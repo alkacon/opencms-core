@@ -2549,6 +2549,15 @@
 			<properties/>
 		</file>
 		<file>
+			<source>action/syncfolder.html</source>
+			<destination>system/workplace/action/syncfolder.html</destination>
+			<type>XMLTemplate</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
 			<source>action/tasks.html</source>
 			<destination>system/workplace/action/tasks.html</destination>
 			<type>XMLTemplate</type>
@@ -10383,6 +10392,33 @@
 			<properties/>
 		</file>
 		<file>
+			<source>pics/system/bt_sync_on.gif</source>
+			<destination>system/workplace/pics/bt_sync_on.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
+			<source>pics/system/bt_sync_off.gif</source>
+			<destination>system/workplace/pics/bt_sync_off.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
+			<source>pics/system/bt_sync_push.gif</source>
+			<destination>system/workplace/pics/bt_sync_push.gif</destination>
+			<type>image</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>15</access>
+			<properties/>
+		</file>
+		<file>
 			<source>pics/system/bt_table_off.gif</source>
 			<destination>system/workplace/pics/bt_table_off.gif</destination>
 			<type>image</type>
@@ -12778,6 +12814,15 @@
 		<file>
 			<source>templates/start</source>
 			<destination>system/workplace/templates/start</destination>
+			<type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>79</access>
+			<properties/>
+		</file>
+		<file>
+			<source>templates/syncfolder</source>
+			<destination>system/workplace/templates/syncfolder</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>

@@ -62,6 +62,7 @@
 			<send>Senden</send>
 			<submit>Übernehmen</submit>
 			<showdetails>Details anzeigen</showdetails>
+			<syncfolder>Ordner synchronisieren</syncfolder>
 			<table>Tabelle</table>
 			<ul>Aufzählung</ul>
 			<underline>Unterstrichen</underline>
@@ -145,6 +146,7 @@
 				<publishproject>Leider konnte das Projekt nicht veröffentlicht werden.</publishproject>
 				<rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
 				<deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
+				<syncfolder>Leider konnten die Ordner nicht synchronisiert werden.</syncfolder>
 				<unlock>Leider konnte die Datei nicht wieder frei gegeben werden.</unlock>
 				<upload>Die Datei konnte nicht hochgeladen werden.</upload>
 			</message>
@@ -197,6 +199,7 @@
 				<projectdatamissing>Die Felder Projektname und Verzeichnisse müssen ausgefüllt werden.</projectdatamissing>
 				<rmdefault>Einer oder mehrere Benutzer, die aus der Gruppe gelöscht werden sollten, hatten diese als Default Gruppe eingestellt.</rmdefault>
 				<deleteproject>Sie haben nicht das Recht dieses Projekt zu löschen.</deleteproject>
+				<syncfolder>Eventuell existieren die zu synchronisierenden Ressourcen oder der Synchronisationspfad nicht.</syncfolder>
 				<unlock>Die Dateisperre wurde von einem anderen Benutzer übernommen.</unlock>
 				<upload>Der Dateiinhalt ist leer</upload>
 			</reason>
@@ -233,6 +236,7 @@
 				<publishproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</publishproject>
 				<rmdefault>Sie müssen die Default Gruppe dieser Benutzer zuerst ändern.</rmdefault>
 				<deleteproject>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</deleteproject>
+				<syncfolder>Bitte überprüfen Sie die Einträge für die Synchronisierung in der Registrierungsdatei oder kontaktieren Sie Ihren Systemadministrator.</syncfolder>
 				<unlock>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</unlock>
 				<upload>Bitte überprüfen Sie den Dateinamen, oder kontaktieren Sie Ihren Systemadministrator.</upload>
 			</suggestion>
@@ -266,6 +270,7 @@
 				<picgallery>Bildergalerie anlegen</picgallery>
 				<publishproject>Projekt veröffentlichen</publishproject>
 				<deleteproject>Projekt löschen</deleteproject>
+				<syncfolder>Ordner synchronisieren</syncfolder>
 				<unlock>Datei frei geben</unlock>
 			 <upload>Datei hochladen</upload>
 			</title>	
@@ -547,6 +552,7 @@
 				<lockfolder>Ordner sperren</lockfolder>
 				<lockchange>Datei Sperrung übernehmen</lockchange>
 				<lockchangefolder>Ordner Sperrung übernehmen</lockchangefolder>
+				<syncfolder>Ordner synchronisieren</syncfolder>
 				<unlock>Datei frei geben</unlock>
 				<unlockfolder>Ordner frei geben</unlockfolder>
 			</title>
@@ -560,6 +566,7 @@
 				<lockfolder>Soll der Ordner wirklich zur Bearbeitung gesperrt werden?</lockfolder>
 				<lockchange>Wollen Sie die Sperrung wirklich übernehmen?</lockchange>
 				<lockchangefolder>Wollen Sie die Sperrung wirklich übernehmen?</lockchangefolder>
+				<syncfolder>Wollen Sie wirklich synchronisieren?</syncfolder>
 				<unlock> Soll die Datei wirklich frei gegeben werden?</unlock>
 				<unlockfolder>Soll der Ordner wirklich frei gegeben werden?</unlockfolder>
 			</message1>
@@ -573,6 +580,7 @@
 				<lockfolder>Auf den Ordner kann dann kein anderer außer Ihnen zugreifen, bis Sie den Ordner wieder freigeben.</lockfolder>
 				<lockchange>Die Datei wird zur Zeit von einem anderen Benutzer gesperrt.</lockchange>
 				<lockchangefolder>Der Ordner wird zur Zeit von einem anderen Benutzer gesperrt.</lockchangefolder>
+				<syncfolder>Die Dateien im OpenCms-System bzw. auf der Festplatte werden dabei auf den neusten Stand gebracht.</syncfolder>
 				<unlock> Die Datei kann dann auch wieder online gestellt werden.</unlock>
 				<unlockfolder> Der Ordner kann dann auch wieder online gestellt werden.</unlockfolder>				
 			</message2>
