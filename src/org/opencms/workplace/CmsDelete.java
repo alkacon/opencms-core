@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/06/28 14:38:30 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -176,8 +176,6 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            // lock resource if autolock is enabled
-            checkLock(getParamResource());
             CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             if (performDeleteOperation(isFolder))  {
@@ -228,8 +226,12 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         }
         
         // determine the correct delete option
-        deleteOption = "true".equalsIgnoreCase(getParamDeleteVfsLinks()) ? I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS : I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
+        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue()
+            ? I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS 
+            : I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
          
+        // lock resource if autolock is enabled
+        checkLock(getParamResource());        
         // delete the resource
         getCms().deleteResource(getParamResource(), deleteOption);
         

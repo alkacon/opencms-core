@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/06/21 10:01:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -192,7 +192,7 @@ public class OpenCmsTestResourceStorage {
      * @param resourceName the resource name to map
      * @return mapped resource name
      */
-    private String mapResourcename(String resourceName) {
+    public String mapResourcename(String resourceName) {
         // only modify the name if we have set some kind of mapping
         if (m_sourceNameMapping != null && m_targetNameMapping != null) {
             // check if the resourcename starts with the source map name

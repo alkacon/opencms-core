@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/28 07:47:33 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -673,8 +673,9 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // store links for later conversion
                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
                 m_linkStorage.put(m_importPath + destination, new String(content));
-                m_linkPropertyStorage.put(m_importPath + destination, properties);
+                m_linkPropertyStorage.put(m_importPath + destination, properties);                
                 res = resource;
+                res.setRootPath(m_cms.getRequestContext().addSiteRoot(m_importPath + destination));
             } else {             
                 // import this resource in the VFS   
                 res = m_cms.importResource(m_importPath + destination, resource, content, properties);

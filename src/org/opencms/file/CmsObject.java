@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/28 14:38:30 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsObject {
 
@@ -576,6 +576,12 @@ public class CmsObject {
      */
     public void undeleteResource(String resourcename) throws CmsException {
 
+        int warning = 0;
+        // TODO: This is NOT the same operation as "undo changes"!
+        // For example a move operation, original resource is deleted 
+        // and new resource is created. Then user modifies the new resource,
+        // and later does "undelete" on deleted resource - changes would be 
+        // lost that have been made on all other siblings!
         undoChanges(resourcename, true);
     }
 
@@ -609,7 +615,7 @@ public class CmsObject {
      */    
     public void unlockResource(String resourcename) throws CmsException {
 
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
         ).unlockResource(
@@ -1173,7 +1179,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
-        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
@@ -1200,7 +1206,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
@@ -1252,7 +1258,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
-        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
     }
 
@@ -1276,7 +1282,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
-        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
     }    
     
@@ -1382,7 +1388,7 @@ public class CmsObject {
      */
     public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
 
-        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         I_CmsPrincipal principal = null;
 
         if ("group".equals(principalType.toLowerCase())) {

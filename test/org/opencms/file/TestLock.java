@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2004/06/28 16:26:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -77,6 +77,8 @@ public class TestLock extends OpenCmsTestCase {
         
         suite.addTest(new TestLock("testLockRequired"));
         suite.addTest(new TestLock("testLockInherit"));
+        suite.addTest(new TestLock("testLockForSiblings"));
+        suite.addTest(new TestLock("testLockForBaseOperations"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -91,6 +93,104 @@ public class TestLock extends OpenCmsTestCase {
         
         return wrapper;
     }     
+    
+    /**
+     * Tests lock status of a resource for basic operations.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockForBaseOperations() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing lock state for basic operations");
+        
+        String source = "/types/text.txt";
+        String destination1 = "/types/text_new1.txt";
+        String destination2 = "/types/text_new2.txt";
+        storeResources(cms, source);
+        
+        // copy source
+        cms.copyResource(source, destination1, I_CmsConstants.C_COPY_AS_NEW);
+
+        // since source was not locked, destination must be locked exclusive
+        // and source must still be unlocked
+        assertLock(cms, source, CmsLock.C_TYPE_UNLOCKED);
+        assertLock(cms, destination1, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        // copy source again
+        cms.lockResource(source);        
+        cms.copyResource(source, destination2, I_CmsConstants.C_COPY_AS_NEW);  
+        
+        // both source and destination must be exlusive locked
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination2, CmsLock.C_TYPE_EXCLUSIVE);
+                
+        // now some move tests
+        source = "/types/jsp.jsp";
+        destination1 = "/types/jsp_new1.html";
+
+        // lock resource
+        cms.lockResource(source);
+        cms.moveResource(source, destination1);
+        
+        // since source was locked, destination must be shared exclusive
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLock.C_TYPE_EXCLUSIVE);
+    }    
+    
+    /**
+     * Tests lock status of a resource during sibling creation.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockForSiblings() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing lock state after sibling creation");
+        
+        String source = "/folder2/index.html";
+        String destination1 = "/folder2/index_sib1.html";
+        String destination2 = "/folder2/index_sib2.html";
+        storeResources(cms, source);
+        
+        // copy source
+        cms.copyResource(source, destination1, I_CmsConstants.C_COPY_AS_SIBLING);
+
+        // since source was not locked, destination must be locked exclusive
+        // and source must be locked shared
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        // copy source again
+        cms.copyResource(source, destination2, I_CmsConstants.C_COPY_AS_SIBLING);  
+        
+        // since one sibling was already exclusive locked, 
+        // new sibling must be shared locked
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLock.C_TYPE_EXCLUSIVE);        
+        assertLock(cms, destination2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        // same stuff but in a different order 
+        source = "/folder2/page1.html";
+        destination1 = "/folder2/page1_sib1.html";
+        destination2 = "/folder2/page1_sib2.html";
+        
+        // this time source is already locked
+        cms.lockResource(source);
+        cms.createSibling(source, destination1, null);
+        
+        // since source was locked, destination must be shared exclusive
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);    
+        
+        // create another sibling
+        cms.createSibling(destination1, destination2, null);    
+        // since one sibling was already exclusive locked, 
+        // new sibling must be shared locked
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
+        assertLock(cms, destination2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);    
+    }
     
     /**
      * Tests an inherited lock in a resource delete scenario.<p>

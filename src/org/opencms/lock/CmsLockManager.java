@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2004/06/28 16:26:13 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com) 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.4
  * 
@@ -107,6 +107,7 @@ public final class CmsLockManager extends Object {
      * @throws CmsException if somethong goes wrong
      */
     public void addResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, CmsUUID userId, int projectId, int mode) throws CmsException {
+        
         CmsLock lock = getLock(driverManager, context, resourcename);
 
         if (!lock.isNullLock() && !lock.getUserId().equals(context.currentUser().getId())) {
@@ -121,7 +122,7 @@ public final class CmsLockManager extends Object {
         }
 
         // handle collisions with exclusive locked sub-resources in case of a folder
-        if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+        if (CmsResource.isFolder(resourcename)) {
             Iterator i = m_exclusiveLocks.keySet().iterator();
             String lockedPath = null;
 
@@ -362,7 +363,7 @@ public final class CmsLockManager extends Object {
         // inevitably result in an infinite loop...        
 
         CmsResource resource = internalReadFileHeader(driverManager, context, resourcename);
-        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource, false);
+        List siblings = driverManager.getVfsDriver().readSiblings(context.currentProject(), resource, true);
 
         int n = siblings.size();
         for (int i = 0; i < n; i++) {
@@ -431,7 +432,7 @@ public final class CmsLockManager extends Object {
 
         // remove the lock and clean-up stuff
         if (lock.getType() == CmsLock.C_TYPE_EXCLUSIVE) {
-            if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            if (CmsResource.isFolder(resourcename)) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
                 Iterator i = m_exclusiveLocks.keySet().iterator();

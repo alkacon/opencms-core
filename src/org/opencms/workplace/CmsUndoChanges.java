@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -130,7 +130,7 @@ public class CmsUndoChanges extends CmsDialog {
     public void actionUndoChanges() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
+        try {              
             if (performUndoChangesOperation())  {
                 // if no exception is caused undo changes operation was successful
                 actionCloseDialog();
@@ -164,6 +164,8 @@ public class CmsUndoChanges extends CmsDialog {
         
         // get the flag if the touch is recursive from request parameter
         boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());    
+        // lock resource if autolock is enabled
+        checkLock(getParamResource());         
         // undo changes on the resource
         getCms().undoChanges(getParamResource(), touchRecursive);
         

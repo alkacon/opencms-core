@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -73,8 +73,14 @@ public abstract class OpenCmsTestResourceFilter {
     public static final OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
     
     /** Definition of a filter used for the copy method. */
-    public static final OpenCmsTestResourceFilter FILTER_COPY = getFilterCopy();    
+    public static final OpenCmsTestResourceFilter FILTER_COPY_AS_NEW = getFilterCopyAsNew();    
     
+    /** Definition of a filter used for the move/reanme method. */
+    public static final OpenCmsTestResourceFilter FILTER_MOVE_DESTINATION = getFilterMoveDestination();  
+    
+    /** Definition of a filter used for the move/reanme method. */
+    public static final OpenCmsTestResourceFilter FILTER_MOVE_SOURCE = getFilterMoveSource();  
+        
     /** Definition of a filter used for the undoChanges method. */
     public static final OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
     
@@ -207,7 +213,7 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterChacc() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterChacc() {
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableStateTest();
@@ -223,7 +229,7 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterCreateResource() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterCreateResource() {
 
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
@@ -243,7 +249,7 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterExistingAndNewSibling() {
         
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
@@ -261,7 +267,7 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterExistingSibling() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterExistingSibling() {
        
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
@@ -277,7 +283,7 @@ public abstract class OpenCmsTestResourceFilter {
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterTouch() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterTouch() {
 
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
@@ -289,18 +295,16 @@ public abstract class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Creates a new filter used for the "copy" method.<p>
+     * Creates a new filter used for the "copy as new" method.<p>
      * 
      * @return the created filter
      */
-    private static OpenCmsTestResourceFilter getFilterCopy() {
+    private static OpenCmsTestResourceConfigurableFilter getFilterCopyAsNew() {
 
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableProjectLastModifiedTest();
         filter.disableStateTest();
-        filter.disableDateLastModifiedTest();
-        filter.disableUserLastModifiedTest();
         filter.disableStructureIdTest();
         filter.disableContentIdTest();
         filter.disableResourceIdTest();
@@ -310,6 +314,42 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableNameTest();
         filter.disableParentIdTest();
         filter.disableAceTest();
+        return filter; 
+    }    
+    
+    /**
+     * Creates a new filter used for the "move/rename" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterMoveDestination() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableStructureIdTest();
+        filter.disableLockTest();
+        filter.disableNameTest();
+        filter.disableParentIdTest();
+        filter.disableSiblingCountTest();
+        return filter; 
+    }
+    
+    /**
+     * Creates a new filter used for the "move/rename" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterMoveSource() {
+
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableLockTest();
+        filter.disableStateTest();
+        filter.disablePropertiesTest();
+        filter.disableSiblingCountTest();
         return filter; 
     }    
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2004/06/28 07:52:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -71,8 +71,8 @@ public class TestCopy extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         
-        suite.addTest(new TestCopy("testCopySingleResource"));
-        suite.addTest(new TestCopy("testCopyFolderNoSiblings"));
+        suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
+        suite.addTest(new TestCopy("testCopyFolderAsNew"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -89,14 +89,14 @@ public class TestCopy extends OpenCmsTestCase {
     }     
     
     /**
-     * Tests the "copy single resource" operation.<p>
+     * Tests the "copy single resource as new" operation.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCopySingleResource() throws Throwable {
+    public void testCopySingleResourceAsNew() throws Throwable {
 
         CmsObject cms = getCmsObject();     
-        echo("Testing copy of a file");
+        echo("Testing copy of a file as new");
         
         String source = "/index.html";
         String destination = "/index_copy.html";
@@ -109,30 +109,28 @@ public class TestCopy extends OpenCmsTestCase {
         
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
-        // state must be "changed"
+        // state must be "new"
         assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
-        // date last modified must be the date set in the tough operation
-        assertDateLastModifiedAfter(cms, destination, timestamp);
+        // date created must be new
         assertDateCreatedAfter(cms, destination, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, destination, cms.getRequestContext().currentUser());
-        assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
+        // user created must be current user
+        assertUserCreated(cms, source, cms.getRequestContext().currentUser());
         // assert lock state
         assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
         // now assert the filter for the rest of the attributes        
         setMapping(destination, source);        
-        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY);       
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);       
     }  
     
     /**
-     * Tests the "copy a folder (no siblings)" operation.<p>
+     * Tests the "copy a folder as new" operation.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testCopyFolderNoSiblings() throws Throwable {
+    public void testCopyFolderAsNew() throws Throwable {
 
         CmsObject cms = getCmsObject();     
-        echo("Testing copy of a folder (no siblings)");
+        echo("Testing copy of a folder as new (i.e. no siblings)");
         
         String source = "/folder2/";
         String destination = "/folder2_copy/";
@@ -159,7 +157,7 @@ public class TestCopy extends OpenCmsTestCase {
         
         // prepare filter without sibling count
         OpenCmsTestResourceConfigurableFilter filter =
-            new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_COPY);
+            new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);
 
         filter.disableSiblingCountTest();        
         
@@ -171,14 +169,12 @@ public class TestCopy extends OpenCmsTestCase {
             
             // project must be current project
             assertProject(cms, resName, cms.getRequestContext().currentProject());
-            // state must be "changed"
+            // state must be "new"
             assertState(cms, resName, I_CmsConstants.C_STATE_NEW);
-            // date last modified must be the date set in the tough operation
-            assertDateLastModifiedAfter(cms, resName, timestamp);
-            assertDateCreatedAfter(cms, resName, timestamp);
-            // the user last modified must be the current user
-            assertUserLastModified(cms, resName, cms.getRequestContext().currentUser());
-            assertUserCreated(cms, resName, cms.getRequestContext().currentUser());
+            // date created must be new
+            assertDateCreatedAfter(cms, destination, timestamp);
+            // user created must be current user
+            assertUserCreated(cms, source, cms.getRequestContext().currentUser());
             // assert lock state
             assertLock(cms, resName);
             // must have sibling count of 1

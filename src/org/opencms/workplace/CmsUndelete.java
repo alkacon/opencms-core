@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2004/06/28 16:26:13 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -113,9 +113,7 @@ public class CmsUndelete extends CmsDialog {
     public void actionUndelete() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
-            // lock resource if autolock is enabled
-            checkLock(getParamResource());            
+        try {        
             if (performUndeleteOperation())  {
                 // if no exception is caused and "true" is returned delete operation was successful
                 actionCloseDialog();
@@ -156,6 +154,8 @@ public class CmsUndelete extends CmsDialog {
             }
         }
          
+        // lock resource if autolock is enabled
+        checkLock(getParamResource());            
         // undelete the resource
         getCms().undeleteResource(getParamResource());
         

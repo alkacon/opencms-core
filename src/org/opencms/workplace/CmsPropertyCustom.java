@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyCustom.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.3
  */
@@ -458,7 +458,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @throws CmsException if editing is not successful
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
-        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
                 switchToTempProject();
@@ -478,7 +478,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 // get the navigation enabled parameter
                 String paramValue = request.getParameter("enablenav");
                 String oldValue = null;
-                if ("true".equals(paramValue)) {
+                if (Boolean.valueOf(paramValue).booleanValue()) {
                     // navigation enabled, update params
                     paramValue = request.getParameter("navpos");
                     if (!"-1".equals(paramValue)) {

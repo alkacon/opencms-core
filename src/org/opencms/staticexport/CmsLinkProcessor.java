@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -160,7 +160,15 @@ public class CmsLinkProcessor {
                 
             case C_PROCESS_LINKS:
                 if (imageTag.getAttribute("src") != null) {
-                    imageTag.setImageURL(processLink(m_linkTable.getLink(getLinkName(imageTag.getImageURL()))));
+                    String imageUrl = imageTag.getImageURL();
+                    CmsLink link = m_linkTable.getLink(getLinkName(imageUrl));
+                    if (link != null) {
+                        // default case: do macro replacement from link table
+                        imageTag.setImageURL(processLink(link));
+                    } else {
+                        // might happen if the HTML is malformed, this prevents a NPE
+                        imageTag.setImageURL(imageUrl);
+                    }
                 }
                 break;
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1
  */
@@ -338,7 +338,7 @@ public class CmsTouch extends CmsDialog {
         String filename = getParamResource();
 
         // get the new timestamp for the resource(s) from request parameter
-        long timeStamp = -1;
+        long timeStamp;
         try {
             if (getParamNewtimestamp() == null) {
                 timeStamp = sourceRes.getDateLastModified();
@@ -373,11 +373,9 @@ public class CmsTouch extends CmsDialog {
         boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());     
   
         // now touch the resource(s)
-        if (timeStamp != -1) {
-            // lock resource if autolock is enabled
-            checkLock(getParamResource());
-            getCms().touch(filename, timeStamp, releasedate, expiredate, touchRecursive);      
-        }
+        // lock resource if autolock is enabled
+        checkLock(getParamResource());
+        getCms().touch(filename, timeStamp, releasedate, expiredate, touchRecursive);      
         return true;
     }
 }

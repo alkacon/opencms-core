@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -340,6 +340,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             driverManager, 
             resource, 
             I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        
+        // make sure lock is switched
+        CmsResource destinationResource = driverManager.readResource(
+            cms.getRequestContext(), 
+            cms.getRequestContext().addSiteRoot(destination), 
+            CmsResourceFilter.ALL);        
+        driverManager.changeLock(cms.getRequestContext(), destinationResource);
     }
 
     /**

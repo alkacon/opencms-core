@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 5.1
  */
@@ -145,7 +145,7 @@ public class CmsMove extends CmsDialog {
     public void actionMove() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        try {
+        try {          
             CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = sourceRes.isFolder();
             if (performMoveOperation(isFolder))  {
@@ -273,6 +273,8 @@ public class CmsMove extends CmsDialog {
                 }
             } 
                     
+            // lock resource if autolock is enabled
+            checkLock(sitePrefix + getParamResource());              
             // move the resource
             getCms().moveResource(sitePrefix + getParamResource(), target);
         } finally {

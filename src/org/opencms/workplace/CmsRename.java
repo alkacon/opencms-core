@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -220,6 +220,8 @@ public class CmsRename extends CmsDialog {
             throw new CmsException("The resource already exists", CmsException.C_FILE_EXISTS);       
         }
         
+        // lock resource if autolock is enabled
+        checkLock(getParamResource());            
         // rename the resource
         getCms().renameResource(getParamResource(), target);
         return true;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/29 14:38:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.15 $
+ * Test cases for the VFS operations.<p> 
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * 
+ * @version $Revision: 1.16 $
  * 
  * @since 5.0
  */
@@ -68,7 +71,8 @@ public final class AllTests {
         suite.addTest(TestCreateWriteResource.suite());
         suite.addTest(TestProjects.suite());
         suite.addTest(TestCopy.suite());        
-        suite.addTest(TestLock.suite());        
+        suite.addTest(TestLock.suite()); 
+        suite.addTest(TestMoveRename.suite());
         //$JUnit-END$
         return suite;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/28 11:18:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 5.3.5
  */
@@ -483,16 +483,16 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertAce(CmsObject cms, String resourceName, CmsAccessControlEntry ace) {
         try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-                      
-                                           
+                              
             // create the exclude list
             List excludeList = new ArrayList();
             if (ace != null) {
                 excludeList.add(ace);
-            }    
+            }  
             
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+                           
             String noMatches = compareAccessEntries(cms, resourceName, storedResource, excludeList);
      
             // now see if we have collected any no-matches
@@ -533,15 +533,16 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertAcl(CmsObject cms, String resourceName, CmsUUID principal, CmsPermissionSet permission) {
         try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-                                          
+                                
             // create the exclude list
             List excludeList = new ArrayList();
             if (permission != null) {
                 excludeList.add(principal);
-            }    
-
+            } 
+            
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+              
             String noMatches = compareAccessLists(cms, resourceName, storedResource, excludeList);
      
             // now see if we have collected any no-matches
@@ -579,10 +580,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertAcl(CmsObject cms, String modifiedResource, String resourceName, CmsUUID principal, CmsPermissionSet permission) {
        //TODO: This method does not work correctly so far, it must be completed!
         
-        try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-                                          
+        try {                       
             // create the exclude list
             List excludeList = new ArrayList();
             if (permission != null) {
@@ -603,7 +601,9 @@ public class OpenCmsTestCase extends TestCase {
                     }
                 }
             }
-
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+            
             String noMatches = compareAccessLists(cms, resourceName, storedResource, excludeList);
      
             // now see if we have collected any no-matches
@@ -1293,7 +1293,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
             // get the stored resource
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-            
+
             // create the exclude list
             List excludeList = new ArrayList();
             excludeList.add(property);            
@@ -1334,7 +1334,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
             // get the stored resource
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);    
-            
+                       
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
             // now see if we have collected any no-matches
@@ -1383,13 +1383,14 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertPropertyRemoved(CmsObject cms, String resourceName, CmsProperty property) {
         try {
-            // get the stored resource
-            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
-            
+
             // create the exclude list
             List excludeList = new ArrayList();
             excludeList.add(property);            
-            
+     
+            // get the stored resource
+            OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
+                 
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
             // now see if we have collected any no-matches
@@ -1426,7 +1427,7 @@ public class OpenCmsTestCase extends TestCase {
         try {
             // get the stored resource
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);    
-            
+                       
             String noMatches = compareProperties(cms, resourceName, storedResource, excludeList);   
             
             // now see if we have collected any no-matches
@@ -1479,7 +1480,8 @@ public class OpenCmsTestCase extends TestCase {
     public void assertSiblingCountIncremented(CmsObject cms, String resourceName, int increment) {
         try {
             // get the current resource from the VFS
-            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);            
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);   
+            
             // get the previous resource from resource storage
             OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/28 16:29:03 $
- * Version: $Revision: 1.389 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.390 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.389 $ $Date: 2004/06/28 16:29:03 $
+ * @version $Revision: 1.390 $ $Date: 2004/06/29 14:38:56 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -665,10 +665,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 context.currentProject().getId(),
                 resource.getState(),
                 resource.getLoaderId(),
-                resource.getDateLastModified(),
-                resource.getUserLastModified(),
                 resource.getDateCreated(),
                 resource.getUserCreated(),
+                resource.getDateLastModified(),
+                resource.getUserLastModified(),                
                 resource.getDateReleased(),
                 resource.getDateExpired(),
                 1,
@@ -701,9 +701,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 newResource = m_vfsDriver.createResource(
                     context.currentProject(), 
                     newResource, 
-                    content);                
-                // result from VFS driver does not have root path set
-                newResource.setRootPath(createdResourceName);             
+                    content);                          
             } else {
                 // resource with this name already exists, update it
                 // used to "overwrite" a resource during import or a copy operation 
@@ -721,6 +719,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         false);
                 }
             }
+            
+            // result from VFS driver does not have root path set
+            newResource.setRootPath(createdResourceName);               
             
             // write the properties (internal operation, no events or duplicate permission checks)
             internalWritePropertyObjects(context, newResource, properties);
@@ -810,8 +811,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         newResource.setDateLastModified(newResource.getDateLastModified());
         
         // create the resource (null content signals creation of sibling)
-        newResource = createResource(context, destination, newResource, null, properties, false);        
-
+        newResource = createResource(context, destination, newResource, null, properties, false); 
+        
         // clear the caches
         clearAccessControlListCache();
 
@@ -940,8 +941,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             source.getLoaderId(), 
             currentTime, 
             context.currentUser().getId(), 
-            currentTime, 
-            context.currentUser().getId(), 
+            source.getDateCreated(), 
+            source.getUserLastModified(), 
             source.getDateReleased(), 
             source.getDateExpired(),
             1,
@@ -949,6 +950,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // set full path
         newResource.setRootPath(destination);
+        
+        // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
+        newResource.setDateLastModified(source.getDateLastModified());
         
         // create the resource
         newResource = createResource(context, destination, newResource, content, properties, false);        
@@ -1525,8 +1529,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 } catch (CmsException exc) {
                     existsOnline = false;
                 }
-
-                m_lockManager.removeResource(this, context, currentResource.getRootPath(), true);
 
                 if (!existsOnline) {
                     // the resource does not exist online => remove the resource

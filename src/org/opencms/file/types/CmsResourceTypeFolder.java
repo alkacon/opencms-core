@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/06/25 16:33:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/29 14:38:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringSubstitution;
 
 import java.util.List;
@@ -46,7 +47,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -201,6 +202,34 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
         // handle the folder itself
         super.deleteResource(cms, driverManager, resource, siblingMode);
     }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, CmsDriverManager, CmsResource, java.lang.String)
+     */
+    public void moveResource(
+        CmsObject cms, 
+        CmsDriverManager driverManager, 
+        CmsResource resource, 
+        String destination
+    ) throws CmsException {
+        
+        // check if the user has write access and if resource is locked
+        // done here since copy is ok without lock, but delete is not
+        driverManager.checkPermissions(cms.getRequestContext(), resource, I_CmsConstants.C_WRITE_ACCESS, true, CmsResourceFilter.IGNORE_EXPIRATION);
+        
+        copyResource(
+            cms, 
+            driverManager, 
+            resource, 
+            destination, 
+            I_CmsConstants.C_COPY_AS_SIBLING);
+        
+        deleteResource(
+            cms, 
+            driverManager, 
+            resource, 
+            I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+    }    
     
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
