@@ -152,6 +152,11 @@ public class HtmlImport {
         // store all member variables
         m_cms = cms;
         m_inputDir=inputDir;
+        
+        // cut of a trailing '/' or '\'
+        if (m_inputDir.endsWith("/") || m_inputDir.endsWith("\\")) {
+            m_inputDir = m_inputDir.substring(0,m_inputDir.length()-1);
+        }
         m_destinationDir = destinationDir;     
         m_imageGallery = C_IMAGEGALLERIES + imageGallery+"/";
         m_linkGallery = C_LINKGALLERIES + linkGallery+"/";
@@ -339,6 +344,12 @@ public class HtmlImport {
             error += "[Template not found=" + m_template+"]";
         }    
         
+        // check if we are in an offline project
+        if (m_cms.getRequestContext().currentProject().isOnlineProject()) {
+            error += "[Import can only be done in an offline project]";
+        }        
+        
+        
         // if there were any errors collected, throw a CmsParameterValidationException
         if (error.length()>0) {
            throw new CmsParameterValidationException(error);           
@@ -491,7 +502,7 @@ public class HtmlImport {
         if (vfsFileName!= null) {                     
             try {
                // check if we have to set the navpos property.
-                if (properties.get(I_CmsConstants.C_PROPERTY_NAVPOS)==null) {
+                if ((properties.get(I_CmsConstants.C_PROPERTY_NAVPOS)==null) && (properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT)!=null)) {
                     // set the position in the folder as navpos
                     // we have to add one to the postion, since it is counted from 0
                     properties.put(I_CmsConstants.C_PROPERTY_NAVPOS, (position+1)+"");
