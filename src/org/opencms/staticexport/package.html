@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/package.html,v $
- Date   : $Date: 2003/09/12 11:06:18 $
- Version: $Revision: 1.1 $
+ Date   : $Date: 2004/03/07 19:22:55 $
+ Version: $Revision: 1.2 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -36,7 +36,36 @@
 </head> 
 <body bgcolor="white">
 
-Contains objects that manage multiple websites in a single OpenCms installation.<p>
+Contains the functionality for writng the static export and for managing static export links.<p>
+
+The static export allows the rendering of resources (including dynamic generated HTML
+pages) to the file system. Resouces that are static exported will not longer be served
+through the OpenCms VFS and the connected databases, but directly from the harddrive 
+of the system. This can dramatically improve performance for an OpenCms generated website.<p>
+
+Static export is only enabled for the "Online" project. When working in any offline project,
+resources are served directly from the OpenCms VFS. This way changes made in the offline 
+mode are immediatly visible.<p>
+
+If your system is properly configured, you can directly serve static exported resources
+with a standard webserver. This means the requests will not even be forwarded to the Java VM
+based servlet container. This is the optimal configuration for maximum performance.<p>
+
+The link management is required in order to mix resources serves dynamically from OpenCms
+with staitc exported resources. Example: A JSP based template renders a persoanlized web page
+from OpenCms. This page can obviously not be static exported. However, there are a 
+number of images refered to on the page. These images are part of the template and also managed
+inside the OpenCms VFS. By configuration you can staitc export these images. This means
+that all links to the images must be adjusted, since the links must now point to a 
+different location. This is what the static export link management does. It adjusts links
+to resources that have been static exported so that they point to the static export 
+location for the "Online" project, and to the OpenCms VFS location for offline projects.<p>
+
+Export points are not related to the static export. 
+An export point is simply a folder inside the OpenCms VFS that is copied 1:1 to a 
+location in the real file system during publishing. This is for example used to 
+copy Java classes, JAR files or other system resouces from the VFS to the WEB-INF/classes or 
+WEB-INF/lib folder. No link processing is done for resources written with export points. 
 
 <!-- Put @see and @since tags down here. -->
 

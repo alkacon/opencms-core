@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/03/02 21:52:34 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/03/07 19:22:55 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -130,18 +130,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         m_staticExportEnabled = false;
         m_exportPropertyDefault = true;
                 
-        LRUMap lruMap;
-        
-        lruMap = new LRUMap(1024);
-        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap);
+        LRUMap lruMap1 = new LRUMap(1024);
+        m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", lruMap);
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheOnlineLinks", lruMap1);
         }              
         
-        lruMap = new LRUMap(1024);
-        m_cacheExportUris = Collections.synchronizedMap(lruMap);
+        LRUMap lruMap2 = new LRUMap(1024);
+        m_cacheExportUris = Collections.synchronizedMap(lruMap2);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheExportUris", lruMap);
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_cacheExportUris", lruMap2);
         }
         
         // register this object as event listener
@@ -149,7 +149,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             I_CmsEventListener.EVENT_PUBLISH_PROJECT, 
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_UPDATE_EXPORTS
-        });  
+        });          
     }
     
     /**
