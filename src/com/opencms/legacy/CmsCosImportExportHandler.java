@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCosImportExportHandler.java,v $
- * Date   : $Date: 2004/02/23 17:38:27 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosImportExportHandler.java,v $
+ * Date   : $Date: 2004/02/23 17:40:58 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.importexport;
+package com.opencms.legacy;
+
+import org.opencms.importexport.I_CmsImportExportHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +40,7 @@ import java.util.List;
  * Import/export handler implementation for COS data.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/23 17:38:27 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/23 17:40:58 $
  * @since 5.3
  */
 public class CmsCosImportExportHandler extends Object implements I_CmsImportExportHandler {
