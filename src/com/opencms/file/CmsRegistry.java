@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2001/10/31 13:04:18 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/12/03 10:46:53 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2001/10/31 13:04:18 $
+ * @version $Revision: 1.40 $ $Date: 2001/12/03 10:46:53 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -740,6 +740,27 @@ public String getModuleParameter(String modulename, String parameter) {
     }
     return retValue;
 }
+
+/**
+ * Gets a parameter for a module.
+ *
+ * @param modulename java.lang.String the name of the module.
+ * @param parameter java.lang.String the name of the parameter to set.
+ * @param defaultValue the default value.
+ * @return value java.lang.String the value to set for the parameter.
+ */
+public String getModuleParameter(String modulename, String parameter, String defaultValue) {
+    String retValue = null;
+    try {
+        Element param = getModuleParameterElement(modulename, parameter);
+        retValue = param.getElementsByTagName("value").item(0).getFirstChild().getNodeValue();
+    } catch (Exception exc) {
+        retValue = defaultValue;
+        // ignore the exception - parameter is not existent
+    }
+    return retValue;
+}
+
 /**
  * Returns a parameter for a module.
  *
@@ -800,11 +821,7 @@ public byte getModuleParameterByte(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public byte getModuleParameterByte(String modulname, String parameter, byte defaultValue) {
-    try {
-        return getModuleParameterByte(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return Byte.parseByte(getModuleParameter(modulname, parameter, Byte.toString(defaultValue)));
 }
 /**
  * Returns a parameter for a module.
@@ -853,11 +870,7 @@ public double getModuleParameterDouble(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public double getModuleParameterDouble(String modulname, String parameter, double defaultValue) {
-    try {
-        return getModuleParameterDouble(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return Double.valueOf(getModuleParameter(modulname, parameter, Double.toString(defaultValue))).doubleValue();
 }
 /**
  * Returns a parameter for a module.
@@ -916,11 +929,7 @@ public float getModuleParameterFloat(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public float getModuleParameterFloat(String modulname, String parameter, float defaultValue) {
-    try {
-        return getModuleParameterFloat(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return Float.valueOf(getModuleParameter(modulname, parameter, Float.toString(defaultValue))).floatValue();
 }
 /**
  * Returns a parameter for a module.
@@ -952,11 +961,7 @@ public int getModuleParameterInteger(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public int getModuleParameterInteger(String modulname, String parameter, int defaultValue) {
-    try {
-        return getModuleParameterInteger(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return Integer.parseInt(getModuleParameter(modulname, parameter, Integer.toString(defaultValue)));
 }
 /**
  * Returns a parameter for a module.
@@ -989,11 +994,7 @@ public long getModuleParameterLong(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public long getModuleParameterLong(String modulname, String parameter, long defaultValue) {
-    try {
-        return getModuleParameterLong(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return Long.valueOf(getModuleParameter(modulname, parameter, Long.toString(defaultValue))).longValue();
 }
 /**
  * Returns a parameter for a module.
@@ -1046,11 +1047,7 @@ public String getModuleParameterString(String modulname, String parameter) {
  * @return boolean the value for the parameter in the module.
  */
 public String getModuleParameterString(String modulname, String parameter, String defaultValue) {
-    try {
-        return getModuleParameterString(modulname, parameter);
-    } catch (Exception exc) {
-        return defaultValue;
-    }
+    return getModuleParameter(modulname, parameter, defaultValue);
 }
 /**
  * This method returns the type of a parameter in a module.
