@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsDbPool.java,v $
- * Date   : $Date: 2000/10/09 13:12:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/10/26 09:58:54 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,14 +41,13 @@ import java.sql.SQLException;
  * @author: Jan Krag
  */ 
 public interface I_CmsDbPool {
-
 	/**
 	 * Gets a PreparedStatement object and remove it from the list of available statements.
 	 * 
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */	
-  public PreparedStatement getPreparedStatement(Integer key) throws SQLException;      
+  public PreparedStatement getPreparedStatement(Integer key) throws SQLException;  
 	/**
 	 * Gets a (Simple)Statement object and remove it from the list of available statements.
 	 * 
@@ -56,6 +55,13 @@ public interface I_CmsDbPool {
 	 */
 
   public Statement getStatement() throws CmsException;  
+/**
+ * This method must be called after the last initPreparedStatement
+ * it initializes the Hashtable so it is possible to get the connection of a PreparedStatement
+ *
+ * Creation date: (11.10.00 12:53:06)
+ */
+public void initLinkConnections() ;
  	/**
 	 * Init the PreparedStatement on all connections.
 	 * 
