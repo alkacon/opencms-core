@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/02/14 14:35:48 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/02/18 07:05:42 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.defaults.master.*;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2002/02/14 14:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2002/02/18 07:05:42 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -376,6 +376,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
                 String addChannel = (String)superChannels.elementAt(i);
                 if(!m_superChannels.contains(addChannel)) {
                     // This super folder was NOT added previously. Add it now!
+                    m_cms.setContextToCos();
                     CmsFolder channel = m_cms.readFolder(addChannel);
                     writeXmlEntrys(channel);
                     // Remember that this folder was added
