@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/23 13:31:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/23 16:34:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
+	 * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -218,7 +218,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.8 $ $Date: 2003/06/23 13:31:09 $
+	 * @version $Revision: 1.9 $ $Date: 2003/06/23 16:34:59 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -8930,32 +8930,43 @@ protected void validName(String name, boolean blank) throws CmsException {
 	 * @return					the access control list of the resource
 	 * @throws CmsException		if something goes wrong
 	 */	
+	// TODO: build acl upon acl of predecessor
 	public CmsAccessControlList getAccessControlList(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
+
         CmsResource res = resource;
-        CmsUUID resourceId = res.getResourceAceId();
         CmsAccessControlList acList = (CmsAccessControlList)m_accessControlListCache.get(resource.getAbsolutePath());
+		ListIterator acEntries = null;
+		CmsUUID resourceId = null;
 		
 		if (acList != null)
 			return acList;
 			
-		acList = new CmsAccessControlList();
-		
-		// add the aces of the resource itself
-		ListIterator acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, false).listIterator();
-		while (acEntries.hasNext()) {
-			acList.add((CmsAccessControlEntry)acEntries.next());
-		}
+		acList = new CmsAccessControlList(); 
 		
 		// add the aces of each predecessor
-		while (!(resourceId = resource.getParentId()).isNullUUID()) {			
-            resource = m_vfsDriver.readFolder(currentProject.getId(), resourceId);
-            resourceId = resource.getResourceAceId();
+		while (!(resourceId = res.getParentId()).isNullUUID()) {			
+            res = m_vfsDriver.readFolder(currentProject.getId(), resourceId);
+            resourceId = res.getResourceAceId();
 			acEntries = m_userDriver.getAccessControlEntries(currentProject, resourceId, true).listIterator();
 			while (acEntries.hasNext()) {
-				acList.add((CmsAccessControlEntry)acEntries.next());
+				CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
+				if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) 
+					acList.setAllowedPermissions(acEntry);
+				else
+					acList.add(acEntry);
 			}
 		}
-		
+
+		// add the aces of the resource itself
+		acEntries = m_userDriver.getAccessControlEntries(currentProject, resource.getResourceAceId(), false).listIterator();
+		while (acEntries.hasNext()) {
+			CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
+			if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) 
+				acList.setAllowedPermissions(acEntry);
+			else
+				acList.add(acEntry);
+		}
+				
 		m_accessControlListCache.put(resource.getAbsolutePath(), acList);
 		
 		return acList;

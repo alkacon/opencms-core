@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/06/13 10:03:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/23 16:34:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  * An access control list contains the permission sets of all principals for a distinct resource
  * that are calculated on the permissions given by various access control entries.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2003/06/13 10:03:10 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/23 16:34:59 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -75,6 +75,34 @@ public class CmsAccessControlList {
 		m_permissions.put(entry.getPrincipal(),permissions); 
 	}
 
+	/**
+	 * Sets the allowed permissions of a given access control entry as allowed permissions in the access control list.
+	 * 
+	 * @param entry the access control entry
+	 */
+	public void setAllowedPermissions(CmsAccessControlEntry entry) {
+	
+		CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
+		if (permissions == null)
+			permissions = new CmsPermissionSet();	
+
+		permissions.setPermissions(entry.getAllowedPermissions(),0);
+	}
+	
+	/**
+	 * Sets the denied permissions of a given access control entry as denied permissions in the access control list.
+	 * 
+	 * @param entry the access control entry
+	 */
+	public void setDeniedPermissions(CmsAccessControlEntry entry) {
+		
+		CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
+		if (permissions == null)
+			permissions = new CmsPermissionSet();
+			
+		permissions.setPermissions(0, entry.getDeniedPermissions());		
+	}
+	
 	/**
 	 * Returns the permission set of a principal as stored in the access control list.
 	 * 

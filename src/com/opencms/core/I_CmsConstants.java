@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/06/16 16:19:39 $
-* Version: $Revision: 1.233 $
+* Date   : $Date: 2003/06/23 16:34:59 $
+* Version: $Revision: 1.234 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.233 $ $Date: 2003/06/16 16:19:39 $
+ * @version $Revision: 1.234 $ $Date: 2003/06/23 16:34:59 $
  */
 public interface I_CmsConstants {
 
@@ -489,21 +489,26 @@ public interface I_CmsConstants {
 	 * Flag to indicate that an access control entry should be inherited
 	 */
 	final static int C_ACCESSFLAGS_INHERIT = 2;
-	
+
+	/*
+	 * Flag to indicate that an access control entry overwrites inherited entries 
+	 */
+	final static int C_ACCESSFLAGS_OVERWRITE = 4;
+	 	
 	/**
 	 * Flag to indicate that an access control entry was inherited (read only)
 	 */
-	final static int C_ACCESSFLAGS_INHERITED = 4;
+	final static int C_ACCESSFLAGS_INHERITED = 8;
 	
 	/**
 	 * Flag to signal the principal type user
 	 */
-	final static int C_ACCESSFLAGS_USER = 8;
+	final static int C_ACCESSFLAGS_USER = 16;
 	
 	/**
 	 * Flag to signal the pricipal type group
 	 */
-	final static int C_ACCESSFLAGS_GROUP = 16;
+	final static int C_ACCESSFLAGS_GROUP = 32;
 	
     /**
      * Is set, if the resource is unchanged in this project.
