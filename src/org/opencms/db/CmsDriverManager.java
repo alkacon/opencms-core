@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/09 08:53:26 $
- * Version: $Revision: 1.200 $
+ * Date   : $Date: 2003/09/09 13:08:57 $
+ * Version: $Revision: 1.201 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.200 $ $Date: 2003/09/09 08:53:26 $
+ * @version $Revision: 1.201 $ $Date: 2003/09/09 13:08:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1158,13 +1158,13 @@ public class CmsDriverManager extends Object {
 
         // read the source properties
         newResourceProps = readProperties(context, source, null, false);
-                     
+        
         if (copyAsLink) {
-            // create a copy of the source file in the destination parent folder
+        // create a copy of the source file in the destination parent folder      
             newResource = createVfsLink(context, destination, source, newResourceProps, false);
         } else {
             // create a new resource in the destination folder
-            
+
             // check the resource flags
             int flags = sourceFile.getFlags();
             if (sourceFile.isLabeled()) {
@@ -1186,9 +1186,9 @@ public class CmsDriverManager extends Object {
 
             }
                         
-            m_vfsDriver.updateResourceState(context.currentProject(), newResource, C_UPDATE_ALL);
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);
             
-            touch(context, destination, sourceFile.getDateLastModified(), sourceFile.getUserLastModified());            
+            touch(context,destination,sourceFile.getDateLastModified(),sourceFile.getUserLastModified());            
         
         if (lockCopy) {
                 lockResource(context, destination);
@@ -4338,13 +4338,9 @@ public class CmsDriverManager extends Object {
      * @return boolean If true the history is enabled
      */
     public boolean isHistoryEnabled(CmsObject cms) {
+        
         try {
-            Hashtable histproperties = cms.getRegistry().getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
-            if ("true".equalsIgnoreCase((String) histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_ENABLE))) {
-                return true;
-            } else {
-                return false;
-            }
+            return cms.getRegistry().getBackupEnabled();
         } catch (CmsException e) {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "Could not get registry value for " + I_CmsConstants.C_REGISTRY_HISTORY + "." + I_CmsConstants.C_REGISTRY_HISTORY_ENABLE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/08 09:08:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/09 13:08:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $ $Date: 2003/09/08 09:08:08 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/09 13:08:57 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -121,6 +121,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         PreparedStatement stmt1 = null;
         PreparedStatement stmt2 = null;
         PreparedStatement stmt3 = null;
+        PreparedStatement stmt4 = null;
         
         Connection conn = null;
         CmsBackupResource currentResource = null;
@@ -131,6 +132,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt1 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_CONTENT");
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_RESOURCES");
             stmt3 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_BACKUP_DELETE_STRUCTURE");
+            stmt4 = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL_BACKUP");
 
             for (int i = 0; i < count; i++) {
                 currentResource = (CmsBackupResource)existingBackups.get(i);
@@ -143,12 +145,18 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 // add the values to delete the structure table
                 stmt3.setString(1, currentResource.getBackupId().toString());             
                 stmt3.addBatch();
+                // delete the properties
+                stmt4.setString(1, currentResource.getBackupId().toString());
+                stmt4.setString(2, currentResource.getResourceId().toString());
+                stmt4.setInt(3, currentResource.getTagId());
+                stmt4.addBatch();
             }
 
             if (count > 0) {
                 stmt1.executeBatch();
                 stmt2.executeBatch();
                 stmt3.executeBatch();
+                stmt4.executeBatch();    
             }
 
         } catch (SQLException e) {
@@ -159,6 +167,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             m_sqlManager.closeAll(conn, stmt1, null);
             m_sqlManager.closeAll(conn, stmt2, null);
             m_sqlManager.closeAll(conn, stmt3, null);
+            m_sqlManager.closeAll(conn, stmt4, null);
         }
     }
 

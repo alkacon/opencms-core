@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/09 09:13:07 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/09/09 13:08:57 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.38 $ $Date: 2003/09/09 09:13:07 $
+ * @version $Revision: 1.39 $ $Date: 2003/09/09 13:08:57 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -653,7 +653,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                     stmt.setString(1, backupId.toString());
                     stmt.setInt(2, m_sqlManager.nextId(m_sqlManager.get("C_TABLE_PROPERTIES_BACKUP")));
                     stmt.setInt(3, propdef.getId());
-                    stmt.setString(4, resource.getId().toString());
+                    stmt.setString(4, resource.getResourceId().toString());
                     stmt.setString(5, resource.getFullResourceName());
                     stmt.setString(6, m_sqlManager.validateNull(value));
                     stmt.setInt(7, tagId);
@@ -802,24 +802,33 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(java.util.List)
      */
     public void deleteBackups(List existingBackups, int maxVersions) throws CmsException {        
-        PreparedStatement stmt = null;
+        PreparedStatement stmt1 = null;
+        PreparedStatement stmt2 = null;
         Connection conn = null;
         CmsBackupResource currentResource = null;
         int count = existingBackups.size() - maxVersions;
 
         try {
             conn = m_sqlManager.getConnectionForBackup();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
+            stmt1 = m_sqlManager.getPreparedStatement(conn, "C_BACKUP_DELETE_RESOURCE");
+            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_DELETEALL_BACKUP");
 
             for (int i = 0; i < count; i++) {
                 currentResource = (CmsBackupResource)existingBackups.get(i);
-                stmt.setString(1, currentResource.getId().toString());
-                stmt.setInt(2, currentResource.getTagId());
-                stmt.addBatch();
+                // delete the resource
+                stmt1.setString(1, currentResource.getId().toString());
+                stmt1.setInt(2, currentResource.getTagId());
+                stmt1.addBatch();
+                // delete the properties
+                stmt2.setString(1, currentResource.getBackupId().toString());
+                stmt2.setString(2, currentResource.getResourceId().toString());
+                stmt2.setInt(3, currentResource.getTagId());
+                stmt2.addBatch();
             }
 
             if (count > 0) {
-                stmt.executeBatch();
+                stmt1.executeBatch();
+                stmt2.executeBatch();
             }
 
         } catch (SQLException e) {
@@ -827,7 +836,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } catch (Exception ex) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt1, null);
+            m_sqlManager.closeAll(conn, stmt2, null);
         }
     }
 
