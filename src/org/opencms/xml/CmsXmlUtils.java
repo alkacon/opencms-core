@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/13 09:51:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -134,11 +134,11 @@ public final class CmsXmlUtils {
      * @return the simplified Xpath for the given name
      */
     public static String createXpath(String path, int index) {
-
+        
         if (path.indexOf('/') > -1) {
             // this is a complex path over more then 1 node
             StringBuffer result = new StringBuffer(path.length() + 32);
-
+            
             // split the path into subelements
             List elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
@@ -155,6 +155,68 @@ public final class CmsXmlUtils {
 
         // this path has only 1 node, append [index] if required
         return createXpathElementCheck(path, index);
+    }
+    
+    /**
+     * Simplifies an Xpath by removing a leading and a trailing slash from the given path.<p> 
+     * 
+     * Examples:<br> 
+     * <code>title/</code> becomes <code>title</code><br>
+     * <code>/title[1]/</code> becomes <code>title[1]</code><br>
+     * <code>/title/subtitle/</code> becomes <code>title/subtitle</code><br>
+     * <code>/title/subtitle[1]/</code> becomes <code>title/subtitle[1]</code><p>
+     * 
+     * @param path the path to process
+     * @return the input with a leading and a trailing slash removed
+     */
+    public static String simplifyXpath(String path) {
+        
+        StringBuffer result = new StringBuffer(path);
+        if (result.charAt(0) == '/') {
+            result.deleteCharAt(0);
+        }
+        int pos = result.length()-1;
+        if (result.charAt(pos) == '/') {
+            result.deleteCharAt(pos);
+        }
+        return result.toString();
+    }
+    
+    /**
+     * Removes all Xpath index information from the given input path.<p>
+     * 
+     * Examples:<br> 
+     * <code>title</code> is left untouched<br>
+     * <code>title[1]</code> becomes <code>title</code><br>
+     * <code>title/subtitle</code> is left untouched<br>
+     * <code>title/subtitle[1]</code> becomes <code>title/subtitle</code><p>
+     * 
+     * @param path the path to remove the Xpath index information from
+     * 
+     * @return the simplified Xpath for the given name
+     */
+    public static String removeXpath(String path) {
+        
+        if (path.indexOf('/') > -1) {
+            // this is a complex path over more then 1 node
+            StringBuffer result = new StringBuffer(path.length() + 32);
+
+            // split the path into subelements
+            List elements = CmsStringUtil.splitAsList(path, '/');
+            int end = elements.size() - 1;
+            for (int i = 0; i <= end; i++) {
+                // append [i] to path element if required 
+                result.append(removeXpathIndex((String)elements.get(i)));
+                if (i < end) {
+                    // append path delimiter if not final path element
+                    result.append('/');
+                }
+            }
+            return result.toString();
+        }
+
+        // this path has only 1 node, remove last index if required
+        return removeXpathIndex(path);
     }
 
     /**
@@ -369,7 +431,7 @@ public final class CmsXmlUtils {
 
         return path.substring(0, pos);
     }
-
+    
     /**
      * Removes the last Xpath index from the given path.<p>
      * 
@@ -392,6 +454,30 @@ public final class CmsXmlUtils {
         }
 
         return path.substring(0, pos2);
+    }
+    
+    /**
+     * Returns the last Xpath index from the given path.<p>
+     * 
+     * Examples:<br> 
+     * <code>title</code> returns them empty String<p>
+     * <code>title[1]</code> returns <code>[1]</code><p>
+     * <code>title/subtitle</code> returns them empty String<p>
+     * <code>title[1]/subtitle[1]</code> returns <code>[1]</code><p>
+     * 
+     * @param path the path to remove the Xpath index from
+     * 
+     * @return the path with the last Xpath index removed
+     */
+    public static String getXpathIndex(String path) {
+        
+        int pos1 = path.lastIndexOf('/');
+        int pos2 = path.lastIndexOf('[');
+        if ((pos2 < 0) || (pos1 > pos2)) {
+            return "";
+        }
+
+        return path.substring(pos2);
     }
 
     /**
