@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/10/21 15:28:30 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2002/10/18 16:54:59 $
+ * @version $Revision: 1.32 $ $Date: 2002/10/21 15:28:30 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -397,8 +397,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents) throws CmsException{
 
-        String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPERATOR, newPageName.length()-2)+1);
-        String pageName = newPageName.substring(folderName.length(), newPageName.length()-1);
+        String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPERATOR, newPageName.length())+1);
+        String pageName = newPageName.substring(folderName.length(), newPageName.length());
 
         // Scan for mastertemplates
         Vector allMasterTemplates = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
