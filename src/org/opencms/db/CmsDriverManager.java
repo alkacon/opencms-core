@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 12:40:36 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2003/07/31 13:07:56 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.108 $ $Date: 2003/07/31 12:40:36 $
+ * @version $Revision: 1.109 $ $Date: 2003/07/31 13:07:56 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1878,27 +1878,33 @@ public class CmsDriverManager extends Object {
 
         // read the resource to delete/remove
         resource = readFileHeader(context, filename, false);
+        
+        // upgrade a potential inherited, non-shared lock into an exclusive lock
+        currentLock = getLock(context, filename);
+        if (currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
+            lockResource(context, filename, false);            
+        }
 
         // add the resource itself to the list of all resources that get deleted/removed
         resources.add(resource);
-            
-        // if selected, add all links pointing to this resource to the list of resources that get deleted/removed  
+
+        // if selected, add all links pointing to this resource to the list of files that get deleted/removed  
         if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
-            resources.addAll(getAllVfsSoftLinks(context, filename));    
-            }
+            resources.addAll(getAllVfsSoftLinks(context, filename));
+        }
 
         // ensure that each link pointing to the resource is unlocked or locked by the current user
-            i = resources.iterator();
-            while (i.hasNext()) {
-                currentResource = (CmsResource) i.next();
-                currentLock = getLock(context, currentResource);
+        i = resources.iterator();
+        while (i.hasNext()) {
+            currentResource = (CmsResource) i.next();
+            currentLock = getLock(context, currentResource);
 
-                if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
-                    // the resource is locked by a user different from the current user
-                    int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
-                    throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
-                }
+            if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
+                // the resource is locked by a user different from the current user
+                int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
+                throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
             }
+        }
 
         // delete/remove all collected resources
         i = resources.iterator();
@@ -1916,21 +1922,21 @@ public class CmsDriverManager extends Object {
                 } catch (CmsException exc) {
                     existsOnline = false;
                 }
-            
+
                 unlockResource(context, currentResource.getFullResourceName(), true);
-    
+
                 if (!existsOnline) {
                     // remove the properties                
                     deleteAllProperties(context, currentResource.getFullResourceName());
                     // remove the access control entries
                     m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
                     // the resource doesnt exist online => remove the file
-                    m_vfsDriver.removeFile(context.currentProject(), currentResource);                
+                    m_vfsDriver.removeFile(context.currentProject(), currentResource);
                 } else {
                     // delete the access control entries
                     deleteAllAccessControlEntries(context, currentResource);
                     // the resource exists online => mark the file as deleted
-                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);
                 }
             }
         }
@@ -7446,17 +7452,19 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  	if operation was not succesful.
      */
     public void unlockResource(CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
-        CmsResource resource = null;     
-        CmsLock currentLock = null;
+        //CmsResource resource = null;     
+        //CmsLock currentLock = null;
         
-        resource = readFileHeader(context, resourcename);
-        currentLock = m_lockDispatcher.getLock(this, context, resourcename);
+        //resource = readFileHeader(context, resourcename);
+        //currentLock = m_lockDispatcher.getLock(this, context, resourcename);
         
         // check a few abort conditions first
         
+        /*
         if (currentLock.getType() == CmsLock.C_TYPE_SHARED_INHERITED || currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
             throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INHERITED);
         }
+        */
         
         /*
         if (!forceUnlock) {
@@ -7465,7 +7473,7 @@ public class CmsDriverManager extends Object {
         } 
         */       
         
-        m_lockDispatcher.removeResource(this, context, resource.getFullResourceName(), forceUnlock);        
+        m_lockDispatcher.removeResource(this, context, resourcename, forceUnlock);        
         
         /*
         String currentResourceName = null;       

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/29 09:34:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/07/31 13:07:56 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,17 +46,47 @@ import com.opencms.flex.util.CmsUUID;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/07/29 09:34:14 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/31 13:07:56 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
  */
 public class CmsLock extends Object implements Cloneable {
 
+    /** 
+     * A lock that allows the user to edit the resource’s structure record, 
+     * it’s resource record, and its content record.<p>
+     * 
+     * This lock is assigned to files that are locked via the context menu.
+     */
     public static final int C_TYPE_EXCLUSIVE = 4;
+    
+    /**
+     * A lock that is inherited from a locked parent folder.
+     */    
     public static final int C_TYPE_INHERITED = 3;
+    
+    /**
+     * A lock that allows the user to edit the resource’s structure record only, 
+     * but not it’s resource record nor content record.<p>
+     * 
+     * This lock is assigned to files if another link to the same resource record has
+     * already an exclusive lock. 
+     */    
     public static final int C_TYPE_SHARED_EXCLUSIVE = 2;
+    
+    /**
+     * A lock that allows the user to edit the resource’s structure record only, 
+     * but not it’s resource record nor content record.<p>
+     * 
+     * This lock is assigned to resources that already have a shared exclusive lock,
+     * and then inherit a lock because one if it's parent folders gets locked.
+     */    
     public static final int C_TYPE_SHARED_INHERITED = 1;
+    
+    /**
+     * Reserved for the Null CmsLock.
+     */    
     public static final int C_TYPE_UNLOCKED = 0;
 
     /** The shared Null lock object */
