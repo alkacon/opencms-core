@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.109 $
+* Date   : $Date: 2003/02/11 18:27:02 $
+* Version: $Revision: 1.110 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.109 $ $Date: 2003/02/02 15:59:53 $
+ * @version $Revision: 1.110 $ $Date: 2003/02/11 18:27:02 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -533,6 +533,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
 
         if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : starting");
 
+        // set context once and for all
+        String context = req.getContextPath() + req.getServletPath();
+        if (! context.endsWith("/")) context += "/";
+        A_OpenCms.setOpenCmsContext(context);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms context      : " + context);
+
         // check for the JSP export URL runtime property
         String jspExportUrl = (String)getRuntimeProperty(CmsJspLoader.C_LOADER_JSPEXPORTURL);
         if (jspExportUrl == null) {
@@ -542,8 +548,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             url.append(req.getServerName());
             url.append(":");
             url.append(req.getServerPort());
-            url.append(req.getContextPath());
-            url.append(req.getServletPath());        
+            url.append(context);        
             String flexExportUrl = new String(url);    
             // check if the URL ends with a "/", this is not allowed
             if (flexExportUrl.endsWith(C_FOLDER_SEPARATOR)) {
