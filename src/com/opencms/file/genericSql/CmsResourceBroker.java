@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/20 15:29:38 $
-* Version: $Revision: 1.299 $
+* Date   : $Date: 2001/12/20 15:31:51 $
+* Version: $Revision: 1.300 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.299 $ $Date: 2001/12/20 15:29:38 $
+ * @version $Revision: 1.300 $ $Date: 2001/12/20 15:31:51 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1538,6 +1538,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
                             readAllProperties(currentUser,currentProject,folder.getResourceName()));
+                m_subresCache.clear();
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(true);
