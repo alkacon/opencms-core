@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2003/11/03 09:05:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/undochanges_html
+ * <li>/jsp/dialogs/undochanges_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */

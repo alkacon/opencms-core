@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/chaccbrowser.html
+ * <li>/jsp/dialogs/chaccbrowser.html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */

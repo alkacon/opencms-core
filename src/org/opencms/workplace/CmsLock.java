@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2003/11/07 10:48:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,27 +49,35 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Creates the dialogs for locking or unlocking a resource.<p> 
+ * Creates the dialogs for locking, unlocking or steal lock operations on a resource.<p> 
  *
  * The following files use this class:
  * <ul>
- * <li>/jsp/lock_standard_html
- * <li>/jsp/unlock_standard_html
+ * <li>/jsp/dialogs/lock_standard_html
+ * <li>/jsp/dialogs/lockchange_standard_html
+ * <li>/jsp/dialogs/unlock_standard_html
  * </ul>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
 public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
         
     public static final String DIALOG_TYPE_LOCK = "lock";
+    public static final String DIALOG_TYPE_LOCKCHANGE = "lockchange";
     public static final String DIALOG_TYPE_UNLOCK = "unlock";
     // always start individual action id's with 100 to leave enough room for more default actions
     
     public static final String URI_LOCK_DIALOG = C_PATH_DIALOGS + "lock_standard.html";
+    public static final String URI_LOCKCHANGE_DIALOG = C_PATH_DIALOGS + "lockchange_standard.html";
     public static final String URI_UNLOCK_DIALOG = C_PATH_DIALOGS + "unlock_standard.html";
+    
+    // the three possible action types performed by this class
+    public static final int TYPE_LOCK = 1;
+    public static final int TYPE_LOCKCHANGE = 2;
+    public static final int TYPE_UNLOCK = 3;
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -102,10 +110,14 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
-        if (lockResource(jsp.getCmsObject())) {
-            return URI_LOCK_DIALOG;
-        } else {
-            return URI_UNLOCK_DIALOG;
+        switch (getDialogAction(jsp.getCmsObject())) {
+            case TYPE_LOCK:
+                return URI_LOCK_DIALOG;
+            case TYPE_LOCKCHANGE:
+                return URI_LOCKCHANGE_DIALOG;
+            case TYPE_UNLOCK:
+            default:
+                return URI_UNLOCK_DIALOG;
         }
     }
 
@@ -126,11 +138,18 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_CONFIRMED);
-        } else {                                   
-            if (lockResource(getCms())) {
+        } else {
+            switch (getDialogAction(getCms())) {
+            case TYPE_LOCK:
                 setParamTitle(key("messagebox.title.lock"));
                 setParamDialogtype(DIALOG_TYPE_LOCK);
-            } else {
+                break;
+            case TYPE_LOCKCHANGE:
+                setParamTitle(key("messagebox.title.lockchange"));
+                setParamDialogtype(DIALOG_TYPE_UNLOCK);
+                break;
+            case TYPE_UNLOCK:
+            default:
                 setParamTitle(key("messagebox.title.unlock"));
                 setParamDialogtype(DIALOG_TYPE_UNLOCK);
             }
@@ -154,18 +173,25 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
     
-        try {        
-            if (lockResource(getCms())) {
+        try {
+            String resName = getParamResource();
+            CmsResource res = getCms().readFileHeader(resName);
+            if (res.isFolder() && !resName.endsWith("/")) {
+                resName += "/";
+            }
+            // perform action depending on dialog uri
+            switch (getDialogAction(getCms())) {
+            case TYPE_LOCK:
                 getCms().lockResource(getParamResource());
-            } else {
-                String resName = getParamResource();
-                CmsResource res = getCms().readFileHeader(resName);
-                if (res.isFolder() && !resName.endsWith("/")) {
-                    resName += "/";
-                }
+                break;
+            case TYPE_LOCKCHANGE:
+                getCms().changeLock(resName);
+                break;
+            case TYPE_UNLOCK:
+            default:               
                 getCms().unlockResource(resName, false);
             }
-            // create a map with an empty "resource" parameter to avoid changing the folder when returning to file list
+            // create a map with an empty "resource" parameter to avoid changing the folder when returning to explorer file list
             Map params = new HashMap();
             params.put(I_CmsWpConstants.C_PARA_RESOURCE, "");
             // if no exception is caused operation was successful
@@ -202,13 +228,22 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     }
     
     /**
-     * Determines if the resource should be locked or unlocked.<p>
+     * Determines if the resource should be locked, unlocked or if the lock should be stolen.<p>
      * 
      * @param cms the CmsObject
-     * @return true if the resource should be locked, otherwise false
+     * @return the dialog action: lock, change lock (steal) or unlock
      */
-    public static boolean lockResource(CmsObject cms) {
-        return ("lock.html".equals(cms.getRequestContext().getFileUri()));
+    public static int getDialogAction(CmsObject cms) {
+        if ("lock.html".equals(cms.getRequestContext().getFileUri())) {
+            // a "lock" action is requested
+            return TYPE_LOCK;
+        } else if ("lockchange.html".equals(cms.getRequestContext().getFileUri())) {
+            // a "steal lock" action is requested
+            return TYPE_LOCKCHANGE;
+        } else {
+            // an "unlock" action is requested
+            return TYPE_UNLOCK;
+        }
     }
     
 }

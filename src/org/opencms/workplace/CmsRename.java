@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/rename_html
+ * <li>/jsp/dialogs/rename_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */

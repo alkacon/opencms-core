@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/11/06 10:55:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,15 @@ import org.opencms.threads.CmsPublishThread;
 
 /**
  * Creates the dialogs for publishing a project or a resource.<p> 
+ * 
+ * The following files use this class:
+ * <ul>
+ * <li>/jsp/dialogs/publishproject_html
+ * <li>/jsp/dialogs/publishresource_html
+ * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.12
  */

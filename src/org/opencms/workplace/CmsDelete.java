@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,11 +49,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/jsp/delete_standard_html
+ * <li>/jsp/dialogs/delete_standard_html
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */

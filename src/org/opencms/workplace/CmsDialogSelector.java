@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2003/11/07 10:48:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/07 13:17:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,14 @@ import org.opencms.main.OpenCms;
  * <li>/jsp/dialogs/property_html
  * <li>/jsp/dialogs/delete_html
  * <li>/jsp/dialogs/lock_html
+ * <li>/jsp/dialogs/lockchange_html
  * <li>/jsp/dialogs/unlock_html
  * </ul>
  *
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
