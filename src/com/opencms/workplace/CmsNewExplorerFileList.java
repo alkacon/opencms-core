@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/06 11:35:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/12/07 08:12:36 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/12/06 11:35:11 $
+ * @version $Revision: 1.4 $ $Date: 2000/12/07 08:12:36 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate, I_CmsLogChannels, I_CmsConstants, I_CmsWpConstants {
 	
@@ -103,15 +103,12 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	}
 	}
 	*/
-System.err.println("mgm-- "+parameters.toString());	
-System.err.println("mgm-- cmsExplorerDunmp     \n\n\n\n\n\n\n");
 	I_CmsSession session = cms.getRequestContext().getSession(true);
 	CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 	CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
 
 	// get the right folder
 	String currentFolder = (String) parameters.get("folder");
-System.err.println("mgm-- currentfolder    "+currentFolder);
 	if ((currentFolder != null) && (!"".equals(currentFolder)) && folderExists(cms, currentFolder)) {
 		session.putValue(C_PARA_FILELIST, currentFolder);
 	} else {
@@ -122,13 +119,17 @@ System.err.println("mgm-- currentfolder    "+currentFolder);
 	}
 	// get the checksum
 	String checksum = (String) parameters.get("check");
-	int check = -1;
+	boolean newTreePlease = true;
+	long check = -1;
 	try {
-		check = Integer.parseInt(checksum);
+		check = Long.parseLong(checksum);
+		if(check == cms.getFileSystemFolderChanges()){
+			newTreePlease = false;
+		} 
 	} catch (Exception e) {
 		//TODO:			e.printStackTrace();
 	}
-
+System.err.println("mgm-- checksum="+checksum+"  Kernzahl="+cms.getFileSystemFolderChanges()+"  newTreePlease="+newTreePlease+"\n");
 	// get the currentFolder Id
 	int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
 
