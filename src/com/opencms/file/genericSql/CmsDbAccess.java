@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.208 $
+ * Date   : $Date: 2001/07/23 11:19:20 $
+ * Version: $Revision: 1.209 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.208 $ $Date: 2001/07/23 07:40:55 $ *
+ * @version $Revision: 1.209 $ $Date: 2001/07/23 11:19:20 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2042,10 +2042,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 */
     public void deleteProject(CmsProject project)
 		throws CmsException {
-		// delete the properties
-		//deleteProjectProperties(project);
-		// delete the files and resources
-		//deleteProjectResources(project);
 
         // delete the resources from project_resources
 	    deleteAllProjectResources(project.getId());
@@ -2092,9 +2088,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	 */
 	public void deleteProjectProperties(CmsProject project)
 		throws CmsException {
-
 /*
-			// get all resources of the project
+		// get all resources of the project
 		Vector resources = readResources(project);
 
 		for( int i = 0; i < resources.size(); i++) {
@@ -3242,11 +3237,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 			    long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 			    int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 			    int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 
 			    file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize, lockedInProject);
 
 			   files.addElement(file);
             }
@@ -3403,9 +3399,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				/* not needed */ res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags,
                                        userId, groupId, projectID, accessFlags, state, lockedBy,
-                                       created, modified, modifiedBy);
+                                       created, modified, modifiedBy, lockedInProject);
 				folders.addElement(folder);
 			}
 		} catch (SQLException e) {
@@ -3791,9 +3788,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize = res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				resource = new CmsResource(resId, parentId, fileId, resName, resType, resFlags, userId,
                                             groupId, projectID, accessFlags, state, lockedBy, launcherType,
-                                            launcherClass, created, modified, modifiedBy, resSize);
+                                            launcherClass, created, modified, modifiedBy, resSize, lockedInProject);
 				resources.addElement(resource);
 			}
 			lastfile = resName;
@@ -3851,9 +3849,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 			    long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
 			    long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 			    int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-			    folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
+			    int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
+                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
 									  groupId,projectID,accessFlags,state,lockedBy,created,
-									  modified,modifiedBy);
+									  modified,modifiedBy, lockedInProject);
 			    folders.addElement(folder);
             }
 
@@ -4676,7 +4675,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         }
 
 		// read all folders in offlineProject
-		offlineFolders = readFolders(projectId, false);
+		offlineFolders = readFolders(projectId, false, true);
 		for (int i = 0; i < offlineFolders.size(); i++){
 			currentFolder = ((CmsFolder) offlineFolders.elementAt(i));
             // do not publish the folder if it is locked in another project
@@ -4869,7 +4868,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		} // end of for(...
 
 		// now read all FILES in offlineProject
-		offlineFiles = readFiles(projectId, false);
+		offlineFiles = readFiles(projectId, false, true);
 		for (int i = 0; i < offlineFiles.size(); i++){
             currentFile = ((CmsFile) offlineFiles.elementAt(i));
             // do not publish files that are locked in another project
@@ -5440,11 +5439,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject=res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize, lockedInProject);
 				allHeaders.addElement(file);
             }
 		} catch (SQLException e){
@@ -5526,11 +5525,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 String modifiedByName=res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsBackupResource(versionId,resId,parentId,fileId,resName,resType,resFlags,
                                            userId,userName,groupId,groupName,projectID,accessFlags,
                                            state,launcherType,launcherClass,created,modified,
-                                           modifiedBy,modifiedByName,new byte[0],resSize);
+                                           modifiedBy,modifiedByName,new byte[0],resSize,
+                                           lockedInProject);
 
 				allHeaders.addElement(file);
             }
@@ -5765,10 +5765,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
 						  		   groupId,resProjectId,accessFlags,state,lockedBy,
 								   launcherType,launcherClass,created,modified,modifiedBy,
-								   content,resSize);
+								   content,resSize, lockedInProject);
             } else {
 			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -5860,10 +5861,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file = new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
 						  		   groupId,projectId,accessFlags,state,lockedBy,
 								   launcherType,launcherClass,created,modified,modifiedBy,
-								   content,resSize);
+								   content,resSize, lockedInProject);
             } else {
 			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6019,11 +6021,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize, lockedInProject);
 						 // check if this resource is marked as deleted
 						if (file.getState() == C_STATE_DELETED) {
 							throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6119,11 +6121,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize,lockedInProject);
 						 // check if this resource is marked as deleted
 						if (file.getState() == C_STATE_DELETED) {
 							throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6220,11 +6222,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize,lockedInProject);
 
                 // check if this resource is marked as deleted
 				if (file.getState() == C_STATE_DELETED) {
@@ -6323,11 +6325,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize,lockedInProject);
                 // check if this resource is marked as deleted
 				if ((file.getState() == C_STATE_DELETED) && !includeDeleted) {
     				throw new CmsException("["+this.getClass().getName()+"] "+file.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);
@@ -6417,12 +6419,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 String modifiedByName=res.getString(m_cq.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
                                            resFlags,userId,userName,groupId,groupName,
                                            projectID,accessFlags,state,
 								           launcherType,launcherClass,created,modified,modifiedBy,
-								           modifiedByName,new byte[0],resSize);
+								           modifiedByName,new byte[0],resSize, lockedInProject);
             } else {
 				throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6505,11 +6507,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				byte[] content=res.getBytes(m_cq.get("C_RESOURCES_FILE_CONTENT"));
                 int resProjectId=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file = new CmsBackupResource(versionId,resId,parentId,fileId,filename,resType,
                                              resFlags,userId,userName,groupId,groupName,
                                              resProjectId,accessFlags,state,
 								             launcherType,launcherClass,created,modified,modifiedBy,
-								             modifiedByName,content,resSize);
+								             modifiedByName,content,resSize, lockedInProject);
             } else {
 			    throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);
             }
@@ -6602,11 +6605,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								new byte[0],resSize);
+								new byte[0],resSize,lockedInProject);
 
                 // check if this resource is marked as deleted
 				if (file.getState() == C_STATE_DELETED) {
@@ -6659,7 +6662,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
     public Vector readFiles(int projectId) throws CmsException {
-        return readFiles(projectId, true);
+        return readFiles(projectId, true, false);
     }
 	/**
 	 * Reads all files from the Cms, that are in one project.<BR/>
@@ -6670,7 +6673,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-    public Vector readFiles(int projectId, boolean includeUnchanged)
+    public Vector readFiles(int projectId, boolean includeUnchanged, boolean onlyProject)
 		throws CmsException {
 
 		Vector files = new Vector();
@@ -6681,6 +6684,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         String usedPool;
         String usedStatement;
         String onlyChanged = new String();
+        String inProject = new String();
         //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject) {
@@ -6689,6 +6693,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         } else {
             usedPool = m_poolName;
             usedStatement = "";
+            if (onlyProject){
+                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
+            }
         }
         if (!includeUnchanged){
             onlyChanged = " AND STATE != "+C_STATE_UNCHANGED;
@@ -6696,7 +6703,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 		try {
 			con = DriverManager.getConnection(usedPool);
 			// read file data from database
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFILESBYPROJECT"+usedStatement)+onlyChanged);
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFILESBYPROJECT"+usedStatement)+onlyChanged+inProject);
             statement.setInt(1,projectId);
 			res = statement.executeQuery();
             // create new file
@@ -6720,11 +6727,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 byte[] fileContent = res.getBytes(m_cq.get("C_FILE_CONTENT"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
                 //byte[] fileContent = new byte[0];
 				file = new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
 								groupId,projectID,accessFlags,state,lockedBy,
 								launcherType,launcherClass,created,modified,modifiedBy,
-								fileContent,resSize);
+								fileContent,resSize,lockedInProject);
 
 				files.addElement(file);
             }
@@ -6810,10 +6818,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
 									  groupId,projectID,accessFlags,state,lockedBy,created,
-									  modified,modifiedBy);
+									  modified,modifiedBy,lockedInProject);
             } else {
 				throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
             }
@@ -6902,10 +6910,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
 									  groupId,projectID,accessFlags,state,lockedBy,created,
-									  modified,modifiedBy);
+									  modified,modifiedBy,lockedInProject);
             } else {
 				throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);
             }
@@ -6953,7 +6961,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public Vector readFolders(int projectId) throws CmsException {
-        return readFolders(projectId, true);
+        return readFolders(projectId, true, false);
     }
 
 	/**
@@ -6965,7 +6973,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public Vector readFolders(int projectId, boolean includeUnchanged)
+	public Vector readFolders(int projectId, boolean includeUnchanged, boolean onlyProject)
 		throws CmsException {
 
 		Vector folders = new Vector();
@@ -6976,6 +6984,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         String usedPool;
         String usedStatement;
         String onlyChanged = new String();
+        String inProject = new String();
         //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
@@ -6984,6 +6993,9 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         } else {
             usedPool = m_poolName;
             usedStatement = "";
+            if (onlyProject){
+                inProject = " AND CMS_RESOURCES.PROJECT_ID = CMS_PROJECTRESOURCES.PROJECT_ID";
+            }
         }
         if (!includeUnchanged){
             onlyChanged = " AND CMS_RESOURCES.STATE != "+C_STATE_UNCHANGED+" ORDER BY CMS_RESOURCES.RESOURCE_NAME";
@@ -6993,7 +7005,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         try {
 			con = DriverManager.getConnection(usedPool);
             // read folder data from database
-			statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFOLDERSBYPROJECT"+usedStatement)+onlyChanged);
+			statement = con.prepareStatement(m_cq.get("C_RESOURCES_READFOLDERSBYPROJECT"+usedStatement)+inProject+onlyChanged);
 			statement.setInt(1,projectId);
 			res = statement.executeQuery();
 		    // create new folder
@@ -7013,10 +7025,10 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
-
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
 									  groupId,projectID,accessFlags,state,lockedBy,created,
-									  modified,modifiedBy);
+									  modified,modifiedBy,lockedInProject);
 				folders.addElement(folder);
             }
         } catch (SQLException e){
@@ -7665,10 +7677,11 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 				file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
 									 userId,groupId,projectId,accessFlags,state,lockedBy,
 									 launcherType,launcherClass,created,modified,modifiedBy,
-									 resSize);
+									 resSize,lockedInProject);
             } else {
 				res.close();
 				res = null;
@@ -7760,11 +7773,12 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
 				long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
 				int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
 				int resSize= res.getInt(m_cq.get("C_RESOURCES_SIZE"));
+                int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
 
 				file=new CmsResource(resId,parentId,fileId,resName,resType,resFlags,
 									 userId,groupId,projectId,accessFlags,state,lockedBy,
 									 launcherType,launcherClass,created,modified,modifiedBy,
-									 resSize);
+									 resSize,lockedInProject);
 				resources.addElement(file);
             }
         } catch (SQLException e){
