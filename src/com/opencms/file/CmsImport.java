@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/05/18 12:37:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/25 07:18:36 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/05/18 12:37:41 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/25 07:18:36 $
  */
 class CmsImport implements I_CmsImportExport, I_CmsConstants {
 	
@@ -177,8 +177,10 @@ class CmsImport implements I_CmsImportExport, I_CmsConstants {
 					String propertyType = getTextNodeValue(currentProperty, C_TAG_TYPE);
 					String value = getTextNodeValue(currentProperty, C_TAG_VALUE);
 					// store these informations
-					properties.put(name, value);
-					createPropertydefinition(name, propertyType, type);
+					if( (name != null) && (value != null) ) {
+						properties.put(name, value);
+						createPropertydefinition(name, propertyType, type);
+					}
 				}
 				
 				// import the specified file
