@@ -8,6 +8,14 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.1.47 Arakis - 03 January 2001
+
+* If the browser sends no user-agent the CmsXmlTemplate don't answers with a 
+  "Service not available".
+* Bugfixing new explorer.
+* Corrected spelling-errors.
+- The import is now disabled for the online-project
+
 OpenCms 4.1.46 Arakis - 19 December 2000
 
 * Bugfixing new explorer.
