@@ -8,7 +8,7 @@
     value at the command line.
     Set it like this: ant all -Dversion.number=5.0.0   
     You can also uncomment the line below. -->
-    <property name="version.number"             value="5.1.1"/>
+    <property name="version.number"             value="5.1.2"/>
     
     <property name="version.name"               value="Salusa Secundus"/>
     <property name="app.name"                   value="opencms"/>
@@ -16,11 +16,11 @@
     <property name="destdir"                    location="../"/>
         
     <property name="zip.home"                   location="${destdir}/zip"/>
-    <property name="pdf.home"                   location="${destdir}/pdf"/>
     <property name="build.home"                 location="${destdir}/build"/>
     
     <property name="build.classes"              location="${build.home}/classes"/>
-    <property name="build.inputlib"             location="${destdir}/ExternalComponents"/>
+    <property name="build.inputlib"             location="web/lib"/>
+    <property name="build.externlib"            location="${destdir}/lib"/>
     <property name="build.web"                  location="${build.home}/${app.name}"/>
     <property name="build.webinf"               location="${build.web}/WEB-INF"/>
     <property name="build.metainf"              location="${build.web}/META-INF"/>
@@ -32,22 +32,17 @@
     <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
     <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces-1_4_4.jar"/>
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql-connector-java-3.0.7-stable-bin.jar"/>          
-    <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>  
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2_0_6.jar"/>
-    <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
+    <property name="build.inputlib.tidy"        value="${build.inputlib}/tidy.jar"/>
     <property name="build.inputlib.uuid"        value="${build.inputlib}/jug.jar"/>
     <property name="build.inputlib.dbcp"        value="${build.inputlib}/commons-dbcp.jar"/>
     <property name="build.inputlib.pool"        value="${build.inputlib}/commons-pool.jar"/>    
+
+    <property name="build.inputlib.oracle"      value="${build.externlib}/classes12.zip"/>  
         
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/login/version.js"/>
     <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
-    
-    <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>
-    <property name="db.setupurl"                value="jdbc:mysql://localhost:3306/mysql"/>
-    <property name="db.user"                    value="root"/>
-    <property name="db.password"                value=""/>
-    <property name="db.driver"                  value="org.gjt.mm.mysql.Driver"/>
 
     <property name="build.tmpexcludes"          value=""/>
     <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
@@ -71,7 +66,7 @@
             </and>
         </condition>
         
-        <condition property="build.excludes" value="com/opencms/file/oraclesql/**,com/opencms/file/oracleplsql/**">
+        <condition property="build.excludes" value="org/opencms/db/oracle/**">
             <not><available file="${build.inputlib.oracle}"/></not>
         </condition>           
         
@@ -132,8 +127,7 @@ ${build.inputlib.dbcp}
         <mkdir dir="${build.classes}"/>
         <mkdir dir="${build.home}"/>
         <mkdir dir="${build.lib}"/>
-        <mkdir dir="${zip.home}"/>
-        <mkdir dir="${pdf.home}"/>        
+        <mkdir dir="${zip.home}"/>      
     </target>
 
 
@@ -211,7 +205,6 @@ ${build.inputlib.dbcp}
                 <include name="**/*.jar"/>
                 <include name="**/*.zip"/>
                 <exclude name="servlet.jar"/>
-                <exclude name="classes12.zip"/>
                 <exclude name="${excludes}" />
             </fileset>
         </copy>
@@ -322,26 +315,17 @@ ${build.inputlib.dbcp}
         <property name="build.srcdist.src"          value="${build.srcdist.main}/src"/>
         <property name="build.srcdist.etc"          value="${build.srcdist.main}/etc"/>
         <property name="build.srcdist.web"          value="${build.srcdist.main}/web"/>
-        <property name="build.srcdist.libs"         value="${build.srcdist}/ExternalComponents"/>
         <property name="build.srcdist.local"        value="${build.srcdist}/local"/>
-        
+        <property name="build.srcdist.externlib"    value="${build.srcdist}/lib"/>
+                
         <mkdir dir="${build.srcdist}"/>     
         <mkdir dir="${build.srcdist.main}"/>     
-        <mkdir dir="${build.srcdist.src}"/>     
-        <mkdir dir="${build.srcdist.libs}"/>        
+        <mkdir dir="${build.srcdist.src}"/>    
         <mkdir dir="${build.srcdist.etc}"/>     
         <mkdir dir="${build.srcdist.web}"/>     
         <mkdir dir="${build.srcdist.local}"/>             
-        <mkdir dir="${zip.home}"/>        
-
-        <copy todir="${build.srcdist.libs}">
-            <fileset dir="${build.inputlib}">
-                <include name="**/*.jar"/>
-                <include name="**/*.zip"/>
-                <exclude name="classes12.zip"/>
-                <exclude name="${excludes}"/>
-            </fileset>
-        </copy>
+        <mkdir dir="${build.srcdist.externlib}"/>        
+        <mkdir dir="${zip.home}"/>
 
         <copy todir="${build.srcdist.src}">
             <fileset dir="src" excludes="${excludes}"/>
