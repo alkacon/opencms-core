@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/10/06 12:59:53 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/10/15 15:22:53 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.24 $ $Date: 2003/10/06 12:59:53 $
+ * @version $Revision: 1.25 $ $Date: 2003/10/15 15:22:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -240,7 +240,9 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         prop.put(C_PROPERTY_TITLE, firstTitlePart);
                         try{
                             if(step.equals("1")){
-                                checkurl = CmsLinkCheck.checkUrl(link);
+                                // TODO: write some better link check which will not fail if there is
+                                // no access to the internet    
+                                //checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
                                 Map targetProperties = null;

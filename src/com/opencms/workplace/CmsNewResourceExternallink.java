@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2003/10/02 12:10:21 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/10/15 15:22:53 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2003/10/02 12:10:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/10/15 15:22:53 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -215,9 +215,11 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                         editFile.setContents(targetName.getBytes());
 
                         if(step.equals("1")){
-                            if(!targetName.startsWith("/")){
-                                checkurl = CmsLinkCheck.checkUrl(targetName);
-                            }
+                            // TODO: write some better link check which will not fail if there is
+                            // no access to the internet                            
+                            //if(!targetName.startsWith("/")){
+                            //    checkurl = CmsLinkCheck.checkUrl(targetName);
+                            //}
                         }
                         if(checkurl){
                             cms.writeFile(editFile);
