@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.5.32 Chusuk       - xx January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.
+! Static export. Only changed or new files are exported. 
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
 * Bugfix in subressource-cache. Now the subressource-cache is user dependend.
