@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+</head>
+<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
+
+<table cellspacing=0 cellpadding=0 border=0>
+	<tr valign=center>
+		<td class=menu valign=middle><a href="#"><img src="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="title.login" /><![CDATA[" border=0 width=32 heigth=32></a></td>
+	</tr>
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+</WORKPLACE>
