@@ -77,7 +77,10 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-<%= wp.paramsAsHidden() %>
+<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= wp.PARAM_TITLE %>" value="<%= wp.getParamTitle() %>">
+<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_DIALOGTYPE %>" value="<%= wp.getParamDialogtype() %>">
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
@@ -160,7 +163,7 @@ default:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');" enctype="multipart/form-data">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/03/17 09:41:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/03/19 14:15:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.1
  */
@@ -303,6 +303,30 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public Set getExportPoints() {
         return m_exportPoints;
+    }
+    
+    /**
+     * Returns the value (in bytes) for the maximum file upload size of the current user.<p>
+     * 
+     * @param cms the initialized CmsObject
+     * @return the value (in bytes) for the maximum file upload size
+     */
+    public long getFileBytesMaxUploadSize(CmsObject cms) {
+        int maxFileSize = getFileMaxUploadSize();
+        long maxFileSizeBytes = maxFileSize * 1024;
+        boolean isAdmin = false;
+        try {
+            isAdmin = cms.userInGroup(cms.getRequestContext().currentUser().getName(), OpenCms.getDefaultUsers().getGroupAdministrators());
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error checking groups of user " + cms.getRequestContext().currentUser().getName());
+            }      
+        }
+        // check if current user belongs to Admin group, if so no file upload limit
+        if ((maxFileSize <= 0) || isAdmin) {
+            maxFileSizeBytes = -1;
+        }
+        return maxFileSizeBytes;
     }
     
     /**
