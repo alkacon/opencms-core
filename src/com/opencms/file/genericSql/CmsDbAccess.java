@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/07 17:35:52 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/07/08 13:17:50 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,9 +50,9 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
 <<<<<<< CmsDbAccess.java
- * @version $Revision: 1.92 $ $Date: 2000/07/07 17:35:52 $ * 
+ * @version $Revision: 1.93 $ $Date: 2000/07/08 13:17:50 $ * 
 =======
- * @version $Revision: 1.92 $ $Date: 2000/07/07 17:35:52 $ * 
+ * @version $Revision: 1.93 $ $Date: 2000/07/08 13:17:50 $ * 
 >>>>>>> 1.88
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
@@ -4791,8 +4791,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
                
 		// add the users
-        CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
-		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER); 
+        CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER); 
+		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER); 
 		addUserToGroup(guest.getId(), guests.getId());
 		addUserToGroup(admin.getId(), administrators.getId());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/07 13:17:53 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2000/07/08 13:17:51 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.51 $ $Date: 2000/07/07 13:17:53 $
+ * @version $Revision: 1.52 $ $Date: 2000/07/08 13:17:51 $
  */
 public interface I_CmsQuerys {
     
@@ -527,7 +527,7 @@ public interface I_CmsQuerys {
     public static final String C_SYSTEMID_INIT = "INSERT INTO " + C_DATABASE_PREFIX + "SYSTEMID VALUES(?,1)";
     
     public static final Integer C_SYSTEMID_LOCK_KEY = new Integer(2);
-    public static final String C_SYSTEMID_LOCK = "LOCK TABLES " + C_DATABASE_PREFIX + "SYSTEMID WRITE";
+    public static final String C_SYSTEMID_LOCK = "LOCK TABLE " + C_DATABASE_PREFIX + "SYSTEMID In Exclusive Mode";
 
     public static final Integer C_SYSTEMID_READ_KEY = new Integer(3);
     public static final String C_SYSTEMID_READ = "SELECT ID FROM " + C_DATABASE_PREFIX + "SYSTEMID WHERE TABLE_KEY=?";
@@ -536,7 +536,7 @@ public interface I_CmsQuerys {
     public static final String C_SYSTEMID_WRITE = "UPDATE " + C_DATABASE_PREFIX + "SYSTEMID SET ID = ? WHERE TABLE_KEY = ? ";
     
     public static final Integer C_SYSTEMID_UNLOCK_KEY = new Integer(5);
-    public static final String C_SYSTEMID_UNLOCK = "UNLOCK TABLES ";
+    public static final String C_SYSTEMID_UNLOCK = "commit ";
 
 }
 

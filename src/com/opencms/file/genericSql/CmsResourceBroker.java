@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/07 13:17:52 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2000/07/08 13:17:50 $
+ * Version: $Revision: 1.86 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.85 $ $Date: 2000/07/07 13:17:52 $
+ * @version $Revision: 1.86 $ $Date: 2000/07/08 13:17:50 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2142,7 +2142,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// check the password minimumsize
 			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
-				CmsUser newUser = m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, "", "", C_USER_TYPE_SYSTEMUSER);
+				CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_SYSTEMUSER);
 				addUserToGroup(currentUser, currentProject, newUser.getName(),defaultGroup.getName());
 				return newUser;
 			} else {
@@ -2184,7 +2184,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	     // check the password minimumsize
 		if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
 				CmsGroup defaultGroup =  readGroup(currentUser, currentProject, group);
-				CmsUser newUser = m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, "", "", C_USER_TYPE_WEBUSER);
+				CmsUser newUser = m_dbAccess.addUser(name, password, description, " ", " ", " ", 0, 0, C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", C_USER_TYPE_WEBUSER);
 				CmsUser user;
                 CmsGroup usergroup;
          
