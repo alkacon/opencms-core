@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/06/18 17:33:46 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/25 16:40:20 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -173,9 +173,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** Suffix to append to online cache entries. */
     public static final String C_CACHE_ONLINESUFFIX = " [online]";
     
-    /** Suffix to append to workplace cache entries. */
-    public static final String C_CACHE_WORKPLACESUFFIX = " [workplace]";
-    
     /** Trigger for clearcache event: Clear complete cache. */
     public static final int C_CLEAR_ALL = 0;
 
@@ -193,9 +190,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     
     /** Trigger for clearcache event: Clear only online entries. */    
     public static final int C_CLEAR_ONLINE_ENTRIES = 3;
-    
-    /** Trigger for clearcache event: Clear all workplace entries. */    
-    public static final int C_CLEAR_WORKPLACE_ALL = 6;
     
     /** Initial cache size, this should be a power of 2 because of the Java collections implementation. */
     public static final int C_INITIAL_CAPACITY_CACHE = 512;
@@ -345,9 +339,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         break;
                     case C_CLEAR_OFFLINE_ENTRIES:
                         clearOfflineEntries(event.getCmsObject());
-                        break;
-                    case C_CLEAR_WORKPLACE_ALL:
-                        clearWorkplace(event.getCmsObject());
                         break;
                     default:
                         // no operation
@@ -867,29 +858,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             System.err.println("FlexCache: Clearing online entries");
         }
         clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, true);
-    }
-    
-    /**
-     * Clears all entries and all keys from workplace in the cache.<p>
-     * 
-     * Cached resources outside the workplace are not touched.<p>
-     *
-     * Only users with administrator permissions are allowed
-     * to perform this operation.<p>
-     *
-     * @param cms the CmsObject used for user authorization
-     */    
-    private void clearWorkplace(CmsObject cms) {
-        if (!isEnabled()) {
-            return;
-        }
-        if (!isAdmin(cms)) {
-            return;
-        }
-        if (DEBUG > 0) {
-            System.err.println("FlexCache: Clearing online keys & entries");
-        }
-        clearAccordingToSuffix(C_CACHE_WORKPLACESUFFIX, false);
     }
     
     /**

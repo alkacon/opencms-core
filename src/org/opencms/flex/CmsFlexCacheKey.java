@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/25 16:40:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.util.StringTokenizer;
 
 import javax.servlet.ServletRequest;
 
+
 /**
  * Implements the CmsFlexCacheKey,
  * which is a key used to describe the caching behaviour
@@ -56,7 +57,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexCacheKey {
     
@@ -126,18 +127,17 @@ public class CmsFlexCacheKey {
      * the output. These items are e.g. the Query-String, the requested resource,
      * the current time etc. etc.
      * All required items are saved in the constructed cache - key.<p>
-     *
+     * 
+     * @param request the request to construct the key for
      * @param target the requested resource in the OpenCms VFS
      * @param online must be true for an online resource, false for offline resources
-     * @param workplace must be true for all workplace resources
-     * @param request the request to construct the key for
      */    
-    public CmsFlexCacheKey(ServletRequest request, String target, boolean online, boolean workplace) {
+    public CmsFlexCacheKey(ServletRequest request, String target, boolean online) {
                 
         // Fetch the cms from the request
         CmsObject cms = ((CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();        
 
-        m_resource = getKeyName(cms.getRequestContext().addSiteRoot(target), online, workplace);     
+        m_resource = getKeyName(cms.getRequestContext().addSiteRoot(target), online);     
         m_variation = "never";
         
         // get the top-level file name / uri
@@ -185,14 +185,13 @@ public class CmsFlexCacheKey {
      * In case a parsing error occures, the value of this key is set to "cache=never", 
      * and the hadParseError() flag is set to true. 
      * This is done to ensure that a valid key is always constructed with the constructor.<p>
-     *
+     * 
      * @param resourcename the full name of the resource including site root
      * @param cacheDirectives the cache directives of the resource (value of the property "cache")
-     * @param workplace must be true for all workplace resources
      * @param online must be true for an online resource, false for offline resources
      */        
-    public CmsFlexCacheKey(String resourcename, String cacheDirectives, boolean online, boolean workplace) {
-        m_resource = getKeyName(resourcename, online, workplace);     
+    public CmsFlexCacheKey(String resourcename, String cacheDirectives, boolean online) {
+        m_resource = getKeyName(resourcename, online);     
         m_variation = "never";
         m_always = -1;
         m_timeout = -1;
@@ -207,17 +206,15 @@ public class CmsFlexCacheKey {
     /**
      * Calculates the cache key name that is used as key in 
      * the first level of the FlexCache.<p>
-     *
+     * 
      * @param resourcename the full name of the resource including site root
      * @param online must be true for an online resource, false for offline resources
-     * @param workplace must be true for all workplace resources
+     *
      * @return fhe FlexCache key name
      */
-    public static String getKeyName(String resourcename, boolean online, boolean workplace) {
+    public static String getKeyName(String resourcename, boolean online) {
         StringBuffer result = new StringBuffer(resourcename);
-        if (workplace) {
-            result.append(CmsFlexCache.C_CACHE_WORKPLACESUFFIX);
-        } else if (online) {
+        if (online) {
             result.append(CmsFlexCache.C_CACHE_ONLINESUFFIX);
         } else {
             result.append(CmsFlexCache.C_CACHE_OFFLINESUFFIX);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/06/21 11:43:33 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/25 16:40:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.OpenCms;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 
 import java.io.IOException;
 
@@ -59,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -149,11 +150,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             // check if the file exists in the VFS, if not set external target
             try {
                 resource = cms.readFileHeader(m_vfsTarget);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // file not found in VFS, treat it as external file
+                m_extTarget = m_vfsTarget;
             } catch (CmsException e) {
-                if (e.getType() == CmsException.C_NOT_FOUND) {
-                    // file not found in VFS, treat it as external file
-                    m_extTarget = m_vfsTarget;
-                }
+                // if other OpenCms exception occured we are in trouble
+                throw new ServletException("OpenCms VFS access exception", e);
             }
         }
                 
@@ -219,7 +221,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     }                       
                 } else { 
                     // cache is on and resource is not yet cached, so we need to read the cache key for the response
-                    CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline(), w_req.isWorkplace()));            
+                    CmsFlexCacheKey res_key = cache.getKey(CmsFlexCacheKey.getKeyName(m_vfsTarget, w_req.isOnline()));            
                     if (res_key != null) {
                         // key already in cache, reuse it
                         w_res.setCmsCacheKey(res_key);                                             
@@ -233,7 +235,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                                 // caching property not set, use default for resource type
                                 cacheProperty = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getCachePropertyDefault();
                             }
-                            cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
+                            cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline()));                                            
                         } catch (CmsException e) {
                             if (e.getType() == CmsException.C_FLEX_CACHE) {
                                 // invalid key is ignored but logged, used key is cache=never
