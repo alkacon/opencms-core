@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/23 08:43:56 $
- * Version: $Revision: 1.223 $
+ * Date   : $Date: 2001/01/23 13:45:07 $
+ * Version: $Revision: 1.224 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.223 $ $Date: 2001/01/23 08:43:56 $
+ * @version $Revision: 1.224 $ $Date: 2001/01/23 13:45:07 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5959,7 +5959,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 				((c < '0') || (c > '9')) &&
 				((c < 'A') || (c > 'Z')) &&
 				(c != '-') && (c != '.') &&
-				(c != '|') && (c != '_') &&	(c != '~')
+				(c != '_') &&	(c != '~')
 				) {
 				throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 					CmsException.C_BAD_NAME);
@@ -5996,7 +5996,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	((c < '0') || (c > '9')) &&
 	((c < 'A') || (c > 'Z')) &&
 	(c != '-') && (c != '.') &&
-	(c != '|') && (c != '_') &&	(c != '~')
+	(c != '_') &&	(c != '~')
 	) {
 	throw new CmsException("[" + this.getClass().getName() + "] " + name, 
 	CmsException.C_BAD_NAME);

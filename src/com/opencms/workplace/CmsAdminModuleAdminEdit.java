@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/22 13:35:22 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2001/01/23 13:46:31 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 			((c < '0') || (c > '9')) &&
 			((c < 'A') || (c > 'Z')) &&
 			(c != '-') && (c != '.') &&
-			(c != '|') && (c != '_') &&	(c != '~')
+			(c != '_') &&	(c != '~')
 			) {
 				return false;
 		}
@@ -67,7 +67,7 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault implements I_Cm
 	return true;
 }
 	/**
-	 *  Checks if the type of the value is correct.
+	 *  Checks if the type of the value is correct and returns the converted value or null.
 	 *  @param type the type that the value should have..
 	 *  @param value the value to check.
 	 */

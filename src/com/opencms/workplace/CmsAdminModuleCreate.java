@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/18 13:39:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/01/23 13:47:00 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -74,7 +74,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 			((c < '0') || (c > '9')) &&
 			((c < 'A') || (c > 'Z')) &&
 			(c != '-') && (c != '.') &&
-			(c != '|') && (c != '_') &&	(c != '~')
+			(c != '_') &&	(c != '~')
 			) {
 				return false;
 		}
