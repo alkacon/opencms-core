@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/14 18:02:11 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2003/08/15 07:41:01 $
+ * Version: $Revision: 1.158 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.157 $ $Date: 2003/08/14 18:02:11 $
+ * @version $Revision: 1.158 $ $Date: 2003/08/15 07:41:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -99,7 +99,7 @@ public class CmsDriverManager extends Object {
     public static final int C_UPDATE_ALL = 3; 
     public static final int C_UPDATE_RESOURCE = 4;
     public static final int C_UPDATE_STRUCTURE = 5;
-
+    
     /** The backup driver. */
     protected I_CmsBackupDriver m_backupDriver;
     protected int m_cachelimit = 0;
@@ -137,7 +137,7 @@ public class CmsDriverManager extends Object {
     * The Registry
     */
     protected I_CmsRegistry m_registry = null;
-    
+
     /**
      * Hashtable with resource-types.
      */
@@ -236,7 +236,7 @@ public class CmsDriverManager extends Object {
                 return 509;
             } else {
                 return m_uuid.hashCode();
-            }            
+    }
         }
 
     }
@@ -1929,7 +1929,7 @@ public class CmsDriverManager extends Object {
                     // try to read the corresponding online resource to decide if the resource should be either removed or deleted
                     CmsResource onlineFile =readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
                     if (onlineFile.getResourceId().equals(resource.getResourceId())) {
-                    existsOnline = true;
+                        existsOnline = true;
                     } else {
                         existsOnline = false;
                     }
@@ -3980,7 +3980,7 @@ public class CmsDriverManager extends Object {
         boolean isAdmin = isAdmin(context);
 
         // if the resource type is jsp or xml template
-        // write is only allowed for administrators        
+        // write is only allowed for administrators
         if (!isAdmin && ((resource.getType() == CmsResourceTypeXMLTemplate.C_RESOURCE_TYPE_ID) || (resource.getType() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID))) {            
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
@@ -3990,7 +3990,7 @@ public class CmsDriverManager extends Object {
             // read must still be possible, since the explorer file list needs some properties
             if (!context.currentUser().getId().equals(lock.getUserId())) {         
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
-            }
+        }
         }        
 
         if (isAdmin) {
@@ -4009,7 +4009,7 @@ public class CmsDriverManager extends Object {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
         } else {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
-        }
+    }
         m_permissionCache.put(cacheKey, new Boolean(result));
         return result;
     }
@@ -4173,7 +4173,7 @@ public class CmsDriverManager extends Object {
         m_projectDriver = projectDriver;
         m_workflowDriver = workflowDriver;
         m_backupDriver = backupDriver;
-        
+
         m_configuration = config;
 
         // initalize the caches 
@@ -4680,21 +4680,25 @@ public class CmsDriverManager extends Object {
                     // try to read the file.....
                     found=true;
                     readFileHeader(context, des);
-                    // ....it's there, so add a postfix and try again                  
-                    des=destination.substring(0, destination.lastIndexOf("."));
+                    // ....it's there, so add a postfix and try again
+                    if (destination.lastIndexOf(".")>0) {            
+                        des=destination.substring(0, destination.lastIndexOf("."));
+                    }
                     des += "_"+postfix;
-                    des += destination.substring(destination.lastIndexOf("."), destination.length());
+                    if (destination.lastIndexOf(".")>0) {
+                        des += destination.substring(destination.lastIndexOf("."), destination.length());
+                    }
                     postfix++;                    
                 } catch (CmsException e3) {                         
                     // the file does not exist, so we can use this filename                               
                     found=false; 
                 }
             }
-            destination=des;     
+            destination=des;                     
             
             if (copyResource) {                
                 // move the existing resource to the lost and foud folder
-                moveResource(context,resourcename,destination);
+            moveResource(context,resourcename,destination) ;
             }           
           } catch (CmsException e2) {
             throw e2;           
@@ -7126,7 +7130,7 @@ public class CmsDriverManager extends Object {
 
         // read the existing resource
         resource = readFileHeader(context, resourceName, false);
-
+        
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -7751,7 +7755,7 @@ public class CmsDriverManager extends Object {
         m_projectDriver.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
     }
 
-         
+
     /**
      * Checks if a user is member of a group.<P/>
      *
@@ -8461,7 +8465,7 @@ public class CmsDriverManager extends Object {
 
         return false;
     }
-    
+
     public CmsResource recoverResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsFile onlineFile = null;
         byte[] contents = null;
@@ -8490,8 +8494,7 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-            }
-
+}
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 

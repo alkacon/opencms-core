@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/15 07:41:01 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,10 +83,10 @@ public class CmsImportVersion2 extends A_CmsImport {
     private String m_webappUrl = null;
     
     /** folder storage for page file and body coversion */
-    private List m_folderStorage = new LinkedList();
+    private List m_folderStorage;
 
     /** page file storage for page file and body coversion */
-    private List m_pageStorage = new ArrayList();
+    private List m_pageStorage;
     
     /** The path to the bodies in OpenCms 4.x */
      private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
@@ -130,6 +130,11 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importZip = importZip;
         m_docXml = docXml;
         m_importingChannelData = false;
+        m_folderStorage = new LinkedList();
+        m_pageStorage = new ArrayList();
+    
+        
+        
         try {
             // first import the user information
             if (m_cms.isAdmin()) {
@@ -425,6 +430,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
 
         } catch (Exception exc) {
+            exc.printStackTrace(System.err);
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
@@ -616,6 +622,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePage.C_RESOURCE_TYPE_ID);
 
         Iterator j = definitions.iterator();
+
+
         while (j.hasNext()) {
             CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
             // check if this propertydef already exits
@@ -639,6 +647,9 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (!resname.startsWith("/")) {
                 resname = "/" + resname;
             }
+            
+
+            
             m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
             m_report.print(m_report.key("report.merge") + " " + resname, I_CmsReport.C_FORMAT_NOTE);
 
@@ -693,7 +704,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_cms.lockResource(bodyname);
                     m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-                }
+                } 
 
             } catch (Exception e) {
                 throw new CmsException(e.toString());
@@ -709,7 +720,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         }
         // free mem
-        m_pageStorage = null;
+        m_pageStorage.clear();
 
     }
 

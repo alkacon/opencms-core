@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/11 10:10:51 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/15 07:41:01 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2003/08/11 10:10:51 $
+ * @version $Revision: 1.34 $ $Date: 2003/08/15 07:41:01 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -67,14 +67,14 @@ public final class CmsLockDispatcher extends Object {
     private static CmsLockDispatcher sharedInstance;
 
     /** A map holding the exclusive CmsLocks */
-    private transient Map m_exclusiveLocks;
+    private Map m_exclusiveLocks;
 
     /**
      * Default constructor.<p>
      */
     private CmsLockDispatcher() {
         super();
-        m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
+        m_exclusiveLocks = Collections.synchronizedMap((Map)new HashMap());
     }
 
     /**
@@ -150,6 +150,7 @@ public final class CmsLockDispatcher extends Object {
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
+System.err.println("CmsLockDeispatcher final");        
         if (m_exclusiveLocks != null) {
             m_exclusiveLocks.clear();
 
@@ -271,14 +272,15 @@ public final class CmsLockDispatcher extends Object {
      */
     private CmsLock getParentFolderLock(String resourcename) {
         String lockedPath = null;
-        Iterator i = m_exclusiveLocks.keySet().iterator();
+        List keys = (List) new ArrayList(m_exclusiveLocks.keySet());
 
-        while (i.hasNext()) {
-            lockedPath = (String) i.next();
+        for (int i = 0; i < keys.size(); i++) {
+            lockedPath = (String)keys.get(i);
 
             if (resourcename.startsWith(lockedPath) && !resourcename.equals(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 return (CmsLock) m_exclusiveLocks.get(lockedPath);
             }
+
         }
 
         return null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/07/07 18:27:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/15 07:41:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,12 @@ import com.opencms.file.CmsResource;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 /**
  * A tree represented by the adjacency list model.<p>
@@ -48,7 +50,7 @@ import java.util.Map;
  * ArrayLists of child CmsResources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/07 18:27:51 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/15 07:41:01 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
@@ -63,7 +65,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
      * Constructs an empty tree.<p>
      */
     public CmsAdjacencyTree() {
-        m_treeMap = (Map) new HashMap();
+        m_treeMap = Collections.synchronizedMap((Map) new HashMap());
         m_size = 0;
     }
 
@@ -97,15 +99,15 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
     /**
      * Removes all resources from the tree.<p>
      */
-    public void clear() {
+    public synchronized void clear() {
         if (m_treeMap == null) {
             return;
         }
 
         // iterate over all adjacency lists to clear them
-        Iterator i = m_treeMap.keySet().iterator();
-        while (i.hasNext()) {
-            String currentParentId = (String) i.next();
+        Enumeration i = new Vector(m_treeMap.keySet()).elements();
+        while (i.hasMoreElements()) {
+            String currentParentId = (String) i.nextElement();
 
             // clear and remove the current adjacency list
             List currentAdjacencyList = (List) m_treeMap.get(currentParentId);
@@ -124,7 +126,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        clear();
+        clear();          
         m_treeMap = null;
     }
 
@@ -140,7 +142,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
         }
 
         List result = (List) new ArrayList();
-        result.add(parentResource);
+        result.add(parentResource.clone());
 
         // get the adjacency list with the child resources of the current parent resource
         List children = (List) m_treeMap.get(parentResource.getId().toString());
