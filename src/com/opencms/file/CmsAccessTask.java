@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessTask.java,v $
- * Date   : $Date: 2000/03/31 08:28:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/05/30 14:19:13 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.util.*;
  * 
  * @author Ruediger Gutfleisch
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/03/31 08:28:31 $
+ * @version $Revision: 1.13 $ $Date: 2000/05/30 14:19:13 $
  */
 class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 	
@@ -1105,7 +1105,8 @@ class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 			}	
 		case C_TASKS_ACTIVE:
 			{
-				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED;
+				result = result + C_TASK_STATE + "=" + C_TASK_STATE_STARTED + " and ";
+				result = result + C_TASK_PERCENTAGE + "!=" + "0 ";
 				break;
 			}
 		case C_TASKS_DONE:
