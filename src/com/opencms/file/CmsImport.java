@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/26 15:19:24 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2003/02/26 15:36:48 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.74 $ $Date: 2003/02/26 15:19:24 $
+ * @version $Revision: 1.75 $ $Date: 2003/02/26 15:36:48 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -439,7 +439,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      *       not used when null
      */
     private void importResource(String source, String destination, String type, String user, 
-    String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+    String group, String access, long lastmodified, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
         // print out the information for shell-users
         m_report.print(m_report.key("report.importing"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(C_ROOT + destination + " ");
@@ -461,7 +461,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         System.err.println("["+this.getClass().getName()+".importResource()]: starting conversion of \""+type+"\" resource "+source+".");
                     }
                     // change the filecontent for encoding if necessary
-                    content = convertFile(source, content, type);
+                    content = convertFile(source, content);
                 }     
                 // only check the file type if the version of the export is 0
                 if(m_importVersion == 0){
@@ -474,7 +474,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             } 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
     
-            CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
+            CmsResource res = m_cms.importResource(source, destination, type, user, group, access, lastmodified,
                                         properties, launcherStartClass, content, m_importPath);
                
             if(res != null){
@@ -540,7 +540,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes;
         Element currentElement, currentProperty;
-        String source, destination, type, user, group, access, launcherStartClass, lastModified;
+        String source, destination, type, user, group, access, launcherStartClass, dummy;
+        long lastmodified = 0;
         Hashtable properties;
         Vector types = new Vector(); // stores the file types for which the property already exists
         
@@ -581,7 +582,14 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
                 access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
                 launcherStartClass = getTextNodeValue(currentElement, C_EXPORT_TAG_LAUNCHER_START_CLASS);
-                lastModified = getTextNodeValue(currentElement, C_EXPORT_TAG_LASTMODIFIED);
+                
+                if ((dummy=getTextNodeValue(currentElement,C_EXPORT_TAG_LASTMODIFIED))!=null) {
+                    lastmodified = Long.parseLong(dummy);
+                }
+                else {
+                    lastmodified = System.currentTimeMillis();
+                }                
+                
                 // if the type is javascript set it to plain
                 if("script".equals(type)){
                     type = C_TYPE_PLAIN_NAME;
@@ -633,10 +641,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     }
     
                     // import the specified file and write maybe put it on the lists writtenFilenames, fileCodes
-                    importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
-                    if (lastModified != null) {
-                        //m_cms.touch("/" + destination, Long.parseLong(lastModified), false);
-                    }
+                    importResource(source, destination, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
                 } else {
                     m_report.print(m_report.key("report.skipping"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.println(destination);
@@ -910,7 +915,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param type the type of the file
 	 * @return the converted filecontent
 	 */
-    private byte[] convertFile(String filename, byte[] byteContent, String type) {
+    private byte[] convertFile(String filename, byte[] byteContent) {
         byte[] returnValue = byteContent;
         if (!filename.startsWith("/")) {
             filename = "/" + filename;
@@ -942,7 +947,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             fileContent = scanFrameTemplate(fileContent);
         }
         // translate OpenCms 4.x paths to the new directory structure 
-        fileContent = setDirectories(fileContent, type);
+        fileContent = setDirectories(fileContent);
         // scan content/bodys
         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1
             || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
@@ -1035,7 +1040,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param type the file type
      * @return String the manipulated file content
      */
-    private String setDirectories(String content, String type) {
+    private String setDirectories(String content) {
         // get translation rules
         String[] rules = m_cms.getRequestContext().getDirectoryTranslator().getTranslations();
         for (int i=0; i<rules.length; i++) {
