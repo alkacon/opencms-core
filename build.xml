@@ -158,7 +158,6 @@ ${build.inputlib.dbcp}
                         ${build.inputlib.xerces}:
                         ${build.inputlib.oracle}:
                         ${build.inputlib.mysql}:
-                        ${build.inputlib.fop}:
                         ${build.inputlib.oro}:
                         ${build.inputlib.tidy}:
                         ${build.inputlib.dbcp}:
