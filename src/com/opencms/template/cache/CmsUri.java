@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/08/01 13:57:44 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/30 13:50:01 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -98,6 +98,24 @@ public class CmsUri implements I_CmsConstants {
         if(elem == null){
             throw new CmsException("Couldn't create start element for this uri, have a look at the log file for details.");
         }
+        // put the elementdefinition infos in the parameter
+        try {
+            Enumeration els = m_elementDefinitions.getAllElementNames();
+            while(els.hasMoreElements()){
+                String currentElement = (String)els.nextElement();
+                CmsElementDefinition eldef = m_elementDefinitions.get(currentElement);
+                parameters.put(currentElement +"._TEMPLATE_", eldef.getTemplateName());
+                parameters.put(currentElement +"._CLASS_", eldef.getClassName());
+                if(eldef.getTemplateSelector()!= null) {
+                    parameters.put(currentElement +"._TEMPLATESELECTOR_", eldef.getTemplateSelector());
+                } else {
+                    parameters.put(currentElement +"._TEMPLATESELECTOR_", "default");
+                }
+            }
+        } catch(NullPointerException exc) {
+            // no body-element found - ignoring
+        }
+
         // check the proxistuff and set the response header
         CmsCacheDirectives proxySettings = new CmsCacheDirectives(true);
         elem.checkProxySettings(cms, proxySettings, parameters);

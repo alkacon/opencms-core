@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/08/19 07:40:48 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/08/30 13:50:01 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -158,6 +158,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         // ok. last chance. It could be the owner of the file
         boolean readError = false;
         try{
+            //if(m_templateName == null){then the readAccessGroup should be null, so we dont have to care here
             cms.readFileHeader(m_templateName);
         }catch(CmsException e){
             readError = true;
@@ -240,29 +241,36 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             boolean proxyPublic = false;
             boolean proxyPrivate = false;
             boolean export = false;
-            try{
-                if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
-                    CmsResource templ = cms.readFileHeader(m_templateName);
-                    int accessflags = templ.getAccessFlags() ;
-                    if(!((accessflags & templ.C_ACCESS_INTERNAL_READ) > 0)){
-                        // internal flag not set
-                        proxyPrivate = true;
-                        if(m_readAccessGroup == null || "".equals(m_readAccessGroup)
-                                || (cms.C_GROUP_GUEST).equals(m_readAccessGroup)){
-                            // lesbar für guest
-                            proxyPublic = true;
-                            if((!m_cacheDirectives.isParameterPartOfKey()) && (!m_cacheDirectives.isTimeCritical())){
-                                export = true;
+            if(m_templateName == null){
+                // no template given set everything to true
+                proxyPublic = true;
+                proxyPrivate = true;
+                export = true;
+            }else{
+                try{
+                    if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
+                        CmsResource templ = cms.readFileHeader(m_templateName);
+                        int accessflags = templ.getAccessFlags() ;
+                        if(!((accessflags & templ.C_ACCESS_INTERNAL_READ) > 0)){
+                            // internal flag not set
+                            proxyPrivate = true;
+                            if(m_readAccessGroup == null || "".equals(m_readAccessGroup)
+                                    || (cms.C_GROUP_GUEST).equals(m_readAccessGroup)){
+                                // lesbar für guest
+                                proxyPublic = true;
+                                if((!m_cacheDirectives.isParameterPartOfKey()) && (!m_cacheDirectives.isTimeCritical())){
+                                    export = true;
+                                }
                             }
                         }
                     }
-                }
 
-            }catch(Exception e){
-                // do nothing, set everything to false and log the error
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString()
-                                + " could not find out if the element is proxy cacheable. "+ e.getMessage());
+                }catch(Exception e){
+                    // do nothing, set everything to false and log the error
+                    if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString()
+                                    + " could not find out if the element is proxy cacheable. "+ e.getMessage());
+                    }
                 }
             }
             if(!m_cacheDirectives.userSetProxyPrivate()){
@@ -365,7 +373,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                         elDef.joinParameters(parameters);
                         // put the name of the element into the params
                         parameters.put("_ELEMENT_", elDef.getName());
-                        parameters.put(elDef.getName() + "._TEMPLATE_", elDef.getTemplateName());
+                        if(elDef.getTemplateName() != null){
+                            parameters.put(elDef.getName() + "._TEMPLATE_", elDef.getTemplateName());
+                        }
                         parameters.put(elDef.getName() + "._CLASS_", elDef.getClassName());
                         if(elDef.getTemplateSelector()!= null) {
                             parameters.put(elDef.getName() + "._TEMPLATESELECTOR_", elDef.getTemplateSelector());
@@ -388,6 +398,11 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                             } catch(Exception e) {
                                 // An error occured while getting the element's content.
                                 // Do some error handling here.
+                                if(cms.C_USER_TYPE_SYSTEMUSER == cms.getRequestContext().currentUser().getType()
+                                    && !cms.C_GROUP_GUEST.equals(cms.getRequestContext().currentGroup().getName())){
+                                    // a systemuser gets the real message.(except guests)
+                                    errorMessage = e.getMessage();
+                                }
                                 subEl = null;
                                 buffer = null;
                                 if(e instanceof CmsException) {
@@ -513,7 +528,10 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
         part1 = part1.substring(part1.lastIndexOf(".") + 1);
 
         String part2 = m_className.substring(m_className.lastIndexOf(".") + 1);
-        String part3 = m_templateName.substring(m_templateName.lastIndexOf("/") + 1);
+        String part3 = "";
+        if(m_templateName != null){
+            part3 = m_templateName.substring(m_templateName.lastIndexOf("/") + 1);
+        }
 
         return "[" + part1 + " (" + part2 + "/" + part3 + ")]";
     }

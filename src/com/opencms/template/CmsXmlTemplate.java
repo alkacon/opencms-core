@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/08/07 16:25:39 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2001/08/30 13:50:01 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.74 $ $Date: 2001/08/07 16:25:39 $
+ * @version $Revision: 1.75 $ $Date: 2001/08/30 13:50:01 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -583,13 +583,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String result = null;
         if(parameters.containsKey(elementName + "._TEMPLATE_")) {
             result = (String)parameters.get(elementName + "._TEMPLATE_");
-        }
-        else {
+        }else {
             if(doc.hasSubtemplateFilename(elementName)) {
                 result = doc.getSubtemplateFilename(elementName);
-            }
-            else {
-
+            }else {
                 // Fallback to "body" element
                 if(parameters.containsKey("body._TEMPLATE_")) {
                     result = (String)parameters.get("body._TEMPLATE_");
@@ -1178,12 +1175,18 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         CmsElementDefinitionCollection subtemplateDefinitions = new CmsElementDefinitionCollection();
         String readAccessGroup = cms.C_GROUP_ADMIN;
         int variantCachesize = 100;
+        // if the templateFile is null someone didnt set the Templatefile in the elementdefinition
+        // in this case we have to use the aktual body template when resolving the variant.
+        // In a body element there are no subelements and we dont care about access rights.
+        // So if if the Exception occurs becource of the template == null it is no error and
+        // we set the readAccessGroup = null (this will happen by getReadingpermittedGroup)
         try {
+            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
+            variantCachesize = elementCache.getVariantCachesize();
+
             readAccessGroup = cms.getReadingpermittedGroup(cms.getRequestContext().currentProject().getId(),templateFile);
             CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, null, parameters, null);
 
-            CmsElementCache elementCache = cms.getRequestContext().getElementCache();
-            variantCachesize = elementCache.getVariantCachesize();
             Vector subtemplates = xmlTemplateDocument.getAllSubElementDefinitions();
 
             int numSubtemplates = subtemplates.size();
@@ -1200,9 +1203,6 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 if(xmlTemplateDocument.hasSubtemplateFilename(elName)) {
                     templateName = xmlTemplateDocument.getSubtemplateFilename(elName);
                 }
-                if(templateName == null){
-                    templateName = (String)parameters.get("body._TEMPLATE_");
-                }
 
                 if(xmlTemplateDocument.hasSubtemplateSelector(elName)) {
                     templateSelector = xmlTemplateDocument.getSubtemplateSelector(elName);
@@ -1214,9 +1214,14 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 }
             }
         } catch(Exception e) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
-                A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + e);
+            if(templateFile != null){
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + "Could not generate my template cache element.");
+                    A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, getClassName() + e);
+                }
+            }else{
+                // no templateFile given, so let everyone read this
+                readAccessGroup = null;
             }
         }
         CmsElementXml result = new CmsElementXml(getClass().getName(),

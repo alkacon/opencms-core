@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/08/19 07:40:48 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/30 13:50:01 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,20 +83,6 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
         // Merge own element definitions with our parent's definitions
         CmsElementDefinitionCollection mergedElDefs = new CmsElementDefinitionCollection(elDefs, m_elementDefinitions);
 
-        // HACK fro EBK set the parameters for the body-element
-        try {
-            CmsElementDefinition bodyElementDef = mergedElDefs.get("body");
-            parameters.put("body._TEMPLATE_", bodyElementDef.getTemplateName());
-            parameters.put("body._CLASS_", bodyElementDef.getClassName());
-            if(bodyElementDef.getTemplateSelector()!= null) {
-                parameters.put("body._TEMPLATESELECTOR_", bodyElementDef.getTemplateSelector());
-            } else {
-                parameters.put("body._TEMPLATESELECTOR_", "default");
-            }
-        } catch(NullPointerException exc) {
-            // no body-element found - ignoring
-        }
-
         // Get out own cache directives
         A_CmsCacheDirectives cd = getCacheDirectives();
 
@@ -160,7 +146,17 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                 }catch(Exception e){
                 }
                 try {
-                    result = templateClass.getContent(cms, m_templateName, elementName, parameters, templateSelector);
+                    String theTemplate = m_templateName;
+                    if(theTemplate == null){
+                        try{
+                            theTemplate = mergedElDefs.get("body").getTemplateName();
+                        }catch(Exception exc){
+                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                                A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " could not find the body element to get the default templatefile for " + this.toString() );
+                            }
+                        }
+                    }
+                    result = templateClass.getContent(cms, theTemplate, elementName, parameters, templateSelector);
                 } catch(Exception e) {
                     if(e instanceof CmsException) {
                         CmsException ce = (CmsException)e;
