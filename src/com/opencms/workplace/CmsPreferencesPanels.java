@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.util.*;
  * TODO: use predefined constants in this class, clean up this class and add more comments!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.23 $ $Date: 2000/08/28 13:17:44 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																		 I_CmsConstants {
@@ -893,8 +893,37 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 		if (currentView == null) {
 			currentView="";
 		}
+
 		
-		// Check if the list of available views is not yet loaded from the workplace.ini
+		Vector viewNames = new Vector();
+		Vector viewLinks = new Vector();
+		// get the List of available views from the Registry
+		int numViews = (cms.getRegistry()).getViews(viewNames,viewLinks);
+		int currentViewIndex = 0;
+		// Loop through the vectors and fill the resultvectors
+		for(int i=0; i<numViews; i++)
+		{
+			String loopName = (String)viewNames.elementAt(i);	
+			String loopLink = (String)viewLinks.elementAt(i);	
+			boolean visible = true;
+			try{
+				cms.readFileHeader(loopLink);
+			}catch(CmsException e){
+				visible = false;
+			}
+			if (visible)
+			{
+				if(loopLink.equals(currentView))
+				{
+					currentViewIndex = values.size();
+				}	 
+				names.addElement(lang.getLanguageValue(loopName));
+				values.addElement(loopLink);
+			}
+		}	
+				
+		
+/*		// Check if the list of available views is not yet loaded from the workplace.ini
 		if(m_viewNames == null || m_viewLinks == null) {
 			m_viewNames = new Vector();
 			m_viewLinks = new Vector();
@@ -917,7 +946,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 				currentViewIndex = i;
 			}
 		}
-		return new Integer(currentViewIndex);
+*/		return new Integer(currentViewIndex);
 	}
 	 /**
 	 * Indicates if the results of this class are cacheable.
@@ -1083,7 +1112,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 			startSettings.put(C_START_PROJECT,new Integer(reqCont.currentProject().getId())); 
 			String currentView = (String)session.getValue(C_PARA_VIEW);
 			if (currentView == null) {
-				currentView="explorer.html";
+				currentView="/system/workplace/action/explorer.html";
 			}        
 			startSettings.put(C_START_VIEW,currentView);           
 			startSettings.put(C_START_DEFAULTGROUP,

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/08/15 16:25:33 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2000/08/15 16:25:33 $
+ * @version $Revision: 1.34 $ $Date: 2000/08/28 13:17:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -294,7 +294,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 					// finally create the project
 		 			CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 		 			  
-					// change the current project
+		 			// change the current project
 					reqCont.setCurrentProject(project.getId());
 					// copy the resources to the project   
 					for (int i=0; i<folders.size(); i++) { 

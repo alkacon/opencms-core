@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,13 +44,14 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.23 $ $Date: 2000/08/28 13:17:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
 
 	private Vector m_viewNames = null;
 	private Vector m_viewLinks = null;
+	
 	
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
@@ -186,6 +187,81 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			}
 		}
 		return new Integer(currentProjectNum);
+	}
+	/**
+	 * Gets all views available for this user in the workplace screen from the Registry.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * <P>
+	 * <code>names</code> will contain language specific view descriptions
+	 * and <code>values</code> will contain the correspondig URL for each
+	 * of these views after returning from this method.
+	 * <P>
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param lang reference to the currently valid language file
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the user's current workplace view in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getRegViews(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+			throws CmsException {
+		
+		// Let's see if we have a session
+		CmsRequestContext reqCont = cms.getRequestContext();
+		I_CmsSession session = cms.getRequestContext().getSession(true);
+
+		// try to get an existing view
+		String currentView = null;
+		Hashtable startSettings=null;
+		// check out the user infor1ation if a default view is stored there.
+		startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+		if (startSettings != null) {
+			currentView = (String)startSettings.get(C_START_VIEW);
+		}
+		// If there is a session, let's see if it has a view stored
+		if(session != null) {
+			 if (session.getValue(C_PARA_VIEW) != null) {
+				currentView = (String)session.getValue(C_PARA_VIEW);
+			}    
+		}
+  
+		if (currentView == null) {
+			currentView="";
+		}
+
+		Vector viewNames = new Vector();
+		Vector viewLinks = new Vector();
+		// get the List of available views from the Registry
+		int numViews = (cms.getRegistry()).getViews(viewNames,viewLinks);
+		int currentViewIndex = 0;
+		// Loop through the vectors and fill the resultvectors
+		for(int i=0; i<numViews; i++)
+		{
+			String loopName = (String)viewNames.elementAt(i);	
+			String loopLink = (String)viewLinks.elementAt(i);	
+			boolean visible = true;
+			try{
+				cms.readFileHeader(loopLink);
+			}catch(CmsException e){
+				visible = false;
+			}
+			if (visible)
+			{
+				if(loopLink.equals(currentView))
+				{
+					currentViewIndex = values.size();
+				}	 
+				names.addElement(lang.getLanguageValue(loopName));
+				values.addElement(loopLink);
+			}
+		}	
+				
+		return new Integer(currentViewIndex);
 	}
 	/**
 	 * Gets the currently logged in user.

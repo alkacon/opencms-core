@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.18 $ $Date: 2000/08/28 13:17:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -83,7 +83,7 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 		
 		// Get list definition and language values
 		CmsXmlWpTemplateFile listdef = getProjectlistDefinitions(cms);
-		
+System.err.println("------Projectlist: here we go!");		
 		// call the method for generating projectlist elements
 		Method callingMethod = null;
 		Vector list = new Vector();
@@ -120,9 +120,12 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			CmsProject project = (CmsProject) list.elementAt(i);
 
 			// get the correckt state
+System.err.println("------countLockedResources(Project "+project.getId()+" ) = "+cms.countLockedResources(project.getId()) );	
 			if( cms.countLockedResources(project.getId()) == 0 ) {
+System.err.println("------Projectlist.state= unlocked projectId="+project.getId());				
 				state = C_PROJECTLIST_STATE_UNLOCKED;
 			} else {
+System.err.println("------Projectlist.state= LOCKED projectId="+project.getId());				
 				state = C_PROJECTLIST_STATE_LOCKED;
 			}
 			  

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/08/08 14:08:31 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.34 $ $Date: 2000/08/08 14:08:31 $
+ * @version $Revision: 1.35 $ $Date: 2000/08/28 13:17:44 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -91,10 +91,11 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 			session.putValue(C_PARA_STARTTASKID,startTaskId);
 			Vector viewNames = new Vector();
 			Vector viewLinks = new Vector();
-			configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
+//			configFile.getWorkplaceIniData(viewNames, viewLinks,"WORKPLACEVIEWS","VIEW");
+			(cms.getRegistry()).getViews(viewNames,viewLinks);
 			String link="";
 			for (int i=0;i<viewNames.size();i++) {
-				if (((String)viewNames.elementAt(i)).equals("tasks")) {
+				if (((String)viewNames.elementAt(i)).equals("select.tasks")) {
 					link=(String)viewLinks.elementAt(i);
 					break;
 				}

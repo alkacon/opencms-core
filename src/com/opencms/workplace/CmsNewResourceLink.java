@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/08/28 13:17:44 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/08/22 13:33:57 $
+ * @version $Revision: 1.16 $ $Date: 2000/08/28 13:17:44 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -128,11 +128,11 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 	            // get folder- and filename
 		 
 		        foldername=(String)session.getValue(C_PARA_FILELIST);
-				if (foldername==null) {
+		        if (foldername==null) {
 				   foldername=cms.rootFolder().getAbsolutePath();
 				}   
 				filename=(String)session.getValue(C_PARA_FILE);
-				link=(String)session.getValue(C_PARA_LINK); 
+				link=(String)session.getValue(C_PARA_LINK);
 				String title= lang.getLanguageValue("explorer.linkto") + " " + link;
 				type="link";
    
@@ -146,32 +146,26 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
 
 				} else{
 					// create the new file
-
 					cms.createFile(foldername,filename,link.getBytes(),type);  
-
 					cms.lockResource(foldername+filename);
-
 					cms.writeProperty(foldername+filename,C_PROPERTY_TITLE, title);    
-	 
 				}   
 				// remove values from session
 					session.removeValue(C_PARA_FILE);   
 				session.removeValue(C_PARA_VIEWFILE); 
 				session.removeValue(C_PARA_LINK);  
 				// TODO: ErrorHandling
-				
 				// now return to appropriate filelist
 				try {
 
 					String lastUrl = (String) session.getValue("lasturl");
 					String redirectUrl;
-  		if (lastUrl != null) {
+  					if (lastUrl != null) {
 						cms.getRequestContext().getResponse().sendRedirect(lastUrl);	
 					} else {
 						cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);	
 					} 
 				} catch (Exception e) {
- 
 					  throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 				}
 				return null;
