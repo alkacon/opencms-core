@@ -131,7 +131,7 @@ function buttonAction(para) {
 		break;
 	case 4:
 		// open elements window;
-		openWindow = window.open("about:blank", "dialogElementWindow", "width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		openWindow = window.open("about:blank", "dialogElementWindow", "left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
 		focusCount = 1;
 		document.ELEMENTS.submit();
 		openWindow.focus();

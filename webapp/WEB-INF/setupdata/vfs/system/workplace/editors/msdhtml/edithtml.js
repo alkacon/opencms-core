@@ -580,7 +580,7 @@ function doEditHTML(para) {
 					params += "&class=" + linkInformation["class"];
 				}
 			}			
-		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
+		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", resizable=yes, top=300, left=250");
 		focusCount = 1;
 		openWindow.focus();
 		} else {
@@ -605,7 +605,7 @@ function doEditHTML(para) {
 					params += "&class=" + linkInformation["class"];
 				}
 			}			
-			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", resizable=no, top=300, left=250");
+			openWindow  = window.open('dialogs/anchor.jsp' + params, 'SetAnchor', "width=350, height=" + winheight + ", resizable=yes, top=300, left=250");
 			focusCount = 1;
 			openWindow.focus();
 		} else {

@@ -71,6 +71,8 @@ if ("true".equals(refreshOpener)) {
 }
 %>
 
+window.resizeTo(400, 170+(27*<%= wp.computeElements().size() %>));
+
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
