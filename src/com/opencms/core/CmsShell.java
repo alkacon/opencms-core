@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/06/06 08:41:18 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/06/07 14:45:20 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import source.org.apache.java.util.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/06/06 08:41:18 $
+ * @version $Revision: 1.2 $ $Date: 2000/06/07 14:45:20 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -609,6 +609,20 @@ public class CmsShell implements I_CmsConstants {
 		}
 	}
 
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 */
+	public void setPassword(String username, String newPassword) {
+		try {
+			m_cms.setPassword( username, newPassword );
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
     /**
 	 * Adds a new CmsMountPoint. 
 	 * A new mountpoint for a mysql filesystem is added.
@@ -784,6 +798,19 @@ public class CmsShell implements I_CmsConstants {
 		}		
 	}
 
+	/**
+	 * Returns a user object.<P/>
+	 * 
+	 * @param username The name of the user that is to be read.
+	 */
+	public void readUser(String username, String password) {
+		try {
+			System.out.println( m_cms.readUser(username, password) );
+		} catch( Exception exc ) {
+			printException(exc);
+		}		
+	}
+	
 	/**
 	 * Returns all projects, which the user may access.
 	 * 

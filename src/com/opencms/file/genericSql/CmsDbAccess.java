@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 14:12:21 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/07 14:45:20 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.22 $ $Date: 2000/06/07 14:12:21 $ * 
+ * @version $Revision: 1.23 $ $Date: 2000/06/07 14:45:20 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -921,9 +921,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		throws CmsException {
 		PreparedStatement statement = null;
 		
-		try	{			
+		try	{
             statement = m_pool.getPreparedStatement(C_USERS_DELETE_KEY);
 			statement.setString(1,name);
+			statement.executeUpdate();
 		}
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -944,13 +945,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		throws CmsException {
 		PreparedStatement statement = null;
 		ResultSet res = null;
-		Vector users = null;
+		Vector users = new Vector();
 		
 		try	{			
             statement = m_pool.getPreparedStatement(C_USERS_GETUSERS_KEY);
 			statement.setInt(1,type);
 			res = statement.executeQuery();
-			
 			// create new Cms user objects
 			while( res.next() ) {
 				// read the additional infos.

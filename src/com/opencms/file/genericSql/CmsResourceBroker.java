@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 13:56:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/07 14:45:20 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/06/07 13:56:36 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/07 14:45:20 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1269,6 +1269,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
         throws CmsException {
+		// TODO: use the real method!
+		return true;
+		/*
          Vector groups = getGroupsOfUser(currentUser,currentProject,username);
      	 CmsGroup group;
 		 for(int z = 0; z < groups.size(); z++) {
@@ -1278,6 +1281,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 }
 		 }
 		 return false;
+		*/
     }
 
 	/** 
