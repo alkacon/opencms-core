@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/04 12:03:06 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
-public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, Serializable {
+public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I_CmsConstants, Serializable {
 
      /**
       * The id of resource type.
@@ -564,4 +564,14 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         throws CmsException{
         cms.doChangeLockedInProject(newProjectId, resourcename);
     }
+    
+    /**
+     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public void replaceResource(CmsObject cms, String resName, Map newResProps, byte[] newResContent, String newResType) throws CmsException {
+        CmsResource res = cms.readFileHeader(resName, true);
+        cms.doLockResource(cms.readAbsolutePath(res), true);
+        cms.doReplaceResource(resName, newResContent, newResType, newResProps);
+    }
+        
 }

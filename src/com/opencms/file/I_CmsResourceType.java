@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/04 12:03:06 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import java.util.Map;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public interface I_CmsResourceType {
+    
     /**
      * init a new CmsResourceType object.
      *
@@ -47,7 +48,7 @@ public interface I_CmsResourceType {
      * @param launcherClass The Java class that should be invoked by the launcher.
      * This value is <b> null </b> if the default invokation class should be used.
      */
-    public void init(int resourceType, int launcherType,
+    void init(int resourceType, int launcherType,
                            String resourceTypeName, String launcherClass);
 
      /**
@@ -56,28 +57,28 @@ public interface I_CmsResourceType {
      *
      * @return the name of the Java class.
      */
-     public String getLauncherClass();
+     String getLauncherClass();
 
      /**
      * Returns the launcher type needed for this resource-type.
      *
      * @return the launcher type for this resource-type.
      */
-     public int getLauncherType();
+     int getLauncherType();
 
     /**
      * Returns the name for this resource-type.
      *
      * @return the name for this resource-type.
      */
-     public String getResourceTypeName();
+     String getResourceTypeName();
 
     /**
      * Returns the type of this resource-type.
      *
      * @return the type of this resource-type.
      */
-    public int getResourceType();
+    int getResourceType();
 
     /**
     * Changes the group of a resource.
@@ -101,7 +102,7 @@ public interface I_CmsResourceType {
     *
     * @throws CmsException if operation was not successful.
     */
-    public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException;
+    void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException;
 
     /**
     * Changes the flags of a resource.
@@ -127,7 +128,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if operation was not successful.
     * for this resource.
     */
-    public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException;
+    void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException;
 
     /**
     * Changes the owner of a resource.
@@ -152,7 +153,7 @@ public interface I_CmsResourceType {
     *
     * @throws CmsException if operation was not successful.
     */
-    public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException;
+    void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException;
     
     /**
      * Change the timestamp of a resource.
@@ -161,7 +162,7 @@ public interface I_CmsResourceType {
      * @param timestamp timestamp the new timestamp of the changed resource
      * @param boolean flag to touch recursively all sub-resources in case of a folder
      */
-    public void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException;
+    void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException;
 
     /**
     * Changes the resourcetype of a resource.
@@ -185,7 +186,7 @@ public interface I_CmsResourceType {
     *
     * @throws CmsException if operation was not successful.
     */
-    public void chtype(CmsObject cms, String filename, String newType) throws CmsException;
+    void chtype(CmsObject cms, String filename, String newType) throws CmsException;
 
 
     /**
@@ -199,7 +200,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the file couldn't be copied, or the user
     * has not the appropriate rights to copy the file.
     */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException;
+    void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException;
 
 
     /**
@@ -209,7 +210,7 @@ public interface I_CmsResourceType {
      *
      * @throws CmsException if operation was not successful.
      */
-    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException;
+    void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException;
 
     /**
     * Creates a new resource.<br>
@@ -224,18 +225,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException;
-
-
-    /**
-    * Deletes a resource.
-    *
-    * @param filename the complete path of the file.
-    *
-    * @throws CmsException if the file couldn't be deleted, or if the user
-    * has not the appropriate rights to delete the file.
-    */
-    public void deleteResource(CmsObject cms, String filename) throws CmsException;
+    CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException;
 
     /**
     * Deletes a resource.
@@ -245,7 +235,17 @@ public interface I_CmsResourceType {
     * @throws CmsException if the file couldn't be deleted, or if the user
     * has not the appropriate rights to delete the file.
     */
-    public void undeleteResource(CmsObject cms, String filename) throws CmsException;
+    void deleteResource(CmsObject cms, String filename) throws CmsException;
+
+    /**
+    * Deletes a resource.
+    *
+    * @param filename the complete path of the file.
+    *
+    * @throws CmsException if the file couldn't be deleted, or if the user
+    * has not the appropriate rights to delete the file.
+    */
+    void undeleteResource(CmsObject cms, String filename) throws CmsException;
 
     /**
      * Does the Linkmanagement when a resource will be exported.
@@ -254,7 +254,7 @@ public interface I_CmsResourceType {
      *
      * @param file is the file that has to be changed
      */
-    public CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException;
+    CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException;
 
     /**
      * Does the Linkmanagement when a resource is imported.
@@ -263,7 +263,7 @@ public interface I_CmsResourceType {
      *
      * @param file is the file that has to be changed
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
+    CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 
     /**
     * Locks a given resource.
@@ -277,7 +277,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the user has not the rights to lock this resource.
     * It will also be thrown, if there is a existing lock and force was set to false.
     */
-    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException;
+    void lockResource(CmsObject cms, String resource, boolean force) throws CmsException;
 
     /**
     * Moves a file to the given destination.
@@ -288,7 +288,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    public void moveResource(CmsObject cms, String source, String destination) throws CmsException;
+    void moveResource(CmsObject cms, String source, String destination) throws CmsException;
 
     /**
     * Renames the file to the new name.
@@ -299,7 +299,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the user has not the rights
     * to rename the file, or if the file couldn't be renamed.
     */
-    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException;
+    void renameResource(CmsObject cms, String oldname, String newname) throws CmsException;
 
     /**
      * Restores a file in the current project with a version in the backup
@@ -310,7 +310,7 @@ public interface I_CmsResourceType {
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException;
+    void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException;
 
     /**
      * Undo all changes in the resource, restore the online file.
@@ -319,7 +319,7 @@ public interface I_CmsResourceType {
      *
      * @throws CmsException Throws CmsException if something goes wrong.
      */
-    public void undoChanges(CmsObject cms, String filename) throws CmsException;
+    void undoChanges(CmsObject cms, String filename) throws CmsException;
 
     /**
     * Unlocks a resource.
@@ -331,7 +331,7 @@ public interface I_CmsResourceType {
     * @throws CmsException if the user has not the rights
     * to unlock this resource.
     */
-    public void unlockResource(CmsObject cms, String resource) throws CmsException;
+    void unlockResource(CmsObject cms, String resource) throws CmsException;
 
     /**
      * Changes the project-id of the resource to the new project
@@ -340,7 +340,18 @@ public interface I_CmsResourceType {
      * @param newProjectId The Id of the new project
      * @param resourcename The name of the resource to change
      */
-    public void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
+    void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
         throws CmsException;
+
+    /**
+     * Replaces the content and properties of an existing resource.<p>
+     * 
+     * @param cms the CmSsObject
+     * @param resourceName the absolute path and name of the resource that is replaced
+     * @param resourceProperties the properties of the resource
+     * @param resourceContent the content of the resource
+     * @throws CmsException if something goes wrong
+     */
+    void replaceResource(CmsObject cms, String resName, Map newResProperties, byte[] newResContent, String newResType) throws CmsException;
 
 }

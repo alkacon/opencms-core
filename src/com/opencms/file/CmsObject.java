@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/03 14:34:53 $
-* Version: $Revision: 1.296 $
+* Date   : $Date: 2003/07/04 12:03:06 $
+* Version: $Revision: 1.297 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.296 $
+ * @version $Revision: 1.297 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -817,6 +817,13 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
 }
 
     /**
+     * @param filename
+     * @param type
+     * @param newProperties
+     * @param newContent
+     * @throws CmsException
+     */
+    /**
      * Replaces and existing resource by another file with different content
      * and different file type.
      * 
@@ -824,36 +831,25 @@ public CmsFile createFile(String folder, String filename, byte[] contents, Strin
      * @param type the type of the new resource
      * @param newContent the content of the new resource
      */
-    public void replaceResource(String filename, String type, Hashtable newProperties, byte[] newContent) throws CmsException {
-        // save the properties of the old file
-        Hashtable oldProperties = null;
+    public void replaceResource(String resName, String newResType, Map newProps, byte[] newResContent) throws CmsException {
+        // read the properties of the existing file
+        Map resProps = null;
         try {
-            oldProperties = this.readAllProperties(filename);
-        }
-        catch (CmsException e) {
-            oldProperties = new Hashtable();
+            resProps = readAllProperties(resName);
+        } catch (CmsException e) {
+            resProps = (Map) new HashMap();
         }
         
-        // add the properties that might have been collected during
-        // a file-upload-dialogue chain etc.
-        if (newProperties!=null) {
-            oldProperties.putAll( newProperties );
+        // add the properties that might have been collected during a file-upload
+        if (newProps != null) {
+            resProps.putAll(newProps);
         }
-
-        try {
-            // delete the old file
-            this.deleteResource(filename);
-
-            // re-create the resource with the new content and the properties
-            // of the old file that we deleted before
-            this.createResource(filename, type, oldProperties, newContent, null);
-        }
-        catch (CmsException e1) {
-            throw new CmsException( CmsException.C_FILESYSTEM_ERROR, e1 );
-        }
+        
+        I_CmsResourceType res = getResourceType(readFileHeader(resName,true).getType());
+        res.replaceResource(this, resName, resProps, newResContent, newResType);        
         
         // clean-up the link management
-        this.joinLinksToTargets( new CmsShellReport() );        
+        joinLinksToTargets( new CmsShellReport() );        
     }
 
 /**
@@ -1001,6 +997,13 @@ protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws 
                                             getSiteRoot(newFolderName), properties);
     return cmsFolder;
 }
+
+    protected CmsResource doReplaceResource(String resName, byte[] newResContent, String newResType, Map newResProps) throws CmsException {
+        CmsResource res = null;
+        
+        res = m_driverManager.replaceResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resName), newResType, newResProps, newResContent);        
+        return res;
+    }
 
 	/**
 	 * Creates a new resource.
@@ -3306,9 +3309,9 @@ public Vector readProjectLogs(int projectId) throws CmsException {
      * @throws CmsException if operation was not succesful
      * @deprecated use readProperties(String) instead
      */
-    public Hashtable readAllProperties(String resource) throws CmsException {
-        Hashtable result = new Hashtable();
-        Map properties = readProperties(resource, false);
+    public Map readAllProperties(String filename) throws CmsException {
+        Map result = (Map) new HashMap();
+        Map properties = readProperties(filename, false);
         if (properties != null) result.putAll(properties);
         return result;
     }    

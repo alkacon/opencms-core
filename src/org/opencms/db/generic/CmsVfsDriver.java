@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/03 13:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/04 12:03:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.6 $ $Date: 2003/07/04 12:03:06 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1627,11 +1627,16 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         Connection conn = null;
         CmsFolder currentFolder = null;
         CmsAdjacencyTree tree = new CmsAdjacencyTree();
+        
+        /*
+         * possible other SQL queries to select a tree view:
+         * SELECT PARENT.RESOURCE_NAME, CHILD.RESOURCE_NAME FROM CMS_OFFLINE_STRUCTURE PARENT, CMS_OFFLINE_STRUCTURE CHILD WHERE PARENT.STRUCTURE_ID=CHILD.PARENT_ID;
+         * SELECT PARENT.RESOURCE_NAME,CHILD.RESOURCE_NAME FROM CMS_OFFLINE_STRUCTURE PARENT LEFT JOIN CMS_OFFLINE_STRUCTURE CHILD ON PARENT.STRUCTURE_ID=CHILD.PARENT_ID; 
+         */
 
         try {
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_GET_FOLDERTREE");
-            //stmt.setInt(1, projectId);
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -3781,4 +3786,37 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         return count;       
     }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, byte[])
+     */
+    public CmsResource replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, I_CmsResourceType newResType) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;   
+        long dateModified = res.isTouched() ? res.getDateLastModified() : System.currentTimeMillis();
+        
+        try {
+            // write the file content
+            if (resContent!=null) {
+                writeFileContent(res.getFileId(), resContent, currentProject.getId(), false);
+            }
+            
+            // update the resource and structure
+            conn = m_sqlManager.getConnection(currentProject);
+            stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE"); 
+            stmt.setInt(1, newResType.getResourceType());
+            stmt.setTimestamp(2, new Timestamp(dateModified));
+            stmt.setString(3, currentUser.getId().toString());
+            stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);     
+            stmt.setString(5, res.getId().toString());
+            stmt.executeUpdate();            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }   
+
+        return null;     
+    }
+    
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/03 13:29:45 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/07/04 12:03:06 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,9 +48,9 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2003/07/03 13:29:45 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/04 12:03:06 $
  */
-public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
+public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
 
     /** Definition of the class */
     private static final String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
@@ -380,7 +380,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
-        String bodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
+        String bodyPath=(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
         String body = hXml.getElementTemplate("body");
         body = hXml.validateBodyPath(cms, body, file);
         String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + body);        
@@ -390,7 +390,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // Evaluate some path information
             String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
             checkFolders(cms, destinationFolder);
-            String newbodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+ destination;
+            String newbodyPath=(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")))+ destination;
 
             // we don't want to use the changeContent method here
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
@@ -456,7 +456,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String pageName = newPageName.substring(folderName.length(), newPageName.length());
 
         // Scan for mastertemplates
-        Vector allMasterTemplates = cms.getFilesInFolder(C_VFS_PATH_DEFAULT_TEMPLATES);
+        Vector allMasterTemplates = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
 
         // Select the first mastertemplate as default
         String masterTemplate = "";
@@ -465,7 +465,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
 
         // Evaluate the absolute path to the new body file
-        String bodyFolder =(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
+        String bodyFolder =(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
 
         // Create the new page file
         CmsFile file = cms.doCreateFile(newPageName, "".getBytes(), m_resourceTypeName, properties);
@@ -709,7 +709,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath = checkBodyPath(cms, file);
         cms.doMoveResource(source, destination);
         if(bodyPath != null) {
-            String hbodyPath = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
+            String hbodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
             cms.doMoveResource(bodyPath, hbodyPath);
             changeContent(cms, destination, hbodyPath);
@@ -741,8 +741,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // build the body path from scratch to control if the current 
         // body path in the XML page is a path where the Cms expects
         // it's body files
-        int lastSlashIndex = C_VFS_PATH_BODIES.lastIndexOf("/");
-        String defaultBodyPath = (C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + oldname;
+        int lastSlashIndex = I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/");
+        String defaultBodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + oldname;
 
         // rename the file itself
         cms.doRenameResource(oldname, newname);
@@ -892,7 +892,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         // Use translated path name of body
-        String result = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(file);
+        String result = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(file);
         if (!result.equals(readBodyPath(cms, (CmsFile)file))){
             result = null;
         }
@@ -929,7 +929,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      private void checkFolders(CmsObject cms, String path)
           throws CmsException {
 
-          String completePath=C_VFS_PATH_BODIES;
+          String completePath=I_CmsWpConstants.C_VFS_PATH_BODIES;
           StringTokenizer t=new StringTokenizer(path,"/");
           String correspFolder = "/";
           // check if all folders are there
@@ -943,7 +943,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
                   String orgFolder=completePath+foldername+"/";
-                  orgFolder=orgFolder.substring(C_VFS_PATH_BODIES.length()-1);
+                  orgFolder=orgFolder.substring(I_CmsWpConstants.C_VFS_PATH_BODIES.length()-1);
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
                   //CmsFolder folder = cms.readFolder(orgFolder);
                   cms.doLockResource(cms.readAbsolutePath(newfolder),false);
@@ -1008,4 +1008,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String currentProject = cms.getRequestContext().currentProject().getName();
         CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
     }
+    
+    /**
+     * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
+     */
+    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, String newResType) throws CmsException {
+        // page files cannot be replaced yet...
+    }
+        
 }
