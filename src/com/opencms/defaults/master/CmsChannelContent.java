@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/03/04 17:25:10 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/04/02 12:44:10 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.17 $
- * $Date: 2003/03/04 17:25:10 $
+ * $Revision: 1.18 $
+ * $Date: 2003/04/02 12:44:10 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -353,8 +353,11 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 newChannel = cms.createResource(m_parentchannel, m_channelname, I_CmsConstants.C_TYPE_FOLDER_NAME, m_properties);
                 cms.lockResource(newChannel.getAbsolutePath(), true);
             } else {
-                newChannel = cms.readFolder(m_channel.getAbsolutePath());
-                if (!newChannel.getAbsolutePath().equals(m_parentchannel+m_channelname+"/")){
+                if (!"".equals(m_channel.getResourceName())) {
+                    newChannel = cms.readFolder(m_channel.getAbsolutePath());
+                }
+                
+                if (newChannel!=null && !newChannel.getAbsolutePath().equals(m_parentchannel+m_channelname+"/")){
                     // the parent and/or the channelname has changed,
                     // so move or rename the channel
                     if(!newChannel.getParent().equals(m_parentchannel)){
@@ -470,6 +473,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      */
     public void setChannelId(String id) {
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, id);
+        m_channelId = id;
     }
 
     /**

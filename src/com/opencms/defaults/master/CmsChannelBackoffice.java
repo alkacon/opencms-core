@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/02/02 15:59:53 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/04/02 12:44:10 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -175,7 +175,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         }
         // for the first call check if the id exist, i.e. if the category is to edit
         // and it is not created new one then read the information of category
-        if (action.equals("") && !id.equals("new")) {
+        if (action.equals("") && !id.equals("new")) {            
             try {
                 Integer.parseInt(id);
             } catch (Exception err) {
@@ -191,7 +191,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             owner=new Integer(cd.getOwner()).toString();
             group=new Integer(cd.getGroupId()).toString();
             accessFlags=cd.getAccessFlags();
-        }else if(cd==null){
+        }else if(cd==null){            
             //create a new ouputchannels content definition.
             cd = new CmsChannelContent(cms);
             idvalue=C_UNKNOWN_ID+"";
@@ -201,7 +201,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         session.putValue("parentName",parentName);
         session.putValue("id",resid+"");
         //set data in CD when data is correct
-        if(error.equals("") && !action.equals("")){
+        if(error.equals("") && !action.equals("")) {           
             cd.setChannelId(idvalue);
             cd.setParentName(parentName);
             cd.setChannelName(channelname);
@@ -264,6 +264,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //if the saveexit-button has been clicked.
         if(action.equals("saveexit") && error.equals("")){
             try{
+                cd.setChannelId(channelid);
                 //write/save
                 cd.write(cms);
                 //exit
@@ -271,7 +272,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 templateSelector = "done";
                 return startProcessing(cms, template, "", parameters, templateSelector);
             }catch (CmsException exc){
-                template.setData("channelId", idvalue);
+                template.setData("channelId", channelid);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
@@ -282,7 +283,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 //log
                 exc.printStackTrace(System.err);
             }catch (Exception e){
-                template.setData("channelId", idvalue);
+                template.setData("channelId", channelid);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
@@ -298,15 +299,16 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //if the "save"-button has been clicked.
         if(action.equals("save") && error.equals("")){
             try{
+                cd.setChannelId(channelid);                
                 //write
                 cd.write(cms);
                 idvalue=cd.getChannelId();
-                template.setData("channelId", idvalue);
+                template.setData("channelId", channelid);
                 template.setData("resourceid", ""+cd.getId());
                 //indicator for saved new entrys - the new id
                 template.setData("newChannelId", idvalue);
             }catch (CmsException exc){
-                template.setData("channelId", idvalue);
+                template.setData("channelId", channelid);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
@@ -318,7 +320,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 exc.printStackTrace(System.err);
             }catch (Exception e){
                 e.printStackTrace(System.err);
-                template.setData("channelId",  idvalue);
+                template.setData("channelId",  channelid);
                 template.setData("resourceid", ""+cd.getId());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
