@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/24 09:35:01 $
-  * Version: $Revision: 1.32 $
+  * Date   : $Date: 2001/07/25 08:45:55 $
+  * Version: $Revision: 1.33 $
   *
   * Copyright (C) 2000  The OpenCms Group
   *
@@ -1025,7 +1025,7 @@ function enableNewButton(showit){
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16></a>");
          wo.writeln("</td>");
 
-        
+
         if(vi.liste[i].project == vr.actProject) {
             wo.write("<td nowrap align=center>");
             // the ressource is in the current project, so display the lock and projectstate
@@ -1048,10 +1048,10 @@ function enableNewButton(showit){
             var projectAltText;
             if(vi.liste[i].status != 0) {
                 if (vi.liste[i].lockedInProjectId == vi.liste[i].project) {
-                    projectIcon=vi.iconPath+'ic_inthisproject.gif';         
+                    projectIcon=vi.iconPath+'ic_inthisproject.gif';
                     projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
                 } else {
-                    projectIcon=vi.iconPath+'ic_inanotherproject.gif';         
+                    projectIcon=vi.iconPath+'ic_inanotherproject.gif';
                     projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
                 }
             } else {
@@ -1066,7 +1066,7 @@ function enableNewButton(showit){
             wo.write("<td></td><td></td>");
         }
 
- 
+
          if(vi.check_name){
              if(vi.liste[i].type==0)wo.writeln("<td nowrap class="+ssclass+"><a href=javascript:top.openthisfolder('"+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
                  else wo.writeln("<td  nowrap class="+ssclass+"><a href=javascript:top.openwinfull('"+vr.servpath+vr.actDirectory+vi.liste[i].name+"'); class="+ssclass+">&nbsp;"+vi.liste[i].name+"&nbsp;</a></td>");
@@ -1084,7 +1084,7 @@ function enableNewButton(showit){
      }
      wo.writeln("</tr></table>");
 
- for(i=0;i<vi.liste.length;i++){
+ 	for(i=0;i<vi.liste.length;i++){
          wo.writeln("<div id='men"+i+"' class='km'>");
          wo.writeln("<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor=#777777><tr><td>");
          wo.writeln("<table width=150 CELLPADDING=1 CELLSPACING=0 BORDER=0 class=fk>");
@@ -1093,76 +1093,88 @@ function enableNewButton(showit){
 
              /* 0:unchanged",1:changed",2:new",3:deleted" */
 
-  //               if(vr.actProject==vr.onlineProject){ /* online project? */
-                if(vi.liste[i].project==vr.onlineProject){ /* online project? */
-                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
-                     }else{
-                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
-                            if(vi.menus[vi.liste[i].type].items[a].name=="-")wo.writeln("<tr><td><hr size=1></td></tr>");
-                            else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-                        }else{
-                            if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
-                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                    wo.writeln("<tr><td><hr size=1></td></tr>");
-                                } else {
-                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                }
-                            }
-                        }
-                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='3'){
-                            if(vr.actProject==vr.onlineProject){
-                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                    wo.writeln("<tr><td><hr size=1></td></tr>");
-                                } else {
-                                    if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                     else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                }
-                            }
-                        }
-                        if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='4'){
-                            if(vr.actProject!=vr.onlineProject){
-                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                    wo.writeln("<tr><td><hr size=1></td></tr>");
-                                } else {
-                                    if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                     else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                }
-                            }
-                        }
-                     }
-                 }else{
-                     /* if not locked */
-                     if(vi.liste[i].lockedBy == ''){
-                         display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+1);
-                     }else{
-                         /* if locked by someone else */
-                         if(vi.liste[i].lockedBy != vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+9);
-                         /* if locked by me*/
-                         if(vi.liste[i].lockedBy == vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+5);
-                     }
-                     if(display == 0){
-                     }else{
-                        if(display == 1){
-                            if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
-                            else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-                        }else{
-                            if(display == 2){
-                                if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                    wo.writeln("<tr><td><hr size=1></td></tr>");
-                                }else{
-                                    if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                        else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                                }
+             if(vr.actProject==vr.onlineProject){
+			 	/* online project */
+				if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='i'){
+					if(vi.menus[vi.liste[i].type].items[a].name=="-")
+						wo.writeln("<tr><td><hr size=1></td></tr>");
+					else
+						wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+				}else{
+					if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='a'){
+						if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+							wo.writeln("<tr><td><hr size=1></td></tr>");
+						} else {
+						if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+						 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+						}
+					}
+				}
+			 }else{
+			 	/* offline project */
+				if(vi.liste[i].project==vr.onlineProject){
+					/* resource is from onlineproject*/
+					if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='i'){
+						if(vi.menus[vi.liste[i].type].items[a].name=="-")
+							wo.writeln("<tr><td><hr size=1></td></tr>");
+						else
+							wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+					}else{
+						if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='a'){
+							if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+								wo.writeln("<tr><td><hr size=1></td></tr>");
+							} else {
+							if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+							 else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+							}
+						}
+					}
+				}else{
+					/* resource is in this project => we have to differ 5 cases */
+					if(vi.liste[i].lockedBy == ''){
+						/* free */
+						display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+2);
+					}else{
+						if(vi.liste[i].lockedInProjectId == vr.actProject){
+							/* locked in this project from ... */
+							if(vi.liste[i].lockedBy == vr.userName){
+								/* ... the actual user */
+								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+6);
+							}else{
+								/* ... someone else */
+								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+10);
+							}
+						}else{
+							/* locked in an other project from ... */
+							if(vi.liste[i].lockedBy == vr.userName){
+								/* ... the actual user */
+								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+14);
+							}else{
+								/* ... someone else */
+								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+18);
+							}
+						}
+					}
+                    if(display == 'i'){
+                        if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
+                        else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                    }else{
+                        if(display == 'a'){
+                            if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                                wo.writeln("<tr><td><hr size=1></td></tr>");
+                            }else{
+                                if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                                    else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+vr.actDirectory+vi.liste[i].name+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                             }
                         }
                     }
-                }
+				}
             }
-        wo.writeln("</table></td></tr></table></div>");
-    }
-    wo.writeln("<br></body></html>");
-    wo.close();
+		}
+		wo.writeln("</table></td></tr></table></div>");
+	}
+	wo.writeln("<br></body></html>");
+	wo.close();
 }
 
 /**

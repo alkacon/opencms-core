@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/07/24 09:35:01 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/07/25 08:44:59 $
+* Version: $Revision: 1.11 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -182,13 +182,33 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
                 langKey = lang.getDataValue(langKey);
             }
             catch(CmsException e) {
-
             }
             result.append(data.substring(index, foundAt) + langKey);
             index = endIndex + 1;
             foundAt = data.indexOf(myToken, index);
         }
         result.append(data.substring(index));
+
+        // at last we have to remove the spaces in the rules parameter
+        data = result.toString();
+        result = new StringBuffer();
+        myToken = "rules_key";
+        index = 0;
+        foundAt = data.indexOf(myToken, index);
+        while(foundAt != -1) {
+            int endIndex = data.indexOf(")", foundAt);
+            String rulesKey = data.substring(data.indexOf("(", foundAt) + 1, endIndex).trim();
+            int nextSpace = rulesKey.indexOf(" ");
+            while(nextSpace > -1){
+                rulesKey = rulesKey.substring(0, nextSpace)+rulesKey.substring(nextSpace+1);
+                nextSpace = rulesKey.indexOf(" ");
+            }
+            result.append(data.substring(index, foundAt) + rulesKey);
+            index = endIndex + 1;
+            foundAt = data.indexOf(myToken, index);
+        }
+        result.append(data.substring(index));
+
         return result.toString();
     }
 
