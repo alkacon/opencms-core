@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/07/08 12:58:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/09 15:50:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -390,7 +390,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         
         // resourceinit
         // TODO: create XML entries for resource init
-        systemElement.addElement(N_RESOURCEINIT);        
+        Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);        
+        i = m_resourceInitHandlers.iterator();
+        while (i.hasNext()) {
+            I_CmsResourceInit clazz = (I_CmsResourceInit)i.next();
+            Element handlerElement = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
+            handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());            
+        }
         
         // return the vfs node
         return systemElement;

@@ -42,6 +42,8 @@
 			</job>
 		</scheduler>			
 	   	<versionhistory enabled="true" count="10"/>
-		<resourceinit />
+		<resourceinit>
+			<resourceinithandler class="org.opencms.configuration.CmsTestDummyResourceInit" />
+		</resourceinit>
 	</system>
 </opencms>    
