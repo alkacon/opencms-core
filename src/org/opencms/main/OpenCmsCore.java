@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/08/15 18:35:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/18 10:13:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -367,31 +367,30 @@ public class OpenCmsCore {
     /**
      * Destroys this OpenCms instance.<p> 
      */    
-    protected synchronized void destroy() {
-        m_instance = null;
-        
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Performing shutdown ...");
+    protected synchronized void destroy() {        
+        if (isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Performing shutdown ...");
         }
         try {
             m_scheduler.shutDown();
             m_driverManager.destroy();
         } catch (Throwable e) {
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms]" + e.toString());
+            if (isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms]" + e.toString());
             }
         }
         try {
-            Utils.getModulShutdownMethods(OpenCms.getRegistry());
+            Utils.getModulShutdownMethods(getRegistry());
         } catch (Throwable e) {
             // log exception since we are about to shutdown anyway
-            if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] Module shutdown exception: " + e);
+            if (isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
+                log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[OpenCms] Module shutdown exception: " + e);
             }
         }
-        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-            OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] ... shutdown completed.");
+        if (isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
+            log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] ... shutdown completed.");
         }        
+        m_instance = null;
     }
      
     /**
