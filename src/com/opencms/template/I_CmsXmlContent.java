@@ -13,7 +13,7 @@ import org.w3c.dom.*;
  * Classes for each customized content type have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/01/13 17:50:48 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/08 18:18:50 $
  */
 public interface I_CmsXmlContent extends Cloneable { 
 
@@ -50,7 +50,7 @@ public interface I_CmsXmlContent extends Cloneable {
      * @param include Filename of the XML file to be included
      * @exception CmsException
      */    
-    public void readIncludeFile(String filename) throws CmsException;
+    public A_CmsXmlContent readIncludeFile(String filename) throws CmsException;
     
 	/**
 	 * Prints the XML parsed content of this template file

@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/04 09:51:05 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/08 18:18:50 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -294,7 +294,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param include Filename of the XML file to be included
      * @exception CmsException
      */    
-    public void readIncludeFile(String filename) throws CmsException {
+    public A_CmsXmlContent readIncludeFile(String filename) throws CmsException {
 
         A_CmsXmlContent include = null;
         if(A_OpenCms.isLogging()) {
@@ -311,6 +311,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         }
 
         readIncludeFile(include);
+        return include;
     }
 
     /**
@@ -1178,11 +1179,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      */
 
-    private void handleIncludeTag(Element n, Object callingObject, Object userObj) throws CmsException {
+    private Object handleIncludeTag(Element n, Object callingObject, Object userObj) throws CmsException {
         A_CmsXmlContent include = null;
         
         String tagcontent = getTagValue(n);
-        readIncludeFile(tagcontent);
+        include = readIncludeFile(tagcontent);
+        return include.getXmlDocument().getDocumentElement().getChildNodes();
     }
 
     /**
@@ -1340,7 +1342,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param n Node representing the actual position in the tree
      * @return next node
      */
-    private Node treeWalker(Node n) {
+    protected Node treeWalker(Node n) {
         Node nextnode = null;
         
         if(n.hasChildNodes()) {
@@ -1361,7 +1363,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param n Node representing the actual position in the tree
      * @return next node
      */
-    private Node treeWalkerWidth(Node n) {
+    protected Node treeWalkerWidth(Node n) {
         Node nextnode = null;
         Node parent = null;
         
@@ -1410,15 +1412,17 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 			throw(new NoSuchMethodException("method name is null or empty"));
 		}
 		
+        //TODO: remove method cache
+        
 		// build the array with all classes for the parameters
-		if(! m_processTagMethodcache.containsKey(methodName)) {
+		//if(! m_processTagMethodcache.containsKey(methodName)) {
 			// method not in cache
             if(C_DEBUG && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() +"User method " + methodName + " is not in cache... getting it.");
             }
             m_processTagMethodcache.put(methodName, 
                     callingObject.getClass().getMethod(methodName, C_PARAMTYPES_USER_METHODS));
-		}
+		//}
 		return (Method)m_processTagMethodcache.get(methodName);
 	}
 
