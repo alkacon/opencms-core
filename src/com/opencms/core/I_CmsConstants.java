@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/02/19 13:03:40 $
-* Version: $Revision: 1.132 $
+* Date   : $Date: 2001/02/19 16:20:55 $
+* Version: $Revision: 1.133 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.132 $ $Date: 2001/02/19 13:03:40 $
+ * @version $Revision: 1.133 $ $Date: 2001/02/19 16:20:55 $
  */
 public interface I_CmsConstants {
 
@@ -994,6 +994,11 @@ public interface I_CmsConstants {
      * A tag in the manifest-file.
      */
     public static String C_EXPORT_TAG_USERGROUPS = "usergroups";
+
+    /**
+     * A tag in the manifest-file.
+     */
+    public static String C_EXPORT_TAG_GROUPNAME = "groupname";
 
     /**
      * A string in the configuration-file.
