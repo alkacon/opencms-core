@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2004/02/10 13:23:50 $
- * Version: $Revision: 1.452 $
+ * Date   : $Date: 2004/02/11 11:07:28 $
+ * Version: $Revision: 1.453 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.452 $
+ * @version $Revision: 1.453 $
  */
 public class CmsObject {
 
@@ -3646,16 +3646,16 @@ public class CmsObject {
     }
 
     /**
-     * Sets the password for a user.
+     * Resets the password for a specified user.<p>
      *
-     * @param username the name of the user.
-     * @param oldPassword the old password.
-     * @param newPassword the new password.
-     *
-     * @throws CmsException if operation was not successful.
+     * @param username the name of the user
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     * @throws CmsException if the user data could not be read from the database
+     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
     public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.setPassword(username, oldPassword, newPassword);
+        m_driverManager.resetPassword(username, oldPassword, newPassword);
     }
 
     /**

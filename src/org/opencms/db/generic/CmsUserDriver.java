@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/01/22 18:06:18 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/02/11 11:07:28 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.51 $ $Date: 2004/01/22 18:06:18 $
+ * @version $Revision: 1.52 $ $Date: 2004/02/11 11:07:28 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -941,9 +941,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException e) {
-            // a.lucas: catch CmsException here and throw it again.
-            // Don't wrap another CmsException around it, since this may cause problems during login.
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, null, e.getType(), e, false);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
@@ -976,7 +974,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, null, e.getType(), e, false);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
@@ -1015,7 +1013,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
+            throw m_sqlManager.getCmsException(this, null, e.getType(), e, true);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {

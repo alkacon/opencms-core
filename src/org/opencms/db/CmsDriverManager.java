@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/02/10 13:23:50 $
- * Version: $Revision: 1.317 $
+ * Date   : $Date: 2004/02/11 11:07:27 $
+ * Version: $Revision: 1.318 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.w3c.dom.Document;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.317 $ $Date: 2004/02/10 13:23:50 $
+ * @version $Revision: 1.318 $ $Date: 2004/02/11 11:07:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7564,36 +7564,55 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Sets the password for a user.<p>
-     *
-     * Every user who knows the username and the password can do this.<p>
+     * Resets the password for a specified user.<p>
      *
      * @param username the name of the user
      * @param oldPassword the old password
      * @param newPassword the new password
-     *
-     * @throws CmsException Throws CmsException if operation was not succesfull.
+     * @throws CmsException if the user data could not be read from the database
+     * @throws CmsSecurityException if the specified username and old password could not be verified
      */
-    public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-
-        // check the password
-        validatePassword(newPassword);
-
-        // read the user in order to ensure that the old password is correct
+    public void resetPassword(String username, String oldPassword, String newPassword) throws CmsException {
+        boolean noSystemUser = false;
+        boolean noWebUser = false;
+        boolean unknownException = false;
         CmsUser user = null;
+
+        // read the user as a system to verify that the specified old password is correct
         try {
             user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) {
-            // user will be null
+        } catch (CmsException e) {
+            if (e.getType() == CmsException.C_NO_USER) {
+                noSystemUser = true;
+            } else {
+                unknownException = true;
+            }
         }
+        
+        // dito as a web user
         if (user == null) {
             try {
                 user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_WEBUSER);
             } catch (CmsException e) {
-                // TODO: Check what happens if this is caught
+                if (e.getType() == CmsException.C_NO_USER) {
+                    noWebUser = true;
+                } else {
+                    unknownException = true;
+                }
             }
         }
-        m_userDriver.writePassword(username, newPassword);
+        
+        if (noSystemUser && noWebUser) {
+            // the specified username + old password don't match
+            throw new CmsSecurityException("The specified username and old password could not be verified", CmsSecurityException.C_SECURITY_INVALID_PASSWORD);
+        } else if (unknownException) {
+            // we caught exceptions different from CmsException.C_NO_USER -> a general error?!
+            throw new CmsException("[" + getClass().getName() + "] Error resetting password for user '" + username + "'", CmsException.C_UNKNOWN_EXCEPTION);
+        } else if (user != null) {
+            // the specified old password was successful verified
+            validatePassword(newPassword);            
+            m_userDriver.writePassword(username, newPassword);
+        }
     }
 
     /**

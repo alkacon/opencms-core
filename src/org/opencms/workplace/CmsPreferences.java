@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/02/11 11:07:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,14 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.workplace.editor.CmsWorkplaceEditorConfiguration;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
@@ -38,13 +46,6 @@ import com.opencms.file.CmsUser;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.I_CmsWpConstants;
-
-import org.opencms.db.CmsUserSettings;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.i18n.CmsMessages;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.editor.CmsWorkplaceEditorConfiguration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1.12
  */
@@ -252,6 +253,13 @@ public class CmsPreferences extends CmsTabDialog {
         if (oldPwd != null && !"".equals(oldPwd.trim()) && newPwd != null && !"".equals(newPwd.trim())) {
             try {
                 getCms().setPassword(getSettings().getUser().getName(), oldPwd, newPwd);
+            } catch (CmsSecurityException e) {
+                // the specified username + old password do not match
+                setAction(ACTION_ERROR);
+                setParamErrorstack(e.getStackTraceAsString());
+                setParamMessage(key("error.message.chpwd"));
+                setParamReasonSuggestion(key("error.reason.chpwd4") + "<br>\n" + key("error.suggestion.chpwd3") + "\n");
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);                
             } catch (CmsException e) {
                 // failed setting the new password, show error dialog
                 setAction(ACTION_ERROR);
