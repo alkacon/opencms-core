@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/12 11:14:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/12 11:28:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,8 +44,9 @@ import org.apache.commons.collections.ExtendedProperties;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/02/12 11:14:41 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/12 11:28:20 $
  * @since 5.3
+ * @see OpenCms#getImportExportManager()
  */
 public class CmsImportExportManager extends Object {
 
