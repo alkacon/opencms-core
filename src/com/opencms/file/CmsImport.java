@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/16 13:01:52 $
-* Version: $Revision: 1.108 $
+* Date   : $Date: 2003/07/16 13:22:26 $
+* Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.108 $ $Date: 2003/07/16 13:01:52 $
+ * @version $Revision: 1.109 $ $Date: 2003/07/16 13:22:26 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -858,7 +858,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     mergePageFiles();
                     removeFolders();
                 } catch (CmsException e) {                  
-                    throw e;
+                    
                 }
             }
 
