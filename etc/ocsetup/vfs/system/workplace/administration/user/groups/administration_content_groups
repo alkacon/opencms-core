@@ -99,6 +99,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 ]]>
 </TEMPLATE>
 
+<!-- lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
 
 <TEMPLATE name="newgroup">
 <![CDATA[
@@ -113,6 +114,30 @@ function show_help()
 {
 	return '5_2_1_2_1.html';
 }
+
+var charList="0123456789-._~abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+function checkFormData()
+{
+	var result=true;
+	var at_pos, entry, strLength;
+	
+	entry = document.GROUPNEW.GROUPDESC.value;
+	strLength=entry.length;
+	
+	for (i=0; i < strLength; i++) 
+	{
+		if (charList.indexOf(entry.charAt(i))==-1)
+		{	
+			alert(']]><LABEL value="error.message.badcharacter" /><![CDATA[' + entry.charAt(i));
+			document.GROUPNEW.GROUPDESC.focus;
+			result= false;
+		}
+	}
+	//return result;
+	if(result==true)location.href='index.html'
+}		
+
 //-->
 </script>
 
@@ -213,7 +238,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="submit" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location.href='index.html'"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="javascript:checkFormData();"></td>
 					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id="CANCEL" name="CANCEL" onClick="location.href='index.html'"></td>
 				</tr>
 				</table>
