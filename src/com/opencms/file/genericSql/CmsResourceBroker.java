@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/09 14:41:52 $
-* Version: $Revision: 1.335 $
+* Date   : $Date: 2002/10/17 14:30:28 $
+* Version: $Revision: 1.336 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.335 $ $Date: 2002/10/09 14:41:52 $
+ * @version $Revision: 1.336 $ $Date: 2002/10/17 14:30:28 $
 
  *
  */
@@ -1831,6 +1831,93 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
                 CmsException.C_NO_ACCESS);
         }
     }
+    
+    /**
+     * Creates a new resource.
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can write the resource</li>
+     * <li>the resource is not locked by another user</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentGroup The group who requested this method.
+     * @param currentProject The current project of the user.
+     * @param folder The complete path to the folder in which the new resource will
+     * be created.
+     * @param newResourceName The name of the new resource (No pathinformation allowed).
+     * @param resourceType The resourcetype of the new resource
+     * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
+     * The keys for this Hashtable are the names for propertydefinitions, the values are
+     * the values for the propertyinfos.
+     * @param launcherType The launcher type of the new resource
+     * @param launcherClassname The name of the launcherclass of the new resource
+     * @param ownername The name of the owner of the new resource
+     * @param groupname The name of the group of the new resource
+     * @param accessFlags The accessFlags of the new resource
+     * @param filecontent The content of the resource if it is of type file 
+     * 
+     * @return CmsResource The created resource.
+     *
+     * @exception CmsException will be thrown for missing propertyinfos, for worng propertydefs
+     * or if the filename is not valid. The CmsException will also be thrown, if the
+     * user has not the rights for this resource.
+     */
+    public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
+                                       String folder, String newResourceName,
+                                       int resourceType, Hashtable propertyinfos, int launcherType,
+                                       String launcherClassname,
+                                       String ownername, String groupname, int accessFlags,
+                                       byte[] filecontent)
+        throws CmsException {
+
+        // checks, if the filename is valid, if not it throws a exception
+        validFilename(newResourceName);
+        String longResourcename = folder + newResourceName;
+        boolean isFolder = false;
+        if(resourceType == C_TYPE_FOLDER){
+        	longResourcename = folder + newResourceName + C_FOLDER_SEPERATOR;
+        	isFolder = true;
+        }
+
+        CmsFolder parentFolder = readFolder(currentUser,currentProject, folder);
+        if( accessCreate(currentUser, currentProject, (CmsResource)parentFolder) ) {
+			// try to read owner and group
+			CmsUser owner = this.readUser(currentUser, currentProject, ownername);
+			CmsGroup group = this.readGroup(currentUser, currentProject, groupname);
+			// create a new CmsResourceObject
+			if(filecontent == null){
+				filecontent = new byte[0];
+			}
+			CmsResource newResource = new CmsResource(C_UNKNOWN_ID,parentFolder.getResourceId(),
+			                        C_UNKNOWN_ID,longResourcename,
+                                    resourceType, 0,
+                                    owner.getId(), group.getId(), currentProject.getId(),
+                                    accessFlags, C_STATE_NEW, currentUser.getId(),
+                                    launcherType, launcherClassname,
+                                    System.currentTimeMillis(), System.currentTimeMillis(),
+                                    currentUser.getId(),filecontent.length, currentProject.getId());
+			
+            // write-acces  was granted - create the folder.
+            newResource = m_dbAccess.createResource(currentProject,onlineProject(currentUser, currentProject),newResource,filecontent, currentUser.getId(), isFolder);
+            
+            this.clearResourceCache(longResourcename);
+            // write metainfos for the folder
+            m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(),true);
+
+            // inform about the file-system-change
+            fileSystemChanged(true);
+            // return the folder
+            return newResource;
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + folder + newResourceName,
+                CmsException.C_NO_ACCESS);
+        }
+    }
+        
 /**
  * Creates a project.
  *
@@ -2049,7 +2136,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             return( m_dbAccess.createPropertydefinition(name,
                                                         getResourceType(currentUser,
                                                                         currentProject,
-                                                                        resourcetype)) );
+                                                                        resourcetype).getResourceType()) );
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + name,
                 CmsException.C_NO_ACCESS);
@@ -7348,6 +7435,85 @@ protected void validName(String name, boolean blank) throws CmsException {
                 CmsException.C_NO_ACCESS);
         }
     }
+    
+     /**
+     * Writes a resource and its properties to the Cms.<br>
+     *
+     * A resource can only be written to an offline project.<br>
+     * The state of the resource is set to  CHANGED (1). The file content of the file
+     * is either updated (if it is already existing in the offline project), or created
+     * in the offline project (if it is not available there).<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can write the resource</li>
+     * <li>the resource is locked by the callingUser</li>
+     * <li>the user is the owner of the resource or administrator<li>
+     * </ul>
+     *
+     * @param currentUser The current user.
+     * @param currentProject The project in which the resource will be used.
+     * @param resourcename The name of the resource to write.
+     * @param properties The properties of the resource.
+     * @param username The name of the new owner of the resource
+     * @param groupname The name of the new group of the resource
+     * @param accessFlags The new accessFlags of the resource
+     * @param resourceType The new type of the resource
+     * @param filecontent The new filecontent of the resource
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void writeResource(CmsUser currentUser, CmsProject currentProject,
+                               String resourcename, Hashtable properties,
+                               String username, String groupname, int accessFlags,
+                               int resourceType, byte[] filecontent)
+        throws CmsException {
+		CmsResource resource = readFileHeader(currentUser, currentProject, resourcename, true);
+        // has the user write-access?
+        if( accessWrite(currentUser, currentProject, resource) ) {
+
+            // write-access was granted
+			// set the owner, group, access flags and type of this resource
+			CmsUser owner = readUser(currentUser,currentProject, username);			
+			CmsGroup group = readGroup(currentUser, currentProject, groupname);
+			
+			// if owner, group, accessFlags or resourcetype must be changed,
+			// check if the current user is owner of the resource or administrator
+			if((resource.getOwnerId() != owner.getId()) ||
+			    	(resource.getGroupId() != group.getId()) ||
+			    	(resource.getAccessFlags() != accessFlags) ||
+			    	(resource.getType() != resourceType)){
+				if((resource.getOwnerId() == currentUser.getId()) ||
+              			isAdmin(currentUser, currentProject)){
+					resource.setUserId(owner.getId());
+					resource.setGroupId(group.getId());
+					resource.setAccessFlags(accessFlags);
+					resource.setType(resourceType);
+			    } else {
+			    	throw new CmsException("[" + this.getClass().getName() + "] change owner, group, access or type of " + resource.getAbsolutePath(),
+                	CmsException.C_NO_ACCESS);
+			    }
+			}	
+
+            if (resource.getState()==C_STATE_UNCHANGED) {
+                resource.setState(C_STATE_CHANGED);
+            }			
+            m_dbAccess.writeResource(currentProject, resource, filecontent, true, currentUser.getId());
+            // write the properties
+            m_dbAccess.writeProperties(properties, currentProject.getId(),resource, resource.getType(),true);
+            // update the cache
+            this.clearResourceCache(resource.getResourceName());
+            m_accessCache.clear();
+            // inform about the file-system-change
+            fileSystemChanged(false);
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + resource.getAbsolutePath(),
+                CmsException.C_NO_ACCESS);
+        }
+    }
+    
     /**
      * Writes the file extensions
      *
@@ -7517,7 +7683,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 CmsException.C_NO_ACCESS);
         }
 
-        m_dbAccess.writeProperty(property, currentProject.getId(),value, res,res.getType());
+        m_dbAccess.writeProperty(property, currentProject.getId(),value, res,res.getType(), false);
         m_propertyCache.clear();
         // set the file-state to changed
         if(res.isFile()){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/09/03 11:57:02 $
-* Version: $Revision: 1.256 $
+* Date   : $Date: 2002/10/17 14:28:19 $
+* Version: $Revision: 1.257 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.256 $ $Date: 2002/09/03 11:57:02 $ *
+ * @version $Revision: 1.257 $ $Date: 2002/10/17 14:28:19 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1324,6 +1324,134 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
+     * Creates a new resource from an given CmsResource object.
+     *
+     * @param project The project in which the resource will be used.
+     * @param onlineProject The online project of the OpenCms.
+     * @param newResource The resource to be written to the Cms.
+     * @param filecontent The filecontent if the resource is a file
+     * @param userId The ID of the current user.
+     * @param parentId The parentId of the resource.
+     *
+     * @return resource The created resource.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+     public CmsResource createResource(CmsProject project,
+                               CmsProject onlineProject,
+                               CmsResource newResource,
+                               byte[] filecontent,
+                               int userId, boolean isFolder)
+
+         throws CmsException {
+
+        String usedPool = null;
+        String usedStatement = null;
+        Connection con = null;
+        PreparedStatement statement = null;
+        // check the resource name
+        if (newResource.getResourceName().length() > C_MAX_LENGTH_RESOURCE_NAME){
+            throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
+        }
+        int state=0;
+        int modifiedBy = userId;
+        long dateModified = System.currentTimeMillis();
+        if (project.equals(onlineProject)) {
+            state= newResource.getState();
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+            modifiedBy = newResource.getResourceLastModifiedBy();
+            dateModified = newResource.getDateLastModified();
+        } else {
+            state=C_STATE_NEW;
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        // Test if the file is already there and marked as deleted.
+        // If so, delete it.
+        // If the file exists already and is not marked as deleted then throw exception
+        try {
+            CmsResource exResource = readResource(project,newResource.getResourceName());
+            throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+        } catch (CmsException e) {
+            // if the resource is marked as deleted remove it!
+            if (e.getType() == CmsException.C_RESOURCE_DELETED) {
+            	if(isFolder){
+            		removeFolder(project.getId(),(CmsFolder)newResource);
+            	} else {
+                	removeFile(project.getId(), newResource.getResourceName());
+            	}
+                state=C_STATE_CHANGED;
+                //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+            }
+            if (e.getType() == CmsException.C_FILE_EXISTS) {
+                throw e;
+            }
+        }
+       
+        int newFileId = -1;
+        int resourceId = nextId(m_cq.get("C_TABLE_RESOURCES"+usedStatement));
+        // now write the resource
+        try {
+            con = DriverManager.getConnection(usedPool);
+            if(!isFolder){
+            	// first write the file content
+            	newFileId = nextId(m_cq.get("C_TABLE_FILES"+usedStatement));
+            	try {
+                	createFileContent(newFileId, filecontent, 0, usedPool, usedStatement);
+            	} catch (CmsException se) {
+                	if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    	A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsDbAccess] " + se.getMessage());
+                	}
+            	}
+            }
+
+            // now write the file header
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_WRITE"+usedStatement));
+            statement.setInt(1, resourceId);
+            statement.setInt(2, newResource.getParentId());
+            statement.setString(3, newResource.getResourceName());
+            statement.setInt(4, newResource.getType());
+            statement.setInt(5, newResource.getFlags());
+            statement.setInt(6, newResource.getOwnerId());
+            statement.setInt(7, newResource.getGroupId());
+            statement.setInt(8, project.getId());
+            statement.setInt(9, newFileId);
+            statement.setInt(10, newResource.getAccessFlags());
+            statement.setInt(11, state);
+            statement.setInt(12, newResource.isLockedBy());
+            statement.setInt(13, newResource.getLauncherType());
+            statement.setString(14, newResource.getLauncherClassname());
+            statement.setTimestamp(15, new Timestamp(newResource.getDateCreated()));
+            statement.setTimestamp(16, new Timestamp(dateModified));
+            statement.setInt(17, newResource.getLength());
+            statement.setInt(18, modifiedBy);
+            statement.executeUpdate();
+            statement.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+         } finally {
+            // close all db-resources
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+
+        return readResource(project, newResource.getResourceName());
+      }
+
+    /**
      * Creates a new projectResource from an given CmsResource object.
      *
      * @param project The project in which the resource will be used.
@@ -1515,12 +1643,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @param name The name of the propertydefinitions to overwrite.
      * @param resourcetype The resource-type for the propertydefinitions.
-     * @param type The type of the propertydefinitions (normal|optional)
      *
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public CmsPropertydefinition createPropertydefinition(String name,
-                                                     I_CmsResourceType resourcetype)
+                                                          int resourcetype)
         throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
@@ -1531,7 +1658,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE"));
             statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF")));
             statement.setString(2,name);
-            statement.setInt(3,resourcetype.getResourceType());
+            statement.setInt(3,resourcetype);
             statement.executeUpdate();
             statement.close();
             con.close();
@@ -1540,7 +1667,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE_ONLINE"));
             statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF_ONLINE")));
             statement.setString(2,name);
-            statement.setInt(3,resourcetype.getResourceType());
+            statement.setInt(3,resourcetype);
             statement.executeUpdate();
             statement.close();
             con.close();
@@ -1549,7 +1676,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement = con.prepareStatement(m_cq.get("C_PROPERTYDEF_CREATE_BACKUP"));
             statement.setInt(1,nextId(m_cq.get("C_TABLE_PROPERTYDEF_BACKUP")));
             statement.setString(2,name);
-            statement.setInt(3,resourcetype.getResourceType());
+            statement.setInt(3,resourcetype);
             statement.executeUpdate();
             statement.close();
             con.close();
@@ -11402,6 +11529,96 @@ public CmsTask readTask(int id) throws CmsException {
         }
     }
 
+     /**
+     * Writes a folder to the Cms.<BR/>
+     *
+     * @param project The project in which the resource will be used.
+     * @param folder The folder to be written.
+     * @param changed Flag indicating if the file state must be set to changed.
+     * @param userId The user who has changed the resource
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful.
+     */
+    public void writeResource(CmsProject project, CmsResource resource, byte[] filecontent, boolean changed, int userId)
+        throws CmsException {
+
+        PreparedStatement statement = null;
+        Connection con = null;
+        String usedPool;
+        String usedStatement;
+        int modifiedBy = userId;
+        long dateModified = System.currentTimeMillis();
+        boolean isFolder = false;
+        if(resource.getType() == C_TYPE_FOLDER){
+        	isFolder = true;
+        }
+        if(filecontent == null){
+        	filecontent = new byte[0];
+        }
+        //int onlineProject = getOnlineProject(project.getId()).getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        if (project.getId() == onlineProject) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
+            modifiedBy = resource.getResourceLastModifiedBy();
+            dateModified = resource.getDateLastModified();
+        } else {
+            usedPool = m_poolName;
+            usedStatement = "";
+        }
+        try {
+            con = DriverManager.getConnection(usedPool);
+            // update resource in the database
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE"+usedStatement));
+            statement.setInt(1,resource.getType());
+            statement.setInt(2,resource.getFlags());
+            statement.setInt(3,resource.getOwnerId());
+            statement.setInt(4,resource.getGroupId());
+            statement.setInt(5,resource.getProjectId());
+            statement.setInt(6,resource.getAccessFlags());
+            int state=resource.getState();
+            if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
+                statement.setInt(7,state);
+            } else {
+                if (changed==true) {
+                    statement.setInt(7,C_STATE_CHANGED);
+                } else {
+                    statement.setInt(7,resource.getState());
+                }
+            }
+            statement.setInt(8,resource.isLockedBy());
+            statement.setInt(9,resource.getLauncherType());
+            statement.setString(10,resource.getLauncherClassname());
+            statement.setTimestamp(11,new Timestamp(dateModified));
+            statement.setInt(12,modifiedBy);
+            statement.setInt(13,filecontent.length);
+            statement.setInt(14,resource.getFileId());
+            statement.setInt(15,resource.getResourceId());
+            statement.executeUpdate();
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }finally {
+            if(statement != null) {
+                try {
+                    statement.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(con != null) {
+                try {
+                    con.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+        }
+        // write the filecontent if this is a file
+        if(!isFolder){
+        	this.writeFileContent(resource.getFileId(),filecontent, usedPool, usedStatement);
+        }   
+    }
+    
     /**
      * Writes an already existing group in the Cms.<BR/>
      *
@@ -11502,12 +11719,28 @@ public CmsTask readTask(int id) throws CmsException {
      * Writes a couple of Properties for a file or folder.
      *
      * @param propertyinfos A Hashtable with propertydefinition- property-pairs as strings.
-     * @param resourceId The id of the resource.
+     * @param projectId The id of the current project.
+     * @param resource The CmsResource object of the resource that gets the properties.
      * @param resourceType The Type of the resource.
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType)
+        throws CmsException {
+        this.writeProperties(propertyinfos, projectId, resource, resourceType, false);
+    }
+    /**
+     * Writes a couple of Properties for a file or folder.
+     *
+     * @param propertyinfos A Hashtable with propertydefinition- property-pairs as strings.
+     * @param projectId The id of the current project.
+     * @param resource The CmsResource object of the resource that gets the properties.
+     * @param resourceType The Type of the resource.
+     * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
 
         // get all metadefs
@@ -11517,7 +11750,7 @@ public CmsTask readTask(int id) throws CmsException {
 
         while(keys.hasMoreElements()) {
             key = (String) keys.nextElement();
-            writeProperty(key, projectId, (String) propertyinfos.get(key), resource, resourceType);
+            writeProperty(key, projectId, (String) propertyinfos.get(key), resource, resourceType, addDefinition);
         }
     }
 
@@ -11528,16 +11761,22 @@ public CmsTask readTask(int id) throws CmsException {
      * @param value The value for the property to be set.
      * @param resourceId The id of the resource.
      * @param resourceType The Type of the resource.
+     * @param addDefinition If <code>true</code> then the propertydefinition is added if it not exists
      *
      * @exception CmsException Throws CmsException if operation was not succesful
      */
-    public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType)
+    public void writeProperty(String meta, int projectId, String value, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
         CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
         if( propdef == null) {
             // there is no propertydefinition for with the overgiven name for the resource
-            throw new CmsException("[" + this.getClass().getName() + "] " + meta,
-                CmsException.C_NOT_FOUND);
+            // add this definition or throw an exception
+            if(addDefinition){
+            	this.createPropertydefinition(meta, resourceType);
+            } else {
+            	throw new CmsException("[" + this.getClass().getName() + "] " + meta,
+                	CmsException.C_NOT_FOUND);
+            }
         } else {
             String usedPool;
             String usedStatement;
