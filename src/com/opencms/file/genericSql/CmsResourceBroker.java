@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/04/24 07:15:50 $
-* Version: $Revision: 1.319 $
+* Date   : $Date: 2002/04/30 09:29:14 $
+* Version: $Revision: 1.320 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.319 $ $Date: 2002/04/24 07:15:50 $
+ * @version $Revision: 1.320 $ $Date: 2002/04/30 09:29:14 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7825,7 +7825,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
             CmsResource res = (CmsResource) e.nextElement();
-            if (!res.getAbsolutePath().startsWith(lastcheck)) {
+            if (!res.getAbsolutePath().equals(lastcheck)) {
                 if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
                     accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
                     accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
@@ -7835,5 +7835,78 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
         }
         return retValue;
+    }
+
+    /**
+     * Reads all files from the Cms, that are of the given type.<BR/>
+     *
+     * @param projectId A project id for reading online or offline resources
+     * @param resourcetype The type of the files.
+     *
+     * @return A Vector of files.
+     *
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */
+    public Vector readFilesByType(CmsUser currentUser, CmsProject currentProject, int projectId, int resourcetype) throws CmsException {
+        Vector resources = new Vector();
+        resources = m_dbAccess.readFilesByType(projectId, resourcetype);
+        Vector retValue = new Vector(resources.size());
+        //make sure that we have access to all these.
+        Enumeration e = resources.elements();
+        while (e.hasMoreElements()) {
+            CmsFile res = (CmsFile) e.nextElement();
+            if (accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE) ||
+                accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ + C_ACCESS_OWNER_VISIBLE) ||
+                accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ + C_ACCESS_GROUP_VISIBLE)) {
+                retValue.addElement(res);
+            }
+        }
+        return retValue;
+    }
+
+    /**
+     * Writes the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param linkchecktable The hashtable that contains the links that were not reachable
+     *
+     * @return the linkchecktable.
+     */
+    public void writeLinkCheckTable(CmsUser currentUser, CmsProject currentProject, Hashtable linkchecktable)
+        throws CmsException {
+        if(isAdmin(currentUser, currentProject)) {
+            if(m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_LINKCHECKTABLE) == null) {
+                m_dbAccess.addSystemProperty(C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
+            } else {
+                m_dbAccess.writeSystemProperty(C_SYSTEMPROPERTY_LINKCHECKTABLE, linkchecktable);
+            }
+        } else {
+            throw new CmsException("No access to write linkchecktable", CmsException.C_NO_ACCESS);
+        }
+    }
+
+    /**
+     * Gets the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return the linkchecktable.
+     */
+    public Hashtable readLinkCheckTable(CmsUser currentUser, CmsProject currentProject)
+        throws CmsException {
+        Hashtable retValue = (Hashtable) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_LINKCHECKTABLE);
+        if(retValue == null) {
+            return new Hashtable();
+        } else {
+            return retValue;
+        }
     }
 }
