@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/25 16:39:45 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/03/02 21:52:34 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,14 +57,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.ExtendedProperties;
-import org.apache.commons.collections.LRUMap;
+import org.apache.commons.collections.map.LRUMap;
 
 /**
  * Provides the functionaility to export resources from the OpenCms VFS
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
