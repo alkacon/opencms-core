@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/05/07 08:56:25 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/05/07 14:46:58 $
+* Version: $Revision: 1.20 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import com.opencms.template.cache.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2001/05/07 08:56:25 $
+ * @version $Revision: 1.20 $ $Date: 2001/05/07 14:46:58 $
  */
 public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
 
@@ -54,6 +54,25 @@ public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate 
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
     public CmsDumpTemplate() {
+
+    }
+
+    /**
+     * gets the caching information from the current template class.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+     */
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+
+        // First build our own cache directives.
+        CmsCacheDirectives result = new CmsCacheDirectives(true);
+        result.setCacheUri(true);
+        return result;
 
     }
 

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/07 08:56:25 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2001/05/07 14:46:58 $
+* Version: $Revision: 1.53 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2001/05/07 08:56:25 $
+ * @version $Revision: 1.53 $ $Date: 2001/05/07 14:46:58 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -761,6 +761,27 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         }
         return result;
 
+    }
+
+    /**
+     * gets the caching information from the current template class.
+     *
+     * @param cms CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+     */
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+
+        // First build our own cache directives.
+        CmsCacheDirectives result = new CmsCacheDirectives(true);
+        result.setCacheUri(true);
+        Vector para = new Vector();
+        para.add("cmsframe");
+        result.setCacheParameters(para);
+        return result;
     }
 
     /**
