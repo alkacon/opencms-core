@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/11/16 15:36:48 $
-* Version: $Revision: 1.228 $
+* Date   : $Date: 2001/12/05 10:45:57 $
+* Version: $Revision: 1.229 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.228 $ $Date: 2001/11/16 15:36:48 $ *
+ * @version $Revision: 1.229 $ $Date: 2001/12/05 10:45:57 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -3314,7 +3314,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.setString(3, propertyDefinition);
             statement.setInt(4, resourceType);
             res = statement.executeQuery();
-
+            String lastResourcename = "";
             // store the result into the vector
             while (res.next()) {
                 int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
@@ -3340,7 +3340,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                 groupId,projectID,accessFlags,state,lockedBy,
                                 launcherType,launcherClass,created,modified,modifiedBy,
                                 resSize,lockedInProject);
-                resources.addElement(resResource);
+                if (!resName.equalsIgnoreCase(lastResourcename)){
+                    resources.addElement(resResource);
+                }
+                lastResourcename = resName;
             }
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
