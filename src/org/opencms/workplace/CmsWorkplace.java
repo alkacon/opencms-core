@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/08 13:15:30 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1
  */
@@ -96,6 +96,8 @@ public abstract class CmsWorkplace {
     protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_PATH_DIALOG_COMMON + "confirmation.html";
     /** Constant for the JSP common report page */
     protected static final String C_FILE_REPORT_OUTPUT = C_PATH_DIALOG_COMMON + "report.html";
+    /** Constant for the JSP common close dialog page */
+    protected static final String C_FILE_DIALOG_CLOSE = C_PATH_DIALOG_COMMON + "closedialog.html";
     
     private static String m_file_explorer_filelist; 
     
@@ -104,6 +106,9 @@ public abstract class CmsWorkplace {
     private HttpSession m_session;
     private CmsWorkplaceSettings m_settings;
     private String m_resourceUri = null;
+    
+    /** Helper variable to store the id of the current project */
+    private int m_currentProjectId = -1;
     
     /** Helper variable to deliver the html start part */
     public static final int HTML_START = 0;
@@ -1001,7 +1006,41 @@ public abstract class CmsWorkplace {
     }
     
     /**
-     * Generates a button fot the OpenCms workplace.<p>
+     * Helper method to change back from the temporary project to the current project.<p>
+     * 
+     * @throws CmsException if switching back fails
+     */
+    protected void switchToCurrentProject() throws CmsException {
+        if (m_currentProjectId != -1) {
+            // switch back to the current users project
+            getCms().getRequestContext().setCurrentProject(m_currentProjectId); 
+        }
+    }
+    
+    /**
+     * Helper method to change the current project to the temporary file project.<p>
+     * 
+     * The id of the old project is stored in a member variable to switch back.<p>
+     * 
+     * @return the id of the tempfileproject
+     * @throws CmsException if getting the tempfileproject id fails
+     */
+    protected int switchToTempProject() throws CmsException {
+        // store the current project id in member variable
+        m_currentProjectId = getSettings().getProject();
+        // get the temporary file project id
+        int tempProject = 0;
+        try {
+            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
+        } catch (Exception e) {
+            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
+        }
+        getCms().getRequestContext().setCurrentProject(tempProject);
+        return tempProject;
+    }
+    
+    /**
+     * Generates a button for the OpenCms workplace.<p>
      * 
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
@@ -1009,9 +1048,25 @@ public abstract class CmsWorkplace {
      * @param label the label for the text of the button 
      * @param type 0: image only (default), 1: image and text, 2: text only
      * 
-     * @return a button fot the OpenCms workplace
+     * @return a button for the OpenCms workplace
      */
     public String button(String href, String target, String image, String label, int type) {
+        return button(href, target, image, label, type, getSkinUri() +  "buttons/");
+    }
+    
+    /**
+     * Generates a button for the OpenCms workplace.<p>
+     * 
+     * @param href the href link for the button, if none is given the button will be disabled
+     * @param target the href link target for the button, if none is given the target will be same window
+     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param label the label for the text of the button 
+     * @param type 0: image only (default), 1: image and text, 2: text only
+     * @param imagePath the path to the image 
+     * 
+     * @return a button for the OpenCms workplace
+     */
+    public String button(String href, String target, String image, String label, int type, String imagePath) {
         StringBuffer result = new StringBuffer(512); 
     
         result.append("<td>");      
@@ -1037,8 +1092,7 @@ public abstract class CmsWorkplace {
                 }
                 result.append("><span unselectable=\"on\" class=\"combobutton\" ");
                 result.append("style=\"background-image: url('");
-                result.append(getSkinUri());
-                result.append("buttons/");
+                result.append(imagePath);
                 result.append(image);
                 result.append(".gif");
                 result.append("');\">");
@@ -1098,8 +1152,7 @@ public abstract class CmsWorkplace {
                     result.append("class=\"disabled\"");
                 }
                 result.append("><img class=\"button\" src=\"");
-                result.append(getSkinUri());
-                result.append("buttons/");
+                result.append(imagePath);
                 result.append(image);
                 result.append(".gif");
                 result.append("\">");
@@ -1196,11 +1249,41 @@ public abstract class CmsWorkplace {
      * @return a button bar html start / end segment 
      */
     public String buttonBar(int segment) {
+        return buttonBar(segment, null);
+    }
+    
+    /**
+     * Returns the html for a button bar.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param attributes optional attributes for the table tag
+     * 
+     * @return a button bar html start / end segment 
+     */
+    public String buttonBar(int segment, String attributes) {
         if (segment == HTML_START) {
-            return "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr>\n";
+            String result = "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"";
+            if (attributes != null) {
+                result += " " + attributes;
+            }
+            return result + "><tr>\n";
         } else {
             return "</tr></table>";
         }
+    }
+    
+    /**
+     * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
+     * 
+     * @param width the width of the invisible spacer
+     * @return the html for the invisible spacer
+     */
+    public String buttonBarSpacer(int width) {
+        StringBuffer result = new StringBuffer(128);
+        result.append("<td><span class=\"norm\"><span unselectable=\"on\" class=\"txtbutton\" style=\"width: "); 
+        result.append(width);
+        result.append("px;\"></span></span></td>\n");
+        return result.toString();
     }
     
 }

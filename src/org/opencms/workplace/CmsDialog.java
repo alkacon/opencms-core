@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,19 +34,21 @@ package org.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -110,6 +112,10 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_THREAD = "thread";
     /** Request parameter name for the lock */
     public static final String PARAM_LOCK = "lock";
+    /** Request parameter name for the ok link */
+    public static final String PARAM_OKLINK = "oklink";
+    /** Request parameter name for the ok javascript functions */
+    public static final String PARAM_OKFUNCTIONS = "okfunctions";
 
     private String m_paramAction;
     private String m_paramResource;
@@ -117,6 +123,8 @@ public class CmsDialog extends CmsWorkplace {
     private String m_paramErrorstack;
     private String m_paramMessage;
     private String m_paramTitle;
+    private String m_paramOklink;
+    private String m_paramOkfunctions;
 
     private int m_action;  
     
@@ -164,6 +172,7 @@ public class CmsDialog extends CmsWorkplace {
         if (wp == null) {
             // ensure that we don't get null pointers if the page is directly called
             wp = new CmsDialog(new CmsJspActionElement(context, req, res));
+            wp.fillParamValues(req);
         }           
         return wp;
     }    
@@ -363,6 +372,54 @@ public class CmsDialog extends CmsWorkplace {
     public void setParamErrorstack(String value) {
         m_paramErrorstack = value;
     }
+    
+    /**
+     * Returns the oklink parameter.<p>
+     * 
+     * Use this parameter to define the target of the "ok" button when closing the dialog.<p>
+     * 
+     * @return the oklink parameter
+     */
+    public String getParamOkLink() {
+        if (m_paramOklink != null && !"null".equals(m_paramOklink)) {
+            return m_paramOklink;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the oklink parameter.<p>
+     * 
+     * @param value the oklink parameter value
+     */
+    public void setParamOkLink(String value) {
+        m_paramOklink = value;
+    }
+    
+    /**
+     * Returns the okfunctions parameter.<p>
+     * 
+     * Use this parameter to define javascript functions to execute when closing the dialog.<p>
+     * 
+     * @return the okfunctions parameter
+     */
+    public String getParamOkFunctions() {
+        if (m_paramOkfunctions != null && !"null".equals(m_paramOkfunctions)) {
+            return m_paramOkfunctions;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Sets the okfunctions parameter.<p>
+     * 
+     * @param value the okfunctions parameter value
+     */
+    public void setParamOkFunctions(String value) {
+        m_paramOkfunctions = value;
+    }
 
     /**
      * Returns the http URI of the current dialog, to be used
@@ -375,6 +432,30 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
+     * Used to close the current JSP dialog.<p>
+     * 
+     * The closing procedure of the dialog depends on the presence of the two
+     * request parameters "oklink" and "okfunctions", if not present, the explorer
+     * file list is included when pressing the "ok" button.<p>
+     * 
+     * <b>Important:</b> Be sure to store an instance of your dialog class in the session!<p>
+     * 
+     * @throws JspException if including an element fails
+     */
+    public void closeDialog() throws JspException {
+        if (getParamOkLink() == null && getParamOkFunctions() == null) {
+            getJsp().include(C_FILE_EXPLORER_FILELIST);
+        } else {
+            if (getParamOkFunctions() == null) {
+                getJsp().include(getParamOkLink());
+            } else {
+                getJsp().include(C_FILE_DIALOG_CLOSE);
+            }
+            
+        }
+    }
+    
+    /**
      * Returns the default action for a "cancel" button.<p>
      * 
      * Always use this value, do not write anything directly in the html page.<p>
@@ -383,9 +464,33 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String buttonActionCancel() {
         if (getSettings().isViewAdministration()) {
+            // in administration view, link to specified back link
             return "onclick=\"location.href='"+ getJsp().link(getAdministrationBackLink()) + "';\"";
+        } else {
+            // in explorer view, check presence of link request parameters
+            if (getParamOkLink() == null && getParamOkFunctions() == null) {
+                // no link parameters present, link to explorer file list 
+                return "onclick=\"location.href='" + getExplorerFileListFullUri() + "';\"";
+            } else {
+                // at least one link parameter is present, link to common close dialog page
+                String link = getJsp().link(C_FILE_DIALOG_CLOSE);
+                boolean firstParam = true;
+                // append the parameters to the link
+                if (getParamOkLink() != null) {
+                    link += "?" + PARAM_OKLINK + "=" + Encoder.encode(getParamOkLink());
+                    firstParam = false;
+                }
+                if (getParamOkFunctions() != null) {
+                    if (firstParam) {
+                        link += "?";
+                    } else {
+                        link += "&";
+                    }
+                    link += PARAM_OKFUNCTIONS + "=" + Encoder.encode(getParamOkFunctions());
+                }
+                return "onclick=\"location.href='" + link + "';\"";
+            }
         }
-        return "onClick=\"location.href='" + getExplorerFileListFullUri() + "';\"";
     }
     
     /**
@@ -900,6 +1005,18 @@ public class CmsDialog extends CmsWorkplace {
             return "+++ file parameter not found +++";
         }
     }
+    
+    /**
+     * Builds the start html of the page, including setting of DOCTYPE and 
+     * inserting a header with the content-type.<p>
+     * 
+     * @param helpUrl the key for the online help to include on the page
+     * @param title the title for the page
+     * @return the start html of the page
+     */
+    public String htmlStart(String helpUrl, String title) {
+        return pageHtml(HTML_START, helpUrl, title);
+    }
 
     /**
      * Builds the start html of the page, including setting of DOCTYPE and 
@@ -918,14 +1035,12 @@ public class CmsDialog extends CmsWorkplace {
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
      * 
-     * This overloads the default method of the parent class.<p>
-     * 
      * @return the start html of the page
      */
     public String htmlStart() {
         return pageHtml(HTML_START, null);
     }
-
+    
     /**
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
@@ -937,8 +1052,23 @@ public class CmsDialog extends CmsWorkplace {
      * @return the start html of the page
      */
     public String pageHtml(int segment, String helpUrl) {        
+        return pageHtml(segment, helpUrl, null);
+    }
+
+    /**
+     * Builds the start html of the page, including setting of DOCTYPE and 
+     * inserting a header with the content-type.<p>
+     * 
+     * This overloads the default method of the parent class.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param helpUrl the url for the online help to include on the page
+     * @param title the title for the page
+     * @return the start html of the page
+     */
+    public String pageHtml(int segment, String helpUrl, String title) {        
         if (segment == HTML_START) {
-            StringBuffer result = new StringBuffer(super.pageHtml(segment, null));
+            StringBuffer result = new StringBuffer(super.pageHtml(segment, title));
             if (getSettings().isViewExplorer()) {
                 result.append("<script type=\"text/javascript\" src=\"");
                 result.append(getSkinUri());

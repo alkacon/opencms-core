@@ -4,7 +4,6 @@
 <title>(<%= wp.getSettings().getUser().getName() %>) - <%= wp.getParamResource() %></title>
 
 <link rel=stylesheet type="text/css" href="<%= wp.getEditorResourceUri() %>format.css">
-<script type="text/javascript" src="<%= cms.link("../../../scripts/opencms.js") %>"></script>
 <script type="text/javascript">
 
 	// which button is clicked
@@ -41,11 +40,10 @@
 			document.EDITOR.submit();
 			break;
 		case 6:
-			// New Body;
-			doSubmit();
-			document.EDITOR.action.value = "newbody";
-			document.EDITOR.target = "_self";
-			document.EDITOR.submit();
+			// open elements window;
+			dialogWindow = window.open("about:blank","DIALOG","width=380,height=420,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+			document.ELEMENTS.submit();
+			window.DIALOG.focus();
 			break;
 		case 7:
 			// Change Body;
@@ -53,6 +51,12 @@
 			document.EDITOR.action.value = "changebody";
 			document.EDITOR.target = "_self";
 			document.EDITOR.submit();
+			break;
+		case 8:
+			// open properties window;
+			dialogWindow = window.open("about:blank","DIALOG","width=600,height=450,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
+			document.PROPERTIES.submit();
+			window.DIALOG.focus();
 			break;
 		}
 	}
@@ -62,8 +66,8 @@
 	var USE_FONTFACE = <%= options.showElement("font.face") %>;
 	var USE_FONTSIZE = <%= options.showElement("font.size") %>; 
         
-        <!-- determines if the simple editor should be loaded -->
-        var loadSimple = false;
+    <!-- determines if the simple editor should be loaded -->
+    var loadSimple = false;
 	
 	<!-- OpenCms context prefix, required for page editor because no link replacement is done here -->
 	var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getOpenCmsContext() %>";
@@ -195,6 +199,7 @@ End Sub
 			doEdit(1);
 		}
 	}
+	
 	function confirmExit()
 	{
 		if (EDITOR.edit1.IsModified(2)) {
@@ -203,6 +208,33 @@ End Sub
 			}
 		} else {
 				doEdit(1);
+		}
+	}
+	
+	function deleteEditorContent(bodyName, language) {
+		if (bodyName == document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+			if (document.EDITOR.EDIT_HTML) {
+				document.EDITOR.EDIT_HTML.DocumentHTML = "";
+			} else {
+				if (isLedit) {
+					document.EDITOR.edit1.Text = "";
+				} else {
+        			document.EDITOR.edit1.value = "";
+				}
+			}
+		}
+	}
+	
+	function changeBody(bodyName, language) {
+		if (bodyName != document.EDITOR.bodyname.value && language == document.EDITOR.bodylanguage.value) {
+			document.EDITOR.bodyname.value = bodyName;
+			doTemplSubmit(7);	
+		}
+	}
+	
+	function closeDialog() {
+		if (dialogWindow) {
+			window.dialogWindow.close();
 		}
 	}
 //-->
@@ -227,7 +259,7 @@ End Sub
 
 </head>
 
-<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText(); initStyles();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
+<body background="<%= wp.getPicsUri() %>bg_grau2.gif" bgproperties="fixed" scroll="no" onload="setText(); initStyles();" onunload="closeDialog();" marginwidth="0" marginheight="0" leftmargin="0" topmargin="0">
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%" class="toolbar">
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
 	<tr>
@@ -279,7 +311,9 @@ End Sub
 							if (options.showElement("selector.body") && options.showElement("option.newbody")) {%>
 								<td><input type="text" name="newbodyname" class="textfeld" size="8" length="255"></td>
 								<td><img src="<%= wp.getPicsUri() %>empty.gif" width="5" height="1"></td>
-								<td width="26" align="center" class="tbl"><a href="javascript:doTemplSubmit(6);" onMouseOver="bu06.className='over';" onMouseOut="bu06.className='norm';" onClick="bu06.className='push';"><img name="bu06" src="<%= wp.getPicsUri() %>bu_newbody.gif" width="20" height="20" alt="<%= wp.key("button.newbody") %>"></td><%
+								<%= wp.button("javascript:doTemplSubmit(6);", null, "elements", "editor.dialog.elements.button", 0, wp.getSkinUri() + "editors/buttons/") %>
+								<%= wp.button("javascript:doTemplSubmit(8);", null, "properties", "editor.dialog.properties.button", 0, wp.getSkinUri() + "editors/buttons/") %>
+								<%
 							}					
 						
 						%>						
@@ -318,6 +352,22 @@ End Sub
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
 </form>
+
+
+<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
+<input type="hidden" name="tempfile" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
+<input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
+<input type="hidden" name="pagetemplate" value="<%= wp.getParamPagetemplate() %>">
+<input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
+</form>
+
+<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOG" method="post">
+<input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="okfunctions" value="window.close();">
+<input type="hidden" name="usetempfileproject" value="true">
+</form>
+
 </table>
 
 <script type="text/javascript">

@@ -1,0 +1,21 @@
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%
+	
+	// get workplace class from request attribute
+	CmsDialog wp =  CmsDialog.initCmsDialog(pageContext, request, response);
+	
+	boolean link = (wp.getParamOkLink() != null);
+
+%><%= wp.htmlStart() %>
+<script type="text/javascript">
+<!--
+<%= wp.getParamOkFunctions() %>
+<%
+	if (link) {
+		%>this.location.href = "<%= wp.getJsp().link(wp.getParamOkLink()) %>";<%
+	}
+%>
+//-->
+</script>
+<body>
+</body>
+<%= wp.htmlEnd() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -103,6 +104,7 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html"; 
 
     private String m_paramNewproperty;
+    private String m_paramUseTempfileProject;
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -135,6 +137,15 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, com.opencms.flex.jsp.CmsJspActionElement)
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
+        try {
+            CmsResource res = jsp.getCmsObject().readFileHeader(resource);
+            if (res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                return C_PATH_WORKPLACE + "editors/dialogs/property.html";
+            }
+        } catch (CmsException e) {
+            // ignore this exception
+            System.err.println(e.getMessage());
+        }
         return URI_PROPERTY_DIALOG;
     }
     
@@ -165,6 +176,28 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      */
     public void setParamNewproperty(String value) {
         m_paramNewproperty = value;
+    }
+    
+    /**
+     * Returns the value of the usetempfileproject parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The usetempfileproject parameter stores if the file resides 
+     * in the temp file project.<p>
+     * 
+     * @return the value of the usetempfileproject parameter
+     */    
+    public String getParamUsetempfileproject() {
+        return m_paramUseTempfileProject;
+    }
+
+    /**
+     * Sets the value of the usetempfileproject parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamUsetempfileproject(String value) {
+        m_paramUseTempfileProject = value;
     }
     
     /**
@@ -429,10 +462,13 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         if (!lock.isNullLock()) {
             // determine if resource is editable...
             if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
-                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())
-                    && getCms().getRequestContext().currentProject().getId() == lock.getProjectId()) {
-                // lock is not shared and belongs to the current user in the current project, so properties are editable
-                return true;
+                    && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                // lock is not shared and belongs to the current user
+                if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId() 
+                        || "true".equals(getParamUsetempfileproject())) {
+                    // resource is locked in the current project or the tempfileproject is used
+                    return true;
+                }
             }
         } else if (getSettings().getAutoLockResources()) {
             return true;
@@ -474,14 +510,24 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      * @throws CmsException if creation is not successful
      */
     private boolean performDefineOperation() throws CmsException {
-        CmsResource res = getCms().readFileHeader(getParamResource());
-        String newProperty = getParamNewproperty();
-        if (newProperty != null && !"".equals(newProperty.trim())) {
-            getCms().createPropertydefinition(newProperty, res.getType());
-            return true;
-        } else {
-            throw new CmsException("You entered an invalid property name", CmsException.C_BAD_NAME); 
-        } 
+        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        try {
+            if (useTempfileProject) {
+                switchToTempProject();
+            }
+            CmsResource res = getCms().readFileHeader(getParamResource());
+            String newProperty = getParamNewproperty();
+            if (newProperty != null && !"".equals(newProperty.trim())) {
+                getCms().createPropertydefinition(newProperty, res.getType());
+                return true;
+            } else {
+                throw new CmsException("You entered an invalid property name", CmsException.C_BAD_NAME); 
+            } 
+        } finally {
+            if (useTempfileProject) {
+                switchToCurrentProject();
+            }
+        }
     }
     
     /**
@@ -518,45 +564,55 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      */
     private boolean performEditOperation(HttpServletRequest request) throws CmsException {
         Vector propertyDef = getPropertyDefinitions();
-        Map activeProperties = getCms().readProperties(getParamResource());
-        boolean lockChecked = false;
-        
-        // check all property definitions of the resource for new values
-        for (int i=0; i<propertyDef.size(); i++) {
-            CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
-            String propName = Encoder.escapeXml(curProperty.getName());
-            String paramValue = request.getParameter(PREFIX_VALUE+propName);
-                        
-            // check if there is a parameter value for the current property
-            boolean emptyParam = true;
-            if (paramValue != null) {
-                if (!"".equals(paramValue.trim())) {
-                    emptyParam = false;
-                }
+        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        try {
+            if (useTempfileProject) {
+                switchToTempProject();
             }
-            if (emptyParam) {
-                // parameter is empty, check if the property has to be deleted
-                if (activeProperties.containsKey(curProperty.getName())) {
-                    if (!lockChecked) {
-                        // lock resource if autolock is enabled
-                        checkLock(getParamResource());
-                        lockChecked = true;
+            Map activeProperties = getCms().readProperties(getParamResource());
+            boolean lockChecked = false;
+            
+            // check all property definitions of the resource for new values
+            for (int i=0; i<propertyDef.size(); i++) {
+                CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
+                String propName = Encoder.escapeXml(curProperty.getName());
+                String paramValue = request.getParameter(PREFIX_VALUE+propName);
+                            
+                // check if there is a parameter value for the current property
+                boolean emptyParam = true;
+                if (paramValue != null) {
+                    if (!"".equals(paramValue.trim())) {
+                        emptyParam = false;
                     }
-                    getCms().deleteProperty(getParamResource(), curProperty.getName());
                 }
-            } else {
-                // parameter is not empty, check if the value has changed
-                String oldValue = request.getParameter(PREFIX_HIDDEN+propName);
-                if (!paramValue.equals(oldValue)) {
-                    if (!lockChecked) {
-                        // lock resource if autolock is enabled
-                        checkLock(getParamResource());
-                        lockChecked = true;
+                if (emptyParam) {
+                    // parameter is empty, check if the property has to be deleted
+                    if (activeProperties.containsKey(curProperty.getName())) {
+                        if (!lockChecked) {
+                            // lock resource if autolock is enabled
+                            checkLock(getParamResource());
+                            lockChecked = true;
+                        }
+                        getCms().deleteProperty(getParamResource(), curProperty.getName());
                     }
-                    getCms().writeProperty(getParamResource(), curProperty.getName(), paramValue);
+                } else {
+                    // parameter is not empty, check if the value has changed
+                    String oldValue = request.getParameter(PREFIX_HIDDEN+propName);
+                    if (!paramValue.equals(oldValue)) {
+                        if (!lockChecked) {
+                            // lock resource if autolock is enabled
+                            checkLock(getParamResource());
+                            lockChecked = true;
+                        }
+                        getCms().writeProperty(getParamResource(), curProperty.getName(), paramValue);
+                    }
                 }
+            }  
+        } finally {
+            if (useTempfileProject) {
+                switchToCurrentProject();
             }
-        }     
+        }
         return true;
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -120,9 +120,6 @@ public abstract class CmsEditor extends CmsDialog {
     
     /** Helper variable to store the uri to the editors pictures */
     private String m_picsUri = null;
-    
-    /** Helper variable to store the id of the current project */
-    private int m_currentProjectId = -1;
     
     /**
      * Public constructor.<p>
@@ -265,6 +262,21 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public final void setParamNoactivex(String noActiveX) {
         m_paramNoActiveX = noActiveX;
+    }
+    
+    /**
+     * Generates a button for the OpenCms editor.<p>
+     * 
+     * @param href the href link for the button, if none is given the button will be disabled
+     * @param target the href link target for the button, if none is given the target will be same window
+     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param label the label for the text of the button 
+     * @param type 0: image only (default), 1: image and text, 2: text only
+     * 
+     * @return a button for the OpenCms editor
+     */
+    public String button(String href, String target, String image, String label, int type) {
+        return button(href, target, image, label, type, getPicsUri());    
     }
     
     /**
@@ -480,40 +492,6 @@ public abstract class CmsEditor extends CmsDialog {
         }
         // include the common error dialog
         getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-    }
-    
-    /**
-     * Helper method to change back from the temporary project to the current project.<p>
-     * 
-     * @throws CmsException if switching back fails
-     */
-    protected void switchToCurrentProject() throws CmsException {
-        if (m_currentProjectId != -1) {
-            // switch back to the current users project
-            getCms().getRequestContext().setCurrentProject(m_currentProjectId); 
-        }
-    }
-    
-    /**
-     * Helper method to change the current project to the temporary file project.<p>
-     * 
-     * The id of the old project is stored in a member variable to switch back.<p>
-     * 
-     * @return the id of the tempfileproject
-     * @throws CmsException if getting the tempfileproject id fails
-     */
-    protected int switchToTempProject() throws CmsException {
-        // store the current project id in member variable
-        m_currentProjectId = getSettings().getProject();
-        // get the temporary file project id
-        int tempProject = 0;
-        try {
-            tempProject = Integer.parseInt(getCms().getRegistry().getSystemValue("tempfileproject"));
-        } catch (Exception e) {
-            throw new CmsException("Can not read projectId of tempfileproject for creating temporary file for editing! "+e.toString());
-        }
-        getCms().getRequestContext().setCurrentProject(tempProject);
-        return tempProject;
     }
         
     /**

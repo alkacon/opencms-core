@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/01/06 12:26:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1.10
  */
@@ -58,8 +58,6 @@ public class CmsReport extends CmsDialog {
     
     /** The Thread to display in this report */
     private CmsUUID m_paramThread;
-    
-    private String m_paramOkLink;
     
     /**
      * Public constructor.<p>
@@ -106,30 +104,6 @@ public class CmsReport extends CmsDialog {
         }           
         return wp;
     } 
-    
-    /**
-     * Returns the oklink parameter.<p>
-     * 
-     * Use this parameter to define the target of the "ok" button, e.g. "onclick=...".<p>
-     * 
-     * @return the oklink parameter
-     */
-    public String getParamOkLink() {
-        if (m_paramOkLink != null && !"null".equals(m_paramOkLink)) {
-            return m_paramOkLink;
-        } else {
-            return null;
-        }
-    }
-    
-    /**
-     * Sets the oklink parameter.<p>
-     * 
-     * @param value the oklink parameter value
-     */
-    public void setParamOkLink(String value) {
-        m_paramOkLink = value;
-    }
    
     /**
      * Returns the Thread id to display in this report.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.util.Encoder;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.main.OpenCms;
@@ -51,7 +52,7 @@ import org.opencms.main.OpenCms;
  * @see org.opencms.workplace.I_CmsDialogHandler
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -83,7 +84,7 @@ public class CmsDialogSelector {
     public CmsDialogSelector(CmsJspActionElement jsp, String handler) {      
         setJsp(jsp);
         setHandler(handler);
-        setParamResource(jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE));         
+        setParamResource(Encoder.decode(jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE)));         
     }
     
     

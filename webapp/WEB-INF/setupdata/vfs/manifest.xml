@@ -6202,6 +6202,33 @@
             <accesscontrol/>
         </file>
         <file>
+		<source>system/workplace/jsp/dialogs/common/closedialog.html</source>
+		<destination>system/workplace/jsp/dialogs/common/closedialog.html</destination>
+		<type>jsp</type>
+		<uuidresource>3d11fbba-4518-11d8-b1fd-8e9b78ad363a</uuidresource>
+		<uuidcontent>3d11fbbb-4518-11d8-b1fd-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1073924559000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073923141000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Close a dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
+        <file>
             <source>system/workplace/jsp/dialogs/common/confirmation.html</source>
             <destination>system/workplace/jsp/dialogs/common/confirmation.html</destination>
             <type>jsp</type>
@@ -6459,6 +6486,78 @@
 		</properties>
 		<accesscontrol/>
 	</file>
+	<file>
+		<destination>system/workplace/jsp/editors/dialogs</destination>
+		<type>folder</type>
+		<uuidresource>5488282c-44dd-11d8-81e1-8e9b78ad363a</uuidresource>
+		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+		<datelastmodified>1073897854000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073897840000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Editor dialogs]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/dialogs/elements.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/elements.html</destination>
+		<type>jsp</type>
+		<uuidresource>6d32700e-44de-11d8-81e1-8e9b78ad363a</uuidresource>
+		<uuidcontent>6d32700f-44de-11d8-81e1-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1073993724000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073898311000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Element activation dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/jsp/editors/dialogs/property.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/property.html</destination>
+		<type>jsp</type>
+		<uuidresource>9b889f5a-45c7-11d8-b877-8e9b78ad363a</uuidresource>
+		<uuidcontent>9b889f5b-45c7-11d8-b877-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1074008668000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073998461000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Page properties dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
 	<file>
 		<destination>system/workplace/jsp/editors/ledit</destination>
 		<type>folder</type>
@@ -13265,6 +13364,103 @@
 		<properties/>
 		<accesscontrol/>
 	</file>
+	<file>
+		<destination>system/workplace/skins/modern/editors/buttons</destination>
+		<type>folder</type>
+		<uuidresource>563b30c2-44f7-11d8-a100-8e9b78ad363a</uuidresource>
+		<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+		<datelastmodified>1073909010000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073909010000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/deletecontent.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/deletecontent.gif</destination>
+		<type>image</type>
+		<uuidresource>b221a8cc-45bf-11d8-9eb6-8e9b78ad363a</uuidresource>
+		<uuidcontent>b221a8cd-45bf-11d8-9eb6-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1073995063000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073995063000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/deletecontent_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/deletecontent_in.gif</destination>
+		<type>image</type>
+		<uuidresource>c374523f-45bf-11d8-9eb6-8e9b78ad363a</uuidresource>
+		<uuidcontent>c3745240-45bf-11d8-9eb6-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1073995092000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1073995092000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/elements.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/elements.gif</destination>
+		<type>image</type>
+		<uuidresource>9abf32a7-4671-11d8-802e-8e9b78ad363a</uuidresource>
+		<uuidcontent>9abf32a8-4671-11d8-802e-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1074071474000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074071474000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/elements_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/elements_in.gif</destination>
+		<type>image</type>
+		<uuidresource>9acb198a-4671-11d8-802e-8e9b78ad363a</uuidresource>
+		<uuidcontent>9acb198b-4671-11d8-802e-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1074071474000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074071474000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/properties.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/properties.gif</destination>
+		<type>image</type>
+		<uuidresource>9ad7006d-4671-11d8-802e-8e9b78ad363a</uuidresource>
+		<uuidcontent>9ad7006e-4671-11d8-802e-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1074071475000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074071475000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/buttons/properties_in.gif</source>
+		<destination>system/workplace/skins/modern/editors/buttons/properties_in.gif</destination>
+		<type>image</type>
+		<uuidresource>9ae09d60-4671-11d8-802e-8e9b78ad363a</uuidresource>
+		<uuidcontent>9ae09d61-4671-11d8-802e-8e9b78ad363a</uuidcontent>
+		<datelastmodified>1074071475000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074071475000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file> 
 	<file>
 		<destination>system/workplace/skins/modern/editors/ledit</destination>
 		<type>folder</type>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/09 10:17:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1.12
  */
@@ -339,10 +339,6 @@ public class CmsPublishProject extends CmsReport {
                 computePublishResource();
                 // add the title for the direct publish dialog 
                 setParamTitle(key("messagebox.title.publishresource") + ": " + getParamResourcename());
-                // determine target to close the report
-                if (getParamOkLink() == null) {
-                    setParamOkLink("onclick=\"location.href('" + getJsp().link(C_FILE_EXPLORER_FILELIST) + "');\"");
-                }
             } else {
                 // add the title for the publish project dialog 
                 setParamTitle(key("project.publish.title"));
@@ -350,7 +346,7 @@ public class CmsPublishProject extends CmsReport {
                 computePublishProject(); 
                 // determine target to close the report
                 if (getParamOkLink() == null) {
-                    setParamOkLink("onclick=\"window.top.location.reload(true);\"");
+                    setParamOkFunctions("window.top.location.reload(true);");
                 }
             }
         }                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/07 13:09:03 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/01/14 10:00:04 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,16 +59,16 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1.12
  */
 public abstract class CmsDefaultPageEditor extends CmsEditor {
     
-    /** Constant for the customizable action button.<p> */
+    /** Constant for the customizable action button */
     public static final String EDITOR_SAVEACTION = "saveaction";
     
-    /** Constant value for the customizable action button.<p> */
+    /** Constant value for the customizable action button */
     public static final int ACTION_SAVEACTION = 200;
     
     private String m_paramBodylanguage;
@@ -80,13 +80,13 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramPageTemplate;
     private String m_paramBackLink;
 
-    /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method.<p>  */
+    /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method */
     protected CmsXmlPage m_page;
     
-    /** File object used to read and write contents.<p> */
+    /** File object used to read and write contents */
     protected CmsFile m_file;
     
-    /** Helper variable to store the html content for the template selector.<p> */
+    /** Helper variable to store the html content for the template selector */
     private String m_selectTemplates = null;
       
     /**
@@ -690,6 +690,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     protected void performSaveContent(String body, String language) throws CmsException {
         // prepare the content for saving
         String content = prepareContent(true);
+        boolean enabled = m_page.isEnabled(body, language);
 
         // create the element if necessary
         if (!m_page.hasElement(body, language)) {
@@ -697,7 +698,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
         // set the element data
         m_page.setContent(getCms(), body, language, content);
-        
+        m_page.setEnabled(body, language, enabled);
         // write the file
         getCms().writeFile(m_page.write(m_file));
     }

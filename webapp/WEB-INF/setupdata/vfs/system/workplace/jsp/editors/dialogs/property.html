@@ -1,0 +1,124 @@
+<%@ page import="org.opencms.workplace.editor.*" buffer="none" %><%	
+
+	// initialize the workplace class
+	CmsDialogProperty wp = new CmsDialogProperty(pageContext, request, response);
+	
+//////////////////// start of switch statement 
+	
+switch (wp.getAction()) {
+
+
+case CmsDialogProperty.ACTION_SAVE_EDIT:
+//////////////////// ACTION: save edited properties for the current resource type
+
+wp.actionEdit(request);
+
+break;
+
+
+case CmsDialogProperty.ACTION_EDIT:
+default:
+//////////////////// ACTION: show edit properties window
+
+	wp.setParamAction(wp.DIALOG_SAVE_EDIT);
+	
+%><%= wp.htmlStart(null, wp.getParamTitle()) %>
+<script type="text/javascript">
+<!--
+
+function toggleDelete(propName) {
+	var sepIndex = propName.indexOf("---");
+	if (sepIndex != -1) {
+		propName = propName.substring(0, sepIndex);
+		var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
+		var count = 1;
+		var curElem = null;
+		while (true) {
+			curElem = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName+"---"+count);
+			if (curElem == null) {
+				break;
+			}
+			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName+"---"+count).value;
+			if (checked == true) {
+				curElem.value = hiddenValue;
+			} else {
+				curElem.value = "";
+			}
+			count ++;
+		}	
+	} else {
+		var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>"+propName).value;
+		var checked = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName).checked;
+		var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
+		if (checked == true) {
+			field.value = hiddenValue;
+		} else {
+			field.value = "";
+		}
+	}
+	
+}
+
+function checkValue(propName) {
+	var sepIndex = propName.indexOf("---");
+	var allEmpty = true;
+	var newVal = null;
+	if (sepIndex != -1) {
+		propName = propName.substring(0, sepIndex);
+		var count = 1;
+		var curElem = null;
+		while (true) {
+			curElem = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName+"---"+count);
+			if (curElem == null) {
+				break;
+			}
+			newVal = curElem.value;
+			if (newVal != null && newVal != "") {
+				allEmpty = false;
+				break;
+			}
+			count ++;
+		}	
+	} else {
+		newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
+		if (newVal != null && newVal != "") {
+			allEmpty = false;
+		}
+	}
+	var field = document.getElementById("<%= wp.PREFIX_USEPROPERTY %>"+propName);
+	if (allEmpty) {
+		field.checked = false;
+	} else {
+		field.checked = true;
+	}
+}
+
+function submitAdvanced() {
+	document.forms["main"].action.value = "<%= wp.DIALOG_SHOW_DEFAULT %>";
+	document.forms["main"].submit();
+}
+
+//-->
+</script>
+<%= wp.bodyStart("dialog") %>
+
+<%= wp.dialogStart() %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %>
+
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<%= wp.paramsAsHidden() %>
+
+<%= wp.buildEditForm() %>
+
+<%= wp.dialogContentEnd() %>
+
+<%= wp.dialogButtonRowOkCancelAdvanced(null, null, "value=\""+wp.key("button.advanced")+"\" onclick=\"submitAdvanced();\"") %>
+</form>
+
+<%= wp.dialogEnd() %>
+<%= wp.bodyEnd() %>
+<%= wp.htmlEnd() %>
+<%
+} 
+//////////////////// end of switch statement 
+%>
