@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/22 17:07:33 $
- * Version: $Revision: 1.200 $
+ * Date   : $Date: 2000/11/28 14:37:28 $
+ * Version: $Revision: 1.201 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.200 $ $Date: 2000/11/22 17:07:33 $
+ * @version $Revision: 1.201 $ $Date: 2000/11/28 14:37:28 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -106,6 +106,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	protected CmsCache m_propertyCache = null;
 	protected CmsCache m_propertyDefCache = null;
 	protected CmsCache m_propertyDefVectorCache = null;
+	protected CmsCache m_accessCache = null;
 	protected String m_refresh = null;
 
 /**
@@ -370,25 +371,39 @@ protected boolean accessOther(CmsUser currentUser, CmsProject currentProject, Cm
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException
 {
+
+	
+	Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
+	if (access != null) {
+		    return access.booleanValue();
+	} else {		
 	if ((resource == null) || !accessProject(currentUser, currentProject, resource.getProjectId()) || 
-			(!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ)))
+			(!accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_READ))) {
+		m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(false));	
 		return false;
+	}
 
 	// check the rights for all 
 	CmsResource res = resource; // save the original resource name to be used if an error occurs.
 	while (res.getParent() != null)
 	{
-		res = m_dbAccess.readFolder(res.getProjectId(), res.getParent());
+		//res = m_dbAccess.readFolder(res.getProjectId(), res.getParent());
+		res = readFolder(currentUser, currentProject, res.getParent());
+		
 		if (res == null)
 		{
 			A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
 			throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
 		}
-		if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ))
-  		return false;
+		if (!accessOther(currentUser, currentProject, res, C_ACCESS_PUBLIC_READ) && !accessOwner(currentUser, currentProject, res, C_ACCESS_OWNER_READ) && !accessGroup(currentUser, currentProject, res, C_ACCESS_GROUP_READ)) {
+			m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(false));	
+			return false;
+		}
 
 	}
+	m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(true));			
 	return true;
+	}
 }
 	/**
 	 * Checks, if the user may unlock this resource.
@@ -973,7 +988,7 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 				m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);                                
 			}
 			m_subresCache.clear();
-
+			m_accessCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();
 		} else {
@@ -1035,6 +1050,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			m_resourceCache.put(C_FILE + currentProject.getId() + filename, resource);
 		}
 		m_subresCache.clear();
+		m_accessCache.clear();
 		// inform about the file-system-change
 		fileSystemChanged();
 	} else {
@@ -1164,6 +1180,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 		m_propertyDefCache.clear();
 		m_propertyDefVectorCache.clear();
 		m_onlineProjectCache.clear();
+		m_accessCache.clear();
 
 		CmsTemplateClassManager.clearCache();
 
@@ -1220,7 +1237,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			lockResource(currentUser, currentProject, destination, true); 		   				
 			writeProperties(currentUser,currentProject, destination,
 							readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
-										
+			m_accessCache.clear();							
 			// inform about the file-system-change
 			fileSystemChanged();
 		} else {
@@ -1272,7 +1289,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 			lockResource(currentUser, currentProject, destination, true); 
 			writeProperties(currentUser,currentProject, destination,
 							readAllProperties(currentUser,currentProject,folder.getAbsolutePath()));
-			
+			m_accessCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();                      
 		} else {
@@ -1877,6 +1894,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 			// update the cache
 			m_resourceCache.remove(C_FILE+currentProject.getId()+filename);   
 			m_subresCache.clear();
+			m_accessCache.clear();
 
 			// inform about the file-system-change
 			fileSystemChanged();
@@ -1936,7 +1954,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 			// update cache
 			m_resourceCache.remove(C_FOLDER+currentProject.getId()+foldername);
 			m_subresCache.clear();
-			
+			m_accessCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();
 		
@@ -3369,6 +3387,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 		m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
 		m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));                  
 		m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
+		m_accessCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
 		m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
 		// initialize the registry#
@@ -5797,7 +5816,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			}	
 			// update the cache
 			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
-			m_subresCache.clear();	
+			m_subresCache.clear();
+			m_accessCache.clear();
 			// inform about the file-system-change
 			fileSystemChanged();
 		} else {
@@ -5871,6 +5891,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			m_resourceCache.put(C_FILE+currentProject.getId()+file.getAbsolutePath(),file);
 			// inform about the file-system-change
 			m_subresCache.clear();
+			m_accessCache.clear();
 			fileSystemChanged();
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 

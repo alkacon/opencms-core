@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/20 16:51:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/11/28 14:37:30 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.8 $ $Date: 2000/11/20 16:51:01 $
+ * @version $Revision: 1.9 $ $Date: 2000/11/28 14:37:30 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 	
@@ -149,8 +149,17 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int
  * @return wether the user has access, or not.
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessRead(currentUser, currentProject, resource));
+
+	Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
+	if (access != null) {
+		    return access.booleanValue();
+	} else {
+		com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+		boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
+		m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));	
+		
+		return ac;
+	}
 }
 /**
  * Checks, if the user may write this resource.
@@ -1364,6 +1373,7 @@ public void writeFile(CmsUser currentUser, CmsProject currentProject, CmsFile fi
 	// update the cache
 	m_resourceCache.put(C_FILE + currentProject.getId() + file.getAbsolutePath(), file);
 	m_subresCache.clear();
+	m_accessCache.clear();
 	// inform about the file-system-change
 	fileSystemChanged();
 }
@@ -1425,6 +1435,7 @@ public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, CmsF
 	m_resourceCache.put(C_FILE + currentProject.getId() + file.getAbsolutePath(), file);
 	// inform about the file-system-change
 	m_subresCache.clear();
+	m_accessCache.clear();
 	fileSystemChanged();
 }
 /**

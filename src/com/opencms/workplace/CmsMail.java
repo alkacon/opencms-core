@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMail.java,v $
- * Date   : $Date: 2000/11/02 14:29:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/11/28 14:37:31 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+//import com.opencms.defaults.*;
 
 import javax.mail.*;
 import javax.activation.*;
@@ -47,7 +48,7 @@ import java.io.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  * 
- * @version $Name:  $ $Revision: 1.16 $ $Date: 2000/11/02 14:29:17 $
+ * @version $Name:  $ $Revision: 1.17 $ $Date: 2000/11/28 14:37:31 $
  * 
  * @deprecated Moved to package <code>com.opencms.defaults</code>. You are urgently
  * encouraged to use this class instead!
