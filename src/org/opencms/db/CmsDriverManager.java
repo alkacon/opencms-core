@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/18 08:22:42 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/07/18 12:06:31 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.63 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.64 $ $Date: 2003/07/18 12:06:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6545,17 +6545,17 @@ public class CmsDriverManager extends Object {
     public Map readProperties(CmsRequestContext context, String resource, String siteRoot, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-
+    
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-
+    
         search = search && (siteRoot != null);
         // check if we have the result already cached
         HashMap value = null;
-
+    
         String cacheKey = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
         value = (HashMap) m_propertyCache.get(cacheKey);
-
+    
         if (value == null) {
             // result not cached, let's look it up in the DB
             if (search) {
@@ -6569,7 +6569,7 @@ public class CmsDriverManager extends Object {
                     value.clear();
                     value.putAll(parentValue);
                     resource = CmsResource.getParent(resource);
-                    cont = (!siteRoot.equals(resource));
+                    cont = (! ((resource.length() < siteRoot.length()) || (resource == null)));
                 } while (cont);
             } else {
                 value = m_vfsDriver.readProperties(context.currentProject().getId(), res, res.getType());
@@ -6603,20 +6603,20 @@ public class CmsDriverManager extends Object {
     public String readProperty(CmsRequestContext context, String resource, String siteRoot, String property, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-
+    
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-
+    
         search = search && (siteRoot != null);
         // check if we have the result already cached
         String cacheKey = getCacheKey(property + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
         String value = (String) m_propertyCache.get(cacheKey);
-
+    
         if (value == null) {
             // check if the map of all properties for this resource is alreday cached
             String cacheKey2 = getCacheKey(C_CACHE_ALL_PROPERTIES + search, null, new CmsProject(context.currentProject().getId(), -1), res.getFullResourceName());
             Map allProperties = (HashMap) m_propertyCache.get(cacheKey2);
-
+    
             if (allProperties != null) {
                 // map of properties already read, look up value there 
                 value = (String) allProperties.get(property);
@@ -6643,8 +6643,8 @@ public class CmsDriverManager extends Object {
                     siteRoot += "/";
                     do {
                         value = readProperty(context, resource, siteRoot, property, false);
-                        cont = !((value != null) || siteRoot.equals(resource));
-                        resource = CmsResource.getParent(resource);
+                        cont = !((value != null) || (resource.length() < siteRoot.length()) || "/".equals(resource));
+                        if (cont) resource = CmsResource.getParent(resource);
                     } while (cont);
                 }
             } else {
