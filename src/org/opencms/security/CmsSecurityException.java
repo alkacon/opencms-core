@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2004/02/25 17:04:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/27 14:20:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -99,7 +99,16 @@ public class CmsSecurityException extends CmsException {
      */
     public CmsSecurityException(int type, Throwable rootCause) {
         super(type, rootCause);
-    }    
+    }        
+    
+    /**
+     * Returns the exception description message<p>
+     *
+     * @return the exception description message
+     */
+    public String getMessage() {
+        return getClass().getName() + ": " + getErrorDescription(getType());
+    }
     
     /**
      * Returns the description String for the provided CmsException type.<p>
@@ -122,7 +131,7 @@ public class CmsSecurityException extends CmsException {
             case C_SECURITY_INVALID_PASSWORD:
                 return "Invalid password";                
             case C_SECURITY_LOGIN_FAILED:
-                return "Login failed";                
+                return "OpenCms login validation failed";                
             default:
                 return super.getErrorDescription(type);
         }
