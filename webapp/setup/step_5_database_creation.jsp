@@ -87,6 +87,7 @@ OpenCms Setup Wizard - Create database & tables
 	<td style="vertical-align: middle;">
 				<%
 					if (!createDb && !createTables && !dbExists)	{
+						enableContinue = true;
 						%>
 						<%= Bean.getHtmlPart("C_BLOCK_START", "Create Database") %>
 						<table border="0" cellpadding="0" cellspacing="0">
@@ -142,7 +143,9 @@ OpenCms Setup Wizard - Create database & tables
 									<%
 									enableContinue = true;
 								}
-								else	{ %>
+								else	{
+									enableContinue = false;
+								 %>
 									<tr>
 										<td><img src="resources/error.gif" border="0"></td>
 										<td>&nbsp;&nbsp;</td>
@@ -187,7 +190,9 @@ OpenCms Setup Wizard - Create database & tables
 									<%
 									enableContinue = true;
 								}
-								else	{ %>
+								else	{ 
+									enableContinue = false;
+								%>
 								
 									<tr>
 										<td><img src="resources/error.gif" border="0"></td>
@@ -245,7 +250,9 @@ OpenCms Setup Wizard - Create database & tables
 									<%
 									enableContinue = true;
 								}
-								else	{ %>
+								else	{ 
+									enableContinue = false;
+								%>
 								
 									<tr>
 										<td><img src="resources/error.gif" border="0"></td>
@@ -290,7 +297,7 @@ OpenCms Setup Wizard - Create database & tables
 <input name="btcontinue" type="submit" value="Continue &#062;&#062;" class="dialogbutton" disabled="disabled" id="btcontinue">
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>
-<% if(enableContinue)	{
+<% if (enableContinue)	{
 	out.println("<script type=\"text/javascript\">\ndocument.getElementById(\"btcontinue\").disabled = false;\n</script>");
 } %>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
