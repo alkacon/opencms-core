@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/08 08:18:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/08 11:04:57 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/07/08 08:18:05 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/08 11:04:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3818,7 +3818,14 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setString(1, destinationFolder.getId().toString());
             stmt.setTimestamp(2, new Timestamp(dateModified));
             stmt.setString(3, currentUser.getId().toString());
-            stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);
+            int state = resource.getState();
+            if ((state == I_CmsConstants.C_STATE_NEW) || (state == I_CmsConstants.C_STATE_CHANGED)) {
+                stmt.setInt(4, state);
+            } else if (state == I_CmsConstants.C_STATE_UNCHANGED) {
+                stmt.setInt(4, I_CmsConstants.C_STATE_CHANGED);
+            } else {
+                stmt.setInt(4, state);
+            }
             stmt.setString(5, resourceName);              
             stmt.setString(6, resource.getId().toString());
             count = stmt.executeUpdate();
