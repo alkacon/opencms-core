@@ -17,6 +17,7 @@
 			<xsd:element name="navigation.startfolder" type="OpenCmsVfsFile" />
 			<xsd:element name="headnav.menus" type="OpenCmsBoolean" default="true" />
 			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
+			<xsd:element name="login.uri" type="OpenCmsVfsFile" />
 			<xsd:element name="help.uri" type="OpenCmsVfsFile" />
 			<xsd:element name="page.form.letter" type="OpenCmsVfsFile" />
 			<xsd:element name="page.form.recommend" type="OpenCmsVfsFile" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2004/11/04 16:01:39 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/08 10:02:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -99,6 +99,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
     
     /** Request parameter name to determine the displayed version of a page.<p> */
     public static final String C_PARAM_LAYOUT = "layout";
+    
+    /** Request parameter name for the login page URI.<p> */
+    public static final String C_PARAM_LOGINURI = "loginuri";
     
     /** Request parameter name to determine the part of a JSP element to include.<p> */
     public static final String C_PARAM_PART = "part";
@@ -239,6 +242,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         if (!showPrintVersion()) {
             // build the foot links row
             m_properties.put(C_PARAM_HELPURI, getConfigurationValue("help.uri", "none"));
+            m_properties.put(C_PARAM_LOGINURI, getConfigurationValue("login.uri", "none"));
             include(C_FOLDER_ELEMENTS + "foot_links.jsp", null, m_properties);
             boolean showMenus = Boolean.valueOf(getConfigurationValue("headnav.menus", "true")).booleanValue();
             if (showHeadNavigation() && showMenus) {

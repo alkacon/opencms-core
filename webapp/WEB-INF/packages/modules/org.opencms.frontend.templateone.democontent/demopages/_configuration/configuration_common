@@ -6,6 +6,7 @@
     <navigation.startfolder/>
     <headnav.menus>true</headnav.menus>
     <navleft.showselected>false</navleft.showselected>
+    <login.uri/>
     <help.uri/>
     <page.form.letter/>
     <page.form.recommend/>
