@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/08/08 14:08:26 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2000/08/14 09:31:37 $
+ * Version: $Revision: 1.58 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.57 $ $Date: 2000/08/08 14:08:26 $
+ * @version $Revision: 1.58 $ $Date: 2000/08/14 09:31:37 $
  */
 public interface I_CmsQuerys {
 	
@@ -112,7 +112,7 @@ public interface I_CmsQuerys {
 	
 	public static final Integer C_RESOURCES_GET_SUBFOLDER_KEY = new Integer(109);
 	public static final String C_RESOURCES_GET_SUBFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE = "
-																	+ I_CmsConstants.C_TYPE_FOLDER;
+																	+ I_CmsConstants.C_TYPE_FOLDER + " ORDER BY RESOURCE_NAME";
 	
 	public static final Integer C_RESOURCES_PUBLISH_PROJECT_READFILE_KEY = new Integer(110);
 	public static final String C_RESOURCES_PUBLISH_PROJECT_READFILE =  "SELECT " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_NAME, "
@@ -188,7 +188,7 @@ public interface I_CmsQuerys {
 
 	public static final Integer C_RESOURCES_GET_FILESINFOLDER_KEY = new Integer(130);
 	public static final String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> "
-																	+ I_CmsConstants.C_TYPE_FOLDER;
+																	+ I_CmsConstants.C_TYPE_FOLDER + " ORDER BY RESOURCE_NAME";
 
 	public static final Integer C_RESOURCES_REMOVE_KEY = new Integer(131);
 	public static final String C_RESOURCES_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
@@ -273,7 +273,7 @@ public interface I_CmsQuerys {
 	public static final String C_GROUPS_DELETEGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPS WHERE GROUP_NAME = ?";
    
 	public static final Integer C_GROUPS_GETGROUPS_KEY = new Integer(206);
-	public static final String C_GROUPS_GETGROUPS = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS";
+	public static final String C_GROUPS_GETGROUPS = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS ORDER BY GROUP_NAME";
   
 	public static final Integer C_GROUPS_GETCHILD_KEY = new Integer(207);
 	public static final String C_GROUPS_GETCHILD = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS WHERE PARENT_GROUP_ID = ?";
@@ -302,7 +302,7 @@ public interface I_CmsQuerys {
 														  + "where G.GROUP_NAME = ? AND U.USER_ID=GU.USER_ID "
 														  + "AND GU.GROUP_ID = G.GROUP_ID "
 														  + "AND U.USER_DEFAULT_GROUP_ID = DG.GROUP_ID "
-														  + "AND U.USER_TYPE = ?";
+														  + "AND U.USER_TYPE = ? ORDER BY USER_NAME";
 
 	public static final Integer C_GROUPS_REMOVEUSERFROMGROUP_KEY = new Integer(213);
 	public static final String C_GROUPS_REMOVEUSERFROMGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
@@ -428,22 +428,22 @@ public interface I_CmsQuerys {
 	public static final String C_PROJECTS_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	public static final Integer C_PROJECTS_READ_KEY = new Integer(402);
-	public static final String C_PROJECTS_READ = "SELECT * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
+	public static final String C_PROJECTS_READ = "SELECT * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ? ORDER BY PROJECT_NAME";
 
 	public static final Integer C_PROJECTS_READ_BYTASK_KEY = new Integer(403);
-	public static final String C_PROJECTS_READ_BYTASK = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where TASK_ID = ?";
+	public static final String C_PROJECTS_READ_BYTASK = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where TASK_ID = ? ORDER BY PROJECT_NAME";
 	
 	public static final Integer C_PROJECTS_READ_BYUSER_KEY = new Integer(404);
-	public static final String C_PROJECTS_READ_BYUSER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where USER_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+	public static final String C_PROJECTS_READ_BYUSER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where USER_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED + " ORDER BY PROJECT_NAME";
 
 	public static final Integer C_PROJECTS_READ_BYGROUP_KEY = new Integer(405);
-	public static final String C_PROJECTS_READ_BYGROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where (GROUP_ID = ? or MANAGERGROUP_ID = ? ) and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+	public static final String C_PROJECTS_READ_BYGROUP = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where (GROUP_ID = ? or MANAGERGROUP_ID = ? ) and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED + " ORDER BY PROJECT_NAME";
 
 	public static final Integer C_PROJECTS_READ_BYFLAG_KEY = new Integer(406);
-	public static final String C_PROJECTS_READ_BYFLAG = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_FLAGS = ?";
+	public static final String C_PROJECTS_READ_BYFLAG = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_FLAGS = ? ORDER BY PROJECT_NAME";
 	
 	public static final Integer C_PROJECTS_READ_BYMANAGER_KEY = new Integer(407);
-	public static final String C_PROJECTS_READ_BYMANAGER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where MANAGERGROUP_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED;
+	public static final String C_PROJECTS_READ_BYMANAGER = "Select * from " + C_DATABASE_PREFIX + "PROJECTS where MANAGERGROUP_ID = ? and PROJECT_FLAGS = " + I_CmsConstants.C_PROJECT_STATE_UNLOCKED + " ORDER BY PROJECT_NAME";
 
 	public static final Integer C_PROJECTS_DELETE_KEY = new Integer(408);
 	public static final String C_PROJECTS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "PROJECTS where PROJECT_ID = ?";
@@ -511,7 +511,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_DELETE = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_NAME = ?";
 
 	public static final Integer C_USERS_GETUSERS_KEY = new Integer(257);
-	public static final String C_USERS_GETUSERS = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+	public static final String C_USERS_GETUSERS = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID ORDER BY USER_NAME";
 
 	public static final Integer C_USERS_SETPW_KEY = new Integer(258);
 	public static final String C_USERS_SETPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? ";

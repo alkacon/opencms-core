@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/08/08 14:08:24 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2000/08/14 09:31:36 $
+ * Version: $Revision: 1.112 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.111 $ $Date: 2000/08/08 14:08:24 $ * 
+ * @version $Revision: 1.112 $ $Date: 2000/08/14 09:31:36 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -356,7 +356,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		  }	
 		return readSystemProperty(name);
-	 } 
+	 }
 	/**
 	 * Adds a user to the database.
 	 * 
@@ -557,7 +557,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 file=readFile(project.getId(),onlineProject.getId(),source);
 		 // create destination file
 		 createFile(project,onlineProject,file,userId,parentId,destination, true);
-	 } 
+	 }
 	// methods working with resources
 	
 	/**
@@ -585,7 +585,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 resource.setState(C_STATE_UNCHANGED);
 		 resource.setParentId(id);
 		 createResource(project,onlineProject,resource);
-	 } 
+	 }
 	/**
 	 * Counts the locked resources in this project.
 	 * 
@@ -766,7 +766,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}
 		 }		
 		 return readFile(project.getId(),onlineProject.getId(),filename);
-	  }  
+	  }
 	/**
 	 * Creates a new file with the given content and resourcetype.
 	 *
@@ -862,7 +862,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}
 			 }	
 		 return readFile(project.getId(),onlineProject.getId(),filename);
-	 } 
+	 }
 	/**
 	 * Creates a new folder 
 	 * 
@@ -915,7 +915,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}
 			 }  
 		 return readFolder(project.getId(),foldername);
-	 } 
+	 }
 	/**
 	 * Creates a new folder from an existing folder object.
 	 * 
@@ -990,7 +990,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			 }  
 		 //return readFolder(project,folder.getAbsolutePath());
 		 return readFolder(project.getId(),foldername);
-	 } 
+	 }
 	 // methods working with users and groups
 	
 	/**
@@ -1045,7 +1045,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	        }
 		 }
 		 return group;
-	 } 
+	 }
 	// methods working with projects
 	
 	/**
@@ -1187,7 +1187,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		  }
 		// return readResource(project,resource.getAbsolutePath());
-	  }  
+	  }
 	// methods working with session-storage
 	
 	/**
@@ -1347,7 +1347,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 						m_pool.putPreparedStatement(C_RESOURCES_REMOVE_KEY, statement);
 					}
 		 }         
-	 } 
+	 }
 	 /**
 	 * Deletes the folder.
 	 * 
@@ -1396,7 +1396,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		 } else {
 				 throw new CmsException("["+this.getClass().getName()+"] "+orgFolder.getAbsolutePath(),CmsException.C_NOT_EMPTY);  
 		 }
-	 } 
+	 }
 	 /**
 	 * Delete a group from the Cms.<BR/>
 	 * Only groups that contain no subgroups can be deleted.
@@ -1421,7 +1421,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		          m_pool.putPreparedStatement(C_GROUPS_DELETEGROUP_KEY,statement);
 	        }
 		 }
-	 } 
+	 }
 	 /**
 	  * Deletes a project from the cms.
 	  * Therefore it deletes all files, resources and properties.
@@ -2093,7 +2093,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			 childs=null;
 		 }
 		 return childs;
-	 } 
+	 }
 	/**
 	 * Returns a Vector with all file headers of a folder.<BR/>
 	 * 
@@ -2153,9 +2153,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			if( statement != null) {
 				m_pool.putPreparedStatement(C_RESOURCES_GET_FILESINFOLDER_KEY, statement);
 			}
-		 } 
-		 return SortEntrys(files);
-	 } 
+		 }
+		return files;
+	 }
 	 /**
 	 * Returns all groups<P/>
 	 * 
@@ -2193,7 +2193,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	        }
 		 }
 	  return groups;
-	 } 
+	 }
 	 /**
 	 * Returns the parent group of  a groups<P/>
 	 * 
@@ -2332,9 +2332,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			  
 				m_pool.putPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY, statement);
 			}
-		 } 
-		 return SortEntrys(folders);
-	 } 
+		 }
+		return folders; 
+	 }
 	/**
 	 * Get a parameter value for a task.
 	 * 
@@ -3381,7 +3381,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		  }
 		return allHeaders;
-	 } 
+	 }
 	/**
 	 * Returns a list of all properties of a file or folder.
 	 * 
@@ -3638,7 +3638,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}	
 		  }
 		 return file;
-	 } 
+	 }
 	/**
 	 * Private helper method to read the fileContent for publishProject(export).
 	 * 
@@ -3738,7 +3738,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		  }
 
 		return file;
-	   }   
+	   }
 	/**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
@@ -3816,7 +3816,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		  }
 	  
 		return file;
-	   }   
+	   }
 	/**
 	 * Reads all files from the Cms, that are in one project.<BR/>
 	 * 
@@ -4034,7 +4034,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	        }
 		 }
 		 return group;
-	 } 
+	 }
 	/**
 	 * Returns a group object.<P/>
 	 * @param groupname The name of the group that is to be read.
@@ -4075,7 +4075,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	        }
 		 }
 		 return group;
-	 } 
+	 }
 	/**
 	 * Reads a project.
 	 * 
@@ -4394,7 +4394,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		  }
 		return file;
-	   }   
+	   }
 	/**
 	 * Reads all resource from the Cms, that are in one project.<BR/>
 	 * A resource is either a file header or a folder.
@@ -5108,7 +5108,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_DELETE_KEY, statement);
 				}
 			 }         
-	 } 
+	 }
 	 /**
 	  * Deletes a folder in the database. 
 	  * This method is used to physically remove a folder form the database.
@@ -5175,7 +5175,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_DELETE_KEY, statement);
 				}
 			 } 
-	 } 
+	 }
 	/**
 	 * Removes a user from a group.
 	 * 
@@ -5204,7 +5204,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				m_pool.putPreparedStatement(C_GROUPS_REMOVEUSERFROMGROUP_KEY, statement);
 			}            
 		}
-	 } 
+	 }
 	 /**
 	 * Renames the file to the new name.
 	 * 
@@ -5240,7 +5240,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY, statement);
 				}
 			}                
-	 } 
+	 }
 	/**
 	 * Sets a new password for a user.
 	 * 
@@ -5344,7 +5344,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	}
 	 /**
 	 * Sorts a vector of files or folders alphabetically. 
-	 * This method uses an insertion sort algorithem.
+	 * This method uses an insertion sort algorithm.
+	 * NOT IN USE AT THE MOMENT
 	 * 
 	 * @param unsortedList Array of strings containing the list of files or folders.
 	 * @return Array of sorted strings.
@@ -5371,8 +5372,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		Vector sortedList=new Vector();
 		for (int i=0;i<list.size();i++) {
 			sortedList.addElement(unsortedList[i]);
-		}
-			   
+		} 
 		return sortedList;
 	}
 	/**
@@ -5401,7 +5401,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_REMOVE_KEY, statement);
 				}
 		 }        
-	 } 
+	 }
 	/**
 	 * Unlocks all resources in this project.
 	 * 
@@ -5519,7 +5519,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}            
 		}
 		 return userInGroup;
-	 } 
+	 }
 	/**
 	 * Writes a file to the Cms.<BR/>
 	 * 
@@ -5553,7 +5553,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_FILES_UPDATE_KEY, statement);
 				}
 		 } 
-	 } 
+	 }
 	 /**
 	 * Writes the fileheader to the Cms.
 	 * 
@@ -5652,7 +5652,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_UPDATE_KEY, statementResourceUpdate);
 				}
 			 }	 
-	 } 
+	 }
 	 /**
 	 * Writes a folder to the Cms.<BR/>
 	 * 
@@ -5704,7 +5704,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					m_pool.putPreparedStatement(C_RESOURCES_UPDATE_KEY, statement);
 				}
 			 } 
-	 } 
+	 }
 	/**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 
@@ -5736,7 +5736,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		         m_pool.putPreparedStatement(C_GROUPS_WRITEGROUP_KEY,statement);
 	        }
 		 }
-	 } 
+	 }
 	 /**
 	  * Deletes a project from the cms.
 	  * Therefore it deletes all files, resources and properties.
