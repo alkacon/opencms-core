@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/01/13 12:44:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/21 16:48:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.util.CmsStringUtil;
  * A container to store information about a collector's result.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0 alpha 3
  */
 public class CmsContentInfoBean {
@@ -80,7 +80,7 @@ public class CmsContentInfoBean {
         m_resultIndex = -1;
         
         m_pageCount = 1;
-        m_pageSize = 10;
+        m_pageSize = -1;
         m_pageIndex = 1;
         m_pageNavStartIndex = 1;
         m_pageNavEndIndex = 1;
