@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/01 09:55:34 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/08/01 10:33:30 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -147,14 +147,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFolder));
 
             // touch the folder itself
-            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp,user);
+            cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp, user);
 
             if (C_BODY_MIRROR) {
                 // touch its counterpart under content/bodies
                 String bodyFolder = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + cms.readAbsolutePath(currentFolder);
                 try {
                     cms.readFolder(bodyFolder);
-                    cms.doTouch(bodyFolder, timestamp,user);
+                    cms.doTouch(bodyFolder, timestamp, user);
                 } catch (CmsException e) { }
             }
         }
@@ -445,7 +445,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
         //cms.doMoveResource(source, destination);
-        this.copyResource(cms, source, destination, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+        this.copyResource(cms, source, destination, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
         this.deleteResource(cms, source, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);        
     }
 
@@ -457,7 +457,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
         // rename the folder itself
         // cms.doRenameResource(oldname, newname);
-        this.copyResource(cms, oldname, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+        this.copyResource(cms, oldname, newname, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
         this.deleteResource(cms, oldname, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
 
         if (C_BODY_MIRROR) {
@@ -466,7 +466,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
             // rename the corresponding body folder
             // cms.doRenameResource(bodyPath, newname);
-            this.copyResource(cms, bodyPath, newname, true, true,I_CmsConstants.C_COPY_PRESERVE_LINK);
+            this.copyResource(cms, bodyPath, newname, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
             this.deleteResource(cms, bodyPath, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         }
     }

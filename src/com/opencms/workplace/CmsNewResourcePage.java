@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/08/01 10:33:30 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.77 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.78 $ $Date: 2003/08/01 10:33:30 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault {
 
@@ -148,7 +148,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault {
                     boolean layoutFileDefined = false;
                     if (layoutFilePath == null || layoutFilePath.equals("")) {
                         // layout not specified, use default body
-                        bodyBytes = (CmsResourceTypePage.getDefaultBodyStart() + CmsResourceTypePage.getDefaultBodyEnd()).getBytes();
+                        bodyBytes = (CmsResourceTypeNewPage.getDefaultBodyStart() + CmsResourceTypeNewPage.getDefaultBodyEnd()).getBytes();
                     } else {
                         // do not catch exceptions, a specified layout should exist
                         bodyBytes = ensureBodyEncoding(cms, layoutFilePath);

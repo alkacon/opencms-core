@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/08/01 10:33:30 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.20 $ $Date: 2003/07/31 17:02:45 $
+ * @version $Revision: 1.21 $ $Date: 2003/08/01 10:33:30 $
  */
 
 public class CmsHelperMastertemplates {
@@ -79,9 +79,9 @@ public class CmsHelperMastertemplates {
          // find the correct index for the current template
         if(currentTemplate != null) {
            // it's required to do directory translation if comparing directory names 
-           currentTemplate = cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + currentTemplate);        
+           currentTemplate = cms.getRequestContext().getDirectoryTranslator().translateResource(currentTemplate);        
            for(int i = 0; i < values.size(); i++) {
-                String template =  cms.getRequestContext().getDirectoryTranslator().translateResource(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + ((String)values.get(i)));
+                String template =  cms.getRequestContext().getDirectoryTranslator().translateResource(((String)values.get(i)));
                 if(currentTemplate.equals(template)) {
                     // found the correct index - return it
                     return new Integer(i);

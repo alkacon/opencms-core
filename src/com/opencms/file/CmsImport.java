@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.129 $
+* Date   : $Date: 2003/08/01 10:33:30 $
+* Version: $Revision: 1.130 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.129 $ $Date: 2003/07/31 19:20:09 $
+ * @version $Revision: 1.130 $ $Date: 2003/08/01 10:33:30 $
  */
 public class CmsImport implements Serializable {
 
@@ -507,7 +507,7 @@ public class CmsImport implements Serializable {
             } finally {
                 try {
                     in.close();
-                } catch (Exception e) {}
+                } catch (Exception e) { }
             }
         } catch (Exception exc) {
             m_report.println(exc);
@@ -627,21 +627,21 @@ public class CmsImport implements Serializable {
             // extract the name of the resource form the destination
             String resname=destination;
             if (resname.endsWith("/")) {
-                resname=resname.substring(0,resname.length()-1);            
+                resname=resname.substring(0, resname.length()-1);            
             } 
             if (resname.lastIndexOf("/")>0) {
-                resname=resname.substring(resname.lastIndexOf("/")+1,resname.length());
+                resname=resname.substring(resname.lastIndexOf("/")+1, resname.length());
             }
                          
             // create a new CmsResource                         
-            CmsResource resource=new CmsResource(newUuidstructure,newUuidresource,
+            CmsResource resource=new CmsResource(newUuidstructure, newUuidresource,
                                                  CmsUUID.getNullUUID(),
-                                                 newUuidcontent,resname,resType,
-                                                 new Integer(0).intValue(),m_cms.getRequestContext().currentProject().getId(),
-                                                 0,I_CmsConstants.C_STATE_NEW,curUser,
+                                                 newUuidcontent, resname, resType,
+                                                 new Integer(0).intValue(), m_cms.getRequestContext().currentProject().getId(),
+                                                 0, I_CmsConstants.C_STATE_NEW, curUser,
                                                  m_cms.getResourceType(resType).getLoaderId(),
-                                                 lastmodified,curUser,lastmodified,
-                                                 curUser,size,m_cms.getRequestContext().currentProject().getId(),1);
+                                                 lastmodified, curUser, lastmodified,
+                                                 curUser, size, m_cms.getRequestContext().currentProject().getId(), 1);
             // import this resource in the VFS     
                      
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);   
@@ -664,7 +664,7 @@ public class CmsImport implements Serializable {
             }
         }
 
-        byte[] digestContent = { 0 };
+        byte[] digestContent = {0};
         if (content != null) {
             digestContent = m_digest.digest(content);
         }
@@ -764,21 +764,21 @@ public class CmsImport implements Serializable {
             // extract the name of the resource form the destination
             String resname=destination;
             if (resname.endsWith("/")) {
-                resname=resname.substring(0,resname.length()-1);            
+                resname=resname.substring(0, resname.length()-1);            
             } 
             if (resname.lastIndexOf("/")>0) {
-                resname=resname.substring(resname.lastIndexOf("/")+1,resname.length());
+                resname=resname.substring(resname.lastIndexOf("/")+1, resname.length());
             }
                          
             // create a new CmsResource                         
-            CmsResource resource=new CmsResource(newUuidstructure,newUuidresource,
+            CmsResource resource=new CmsResource(newUuidstructure, newUuidresource,
                                                  CmsUUID.getNullUUID(),
-                                                 newUuidcontent,resname,resType,
-                                                 new Integer(flags).intValue(),m_cms.getRequestContext().currentProject().getId(),
-                                                 0,I_CmsConstants.C_STATE_NEW,curUser,
+                                                 newUuidcontent, resname, resType,
+                                                 new Integer(flags).intValue(), m_cms.getRequestContext().currentProject().getId(),
+                                                 0, I_CmsConstants.C_STATE_NEW, curUser,
                                                  m_cms.getResourceType(resType).getLoaderId(),
-                                                 datelastmodified,newUserlastmodified,datecreated,
-                                                 newUsercreated,size,m_cms.getRequestContext().currentProject().getId(),1);
+                                                 datelastmodified, newUserlastmodified, datecreated,
+                                                 newUsercreated, size, m_cms.getRequestContext().currentProject().getId(), 1);
             // import this resource in the VFS   
                       
             res = m_cms.importResource(resource, content, properties, m_importPath+destination);             
@@ -801,7 +801,7 @@ public class CmsImport implements Serializable {
             }
         }
 
-        byte[] digestContent = { 0 };
+        byte[] digestContent = {0};
         if (content != null) {
             digestContent = m_digest.digest(content);
         }
@@ -922,8 +922,7 @@ public class CmsImport implements Serializable {
                 // <flags>              
                 flags = getTextNodeValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
 
-                //TODO: will this work with multiple sites?
-                String translatedName = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + m_importPath + destination;
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
@@ -931,7 +930,7 @@ public class CmsImport implements Serializable {
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
                 // check if this resource is immutable
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
-                translatedName = translatedName.substring(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE.length());
+                translatedName =  m_cms.getRequestContext().removeSiteRoot(translatedName);
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
                     // print out the information to the report
@@ -941,7 +940,7 @@ public class CmsImport implements Serializable {
                     properties = getPropertiesFromXml(currentElement, type, propertyName, propertyValue, deleteProperties);
                     // import the resource               
 
-                    CmsResource res = importResourceVersion3(source, destination, type, uuidstructure, uuidresource,uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
+                    CmsResource res = importResourceVersion3(source, destination, type, uuidstructure, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
 
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
@@ -1077,7 +1076,7 @@ public class CmsImport implements Serializable {
                     type = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
 
-                String translatedName = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE + m_importPath + destination;
+                String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
                 if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
@@ -1087,7 +1086,7 @@ public class CmsImport implements Serializable {
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
 
-                translatedName = translatedName.substring(I_CmsConstants.VFS_FOLDER_DEFAULT_SITE.length());
+                translatedName = m_cms.getRequestContext().removeSiteRoot(translatedName);
                 if (resourceNotImmutable && (!excludeList.contains(translatedName))) {
 
                     // print out the information to the report
@@ -1149,7 +1148,7 @@ public class CmsImport implements Serializable {
                     // do nothing, 
                 }
                 
-                boolean convertToNewPage=((newpage!=null) || (CmsResourceTypeFolder.C_BODY_MIRROR==false));
+                boolean convertToNewPage=((newpage!=null) || !CmsResourceTypeFolder.C_BODY_MIRROR);
                 
                 if (convertToNewPage) {
                     mergePageFiles();
@@ -1319,22 +1318,22 @@ public class CmsImport implements Serializable {
                     // get the name of the mastertemplate
                     bodyname = bodyNode.item(0).getFirstChild().getNodeValue();
                     // lock the resource, so that it can be manipulated
-                    m_cms.lockResource(resname);
+                    m_cms.lockResource(resname);             
                     // get all properties                   
                     Map properties = m_cms.readProperties(resname);
                     // now get the content of the bodyfile and insert it into the control file                   
                     bodyfile = m_cms.readFile(bodyname);
                     pagefile.setContents(bodyfile.getContents());
-                    //new set the type to new page                               
+                    // set the type to 'newpage'                               
                     pagefile.setType(CmsResourceTypeNewPage.C_RESOURCE_TYPE_ID);
-                    pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);
+                    pagefile.setLoaderId(CmsPageLoader.C_RESOURCE_LOADER_ID);      
                     
                     // write all changes                     
                     m_cms.writeFile(pagefile);
                     // add the template property to the controlfile
                     m_cms.writeProperty(resname, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY, mastertemplate);
                     m_cms.writeProperties(resname, properties);
-                    m_cms.touch(resname,pagefile.getDateLastModified(),false,pagefile.getUserLastModified());
+                    m_cms.touch(resname, pagefile.getDateLastModified(), false, pagefile.getUserLastModified());
                     // don, ulock the resource                   
                     m_cms.unlockResource(resname, false);
                     // finally delete the old body file, it is not needed anymore
@@ -1533,7 +1532,7 @@ public class CmsImport implements Serializable {
             if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
                 try {
                     parentGroup = m_cms.readGroup(parentgroupName);
-                } catch (CmsException exc) {}
+                } catch (CmsException exc) { }
             }
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
@@ -1597,7 +1596,7 @@ public class CmsImport implements Serializable {
                 for (int i = 0; i < userGroups.size(); i++) {
                     try {
                         m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
-                    } catch (CmsException exc) {}
+                    } catch (CmsException exc) { }
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException exc) {
@@ -1930,7 +1929,7 @@ public class CmsImport implements Serializable {
                     content += "\n</XMLTEMPLATE>";
                 }
 
-            } catch (Exception exc) {}
+            } catch (Exception exc) { }
         }
         return content;
     }

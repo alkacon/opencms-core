@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/01 07:53:00 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2003/08/01 10:33:30 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.152 $
+ * @version $Revision: 1.153 $
  */
 public final class OpenCms extends A_OpenCms {
 
@@ -931,7 +931,8 @@ public final class OpenCms extends A_OpenCms {
         // create a valid cms-object
         CmsObject cms = new CmsObject();
         try {
-            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
+            // TODO: Maybe implement site root as a parameter in cron job table 
+            initUser(cms, null, null, entry.getUserName(), entry.getGroupName(), "/", I_CmsConstants.C_PROJECT_ONLINE_ID, null);
             // create a new ScheduleJob and start it
             CmsCronScheduleJob job = new CmsCronScheduleJob(cms, entry);
             job.start();

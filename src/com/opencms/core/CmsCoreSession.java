@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
- * Date   : $Date: 2003/08/01 07:53:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/01 10:33:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <code>sendBroadcastMessage()</code> method.
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -132,7 +132,7 @@ public class CmsCoreSession {
             currentSite = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTSITE);
         }
         if (currentSite == null) {
-            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+            return A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
         } else {
             return currentSite;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/07/31 17:02:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/08/01 10:33:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
  */
 package org.opencms.workplace;
 
-import com.opencms.core.I_CmsConstants;
+import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsUser;
 
 
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -55,16 +55,20 @@ public class CmsWorkplaceSettings {
     private String m_explorerMode;
     private boolean m_explorerShowLinks;
     
-    private int m_explorerPage = 1;
-    private int m_explorerChecksum = -1;
+    private int m_explorerPage;
+    private int m_explorerChecksum;
     private String m_explorerFlaturl;
     private String m_permissionDetailView;
-    private String m_currentSite = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+    private String m_currentSite;
         
     /**
      * Constructor, only package visible.<p>
      */
-    CmsWorkplaceSettings() { }
+    CmsWorkplaceSettings() { 
+        m_explorerPage = 1;
+        m_explorerChecksum = -1;
+        m_currentSite = A_OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
+    }
     
     /**
      * Returns the currently selected user language.<p>
