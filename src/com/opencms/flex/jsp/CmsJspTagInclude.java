@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/10/30 10:25:35 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/11/08 16:04:32 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamParent { 
     
@@ -232,6 +232,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             } 
               
             includeTagAction(pageContext, target, m_parameterMap, c_req, c_res);
+            
+            // must call release here manually to make sure m_parameterMap is cleared
+            release();
         }
         
         return EVAL_PAGE;
@@ -269,7 +272,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
             if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
             throw new JspException(e);
         } finally {
-            if (oldParamterMap != null) req.setParameterMap(oldParamterMap);
+            if (oldParamterMap != null) req.setParameterMap(oldParamterMap);            
         }           
     }
     
@@ -300,7 +303,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspParamPar
         
         // Check if the parameter name (key) exists
         if (m_parameterMap.containsKey(name)) {
-            // Yes: Check name values if value exists, if so no nothing, else add new value
+            // Yes: Check name values if value exists, if so do nothing, else add new value
             String[] values = (String[]) m_parameterMap.get(name);
             String[] newValues = new String[values.length+1];
             System.arraycopy(values, 0, newValues, 0, values.length);
