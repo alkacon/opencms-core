@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/24 15:44:26 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/06/24 15:46:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
+ * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
+	 * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -200,9 +200,6 @@ public class CmsDriverManager implements I_CmsConstants {
 			//	return false;
 			//}
 
-if (resource.getResourceName().equals("/default/vfs/release/")) {
-	int i = 42;
-}
 			if (isAdmin(getUser(),getProject())) {
 				// if the current user is administrator, anything is allowed
 				permissions = new CmsPermissionSet(~0);			
@@ -221,7 +218,7 @@ if (resource.getResourceName().equals("/default/vfs/release/")) {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.10 $ $Date: 2003/06/24 15:44:26 $
+	 * @version $Revision: 1.11 $ $Date: 2003/06/24 15:46:32 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
