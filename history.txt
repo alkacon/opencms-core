@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/02/02 16:01:10 $
- * Version: $Revision: 1.442 $
+ * Date   : $Date: 2003/02/02 17:45:14 $
+ * Version: $Revision: 1.443 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.0 (next version)
+OpenCms 5.0 "release candidate" (rc) 2  Kaitain - 04 February 2003
 ! Improved editor GUI (for both source code and WYSIWYG editor) 
 ! The setup wizards now checks for the correct setting of the Java file.encoding 
 ! The com.opencms.flex.jsp.CmsJspNavElement now provides direct access to all properties of a file
@@ -31,6 +31,7 @@ OpenCms 5.0 (next version)
 * Fixed issues #43, 44 and 45 from Bugzilla
 * Fixed isse where CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
+- The "template class caching" was not longer required and has been removed as OpenCms 5.x uses the standard ClassLoader
 - The online help is now a separate upload module (is currently available only in German and needs an update anyway)
 - The default character encoding for a new OpenCms installation is now ISO-8859-1
 - Improved the OpenCms logfile output during startup
@@ -41,7 +42,6 @@ OpenCms 5.0 (next version)
 - All ResourceBundles for localization have been combined in 
   com/opencms/workplace/workplace.properties for easier translation
 - Improved language handling in workplace.CmsNewExplorerFileList, current Workplace language now stored in session
-- Added CmsXmlLanguageFile optimization from the 4_7x branch
 - Removed errors in JavaDocs and added package.html to all packages
 - Removed unused variables in all classes
 
