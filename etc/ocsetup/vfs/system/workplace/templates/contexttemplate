@@ -4,7 +4,7 @@
 		<![CDATA[<div id="]]><PROCESS>name</PROCESS><![CDATA[" class="kontextmenu">
 		<table CELLPADDING=1 CELLSPACING=0 BORDER=0 bgcolor="#000000">
 		<tr><td>
-		<table class=filekontext>
+		<table class=filekontext CELLPADDING=1 CELLSPACING=0 BORDER=0>
 		<tr><td>
 		<table CELLPADDING=1 CELLSPACING=1 BORDER=0 bgcolor="#c0c0c0" width=100%>]]>
 	</CONTEXTHEAD>

@@ -96,19 +96,21 @@ var workplace;
 
 function openwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
 {
-	if(w==0) w=screen.availWidth-20;
-	if(h==0) h=screen.availHeight-100;
+    if (url != '#') {
+		if(w==0) w=screen.availWidth-20;
+		if(h==0) h=screen.availHeight-100;
 
-	workplace = window.open(url,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
-	workplace.moveTo(0,0);
-	if(workplace != null)
-	   {
-	      if (workplace.opener == null)
-	      {
-	         workplace.opener = self;
-	      }
-   		}
-	workplace.focus();
+		workplace = window.open(url,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+		workplace.moveTo(0,0);
+		if(workplace != null)
+		   {
+		      if (workplace.opener == null)
+		      {
+		         workplace.opener = self;
+		      }
+	   		}
+		workplace.focus();
+     }
 
 }
 

@@ -1,60 +1,8 @@
-// listen the event mous click
-document.onclick = mouseGeklickt;
+// mouseevent
 
-//---------------------------------
-// help to choose the right browser
-// m.schleich 21.12.1999
-// changed am 03.01.2000
-//---------------------------------
-ns = (document.layers)? true:false;
-ie = (document.all)? true:false;
-if(ie)
-{
-	if (navigator.userAgent.indexOf('MSIE 5')>0)
-	{
-		ie5 = true;
-	}
-	else
-	{
-		ie5 = false;
-	}
-}
-
-if(ns)
-{
-	document.captureEvents(Event.CLICK);
-	var layerzeigen_01= 'document.layers.';
-	var layerzeigen_02= '.visibility="show"';
-	var layerverstecken_01= 'document.layers.';
-	var layerverstecken_02= '.visibility="hide"';
-	var xpos_01= 'document.';
-	var xpos_02= '.left=';
-	var ypos_01= 'document.';
-	var ypos_02= '.top=';
-	var xoffset= '+3';
-	var yoffset= '+3';
-}
-else
-{
-	var layerzeigen_01= 'document.all.';
-	var layerzeigen_02= '.style.visibility="visible"';
-	var layerverstecken_01= 'document.all.';
-	var layerverstecken_02= '.style.visibility="hidden"';
-	var xpos_01= 'document.all.';
-	var xpos_02= '.style.left=';
-	var ypos_01= 'document.all.';
-	var ypos_02= '.style.top=';
-	var xoffset= '+3';
-	var yoffset= '+3';
-	if(ie5)
-	{
-		var xpos_01= 'document.all.';
-		var xpos_02= '.style.left=';
-		var ypos_01= 'document.all.';
-		var ypos_02= '.style.top=';
-		var xoffset= '+3+document.body.scrollLeft';
-		var yoffset= '+3+document.body.scrollTop';
-	}
+function start() {
+	document.onclick = mouseClicked;
+	if(ns){document.captureEvents(Event.CLICK);	}
 }
 
 //------------------------------------------
@@ -72,7 +20,7 @@ var kontextparam;
 // which operation is clicked
 var DO_LOCK=1;
 var DO_LOCKUSER=2;
-var DO_UNLOCK=3;
+var DO_UNLOCK=3; 
 
 var DO_COPY=4;
 var DO_MOVE=5;
@@ -117,7 +65,7 @@ var DO_PREACT=20;
 
 
 // mousekoordinates on click
-function mouseGeklickt(e)
+function mouseClicked(e)
 {
 		if (ie) {x=event.x; y=event.y;}
 		if (ns) {x=e.x; y=e.y;}
@@ -137,11 +85,16 @@ function showkontext(welche, parameter, id)
 	// set the kontextparameter
 	kontextparam = parameter;
 	
+	if(ns) alert("Hi Netscape");
+	
 	if (!shown || id!=altid)
 	{
+	    	
 		if(y >= (screen.availHeight/2))
 		{
+			
 			if(ie)lyrheight=checklyrheight(welche);
+			
 			if(ns)lyrheight=document.layers[welche].clip.height;
 			
 			lyrheight='-'+lyrheight;
@@ -226,7 +179,7 @@ function doAction(action) {
 	hidemenu(letztelyr);
 	
 	switch(action)	{
-		case DO_LOCK: {
+		case 1: {
 			location.href='lock.html?file='+ kontextparam;
 			break;
 		} 
@@ -234,7 +187,7 @@ function doAction(action) {
 		{
 			location.href='explorer_files_lockchange.html';
 			break;
-		} case DO_UNLOCK: {
+		} case 3: {
 			location.href='unlock.html?file='+ kontextparam;
 			break;
 		}
@@ -248,7 +201,7 @@ function doAction(action) {
 		{
 			location.href='explorer_files_move.html';
 			break;
-		} case DO_RENAME: {
+		} case 6: {
 			location.href='rename.html?file='+ kontextparam;
 			break;
 		}
@@ -287,13 +240,13 @@ function doAction(action) {
 		{
 			location.href='explorer_files_metashow.html';
 			break;
-		} case DO_EDIT: {
+		} case 14: {
 			top.location.href='texteditor.html?file='+ kontextparam;
 			break;
-		} case DO_HTMLEDIT: {
+		} case 15: {
 			top.location.href='htmleditor.html?file='+ kontextparam;
 			break;
-		} case DO_TEMPLATEEDIT: {
+		} case 18: {
 					top.location.href='templateeditor.html?file='+ kontextparam;
 					break;
 		}

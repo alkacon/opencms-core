@@ -13,7 +13,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/02/10 17:13:41 $
+ * @version $Revision: 1.23 $ $Date: 2000/02/11 14:04:30 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -104,7 +104,7 @@ import com.opencms.util.*;
      * deleted!
      */   
     private static final String C_RESOURCE_REMOVE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
-                                                   +"STATE = ? "
+                                                   +"STATE = ?, LOCKED_BY = ?"
                                                    +"WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
 
      /**
@@ -818,8 +818,9 @@ import com.opencms.util.*;
            PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
            // mark the file as deleted       
            statementResourceRemove.setInt(1,C_STATE_DELETED);
-           statementResourceRemove.setString(2,absoluteName(filename));
-           statementResourceRemove.setInt(3,project.getId());
+           statementResourceRemove.setInt(2,C_UNKNOWN_ID);
+           statementResourceRemove.setString(3,absoluteName(filename));
+           statementResourceRemove.setInt(4,project.getId());
            statementResourceRemove.executeUpdate();               
           
          } catch (SQLException e){
@@ -1082,8 +1083,9 @@ import com.opencms.util.*;
                     // mark the folder as deleted       
                     PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
                     statementResourceRemove.setInt(1,C_STATE_DELETED);
-                    statementResourceRemove.setString(2,absoluteName(foldername));
-                    statementResourceRemove.setInt(3,project.getId());
+                    statementResourceRemove.setInt(2,C_UNKNOWN_ID);
+                    statementResourceRemove.setString(3,absoluteName(foldername));
+                    statementResourceRemove.setInt(4,project.getId());
                     statementResourceRemove.executeUpdate();              
                 } catch (SQLException e){
                  throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
