@@ -45,22 +45,18 @@ createPropertydefinition exportname plain
 createPropertydefinition exportname page
 createPropertydefinition exportname image
 createPropertydefinition exportname link
-createPropertydefinition Content-encoding folder
-createPropertydefinition Content-encoding plain
-createPropertydefinition Content-encoding page
-createPropertydefinition Content-encoding link
+createPropertydefinition content-encoding folder
+createPropertydefinition content-encoding plain
+createPropertydefinition content-encoding page
+createPropertydefinition content-encoding link
+createPropertydefinition default-file folder
 createPropertydefinition Title jsp
 createPropertydefinition Keywords jsp
 createPropertydefinition Description jsp
 createPropertydefinition export jsp
 createPropertydefinition cache jsp
 createPropertydefinition stream jsp
-createPropertydefinition Title velocity
-createPropertydefinition Keywords velocity
-createPropertydefinition Description velocity
-createPropertydefinition export velocity
-createPropertydefinition cache velocity
-createPropertydefinition stream velocity
+createPropertydefinition content-encoding jsp
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
@@ -72,8 +68,6 @@ addFileExtension jpeg image
 addFileExtension jpg image
 addFileExtension gif image
 addFileExtension jsp jsp
-addFileExtension vtl velocity
-addFileExtension velocity velocity
 createTempfileProject
 setCurrentProject 2
 importResources "ocsetup/vfs"
