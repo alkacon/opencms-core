@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/31 12:55:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceMessages;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -229,7 +230,29 @@ public class CmsChnav extends CmsDialog {
                         newNavText.setResourceValue(newText);
                     }
                 }
-                getCms().writePropertyObject(filename, newNavText);
+                
+                String oldStructureValue = oldNavText.getStructureValue();
+                String newStructureValue = newNavText.getStructureValue();
+                if (CmsStringUtil.isEmpty(oldStructureValue)) {
+                    oldStructureValue = CmsProperty.C_DELETE_VALUE;
+                }
+                if (CmsStringUtil.isEmpty(newStructureValue)) {
+                    newStructureValue = CmsProperty.C_DELETE_VALUE;
+                }
+
+                String oldResourceValue = oldNavText.getResourceValue();
+                String newResourceValue = newNavText.getResourceValue();
+                if (CmsStringUtil.isEmpty(oldResourceValue)) {
+                    oldResourceValue = CmsProperty.C_DELETE_VALUE;
+                }
+                if (CmsStringUtil.isEmpty(newResourceValue)) {
+                    newResourceValue = CmsProperty.C_DELETE_VALUE;
+                }
+
+                // change nav text only if it has been changed            
+                if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
+                    getCms().writePropertyObject(getParamResource(), newNavText);
+                }
             }
             
             // determine the selected position
