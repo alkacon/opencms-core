@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/10/23 15:15:42 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     private String m_launcherClass;
     
     /** Internal debug flag */
-    private static final int DEBUG = 1;
+    private static final int DEBUG = 0;
 
 
     /**
