@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/12/20 13:12:56 $
-* Version: $Revision: 1.297 $
+* Date   : $Date: 2001/12/20 15:26:47 $
+* Version: $Revision: 1.298 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.297 $ $Date: 2001/12/20 13:12:56 $
+ * @version $Revision: 1.298 $ $Date: 2001/12/20 15:26:47 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1476,12 +1476,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject),
                               currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
 
+                this.clearResourceCache(foldername + filename);
                 // copy the metainfos
                 lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
                             readAllProperties(currentUser,currentProject,file.getResourceName()));
                 m_accessCache.clear();
-                m_subresCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(file.isFolder());
             } else {
@@ -1533,13 +1533,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
                 m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
-
+                this.clearResourceCache(destination);
                 // copy the properties
                 lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
                             readAllProperties(currentUser,currentProject,folder.getResourceName()));
                 m_accessCache.clear();
-                m_subresCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(true);
             } else {
