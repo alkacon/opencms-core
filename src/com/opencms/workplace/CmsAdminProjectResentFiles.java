@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/08/04 10:39:53 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2003/07/31 13:19:36 $
+ * @version $Revision: 1.23 $ $Date: 2003/08/04 10:39:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,21 +70,24 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
                 templateFile, elementName, parameters, templateSelector);
         String filter = (String)parameters.get("filter");
         String projectId = (String)parameters.get("projectid");
-        String action = (String)parameters.get("action");
-        if(filter == null || "".equalsIgnoreCase(filter)){
-            filter=(String)session.getValue("filter");
-            if(filter == null || "".equalsIgnoreCase(filter)){
-                filter = "all";
-            }
-            xmlTemplateDocument.setData("loadheader",xmlTemplateDocument.getProcessedDataValue("LOADHEADER", this));
-        } else {
-            xmlTemplateDocument.setData("loadheader",xmlTemplateDocument.getProcessedDataValue("NOTLOADHEADER", this));
-        }
-        if(projectId == null || "".equalsIgnoreCase(projectId)){
+        if (projectId == null || "".equalsIgnoreCase(projectId)) {
             projectId = (String)session.getValue("projectid");
-            if(projectId == null || "".equalsIgnoreCase(projectId)){
+            if (projectId == null || "".equalsIgnoreCase(projectId)) {
                 projectId = ""+cms.getRequestContext().currentProject().getId();
             }
+        }
+        xmlTemplateDocument.setData("projectid", projectId);
+        String action = (String)parameters.get("action");
+        if (filter == null || "".equalsIgnoreCase(filter)) {
+            filter=(String)session.getValue("filter");
+            if (filter == null || "".equalsIgnoreCase(filter)) {
+                filter = "all";
+            }
+            xmlTemplateDocument.setData("filter", filter);
+            xmlTemplateDocument.setData("loadheader", xmlTemplateDocument.getProcessedDataValue("LOADHEADER", this));
+        } else {
+            xmlTemplateDocument.setData("filter", filter);
+            xmlTemplateDocument.setData("loadheader", xmlTemplateDocument.getProcessedDataValue("NOTLOADHEADER", this));
         }
 
         // store the chosen filter and projectid into the session

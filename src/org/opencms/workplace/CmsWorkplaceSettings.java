@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/04 10:39:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import com.opencms.file.CmsUser;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -52,6 +52,8 @@ public class CmsWorkplaceSettings {
     private String m_currentView;
     private String m_explorerResource;
     private String m_explorerMode;
+    private String m_explorerProjectFilter;
+    private int m_explorerProjectId;
     private boolean m_explorerShowLinks;
     
     private int m_explorerPage;
@@ -249,6 +251,48 @@ public class CmsWorkplaceSettings {
      */
     public void setExplorerChecksum(int value) {
         m_explorerChecksum = value;
+    }
+    
+    /**
+     * Gets the explorer project filter for the project view.<p>
+     * 
+     * This parameter is used in the administration to filter
+     * files belonging to a project.
+     * 
+     * @return the explorer project filter
+     */
+    public String getExplorerProjectFilter() {
+        return m_explorerProjectFilter;
+    }
+    
+    /**
+     * Sets the explorer project filter for the project view.<p>
+     * 
+     * @param value the explorer project filter
+     */
+    public void setExplorerProjectFilter(String value) {
+        m_explorerProjectFilter = value;
+    }
+    
+    /**
+     * Gets the explorer project id for the project view.<p>
+     * 
+     * This parameter is used in the administration to filter
+     * files belonging to a selected project.
+     * 
+     * @return the explorer project id
+     */
+    public int getExplorerProjectId() {
+        return m_explorerProjectId;
+    }
+    
+    /**
+     * Sets the explorer project id for the project view.<p>
+     * 
+     * @param value the explorer project id
+     */
+    public void setExplorerProjectId(int value) {
+        m_explorerProjectId = value;
     }
 
     /**

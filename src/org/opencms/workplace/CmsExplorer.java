@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/08/01 17:57:01 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/08/04 10:39:53 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1
  */
@@ -92,6 +92,22 @@ public class CmsExplorer extends CmsWorkplace {
                 settings.setExplorerMode("explorerview");
             }
         }
+        
+        // get filter parameter for project view
+        String filter = request.getParameter("filter");
+        if (filter == null || "".equals(filter)) {
+            settings.setExplorerProjectFilter("all");
+        } else {
+            settings.setExplorerProjectFilter(filter);
+        }
+        
+        // get project id parameter for project view
+        String projectIdString = request.getParameter("projectid");
+        int projectId = getCms().getRequestContext().currentProject().getId();
+        if (projectIdString != null && !"".equals(projectIdString)) {
+            projectId = Integer.parseInt(projectIdString);
+        }
+        settings.setExplorerProjectId(projectId);
         
         boolean showLinks = "true".equals(request.getParameter("showlinks"));
         
@@ -674,6 +690,13 @@ public class CmsExplorer extends CmsWorkplace {
         if (getSettings().getExplorerShowLinks()) {
             try {
                 return new Vector(getCms().getAllVfsLinks(resource));
+            } catch (CmsException e) {
+                return new Vector();
+            }
+        } else if ("projectview".equals(getSettings().getExplorerMode())) {
+            // show only files belonging to the selected project
+            try {
+                return getCms().readProjectView(getSettings().getExplorerProjectId(), getSettings().getExplorerProjectFilter());
             } catch (CmsException e) {
                 return new Vector();
             }
