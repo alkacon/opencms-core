@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/01/03 12:46:39 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/04 11:56:59 $
  */
 interface I_CmsResourceBroker {
 
@@ -443,7 +443,7 @@ interface I_CmsResourceBroker {
 	 * Returns a group object.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.

@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.10 $ $Date: 2000/01/03 18:51:36 $ 
+ * @version $Revision: 1.11 $ $Date: 2000/01/04 11:56:59 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -795,11 +795,11 @@ public abstract class A_CmsObject {
 	 * 
 	 * @param username The name of the user to be returned.
 	 * @param password The password of the user to be returned.
-	 * @return a user in the Cms.
+	 * @return the name of the logged in user.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsUser loginUser(String username, String password) 
+	abstract public String loginUser(String username, String password) 
 		throws CmsException;
 	
 	/** 
@@ -842,13 +842,11 @@ public abstract class A_CmsObject {
 	 * 
 	 * Only the administrator can do this.
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The user to be written.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public void writeUser(String username, Hashtable additionalInfos, int flag)
+	abstract public void writeUser(A_CmsUser user)
 		throws CmsException;
 	
 	/**
@@ -873,6 +871,16 @@ public abstract class A_CmsObject {
 	abstract public Vector getGroupsOfUser(String username)
 		throws CmsException;
 	
+    /**
+	 * Returns all child groups of a group<P/>
+	 * 
+	 * @param groupname The name of the group.
+	 * @return groups A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	abstract public Vector getChild(String groupname)
+        throws CmsException;
+
 	/**
 	 * Tests, if a user is in a group.
 	 * 
@@ -893,8 +901,9 @@ public abstract class A_CmsObject {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract public A_CmsGroup readGroup(String groupname);	
-	
+	abstract public A_CmsGroup readGroup(String groupname)
+		throws CmsException;
+
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
@@ -915,6 +924,15 @@ public abstract class A_CmsObject {
 										String parent)
 		throws CmsException;
 	
+    /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	abstract public void writeGroup(A_CmsGroup group)
+		throws CmsException;
+
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * 

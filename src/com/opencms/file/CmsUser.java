@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This class describes the Cms user object and the methods to access it.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/03 18:51:36 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/04 11:56:59 $
  */
 
 public class CmsUser extends A_CmsUser implements I_CmsConstants {
@@ -123,14 +123,19 @@ public class CmsUser extends A_CmsUser implements I_CmsConstants {
         return disabled;
     }
 	
-
-     /**
+    /**
      * Disables the user flags by setting them to C_FLAG_DISABLED.
      */
-    void  setDisabled() {
+    public void  setDisabled() {
         setFlags(C_FLAG_DISABLED);
     }
     
+    /**
+     * Enables the user flags by setting them to C_FLAG_ENABLED.
+     */
+    public void  setEnabled() {
+        setFlags(C_FLAG_ENABLED);
+    }
     
 	/**
 	 * Returns a string-representation for this object.

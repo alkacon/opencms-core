@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/04 11:56:59 $
  */
 abstract public class A_CmsGroup { 
 	
@@ -52,6 +52,16 @@ abstract public class A_CmsGroup {
 	 */
 	abstract void setFlags(int flags);
     
+    /**
+     * Disables the flags by setting them to C_FLAG_DISABLED.
+     */
+    abstract public void  setDisabled();
+    
+    /**
+     * Enables the flags by setting them to C_FLAG_ENABLED.
+     */
+    abstract public void  setEnabled();
+
 	/**
 	 * Returns the id of the parent group of the actual Cms group object, 
 	 * or C_UNKNOWN_ID.

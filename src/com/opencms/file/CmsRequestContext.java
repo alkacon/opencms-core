@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/01/03 17:37:23 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/04 11:56:59 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -64,6 +64,12 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		m_req = req;
 		m_resp = resp;
 		m_user = m_rb.readUser(null, null, user);
+		
+		// check, if the user is disabled
+		if( m_user.getDisabled() == true ) {
+			m_user = null;
+		}
+		
 		m_currentProject = m_rb.readProject(m_user, null, currentProject);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
 	}

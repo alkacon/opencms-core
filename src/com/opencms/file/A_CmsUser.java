@@ -7,7 +7,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/04 11:56:59 $
  */
 public abstract class A_CmsUser {
 	
@@ -39,10 +39,15 @@ public abstract class A_CmsUser {
      */
     abstract public boolean getDisabled();
 	
-     /**
+    /**
      * Disables the user flags by setting them to C_FLAG_DISABLED.
      */
-    abstract void setDisabled();
+    abstract public void  setDisabled();
+    
+    /**
+     * Enables the user flags by setting them to C_FLAG_ENABLED.
+     */
+    abstract public void  setEnabled();
 
 	/**
 	 * Returns a string-representation for this object.

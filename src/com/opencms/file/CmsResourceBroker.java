@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/03 18:51:36 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/04 11:56:59 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -474,8 +474,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */	
 	public boolean isProjectLeader(A_CmsUser currentUser, A_CmsProject currentProject) 
 		throws CmsException { 
-		// TODO: implement this!
-		return( false );
+		return( m_userRb.userInGroup(currentUser.getName(), C_GROUP_PROJECTLEADER) );
 	}
 
 	/**
@@ -533,7 +532,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		return( m_userRb.readUser(username, password) );
 	}
 
-
 	/**
 	 * Returns a list of groups of a user.<P/>
 	 * 
@@ -562,7 +560,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Returns a group object.<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -574,8 +572,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsGroup readGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 								String groupname)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		
+		return m_userRb.readGroup(groupname);
 	}
 
 	/**
@@ -593,8 +591,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getUsersOfGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 								  String groupname)
 		throws CmsException {
-		// TODO: implement this!
-		return null;
+		// check the security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_userRb.getUsersOfGroup(groupname);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
@@ -605,7 +608,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
-	 * @param callingUser The user who wants to use this method.
 	 * @param nameuser The name of the user to check.
 	 * @param groupname The name of the group to check.
 	 * @return True or False
@@ -615,8 +617,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public boolean userInGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
-		// TODO: implement this!
-		return false;
+		// check the security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_userRb.userInGroup(username, groupname);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/** 
@@ -704,6 +711,12 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException {
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
+			
+			// prevent the admin to be set disabled!
+			if( isAdmin(user, currentProject) ) {
+				user.setEnabled();
+			}
+			
 			m_userRb.writeUser(user);
 		} else {
 			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
@@ -733,6 +746,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsGroup addGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
 		throws CmsException {
+		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			return( m_userRb.addGroup(name, description, flags, parent) );
 		} else {
@@ -741,8 +755,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 
-    
-     /**
+    /**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.<P/>
@@ -755,10 +768,15 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   A_CmsGroup group)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_userRb.writeGroup(group);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
-    
     
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -777,8 +795,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String delgroup)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_userRb.deleteGroup(delgroup);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
@@ -798,8 +821,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void addUserToGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_userRb.addUserToGroup(username, groupname);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
@@ -819,8 +847,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void removeUserFromGroup(A_CmsUser currentUser, A_CmsProject currentProject, 
 									String username, String groupname)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			m_userRb.removeUserFromGroup(username, groupname);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/**
@@ -868,7 +901,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
     
-    
     /**
 	 * Returns all child groups of a groups<P/>
 	 * 
@@ -884,8 +916,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getChild(A_CmsUser currentUser, A_CmsProject currentProject, 
 						   String groupname)
         throws CmsException {
-		// TODO: implement this!
-		return null;
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_userRb.getChild(groupname);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 
 	/** 
@@ -907,7 +944,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void setPassword(A_CmsUser currentUser, A_CmsProject currentProject, 
 							String username, String newPassword)
 		throws CmsException {
-		// TODO: implement this!
-		return ;
+		// read the user
+		A_CmsUser user = readUser(currentUser, currentProject, username);
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) && 
+			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
+			m_userRb.setPassword(username, newPassword);
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
 	}
 }

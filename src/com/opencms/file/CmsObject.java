@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/03 18:51:36 $ 
+ * @version $Revision: 1.5 $ $Date: 2000/01/04 11:56:59 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -882,6 +882,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		return( c_rb.getGroups(m_context.currentUser(), m_context.getCurrentProject()) );
 	}
+	
+    /**
+	 * Returns all child groups of a group<P/>
+	 * 
+	 * @param groupname The name of the group.
+	 * @return groups A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getChild(String groupname)
+        throws CmsException {
+		return( c_rb.getChild(m_context.currentUser(), m_context.getCurrentProject(), 
+							  groupname ) );
+	}
+
 		
 	/**
 	 * Returns a user in the Cms.
@@ -919,16 +933,25 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @param username The name of the user to be returned.
 	 * @param password The password of the user to be returned.
-	 * @return a user in the Cms.
+	 * @return the name of the logged in user.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsUser loginUser(String username, String password) 
+	public String loginUser(String username, String password) 
 		throws CmsException { 
 		A_CmsUser newUser = readUser(username, password);
-		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
-			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE);
-		return(newUser);
+		
+		// is the user enabled?
+		if( ! ( ( newUser.getFlags() & C_FLAG_DISABLED ) == C_FLAG_DISABLED ) ) {
+			// Yes - log him in!
+			init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
+				 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE);
+			return(newUser.getName());
+		} else {
+			// No Access!
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS], 
+				CmsException.C_NO_ACCESS );
+		}		
 	}
 	
 	/** 
@@ -978,34 +1001,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * Only the administrator can do this.
 	 * 
-	 * @param username The name of the user to be updated.
-	 * @param additionalInfos A Hashtable with additional infos for the user. These
-	 * @param flag The new user access flags.
+	 * @param user The user to be written.
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeUser(String username, Hashtable additionalInfos, int flag)
+	public void writeUser(A_CmsUser user)
 		throws CmsException { 
-		
-		// get the user, which has to be written
-		A_CmsUser user = c_rb.readUser(m_context.currentUser(), 
-									   m_context.getCurrentProject(),
-									   username);
-		
-		// merge the additional infos
-		Hashtable originalInfos = user.getAdditionalInfo();
-		Enumeration keys = additionalInfos.keys();
-		Object key;
-		while(keys.hasMoreElements()) {
-			key = keys.nextElement();
-			originalInfos.put(key, additionalInfos.get(key));
-		}
-		
-		// put the new infos into the user-object
-		user.setAdditionalInfo(originalInfos);
-		user.setFlags(flag);
-		// write it back
-		c_rb.writeUser(m_context.currentUser(), m_context.getCurrentProject(), user);
+		c_rb.writeUser(m_context.currentUser(), m_context.getCurrentProject(), user );
 	}
 	
 	/**
@@ -1018,7 +1020,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getUsersOfGroup(String groupname)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.getUsersOfGroup(m_context.currentUser(), 
+									 m_context.getCurrentProject(), groupname ));
 	}
 	
 	/**
@@ -1047,7 +1050,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public boolean userInGroup(String username, String groupname)
 		throws CmsException { 
 		return( c_rb.userInGroup(m_context.currentUser(), m_context.getCurrentProject(), 
-						 username, groupname));
+								 username, groupname));
 	}
 
 	/**
@@ -1058,8 +1061,10 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public A_CmsGroup readGroup(String groupname) { 
-		return null; // TODO: implement this! 
+	public A_CmsGroup readGroup(String groupname) 
+		throws CmsException { 
+		return( c_rb.readGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+							   groupname));
 	}	
 	
 	/**
@@ -1083,6 +1088,18 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 							  name, description, flags, parent) );
 	}
 	
+    /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	public void writeGroup(A_CmsGroup group)
+		throws CmsException {
+		c_rb.writeGroup(m_context.currentUser(), m_context.getCurrentProject(),
+						group);
+	}
+
 	/**
 	 * Delete a group from the Cms.<BR/>
 	 * 
@@ -1093,7 +1110,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void deleteGroup(String delgroup)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+						 delgroup);
 	}
 	
 	/**
@@ -1107,7 +1125,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void addUserToGroup(String username, String groupname)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.addUserToGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+							username, groupname );
 	}
 			   
 	/**
@@ -1121,7 +1140,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */	
 	public void removeUserFromGroup(String username, String groupname)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.removeUserFromGroup(m_context.currentUser(), m_context.getCurrentProject(), 
+								 username, groupname );
 	}
 	
 	/**
