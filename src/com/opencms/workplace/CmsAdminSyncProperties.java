@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/07/18 06:08:16 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/07/23 11:25:37 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -238,7 +238,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
                 syncPath = "";
             }
         }
-
         if((allResources == null) || ("".equals(allResources))) {
             allResources = "";
             if (!((projectId == null) || ("".equals(projectId)))){
@@ -250,7 +249,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
 		                String path = (String)resources.get(C_SYNCHRONISATION_RESOURCETAG+i);
                         // try to read this resource from the project
                         try{
-                            CmsResource resource = cms.readFileHeaderForHist(path, Integer.parseInt(projectId));
+                            CmsResource resource = cms.readFileHeader(path, Integer.parseInt(projectId));
                             allResources = allResources + path + ";";
                         } catch (CmsException exc){
                         }
