@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/09/26 15:02:28 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2001/10/02 13:04:41 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.63 $ $Date: 2001/09/26 15:02:28 $ *
+ * @version $Revision: 1.64 $ $Date: 2001/10/02 13:04:41 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     /**
@@ -512,6 +512,7 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
     CmsFolder currentFolder = null;
     CmsFile currentFile = null;
     CmsFolder newFolder = null;
+    CmsFile newFile = null;
     Vector offlineFolders;
     Vector offlineFiles;
     Vector deletedFolders = new Vector();
@@ -769,8 +770,8 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
             // in this case do nothing
         } else if (currentFile.getName().startsWith(C_TEMP_PREFIX))
         {
+            deleteAllProperties(projectId, currentFile.getResourceId());
             removeFile(projectId, currentFile.getAbsolutePath());
-
             // C_STATE_DELETE
         }
         else
@@ -958,11 +959,70 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
                             folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
                         }
                         //first remove the file if it already exists in online project
-                        removeFile(onlineProject.getId(), currentFile.getAbsolutePath());
-                        // create the new file
-                        CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
-                        newFile.setState(C_STATE_UNCHANGED);
-                        updateResourcestate(newFile);
+                        //removeFile(onlineProject.getId(), currentFile.getAbsolutePath());
+                        try{
+                            // create the new file
+                            newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
+                            newFile.setState(C_STATE_UNCHANGED);
+                            updateResourcestate(newFile);
+                        } catch(CmsException e){
+                            if (e.getType() == CmsException.C_FILE_EXISTS) {
+                                CmsFile onlineFile = null;
+                                try {
+                                    onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+                                } catch (CmsException exc) {
+                                    throw exc;
+                                } // end of catch
+                                Connection con = null;
+                                PreparedStatement statement = null;
+                                try {
+                                    con = DriverManager.getConnection(m_poolNameOnline);
+                                    // update the onlineFile with data from offlineFile
+                                    statement = con.prepareStatement(m_cq.get("C_RESOURCES_UPDATE_ONLINE"));
+                                    statement.setInt(1, currentFile.getType());
+                                    statement.setInt(2, currentFile.getFlags());
+                                    statement.setInt(3, currentFile.getOwnerId());
+                                    statement.setInt(4, currentFile.getGroupId());
+                                    statement.setInt(5, onlineFile.getProjectId());
+                                    statement.setInt(6, currentFile.getAccessFlags());
+                                    statement.setInt(7, C_STATE_UNCHANGED);
+                                    statement.setInt(8, currentFile.isLockedBy());
+                                    statement.setInt(9, currentFile.getLauncherType());
+                                    statement.setString(10, currentFile.getLauncherClassname());
+                                    statement.setTimestamp(11, new Timestamp(System.currentTimeMillis()));
+                                    statement.setInt(12, currentFile.getResourceLastModifiedBy());
+                                    statement.setInt(13, currentFile.getLength());
+                                    statement.setInt(14, onlineFile.getFileId());
+                                    statement.setInt(15, onlineFile.getResourceId());
+                                    statement.executeUpdate();
+                                    statement = con.prepareStatement(m_cq.get("C_FILES_UPDATE_ONLINE"));
+                                    statement.setBytes(1, currentFile.getContents());
+                                    statement.setInt(2, onlineFile.getFileId());
+                                    statement.executeUpdate();
+                                    statement.close();
+                                    newFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getAbsolutePath());
+                                } catch (SQLException sqle) {
+                                    throw new CmsException("[" + this.getClass().getName() + "] " + sqle.getMessage(), CmsException.C_SQL_ERROR, sqle);
+                                } finally {
+                                    if(statement != null) {
+                                        try {
+                                            statement.close();
+                                        } catch(SQLException exc) {
+                                            // nothing to do here
+                                        }
+                                    }
+                                    if(con != null) {
+                                        try {
+                                            con.close();
+                                        } catch(SQLException exc) {
+                                            // nothing to do here
+                                        }
+                                    }
+                                }
+                            } else {
+                                throw e;
+                            }
+                        }
 
                         // copy properties
                         Hashtable props = null;
@@ -1001,8 +1061,9 @@ public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProje
             // backup the offline resource
             backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
         }
-        try
-        {
+        CmsResource delOnlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+        try{
+            deleteAllProperties(onlineProject.getId(), delOnlineFolder);
             deleteAllProperties(projectId,currentFolder);
         }
         catch (CmsException exc)
