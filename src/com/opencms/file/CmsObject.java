@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/23 10:03:26 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2001/07/23 11:12:35 $
+ * Version: $Revision: 1.176 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.175 $ $Date: 2001/07/23 10:03:26 $
+ * @version $Revision: 1.176 $ $Date: 2001/07/23 11:12:35 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2310,7 +2310,12 @@ public void publishResource(String resourcename) throws CmsException {
             getRequestContext().setCurrentProject(newProjectId);
 	        CmsResource res = readFileHeader(resourcename);
 	        I_CmsResourceType rt = getResourceType(res.getType());
+            // copy the resource to the
 	        rt.copyResourceToProject(this, resourcename);
+            // lock and unlock resource to set the project_id to the current project
+            rt.lockResource(this, resourcename, true);
+            rt.unlockResource(this, resourcename);
+            // publish the temporary project
             publishProject(newProjectId);
             getRequestContext().setCurrentProject(oldProjectId);
         } else {
