@@ -7,7 +7,6 @@ addResourceType binary 1 ""
 addResourceType image 1 ""
 addResourceType script 1 ""
 addResourceType link 4 ""
-addResourceType newspage 3 ""
 addResourceType pdfpage 5 ""
 createPropertydefinition Title plain 0
 createPropertydefinition Title page 0

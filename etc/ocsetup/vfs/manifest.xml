@@ -154,21 +154,6 @@
             </properties>
         </file>
         <file>
-            <source>restypes/newspage</source>
-            <destination>system/workplace/restypes/newspage</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
             <source>restypes/page</source>
             <destination>system/workplace/restypes/page</destination>
             <type>plain</type>
@@ -237,22 +222,6 @@
                 </property>
             </properties>
         </file>
-		<file>
-			<destination>system/xmlmodules</destination>
-			<type>folder</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<destination>system/xmlmodules/news</destination>
-			<type>folder</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
         <file>
             <source>content/templates/empty</source>
             <destination>content/templates/empty</destination>
@@ -307,15 +276,6 @@
             <access>367</access>
             <properties/>
         </file>
-		<file>
-			<source>xmlmodules/news/module.ini</source>
-			<destination>system/xmlmodules/news/module.ini</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
 		<file>
 			<source>action/administration.html</source>
 			<destination>system/workplace/action/administration.html</destination>
@@ -935,105 +895,6 @@
 		<file>
 			<source>action/move.html</source>
 			<destination>system/workplace/action/move.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/news_admin.html</source>
-			<destination>system/workplace/action/news_admin.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/news_admin_content.html</source>
-			<destination>system/workplace/action/news_admin_content.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/news_admin_head.html</source>
-			<destination>system/workplace/action/news_admin_head.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-        <file>
-            <source>action/NewsAdminBackoffice.html</source>
-            <destination>system/workplace/action/NewsAdminBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>action/NewsBodyBackoffice.html</source>
-            <destination>system/workplace/action/NewsBodyBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>action/NewsDeleteBackoffice.html</source>
-            <destination>system/workplace/action/NewsDeleteBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>action/NewsEditBackoffice.html</source>
-            <destination>system/workplace/action/NewsEditBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>action/NewsEditBodyBackoffice.html</source>
-            <destination>system/workplace/action/NewsEditBodyBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>action/NewsHeadBackoffice.html</source>
-            <destination>system/workplace/action/NewsHeadBackoffice.html</destination>
-            <type>XMLTemplate</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-		<file>
-			<source>action/news_edit.html</source>
-			<destination>system/workplace/action/news_edit.html</destination>
-			<type>XMLTemplate</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>15</access>
-			<properties/>
-		</file>
-		<file>
-			<source>action/news_edit_content.html</source>
-			<destination>system/workplace/action/news_edit_content.html</destination>
 			<type>XMLTemplate</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -2531,26 +2392,8 @@
 			<properties/>
 		</file>
 		<file>
-			<source>config/language/de/news_de</source>
-			<destination>system/workplace/config/language/de/news_de</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
 			<source>config/language/uk/core_uk</source>
 			<destination>system/workplace/config/language/uk/core_uk</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>config/language/uk/news_uk</source>
-			<destination>system/workplace/config/language/uk/news_uk</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>
@@ -9827,135 +9670,6 @@
 		<file>
 			<source>templates/move</source>
 			<destination>system/workplace/templates/move</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-        <file>
-            <source>templates/NewsAdminBackoffice</source>
-            <destination>system/workplace/templates/NewsAdminBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Administrators</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[detailed view]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>templates/NewsBodyBackoffice</source>
-            <destination>system/workplace/templates/NewsBodyBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[data list in the body]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>templates/NewsDeleteBackoffice</source>
-            <destination>system/workplace/templates/NewsDeleteBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[delete content]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>templates/NewsEditBackoffice</source>
-            <destination>system/workplace/templates/NewsEditBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[edit content]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>templates/NewsEditBodyBackoffice</source>
-            <destination>system/workplace/templates/NewsEditBodyBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties>
-                <property>
-                    <name>Title</name>
-                    <type>1</type>
-                    <value><![CDATA[Eingabemaske_News]]></value>
-                </property>
-            </properties>
-        </file>
-        <file>
-            <source>templates/NewsHeadBackoffice</source>
-            <destination>system/workplace/templates/NewsHeadBackoffice</destination>
-            <type>plain</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>383</access>
-            <properties/>
-        </file>
-		<file>
-			<source>templates/news_admin</source>
-			<destination>system/workplace/templates/news_admin</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/news_admin_content</source>
-			<destination>system/workplace/templates/news_admin_content</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/news_admin_head</source>
-			<destination>system/workplace/templates/news_admin_head</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/news_edit</source>
-			<destination>system/workplace/templates/news_edit</destination>
-			<type>plain</type>
-			<user>Admin</user>
-			<group>Users</group>
-			<access>79</access>
-			<properties/>
-		</file>
-		<file>
-			<source>templates/news_edit_content</source>
-			<destination>system/workplace/templates/news_edit_content</destination>
 			<type>plain</type>
 			<user>Admin</user>
 			<group>Users</group>

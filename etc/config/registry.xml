@@ -12,20 +12,16 @@
         <view>
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
-        </view>  <!--  Enable this view only for spaceage        <view>
-            <name>select.news</name>
-            <url>/system/workplace/action/news_admin.html</url>        </view>
-        -->        <smtpserver>my.smtp.server</smtpserver>
+        </view>
+		
+		<smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>
-		<astest>
-			<a>a</a>
-			<b>b</b>
-			<c>c</c>
-		</astest>
+		
         <repository>
             <path>/system/classes/</path>
         </repository>
+		
 		<!-- enable this for synchronizing resources and set the desired paths
 		<syncpath>c:/work41/sync</syncpath>
 		<syncproject>_syncProject</syncproject>

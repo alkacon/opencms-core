@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/02/21 12:34:32 $
-* Version: $Revision: 1.136 $
+* Date   : $Date: 2001/02/22 09:34:36 $
+* Version: $Revision: 1.137 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.136 $ $Date: 2001/02/21 12:34:32 $
+ * @version $Revision: 1.137 $ $Date: 2001/02/22 09:34:36 $
  */
 public interface I_CmsConstants {
 
@@ -130,11 +130,6 @@ public interface I_CmsConstants {
      * The resource type-name for a page file.
      */
     final static String C_TYPE_PAGE_NAME = "page";
-
-    /**
-     * The resource type-name for a newspage file.
-     */
-    final static String C_TYPE_NEWSPAGE_NAME = "newspage";
 
     /**
      * The resource type-name for plain files.

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2001/02/02 16:46:41 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2001/02/22 09:34:36 $
+* Version: $Revision: 1.35 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,10 +43,10 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.34 $ $Date: 2001/02/02 16:46:41 $
+ * @version $Revision: 1.35 $ $Date: 2001/02/22 09:34:36 $
  */
 
-public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants,I_CmsNewsConstants {
+public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
     /**
      * Deletes a file.
@@ -83,46 +83,6 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             }
 
         //
-        }
-        else {
-            if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME)) {
-                String newsContentPath = getNewsContentPath(cms, (CmsFile)file);
-                try {
-                    CmsFile newsContentFile = (CmsFile)cms.readFileHeader(newsContentPath);
-                    if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()
-                            == cms.getRequestContext().currentUser().getId())) {
-                        cms.deleteFile(newsContentPath);
-                    }
-                }
-                catch(CmsException e) {
-
-
-                //TODO: ErrorHandling
-                }
-                try {
-                    cms.deleteFile(file.getAbsolutePath());
-                    hDelete = false;
-                }
-                catch(CmsException e) {
-
-
-                //TODO: ErrorHandling
-                }
-                try {
-                    String parentFolderName = file.getParent();
-                    CmsFolder parentFolder = cms.readFolder(parentFolderName);
-                    if((!parentFolder.isLocked()) || (parentFolder.isLockedBy()
-                            != cms.getRequestContext().currentUser().getId())) {
-                        cms.lockResource(parentFolderName);
-                    }
-                    cms.deleteFolder(parentFolderName);
-                }
-                catch(CmsException e) {
-
-
-                //TODO: ErrorHandling
-                }
-            }
         }
         if(hDelete) {
             cms.deleteFile(file.getAbsolutePath());
@@ -334,34 +294,6 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
-    }
-
-    /**
-     * Get the real path of the news content file.
-     *
-     * @param cms The CmsObject, to access the XML read file.
-     * @param file File in which the body path is stored.
-     */
-
-    private String getNewsContentPath(CmsObject cms, CmsFile file) throws CmsException {
-        String newsContentFilename = null;
-
-        // The given file object contains the news page file.
-
-        // we have to read out the article
-        CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, file.getAbsolutePath());
-        String readParam = newsPageFile.getElementParameter("body", "read");
-        String newsfolderParam = newsPageFile.getElementParameter("body", "folder");
-        if(readParam != null && !"".equals(readParam)) {
-
-            // there is a read parameter given.
-            // so we know which news file should be read.
-            if(newsfolderParam == null || "".equals(newsfolderParam)) {
-                newsfolderParam = C_NEWS_FOLDER_CONTENT;
-            }
-            newsContentFilename = newsfolderParam + readParam;
-        }
-        return newsContentFilename;
     }
 
     /**
