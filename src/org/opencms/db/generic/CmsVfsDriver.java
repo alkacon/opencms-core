@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/18 11:54:19 $
- * Version: $Revision: 1.199 $
+ * Date   : $Date: 2004/08/19 15:06:58 $
+ * Version: $Revision: 1.200 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.199 $ $Date: 2004/08/18 11:54:19 $
+ * @version $Revision: 1.200 $ $Date: 2004/08/19 15:06:58 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1378,9 +1378,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int, int)
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(org.opencms.file.CmsUser, org.opencms.file.CmsProject, org.opencms.file.CmsResource, byte[], int)
      */
-    public void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType, int loaderId) throws CmsException {
+    public void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
@@ -1395,8 +1395,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCE_REPLACE");
             stmt.setInt(1, newResType);
             stmt.setInt(2, resContent.length);
-            stmt.setInt(3, loaderId);
-            stmt.setString(4, res.getResourceId().toString());
+            stmt.setString(3, res.getResourceId().toString());
             stmt.executeUpdate();
 
         } catch (SQLException e) {

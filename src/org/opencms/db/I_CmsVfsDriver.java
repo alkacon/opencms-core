@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/17 16:46:36 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2004/08/19 15:06:58 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.87 $ $Date: 2004/08/17 16:46:36 $
+ * @version $Revision: 1.88 $ $Date: 2004/08/19 15:06:58 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -411,16 +411,15 @@ public interface I_CmsVfsDriver {
     
     /**
      * Replaces the content and properties of an existing resource.<p>
-     * 
      * @param currentUser the current user
      * @param currentProject the current project
      * @param res the new resource
      * @param newResContent the new content
      * @param newResType the resource type
-     * @param loaderId the new loader id
+     * 
      * @throws CmsException if something goes wrong
      */
-    void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType, int loaderId) throws CmsException;
+    void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] newResContent, int newResType) throws CmsException;
 
     /**
      * Validates if the specified content ID in the tables of the specified project {offline|online} exists.<p>
