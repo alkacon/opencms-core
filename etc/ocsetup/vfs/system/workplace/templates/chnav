@@ -6,14 +6,17 @@
 <html>
 <head>
 <script language="JavaScript">
-    function checkForm(){
-      document.location.href='chnav.html?action=save&navpos='+document.getElementById("navpos").value;
+<!--
+    function setValues(){
+    	var navText = unescape(']]><PROCESS>navtitle</PROCESS><![CDATA[');
+    	document.navigation.navtitle.value = escape(navText);
     }
+//-->  
 </script>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 </head>
-<body>
-<form>
+<body onLoad="javascript:setValues();">
+<form name="navigation">
     <table border=2 cellspacing=0 cellpadding=0 width=430px align=center>
         <tr>
             <td>
@@ -26,6 +29,14 @@
                     <tr>
                         <td colspan=2 class=dialogtxt>
                             <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            ]]><LABEL value="input.navtext" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            <input type="textfield" id="navtitle" name="navtitle" maxlength=100 style="width:300px;" class="textfeld2" > 
                         </td>
                     </tr>
                     <tr>
@@ -45,7 +56,8 @@
                     		<table>
                     			<tr>
                         			<td class=dialogtxt align=center>
-                            			<input class=button type="button" value="]]><LABEL value="button.ok" /><![CDATA[" onClick=checkForm();>
+                        				<input type="hidden" id="action" name="action" value="save">
+                            			<input class=button type="submit" value="]]><LABEL value="button.ok" /><![CDATA[">
                             			<input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
                         			</td>
                         		</tr>
