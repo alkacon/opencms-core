@@ -260,4 +260,7 @@ function update_frames()
 <TEMPLATE name="error">
 <ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
 </TEMPLATE>
+<TEMPLATE name="errorbadname">
+<ERRORPAGE title="error.title.rename" message="error.message.rename" reason="error.reason.newextension" suggestion="error.suggestion.none" ref="explorer_files.html" ><process>details</process></ERRORPAGE>
+</TEMPLATE>
 </WORKPLACE>

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/23 07:40:55 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2001/07/23 08:03:02 $
+ * Version: $Revision: 1.174 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.173 $ $Date: 2001/07/23 07:40:55 $
+ * @version $Revision: 1.174 $ $Date: 2001/07/23 08:03:02 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2202,8 +2202,6 @@ public void moveFile(String source, String destination) throws CmsException {
  *
  * @exception CmsException if the user has not the rights to move this resource,
  * or if the file couldn't be moved.
- *
- * @deprecated Use moveResource instead.
  */
 public void moveResource(String source, String destination) throws CmsException {
 	CmsResource res = readFileHeader(source);

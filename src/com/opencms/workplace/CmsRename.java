@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2001/07/18 06:10:24 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/07/23 08:02:18 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.36 $ $Date: 2001/07/18 06:10:24 $
+ * @version $Revision: 1.37 $ $Date: 2001/07/23 08:02:18 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -153,9 +153,10 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        //session.removeValue(C_PARA_FILE); don't delete this. We really need this to try again.
+                        session.removeValue(C_PARA_FILE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
-                        throw ex;
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "errorbadname");
                     }
 
                     // everything is done, so remove all session parameters
@@ -184,9 +185,10 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     } catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        //session.removeValue(C_PARA_FILE); don't delete this. We really need this to try again.
+                        session.removeValue(C_PARA_FILE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
-                        throw ex;
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "errorbadname");
                     }
 
                     // everything is done, so remove all session parameters

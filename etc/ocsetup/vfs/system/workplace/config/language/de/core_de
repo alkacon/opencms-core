@@ -165,6 +165,7 @@
                 <projectdatamissing>Das neue Projekt konnte nicht angelegt werden.</projectdatamissing>
                 <publishproject>Leider konnte das Projekt nicht veröffentlicht werden.</publishproject>
                 <publishresource>Leider konnte die Ressource nicht veröffentlicht werden.</publishresource>
+                <rename>Leider konnte die Ressource nicht umbenannt werden.</rename>
                 <restoreresource>Leider konnte diese Version der Ressource nicht wiederhergestellt werden.</restoreresource>
                 <rmdefault>Leider konnten nicht alle Benutzerzugehörigkeiten geändert werden.</rmdefault>
                 <deleteproject>Leider konnte das Projekt nicht gelöscht werden.</deleteproject>
@@ -317,6 +318,7 @@
                 <publishproject>Projekt veröffentlichen</publishproject>
                 <publishresource>Direkt veröffentlichen</publishresource>
                 <restoreresource>Historisierte Version wiederherstellen</restoreresource>
+				<rename>Umbenennen</rename>
                 <deleteproject>Projekt löschen</deleteproject>
                 <syncfolder>Ordner synchronisieren</syncfolder>
                 <syncproperties>Einstellungen für die Synchronisation</syncproperties>

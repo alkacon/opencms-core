@@ -166,7 +166,8 @@
 				<projectdatamissing>Sorry, the new project could not be created.</projectdatamissing>
 				<publishproject>Sorry, the project could not be published.</publishproject> 
 				<publishresource>Sorry, the resource could not be published directly.</publishresource>
-				<restoreresource>Sorry, this version of the resource could not be restored.</restoreresource>
+				<rename>Sorry, the resource could not be renamed.</rename>
+                <restoreresource>Sorry, this version of the resource could not be restored.</restoreresource>
 				<rmdefault>Sorry, not all users could be removed.</rmdefault>
 				<deleteproject>Sorry, the project could not be deleted.</deleteproject>
 				<staticexport>Sorry, the Resources could not be exported.</staticexport>
@@ -317,7 +318,8 @@
 				<picgallery>Creating new Picture Gallery</picgallery>
 				<publishproject>Publish Project</publishproject>
 				<publishresource>Publish Resource</publishresource>
-				<restoreresource>Restore Version</restoreresource>
+				<rename>Rename Resource</rename>
+                <restoreresource>Restore Version</restoreresource>
 				<deleteproject>Delete Project</deleteproject>
 				<syncfolder>Synchronize Folders</syncfolder>
 				<syncproperties>Properties for Synchronisation</syncproperties>
