@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/11/12 18:41:52 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/11/12 20:09:25 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.51 $ $Date: 2004/11/12 18:41:52 $
+ * @version $Revision: 1.52 $ $Date: 2004/11/12 20:09:25 $
  */
 public class CmsExport implements Serializable {
 
@@ -340,6 +340,8 @@ public class CmsExport implements Serializable {
         }
     }
 
+    private static final int C_SUB_LENGTH = 4096;
+    
     /**
      * Closes the export ZIP file and saves the XML document for the manifest.<p>
      * 
@@ -359,8 +361,20 @@ public class CmsExport implements Serializable {
         ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
         getExportZipStream().putNextEntry(entry);
 
-        // write the XML to the zip stream
-        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
+        // complex substring operation is required to ensure handling for very large export manifest files
+        StringBuffer result = ((StringWriter)xmlSaxWriter.getWriter()).getBuffer();                       
+        int steps = result.length() / C_SUB_LENGTH;
+        int rest = result.length() % C_SUB_LENGTH;        
+        int pos = 0;
+        for (int i=0; i<steps; i++) {
+            String sub = result.substring(pos, pos + C_SUB_LENGTH);
+            getExportZipStream().write(sub.getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
+            pos += C_SUB_LENGTH;
+        }        
+        if (rest > 0) {
+            String sub = result.substring(pos, pos + rest);
+            getExportZipStream().write(sub.getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));            
+        }
 
         // close the zip entry for the manifest XML document
         getExportZipStream().closeEntry();
@@ -524,7 +538,7 @@ public class CmsExport implements Serializable {
     protected Element openExportFile() throws IOException, SAXException {
         // create the export-zipstream
         setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
-        // generate the SAX XML writer 
+        // generate the SAX XML writer
         CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getSystemInfo().getDefaultEncoding());
         // initialize the dom4j writer object as member variable
         setSaxWriter(new SAXWriter(saxHandler, saxHandler));
