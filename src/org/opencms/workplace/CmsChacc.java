@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/02 13:40:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/07 14:30:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -673,7 +673,7 @@ public class CmsChacc extends CmsDialog {
         
         // only display form if current user has the "control" right
         if (m_editable) { 
-            retValue.append(dialogBlock(HTML_START, key("dialog.permission.headline.add")));
+            retValue.append(dialogBlockStart(key("dialog.permission.headline.add")));
 
             // get all possible entry types
             ArrayList options = new ArrayList();
@@ -696,7 +696,7 @@ public class CmsChacc extends CmsDialog {
             retValue.append("</form>\n");
             retValue.append("</table>\n");          
             
-            retValue.append(dialogBlock(HTML_END));      
+            retValue.append(dialogBlockEnd());      
         }
         return retValue.toString();
     }
@@ -712,7 +712,7 @@ public class CmsChacc extends CmsDialog {
         if (!"".equals(errorMessages)) {
             retValue.append(dialogBlock(HTML_START, key("dialog.permission.error.headline"), true));
             retValue.append(errorMessages);
-            retValue.append(dialogBlock(HTML_END));
+            retValue.append(dialogBlockEnd());
         }
         return retValue.toString();
     }
