@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/27 10:26:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -733,12 +733,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @return true if properties are editable, otherwise false
      */
     protected boolean isEditable() {
-        if (m_isEditable == null) {  
-            
-            if (getCms().getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-                // we are in the online project, no editing allowed
+
+        if (m_isEditable == null) {
+
+            if (getCms().getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID
+                || !getCms().isInsideCurrentProject(getParamResource())) {
+                // we are in the online project or resource does not belong to project, no editing allowed
                 m_isEditable = new Boolean(false);
-                
+
             } else {
                 // we are in an offline project, check lock state
                 String resourceName = getParamResource();
@@ -748,7 +750,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     file = getCms().readResource(resourceName, CmsResourceFilter.ALL);
                     // check if resource is a folder
                     if (file.isFolder()) {
-                        resourceName += "/";            
+                        resourceName += "/";
                     }
                 } catch (CmsException e) {
                     // should usually never happen
@@ -756,25 +758,26 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         OpenCms.getLog(this).info(e);
                     }
                 }
-            
+
                 try {
                     // get the lock for the resource
                     lock = getCms().getLock(resourceName);
                 } catch (CmsException e) {
                     lock = CmsLock.getNullLock();
-                
-                    if (OpenCms.getLog(this).isErrorEnabled()) { 
+
+                    if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error getting lock state for resource " + resourceName, e);
-                    }             
+                    }
                 }
-            
+
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
-                            && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
+                    if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE
+                        && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
+                        && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                         // lock is not shared and belongs to the current user
-                        if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId() 
-                                || "true".equals(getParamUsetempfileproject())) {
+                        if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId()
+                            || "true".equals(getParamUsetempfileproject())) {
                             // resource is locked in the current project or the tempfileproject is used
                             m_isEditable = new Boolean(true);
                             return m_isEditable.booleanValue();
@@ -788,7 +791,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 m_isEditable = new Boolean(false);
             }
         }
-        
         return m_isEditable.booleanValue();
     }
     
