@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/09/05 09:27:53 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.15 $ $Date: 2001/09/05 09:27:53 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -633,6 +633,17 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         A_OpenCms.initializeServletLogging(m_configurations);
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Server Info: " + config.getServletContext().getServerInfo());
+            String jdkinfo = System.getProperty("java.vm.name") + " ";
+            jdkinfo += System.getProperty("java.vm.version") + " ";
+            jdkinfo += System.getProperty("java.vm.info") + " ";
+            jdkinfo += System.getProperty("java.vm.vendor") + " ";
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] JDK Info: " + jdkinfo);
+
+            String osinfo = System.getProperty("os.name") + " ";
+            osinfo += System.getProperty("os.version") + " ";
+            osinfo += System.getProperty("os.arch") + " ";
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] OS Info: " + osinfo);
         }
 
         // initialize the redirect information
