@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 08:40:23 $
- * Version: $Revision: 1.73 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
+ * Date   : $Date: 2000/06/06 08:40:24 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file;
+package com.opencms.file.genericSql;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -34,19 +34,22 @@ import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
+import com.opencms.file.*;
+
 
 /**
- * This interface describes THE resource broker. All DB-specific access modules must
- * implement this interface.
- * The interface is local to package. <B>All</B> methods
+ * This is THE resource broker. It merges all resource broker
+ * into one public class. The interface is local to package. <B>All</B> methods
  * get additional parameters (callingUser and currentproject) to check the security-
  * police.
  * 
+ * @author Andreas Schouten
+ * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2000/06/06 08:40:23 $
+ * @version $Revision: 1.1 $ $Date: 2000/06/06 08:40:24 $
  * 
  */
-public interface I_CmsResourceBroker {
+class  CmsResourceBroker implements I_CmsResourceBroker {
 
 
     // Internal ResourceBroker methods
@@ -58,7 +61,8 @@ public interface I_CmsResourceBroker {
      * @exception CmsException Throws CmsException if something goes wrong.
      */
     public void init(Configurations config) 
-        throws CmsException;
+        throws CmsException {
+    }
                               
     
     // Methods working with projects
@@ -77,7 +81,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
 								 int projectId) 
-		throws CmsException;
+        throws CmsException {
+        return true;
+    }
     
      /**
 	 * Creates a project.
@@ -97,7 +103,9 @@ public interface I_CmsResourceBroker {
 	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 									   String name, String description, String group,
 									   String managergroupname)
-		 throws CmsException;
+         throws CmsException {
+         return null;
+     }
 	
 	/**
 	 * Creates a project.
@@ -118,7 +126,9 @@ public interface I_CmsResourceBroker {
 	 public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
 									   int id, String name, String description, String group,
 									   String managergroupname)
-		 throws CmsException;
+         throws CmsException {
+         return null;
+     }
      							
 	/**
 	 * Deletes a project.
@@ -134,7 +144,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deleteProject(CmsUser currentUser, CmsProject currentProject,
 							  int id)
-		throws CmsException;
+        throws CmsException {
+    }
      
 	/**
 	 * Returns all projects, which are owned by the user or which are accessible
@@ -150,7 +161,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public Vector getAllAccessibleProjects(CmsUser currentUser, 
 											CmsProject currentProject)
-		 throws CmsException;	
+         throws CmsException {
+         return null;
+     }
 	
 	/**
 	 * Returns all projects, which are owned by the user or which are manageable
@@ -166,7 +179,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public Vector getAllManageableProjects(CmsUser currentUser, 
 											CmsProject currentProject)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
      
 	/**
@@ -183,7 +198,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsProject onlineProject(CmsUser currentUser, 
 									CmsProject currentProject)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/**
 	 * Publishes a project.
@@ -200,7 +217,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
 	/**
 	 * Reads a project from the Cms.
@@ -216,7 +235,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   int id)
-		 throws CmsException ;
+         throws CmsException {
+      return null;
+     }
      
      /**
 	 * Reads a project from the Cms.
@@ -232,7 +253,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   CmsResource res)
-		 throws CmsException ;
+         throws CmsException {
+      return null;
+     }
 	
     /**
 	 * Reads a project from the Cms.
@@ -248,7 +271,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 									 CmsTask task)
-		 throws CmsException ;
+         throws CmsException {
+      return null;
+     }
 	 
 
 	/**
@@ -264,7 +289,8 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public void unlockProject(CmsUser currentUser, CmsProject currentProject, int id)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	
 	// Methods working with properties and propertydefinitions
@@ -289,7 +315,9 @@ public interface I_CmsResourceBroker {
 													String name, 
 													String resourcetype, 
 													int type)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 		
 	/**
 	 * Delete the propertydefinition for the resource type.<BR/>
@@ -307,7 +335,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
 									 String name, String resourcetype)
-		throws CmsException;
+        throws CmsException {
+    }
 	
     
 	/**
@@ -326,7 +355,8 @@ public interface I_CmsResourceBroker {
 	public void deleteAllProperties(CmsUser currentUser, 
 										  CmsProject currentProject, 
 										  String resource)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Deletes a propertyinformation for a file or folder.
@@ -344,7 +374,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String property)
-		throws CmsException;
+        throws CmsException {
+    }
     
     /**
 	 * Reads all propertydefinitions for the given resource type.
@@ -363,7 +394,9 @@ public interface I_CmsResourceBroker {
 	 */	
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype)
-		throws CmsException;
+        throws CmsException {
+         return null;
+    }
 	
 	/**
 	 * Reads all propertydefinitions for the given resource type.
@@ -383,7 +416,9 @@ public interface I_CmsResourceBroker {
 	 */	
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										 String resourcetype, int type)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
     /**
 	 * Reads a definition for the given resource type.
@@ -405,7 +440,9 @@ public interface I_CmsResourceBroker {
 	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
       
 	/**
@@ -425,7 +462,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject, 
 											 String resource)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
     
     /**
@@ -446,7 +485,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, String property)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
     
 	/**
@@ -466,7 +507,9 @@ public interface I_CmsResourceBroker {
 	public CmsPropertydefinition writePropertydefinition(CmsUser currentUser, 
 												   CmsProject currentProject, 
 												   CmsPropertydefinition propertydef)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 
 	/**
@@ -486,7 +529,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void writeProperty(CmsUser currentUser, CmsProject currentProject, 
 									 String resource, String property, String value)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Writes a couple of propertyinformation for a file or folder.
@@ -504,7 +548,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void writeProperties(CmsUser currentUser, CmsProject currentProject, 
 									  String resource, Hashtable propertyinfos)
-		throws CmsException;
+        throws CmsException {
+    }
 
 
     // Methods working with system properties
@@ -522,7 +567,9 @@ public interface I_CmsResourceBroker {
 	 * @return the exportpath.
 	 */
 	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException ;
+        throws CmsException  {
+     return null;
+    }
 							
     
     
@@ -538,7 +585,8 @@ public interface I_CmsResourceBroker {
 	 * @param mountpoint The mount point in the Cms filesystem.
 	 */
 	public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
-		throws CmsException ;
+        throws CmsException {
+    }
    
     	
 	/** 
@@ -558,7 +606,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String newPassword)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Gets the MimeTypes. 
@@ -573,7 +622,9 @@ public interface I_CmsResourceBroker {
 	 * @return the mime-types.
 	 */
 	public Hashtable readMimeTypes(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Gets the known file extensions (=suffixes) 
@@ -588,7 +639,9 @@ public interface I_CmsResourceBroker {
 	 */
 	
 	public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	
 	/**
@@ -604,7 +657,8 @@ public interface I_CmsResourceBroker {
 	
 	public void writeFileExtensions(CmsUser currentUser, CmsProject currentProject,
 									Hashtable extensions)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * adds a file extension to the list of known file extensions 
@@ -620,7 +674,8 @@ public interface I_CmsResourceBroker {
 	
 	public void addFileExtension(CmsUser currentUser, CmsProject currentProject,
 								 String extension, String resTypeName)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	
     /**
@@ -640,7 +695,8 @@ public interface I_CmsResourceBroker {
 	public void addMountPoint(CmsUser currentUser, CmsProject currentProject, 
 							  String mountpoint, String driver, String connect,
 							  String name)
-		throws CmsException ;
+        throws CmsException {
+    }
 
     /**
 	 * Adds a new CmsMountPoint. 
@@ -662,7 +718,8 @@ public interface I_CmsResourceBroker {
 	public void addMountPoint(CmsUser currentUser, CmsProject currentProject,
 							  String mountpoint, String mountpath, String name, 
 							  String user, String group, String type, int accessFlags)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Gets a CmsMountPoint. 
@@ -680,7 +737,9 @@ public interface I_CmsResourceBroker {
 	public CmsMountPoint readMountPoint(CmsUser currentUser, 
 										  CmsProject currentProject, 
 										  String mountpoint )
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
     /**
 	 * Deletes a CmsMountPoint. 
@@ -695,7 +754,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deleteMountPoint(CmsUser currentUser, CmsProject currentProject, 
 								 String mountpoint )
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Gets all CmsMountPoints. 
@@ -710,7 +770,9 @@ public interface I_CmsResourceBroker {
 	 * @return the mountpoints - or null if they doesen't exists.
 	 */
 	public Hashtable getAllMountPoints(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 
 
     /**
@@ -722,7 +784,9 @@ public interface I_CmsResourceBroker {
 	 * @exception Throws CmsException if something goes wrong.
      */
     public Hashtable getMountPointMappings(CmsUser currentUser,  CmsProject currentProject)
-        throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
 
 	//  Methods working with user and groups
@@ -743,7 +807,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser loginUser(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String password) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
     	
 	/**
@@ -761,7 +827,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
     
     
 	/**
@@ -779,7 +847,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
 									   CmsTask task) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
     
 	/**
 	 * Reads the owner of a resource from the OpenCms.
@@ -795,7 +865,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Reads the owner of a tasklog from the OpenCms.
@@ -810,7 +882,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 							
 	/**
 	 * Reads the owner (initiator) of a task from the OpenCms.
@@ -827,7 +901,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 							
 	/**
 	 * Reads the group of a resource from the OpenCms.
@@ -843,7 +919,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 							
 	/**
 	 * Reads the group (role) of a task from the OpenCms.
@@ -860,7 +938,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 								
 	/**
 	 * Reads the owner of a project from the OpenCms.
@@ -876,7 +956,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsProject project) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Reads the group of a project from the OpenCms.
@@ -892,7 +974,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								CmsProject project) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Reads the managergroup of a project from the OpenCms.
@@ -908,7 +992,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup readManagerGroup(CmsUser currentUser, CmsProject currentProject, 
 									   CmsProject project) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Determines, if the users current group is the admin-group.
@@ -923,7 +1009,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	public boolean isAdmin(CmsUser currentUser, CmsProject currentProject) 
-		throws CmsException;
+        throws CmsException {
+        return true;
+    }
     
     /**
 	 * Determines, if the users current group is the projectleader-group.<BR/>
@@ -939,7 +1027,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	public boolean isProjectManager(CmsUser currentUser, CmsProject currentProject) 
-		throws CmsException;
+        throws CmsException {
+        return true;
+    }
 
    	/**
 	 * Determines, if the users may manage a project.<BR/>
@@ -954,7 +1044,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */	
 	public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject) 
-		throws CmsException;
+        throws CmsException {
+        return true;
+    }
 	
 	/**
 	 * Returns the anonymous user object.<P/>
@@ -968,7 +1060,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns a user object.<P/>
@@ -984,7 +1078,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
@@ -1002,7 +1098,9 @@ public interface I_CmsResourceBroker {
 	 */		
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username, String password)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 
 	/**
@@ -1019,7 +1117,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 								  String username)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns the list of groups to which the user directly belongs to<P/>
@@ -1035,7 +1135,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 										String username)
-		throws CmsException;
+        throws CmsException {
+        return null;
+    }
 	
 	/**
 	 * Returns a group object.<P/>
@@ -1052,7 +1154,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/**
 	 * Returns a list of users in a group.<P/>
@@ -1068,7 +1172,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, 
 								  String groupname)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/**
 	 * Checks if a user is member of a group.<P/>
@@ -1087,7 +1193,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
-		throws CmsException;
+        throws CmsException {
+        return true;
+    }
 
 	/** 
 	 * Adds a user to the Cms.
@@ -1115,7 +1223,9 @@ public interface I_CmsResourceBroker {
 							 String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
     
      /** 
@@ -1142,7 +1252,9 @@ public interface I_CmsResourceBroker {
 							 String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/** 
 	 * Deletes a user from the Cms.
@@ -1160,7 +1272,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Updated the user information.<BR/>
@@ -1178,7 +1291,8 @@ public interface I_CmsResourceBroker {
 	 */
     public void writeUser(CmsUser currentUser, CmsProject currentProject, 
 						  CmsUser user)			
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Add a new group to the Cms.<BR/>
@@ -1201,7 +1315,9 @@ public interface I_CmsResourceBroker {
 	 */	
 	public CmsGroup addGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String name, String description, int flags, String parent)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
     
      /**
@@ -1216,7 +1332,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void writeGroup(CmsUser currentUser, CmsProject currentProject, 
 						   CmsGroup group)
-		throws CmsException;
+        throws CmsException {
+    }
     
     /**
 	 * Sets a new parent-group for an already existing group in the Cms.<BR/>
@@ -1232,7 +1349,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void setParentGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String groupName, String parentGroupName)
-		throws CmsException;
+        throws CmsException {
+    }
     
 	/**
 	 * Delete a group from the Cms.<BR/>
@@ -1250,7 +1368,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void deleteGroup(CmsUser currentUser, CmsProject currentProject, 
 							String delgroup)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Adds a user to a group.<BR/>
@@ -1268,7 +1387,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Removes a user from a group.
@@ -1286,7 +1406,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void removeUserFromGroup(CmsUser currentUser, CmsProject currentProject, 
 									String username, String groupname)
-		throws CmsException;
+        throws CmsException {
+    }
 
 	/**
 	 * Returns all users<P/>
@@ -1300,7 +1421,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
-        throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns all groups<P/>
@@ -1314,7 +1437,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getGroups(CmsUser currentUser, CmsProject currentProject)
-        throws CmsException;	
+        throws CmsException {
+     return null;
+    }
     
     
     /**
@@ -1331,7 +1456,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getChild(CmsUser currentUser, CmsProject currentProject, 
 						   String groupname)
-        throws CmsException ;	
+        throws CmsException {
+     return null;
+    }
 
     /**
 	 * Returns all child groups of a group<P/>
@@ -1348,7 +1475,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getChilds(CmsUser currentUser, CmsProject currentProject, 
 							String groupname)
-        throws CmsException ;	
+        throws CmsException {
+     return null;
+    }
 							  
     /**
 	 * Returns the parent group of a group<P/>
@@ -1364,7 +1493,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
 								String groupname)
-        throws CmsException ;	
+        throws CmsException {
+     return null;
+    }
 	
 	/** 
 	 * Sets the password for a user.
@@ -1385,7 +1516,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
-		throws CmsException;
+        throws CmsException {
+    }
 
     
     
@@ -1411,7 +1543,9 @@ public interface I_CmsResourceBroker {
 	 * */
 	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 String filename)
-		throws CmsException;
+         throws CmsException {
+      return null;
+     }
     
      /**
 	 * Reads a file from a previous project of the Cms.<BR/>
@@ -1434,7 +1568,9 @@ public interface I_CmsResourceBroker {
 	 * */
 	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
 							 int projectId, String filename)
-		throws CmsException;
+         throws CmsException {
+      return null;
+     }
      
 	 /**
 	 * Reads a file header from the Cms.<BR/>
@@ -1459,7 +1595,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public CmsResource readFileHeader(CmsUser currentUser, 
 										 CmsProject currentProject, String filename)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
 	
       /**
@@ -1488,7 +1626,9 @@ public interface I_CmsResourceBroker {
 									   CmsProject currentProject,
                                        int projectId,
                                        String filename)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
      
     /**
      * Copies a resource from the online project to a new, specified project.<br>
@@ -1509,7 +1649,8 @@ public interface I_CmsResourceBroker {
     public void copyResourceToProject(CmsUser currentUser, 
 									  CmsProject currentProject,
                                       String resource)
-        throws CmsException;
+        throws CmsException {
+    }
 								
 	/**
 	 * Reads a folder from the Cms.<BR/>
@@ -1535,7 +1676,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
-		throws CmsException ;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Creates a new folder.
@@ -1571,7 +1714,9 @@ public interface I_CmsResourceBroker {
                                   CmsProject currentProject, 
 								  String folder, String newFolderName, 
 								  Hashtable propertyinfos)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
      /**
 	 * Deletes a folder in the Cms.<br>
@@ -1597,7 +1742,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void deleteFolder(CmsUser currentUser, CmsProject currentProject,
 							 String foldername)
-		throws CmsException;
+        throws CmsException {
+    }
 
     
     /**
@@ -1617,7 +1763,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void moveFolder(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
-		throws CmsException;
+        throws CmsException {
+    }
     
      /**
 	 * Renames the folder to a new name. <br>
@@ -1647,7 +1794,8 @@ public interface I_CmsResourceBroker {
 	 */		
 	public void renameFolder(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
-		throws CmsException;
+        throws CmsException {
+    }
     
      /**
 	 * Copies a folder in the Cms. <br>
@@ -1670,7 +1818,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void copyFolder(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
-		throws CmsException;
+        throws CmsException {
+    }
     
    	/**
 	 * Returns a Vector with all subfolders.<br>
@@ -1694,7 +1843,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
 								String foldername)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 							   
 	/**
 	 * Locks a resource.<br>
@@ -1725,7 +1876,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void lockResource(CmsUser currentUser, CmsProject currentProject,
                              String resourcename, boolean force)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Unlocks a resource.<br>
@@ -1750,7 +1902,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void unlockResource(CmsUser currentUser,CmsProject currentProject,
                                String resourcename)
-        throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Returns the user, who had locked the resource.<BR/>
@@ -1769,7 +1922,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns the user, who had locked the resource.<BR/>
@@ -1788,7 +1943,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  CmsResource resource)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
 	/**
 	 * Returns a Vector with all I_CmsResourceTypes.
@@ -1805,7 +1962,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Hashtable getAllResourceTypes(CmsUser currentUser, 
 										 CmsProject currentProject) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/**
 	 * Creates a new file with the given content and resourcetype. <br>
@@ -1842,7 +2001,9 @@ public interface I_CmsResourceBroker {
                                String filename, byte[] contents, String type,
 							   Hashtable propertyinfos) 
 						
-         throws CmsException;
+         throws CmsException {
+         return null;
+     }
 	 
 	 /**
 	 * Writes a file to the Cms.<br>
@@ -1868,7 +2029,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
 						  CmsFile file)
-		throws CmsException ;
+        throws CmsException {
+    }
 							
 	 /**
 	 * Writes a fileheader to the Cms.<br>
@@ -1894,7 +2056,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, 
 								CmsFile file)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Renames the file to a new name. <br>
@@ -1931,7 +2094,8 @@ public interface I_CmsResourceBroker {
 	 */		
 	public void renameFile(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Deletes a file in the Cms.<br>
@@ -1956,7 +2120,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void deleteFile(CmsUser currentUser, CmsProject currentProject,
 						   String filename)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Copies a file in the Cms. <br>
@@ -1979,7 +2144,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void copyFile(CmsUser currentUser, CmsProject currentProject,
                          String source, String destination)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Moves the file.
@@ -1998,7 +2164,8 @@ public interface I_CmsResourceBroker {
 	 */	
 	public void moveFile(CmsUser currentUser, CmsProject currentProject,
 						 String source, String destination)
-		throws CmsException;
+        throws CmsException {
+    }
 	
     /**
 	 * Changes the flags for this resource.<br>
@@ -2026,7 +2193,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void chmod(CmsUser currentUser, CmsProject currentProject,
 					  String filename, int flags)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Changes the owner for this resource.<br>
@@ -2054,7 +2222,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void chown(CmsUser currentUser, CmsProject currentProject,
 					  String filename, String newOwner)
-		throws CmsException;
+        throws CmsException {
+    }
 	
      /**
 	 * Changes the group for this resource<br>
@@ -2082,7 +2251,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void chgrp(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newGroup)
-		throws CmsException;
+        throws CmsException {
+    }
 	
      /**
 	 * Changes the resourcetype for this resource<br>
@@ -2110,7 +2280,8 @@ public interface I_CmsResourceBroker {
 	 */
 	public void chtype(CmsUser currentUser, CmsProject currentProject,
                       String filename, String newType)
-		throws CmsException;
+        throws CmsException {
+    }
     
     
 	 /**
@@ -2135,7 +2306,9 @@ public interface I_CmsResourceBroker {
 	 */
 	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
 								   String foldername)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
      /**
 	 * Reads all file headers of a file in the OpenCms.<BR>
@@ -2160,7 +2333,9 @@ public interface I_CmsResourceBroker {
 	 */
 	 public Vector readAllFileHeaders(CmsUser currentUser, CmsProject currentProject, 
 									  String filename)
-         throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
 	/**
 	 * Returns a CmsResourceTypes.
@@ -2179,7 +2354,9 @@ public interface I_CmsResourceBroker {
 	public CmsResourceType getResourceType(CmsUser currentUser, 
 											 CmsProject currentProject,
 											 String resourceType) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 
 	/**
 	 * Returns a CmsResourceTypes.
@@ -2198,7 +2375,9 @@ public interface I_CmsResourceBroker {
 	public CmsResourceType getResourceType(CmsUser currentUser, 
 											 CmsProject currentProject,
 											 int resourceType)
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
 	
     
     
@@ -2218,7 +2397,9 @@ public interface I_CmsResourceBroker {
      */
     public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
                                          String resourcename) 
-        throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
     
 	/**
@@ -2241,7 +2422,9 @@ public interface I_CmsResourceBroker {
 											 CmsProject currentProject,
 											 String resourceType, int launcherType, 
 											 String launcherClass) 
-		throws CmsException;
+        throws CmsException {
+     return null;
+    }
     
     	
 	/**
@@ -2257,7 +2440,9 @@ public interface I_CmsResourceBroker {
 	 * 
 	 * @return the number of file-system-changes.
 	 */
-	public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject);
+    public long getFileSystemChanges(CmsUser currentUser, CmsProject currentProject) {
+     return 0;
+    }
 
     
         
@@ -2271,7 +2456,9 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessRead(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
+                              CmsResource resource) throws CmsException {
+        return true;
+    }
 
 	/**
 	 * Checks, if the user may create this resource.
@@ -2283,7 +2470,9 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
-								 CmsResource resource) throws CmsException;
+                                CmsResource resource) throws CmsException {
+        return true;
+    }
 			
 	/**
 	 * Checks, if the user may write this resource.
@@ -2295,7 +2484,9 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user has access, or not.
 	 */
 	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
-								CmsResource resource) throws CmsException;
+                               CmsResource resource) throws CmsException {
+        return true;
+    }
     	
 	/**
 	 * Checks, if the user may lock this resource.
@@ -2307,7 +2498,9 @@ public interface I_CmsResourceBroker {
 	 * @return wether the user may lock this resource, or not.
 	 */
 	public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
-							   CmsResource resource) throws CmsException;
+                              CmsResource resource) throws CmsException {
+    return true;
+    }
 
     // Methods working with Tasks
 
@@ -2328,7 +2521,9 @@ public interface I_CmsResourceBroker {
 	 public CmsTask createProject(CmsUser currentUser, String projectname, int projectType,
 									String roleName, long timeout, 
 									int priority)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	
 	 /**
 	  * Creates a new task.
@@ -2354,7 +2549,9 @@ public interface I_CmsResourceBroker {
 								 String agentName, String roleName, 
 								 String taskname, String taskcomment, 
 								 long timeout, int priority)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 
 	 
@@ -2381,7 +2578,9 @@ public interface I_CmsResourceBroker {
 	 public CmsTask createTask(CmsUser currentUser, int projectid, String agentName, String roleName, 
 								 String taskname, String taskcomment, int tasktype,
 								 long timeout, int priority)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 
 
@@ -2395,7 +2594,9 @@ public interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public int getTaskType(String taskname)
-		throws CmsException; 
+        throws CmsException {
+     return 0;
+    }
    
 	 /**
 	  * Set a Parameter for a task.
@@ -2415,7 +2616,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void setTaskPar(CmsUser currentUser, CmsProject currentProject, 
 						   int taskid, String parname, String parvalue)
-		 throws CmsException;
+         throws CmsException {
+     }
 
 	 /**
 	  * Get a parameter value for a task.
@@ -2432,7 +2634,9 @@ public interface I_CmsResourceBroker {
 	  */
 	 public String getTaskPar(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String parname)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
 	 /**
 	  * Reads all tasks for a user in a project.
@@ -2452,7 +2656,9 @@ public interface I_CmsResourceBroker {
 	 public Vector readTasksForUser(CmsUser currentUser, CmsProject currentProject,
 									int projectId, String userName, int tasktype, 
 									String orderBy, String sort) 
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
 	 /**
 	  * Reads all tasks for a project.
@@ -2472,7 +2678,9 @@ public interface I_CmsResourceBroker {
 	 public Vector readTasksForProject(CmsUser currentUser, CmsProject currentProject,
 									   int projectId, int tasktype, 
 									   String orderBy, String sort)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 /**
 	  * Reads all tasks for a role in a project.
@@ -2492,7 +2700,9 @@ public interface I_CmsResourceBroker {
 	 public Vector readTasksForRole(CmsUser currentUser, CmsProject currentProject,
 									int projectId, String roleName, int tasktype, 
 									String orderBy, String sort) 
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 /**
 	  * Reads all given tasks from a user for a project.
@@ -2512,7 +2722,9 @@ public interface I_CmsResourceBroker {
 	 public Vector readGivenTasks(CmsUser currentUser, CmsProject currentProject,
 								  int projectId, String ownerName, int taskType, 
 								  String orderBy, String sort) 
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 /**
 	  * Read a task by id.
@@ -2528,7 +2740,9 @@ public interface I_CmsResourceBroker {
 	  */
 	 public CmsTask readTask(CmsUser currentUser, CmsProject currentProject, 
 							   int id)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
 	 /**
 	  * Accept a task from the Cms.
@@ -2543,7 +2757,8 @@ public interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskId)
-		 throws CmsException ;
+         throws CmsException  {
+     }
 
 	 /**
 	  * Forwards a task to a new user.
@@ -2561,7 +2776,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void forwardTask(CmsUser currentUser, CmsProject currentProject, int taskid, 
 							 String newRoleName, String newUserName) 
-		 throws CmsException;
+         throws CmsException {
+     }
 	 
 	 /**
 	  * Ends a task from the Cms.
@@ -2576,7 +2792,8 @@ public interface I_CmsResourceBroker {
 	  * @exception CmsException Throws CmsException if something goes wrong.
 	  */
 	 public void endTask(CmsUser currentUser, CmsProject currentProject, int taskid) 
-		 throws CmsException;
+         throws CmsException {
+     }
 
 	 /**
 	  * Writes a new user tasklog for a task.
@@ -2593,7 +2810,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String comment)
-		 throws CmsException ;
+         throws CmsException  {
+     }
 	 
 	 /**
 	  * Writes a new user tasklog for a task.
@@ -2611,7 +2829,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String comment, int taskType)
-		 throws CmsException;	 
+         throws CmsException {
+     }
 	 
 	 /**
 	  * Reads log entries for a task.
@@ -2627,7 +2846,9 @@ public interface I_CmsResourceBroker {
 	  */
 	 public Vector readTaskLogs(CmsUser currentUser, CmsProject currentProject,
 								int taskid)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 	 
 	 /**
 	  * Reads log entries for a project.
@@ -2638,7 +2859,9 @@ public interface I_CmsResourceBroker {
 	  */
 	 public Vector readProjectLogs(CmsUser currentUser, CmsProject currentProject,
 								   int projectId)
-		 throws CmsException;
+         throws CmsException {
+      return null;
+     }
 
  	 /**
 	  * Set timeout of a task
@@ -2655,7 +2878,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void setTimeout(CmsUser currentUser, CmsProject currentProject,
 							int taskId, long timeout)
-		 throws CmsException;
+         throws CmsException {
+     }
 
 	 /**
 	  * Set priority of a task
@@ -2672,7 +2896,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void setPriority(CmsUser currentUser, CmsProject currentProject,
 							 int taskId, int priority)
-		 throws CmsException;
+         throws CmsException {
+     }
 
 	 /**
 	  * Reaktivates a task from the Cms.
@@ -2688,7 +2913,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void reaktivateTask(CmsUser currentUser, CmsProject currentProject,
 								int taskId)
-		 throws CmsException;
+         throws CmsException {
+     }
 
 	 /**
 	  * Set a new name for a task
@@ -2705,7 +2931,8 @@ public interface I_CmsResourceBroker {
 	  */
 	 public void setName(CmsUser currentUser, CmsProject currentProject, 
 						 int taskId, String name)
-		 throws CmsException;
+         throws CmsException {
+     }
      
      	 
 	
@@ -2730,7 +2957,8 @@ public interface I_CmsResourceBroker {
 	 * 
 	 */
 	public void exportDb(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, int exportType)
-		throws Exception;
+        throws Exception {
+    }
 	
 	/**
 	 * imports a (files, groups, users) XML file into database
@@ -2747,7 +2975,8 @@ public interface I_CmsResourceBroker {
 	 * 
 	 */
 	public void importDb(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath)
-		throws Exception;
+        throws Exception {
+    }
     
     /**
 	 * Imports a import-resource (folder or zipfile) to the cms.
@@ -2764,7 +2993,8 @@ public interface I_CmsResourceBroker {
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Exports cms-resources to zip.
@@ -2781,7 +3011,8 @@ public interface I_CmsResourceBroker {
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms)
-		throws CmsException;
+        throws CmsException {
+    }
 	
 	/**
 	 * Exports cms-resources to zip.
@@ -2799,7 +3030,8 @@ public interface I_CmsResourceBroker {
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String exportPath, CmsObject cms, boolean includeSystem)
-		throws CmsException;
+        throws CmsException {
+    }
     
     
 
