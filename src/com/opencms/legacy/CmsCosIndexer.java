@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsIndexException;
-import org.opencms.search.CmsIndexResource;
+import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexingThreadManager;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
@@ -61,7 +61,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/07/02 16:05:08 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -70,9 +70,6 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     public static final String C_PARAM_CLASSNAME = "classname";
     public static final String C_PARAM_CHANNEL_DISPLAY_URI = "displayUri";
     public static final String C_PARAM_CHANNEL_DISPLAY_PARAM = "displayPram";
-    
-    /** The cms object. */
-    private CmsObject m_cms;
     
     /** The index writer. */
     private IndexWriter m_writer;
@@ -94,23 +91,15 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     
     /** General class to handle module content. */
     private CmsMasterContent m_contentDefinition;
-    
-    /**
-     * Creates a new cos indexer.<p>
-     */
-    public CmsCosIndexer () {
-        //noop
-    }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
+     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
      */
-    public void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException {
+    public void init(I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException {
         
         String cdClassName = null;
         
         try {
-            m_cms = cms;
             m_writer = writer;
             m_index = index;
             m_indexSource = indexSource;
@@ -136,23 +125,21 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     }
     
     /**
-     * Creates new index entries for all cos resources below the given path.<p>
-     * 
-     * @param channel the channel to index
-     * @throws CmsIndexException if something goes wrong
+     * @see org.opencms.search.I_CmsIndexer#updateIndex(org.opencms.file.CmsObject, java.lang.String)
      */
-    public void updateIndex(String channel) throws CmsIndexException {
-        updateIndex (channel, channel);
+    public void updateIndex(CmsObject cms, String channel) throws CmsIndexException {
+        updateIndex (cms, channel, channel);
     }
-    
+
     /**
      * Creates new index entries for all cos resources below the given path.<p>
      * 
+     * @param cms the current user's CmsObject
      * @param channel the channel to index
      * @param root the root channel
      * @throws CmsIndexException if something goes wrong
      */    
-    public void updateIndex(String channel, String root) throws CmsIndexException {
+    protected void updateIndex(CmsObject cms, String channel, String root) throws CmsIndexException {
         
         boolean channelReported = false;
         CmsProject currentProject = null;
@@ -171,7 +158,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             for (int i = 0; i < subChannels.size(); i++) {
                 
                 String subChannel = (String)subChannels.get(i);                   
-                updateIndex(subChannel, root);
+                updateIndex(cms, subChannel, root);
             } 
                 
             // now index channel
@@ -199,7 +186,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                     + "?" + m_indexSource.getParam(C_PARAM_CHANNEL_DISPLAY_PARAM)
                     + "=" + ds.m_masterId;
                 
-                CmsIndexResource ires = new CmsCosIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
+                A_CmsIndexResource ires = new CmsCosIndexResource(ds, path, channel, m_contentDefinition.getClass().getName());
                 m_threadManager.createIndexingThread(m_writer, ires, m_index);
             }
         } catch (Exception exc) {
@@ -226,7 +213,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
      * @return the uuid of the channel
      * @throws CmsIndexException if something goes wrong
      */
-    private CmsUUID getChannelId(String channelName) throws CmsIndexException {
+    protected CmsUUID getChannelId(String channelName) throws CmsIndexException {
 
         String siteRoot = m_cms.getRequestContext().getSiteRoot();
         m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
@@ -250,7 +237,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
      * @return the cos data
      * @throws CmsException if something goes wrong
      */
-    public static CmsIndexResource readResource(CmsObject cms, Document doc) throws CmsException {
+    public A_CmsIndexResource readResource(CmsObject cms, Document doc) throws CmsException {
         
         try {
             String channel   = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL).stringValue();
@@ -277,19 +264,19 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     }
     
     /**
-     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(CmsObject, String, org.apache.lucene.document.Document)
      */
-    public CmsIndexResource getIndexResource(Document doc) throws CmsException {
+    public A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException {
 
         Field f = null;
         String channel = null;
-        CmsIndexResource result = null;
+        A_CmsIndexResource result = null;
         
         if ((f = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL)) != null) {
             channel = f.stringValue();
             
             if (channel != null) {
-                result = CmsCosIndexer.readResource(m_cms, doc);
+                result = readResource(cms, doc);
             }
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 package org.opencms.search.documents;
 
 import org.opencms.main.CmsException;
-import org.opencms.search.CmsIndexResource;
+import org.opencms.search.A_CmsIndexResource;
 
 
 import org.apache.lucene.document.Document;
@@ -39,7 +39,7 @@ import org.apache.lucene.document.Document;
 /**
  * Implementation interface for lucene document factories used in OpenCms.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDocumentFactory {
@@ -100,7 +100,7 @@ public interface I_CmsDocumentFactory {
      * @return the raw textual content of the resource
      * @throws CmsException if somethin goes wrong
      */
-    String getRawContent(CmsIndexResource resource, String language) throws CmsException;
+    String getRawContent(A_CmsIndexResource resource, String language) throws CmsException;
     
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>
@@ -110,5 +110,5 @@ public interface I_CmsDocumentFactory {
      * @return a lucene document for the given resource
      * @throws CmsException if something goes wrong
      */
-    Document newInstance(CmsIndexResource resource, String language) throws CmsException;
+    Document newInstance(A_CmsIndexResource resource, String language) throws CmsException;
 }

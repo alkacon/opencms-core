@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Interface for the vfs and cos indexer.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/07/02 16:05:08 $
+ * @version $Revision: 1.3 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsIndexer {
@@ -48,33 +48,42 @@ public interface I_CmsIndexer {
     /**
      * Initializes the indexer.<p>
      * 
-     * @param cms the cms object
      * @param report the report
      * @param index the search index
      * @param indexSource the search index source
      * @param writer writer to write the search index in the physical file system
      * @param threadManager the tread manager
+     * 
      * @throws CmsIndexException if something goes wrong
      */
-    void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException;
+    void init(I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException;
     
     /**
      * Creates new index entries for all resources below the given path.<p>
      * 
+     * @param cms the current user's CmsObject
      * @param path the path to the root of the subtree to index
+     * 
      * @throws CmsIndexException if something goes wrong
      */    
-    void updateIndex(String path) throws CmsIndexException;
+    void updateIndex(CmsObject cms, String path) throws CmsIndexException;
     
     /**
-     * Returns an index resource for specified Lucene search result document.<p>
+     * Returns an index resource for a specified Lucene search result document.<p>
      * 
-     * Index resources are stored in a search result as result documents.<p>
+     * Implementations of this method have to decide if the specified Lucene document should
+     * be included in the search result or not. This should be done by checking permissions,
+     * or if the Cms resource is a sub-resource of a given search root folder for example.<p>
      * 
+     * If these checks fail, implementation must return null as a result.<p>
+     * @param cms the current user's CmsObject
+     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
      * @param doc the Lucene search result document
+     * 
      * @return a new index resource
      * @throws CmsException if something goes wrong
+     * @see A_CmsIndexResource
      */
-    CmsIndexResource getIndexResource(Document doc) throws CmsException;
+    A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException;
     
 }

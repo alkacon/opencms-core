@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.17 $ $Date: 2004/07/02 16:05:08 $
+ * @version $Revision: 1.18 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -142,7 +142,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
     private HashMap m_analyzers;
 
-    /** The cms object. */
+    /** The Admin cms object to index Cms resources. */
     private CmsObject m_cms;
     
     /** Configured documenttypes for indexing using &lt;documenttype&gt;. */
@@ -163,7 +163,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     private String m_timeout;
 
     /** The cache for storing search results. */
-    private static Map m_resultCache;
+    private Map m_resultCache;
 
     /** Configured index sources. */
     private Map m_indexSources;    
@@ -174,36 +174,51 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @param cms the cms object
      */
     public void initialize(CmsObject cms) {
-        
-        CmsSearchIndex index = null;
-        
+
+        // store the Admin cms to index Cms resources
         m_cms = cms;
-        
-        // init. the result cache
-        if (m_resultCache == null) {
-            LRUMap hashMap = new LRUMap(Integer.parseInt(m_resultCacheSize));
-            m_resultCache = Collections.synchronizedMap(hashMap);
-            
-            if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resultCache", hashMap);
-            }
-        } else {
-            m_resultCache.clear();
+
+        // init. the search result cache
+        LRUMap hashMap = new LRUMap(Integer.parseInt(m_resultCacheSize));
+        m_resultCache = Collections.synchronizedMap(hashMap);
+
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_resultCache", hashMap);
         }
-        
-        initDocumentTypes();
-        
-        // init. each each search index with the admin cms of the search manager
+
+        initAvailableDocumentTypes();
+        initSearchIndexes();
+    }
+    
+    /**
+     * Initializes the configured search indexes.<p>
+     * 
+     * This initializes also the list of Cms resources types
+     * to be indexed by an index source.<p>
+     */
+    protected void initSearchIndexes() {
+
+        CmsSearchIndex index = null;
+
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
-            index.initialize(m_cms);
+            index.initialize();
         }
     }
     
     /**
-     * Builds a map of document factories keyed by their matching resource types and mimetypes.<p>
+     * Initializes the available Cms resource types to be indexed.<p>
+     * 
+     * A map stores document factories keyed by a string representing
+     * a colon separated list of Cms resource types and/or mimetypes.<p>
+     * 
+     * The keys of this map are used to trigger a document factory to convert 
+     * a Cms resource into a Lucene index document.<p>
+     * 
+     * A document factory is a class implementing the interface
+     * {@link org.opencms.search.documents.I_CmsDocumentFactory}.<p>
      */
-    protected void initDocumentTypes() {
+    protected void initAvailableDocumentTypes() {
                 
         CmsSearchDocumentType documenttype = null;
         String className = null;
@@ -371,7 +386,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @param resource a cms resource
      * @return a lucene document factory or null
      */
-    protected I_CmsDocumentFactory getDocumentFactory (CmsIndexResource resource) {
+    protected I_CmsDocumentFactory getDocumentFactory (A_CmsIndexResource resource) {
 
         String documentTypeKey = resource.getDocumentKey();
         
@@ -591,8 +606,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     resourceName = (String)resourceNames.get(j);
                     
                     // update the index
-                    indexer.init(m_cms, report, index, indexSource, writer, threadManager);
-                    indexer.updateIndex(resourceName);                
+                    indexer.init(report, index, indexSource, writer, threadManager);
+                    indexer.updateIndex(m_cms, resourceName);                
                 }
                 
                 // wait for indexing threads to finish

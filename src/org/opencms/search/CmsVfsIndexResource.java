@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,11 @@ import org.opencms.main.OpenCms;
  * The type is either <code>CmsResource</code> while indexing vfs data,
  * or <code>CmsMasterDataSet</code> while indexing cos data.
  * 
- * @version $Revision: 1.4 $ $Date: 2004/06/21 11:45:41 $
+ * @version $Revision: 1.5 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
-public class CmsVfsIndexResource extends CmsIndexResource {
+public class CmsVfsIndexResource extends A_CmsIndexResource {
 
     /** 
      * Creates a new instance to wrap the given <code>CmsResource</code>.<p>
@@ -62,7 +62,7 @@ public class CmsVfsIndexResource extends CmsIndexResource {
     }
 
     /**
-     * @see org.opencms.search.CmsIndexResource#getDocumentKey()
+     * @see org.opencms.search.A_CmsIndexResource#getDocumentKey()
      */
     public String getDocumentKey() {
         return  "VFS" + getType() + ":" + getMimetype();

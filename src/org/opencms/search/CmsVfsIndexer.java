@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,14 +50,11 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of vfs data.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/07/02 16:05:08 $
+ * @version $Revision: 1.10 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsVfsIndexer implements I_CmsIndexer {
-
-    /** The cms object. */
-    private CmsObject m_cms;
         
     /** The writer. */
     private IndexWriter m_writer;
@@ -72,11 +69,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private CmsIndexingThreadManager m_threadManager;
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, org.opencms.search.CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
+     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.report.I_CmsReport, org.opencms.search.CmsSearchIndex, org.opencms.search.CmsSearchIndexSource, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager)
      */
-    public void init(CmsObject cms, I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) {
+    public void init(I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) {
         
-        m_cms = cms;
         m_writer = writer;
         m_index = index;
         m_report = report;
@@ -84,9 +80,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
     
     /**
-     * @see org.opencms.search.I_CmsIndexer#updateIndex(java.lang.String)
+     * @see org.opencms.search.I_CmsIndexer#updateIndex(CmsObject, java.lang.String)
      */
-    public void updateIndex(String path) throws CmsIndexException {
+    public void updateIndex(CmsObject cms, String path) throws CmsIndexException {
                 
         boolean folderReported = false;
         List resources = null;
@@ -94,7 +90,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         
         try {
             if (CmsResource.isFolder(path)) {            
-                resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
+                resources = cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
             } else {
                 resources = Collections.EMPTY_LIST;
             }
@@ -103,7 +99,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 
                 res = (CmsResource)resources.get(i);
                 if (res instanceof CmsFolder) {                    
-                    updateIndex(m_cms.getRequestContext().removeSiteRoot(res.getRootPath()));
+                    updateIndex(cms, cms.getRequestContext().removeSiteRoot(res.getRootPath()));
                     continue;
                 } 
 
@@ -120,7 +116,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
                 
-                CmsIndexResource ires = new CmsVfsIndexResource(res); 
+                A_CmsIndexResource ires = new CmsVfsIndexResource(res); 
                 m_threadManager.createIndexingThread(m_writer, ires, m_index);
             }
             
@@ -157,22 +153,25 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
         }
     }
-    
+
     /**
-     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.apache.lucene.document.Document)
+     * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.opencms.file.CmsObject, java.lang.String, org.apache.lucene.document.Document)
      */
-    public CmsIndexResource getIndexResource(Document doc) throws CmsException {
+    public A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws CmsException {
 
         Field f = null;
         String path = null;
         CmsResource resource = null;
-        CmsIndexResource result = null;
+        A_CmsIndexResource result = null;
 
         if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
-            path = f.stringValue();
 
-            resource = m_cms.readResource(path);
-            if (m_cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)) {
+            path = cms.getRequestContext().removeSiteRoot(f.stringValue());
+            resource = cms.readResource(path);
+
+            if (cms.hasPermissions(resource, I_CmsConstants.C_READ_ACCESS)
+                && resource.getRootPath().startsWith(searchRoot)) {
+
                 result = new CmsVfsIndexResource(resource);
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a cos resource</li>
  * </ul>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -107,12 +107,17 @@ public class CmsSearch {
     
     /** The search parameter String. */
     String m_searchParameters;
+    
+    /** The search root. */
+    String m_searchRoot;
         
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
      */
     public CmsSearch () {
+        
         super();
+        m_searchRoot = "";
     } 
     
     /**
@@ -299,23 +304,31 @@ public class CmsSearch {
      * @return the search result (may be empty) or null if no index or query was set before
      */
     public List getSearchResult() {
-        
-        if (m_result == null && m_index != null && m_query != null && !"".equals(m_query.trim())) {
+
+        if (m_cms != null && m_result == null && m_index != null && m_query != null && !"".equals(m_query.trim())) {
+            
             if ((this.getQueryLength() > 0) && (m_query.trim().length() < this.getQueryLength())) {
-                m_exc = new CmsSearchException("Search query too short, enter at least " + this.getQueryLength() + " characters!");
+                
+                m_exc = new CmsSearchException("Search query too short, enter at least "
+                    + this.getQueryLength()
+                    + " characters!");
+                
                 return m_result;
             }
-            try {        
-                m_result = m_index.search(m_query, m_fields);
+            
+            try {
+                m_result = m_index.search(m_cms, m_searchRoot, m_query, m_fields);
             } catch (Exception exc) {
+                
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("[" + this.getClass().getName() + "] " + "Searching failed", exc);
                 }
-                    m_result = null;
-                    m_exc = exc;
+                
+                m_result = null;
+                m_exc = exc;
             }
         }
-        
+
         return m_result;
     }
     
@@ -504,5 +517,34 @@ public class CmsSearch {
      */
     public void setQueryLength(int length) {
         m_queryLength = length;
+    }
+    
+    /**
+     * Returns the search root.<p>
+     * 
+     * Only resource that are sub-resource of the search root
+     * are included in the search result.<p>
+     * 
+     * Per default, the search root is an empty string.<p>
+     *
+     * @return the search root
+     */
+    public String getSearchRoot() {
+
+        return m_searchRoot;
+    }
+    /**
+     * Sets the search root.<p>
+     * 
+     * Only resource that are sub-resource of the search root
+     * are included in the search result.<p>
+     * 
+     * Per default, the search root is an empty string.<p>
+     *
+     * @param searchRoot the search root to set
+     */
+    public void setSearchRoot(String searchRoot) {
+
+        m_searchRoot = searchRoot;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/03 10:25:28 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/07/05 11:58:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -98,7 +99,7 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.16 $ $Date: 2004/07/03 10:25:28 $
+ * @version $Revision: 1.17 $ $Date: 2004/07/05 11:58:21 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -110,9 +111,6 @@ public class CmsSearchIndex {
     
     /** Automatic rebuild. */
     public static final String C_AUTO_REBUILD = "auto";    
-
-    /** The cms object. */
-    private CmsObject m_cms;
 
     /** The incremental mode for this index. */
     private boolean m_incremental;
@@ -144,18 +142,36 @@ public class CmsSearchIndex {
     public CmsSearchIndex() {
         
         m_sourceNames = new ArrayList();
+        m_documenttypes = new HashMap();
     }
     
     /**
      * Initializes the search index.<p>
-     * 
-     * @param cms the Cms object
      */
-    public void initialize(CmsObject cms) {
-        
-        m_cms = cms;
-        
-        m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSearchManager().getDirectory() + "/" + m_name);
+    public void initialize() {
+
+        String sourceName = null;
+        CmsSearchIndexSource indexSource = null;
+        List searchIndexSourceDocumentTypes = null;
+        List resourceNames = null;
+        String resourceName = null;
+
+        m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            OpenCms.getSearchManager().getDirectory() + "/" + m_name);
+
+        for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
+            
+            sourceName = (String)m_sourceNames.get(i);
+            indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
+            resourceNames = indexSource.getResourcesNames();
+            searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
+            
+            for (int j = 0, m = resourceNames.size(); j < m; j++) {
+                
+                resourceName = (String)resourceNames.get(j);
+                m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
+            }
+        }
     }
     
     /**
@@ -304,97 +320,115 @@ public class CmsSearchIndex {
             documenttypes = OpenCms.getSearchManager().getDocumenttypes();
         }
         return documenttypes;
-    }
-    
-    /**
-     * Performs a search on the index.<p>
-     * The result is returned as List with entries of type I_CmsSearchResult
-     * 
-     * @param searchQuery the search term to search the index
-     * @return the List of results found or an empty list
-     * @throws CmsException if something goes wrong
-     */
-    public List search(String searchQuery) throws CmsException {
-
-        return search(searchQuery, null);        
     }      
     
     /**
      * Performs a search on the index within the given fields.<p>
-     * The result is returned as List with entries of type I_CmsSearchResult
      * 
+     * The result is returned as List with entries of type I_CmsSearchResult.<p>
+     * 
+     * @param cms the current user's Cms object
+     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
      * @param searchQuery the search term to search the index
      * @param fields the list of fields to search
+     * 
      * @return the List of results found or an empty list
      * @throws CmsException if something goes wrong
      */
-    public List search(String searchQuery, String fields) throws CmsException {
+    public List search(CmsObject cms, String searchRoot, String searchQuery, String fields) throws CmsException {
 
         ArrayList result = null;
+        Query query = null;
+        Searcher searcher = null;
+        Hits hits = null;
+        Document doc = null;
+        A_CmsIndexResource resource = null;
 
         Map searchCache = OpenCms.getSearchManager().getResultCache();
-        String key = m_cms.getRequestContext().currentUser().getName() + "_" 
-            + m_cms.getRequestContext().getRemoteAddress() + "_" + m_name + "_" + searchQuery + "_" + fields;
-            
+        String key = cms.getRequestContext().currentUser().getName()
+            + "_"
+            + cms.getRequestContext().getRemoteAddress()
+            + "_"
+            + m_name
+            + "_"
+            + searchQuery
+            + "_"            
+            + searchRoot
+            + "_"            
+            + fields;
+
         result = (ArrayList)searchCache.get(key);
         if (result != null) {
             return result;
         }
-        
+
         // change the project     
-        CmsRequestContext context = m_cms.getRequestContext();
+        CmsRequestContext context = cms.getRequestContext();
         CmsProject currentProject = context.currentProject();
-        context.setCurrentProject(m_cms.readProject(m_project));
-        
-        Searcher searcher = null;
+        context.setCurrentProject(cms.readProject(m_project));
+
+        // complete the search root
+        if (searchRoot != null && !"".equals(searchRoot)) {
+            // add the site root to the search root
+            searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
+        } else {
+            // just use the site root as the search root
+            searchRoot = cms.getRequestContext().getSiteRoot();
+        }
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Searching for \"" + searchQuery + "\" in fields \"" + fields + "\" of index " + m_name);
+            OpenCms.getLog(this).debug(
+                "Searching for \"" + searchQuery + "\" in fields \"" + fields + "\" of index " + m_name);
         }
-        
+
         try {
-             
-            Query query;
-            
+
             if (fields != null) {
-                
+
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 String fList[] = org.opencms.util.CmsStringSubstitution.split(fields, " ");
                 for (int i = 0; i < fList.length; i++) {
-                    fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(m_locale)), false, false);
+                    fieldsQuery.add(QueryParser.parse(searchQuery, fList[i], OpenCms.getSearchManager().getAnalyzer(
+                        m_locale)), false, false);
                 }
-                
+
                 query = fieldsQuery;
-                 
+
             } else {
-                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager().getAnalyzer(m_locale));
+                query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
+                    .getAnalyzer(m_locale));
             }
-            
-            searcher = new IndexSearcher(m_path);   
-            Hits hits = searcher.search(query);
+
+            searcher = new IndexSearcher(m_path);
+            hits = searcher.search(query);
             double maxScore = -1.0;
 
             result = new ArrayList(hits.length());
-            for (int i = 0, n = hits.length(); i < n; i++) { 
+            for (int i = 0, n = hits.length(); i < n; i++) {
+
                 try {
-                
-                    Document doc = hits.doc(i);                                       
-                    CmsIndexResource resource = getIndexResource(doc);
-                    
+
+                    doc = hits.doc(i);
+                    resource = getIndexResource(cms, searchRoot, doc);
+
                     if (resource != null) {
                         maxScore = (maxScore < hits.score(i)) ? hits.score(i) : maxScore;
-                        result.add(new CmsSearchResult(this, searchQuery, resource, doc, (int)((hits.score(i) / maxScore) * 100.0)));
+                        result.add(new CmsSearchResult(
+                            this,
+                            searchQuery,
+                            resource,
+                            doc,
+                            (int)((hits.score(i) / maxScore) * 100.0)));
                     }
-                    
                 } catch (Exception exc) {
                     // happens if resource was deleted or current user has not the right to view the current resource at least
                 }
             }
-            
+
         } catch (Exception exc) {
             throw new CmsException("[" + this.getClass().getName() + "] " + "Search on " + m_path + " failed. ", exc);
         } finally {
-            
+
             if (searcher != null) {
                 try {
                     searcher.close();
@@ -402,34 +436,39 @@ public class CmsSearchIndex {
                     // noop
                 }
             }
-            
+
             // switch back to the original project
             context.setCurrentProject(currentProject);
         }
-        
+
         searchCache.put(key, result);
         return result;
     }
     
     /**
-     * Returns a CmsIndexResource for a specified Lucene search result document.<p>
+     * Returns a A_CmsIndexResource for a specified Lucene search result document.<p>
      * 
-     * All index sources of this search index are iterated. The indexer of an 
-     * index source then tries to convert the Lucene document into an index 
-     * resource.<p>
+     * All index sources of this search index are iterated in order to find a matching
+     * indexer to create the index resource.<p>
      * 
+     * Permissions and the search root are checked in the implementations of
+     * {@link I_CmsIndexer#getIndexResource(CmsObject, String, Document)}.<p>
+     * 
+     * @param cms the current user's CmsObject
+     * @param searchRoot only resource that are sub-resource of the search root are included in the search result
      * @param doc the Lucene search result document
-     * @return a CmsIndexResource, or null if no index source had an indexer configured that was able to convert the document
+     * 
+     * @return a A_CmsIndexResource, or null if no index source had an indexer configured that was able to convert the document
      * @throws Exception if something goes wrong
-     * @see I_CmsIndexer#getIndexResource(Document)
+     * @see I_CmsIndexer#getIndexResource(CmsObject, String, Document)
      */
-    protected CmsIndexResource getIndexResource(Document doc) throws Exception {
+    protected A_CmsIndexResource getIndexResource(CmsObject cms, String searchRoot, Document doc) throws Exception {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
         String indexSourceName = null;
         CmsSearchIndexSource indexSource = null;
         I_CmsIndexer indexer = null;
-        CmsIndexResource result = null;
+        A_CmsIndexResource result = null;
         String className = null;
 
         for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
@@ -438,8 +477,7 @@ public class CmsSearchIndex {
 
             className = indexSource.getIndexerClassName();
             indexer = (I_CmsIndexer)Class.forName(className).newInstance();
-            indexer.init(m_cms, null, null, null, null, null);
-            result = indexer.getIndexResource(doc);
+            result = indexer.getIndexResource(cms, searchRoot, doc);
 
             if (result != null) {
                 break;
