@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2003/10/01 07:58:17 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.139 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.140 $ $Date: 2003/10/01 07:58:17 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -700,7 +700,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
             stmt.setString(1, resource.getResourceId().toString());
-            stmt.setString(2, resourceName);
+            stmt.setString(2, resource.getStructureId().toString() /* resourceName */);
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -735,7 +735,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE");
                 stmt.setInt(1, propdef.getId());
                 stmt.setString(2, resource.getResourceId().toString());
-                stmt.setString(3, resourceName);
+                stmt.setString(3, resource.getStructureId().toString() /* resourceName */);
                 stmt.executeUpdate();
             } catch (SQLException exc) {
                 throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -1524,7 +1524,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_READALL");
             stmt.setString(1, resourceId.toString());
-            stmt.setString(2, resourceName);
+            stmt.setString(2, resource.getStructureId().toString() /* resourceName */);
             stmt.setInt(3, resourceType);
             result = stmt.executeQuery();
             while (result.next()) {
@@ -1562,7 +1562,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, meta);
             stmt.setInt(2, resourceType);
             stmt.setString(3, resourceId);
-            stmt.setString(4, resourceName);
+            stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
 
             result = stmt.executeQuery();
             if (result.next()) {
@@ -2319,7 +2319,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_UPDATE");
                     stmt.setString(1, m_sqlManager.validateNull(value));
                     stmt.setString(2, resource.getResourceId().toString());
-                    stmt.setString(3, resourceName);
+                    stmt.setString(3, resource.getStructureId().toString() /* resourceName */);
                     stmt.setInt(4, propdef.getId());
                     stmt.executeUpdate();
                 } else {
@@ -2329,7 +2329,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     stmt.setInt(1, m_sqlManager.nextId(m_sqlManager.readQuery(projectId, "C_TABLE_PROPERTIES")));
                     stmt.setInt(2, propdef.getId());
                     stmt.setString(3, resource.getResourceId().toString());
-                    stmt.setString(4, resourceName);
+                    stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
                     stmt.setString(5, m_sqlManager.validateNull(value));
                     stmt.executeUpdate();
                 }
