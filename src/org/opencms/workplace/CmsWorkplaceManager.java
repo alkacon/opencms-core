@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/04/02 10:25:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/04/07 09:22:13 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.3.1
  */
@@ -100,6 +100,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The editor manager */
     private CmsWorkplaceEditorManager m_editorManager;
+    
+    /** The flag if switching tabs in the advanced property dialog is enabled */
+    private boolean m_enableAdvancedPropertyTabs;
     
     /** The explorer type settings */
     private List m_explorerTypeSettings;
@@ -147,6 +150,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_explorerTypeSettings = new ArrayList();
         m_explorerTypeSettingsMap = new HashMap();
         m_defaultPropertiesOnStructure = true;
+        m_enableAdvancedPropertyTabs = true;
         // TODO: Set workplace encoding independent from main system (use UTF-8 as default)
         m_defaultEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
     }
@@ -492,6 +496,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         return m_defaultPropertiesOnStructure;
     }
     
+    /**
+     * Returns if tabs in the advanced property dialog are enabled.<p>
+     *
+     * @return true if tabs should be enabled, otherwise false
+     */
+    public boolean isEnableAdvancedPropertyTabs() {
+        return m_enableAdvancedPropertyTabs;
+    }
+    
     
     /**
      * Sets if the autolock resources feature is enabled.<p>
@@ -556,6 +569,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : " + m_editorHandler.getClass().getName());
         }
+    }
+    
+    /**
+     * Sets if tabs in the advanced property dialog are enabled.<p>
+     *
+     * @param enableAdvancedPropertyTabs true if tabs should be enabled, otherwise false
+     */
+    public void setEnableAdvancedPropertyTabs(String enableAdvancedPropertyTabs) {
+        m_enableAdvancedPropertyTabs = Boolean.valueOf(enableAdvancedPropertyTabs).booleanValue();
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adv. property dialog : " + (m_enableAdvancedPropertyTabs?"Show tabs":"Hide tabs"));
+        }       
     }
 
     /**

@@ -19,6 +19,7 @@
 	autolock?, 
 	enableusermanagement?, 
 	defaultpropertiesonstructure,
+	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
 	labeledfolders?,
 	explorertypes+ )>
@@ -96,6 +97,15 @@
 # an individual structure property.
 -->
 <!ELEMENT defaultpropertiesonstructure (#PCDATA)>
+
+<!--
+# The enable advanced property tabs setting of the OpenCms workplace 
+# enables or disables the possibility to edit both the resource properties
+# and the individual structure properties.
+# If disabled, either the structure or the resource properties can be edited 
+# depending on the default properties on structure setting.
+-->
+<!ELEMENT enableadvancedpropertytabs (#PCDATA)>
 
 <!--
 # Limits the size of the files which can be uploaded

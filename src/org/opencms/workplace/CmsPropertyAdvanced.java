@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/07 08:17:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/04/07 09:22:13 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -209,9 +209,27 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     public List getTabs() {
         ArrayList tabList = new ArrayList(2);
-        tabList.add(key(PANEL_STRUCTURE));
-        if (!m_isFolder) {
-            tabList.add(key(PANEL_RESOURCE));
+        if (OpenCms.getWorkplaceManager().isEnableAdvancedPropertyTabs()) {
+            // tabs are enabled, show both tabs except for folders
+            if (m_isFolder) {
+                // resource is a folder, show only the configured tab
+                if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                    tabList.add(key(PANEL_STRUCTURE));
+                } else {
+                    tabList.add(key(PANEL_RESOURCE));
+                }
+            } else {
+                // resource is no folder, show both tabs
+                tabList.add(key(PANEL_STRUCTURE));
+                tabList.add(key(PANEL_RESOURCE));
+            }
+        } else {
+            // tabs are disabled, show only the configured tab
+            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                tabList.add(key(PANEL_STRUCTURE));
+            } else {
+                tabList.add(key(PANEL_RESOURCE));
+            }
         }
         return tabList;
     }
@@ -932,11 +950,6 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (propertiesToWrite.size() > 0) {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
-                CmsResource resource = getCms().readFileHeader(getParamResource());
-                if (resource.isFolder() && !getParamResource().endsWith("/")) {
-                    // append folder separator to resource name
-                    setParamResource(getParamResource() + "/");    
-                }
                 //write the new property values
                 getCms().writePropertyObjects(getParamResource(), propertiesToWrite);
             }

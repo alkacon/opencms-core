@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/04/02 10:25:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/07 09:22:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,6 +114,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the editor handler node */
     protected static final String N_EDITORHANDLER = "editorhandler";
     
+    /** The name of the "enable advanced property tabs" node */
+    protected static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
+    
     /** The name of the "user management enabled" node */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
     
@@ -171,6 +174,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         
         // add default properties on structure setting
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_DEFAULTPROPERTIESONSTRUCTURE, "setDefaultPropertiesOnStructure", 0);
+        
+//      add default properties on structure setting
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_ENABLEADVANCEDPROPERTYTABS, "setEnableAdvancedPropertyTabs", 0);
         
         // add rules for dialog handlers
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER, A_CLASS, CmsConfigurationException.class);

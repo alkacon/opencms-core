@@ -23,6 +23,7 @@
 		<autolock>true</autolock>
 		<enableusermanagement>true</enableusermanagement>
 		<defaultpropertiesonstructure>true</defaultpropertiesonstructure>
+		<enableadvancedpropertytabs>true</enableadvancedpropertytabs>
 		<maxfileuploadsize>-1</maxfileuploadsize>
 		<labeledfolders/>
 		<explorertypes>
