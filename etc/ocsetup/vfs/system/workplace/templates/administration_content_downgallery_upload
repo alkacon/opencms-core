@@ -8,9 +8,9 @@
 <!--
 function show_help()
 {
-	return '2_2_2_2_3_4.html';
+    return '2_2_2_2_3_4.html';
 }
-	
+    
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 //-->
@@ -18,7 +18,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
@@ -31,33 +31,33 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=center valign=middle>
 
-<form name=UPLOAD action="administration_content_picgallery_upload.html" method=POST ENCTYPE="multipart/form-data"	>
+<form name=UPLOAD action="administration_content_picgallery_upload.html" method=POST ENCTYPE="multipart/form-data"  >
 <input type=hidden name="folder" value="]]><PROCESS>link_value</PROCESS><![CDATA[">
 <input type=hidden name="action" value="upload">
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td>
-	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-	<tr><td colspan=2 class=head>]]><LABEL value="title.uploadimage" /><![CDATA[</td></tr>
-	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
-	<tr>
-		<td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
-		<td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
-	</tr>
-	<tr>
-		<td colspan=2 class=leerzeile>&nbsp;</td>
-	<tr>
-		<td colspan=2 class=formular>
-			<table cellspacing=0 cellpadding=5 width=100%>
-			<tr>
-				<INPUT type="hidden" name="step" id="step" value="1">
-				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location=lasturl"></td>
-				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
-				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
-			</tr>
-			</table>
-		</td>
-	</tr>
-	</table>
+    <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+    <tr><td colspan=2 class=head>]]><LABEL value="title.uploadimage" /><![CDATA[</td></tr>
+    <tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+    <tr>
+        <td class=formular width=10%>]]><LABEL value="input.name" /><![CDATA[:</td>
+        <td class=dialogtxt align=left><INPUT size="30" maxlength="30" class="textfeld3" type="file" id="DATEINAME" name="DATEINAME" onfocus="UPLOAD.WEITER.disabled=false"></td>
+    </tr>
+    <tr>
+        <td colspan=2 class=leerzeile>&nbsp;</td>
+    <tr>
+        <td colspan=2 class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <INPUT type="hidden" name="step" id="step" value="1">
+                <td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location=lasturl"></td>
+                <td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="submit" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER></td>
+                <td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
 </td>
 </tr>
 </table>
@@ -79,24 +79,24 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 <!--
 function show_help()
 {
-	return 'help/3.html';
+    return 'help/3.html';
 }
 
 function check_textfeld(formular, feld)
 {
-	if(document[formular][feld].value=="")
-	{ 
-		document[formular][feld].focus();
-		return false;
-	}
-	return true;
+    if(document[formular][feld].value=="")
+    { 
+        document[formular][feld].focus();
+        return false;
+    }
+    return true;
 }
 //-->
 </script>
 
 <head>
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html;  ">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
 <link rel=stylesheet type="text/css" href="../css/format.css">
@@ -116,44 +116,44 @@ function check_textfeld(formular, feld)
 <table border=2 cellspacing=0 cellpadding=0 width=500>
 
 <tr><td><table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-	<!--Beginn Head-->
-	<tr><td colspan=2 class=head>]]><LABEL value="title.uploadimage" /><![CDATA[</td></tr>
-	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
-	<!--Beginn Inhalt-->
-	<tr>
-		<td class=formular width=15%>]]><LABEL value="label.mimetype" /><![CDATA[:</td>
-		<td class=dialogtxt>]]><PROCESS>MIME</PROCESS><![CDATA[</td>
-	</tr>
-	<tr>
-		<td class=formular>]]><LABEL value="label.size" /><![CDATA[:</td>
-		<td class=dialogtxt>]]><PROCESS>SIZE</PROCESS><![CDATA[</td>
-	</tr>
-	<tr>
-		<td class=formular>]]><LABEL value="label.filesize" /><![CDATA[:</td>
-		<td class=dialogtxt>]]><PROCESS>FILESIZE</PROCESS><![CDATA[</td>
-	</tr>
-	<tr>
-		<td class=formular>]]><LABEL value="input.name" /><![CDATA[:</td>
-		<td class=dialogtxt><INPUT class="textfeld2" id=name name=name value="]]><PROCESS>FILENAME</PROCESS><![CDATA["></td>
-	</tr>
-	<tr>
-		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
-	</tr>
-	
-	<!--Beginn Buttons-->
-	<tr><td colspan=2 class=formular>
-			<table cellspacing=0 cellpadding=5 width=100%>
-			<tr>
-				<INPUT type="hidden" name="step" ID="step" value="2">
-				<td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='administration_content_picgallery_upload.html?step=0&folder=]]><PROCESS>link_value</PROCESS><![CDATA[&action=upload';"></td>
-				<td class=formular align=middle width=20%><INPUT disabled class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="a=check_textfeld('UPLOADPIC', 'TITLE'); if(a==true)location='administration_content_picgallery_upload.html';"></td>
-				<td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
-			</tr>
-			</table>
-		</td>
-	</tr>
-	</table>
+    <!--Beginn Head-->
+    <tr><td colspan=2 class=head>]]><LABEL value="title.uploadimage" /><![CDATA[</td></tr>
+    <tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+    <!--Beginn Inhalt-->
+    <tr>
+        <td class=formular width=15%>]]><LABEL value="label.mimetype" /><![CDATA[:</td>
+        <td class=dialogtxt>]]><PROCESS>MIME</PROCESS><![CDATA[</td>
+    </tr>
+    <tr>
+        <td class=formular>]]><LABEL value="label.size" /><![CDATA[:</td>
+        <td class=dialogtxt>]]><PROCESS>SIZE</PROCESS><![CDATA[</td>
+    </tr>
+    <tr>
+        <td class=formular>]]><LABEL value="label.filesize" /><![CDATA[:</td>
+        <td class=dialogtxt>]]><PROCESS>FILESIZE</PROCESS><![CDATA[</td>
+    </tr>
+    <tr>
+        <td class=formular>]]><LABEL value="input.name" /><![CDATA[:</td>
+        <td class=dialogtxt><INPUT class="textfeld2" id=name name=name value="]]><PROCESS>FILENAME</PROCESS><![CDATA["></td>
+    </tr>
+    <tr>
+        <td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
+        <td class=dialogtxt><INPUT class="textfeld2" id="TITLE" name="TITLE" onfocus="UPLOADPIC.FERTIG.disabled=false;"></td>
+    </tr>
+    
+    <!--Beginn Buttons-->
+    <tr><td colspan=2 class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <INPUT type="hidden" name="step" ID="step" value="2">
+                <td class=formular align=right width=60%><INPUT class=button width = 100 type ="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='administration_content_picgallery_upload.html?step=0&folder=]]><PROCESS>link_value</PROCESS><![CDATA[&action=upload';"></td>
+                <td class=formular align=middle width=20%><INPUT disabled class=button width = 100 type ="submit" value="]]><LABEL value="button.endwizard" /><![CDATA[" id =FERTIG name=FERTIG onClick="a=check_textfeld('UPLOADPIC', 'TITLE'); if(a==true)location='administration_content_picgallery_upload.html';"></td>
+                <td class=formular align=middle width=20%><INPUT class=button width = 100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl"></td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    </table>
 </TD></TR>
 </TABLE>
 </FORM>
@@ -163,7 +163,7 @@ function check_textfeld(formular, feld)
 
 </body>
 </HTML>
-	]]>
+    ]]>
 </TEMPLATE>
 
 <TEMPLATE name="error">
