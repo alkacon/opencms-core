@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2001/09/24 13:57:16 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/09/02 07:50:02 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.18 $ $Date: 2001/09/24 13:57:16 $
+ * @version $Name:  $ $Revision: 1.19 $ $Date: 2002/09/02 07:50:02 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -172,7 +172,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                         + className + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }
-        templateDocument.setData("linkTo", this.getServletPath(cms, "", null, null) + C_ADMIN_PATH
+        templateDocument.setData("linkTo", cms.getRequestContext().getRequest().getServletUrl() + "/" + C_ADMIN_PATH
                 + "?" + "sender=" + sender);
         StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(languageKey));
 
