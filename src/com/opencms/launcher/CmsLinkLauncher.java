@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/08/02 07:26:22 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -46,7 +46,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.10 $ $Date: 2001/08/02 07:26:22 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 
@@ -76,6 +76,9 @@ public class CmsLinkLauncher extends A_CmsLauncher {
                           String startTemplateClass,
                           A_OpenCms openCms) throws CmsException {
         String link = new String(file.getContents());
+        if(link == null || "".equals(link)){
+            throw new CmsException(CmsException.C_NOT_FOUND);
+        }
         if( link.startsWith("/") ) {
             // internal link ...
             CmsFile linkFile = cms.readFile(link);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2001/08/02 07:30:16 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.60 $ $Date: 2001/08/02 07:30:16 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {

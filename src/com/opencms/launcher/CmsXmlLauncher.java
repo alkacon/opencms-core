@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/08/02 07:26:22 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.29 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.30 $ $Date: 2001/08/02 07:26:22 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels,I_CmsConstants {
 
