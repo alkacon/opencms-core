@@ -972,6 +972,15 @@
 			<access>15</access>
 			<properties/>
 		</file>
+        <file>
+            <source>action/publish_project.html</source>
+            <destination>system/workplace/action/publish_project.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
 		<file>
 			<source>action/rename.html</source>
 			<destination>system/workplace/action/rename.html</destination>
@@ -7366,6 +7375,42 @@
 			<access>15</access>
 			<properties/>
 		</file>
+        <file>
+            <source>pics/system/bt_publish_in.gif</source>
+            <destination>system/workplace/pics/bt_publish_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_publish_off.gif</source>
+            <destination>system/workplace/pics/bt_publish_off.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_publish_on.gif</source>
+            <destination>system/workplace/pics/bt_publish_on.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>pics/system/bt_publish_push.gif</source>
+            <destination>system/workplace/pics/bt_publish_push.gif</destination>
+            <type>image</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
 		<file>
 			<source>pics/system/bt_redo_off.gif</source>
 			<destination>system/workplace/pics/bt_redo_off.gif</destination>
@@ -9801,6 +9846,15 @@
 			<access>79</access>
 			<properties/>
 		</file>
+        <file>
+            <source>templates/publish_project</source>
+            <destination>system/workplace/templates/publish_project</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
 		<file>
 			<source>templates/radioTemplate</source>
 			<destination>system/workplace/templates/radioTemplate</destination>
