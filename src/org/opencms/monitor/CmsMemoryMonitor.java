@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/11 20:56:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/12 11:33:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.11 $ $Date: 2003/11/11 20:56:51 $
+ * @version $Revision: 1.12 $ $Date: 2003/11/12 11:33:54 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -574,10 +574,14 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         
         OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
         CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
-        content += "Current status of the sessions:\n\n";
-        content += "Logged in users          : " + cs.getLoggedInUsers().size() + "\n";
-        content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
-        content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
+        
+        if ((sm != null) && (cs != null)) {
+            content += "Current status of the sessions:\n\n";
+            content += "Logged in users          : " + cs.getLoggedInUsers().size() + "\n";
+            content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
+            content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
+        }
+        
         sm = null;
         cs = null;
         
@@ -600,7 +604,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                     + "Limit: " + form.sprintf(getLimit(obj)) + "   "
                     + "Size: " + form.sprintf(Long.toString(size)) + "\n";
         }
-        content += "\nTotal size of cache memory monitored: " + totalSize / 1048576 + " mb\n\n";
+        content += "\nTotal size of cache memory monitored: " + totalSize + " (" + totalSize / 1048576 + ")\n\n";
         
         String from = m_emailSender;
         String[] to = m_emailReceiver;        
@@ -658,6 +662,8 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             OpenCms.getLog(this).warn(memStatus);
         } else {            
             
+            OpenCms.getLog(this).debug(", Memory monitor log for server " + OpenCms.getServerName().toUpperCase());
+            
             List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
             Collections.sort(keyList);
             long totalSize = 0;            
@@ -679,12 +685,16 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                         + "Limit:, " + form.sprintf(getLimit(obj)) + ", " 
                         + "Size:, " + form.sprintf(Long.toString(size)));
             }
-            memStatus += " " + "monitored: " + totalSize / 1048576 + " mb";
+            memStatus += " " + "size monitored: " + totalSize + " (" + totalSize / 1048576 + ")";
             OpenCms.getLog(this).debug(memStatus);
             
             OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
             CmsCoreSession cs = OpenCmsCore.getInstance().getSessionStorage();
-            OpenCms.getLog(this).debug(", Sessions users: " + cs.getLoggedInUsers().size() + " current: " + sm.getCurrentSessions() + " total: " + sm.getTotalSessions());
+            
+            if ((sm != null) && (cs != null)) {
+                OpenCms.getLog(this).debug(", Sessions users: " + cs.getLoggedInUsers().size() + " current: " + sm.getCurrentSessions() + " total: " + sm.getTotalSessions());
+            }
+            
             sm = null;
             cs = null;            
         }                
