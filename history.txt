@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/06/27 14:59:46 $
- * Version: $Revision: 1.472.2.3 $
+ * Date   : $Date: 2003/11/11 13:33:44 $
+ * Version: $Revision: 1.472.2.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms (next 5.0 update version)
+! Added "delete" option to image and download galleries to delete resources directly in the gallery views
 * Fixed issue #28: Property definitions are now read from the correct table (online/offline)
 * Applied fix to issue #15 contributed by ulrich.rueth@gmx.de
 ! Added "getNavigationBreadCrumb()" methods to com.opencms.flex.jsp.CmsJspNavBuilder
