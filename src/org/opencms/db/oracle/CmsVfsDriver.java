@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/02/25 15:20:59 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.28 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.29 $ $Date: 2005/02/25 15:20:59 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -105,11 +105,17 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
         Connection conn = null;
         ResultSet res = null;
         
+        boolean wasInTransaction = false;
         try {            
             conn = m_sqlManager.getConnection(dbc, project.getId());
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
+            if (conn.getMetaData().getDriverMajorVersion()<9) {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE8_CONTENTS_UPDATECONTENT");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ORACLE_CONTENTS_UPDATECONTENT");
+            }
             
-            if (dbc.isDefaultDbContext()) {
+            wasInTransaction = !conn.getAutoCommit();
+            if (!wasInTransaction) {
                 conn.setAutoCommit(false);
             }
             
@@ -125,7 +131,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             output.write(content);
             output.close();
                 
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
                 m_sqlManager.closeAll(dbc, null, commit, null); 
@@ -137,7 +143,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt = null;
             res = null;
                 
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
                 
@@ -163,7 +169,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 }
             } 
             
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 if (stmt != null) {
                     try {
                         rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");

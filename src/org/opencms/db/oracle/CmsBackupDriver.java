@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2005/02/25 15:20:59 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.46 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.47 $ $Date: 2005/02/25 15:20:59 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -176,15 +176,21 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         
+        boolean wasInTransaction = false;
         try {
             conn = m_sqlManager.getConnection(dbc);
             
-            if (dbc.isDefaultDbContext()) {
+            wasInTransaction = !conn.getAutoCommit();
+            if (!wasInTransaction) {
                 conn.setAutoCommit(false);
             }
             
             // select the backup record for update            
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
+            if (conn.getMetaData().getDriverMajorVersion()<9) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE8_CONTENTS_UPDATEBACKUP");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_CONTENTS_UPDATEBACKUP");
+            }
             stmt.setString(1, contentId.toString());
             stmt.setString(2, backupId.toString());
             
@@ -201,7 +207,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             res = null;
             fileContent = null;
             
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
                 commit.close();
@@ -211,7 +217,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
             stmt.close();
             stmt = null;
 
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 conn.setAutoCommit(true);    
             }
         } catch (IOException e) {
@@ -242,7 +248,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 }
             }
             
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 if (stmt != null) {
                     try {
                         rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");

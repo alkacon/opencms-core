@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/02/25 15:20:59 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.38 $ $Date: 2005/02/17 12:43:47 $
+ * @version $Revision: 1.39 $ $Date: 2005/02/25 15:20:59 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -218,6 +217,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         ResultSet res = null;
         Connection conn = null;
             
+        boolean wasInTransaction = false;
+        
         try {
 
             // serialize the user info
@@ -230,14 +231,19 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             } else {
                 // get a JDBC connection from the reserved JDBC pools
                 conn = m_sqlManager.getConnection(dbc, ((Integer) reservedParam).intValue());
-            }      
-                        
-            if (dbc.isDefaultDbContext()) {
+            }
+
+            wasInTransaction = !conn.getAutoCommit();
+            if (!wasInTransaction) {
                 conn.setAutoCommit(false);
             }
                         
             // update user_info in this special way because of using blob
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
+            if (conn.getMetaData().getDriverMajorVersion()<9) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE8_USERS_UPDATEINFO");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERS_UPDATEINFO");
+            }
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
@@ -250,7 +256,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             output.close();
             value = null;
                          
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
                 commit.execute();
                 m_sqlManager.closeAll(dbc, null, commit, null);      
@@ -262,7 +268,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt = null;
             res = null;
                           
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 conn.setAutoCommit(true);
             }
             
@@ -287,7 +293,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 }
             } 
             
-            if (dbc.isDefaultDbContext()) {
+            if (!wasInTransaction) {
                 if (stmt != null) {
                     try {
                         rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
@@ -326,14 +332,15 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      */
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
         
-        Blob blob = res.getBlob(name);
+        oracle.sql.BLOB blob = ((oracle.jdbc.OracleResultSet)res).getBLOB(name);
         
+        return blob.getBinaryOutputStream();
         // TODO: figure out how to implement this without being Oracle JDBC driver version dependent        
-        // this is the code for Oracle 10 (dosen't work with Oracle 9)                
-        //        ((oracle.sql.BLOB)blob).truncate(0);
-        //        return blob.setBinaryStream(0L);
+        // this is the code for Oracle 10 (doesn't work with Oracle 9)                
+        //((oracle.sql.BLOB)blob).truncate(0);
+        //return blob.setBinaryStream(0L);
         
-        ((oracle.sql.BLOB)blob).trim(0);
-        return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+        //((oracle.sql.BLOB)blob).trim(0);
+        //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
     }
 }
