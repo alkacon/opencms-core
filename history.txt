@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/07 18:08:13 $
- * Version: $Revision: 1.480 $
+ * Date   : $Date: 2003/07/08 10:30:45 $
+ * Version: $Revision: 1.481 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,9 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+- Database schema change for revised data in resources table,
+  "Owner", "Group" and "Access flags" removed because of new ACL,
+  added "user who created". 
 
 OpenCms 5.1.3 Salusa Secundus - July 7, 2003
 - OpenCms 5.1.3 is a development version.
