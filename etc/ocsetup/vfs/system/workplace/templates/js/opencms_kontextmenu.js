@@ -363,7 +363,7 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 3:
 		{
-			location.href='administration_content_publish_project.html?' + kontextparam;
+			location.href='administration_content_publish_project.html?projectname=' + kontextparam;
 			break;
 		}
 		case 10:
