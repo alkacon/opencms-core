@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/24 15:56:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/28 13:56:37 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package org.opencms.lock;
 
-import com.opencms.boot.I_CmsLogChannels;
+import org.opencms.db.CmsDriverManager;
+
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -61,7 +62,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/07/24 15:56:43 $
+ * @version $Revision: 1.13 $ $Date: 2003/07/28 13:56:37 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -71,8 +72,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     /** The shared lock dispatcher instance */
     private static CmsLockDispatcher sharedInstance;
 
-    /** A map holding the CmsLocks of the resources */
-    private Map m_locks;
+    /** A map holding the exclusive CmsLocks */
+    private Map m_exclusiveLocks;
 
     /**
      * Default constructor.<p>
@@ -82,7 +83,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     private CmsLockDispatcher() {
         super();
 
-        m_locks = Collections.synchronizedMap(new HashMap());
+        m_exclusiveLocks = Collections.synchronizedMap(new HashMap());
 
         // add this class as an event listener to the Cms
         A_OpenCms.addCmsEventListener(this);
@@ -110,11 +111,9 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param hierachy flag indicating how the resource is locked
      * @return the new CmsLock object for the added resource
      */
-    public CmsLock addResource(String resourcename, CmsUUID userId, int projectId, int hierachy) {
-        CmsLock newLock = new CmsLock(resourcename, userId, projectId, hierachy);
-        m_locks.put(resourcename, newLock);
-
-        return newLock;
+    public void addResource(String resourcename, CmsUUID userId, int projectId) {
+        CmsLock newLock = new CmsLock(resourcename, userId, projectId, CmsLock.C_TYPE_EXCLUSIVE);
+        m_exclusiveLocks.put(resourcename, newLock);
     }
 
     /**
@@ -134,44 +133,85 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     }
 
     /**
-     * Returns the lock for a specified resource.<p>
+     * Returns the lock for a specified resource name.<p>
      * 
      * @param context the request context
      * @param resourcename the full resource name including the site root
      * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
      */
-    public CmsLock getLock(CmsRequestContext context, String resourcename) {
-        CmsLock parentLock = null;
-        String lockedPath = null;
-        Iterator i = null;
-        CmsLock lock = CmsLock.getNullLock();
-
+    public CmsLock getLock(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
         if (context.currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            // resource cannot be locked in the online project
-            lock = CmsLock.getNullLock();
-        } else if (m_locks.containsKey(resourcename)) {
-            // try to find an existing lock for the resource
-            lock = (CmsLock) m_locks.get(resourcename);
+            return CmsLock.getNullLock();
         } else {
-            // check if a parent folder is locked 
-            i = m_locks.keySet().iterator();
+            // calculate the lock state of the resource...
+            int lockState = getLockState(driverManager, context, resourcename);
+            
+            if (lockState != CmsLock.C_TYPE_UNLOCKED) {
+                // ...and create a CmsLock object in case the resource is locked
+                return new CmsLock(resourcename, context.currentUser().getId(), context.currentProject().getId(), lockState);
+            }  
+        }
 
-            while (i.hasNext()) {
-                lockedPath = (String) i.next();
+        return CmsLock.getNullLock();
+    }
+    
+    /**
+     * Gets the lock state for a specified resource name.<p>
+     * 
+     * @param driverManager the driver manager of the Cms
+     * @param context the current request context
+     * @param resourcename the name of the resource
+     * @return the lock state
+     * @throws CmsException if something goes wrong
+     */
+    protected int getLockState(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        List siblings = null;
+        
+        if (m_exclusiveLocks.containsKey(resourcename)) {
+            return CmsLock.C_TYPE_EXCLUSIVE;
+        }         
+        
+        siblings = driverManager.getAllSiblings(context, resourcename);
 
-                if (resourcename.startsWith(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                    // create a new indirect lock if a locked parent folder was found
-                    parentLock = (CmsLock) m_locks.get(lockedPath);
-                    lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_TYPE_INDIRECT_LOCKED);
-                    break;
+        if (!parentFolderIsLocked(resourcename)) {
+            for (int i = 0; i < siblings.size(); i++) {
+                CmsResource sibling = (CmsResource) siblings.get(i);
+                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                    return CmsLock.C_TYPE_SHARED_EXCLUSIVE;
                 }
+            }
+            return CmsLock.C_TYPE_UNLOCKED;
+        } else {
+            for (int i = 0; i < siblings.size(); i++) {
+                CmsResource sibling = (CmsResource) siblings.get(i);
+                if (m_exclusiveLocks.containsKey(sibling.getFullResourceName())) {
+                    return CmsLock.C_TYPE_SHARED_INHERITED;
+                }
+            }
+            return CmsLock.C_TYPE_INHERITED;
+        }
+    }
+
+    /**
+     * Proves if a parent folder of a specified resource is locked.<p>
+     * 
+     * @param resourcename the name of the resource
+     * @return true, if a parent folder of the specified resource has an exclusive lock
+     */
+    protected boolean parentFolderIsLocked(String resourcename) {
+        String lockedPath = null;
+        Iterator i = m_exclusiveLocks.keySet().iterator();
+
+        while (i.hasNext()) {
+            lockedPath = (String) i.next();
+
+            if (resourcename.startsWith(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                return true;
             }
         }
 
-        // we are in an offline project, and neither the resource itself 
-        // nor one of its parent folders is locked
-        return lock;
-    }
+        return false;
+    }    
 
     /**
      * Initializes the the lock dispatcher by reading all directly locked resources from the database.<p>
@@ -181,13 +221,16 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @throws CmsException if something goes wrong
      */
     public int init(CmsObject cms) {
+        return 0;
+        
+        /*
         List lockedResources = null;
         Iterator i = null;
         CmsResource currentResource = null;
         String currentPath = null;
         int count = 0;
 
-        m_locks.clear();
+        m_exclusiveLocks.clear();
 
         try {
             lockedResources = cms.readLockedFileHeaders();
@@ -196,7 +239,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             while (i.hasNext()) {
                 currentResource = (CmsResource) i.next();
                 currentPath = currentResource.getFullResourceName();
-                addResource(currentPath, currentResource.isLockedBy(), currentResource.getProjectId(), CmsLock.C_TYPE_DIRECT_LOCKED);
+                addResource(currentPath, currentResource.isLockedBy(), currentResource.getProjectId());
                 count++;
             }
 
@@ -210,6 +253,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         }
 
         return count;
+        */
     }
 
     /**
@@ -223,8 +267,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param resourcename the full resource name including the site root
      * @return true, if and only if the resource is currently locked, either direct or indirect
      */
-    public boolean isLocked(CmsRequestContext context, String resourcename) {
-        CmsLock lock = getLock(context, resourcename);
+    public boolean isLocked(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsLock lock = getLock(driverManager, context, resourcename);
         return !lock.isNullLock();
     }
 
@@ -234,24 +278,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param resourcename the full resource name including the site root
      * @throws CmsLockException if the user tried to unlock a resource in a locked folder
      */
-    public void removeResource(String resourcename) throws CmsLockException {
-        String lockedPath = null;
-        Iterator i = null;
-
-        m_locks.remove(resourcename);
-
-        if (resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            // remove also all locked sub resources in case of a folder
-            i = m_locks.keySet().iterator();
-            while (i.hasNext()) {
-                lockedPath = (String) i.next();
-
-                if (lockedPath.startsWith(resourcename)) {
-                    // send the lock to slumberland...
-                    i.remove();
-                }
-            }
-        }
+    public CmsLock removeResource(String resourcename) throws CmsLockException {
+        return (CmsLock) m_exclusiveLocks.remove(resourcename);
     }
 
     /**
@@ -264,28 +292,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @return a list with resource names of direct locked sub resources
      */
     public List getLockedSubResources(String resourcename) {
-        List lockedSubResources = (List) new ArrayList();
-        String lockedPath = null;
-        CmsLock lock = null;
-        Iterator i = null;
-
-        if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            return lockedSubResources;
-        }
-
-        i = m_locks.keySet().iterator();
-        while (i.hasNext()) {
-            lockedPath = (String) i.next();
-            lock = (CmsLock) m_locks.get(lockedPath);
-
-            if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
-                //if (lock.getHierarchy() == CmsLock.C_TYPE_DIRECT_LOCKED) {
-                    lockedSubResources.add(lock.getResourceName());
-                //}
-            }
-        }
-
-        return lockedSubResources;
+        return (List) new ArrayList(0);
     }
 
     /**
@@ -294,11 +301,11 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param projectId the ID of the project where the resources have been locked
      */
     public void removeResourcesInProject(int projectId) {
-        Iterator i = m_locks.keySet().iterator();
+        Iterator i = m_exclusiveLocks.keySet().iterator();
         CmsLock currentLock = null;
 
         while (i.hasNext()) {
-            currentLock = (CmsLock) m_locks.get(i.next());
+            currentLock = (CmsLock) m_exclusiveLocks.get(i.next());
 
             if (currentLock.getProjectId() == projectId) {
                 // iterators are fail-fast!
@@ -314,7 +321,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      */
     public String toString() {
         // bring the list of locked resources into a human readable order first
-        List lockedResources = (List) new ArrayList(m_locks.keySet());
+        List lockedResources = (List) new ArrayList(m_exclusiveLocks.keySet());
         Collections.sort(lockedResources);
         Iterator i = lockedResources.iterator();
         StringBuffer buf = new StringBuffer();
@@ -325,7 +332,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
 
         while (i.hasNext()) {
             lockedPath = (String) i.next();
-            currentLock = (CmsLock) m_locks.get(lockedPath);
+            currentLock = (CmsLock) m_exclusiveLocks.get(lockedPath);
             buf.append(currentLock.getResourceName());
             buf.append(":");
             buf.append(currentLock.getType());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/28 12:07:01 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/07/28 13:56:38 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.54 $ $Date: 2003/07/28 12:07:01 $
+ * @version $Revision: 1.55 $ $Date: 2003/07/28 13:56:38 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1390,8 +1390,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_SELECT_SOFT_VFS_LINKS");
             stmt.setString(1, resource.getResourceId().toString());
             stmt.setString(2, resource.getId().toString());
-            stmt.setInt(3, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
-            stmt.setInt(4, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
+            //stmt.setInt(3, I_CmsConstants.C_VFS_LINK_TYPE_SLAVE);
+            stmt.setInt(3, com.opencms.core.I_CmsConstants.C_STATE_DELETED);
             res = stmt.executeQuery();
 
             while (res.next()) {

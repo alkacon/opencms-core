@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/07/28 13:56:38 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,8 @@ package org.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
 
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
@@ -59,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -338,8 +340,18 @@ public class CmsExplorer extends CmsWorkplace {
 
         for (int i = startat; i < stopat; i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
-            CmsLock lock = getCms().getLock(res);
+            CmsLock lock = null;
             String path = getCms().readAbsolutePath(res);
+            
+            try {
+                lock = getCms().getLock(res);
+            } catch (CmsException e) {
+                lock = CmsLock.getNullLock();
+            
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + res + " " + e.getMessage());
+                }             
+            }            
             
             content.append("top.aF(");
             // position 1: name

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/23 08:22:53 $
-* Version: $Revision: 1.350 $
+* Date   : $Date: 2003/07/28 13:56:38 $
+* Version: $Revision: 1.351 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.350 $
+ * @version $Revision: 1.351 $
  */
 public class CmsObject extends Object {
 
@@ -4400,11 +4400,11 @@ public class CmsObject extends Object {
         return m_driverManager.readLockedFileHeaders(m_context);
     }
     
-    public CmsLock getLock(CmsResource resource) {
+    public CmsLock getLock(CmsResource resource) throws CmsException {
         return m_driverManager.getLock(m_context, resource);
     }    
     
-    public CmsLock getLock(String resourcename) {
+    public CmsLock getLock(String resourcename) throws CmsException {
         return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
     }
 

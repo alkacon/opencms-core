@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/24 15:56:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/07/28 13:56:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,35 +56,32 @@ import java.io.Serializable;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/07/24 15:56:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/07/28 13:56:37 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
  */
 public class CmsLock extends Object implements Serializable, Cloneable {
 
-    /** The resource is directly locked */
-    public static final int C_TYPE_DIRECT_LOCKED = 2;
-
-    /** The resource is indirect locked because one of it's parent folders is locked */
-    public static final int C_TYPE_INDIRECT_LOCKED = 1;
-
-    /** The resource is not locked at all */
+    public static final int C_TYPE_EXCLUSIVE = 4;
+    public static final int C_TYPE_INHERITED = 3;
+    public static final int C_TYPE_SHARED_EXCLUSIVE = 2;
+    public static final int C_TYPE_SHARED_INHERITED = 1;
     public static final int C_TYPE_UNLOCKED = 0;
 
     /** The shared Null lock object */
     private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
 
-    /** Saves whether the resource is direct or indirect locked */
+    /** Saves how the resource is locked */
     private int m_type;
 
-    /** The ID of the project where the resource is currently locked */
+    /** The ID of the project where the resource is locked */
     private int m_projectId;
 
     /** The name of the locked resource */
     private String m_resourceName;
 
-    /** The ID of the user who currently locked the resource */
+    /** The ID of the user who locked the resource */
     private CmsUUID m_userId;
 
     /**
