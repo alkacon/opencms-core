@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/04/20 09:14:28 $
+* Version: $Revision: 1.7 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * @author: Hanjo Riege
  */
 public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
-    
+
     /*	private final String C_PACKETNAME	= "packetname";
     private final String C_VERSION		= "version";
     private final String C_MODULENAME	= "modulename";
@@ -59,11 +59,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_MODULE = "module";
     private final String C_ACTION = "action";
     private final String C_NAME_PARAMETER = "module";
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -83,7 +83,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
         String step = (String)parameters.get(C_ACTION);
         String moduleName = (String)parameters.get(C_MODULE);
         if((step != null) && ("ok".equals(step))) {
-            
+
             // export
             String exportName = (String)parameters.get("modulename");
             String[] resourcen = new String[4];
@@ -91,7 +91,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             resourcen[1] = "/system/classes/" + exportName.replace('.', '/') + "/";
             resourcen[2] = "/moduledemos/" + exportName + "/";
             resourcen[3] = "/content/bodys/moduledemos/" + exportName + "/";
-            
+
             // TODO: this is just a Hack
             for(int i = 1;i < 4;i++) {
                 try {
@@ -109,26 +109,26 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
                 System.err.println("error exporting module: couldn't add " + resourcen[0] + " to Module\n" + "You dont have this module in this project!");
                 return startProcessing(cms, templateDocument, elementName, parameters, "done");
             }
-            
+
             // end hack
-            reg.exportModule(exportName, resourcen, cms.readExportPath() + exportName + "_" + reg.getModuleVersion(exportName));
+            reg.exportModule(exportName, resourcen, com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/" + exportName + "_" + reg.getModuleVersion(exportName));
             templateSelector = "done";
         }
         else {
-            
+
             // first call
             templateDocument.setData("modulename", moduleName);
         }
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
