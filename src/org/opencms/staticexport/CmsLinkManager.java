@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,10 @@
 
 package org.opencms.staticexport;
 
-import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
-import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
-
-import java.util.Vector;
-
-import org.apache.oro.text.perl.MalformedPerl5PatternException;
-import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * Does the link replacement for the &lg;link&gt; tags.<p> 
@@ -51,118 +44,65 @@ import org.apache.oro.text.perl.Perl5Util;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsLinkManager {
 
-    /** Provides Perl style regular expression functionality */
-    private Perl5Util m_perlUtil;
-    
     /**
      * Hides the public constructor.<p>
      */
     public CmsLinkManager() {
-        m_perlUtil = new Perl5Util();
     }
 
     /**
-     * Replaces the link according to the configured rules and registers it to the
-     * request context during static export.<p>
+     * Substitutes the contents of a link by adding the context path and 
+     * servlet name, and in the case of the "online" project also according
+     * to the configured static export settings.<p>
      * 
      * @param cms the cms context
-     * @param link the link to process
+     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
      * @return the substituted link
      */
     public String substituteLink(CmsObject cms, String link) {
         if (link == null || "".equals(link)) {
             return "";
         }
+        String absoluteLink;
         if (!link.startsWith("/")) {
             // this is a relative link, lets make an absolute out of it
-            link = Utils.mergeAbsolutePath(cms.getRequestContext().getRequest().getRequestedResource(), link);
+            absoluteLink = Utils.mergeAbsolutePath(cms.getRequestContext().getUri(), link);
+        } else {
+            absoluteLink = link;
         }
-        String linkparam = link;
-        link = cms.getRequestContext().addSiteRoot(link);
-        String siteRoot = cms.getRequestContext().getAdjustedFullSiteRoot(link);
-        // first ask if this is the export
-        int modus = cms.getMode();
-        if (modus == I_CmsConstants.C_MODUS_EXPORT) {
-            // we have to register this link to the request context
-            cms.getRequestContext().addLink(linkparam);
-            // and we have to process the startrule
-            String startRule = A_OpenCms.getStaticExportProperties().getStartRule();
-            if (startRule != null && !"".equals(startRule)) {
-                try {
-                    link = m_perlUtil.substitute(startRule, link);
-                } catch (Exception e) {
-                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/1] problems with startrule:\"" + startRule + "\" (" + e + "). ");
-                    }
-                }
-            }
+        
+        String uri;
+        int pos = absoluteLink.indexOf('?');
+        if (pos >= 0) {
+            uri = absoluteLink.substring(0, pos-1);
+        } else {
+            uri = absoluteLink;
         }
-    
-        String[] rules = A_OpenCms.getStaticExportProperties().getLinkRules(modus);
-        if (rules == null || rules.length == 0) {
-            return cms.getRequestContext().removeSiteRoot(link);
-        }
-        String retValue = link;
-        for (int i = 0; i < rules.length; i++) {
+
+        String exportProperty;
+        if (A_OpenCms.getStaticExportProperties().isStaticExportEnabled() 
+        && cms.getRequestContext().currentProject().isOnlineProject()) {           
             try {
-                boolean nextRule = true;
-                if ("*dynamicRules*".equals(rules[i])) {
-                    // here we go trough our dynamic rules
-                    Vector booleanReplace = new Vector();
-                    retValue = CmsStaticExport.handleDynamicRules(cms, link, modus, booleanReplace);
-                    Boolean goOn = (Boolean)booleanReplace.firstElement();
-                    if (goOn.booleanValue()) {
-                        link = retValue;
-                    } else {
-                        nextRule = false;
-                    }
-                } else {
-                    StringBuffer result = new StringBuffer();
-                    int matches = m_perlUtil.substitute(result, rules[i], link);
-                    if (matches != 0) {
-                        retValue = result.toString();
-                        nextRule = false;
-                    }
-                }
-                if (!nextRule) {
-                    // found the match
-                    if (A_OpenCms.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(A_OpenCms.getStaticExportProperties().getExportPrefix())) {
-                        // we want the path relative
-                        retValue = LinkSubstitution.getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((A_OpenCms.getStaticExportProperties().getExportPrefix()).length()));
-                    }
-                    // HACK: The site root must be removed, but the servlet context might have been appended as prefix
-                    if (!retValue.startsWith(A_OpenCms.getStaticExportProperties().getExportPrefix())) {
-                        // this is not an exported file 
-                        int pos = retValue.indexOf(siteRoot);
-                        if (pos >= 0) {
-                            retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());
-                        }
-                    }
-                    return retValue;
-                }
-            } catch (MalformedPerl5PatternException e) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/2] problems with rule:\"" + rules[i] + "\" (" + e + "). ");
-                }
+                exportProperty = cms.readProperty(uri, I_CmsConstants.C_PROPERTY_EXPORT, true, "false");
+            } catch (Throwable t) {
+                exportProperty = "false";
             }
+        } else {
+            exportProperty = "false";
         }
-        if (A_OpenCms.getStaticExportProperties().relativLinksInExport() && modus == I_CmsConstants.C_MODUS_EXPORT && (retValue != null) && retValue.startsWith(A_OpenCms.getStaticExportProperties().getExportPrefix())) {
-            // we want the path relative
-            retValue = LinkSubstitution.getRelativePath(cms.getRequestContext().getRequest().getRequestedResource(), retValue.substring((A_OpenCms.getStaticExportProperties().getExportPrefix()).length()));
+
+        String result;
+        
+        if ("true".equalsIgnoreCase(exportProperty)) {
+            result = A_OpenCms.getStaticExportProperties().getRfsPrefix() + absoluteLink;
+        } else {
+            result = A_OpenCms.getStaticExportProperties().getVfsPrefix() + absoluteLink;
         }
-        // HACK: The site root must be removed, but the servlet context might have been appended as prefix
-        if (!retValue.startsWith(A_OpenCms.getStaticExportProperties().getExportPrefix())) {
-            // this is not an exported file 
-            int pos = retValue.indexOf(siteRoot);
-            if (pos >= 0) {
-                retValue = retValue.substring(0, pos) + retValue.substring(pos + siteRoot.length());
-            }
-        }
-        return retValue;
+        return result;
     }
 
 }

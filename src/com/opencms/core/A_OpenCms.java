@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -62,7 +63,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public abstract class A_OpenCms {
 
@@ -77,6 +78,9 @@ public abstract class A_OpenCms {
 
     /** Default encoding, can be overwritten in "opencms.properties" */
     private static String m_defaultEncoding = "ISO-8859-1";
+    
+    /** List of configured default file names */
+    private static List m_defaultFilenames;
 
     /** The default user and group names */
     private static CmsDefaultUsers m_defaultUsers;
@@ -183,6 +187,17 @@ public abstract class A_OpenCms {
      */
     public static String getDefaultEncoding() {
         return m_defaultEncoding;
+    }
+    
+    /**
+     * Returns the configured list of default directory file names.<p>
+     *  
+     * Caution: This list can not be modified.<p>
+     * 
+     * @return the configured list of default directory file names
+     */
+    public static List getDefaultFilenames() {
+        return m_defaultFilenames;
     }
     
     /**
@@ -530,6 +545,17 @@ public abstract class A_OpenCms {
      */
     protected void setDefaultEncoding(String encoding) {
         m_defaultEncoding = encoding;
+    }
+    
+    /**
+     * Sets the configured list of default directory file names.<p>
+     * 
+     * @param defaultFilenames the configured list of default directory file names
+     */
+    protected void setDefaultFilenames(List defaultFilenames) {
+        m_defaultFilenames = new ArrayList(defaultFilenames.size());
+        m_defaultFilenames.addAll(defaultFilenames);
+        m_defaultFilenames = Collections.unmodifiableList(m_defaultFilenames);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/07/22 00:29:23 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/08/11 18:30:52 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ public final class Utils {
             // case 1:     a / at the beginning of the relPath -> return the relPath
             return relativePath;
         }
-        basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1);
+        basePath = CmsResource.getPath(basePath);
         String result = null;
         if (relativePath.startsWith("./")) {
             // case 3 a:     ./ at the beginning -> return base + relpath (without the ./ of course)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.db.generic;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
-import org.opencms.staticexport.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
@@ -74,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.51 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.52 $ $Date: 2003/08/11 18:30:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -378,59 +377,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes an exportlink from the Cms.
-     *
-     * @param link the cmsexportlink object to delete.
-     * @throws CmsException if something goes wrong.
-     */
-    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
-        int deleteId = link.getId();
-        if (deleteId == 0) {
-            CmsStaticExportLink dbLink = readExportLink(link.getLink());
-            if (dbLink == null) {
-                return;
-            } else {
-                deleteId = dbLink.getId();
-                link.setLinkId(deleteId);
-            }
-        }
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_LINK_DELETE");
-            // delete the link table entry
-            stmt.setInt(1, deleteId);
-            stmt.executeUpdate();
-            // now the dependencies
-            try {
-                stmt.close();
-            } catch (SQLException ex) {
-            }
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_DELETE");
-            stmt.setInt(1, deleteId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "deleteExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Deletes an exportlink from the Cms.
-     *
-     * @param link the cmsexportlink to delete.
-     * @throws CmsException if something goes wrong.
-     */
-    public void deleteExportLink(String link) throws CmsException {
-        CmsStaticExportLink dbLink = readExportLink(link);
-        if (dbLink != null) {
-            deleteExportLink(dbLink);
         }
     }
 
@@ -1639,86 +1585,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
     }
 
     /**
-     * Reads a exportrequest from the Cms.
-     *
-     * @param request The request to be read.
-     * @return The exportrequest read from the Cms or null if it is not found.
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsStaticExportLink readExportLink(String request) throws CmsException {
-        CmsStaticExportLink link = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_LINK_READ");
-            stmt.setString(1, request);
-            res = stmt.executeQuery();
-
-            // create new Cms exportlink object
-            if (res.next()) {
-                link = new CmsStaticExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
-
-                // now the dependencies
-                try {
-                    res.close();
-                    stmt.close();
-                } catch (SQLException ex) {
-                }
-                stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_READ");
-                stmt.setInt(1, link.getId());
-                res = stmt.executeQuery();
-                while (res.next()) {
-                    link.addDependency(res.getString(m_sqlManager.get("C_EXPORT_DEPENDENCIES_RESOURCE")));
-                }
-            }
-            return link;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readExportLink(String)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
-     * Reads a exportrequest without the dependencies from the Cms.<p>
-     *
-     * @param request The request to be read.
-     * @return The exportrequest read from the Cms.
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
-        CmsStaticExportLink link = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        Connection conn = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_LINK_READ");
-            stmt.setString(1, request);
-            res = stmt.executeQuery();
-
-            // create new Cms exportlink object
-            if (res.next()) {
-                link = new CmsStaticExportLink(res.getInt(m_sqlManager.get("C_EXPORT_ID")), res.getString(m_sqlManager.get("C_EXPORT_LINK")), SqlHelper.getTimestamp(res, m_sqlManager.get("C_EXPORT_DATE")).getTime(), null);
-
-            }
-            return link;
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, "readExportLinkHeader(String)", CmsException.C_UNKNOWN_EXCEPTION, e, false);
-        } finally {
-            // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-    }
-
-    /**
      * Returns a Vector (Strings) with the link destinations of all links on the page with
      * the pageId.<p>
      *
@@ -2273,89 +2139,6 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
         return retValue;
-    }
-    
-    /**
-     * Writes an exportlink to the Cms.
-     *
-     * @param link the cmsexportlink object to write.
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
-        //first delete old entrys in the database
-        deleteExportLink(link);
-        int id = link.getId();
-        if (id == 0) {
-            id = m_sqlManager.nextId(m_sqlManager.get("C_TABLE_EXPORT_LINKS"));
-            link.setLinkId(id);
-        }
-        // now write it
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_LINK_WRITE");
-            // write the link table entry
-            stmt.setInt(1, id);
-            stmt.setString(2, link.getLink());
-            stmt.setTimestamp(3, new Timestamp(link.getLastExportDate()));
-            stmt.setBoolean(4, link.getProcessedState());
-            stmt.executeUpdate();
-            // now the dependencies
-            try {
-                stmt.close();
-            } catch (SQLException ex) {
-            }
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_DEPENDENCIES_WRITE");
-            stmt.setInt(1, id);
-            Vector deps = link.getDependencies();
-            for (int i = 0; i < deps.size(); i++) {
-                try {
-                    stmt.setString(2, (String) deps.elementAt(i));
-                    stmt.executeUpdate();
-                } catch (SQLException e) {
-                    // this should be an Duplicate entry error and can be ignored
-                    // todo: if it is something else we should coutionary delete the whole exportlink
-                }
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeExportLink(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * Sets one exportLink to procecced.
-     *
-     * @param link the cmsexportlink.
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
-        int linkId = link.getId();
-        if (linkId == 0) {
-            CmsStaticExportLink dbLink = readExportLink(link.getLink());
-            if (dbLink == null) {
-                return;
-            } else {
-                linkId = dbLink.getId();
-            }
-        }
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_EXPORT_LINK_SET_PROCESSED");
-            // delete the link table entry
-            stmt.setBoolean(1, link.getProcessedState());
-            stmt.setInt(2, linkId);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeExportLinkProcessedState(CmsExportLink)", CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
     }
 
     /**

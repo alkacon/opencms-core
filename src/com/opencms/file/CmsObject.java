@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/11 15:53:53 $
-* Version: $Revision: 1.371 $
+* Date   : $Date: 2003/08/11 18:30:52 $
+* Version: $Revision: 1.372 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.staticexport.*;
 import org.opencms.synchronize.CmsSynchronize;
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -54,7 +53,6 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import com.opencms.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.371 $
+ * @version $Revision: 1.372 $
  */
 public class CmsObject {
 
@@ -908,24 +906,6 @@ public class CmsObject {
     }
 
     /**
-     * Deletes an exportlink in the database.
-     *
-     * @param link the cmsExportLink object to delete.
-     */
-    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
-        m_driverManager.deleteExportLink(link);
-    }
-
-    /**
-     * Deletes an exportlink in the database.
-     *
-     * @param link the name of the link
-     */
-    public void deleteExportLink(String link) throws CmsException {
-        m_driverManager.deleteExportLink(link);
-    }
-
-    /**
      * Deletes a file.
      *
      * @param filename the complete path of the file.
@@ -1602,20 +1582,6 @@ public class CmsObject {
     }
 
     /**
-     * Creates a static export in the filesystem
-     *
-     * @param startpoints the startpoints for the export.
-     * @param projectResources
-     * @param changedResources
-     * @param report the cmsReport to handle the log messages.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void exportStaticResources(Vector startpoints, Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
-        m_driverManager.exportStaticResources(this, m_context, startpoints, changedLinks, changedResources, report);
-    }
-
-    /**
      * Gets all hard and soft links pointing to a specified resource.<p>
      * 
      * @param resourcename the name of the resource
@@ -1863,7 +1829,7 @@ public class CmsObject {
      *              that describes a contentdefinition).
      * @return a Vector(of Strings) with the linkrequest names.
      */
-    public Vector getDependingExportLinks(Vector res) throws CmsException {
+    public Vector getDependings(Vector res) throws CmsException {
         return m_driverManager.getDependingExportLinks(res);
     }
 
@@ -2718,31 +2684,6 @@ public class CmsObject {
             }
 
             clearcache();
-
-            // do static export if the static-export is enabled in opencms.properties
-            if (A_OpenCms.getStaticExportProperties().isStaticExportEnabled()) {
-                try {
-                    int oldId = m_context.currentProject().getId();
-                    m_context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-
-                    // the return value for the search
-                    Vector changedLinks = new Vector();
-
-                    this.exportStaticResources(A_OpenCms.getStaticExportProperties().getStartPoints(), changedLinks, publishedResources, report);
-                    m_context.setCurrentProject(oldId);
-                    Utils.getModulPublishMethods(this, changedLinks);
-                } catch (Exception ex) {
-                    if (DEBUG > 0) {
-                        System.err.println("Error while exporting static resources:");
-                        ex.printStackTrace();
-                    }
-
-                    if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Error while exporting static resources.");
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject()/0] Exception was: " + ex);
-                    }
-                }
-            }
             success = true;
         } catch (Exception e) {
             String stamp1 = "[" + this.getClass().getName() + ".publishProject()/1] Project:" + m_context.currentProject().getId() + " Time:" + new Date();
@@ -3035,34 +2976,6 @@ public class CmsObject {
      */
     public String readCronTable() throws CmsException {
         return m_driverManager.readCronTable();
-    }
-
-    /**
-     * Reads a exportrequest from the Cms.
-     *
-     * @param request the reourcename with  the url parameter.
-     *
-     * @return CmsExportLink the read exportrequest.
-     *
-     * @throws CmsException if the user has not the rights to read this resource,
-     * or if it couldn't be read.
-     */
-    public CmsStaticExportLink readExportLink(String request) throws CmsException {
-        return (m_driverManager.readExportLink(request));
-    }
-
-    /**
-     * Reads a exportrequest without the dependencies from the Cms.
-     *
-     * @param request the reourcename with  the url parameter.
-     *
-     * @return CmsExportLink the read exportrequest.
-     *
-     * @throws CmsException if the user has not the rights to read this resource,
-     * or if it couldn't be read.
-     */
-    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
-        return (m_driverManager.readExportLinkHeader(request));
     }
 
     /**
@@ -4213,28 +4126,6 @@ public class CmsObject {
      */
     public void writeCronTable(String crontable) throws CmsException {
         m_driverManager.writeCronTable(m_context, crontable);
-    }
-
-    /**
-     * Writes an exportlink to the Cms.
-     *
-     * @param link the cmsexportlink object to write.
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
-        m_driverManager.writeExportLink(link);
-    }
-
-    /**
-     * Sets one exportLink to procecced.
-     *
-     * @param link the cmsexportlink.
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
-        m_driverManager.writeExportLinkProcessedState(link);
     }
 
     /**

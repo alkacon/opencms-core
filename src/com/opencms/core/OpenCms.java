@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/11 11:00:11 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.staticexport.CmsStaticExport;
 import org.opencms.staticexport.CmsStaticExportProperties;
 
 import com.opencms.boot.CmsBase;
@@ -57,10 +56,10 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -93,15 +92,12 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.162 $
+ * @version $Revision: 1.163 $
  */
 public final class OpenCms extends A_OpenCms {
 
     /** The name of the class used to validate a new password */
     private static String c_passwordValidatingClass = "";
-
-    /** List of default file names (for directories, e.g, "index.html") */
-    private static String[] m_defaultFilenames = null;
 
     /** Directory translator, used to translate all access to resources */
     private static CmsResourceTranslator m_directoryTranslator = null;
@@ -120,6 +116,9 @@ public final class OpenCms extends A_OpenCms {
 
     /** The cron table to use with the scheduler */
     private CmsCronTable m_table;
+    
+    /** Array of configured default file names (for faster access) */
+    private static String[] m_defaultFilenames;
 
     /**
      * Constructor to create a new OpenCms object.<p>
@@ -324,6 +323,7 @@ public final class OpenCms extends A_OpenCms {
         if (m_fileTranslator == null)
             m_fileTranslator = new CmsResourceTranslator(new String[0], false);
 
+        m_defaultFilenames = null;
         // try to initialize default directory file names (e.g. index.html)
         try {
             m_defaultFilenames = conf.getStringArray("directory.default.files");
@@ -338,8 +338,10 @@ public final class OpenCms extends A_OpenCms {
                 log(I_CmsLogChannels.C_OPENCMS_INIT, ". Default file         : non-critical error " + e.toString());
         }
         // make sure we always have at last an emtpy array      
-        if (m_defaultFilenames == null)
+        if (m_defaultFilenames == null) {
             m_defaultFilenames = new String[0];
+        }
+        setDefaultFilenames(Arrays.asList(m_defaultFilenames));
             
         // read the immutable import resources
         String[] immuResources = conf.getStringArray("import.immutable.resources");
@@ -457,102 +459,25 @@ public final class OpenCms extends A_OpenCms {
             log(I_CmsLogChannels.C_OPENCMS_INIT, ". Old context support  : " + ((webAppNames.size() > 0) ? "enabled" : "disabled"));
         setRuntimeProperty("compatibility.support.webAppNames", webAppNames);
 
-        // now for the link replacement rules there are up to three rulesets for export online and offline
-        try {
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : starting");
+        // initialize static export variables
+        CmsStaticExportProperties exportProperties = new CmsStaticExportProperties();
+        setStaticExportProperties(exportProperties);
+        
+        // set if the static export is enabled or not
+        exportProperties.setStaticExportEnabled("true".equalsIgnoreCase(conf.getString("staticexport.enabled", "false")));
 
-            CmsStaticExportProperties exportProperties = new CmsStaticExportProperties();
-            setStaticExportProperties(exportProperties);
-            String exportPrefix = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_EXPORT, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            String internPrefix = internPrefix = CmsStringSubstitution.substitute(conf.getString(I_CmsConstants.C_URL_PREFIX_HTTP, ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-            exportProperties.setExportPrefix(exportPrefix);
-            exportProperties.setInternPrefix(internPrefix);
-            // to get the right rulesets we need the default value for the export property
-            String exportDefault = conf.getString("staticexport.default.export", "true");
-            exportProperties.setExportDefaultValue(exportDefault);
-            String export = conf.getString("linkrules." + exportDefault + ".export");
-            String[] linkRulesExport;
-            if (export != null && !"".equals(export)) {
-                linkRulesExport = conf.getStringArray("ruleset." + export);
-                // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
-                for (int i = 0; i < linkRulesExport.length; i++) {
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", exportPrefix);
-                    linkRulesExport[i] = CmsStringSubstitution.substitute(linkRulesExport[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", internPrefix);
-                }
-                exportProperties.setLinkRulesExport(linkRulesExport);
-            }
-            String online = conf.getString("linkrules." + exportDefault + ".online");
-            String[] linkRulesOnline;
-            if (online != null && !"".equals(online)) {
-                linkRulesOnline = conf.getStringArray("ruleset." + online);
-                // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
-                for (int i = 0; i < linkRulesOnline.length; i++) {
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", exportPrefix);
-                    linkRulesOnline[i] = CmsStringSubstitution.substitute(linkRulesOnline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", internPrefix);
-                }
-                exportProperties.setLinkRulesOnline(linkRulesOnline);
-            }
-            String offline = conf.getString("linkrules." + exportDefault + ".offline");
-            String[] linkRulesOffline;
-            if (offline != null && !"".equals(offline)) {
-                linkRulesOffline = conf.getStringArray("ruleset." + offline);
-                // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
-                for (int i = 0; i < linkRulesOffline.length; i++) {
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", exportPrefix);
-                    linkRulesOffline[i] = CmsStringSubstitution.substitute(linkRulesOffline[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", internPrefix);
-                }
-                exportProperties.setLinkRulesOffline(linkRulesOffline);
-            }
-            String extern = conf.getString("linkrules." + exportDefault + ".extern");
-            String[] linkRulesExtern;
-            if (extern != null && !"".equals(extern)) {
-                linkRulesExtern = conf.getStringArray("ruleset." + extern);
-                // now replace ${WEB_APP_NAME} with the correct name of the webapplication and replace the other variables
-                for (int i = 0; i < linkRulesExtern.length; i++) {
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName());
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_EXPORT + "}", exportPrefix);
-                    linkRulesExtern[i] = CmsStringSubstitution.substitute(linkRulesExtern[i], "${" + I_CmsConstants.C_URL_PREFIX_HTTP + "}", internPrefix);
-                }
-                exportProperties.setLinkRulesExtern(linkRulesExtern);
-            }
-            exportProperties.setStartRule(null); // temporary out of order: conf.getString("exportfirstrule");
-
-            Vector staticExportStart = new Vector();
-            staticExportStart.add("/");
-            exportProperties.setStartPoints(staticExportStart);
-
-            // at last the target for the export
-            exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString(I_CmsConstants.C_STATICEXPORT_PATH))));
-
-            // should the links in static export be relative?
-            exportProperties.setExportRelativeLinks(conf.getBoolean("relativelinks_in_export", false));
-            // is the static export enabled?
-            String activCheck = conf.getString("staticexport.enabled", "false");
-            if ("true".equalsIgnoreCase(activCheck)) {
-                exportProperties.setStaticExportEnabled(true);
-            } else {
-                exportProperties.setStaticExportEnabled(false);
-            }
-            if (exportProperties.isStaticExportEnabled()) {
-                // we have to generate the dynamic rulessets
-                createDynamicLinkRules();
-            } else {
-                // no static export. We need online and offline rules to stay in OpenCms.
-                // we generate them with the url_prefix_http so the user can still configure
-                // the servletpath.
-                exportProperties.setLinkRulesOffline(new String[] {"s#^#" + internPrefix + "#"});
-                exportProperties.setLinkRulesOnline(new String[] {"s#^#" + internPrefix + "#"});
-            }
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : finished");
-        } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
-        }     
+        // set the default value for the "export" property
+        exportProperties.setExportPropertyDefault("true".equalsIgnoreCase(conf.getString("staticexport.export_default", "false")));
+                
+        // set the path for the export
+        exportProperties.setExportPath(com.opencms.boot.CmsBase.getAbsoluteWebPath(CmsBase.getAbsoluteWebPath(conf.getString("staticexport.export_path"))));
+                
+        // set the export prefix variables for rfs and vfs
+        exportProperties.setRfsPrefix(CmsStringSubstitution.substitute(conf.getString("staticexport.prefix_rfs", ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName()));
+        exportProperties.setVfsPrefix(CmsStringSubstitution.substitute(conf.getString("staticexport.prefix_vfs", ""), I_CmsConstants.C_WEB_APP_REPLACE_KEY, CmsBase.getWebAppName()));    
+                
+        // set if links in the export should be relative or not
+        exportProperties.setExportRelativeLinks(conf.getBoolean("staticexport.relative_links", false)); 
     }
 
     /**
@@ -564,21 +489,6 @@ public final class OpenCms extends A_OpenCms {
         return c_passwordValidatingClass;
     }
 
-    /**
-     * Creates the dynamic linkrules.<p>
-     */
-    private void createDynamicLinkRules() {
-        //create a valid cms-object
-        CmsObject cms = new CmsObject();
-        try {
-            // TODO: Check for correct site root setting here
-            initUser(cms, null, null, A_OpenCms.getDefaultUsers().getUserAdmin(), I_CmsConstants.VFS_FOLDER_DEFAULT_SITE, I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-            new CmsStaticExport(cms, null, false, null, null, null);
-        } catch (Exception e) {
-            if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Dynamic link rules   : non-critical error " + e.toString());
-        }
-    }
 
     /**
      * Destructor, called when the the servlet is shut down.<p>

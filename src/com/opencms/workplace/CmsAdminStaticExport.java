@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/08/06 16:32:48 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/08/11 18:30:52 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.staticexport.CmsStaticExport;
-
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
@@ -47,7 +45,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,7 +98,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
         }
         if(action == null || "dynPrint".equals(action)) {
             // This is an initial request of the static export page
-            Vector exportStartPoints = A_OpenCms.getStaticExportProperties().getStartPoints();
+            Vector exportStartPoints = null;
             String allStartPoints = "";
             if(exportStartPoints != null){
                 for(int i=0; i<exportStartPoints.size(); i++){
@@ -110,33 +108,6 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
             xmlTemplateDocument.setData("path", A_OpenCms.getStaticExportProperties().getExportPath());
-            if("dynPrint".equals(action)){
-                // print the dynamic rules to the errorlog
-                System.err.println("");
-                System.err.println("The dynamic rulesets created by OpenCms:");
-                System.err.println("----------------------------------------");
-                System.err.println("");
-                System.err.println("---- Online ----");
-                if(CmsStaticExport.m_dynamicExportRulesOnline != null){
-                    for(int i=0; i<CmsStaticExport.m_dynamicExportRulesOnline.size();System.err.println(CmsStaticExport.m_dynamicExportRulesOnline.elementAt(i++)));
-                }
-                System.err.println("");
-                System.err.println("---- Extern ----");
-                if(CmsStaticExport.m_dynamicExportRulesExtern != null){
-                    for(int i=0; i<CmsStaticExport.m_dynamicExportRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportRulesExtern.elementAt(i++)));
-                }
-                System.err.println("");
-                System.err.println("---- nicename Online ----");
-                if(CmsStaticExport.m_dynamicExportNameRules != null){
-                    for(int i=0; i<CmsStaticExport.m_dynamicExportNameRules.size();System.err.println(CmsStaticExport.m_dynamicExportNameRules.elementAt(i++)));
-                }
-                System.err.println("");
-                System.err.println("---- nicename  Extern----");
-                if(CmsStaticExport.m_dynamicExportNameRulesExtern != null){
-                    for(int i=0; i<CmsStaticExport.m_dynamicExportNameRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportNameRulesExtern.elementAt(i++)));
-                }
-                System.err.println("");
-            }
         }
 
         // special feature to test the regular expressions

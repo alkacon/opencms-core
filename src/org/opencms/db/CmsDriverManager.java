@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/11 15:53:53 $
- * Version: $Revision: 1.151 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.152 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,8 +43,6 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.staticexport.CmsStaticExport;
-import org.opencms.staticexport.CmsStaticExportLink;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -81,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.151 $ $Date: 2003/08/11 15:53:53 $
+ * @version $Revision: 1.152 $ $Date: 2003/08/11 18:30:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1847,25 +1845,7 @@ public class CmsDriverManager extends Object {
         }
         return lastVersion;
     }
-
-    /**
-     * Deletes an exportlink in the database.
-     *
-     * @param link the cmsExportLink object to delete.
-     */
-    public void deleteExportLink(CmsStaticExportLink link) throws CmsException {
-        m_projectDriver.deleteExportLink(link);
-    }
-
-    /**
-     * Deletes an exportlink in the database.
-     *
-     * @param link the name of the link
-     */
-    public void deleteExportLink(String link) throws CmsException {
-        m_projectDriver.deleteExportLink(link);
-    }
-
+    
     /**
      * Deletes a file in the Cms.<br>
      *
@@ -2473,24 +2453,6 @@ public class CmsDriverManager extends Object {
             new CmsExport(cms, exportFile, exportPaths, excludeSystem, excludeUnchanged, null, exportUserdata, contentAge, report);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] exportResources()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);                        
-        }
-    }
-
-    /**
-     * Creates a static export of a Cmsresource in the filesystem
-     *
-     * @param context the current request context
-     * @param cms the cms-object to use for the export.
-     * @param startpoints the startpoints for the export.
-     * @param report the cmsReport to handle the log messages.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public synchronized void exportStaticResources(CmsObject cms, CmsRequestContext context, Vector startpoints, Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
-        if (isAdmin(context) || isProjectManager(context) || isUser(context)) {
-            new CmsStaticExport(cms, startpoints, true, changedLinks, changedResources, report);
-        } else {
-            throw new CmsSecurityException("[" + getClass().getName() + "] exportStaticResources()", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
     }
 
@@ -5135,34 +5097,6 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Reads a exportrequest from the Cms.<BR/>
-     *
-     *
-     * @param request The request to be read.
-     *
-     * @return The exportrequest read from the Cms.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsStaticExportLink readExportLink(String request) throws CmsException {
-        return m_projectDriver.readExportLink(request);
-    }
-
-    /**
-     * Reads a exportrequest without the dependencies from the Cms.<BR/>
-     *
-     *
-     * @param request The request to be read.
-     *
-     * @return The exportrequest read from the Cms.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    public CmsStaticExportLink readExportLinkHeader(String request) throws CmsException {
-        return m_projectDriver.readExportLinkHeader(request);
-    }
-
-    /**
      * Reads the export-m_path for the system.
      * This m_path is used for db-export and db-import.
      *
@@ -5600,12 +5534,12 @@ public class CmsDriverManager extends Object {
         }
 
         List path = readPathInProject(context, projectId, foldername, false);
-        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);
+        CmsFolder cmsFolder = (CmsFolder)path.get(path.size() - 1);
         List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
 
-        if (isInsideProject(projectResources, (CmsResource) cmsFolder)) {
-                return cmsFolder;
-            }
+        if (isInsideProject(projectResources, cmsFolder)) {
+            return cmsFolder;
+        }
 
         throw new CmsResourceNotFoundException("Folder " + foldername + " is not inside project with ID " + projectId);
     }
@@ -7985,28 +7919,6 @@ public class CmsDriverManager extends Object {
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);       
         }
-    }
-
-    /**
-     * Writes an exportlink to the Cms.
-     *
-     * @param link the cmsexportlink object to write.
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLink(CmsStaticExportLink link) throws CmsException {
-        m_projectDriver.writeExportLink(link);
-    }
-
-    /**
-     * Sets one exportLink to procecced.
-     *
-     * @param link the cmsexportlink.
-     *
-     * @throws CmsException if something goes wrong.
-     */
-    public void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException {
-        m_projectDriver.writeExportLinkProcessedState(link);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/10 11:49:48 $
-* Version: $Revision: 1.259 $
+* Date   : $Date: 2003/08/11 18:30:52 $
+* Version: $Revision: 1.260 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.259 $ $Date: 2003/08/10 11:49:48 $
+ * @version $Revision: 1.260 $ $Date: 2003/08/11 18:30:52 $
  */
 public interface I_CmsConstants {
 
@@ -449,36 +449,6 @@ public interface I_CmsConstants {
      * A string in the configuration-file.
      */
     String C_EXPORTPOINT_PATH = "exportpoint.path.";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_STATICEXPORT_PATH = "staticexport.path";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_STATICEXPORT_START = "staticexport.start";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_URL_PREFIX_EXPORT = "url_prefix_export";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_URL_PREFIX_HTTP = "url_prefix_http";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_URL_PREFIX_HTTPS = "url_prefix_https";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_URL_PREFIX_SERVERNAME = "url_prefix_servername";
 
     /**
      * The folder - seberator in this system

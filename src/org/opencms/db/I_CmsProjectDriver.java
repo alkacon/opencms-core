@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.staticexport.CmsStaticExportLink;
-
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
@@ -53,7 +51,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/06 16:32:48 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/11 18:30:52 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -83,8 +81,6 @@ public interface I_CmsProjectDriver {
     void createSession(String sessionId, Hashtable data) throws CmsException;
     
     void deleteAllProjectResources(int projectId) throws CmsException;
-    void deleteExportLink(CmsStaticExportLink link) throws CmsException;
-    void deleteExportLink(String link) throws CmsException;
     void deleteLinkEntrys(CmsUUID pageId) throws CmsException;
     void deleteOnlineLinkEntrys(CmsUUID pageId) throws CmsException;
     void deleteProject(CmsProject project) throws CmsException;
@@ -132,8 +128,6 @@ public interface I_CmsProjectDriver {
     
     Vector publishProject(CmsRequestContext m_context, CmsProject onlineProject, boolean backupEnabled, I_CmsReport report, Hashtable exportpoints) throws CmsException;
     Vector readAllProjectResources(int projectId) throws CmsException;
-    CmsStaticExportLink readExportLink(String request) throws CmsException;
-    CmsStaticExportLink readExportLinkHeader(String request) throws CmsException;
     Vector readLinkEntrys(CmsUUID pageId) throws CmsException;
     Vector readOnlineLinkEntrys(CmsUUID pageId) throws CmsException;
     CmsProject readProject(CmsTask task) throws CmsException;
@@ -164,9 +158,7 @@ public interface I_CmsProjectDriver {
      * @throws CmsException if something goes wrong
      */    
     int updateSession(String sessionId, Hashtable data) throws CmsException;
-    
-    void writeExportLink(CmsStaticExportLink link) throws CmsException;
-    void writeExportLinkProcessedState(CmsStaticExportLink link) throws CmsException;
+   
     void writeProject(CmsProject project) throws CmsException;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportProperties.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/11 18:30:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,6 @@
 
 package org.opencms.staticexport;
 
-import com.opencms.core.I_CmsConstants;
-
-import java.util.Vector;
 
 /**
  * Provides a data structure to access the static 
@@ -41,39 +38,27 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsStaticExportProperties {
 
-    /** Indicates if <code>true</code> is the default value for "export" */
-    private boolean m_exportDefaultTrue;
+    /** Indicates if <code>true</code> is the default value for the property "export" */
+    private boolean m_exportPropertyDefault;
 
     /** Indicates if links in the static export should be relative */
     private boolean m_exportRelativeLinks;
 
-    // link rules arrays
-    private String[] m_linkRulesExport;
-    private String[] m_linkRulesExtern;
-    private String[] m_linkRulesOffline;
-    private String[] m_linkRulesOnline;
-
-    /** The start rule for the extern and the export rules */
-    private String m_linkRuleStart;
+    /** Prefix to use for exported files */
+    private String m_rfsPrefix;
 
     /** Indicates if the static export is enabled or diabled */
     private boolean m_staticExportEnabled;
 
     /** The path to where the static export will be written */
     private String m_staticExportPath;
-
-    /** The starting points for the static export */
-    private Vector m_staticExportStart;
-
-    /** Prefix to use for exported files */
-    private String m_exportPrefix;
     
     /** Prefix to use for internal OpenCms files */
-    private String m_internPrefix;
+    private String m_vfsPrefix;
 
     /**
      * Creates a new static export property object.<p>
@@ -81,26 +66,7 @@ public class CmsStaticExportProperties {
     public CmsStaticExportProperties() {
         m_exportRelativeLinks = false;
         m_staticExportEnabled = false;
-        m_exportDefaultTrue = true;
-    }
-
-    /**
-     * Returns the selected ruleset for link replacement.<p>
-     * 
-     * @param state defines which ruleset is needed
-     * @return the selected ruleset for link replacement
-     */
-    public String[] getLinkRules(int state) {
-        if (state == I_CmsConstants.C_MODUS_ONLINE) {
-            return m_linkRulesOnline;
-        } else if (state == I_CmsConstants.C_MODUS_OFFLINE) {
-            return m_linkRulesOffline;
-        } else if (state == I_CmsConstants.C_MODUS_EXPORT) {
-            return m_linkRulesExport;
-        } else if (state == I_CmsConstants.C_MODUS_EXTERN) {
-            return m_linkRulesExtern;
-        }
-        return null;
+        m_exportPropertyDefault = true;
     }
 
     /**
@@ -111,51 +77,32 @@ public class CmsStaticExportProperties {
     public String getExportPath() {
         return m_staticExportPath;
     }
-    
-    /**
-     * Returns the prefix for exported links.<p>
-     * 
-     * @return the prefix for exported links
-     */ 
-    public String getExportPrefix() {
-        return m_exportPrefix;
-    }
-
-    /**
-     * Returns the prefix for internal links.<p>
-     * 
-     * @return the prefix for internal links
-     */
-    public String getInternPrefix() {
-        return m_internPrefix;
-    }
-
-    /**
-     * Returns a Vector (of Strings) with the names of the VFS resources (files
-     * and folders) where the export should start.<p>
-     *
-     * @return a Vector with the resources where the export should start
-     */
-    public Vector getStartPoints() {
-        return m_staticExportStart;
-    }
-
-    /**
-     * Return the start rule used for export and extern mode.<p>
-     * 
-     * @return the start rule used for export and extern mode
-     */
-    public String getStartRule() {
-        return m_linkRuleStart;
-    }
 
     /**
      * Returns true if the default value for the resource property "export" is true.<p>
      * 
      * @return true if the default value for the resource property "export" is true
      */
-    public boolean isExportDefault() {
-        return m_exportDefaultTrue;
+    public boolean getExportPropertyDefault() {
+        return m_exportPropertyDefault;
+    }
+    
+    /**
+     * Returns the prefix for exported links in the "real" file system.<p>
+     * 
+     * @return the prefix for exported links in the "real" file system
+     */ 
+    public String getRfsPrefix() {
+        return m_rfsPrefix;
+    }
+
+    /**
+     * Returns the prefix for internal links in the vfs.<p>
+     * 
+     * @return the prefix for internal links in the vfs
+     */
+    public String getVfsPrefix() {
+        return m_vfsPrefix;
     }
 
     /**
@@ -177,20 +124,6 @@ public class CmsStaticExportProperties {
     }
     
     /**
-     * Sets the default for the "export" resource property, 
-     * possible values are "true", "false" or "dynamic".<p>
-     *  
-     * @param value the default for the "export" resource property
-     */
-    public void setExportDefaultValue(String value) {
-        if ("dynamic".equalsIgnoreCase(value)) {
-            m_exportDefaultTrue = false;
-        } else {
-            m_exportDefaultTrue = true;
-        }
-    }
-    
-    /**
      * Sets the path where the static export is written.<p>
      * 
      * @param path the path where the static export is written
@@ -201,14 +134,15 @@ public class CmsStaticExportProperties {
             m_staticExportPath += "/";
         }
     }
-
+    
     /**
-     * Sets the prefix for exported links.<p>
-     * 
-     * @param exportPrefix the prefix for exported links
+     * Sets the default for the "export" resource property, 
+     * possible values are "true", "false" or "dynamic".<p>
+     *  
+     * @param value the default for the "export" resource property
      */
-    public void setExportPrefix(String exportPrefix) {
-        m_exportPrefix = exportPrefix;
+    public void setExportPropertyDefault(boolean value) {
+        m_exportPropertyDefault = value;
     }
     
     /**
@@ -221,66 +155,12 @@ public class CmsStaticExportProperties {
     }
 
     /**
-     * Sets the prefix for internal links.<p>
+     * Sets the prefix for exported links in the "real" file system.<p>
      * 
-     * @param internPrefix the prefix for internal links
+     * @param exportPrefix the prefix for exported links in the "real" file system
      */
-    public void setInternPrefix(String internPrefix) {
-        m_internPrefix = internPrefix;
-    }
-    
-    /**
-     * Sets the export link rules.<p>
-     * 
-     * @param rules the export link rules
-     */
-    public void setLinkRulesExport(String[] rules) {
-        m_linkRulesExport = rules;
-    }
-    
-    /**
-     * Sets the external link rules.<p> 
-     *  
-     * @param rules the external link rules
-     */
-    public void setLinkRulesExtern(String[] rules) {
-        m_linkRulesExtern = rules;
-    }
-    
-    /**
-     * Sets the Offline link rules.<p>
-     * 
-     * @param rules the Offline link rules
-     */
-    public void setLinkRulesOffline(String[] rules) {
-        m_linkRulesOffline = rules;
-    }
-    
-    /**
-     * Sets the online link rules.<p>
-     * 
-     * @param rules the online link rules
-     */
-    public void setLinkRulesOnline(String[] rules) {
-        m_linkRulesOnline = rules;
-    }
-    
-    /**
-     * Sets the starting point Vector for the static export.<p>
-     * 
-     * @param startPoints the starting point Vector for the static export
-     */
-    public void setStartPoints(Vector startPoints) {
-        m_staticExportStart = startPoints;
-    }
-    
-    /**
-     * Sets the start rule for the static export.<p>
-     * 
-     * @param rule the start rule for the staitc export
-     */
-    public void setStartRule(String rule) {
-        m_linkRuleStart = rule;
+    public void setRfsPrefix(String rfsPrefix) {
+        m_rfsPrefix = rfsPrefix;
     }
     
     /**
@@ -290,5 +170,14 @@ public class CmsStaticExportProperties {
      */
     public void setStaticExportEnabled(boolean value) {
         m_staticExportEnabled = value;
+    }
+
+    /**
+     * Sets the prefix for internal links in the vfs.<p>
+     * 
+     * @param internPrefix the prefix for internal links in the vfs
+     */
+    public void setVfsPrefix(String vfsPrefix) {
+        m_vfsPrefix = vfsPrefix;
     }
 }

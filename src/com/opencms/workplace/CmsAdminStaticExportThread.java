@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2003/08/06 16:32:48 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/08/11 18:30:52 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,6 @@
 
 package com.opencms.workplace;
 
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.A_OpenCms;
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.report.A_CmsReportThread;
 import com.opencms.report.CmsHtmlReport;
@@ -67,20 +64,7 @@ public class CmsAdminStaticExportThread extends A_CmsReportThread {
      * Executes the static export Thread.<p>
      */
     public void run() {
-         // Dont try to get the session this way in a thread!
-         // It will result in a NullPointerException sometimes.
-         // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
-        String errormessage = "Error exporting resources:<br>";
-        try {
-            // start the export
-            m_cms.exportStaticResources(A_OpenCms.getStaticExportProperties().getStartPoints(), null, null, m_report);
-
-        } catch (CmsException e) {
-            errormessage += " " + e.getTypeText() + " " + e.getMessage();
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "error in static export " + e.getMessage());
-            }
-        }
+        // TODO: Implement "crawler" thread here
     }
 
     /**
