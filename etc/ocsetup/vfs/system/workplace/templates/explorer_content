@@ -3,7 +3,7 @@
 <TEMPLATE>
 <![CDATA[
 <html>
-
+<head>
 <script language=JavaScript>
 <!--
 function show_help()
@@ -12,7 +12,7 @@ function show_help()
 }
 //-->
 </script>
-
+</head>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>opencms</title>
 </head>

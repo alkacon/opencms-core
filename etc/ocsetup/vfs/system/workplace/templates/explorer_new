@@ -2,22 +2,14 @@
 <WORKPLACE>
 <TEMPLATE>
 <![CDATA[
-<html>
-<head>
 
-<script language=JavaScript>
-<!--
-    // shows the explorer
-    top.display_ex();
-//-->
-</script>
-
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-
-<title>opencms</title>
-
-</head>
-</html>
+        <html>
+        <head><script language=JavaScript> <!-- function show_help() {    return explorer_content.show_help(); } //--> </script> </head>
+        <frameset border=2 frameborder=yes framespacing=2 cols=20%,80%>
+        <frame name=explorer_tree id=explorer_tree src="explorer_tree.html">
+        <frame name=explorer_content id=explorer_content src="explorer_files_frameset.html">
+        </frameset>
+        </html>
 ]]>
 </TEMPLATE>
 </WORKPLACE>

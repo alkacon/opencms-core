@@ -9,7 +9,7 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </head>
 
-<body bgcolor="#ffffff">
+<body bgcolor="#ffffff" onload="top.display_ex();">
 
 <!-- begin of folder tree -->
 <table cellspacing=0 cellpadding=0 border=0>

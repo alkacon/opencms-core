@@ -23,9 +23,10 @@
 
 </head>
 
-<body bgcolor="#C0C0C0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
-<form>
+<body bgcolor="#C0C0C0" topmargin="0" marginheight="0" >
+
 <table cellspacing=0 cellpadding=0 border=0>
+<form name=urlform onSubmit='javascript:top.openurl();return false;'>
     <tr valign=center>
         ]]><PROCESS>PREVIOUS</PROCESS><![CDATA[
         ]]><PROCESS>PARENT</PROCESS><![CDATA[
@@ -33,10 +34,10 @@
         <td class=menu width=30px nowrap align=right>&nbsp;</td>
         <td class=menubold nowrap align=right valign=middle><IMG border=0  src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" width=16 height=16></td>
         <td class=menubold nowrap align=right valign=middle><p class=einzug>]]><LABEL value="input.adress" /><![CDATA[:</td>
-        <td class=menu nowrap align=left valign=middle><p class=einzug>]]><INPUTFIELD name="URL" class="textfeld2" size="50" length="255" method="setValue" /><![CDATA[</td>
+        <td class=menu nowrap align=left valign=middle><p class=einzug>]]><INPUTFIELD name="url" class="textfeld2" size="50" length="255" method="setValue" /><![CDATA[</td>
         <!--<td class=menu nowrap align=left valign=middle><p class=einzug><input size=50 class="textfeld2" value="/" name=URL ID=URL></td>-->
     </tr>
-    
+
 </table>
 </form>
 </body>
@@ -57,7 +58,7 @@
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></script>
 </head>
-<body bgcolor="#E0E0E0" background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA["  bgproperties=fixed>
+<body bgcolor="#E0E0E0" >
 
 <table cellspacing=0 cellpadding=0 border=0>
 ]]><PROCESS>BACKBUTTON</PROCESS><![CDATA[

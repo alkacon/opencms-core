@@ -23,7 +23,7 @@ function show_help()
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_kontextmenu.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 </head>
-<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed onLoad="start();">
+<body bgcolor="#ffffff" onLoad="start();">
 
 <table cellspacing=1 cellpadding=1 border=0 >
 ]]><FILELIST method="getFiles" template="explorerFilelistTemplate"/><![CDATA[
@@ -34,8 +34,6 @@ function show_help()
 <![CDATA[
 </html>
 ]]>
-
-
 
 </TEMPLATE>
 </WORKPLACE>

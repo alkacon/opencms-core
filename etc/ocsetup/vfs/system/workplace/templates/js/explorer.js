@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/12/04 08:04:53 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2001/12/14 16:04:37 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -165,15 +165,16 @@
 
 
  var windowed=0;
-
+var ns,ie,gecko;
 
  /**
   *  detects the users browser
   */
- function whichBrowser(){
-     var ns,ie;
-     ns = (document.layers)? true:false;
-     ie = (document.all)? true:false;
+    function whichBrowser(){
+
+        ns = (document.layers)? true:false;
+        ie = (document.all)? true:false;
+        gecko = (navigator.userAgent.toLowerCase().indexOf('gecko') != -1);
 
      if(ie){
          brcfg.allLayers = 'doc.all.';
@@ -183,8 +184,7 @@
          brcfg.docu = 'doc.all.';
          brcfg.distanceLeft = '.style.left=';
          brcfg.distanceTop = '.style.top=';
- //onload=top.preloadPics(document)
-         brcfg.bodyString = "<body background='/opencms/pics/system/bg_weiss.gif' bgproperties=fixed onclick=javascript:top.hideLastone(document);>";
+
          brcfg.showKontext = "<a style=\"cursor:hand;\" onClick=\"javascript:top.showKontext(document,'";
          brcfg.showKontextEnd = ",window.event.x,window.event.y);\">";
 
@@ -196,6 +196,7 @@
             brcfg.yOffset ='+3';
          }
      }
+
      if(ns){
          brcfg.allLayers = 'doc.layers.';
          brcfg.showLayer = '.visibility="show"';
@@ -207,14 +208,27 @@
 
         brcfg.xOffset = '+3';
             brcfg.yOffset = '+3';
-         brcfg.bodyString="<body background='/opencms/pics/system/bg_weiss.gif' "+
-                 "onLoad='captureEvents(Event.CLICK);top.whichdoc(document); "+
-                 "onClick = top.mouseClickedNs;' "+
-                 "onResize=javascript:top.resized(document);> ";
 
          brcfg.showKontext = "<a href=javascript:top.showKontext(document,'";
-         brcfg.showKontextEnd = ",0,0);>";
+ brcfg.showKontextEnd = ",0,0);>";
      }
+
+
+    if(gecko){
+        brcfg.docu = 'doc.all.';
+        brcfg.distanceLeft = '.style.left=';
+        brcfg.distanceTop = '.style.top=';
+
+         brcfg.showKontext = "<a onClick=javascript:top.setpos(event.pageX,event.pageY,document,'";
+         brcfg.showKontextEnd = ",0,0);>";
+
+
+        brcfg.xOffset = '+3+doc.body.scrollLeft';
+        brcfg.yOffset = '+3+doc.body.scrollTop';
+    }
+
+
+
  }
 
  function simpleEscape(text) {
@@ -300,7 +314,7 @@
   *  creates framesets for the explorer-view
   */
  function display_ex(){
-
+/*
      var frameStr1 =
          '<html>' +
          "<head><script language=JavaScript> <!-- function show_help() {    return explorer_content.show_help(); } //--> </script> </head>"+
@@ -327,14 +341,17 @@
 
      explorer_content = window.body.explorer_content.document;
     framefill(explorer_content, frameStr2);
-
+*/
      explorer_tree = window.body.explorer_tree.document;
-    framefill(explorer_tree, frametree);
+//    framefill(explorer_tree, frametree);
 
      explorer_head = window.body.explorer_content.explorer_head.document;
-     framefill(explorer_head, framehead);
+  //   framefill(explorer_head, framehead);
 
-     window.body.explorer_content.explorer_files.document.location="explorer_files.html";
+     //window.body.explorer_content.explorer_files.document.location="explorer_files.html";
+
+whichBrowser();
+
  }
 
  /* explorer_tree / tree functions ------------------------------------------ */
@@ -347,7 +364,7 @@
      a = tree.icon.length;
      tree.icon[a] = new Image(w,h);
      tree.icon[a].src = source;
- }
+}
 
  /**
   *  adds icons for the treeview
@@ -402,12 +419,12 @@
 
      var pfad="";
      addHist(window.frames[1].frames[1].frames[0].document.forms[0].url.value);
-     top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value="";
+     window.frames[1].frames[1].frames[0].document.forms[0].url.value="";
     if (id!=tree.root.id){
         do{
             var nodeName='_n'+id;
             pfad="/"+tree.nodes[nodeName].name;
-            top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+            top.window.frames[1].frames[1].frames[0].document.forms[0].url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms[0].url.value ;
             id   = tree.nodes[nodeName].parent.id;
             test = tree.nodes[nodeName].parent.id;
 
@@ -433,11 +450,11 @@
 
  }
 
- function openurl(){
+function openurl(){
 
- top.window.frames[1].frames[1].frames[1].document.open();
- top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body></html>");
- top.window.frames[1].frames[1].frames[1].document.close();
+top.window.frames[1].frames[1].frames[1].document.open();
+top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body></html>");
+top.window.frames[1].frames[1].frames[1].document.close();
 
      folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
      selectedpage="";
@@ -446,20 +463,15 @@
      }
      top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum+"&selPage="+selectedpage;
 
-     //window.alert("explorer_files.html?folder="+folder+"&check="+vi.checksum);
-
- }
-
-
-
+}
 
 
  /**
   *  specifications of a node
   */
  function node(id, name, type, parent, open, isGrey){
-     this.id=id;
-     this.name=name;
+    this.id=id;
+    this.name=name;
     this.type=type;
     this.parent=parent;
     this.open=open;
@@ -501,7 +513,6 @@ function showPic(doc, pic) {
 function showPicLink(doc, pic, id,windowed) {
     if(windowed==0) doc.write("<a href=javascript:top.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
     if(windowed>0) doc.write("<a href=javascript:window.opener.toggleNode(document,"+ id +","+windowed+")><img src='"+ pic +"' height=16 width=16 border=0 vspace=0 hspace=0 align=left></a>");
-
 }
 
 
@@ -769,6 +780,8 @@ function showTree(doc,windowed) {
   */
  function displayHead(doc, pages, actpage){
 
+
+
  if(vr.actDirectory=="/")dirup="";
 else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">";
 
@@ -829,8 +842,10 @@ if(pages>1){
     }
 
     doc.writeln(headFoot);
-    doc.close();
+
     displayHeadPics(doc);
+
+doc.close();
 }
 
 
@@ -954,7 +969,7 @@ function enableNewButton(showit){
  function openthisfolder(thisdir){
 
      addHist(window.frames[1].frames[1].frames[0].document.forms[0].url.value);
-     top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value +=thisdir+'/';
+     window.frames[1].frames[1].frames[0].document.forms[0].url.value +=thisdir+'/';
      openurl();
 
  }
@@ -962,6 +977,22 @@ function enableNewButton(showit){
  function openthisfolderflat(thisdir){
     eval(flaturl + "?folder=" + vr.actDirectory+thisdir+"/\"");
  }
+
+
+
+function clicked(doc){
+    hideMenu(doc, vi.lastLayer);
+}
+
+function setpos(x,y,doc,welche,id,i){
+x+=3;
+y+=3;
+nsx=x;
+nsy=y;
+
+showKontext(doc, welche, id,x,y);
+
+}
 
  /**
   *  creates content of the main-filelist-frame
@@ -1031,9 +1062,15 @@ function enableNewButton(showit){
     returnplace=simpleEscape(returnplace);
 
     wo.open();
-     wo.writeln(temp);
-     wo.writeln(brcfg.bodyString);
+    wo.writeln(temp);
 
+    if(ie)wo.writeln("<body background=#FFFFFF onclick=javascript:top.hideLastone(document);>");
+    if(gecko)wo.writeln("<body background=#FFFFFF onclick=javascript:top.hideLastone(document);");
+//onLoad='captureEvents(Event.MOUSEMOVE);top.whichdoc(document); ' onClick=javascript:clicked(document);>");
+    if(ns)wo.writeln("<body background='/opencms/pics/system/bg_weiss.gif' "+
+                     "onLoad='captureEvents(Event.CLICK);top.whichdoc(document); "+
+                     "onClick = top.mouseClickedNs;' "+
+                     "onResize=javascript:top.resized(document);>");
      wo.writeln("<table cellpadding=1 cellspacing=1 border=0><tr>");
 
      wo.writeln("<td nowrap class=t width=20>&nbsp;</td>");
@@ -1069,13 +1106,13 @@ function enableNewButton(showit){
 
          if(showKon) {
             wo.writeln(brcfg.showKontext + i + "'," + i + brcfg.showKontextEnd);
+//document.getElementById(x)
          }
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16>");
          if(showKon) {
             wo.write("</a>");
          }
          wo.writeln("</td>");
-
 
         if(vi.liste[i].project == vr.actProject) {
             wo.write("<td nowrap align=center>");
@@ -1184,13 +1221,13 @@ function enableNewButton(showit){
                 /* online project */
                 if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='i'){
                     if(vi.menus[vi.liste[i].type].items[a].name=="-")
-                        wo.writeln("<tr><td><hr size=1></td></tr>");
+                        wo.writeln("<tr><td><hr noshade size=1></td></tr>");
                     else
                         wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                 }else{
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='a'){
                         if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                            wo.writeln("<tr><td><hr size=1></td></tr>");
+                            wo.writeln("<tr><td><hr noshade  size=1></td></tr>");
                         } else {
                         if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                          else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
@@ -1203,13 +1240,13 @@ function enableNewButton(showit){
                     /* resource is from onlineproject*/
                     if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='i'){
                         if(vi.menus[vi.liste[i].type].items[a].name=="-")
-                            wo.writeln("<tr><td><hr size=1></td></tr>");
+                            wo.writeln("<tr><td><hr noshade  size=1></td></tr>");
                         else
                             wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }else{
                         if(vi.menus[vi.liste[i].type].items[a].rules.charAt(1)=='a'){
                             if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                wo.writeln("<tr><td><hr size=1></td></tr>");
+                                wo.writeln("<tr><td><hr noshade  size=1></td></tr>");
                             } else {
                             if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                              else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
@@ -1243,12 +1280,12 @@ function enableNewButton(showit){
                         }
                     }
                     if(display == 'i'){
-                        if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr size=1></td></tr>");
+                        if(vi.menus[vi.liste[i].type].items[a].name=="-") wo.writeln("<tr><td><hr noshade  size=1></td></tr>");
                         else wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
                     }else{
                         if(display == 'a'){
                             if(vi.menus[vi.liste[i].type].items[a].name=="-"){
-                                wo.writeln("<tr><td><hr size=1></td></tr>");
+                                wo.writeln("<tr><td><hr noshade  size=1></td></tr>");
                             }else{
                                 if(vi.liste[i].type==0) wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"/' >"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
                                     else wo.writeln("<TR><TD><A class=kl href='"+vi.menus[vi.liste[i].type].items[a].link+"&lasturl="+returnplace+"&file="+resourceName+"' target="+vi.menus[vi.liste[i].type].items[a].target+">"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
@@ -1270,15 +1307,23 @@ function enableNewButton(showit){
  *  (if a filelist has more than X entrys, 0 otherwise)
  *  actpage: the aktual shown page
  */
+
 function dU(doc, pages, actpage){
+
+
     vi.lastLayer=null;
     vi.locklength=0;
     vi.doc=doc;
     showCols(vr.viewcfg);
     printList(doc);
+
     folderOpen(vr.actDirId);
-    showTree(explorer_tree,0);
-    displayHead(explorer_head, pages, actpage);
+
+    displayHead(window.body.explorer_content.explorer_head.document, pages, actpage);
+
+    showTree(window.body.explorer_tree.document,0);
+
+    
 }
 
 /**
@@ -1347,20 +1392,33 @@ function showKontext(doc, welche, id,x,y){
         y=nsy;
     }
 
-    if (!vi.shown || id!=vi.oldId){
-        if(y >= (screen.availHeight/2)){
-            eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
-        }
-        eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
-        eval(brcfg.docu+"men"+welche+brcfg.distanceLeft+'x'+brcfg.xOffset);
+if(ie || ns){
 
-        hideMenu(doc, vi.lastLayer);
-        eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
-        vi.shown = true;
-    } else {
-        hideMenu(doc, vi.lastLayer);
-        vi.shown = false;
+    if (!vi.shown || id!=vi.oldId){
+         if(y >= (screen.availHeight/2)){
+            eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+            }
+            eval(brcfg.docu+"men"+welche+brcfg.distanceTop+'y'+brcfg.yOffset);
+            eval(brcfg.docu+"men"+welche+brcfg.distanceLeft+'x'+brcfg.xOffset);
+    
+            hideMenu(doc, vi.lastLayer);
+            eval(brcfg.allLayers+"men"+welche+brcfg.showLayer);
+            vi.shown = true;
+        } else {
+            hideMenu(doc, vi.lastLayer);
+            vi.shown = false;
+        }
     }
+
+
+    if(gecko){
+        hideMenu(doc, vi.lastLayer);
+        doc.getElementById("men"+welche).style.visibility = "visible";
+        doc.getElementById("men"+welche).style.left = x;
+        doc.getElementById("men"+welche).style.top =  y;
+    }
+
+
     vi.lastLayer=welche;
     vi.oldId=id;
     vi.dokument=doc;
@@ -1370,8 +1428,14 @@ function showKontext(doc, welche, id,x,y){
  *  hides the context (layer)
  */
 function hideMenu(doc, welche){
+
     if(welche!=null){
-        eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
+        if(ie||ns){
+            eval(brcfg.allLayers+"men"+welche+brcfg.hideLayer);
+        }
+        if(gecko){
+            doc.getElementById("men"+welche).style.visibility = "hidden";   
+        }
         vi.shown=false;
     }
     else return;
