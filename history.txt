@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/03/28 10:56:43 $
- * Version: $Revision: 1.469 $
+ * Date   : $Date: 2003/04/10 15:56:12 $
+ * Version: $Revision: 1.470 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,9 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! The size of the file upload can now be limited with the opencms.property setting "workplace.file.maxuploadsize"
+! Added method getContent() to com.opencms.jsp.CmsJspActionElement
+! Added method isInWorkplaceMode() to com.opencms.jsp.CmsJspActionElement
 ! Export and import for module data now use a report output instead of writing to the console
 ! OpenCms now sets a "Server" response header "OpenCms/{version_number}"
 ! The file last modified date is now saved when exporting and importing data from the VFS
@@ -33,7 +36,8 @@ OpenCms 5.0 (next version)
 ! Improved "new module" options, it's now possible to select if exportable 
   "classes/" and/or "lib/" folders should be created for the module
 ! Updated and improved english workplace online help is now available as a separate module "org.opencms.help.en"
-* Fixed issue #71: CronScheduler will now not re-open the DB connections if OpenCms is shut down
+* Database field sizes for user, group and project names have been increased to 64 characters
+* Fixed issue #71: CronScheduler does not longer re-open the DB connections if OpenCms is shut down
 * Fixed issue with JSP static export not always restoring the previous URI context
 * Fixed compatibility issues with MySQL 4 (note that MySQL 4 has not been extensivly tested with OpenCmd so far)
 * Fixed issue #56: Links in "Text" pages edited with the WYSIWYG "Edit as HTML"
