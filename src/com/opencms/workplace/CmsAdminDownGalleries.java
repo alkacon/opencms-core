@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/08/28 14:55:38 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,12 +41,18 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.18 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.19 $ $Date: 2002/08/28 14:55:38 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsFileListUsers {
 
+    /** Vector containing all names of the radiobuttons */
+    private Vector m_names = null;
+
+    /** Vector containing all links attached to the radiobuttons */
+    private Vector m_values = null;
+    
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters.
@@ -77,6 +83,15 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         String lasturl = getLastUrl(cms, parameters);
 
         // read the parameters
+        String unzip = (String) parameters.get("unzip");
+        String nofolder = (String) parameters.get("NOFOLDER");
+        //get the filetype
+        String newtype = (String)parameters.get(C_PARA_NEWTYPE);
+        if(newtype != null) {
+            session.putValue(C_PARA_NEWTYPE, newtype);
+        }
+        newtype = (String)session.getValue(C_PARA_NEWTYPE);
+
         String foldername = (String)parameters.get(C_PARA_FOLDER);
         if(foldername != null) {
             try {
@@ -110,6 +125,7 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         String newname = (String)parameters.get(C_PARA_NAME);
         String title = (String)parameters.get("TITLE"); // both for gallery and upload file
         String step = (String)parameters.get("step");
+        String filename = null;
         if(foldername == null) {
             foldername = "";
         }
@@ -169,7 +185,6 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
             if("upload".equals(action)) {
 
                 // get filename and file content if available
-                String filename = null;
                 byte[] filecontent = new byte[0];
 
                 // get the filename
@@ -205,10 +220,35 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
                                 xmlTemplateDocument.setData("details", filename);
                             }
                             else {
-                                xmlTemplateDocument.setData("MIME", filename);
-                                xmlTemplateDocument.setData("SIZE", "Not yet available");
-                                xmlTemplateDocument.setData("FILESIZE", new Integer(filecontent.length).toString() + " Bytes");
-                                xmlTemplateDocument.setData("FILENAME", filename);
+                                if(unzip != null) {
+                                    // try to unzip the file here ...
+                                    boolean noSubFolder = (nofolder != null ? true : false);
+                                    CmsImportFolder zip = new CmsImportFolder(
+                                        filecontent, foldername, cms, noSubFolder);
+                                    if( zip.isValidZipFile() ) {
+
+                                        // remove the values form the session
+                                        session.removeValue(C_PARA_FILE);
+                                        session.removeValue(C_PARA_FILECONTENT);
+                                        session.removeValue(C_PARA_NEWTYPE);
+                                        // return to the filelist
+                                        try {
+                                            //cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                                            if((lasturl != null) && (lasturl != "")) {
+                                                cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                            }
+                                            else {
+                                                cms.getRequestContext().getResponse().sendCmsRedirect(
+                                                    getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                            }
+                                        } catch(Exception ex) {
+                                            throw new CmsException(
+                                                "Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
+                                                + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                        }
+                                        return null;
+                                    }
+                                } // else, zip was not valid, so continue ...
                                 templateSelector = "step1";
                             }
                         }
@@ -216,22 +256,96 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
                     else {
                         if("2".equals(step)) {
 
-                            // check if a new filename is given
-                            if(newname != null) {
-                                filename = newname;
+                            // get the selected resource and check if it is an image
+                            I_CmsResourceType type = cms.getResourceType(newtype);
+                            if(newtype.equals(C_TYPE_IMAGE_NAME)) {
+
+                                // the file type is an image
+                                templateSelector = "image";
+                                xmlTemplateDocument.setData("MIME", filename);
+                                xmlTemplateDocument.setData("SIZE", "Not yet available");
+                                xmlTemplateDocument.setData("FILESIZE", new Integer(filecontent.length).toString() + " Bytes");
                             }
-                            CmsFile file = cms.createFile(foldername, filename, filecontent, C_TYPE_PLAIN_NAME);
-                            if(title != null) {
-                                String filepath = file.getAbsolutePath();
-                                cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
+                            else {
+
+                                // create the new file.
+                                // todo: error handling if file already exits
+
+                                try{
+                                    cms.createResource(foldername, filename, type.getResourceTypeName(), new Hashtable(), filecontent);
+                                }catch(CmsException e){
+                                    // remove the values form the session
+                                    session.removeValue(C_PARA_FILE);
+                                    session.removeValue(C_PARA_FILECONTENT);
+                                    session.removeValue(C_PARA_NEWTYPE);
+                                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                                    return startProcessing(cms, xmlTemplateDocument, "", parameters, "error2");
+
+                                }
+                                // remove the values form the session
+                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_FILECONTENT);
+                                session.removeValue(C_PARA_NEWTYPE);
+
+                                // return to the filelist
+                                try {
+
+                                    //cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                                    if((lasturl != null) && (lasturl != "")) {
+                                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                    }
+                                    else {
+                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                    }
+                                }
+                                catch(Exception ex) {
+                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                }
+                                return null;
                             }
-                            try {
-                                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + lasturl);
-                            }
-                            catch(Exception ex) {
-                                throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                                        + lasturl, CmsException.C_UNKNOWN_EXCEPTION, ex);
-                            }
+                        }
+                        else {
+                            if("3".equals(step)) {
+
+                                // get the data from the special image upload dialog
+
+                                // check if a new filename is given
+                                if(newname != null) {
+                                    filename = newname;
+                                }
+
+                                // create the new file.
+
+                                // todo: error handling if file already exits
+                                I_CmsResourceType type = cms.getResourceType(newtype);
+                                Hashtable prop = new Hashtable();
+                                // check if a file title was given
+                                if(title != null) {
+                                    prop.put(C_PROPERTY_TITLE, title);
+                                }
+                                CmsResource file = cms.createResource(foldername, filename,
+                                                    type.getResourceTypeName(), prop, filecontent);
+
+                                // remove the values form the session
+                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_FILECONTENT);
+                                session.removeValue(C_PARA_NEWTYPE);
+                                session.removeValue("lasturl");
+
+                                // return to the filelist
+                                try {
+                                    if((lasturl != null) && (lasturl != "")) {
+                                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                                    }
+                                    else {
+                                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
+                                    }
+                                }
+                                catch(Exception ex) {
+                                    throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, ex);
+                                }
+                                return null;
+                            }              
                         }
                     }
                 }
@@ -239,6 +353,9 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         }
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
+        if(filename != null) {
+            xmlTemplateDocument.setData("FILENAME", filename);
+        }
 
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -324,6 +441,81 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         return new Integer(retValue);
     }
 
+    /**
+     * Gets the resources displayed in the Radiobutton group on the chtype dialog.
+     * @param cms The CmsObject.
+     * @param lang The langauge definitions.
+     * @param names The names of the new rescources.
+     * @param values The links that are connected with each resource.
+     * @param parameters Hashtable of parameters (not used yet).
+     * @param descriptions Description that will be displayed for the new resource.
+     * @returns The vectors names and values are filled with the information found in the workplace.ini.
+     * @return the number of the preselected item, -1 if none preselected
+     * @exception Throws CmsException if something goes wrong.
+     */
+    public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) throws CmsException {
+        I_CmsSession session = cms.getRequestContext().getSession(true);
+        String filename = (String)session.getValue(C_PARA_FILE);
+        String suffix = filename.substring(filename.lastIndexOf('.') + 1);
+        suffix = suffix.toLowerCase(); // file extension of filename
+
+        // read the known file extensions from the database
+        Hashtable extensions = cms.readFileExtensions();
+        String resType = new String();
+        if(extensions != null) {
+            resType = (String)extensions.get(suffix);
+        }
+        if(resType == null) {
+            resType = "";
+        }
+        int ret = 0;
+
+        // Check if the list of available resources is not yet loaded from the workplace.ini
+        if(m_names == null || m_values == null) {
+            m_names = new Vector();
+            m_values = new Vector();
+            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+            configFile.getWorkplaceIniData(m_names, m_values, "RESOURCETYPES", "RESOURCE");
+        }
+
+        // Check if the temportary name and value vectors are not initialized, create
+        // them if nescessary.
+        if(names == null) {
+            names = new Vector();
+        }
+        if(values == null) {
+            values = new Vector();
+        }
+        if(descriptions == null) {
+            descriptions = new Vector();
+        }
+
+        // OK. Now m_names and m_values contain all available
+        // resource information.
+        // Loop through the vectors and fill the result vectors.
+        int numViews = m_names.size();
+        for(int i = 0;i < numViews;i++) {
+            String loopValue = (String)m_values.elementAt(i);
+            String loopName = (String)m_names.elementAt(i);
+            values.addElement(loopValue);
+            names.addElement("file_" + loopName);
+            String descr;
+            if(lang != null) {
+                descr = lang.getLanguageValue("fileicon." + loopName);
+            }
+            else {
+                descr = loopName;
+            }
+            descriptions.addElement(descr);
+            if(resType.equals(loopName)) {
+
+                // known file extension
+                ret = i;
+            }
+        }
+        return ret;
+    }
+    
     /**
      * Indicates if the results of this class are cacheable.
      *
