@@ -17,7 +17,10 @@ OpenCms 4.3.33 Bela Tegeuse - ?? July 2001
 * Fixed bug when copying a folder: check if the destinationname ends with a slash and
   add the slash only if it is missing.
 * Fixed bug when unlock a resource: do not set the project id to the current project
+* Fixed bug when undo changes in a folder: deleted resources have to be undeleted and unchanged
 - When importing resources the group and user data is imported before the resources
+- New cache for resources: when a resource was changed it has to be removed from the cache
+  for each project.
 
 OpenCms 4.3.32 Bela Tegeuse - 23 July 2001
 ! Added a ecmascript-engine to the OpenCms-shell. You can start it with like this:
