@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/11/10 17:14:16 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -663,6 +663,10 @@ public class CmsImportVersion2 extends A_CmsImport {
      */
     private void mergePageFile(String resourcename) throws Exception {
         
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Start merging " + resourcename);
+        }
+        
         // in OpenCms versions <5 node names have not been case sensitive. thus, nodes are read both in upper
         // and lower case letters, or have to be tested for equality ignoring upper/lower case...
         
@@ -672,67 +676,50 @@ public class CmsImportVersion2 extends A_CmsImport {
         
         // get the <masterTemplate> node to check the content. this node contains the name of the template file.
         String masterTemplateNodeName = "//masterTemplate";
-        List masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName);
-        if (masterTemplateNode == null || masterTemplateNode.size() == 0) {
-            masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName.toLowerCase());
+        Node masterTemplateNode = contentXml.selectSingleNode(masterTemplateNodeName);
+        if (masterTemplateNode == null) {
+            masterTemplateNode = contentXml.selectSingleNode(masterTemplateNodeName.toLowerCase());
         }
-        if (masterTemplateNode == null || masterTemplateNode.size() == 0) {
-            masterTemplateNode = contentXml.selectNodes(masterTemplateNodeName.toUpperCase());
+        if (masterTemplateNode == null) {
+            masterTemplateNode = contentXml.selectSingleNode(masterTemplateNodeName.toUpperCase());
         }        
         
         // there is only one <masterTemplate> allowed
         String mastertemplate = null;    
-        if (masterTemplateNode.size() == 1) {
+        if (masterTemplateNode != null) {
             // get the name of the mastertemplate
-            mastertemplate = ((Element) masterTemplateNode.get(0)).getTextTrim();
+            mastertemplate = masterTemplateNode.getText().trim();
         }
         
         // get the <ELEMENTDEF> nodes to check the content.
         // this node contains the information for the body element.
         String elementDefNodeName = "//ELEMENTDEF";
-        List bodyNode = contentXml.selectNodes(elementDefNodeName);
-        if (bodyNode == null || bodyNode.size() == 0) {
-            bodyNode = contentXml.selectNodes(elementDefNodeName.toLowerCase());
+        Node bodyNode = contentXml.selectSingleNode(elementDefNodeName);
+        if (bodyNode == null) {
+            bodyNode = contentXml.selectSingleNode(elementDefNodeName.toLowerCase());
         }
         
         // there is only one <ELEMENTDEF> allowed
-        if (bodyNode.size() == 1) {
+        if (bodyNode != null) {
             
-            // get the elementdef
-            Element bodyElement = (Element) bodyNode.get(0);
-            List nodes = bodyElement.elements();
-            int i;
-            Node node = null;
-            
-            // get the class of the body template
             String bodyclass = null;
-            for (i = 0; i < nodes.size(); i++) {
-                node = (Node) nodes.get(i);
-                if ("CLASS".equalsIgnoreCase(node.getName())) {
-                    bodyclass = ((Element)node).getTextTrim();
-                    break;
-                }
-            }
+            String bodyname = null;
+            Map bodyparams = null;
             
-            // get the name of the body template
-            String bodyname = null;          
-            for (i = 0; i < nodes.size(); i++) {
-                node = (Node) nodes.get(i);
-                if ("TEMPLATE".equalsIgnoreCase(node.getName())) {
-                    bodyname = ((Element)node).getTextTrim();
+            List nodes = ((Element)bodyNode).elements();            
+            for (int i = 0, n = nodes.size(); i < n; i++) {
+                
+                Node node = (Node) nodes.get(i);
+                
+                if ("CLASS".equalsIgnoreCase(node.getName())) {
+                    bodyclass = node.getText().trim();
+                } else if ("TEMPLATE".equalsIgnoreCase(node.getName())) {
+                    bodyname = node.getText().trim();
                     if (!bodyname.startsWith("/")) {
                         bodyname = CmsResource.getFolderPath(resourcename) + bodyname;
                     }
-                    break;
-                }
-            }
-            
-            // get body template parameters if defined
-            Map bodyparams = null;
-            for (i = 0; i < nodes.size(); i++) {
-                node = (Node) nodes.get(i);
-                if ("PARAMETER".equalsIgnoreCase(node.getName())) {
-                    Element paramElement = (Element) node;
+                } else if ("PARAMETER".equalsIgnoreCase(node.getName())) {
+                    Element paramElement = (Element)node;
                     if (bodyparams == null) {
                         bodyparams = new HashMap();
                     }
@@ -740,9 +727,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
             
-            if ((mastertemplate == null) || (bodyname == null)) {
-                // required XML nodes not found
-                throw new CmsException("Could not merge page file '" + resourcename + "', bad XML structure!");
+            if (mastertemplate == null || bodyname == null) {
+                throw new CmsException("Could not merge page file '" + resourcename + "', mastertemplate=" + mastertemplate + ", bodyname=" + bodyname);
             }
             
             // lock the resource, so that it can be manipulated
@@ -755,15 +741,19 @@ public class CmsImportVersion2 extends A_CmsImport {
             CmsFile bodyfile = m_cms.readFile(bodyname, CmsResourceFilter.IGNORE_EXPIRATION);
             
             //get the encoding
-            String encoding = null;                    
-            encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
+            String encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
             if (encoding == null) {
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
                      
             if (m_convertToXmlPage) {
-                // TODO: Check encoding
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Start converting to XML");
+                }
                 CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents(), encoding), "body", getLocale(resourcename, properties), encoding); 
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("End converting to XML");
+                }
                 
                 if (xmlPage != null) {
                     pagefile.setContents(xmlPage.marshal());
@@ -774,9 +764,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
 
             // add the template and other required properties
-            CmsProperty newProperty;
-            
-            newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
+            CmsProperty newProperty = new CmsProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, mastertemplate, null);
             // property lists must not contain equal properties
             properties.remove(newProperty);            
             properties.add(newProperty);
@@ -799,15 +787,21 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }
             
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Start importing XML page");
+            }
+            
             // now import the resource
             m_cms.importResource(resourcename, pagefile, pagefile.getContents(), properties);
-
-            // done, unlock the resource                   
-            //m_cms.unlockResource(resourcename);
             
             // finally delete the old body file, it is not needed anymore
             m_cms.lockResource(bodyname);
             m_cms.deleteResource(bodyname, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("End importing XML page");
+            }
+            
             m_report.println(" " + m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK); 
             
         } else {
@@ -822,9 +816,19 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.writeFile(pagefile);
             // done, unlock the resource                   
             m_cms.unlockResource(resourcename);
+            
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info("Cannot convert XML structure of " + resourcename);
+            }
+            
             m_report.println(" " + m_report.key("report.notconverted"), I_CmsReport.C_FORMAT_OK);
             
         }
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("End merging " + resourcename);
+        }
+        
     }
     
     /**
