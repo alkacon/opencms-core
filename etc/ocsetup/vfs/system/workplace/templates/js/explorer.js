@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/26 14:33:24 $
-  * Version: $Revision: 1.17 $
+  * Date   : $Date: 2001/01/29 13:06:16 $
+  * Version: $Revision: 1.18 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -416,7 +416,7 @@
  function openurl(){
  
  top.window.frames[1].frames[1].frames[1].document.open();
- top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>loading...</center></body></html>");
+ top.window.frames[1].frames[1].frames[1].document.writeln("<html><body><center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body></html>");
  top.window.frames[1].frames[1].frames[1].document.close();
  
      folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
