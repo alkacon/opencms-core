@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/07/23 13:26:30 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.52 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.53 $ $Date: 2003/07/23 13:26:30 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -589,6 +589,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         int state = 0;
         CmsUUID modifiedByUserId = user.getId();
         long dateModified = System.currentTimeMillis();
+        // check if the creation date is set. if not, set it to the current system time        
+        long dateCreated= folder.getDateCreated();
+        if (dateCreated==0) {
+            dateCreated=System.currentTimeMillis();
+        }
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = folder.getState();
@@ -629,11 +634,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(3, folder.getFlags());       
             stmt.setString(4, CmsUUID.getNullUUID().toString());           
             stmt.setInt(5, folder.getLoaderId());
-            stmt.setTimestamp(6, new Timestamp(folder.getDateCreated()));
-			stmt.setString(7, user.getId().toString());
+            stmt.setTimestamp(6, new Timestamp(dateCreated));
+            stmt.setString(7, user.getId().toString());
             stmt.setTimestamp(8, new Timestamp(dateModified));
-			stmt.setString(9, modifiedByUserId.toString());
-			stmt.setInt(10, state);
+            stmt.setString(9, modifiedByUserId.toString());
+            stmt.setInt(10, state);
             stmt.setInt(11, folder.getLength());
             stmt.setString(12, folder.isLockedBy().toString());
             stmt.setInt(13, project.getId());
