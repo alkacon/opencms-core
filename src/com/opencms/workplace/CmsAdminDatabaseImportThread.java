@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2002/12/16 13:18:55 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/12/17 12:16:53 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,6 +83,7 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
             m_report.println(m_report.key("report.import_db_end"), I_CmsReport.C_FORMAT_HEADLINE);            
         }
         catch(CmsException e) {
+            m_report.println(e);
             m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());

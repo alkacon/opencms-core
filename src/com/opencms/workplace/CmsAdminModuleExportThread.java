@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExportThread.java,v $
- * Date   : $Date: 2002/12/16 13:18:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/17 12:16:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.report.I_CmsReport;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleExportThread extends Thread {
@@ -100,6 +100,7 @@ public class CmsAdminModuleExportThread extends Thread {
             if (DEBUG) System.err.println("CmsAdminModuleExportThread() finished");
         }
         catch(CmsException e) {
+            m_report.println(e);
             if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }

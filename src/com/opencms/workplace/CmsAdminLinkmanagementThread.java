@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2002/12/16 13:18:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2002/12/17 12:16:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 
 import com.opencms.core.A_OpenCms;
@@ -89,6 +89,7 @@ public class CmsAdminLinkmanagementThread extends Thread {
                     // delete the direct publish project
                     m_cms.deleteProject(m_projectId);
                 } catch (Exception e) {
+                    m_report.println(e);
                     // ignore exception, nothing we can do here
                     if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
                         A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
