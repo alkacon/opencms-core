@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/01 12:23:49 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,6 +85,8 @@ public class TestCmsXmlContent extends TestCase {
         assertTrue(xmlcontent.hasValue("DateTime", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("Locale", Locale.ENGLISH));
+        
+        assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
         
         CmsXmlStringValue stringValue = (CmsXmlStringValue)xmlcontent.getValue("String", Locale.ENGLISH);
         CmsXmlDateTimeValue dateTimeValue = (CmsXmlDateTimeValue)xmlcontent.getValue("DateTime", Locale.ENGLISH);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2004/10/19 18:05:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/11/01 12:23:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.xmlwidgets.I_CmsXmlWidget;
+import org.opencms.xml.content.I_CmsXmlContentHandler;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.io.UnsupportedEncodingException;
@@ -47,6 +48,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.FastHashMap;
+
 import org.dom4j.Document;
 import org.dom4j.Element;
 
@@ -55,17 +58,20 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsXmlContentTypeManager {
+
+    /** Stores the initialized XML content handlers. */
+    private Map m_contentHandlers;
 
     /** Stores the registered content types. */
     private Map m_registeredTypes;
 
     /** Stores the registered content widgets. */
     private Map m_registeredWidgets;
-
+    
     /**
      * Creates a new content type manager.<p> 
      */
@@ -73,6 +79,12 @@ public class CmsXmlContentTypeManager {
 
         m_registeredTypes = new HashMap();
         m_registeredWidgets = new HashMap();
+        
+        // use the fast hash map implementation since there will be far more read then write accesses
+        FastHashMap fastMap = new FastHashMap();
+        fastMap.setFast(true);
+        m_contentHandlers = fastMap;
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". XML content config   : starting");
         }
@@ -216,6 +228,52 @@ public class CmsXmlContentTypeManager {
 
         // now add the classes 
         addXmlContent(classClazz, widgetClazz);
+    }
+    
+    /**
+     * Returns the XML content handler instance class for the specified class name.<p>
+     * 
+     * Only one instance of an XML content handler class per content definition name will be generated, 
+     * and that instance will be cached and re-used for all operations.<p> 
+     * 
+     * @param className the name of the XML content handler to return
+     * @param contentDefinitionName the name of the XML content definition that handler belongs to
+     *  
+     * @return the XML content handler class
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public I_CmsXmlContentHandler getContentHandler(String className, String contentDefinitionName) throws CmsXmlException {
+
+        // create a unique key for the content deinition / class name combo
+        StringBuffer buffer = new StringBuffer(64);
+        buffer.append(contentDefinitionName);
+        buffer.append('#');
+        buffer.append(className);
+        String key = buffer.toString();
+        
+        // look up the content handler from the cache
+        I_CmsXmlContentHandler contentHandler = (I_CmsXmlContentHandler)m_contentHandlers.get(key);                
+        if (contentHandler != null) {
+            return contentHandler;
+        }
+        
+        // generate an instance for the content handler
+        try {
+            contentHandler = (I_CmsXmlContentHandler)Class.forName(className).newInstance();
+        } catch (InstantiationException e) {
+            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+        } catch (IllegalAccessException e) {
+            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+        } catch (ClassCastException e) {
+            throw new CmsXmlException("Invalid XML content handler requested: " + key);
+        } catch (ClassNotFoundException e) {
+            throw new CmsXmlException("Invalid XML content handler requested: " + key);            
+        }
+        
+        // cache and return the content handler instance
+        m_registeredWidgets.put(key, contentHandler);
+        return contentHandler;
     }
 
     /**

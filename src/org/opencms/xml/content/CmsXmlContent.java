@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2004/10/22 11:05:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/01 12:23:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,15 +33,12 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
@@ -68,16 +65,10 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
-
-    /** Prefix for attribute mappings. */
-    public static final String C_MAPTO_ATTRIBUTE = "attribute:";
-
-    /** Prefix for property mappings. */
-    public static final String C_MAPTO_PROPERTY = "property:";
 
     /** The property to set to enable xerces schema validation. */
     public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
@@ -92,7 +83,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param encoding the encoding of the xml content
      */
     public CmsXmlContent(CmsXmlContentDefinition contentDefinition, Locale locale, String encoding) {
-        
+
         initDocument(contentDefinition.createDocument(locale), encoding, contentDefinition);
     }
 
@@ -106,7 +97,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param resolver the XML entitiy resolver to use
      */
     public CmsXmlContent(Document document, String encoding, EntityResolver resolver) {
-        
+
         m_document = document;
         initDocument(m_document, encoding, getContentDefinition(resolver));
     }
@@ -121,7 +112,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param resolver the XML entitiy resolver to use
      */
     public CmsXmlContent(String encoding, EntityResolver resolver) {
-        
+
         m_document = DocumentHelper.createDocument();
         initDocument(m_document, encoding, getContentDefinition(resolver));
     }
@@ -134,18 +125,18 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         if (hasLocale(locale)) {
             throw new CmsXmlException("Locale '" + locale + "' already exists in XML document");
         }
-        
+
         // create empty document with new Locale
         Document newDocument = m_contentDefinition.createDocument(locale);
         Element newElement = (Element)newDocument.getRootElement().elements().get(0);
-        
+
         // detach new element from parent folder before adding it 
         m_document.getRootElement().add(newElement.detach());
-        
+
         // re-initialize the bookmarks
-        initDocument(m_document, m_encoding, m_contentDefinition);        
+        initDocument(m_document, m_encoding, m_contentDefinition);
     }
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition(org.xml.sax.EntityResolver)
      */
@@ -160,11 +151,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // Therefore the exceptions should never be really thrown.
         if (schema == null) {
             throw new RuntimeException("No XML schema set for content definition");
-        }                
+        }
         InputSource source;
         try {
             source = resolver.resolveEntity(null, schema);
-            return CmsXmlContentDefinition.unmarshal(source, schema, resolver);            
+            return CmsXmlContentDefinition.unmarshal(source, schema, resolver);
         } catch (SAXException e) {
             throw new RuntimeException("Could not parse XML content definition schema", e);
         } catch (IOException e) {
@@ -173,7 +164,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             throw new RuntimeException("Unable to unmarshal XML content definition schema", e);
         }
     }
-    
+
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getLinkProcessor(org.opencms.file.CmsObject, org.opencms.staticexport.CmsLinkTable)
      */
@@ -182,62 +173,18 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // initialize link processor
         return new CmsLinkProcessor(cms, linkTable, getEncoding(), null);
     }
-    
+
     /**
-     * Resolves the element mappings specified with the 'default' attribute.<p>
+     * Resolves the element mappings according to the rules of the XML content handler that 
+     * has been configured for the XML content definition.<p>
      * 
      * @param cms an initialized CmsObject
      * @throws CmsException if something goes wrong
      */
     public void resolveElementMappings(CmsObject cms) throws CmsException {
 
-        int todo = 0;
-        // TODO: this is just a quick hack, need to re-write this
-
-        if (m_file == null) {
-            throw new CmsXmlException("File not available to resolve element mappings");
-        }
-        String filename = cms.getSitePath(m_file);
-        Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cms, filename).get(0);
-
-        List typeSequence = m_contentDefinition.getTypeSequence();
-        Iterator i = typeSequence.iterator();
-        while (i.hasNext()) {
-
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            String name = type.getNodeName();
-            int count = getIndexCount(name, locale);
-            if (count > 0) {
-                String mapping = m_contentDefinition.getMapping(name);
-                if (CmsStringUtil.isNotEmpty(mapping)) {
-
-                    I_CmsXmlContentValue value = getValue(name, locale, 0);
-                    String stringValue = value.getStringValue(cms, this);
-
-                    if (mapping.startsWith(C_MAPTO_PROPERTY)) {
-                        String property = mapping.substring(C_MAPTO_PROPERTY.length());
-
-                        cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
-
-                    } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
-
-                        String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
-
-                        if ("datereleased".equals(attribute)) {
-                            long date = Long.valueOf(stringValue).longValue();
-                            m_file.setDateReleased(date);
-                        } else if ("dateexpired".equals(attribute)) {
-                            long date = Long.valueOf(stringValue).longValue();
-                            if (date == 0) {
-                                date = CmsResource.DATE_EXPIRED_DEFAULT;
-                            }
-                            m_file.setDateExpired(date);
-                        }
-                    }
-                    // TODO: handle invalid mapto values
-                }
-            }
-        }
+        // call the element mapping resolver of the configured XML content handler
+        m_contentDefinition.getContentHandler().resolveElementMappings(cms, this, m_contentDefinition);
     }
 
     /**
@@ -249,7 +196,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();              
+        m_elementNames = new HashMap();
 
         // initialize the bookmarks
         for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {
@@ -285,7 +232,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @param file the file this XML content content is written to
      */
     protected void setFile(CmsFile file) {
-        
+
         m_file = file;
-    }  
+    }
 }
