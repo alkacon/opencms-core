@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/25 11:40:24 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/06/25 15:54:22 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.71 $ $Date: 2000/06/25 11:40:24 $
+ * @version $Revision: 1.72 $ $Date: 2000/06/25 15:54:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3471,6 +3471,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         Vector folders = new Vector();
 		
+       // Todo: add caching for getSubFolders
        //folders=(Vector)m_subresCache.get(C_FOLDER+currentProject.getId()+foldername);
        if ((folders==null) || (folders.size()==0)){
            
@@ -4586,6 +4587,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
     	Vector files = new Vector();
 		
+        // Todo: add caching for getFilesInFolder
         //files=(Vector)m_subresCache.get(C_FILE+currentProject.getId()+foldername);
         if ((files==null) || (files.size()==0)) {
             

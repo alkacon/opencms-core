@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
- * Date   : $Date: 2000/06/05 13:37:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/06/25 15:54:22 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/06/05 13:37:57 $
+ * @version $Revision: 1.9 $ $Date: 2000/06/25 15:54:22 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher { 	
         
@@ -70,7 +70,8 @@ public class CmsDumpLauncher extends A_CmsLauncher {
         byte[] result = null;
 
         String templateClass = startTemplateClass;
-        if(templateClass == null || "".equals(templateClass)) {            
+        if(templateClass == null || "".equals(templateClass)
+           || (startTemplateClass.equals(C_UNKNOWN_LAUNCHER)) ) {            
             templateClass = "com.opencms.template.CmsDumpTemplate";
         }
          

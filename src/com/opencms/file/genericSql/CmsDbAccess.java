@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/25 11:40:23 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/06/25 15:54:22 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.77 $ $Date: 2000/06/25 11:40:23 $ * 
+ * @version $Revision: 1.78 $ $Date: 2000/06/25 15:54:22 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2996,23 +2996,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      
                // create new folder
                while(res.next()) {
-				    folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
-											   res.getInt(C_RESOURCES_PARENT_ID),
-											   res.getInt(C_RESOURCES_FILE_ID),
-											   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                               res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                               res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                               res.getInt(C_RESOURCES_USER_ID),
-                                               res.getInt(C_RESOURCES_GROUP_ID),
-                                               res.getInt(C_RESOURCES_PROJECT_ID),
-                                               res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                               res.getInt(C_RESOURCES_STATE),
-                                               res.getInt(C_RESOURCES_LOCKED_BY),
-                                               res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                               res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                               res.getInt(C_RESOURCES_LASTMODIFIED_BY)
-                                           );
-					folders.addElement(folder);
+				int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                   
+                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                      groupId,projectID,accessFlags,state,lockedBy,created,
+                                      modified,modifiedBy);	
+				folders.addElement(folder);
 			   }
 			res.close();
          } catch (SQLException e){
@@ -3049,27 +3052,31 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                
                // create new file
                while(res.next()) {
-				    file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           new byte[0],
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );
-					files.addElement(file);
+				int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int resSize= res.getInt(C_RESOURCES_SIZE);
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                                     
+                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                new byte[0],resSize);	
+     
+				files.addElement(file);
 			   }
 			res.close();
          } catch (SQLException e){
@@ -3188,26 +3195,30 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     statement.setInt(2,onlineProjectId);
                     res = statement.executeQuery();  
                     if(res.next()) {
-                         file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-											res.getInt(C_RESOURCES_PARENT_ID),
-											res.getInt(C_RESOURCES_FILE_ID),
-											filename,
-                                            res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                            res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                            res.getInt(C_RESOURCES_USER_ID),
-                                            res.getInt(C_RESOURCES_GROUP_ID),
-                                            onlineProjectId,
-                                            res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                            res.getInt(C_RESOURCES_STATE),
-                                            res.getInt(C_RESOURCES_LOCKED_BY),
-                                            res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                            res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-											res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                            res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                            res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                            res.getBytes(C_RESOURCES_FILE_CONTENT),
-                                            res.getInt(C_RESOURCES_SIZE)
-                                           );
+                      int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                      int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                      int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                      int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                      int userId=res.getInt(C_RESOURCES_USER_ID);
+                      int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                      int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                      int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                      int state= res.getInt(C_RESOURCES_STATE);
+                      int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                      int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                      String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                      long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                      long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                      int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                      int resSize= res.getInt(C_RESOURCES_SIZE);
+                      byte[] content=res.getBytes(C_RESOURCES_FILE_CONTENT);
+              
+                                     
+                      file=new CmsFile(resId,parentId,fileId,filename,resType,resFlags,userId,
+                                groupId,onlineProjectId,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                content,resSize);	
+     
                           res.close();
                      } else {
                        throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
@@ -3280,28 +3291,31 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                res = statement.executeQuery();
                // create new file headers
                while(res.next()) {
-                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           new byte[0],
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );
+                int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int resSize= res.getInt(C_RESOURCES_SIZE);
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                                     
+                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                new byte[0],resSize);	
                        
-                        allHeaders.addElement(file);
+                allHeaders.addElement(file);
                }
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -3347,26 +3361,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
                // create new file
                if(res.next()) {
-                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           new byte[0],
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );
+                int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int resSize= res.getInt(C_RESOURCES_SIZE);
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                                     
+                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                new byte[0],resSize);	
                           res.close();    
          
                          // check if this resource is marked as deleted
@@ -3415,26 +3432,29 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                res = statement.executeQuery();
                // create new file
                if(res.next()) {
-                        file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           new byte[0],
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );
+                int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+                String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int resSize= res.getInt(C_RESOURCES_SIZE);
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                                     
+                file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                new byte[0],resSize);	
                           res.close();                 
                          // check if this resource is marked as deleted
                         if (file.getState() == C_STATE_DELETED) {
@@ -3499,9 +3519,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                     state=C_STATE_CHANGED;
                }              
            }
-
-           String launcherClass="unknown";
-
+    
 		   int	resourceId = nextId(C_TABLE_RESOURCES);
            int fileId = nextId(C_TABLE_FILES);
            
@@ -3524,7 +3542,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statement.setInt(11,state);
                 statement.setInt(12,C_UNKNOWN_ID);
                 statement.setInt(13,resourceType.getLauncherType());
-                statement.setString(14,launcherClass);
+                statement.setString(14,resourceType.getLauncherClass());
                 statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
                 statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
                 statement.setInt(17,contents.length);
@@ -3765,25 +3783,25 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                // create new resource
                if(res.next()) {
 
-                   folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
-											   res.getInt(C_RESOURCES_PARENT_ID),
-											   res.getInt(C_RESOURCES_FILE_ID),
-											   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                               res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                               res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                               res.getInt(C_RESOURCES_USER_ID),
-                                               res.getInt(C_RESOURCES_GROUP_ID),
-                                               res.getInt(C_RESOURCES_PROJECT_ID),
-                                               res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                               res.getInt(C_RESOURCES_STATE),
-                                               res.getInt(C_RESOURCES_LOCKED_BY),
-                                               res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                               res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                               res.getInt(C_RESOURCES_LASTMODIFIED_BY));
-                        // check if this resource is marked as deleted
-                       // if (folder.getState() == C_STATE_DELETED) {
-                       //     throw new CmsException("["+this.getClass().getName()+"]"+folder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
-                       // }
+                int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+                int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+                String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+                int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+                int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+                int userId=res.getInt(C_RESOURCES_USER_ID);
+                int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+                int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+                int fileId=res.getInt(C_RESOURCES_FILE_ID);
+                int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+                int state= res.getInt(C_RESOURCES_STATE);
+                int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+                long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+                long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+                int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                   
+                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                      groupId,projectID,accessFlags,state,lockedBy,created,
+                                      modified,modifiedBy);	
                    }else {
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);  
                }
@@ -4313,15 +4331,12 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
          ResultSet res =null;
          PreparedStatement statement = null;
          
-         System.err.println("GET SUBFOLDERS OF "+parentFolder);
            try {
              //  get all subfolders
              statement = m_pool.getPreparedStatement(C_RESOURCES_GET_SUBFOLDER_KEY);
              statement.setInt(1,parentFolder.getResourceId()); 
              
              res = statement.executeQuery();             
-            System.err.println("+++ result");
-            System.err.println(res);
             // create new folder objects
 		    while ( res.next() ) {
                int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
@@ -4383,27 +4398,31 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
              
             // create new file objects
 		    while ( res.next() ) {
-                     file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
-										   res.getInt(C_RESOURCES_PARENT_ID),
-										   res.getInt(C_RESOURCES_FILE_ID),
-										   res.getString(C_RESOURCES_RESOURCE_NAME),
-                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
-                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
-                                           res.getInt(C_RESOURCES_USER_ID),
-                                           res.getInt(C_RESOURCES_GROUP_ID),
-                                           res.getInt(C_PROJECT_ID_RESOURCES),
-                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
-                                           res.getInt(C_RESOURCES_STATE),
-                                           res.getInt(C_RESOURCES_LOCKED_BY),
-                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
-                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
-                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
-                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
-                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
-                                           new byte[0],
-                                           res.getInt(C_RESOURCES_SIZE)
-                                           );
-                     files.addElement(file);
+               int resId=res.getInt(C_RESOURCES_RESOURCE_ID);
+               int parentId=res.getInt(C_RESOURCES_PARENT_ID);
+               String resName=res.getString(C_RESOURCES_RESOURCE_NAME);
+               int resType= res.getInt(C_RESOURCES_RESOURCE_TYPE);
+               int resFlags=res.getInt(C_RESOURCES_RESOURCE_FLAGS);
+               int userId=res.getInt(C_RESOURCES_USER_ID);
+               int groupId= res.getInt(C_RESOURCES_GROUP_ID);
+               int projectID=res.getInt(C_RESOURCES_PROJECT_ID);
+               int fileId=res.getInt(C_RESOURCES_FILE_ID);
+               int accessFlags=res.getInt(C_RESOURCES_ACCESS_FLAGS);
+               int state= res.getInt(C_RESOURCES_STATE);
+               int lockedBy= res.getInt(C_RESOURCES_LOCKED_BY);
+               int launcherType= res.getInt(C_RESOURCES_LAUNCHER_TYPE);
+               String launcherClass=  res.getString(C_RESOURCES_LAUNCHER_CLASSNAME);
+               long created=res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime();
+               long modified=res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime();
+               int resSize= res.getInt(C_RESOURCES_SIZE);
+               int modifiedBy=res.getInt(C_RESOURCES_LASTMODIFIED_BY);
+                                     
+               file=new CmsFile(resId,parentId,fileId,resName,resType,resFlags,userId,
+                                groupId,projectID,accessFlags,state,lockedBy,
+                                launcherType,launcherClass,created,modified,modifiedBy,
+                                new byte[0],resSize);	
+     
+               files.addElement(file);
              }
              res.close();
 

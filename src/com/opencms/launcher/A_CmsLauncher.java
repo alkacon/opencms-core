@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/06/05 13:37:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/25 15:54:22 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,9 +59,9 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/06/05 13:37:57 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/25 15:54:22 $
  */
-abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
+abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants  {
         
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
