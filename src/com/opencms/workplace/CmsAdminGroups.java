@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.5 $Selector
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.6 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/09 10:02:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -89,19 +89,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
         A_CmsRequestContext reqCont = cms.getRequestContext();   	
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);
-		
-		
-		System.err.println("******");
-        Enumeration enu=parameters.keys();
-        while (enu.hasMoreElements()) {
-            String key=(String)enu.nextElement();
-            String values=(String)parameters.get(key);
-            System.err.println(key+" : "+values);
-        }
-        System.err.println("******");
-
-		
-		
+		 
 		boolean groupYetChanged=true;
 		boolean groupYetEstablished=true;
 		// find out which template (=perspective) should be used

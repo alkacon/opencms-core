@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
- * Date   : $Date: 2000/04/20 12:35:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/20 12:35:52 $
+ * @version $Revision: 1.8 $ $Date: 2000/05/09 10:02:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -159,7 +159,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault implements
 			// preselect the old user and role in the dialog for forwarding and resurrection
 			// compute the indices of the user and role
 			String username = cms.readAgent(task).getName();
-			String groupname = cms.readGroup(task).getName(); 
+			String groupname = cms.readGroup(task).getName();
 			int userindex = 0;
 			int groupindex = 0;
 			Vector groups = cms.getGroups();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/05/03 11:17:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/05/03 11:17:47 $
+ * @version $Revision: 1.10 $ $Date: 2000/05/09 10:02:57 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -81,8 +81,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // the template to be displayed
         String template=null;
                              
-		String lasturl = getLastUrl(cms, parameters);
-		System.err.println("CmsProperty: lasturl="+lasturl);
+		String lasturl = getLastUrl(cms, parameters); 
 		
 		
         // clear session values on first load

@@ -300,7 +300,7 @@ function doAction(action) {
 
 function doPAction(action) // which action on layer Project is clicked
 {
-	hidemenu(letztelyr);
+	hidemenu(letztelyr); 
 	var encLasturl = simpleEscape(location.href);
 	
 	switch(action)
@@ -327,7 +327,7 @@ function doPAction(action) // which action on layer Project is clicked
 		}
 		case 10:
 		{
-			location.href='tasks_content_new_forproject.html';
+			location.href='tasks_content_new_forproject.html?lasturl=' + encLasturl;
 			break;
 		}
 		case 20:

@@ -45,7 +45,7 @@ function doSubmit(){
 	<tr><td>
 		<table cellspacing=0 cellpadding=0 border=0 width=100% height=360>
 			<tr> 
-           		<td colspan=4 class="head" height=22><p class=einzug>Einstellungen</p></td>
+           		<td colspan=4 class="head" height=22><p class=einzug>]]><LABEL value="title.preferences" /><![CDATA[</p></td>
 			</tr>
 			<tr bgcolor="#838383"> 
 				<td colspan=4 valign=bottom> 		

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/04/06 10:44:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2000/04/06 10:44:30 $
+ * @version $Revision: 1.23 $ $Date: 2000/05/09 10:02:57 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -992,12 +992,14 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     * @param tag Key for this datablock.
     * @param data String to be put in the datablock.
     */
-    protected void fastSetData(String tag, String data) {
-        Element originalBlock = (Element)(m_blocks.get(tag));
-        while(originalBlock.hasChildNodes()) {
-            originalBlock.removeChild(originalBlock.getFirstChild());
-        }
-        originalBlock.appendChild(m_content.createTextNode(data));
+    protected void fastSetData(String tag, String data) {   
+		// fastSetData could have been called with an upper case argument
+		tag=tag.toLowerCase();
+		Element originalBlock = (Element)(m_blocks.get(tag)); 
+		while(originalBlock.hasChildNodes()) { 
+			originalBlock.removeChild(originalBlock.getFirstChild());
+		} 
+		originalBlock.appendChild(m_content.createTextNode(data));  
     }
     
    /**
@@ -1007,8 +1009,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     * @param tag Key for this datablock.
     * @param data String to be put in the datablock.
     */
-    protected void setData(String tag, String data) {
-                
+    protected void setData(String tag, String data) { 
         // create new XML Element to store the data
         //Element newElement = m_content.createElement("DATA");
         String attribute = tag;

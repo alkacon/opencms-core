@@ -55,7 +55,7 @@ function show_help()
 						<table border=0 cellspacing=4 width=100% height=200px>
 							<tr>
 								<td class=formular width=10%>]]><LABEL value="label.projectname" /><![CDATA[:</td>
-								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 length=16 value="]]><PROCESS>new_project_name</PROCESS><![CDATA["> </td>
+								<td class=dialogtxt><input type="text" name="NAME" class="textfeld3" size=31 maxlength=16 value="]]><PROCESS>new_project_name</PROCESS><![CDATA["> </td>
 								<td class=formular><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" width="50" height="1" alt="" border="0"></td>
 							</tr>
 							<tr>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/05/02 15:58:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2000/05/02 15:58:37 $
+ * @version $Revision: 1.11 $ $Date: 2000/05/09 10:02:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -407,21 +407,21 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
      * @see I_CmsFileListUsers
      */
     public void getCustomizedColumnValues(A_CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, A_CmsResource res, CmsXmlLanguageFile lang) 
-        throws CmsException {
+        throws CmsException { 
         String state = lang.getLanguageValue(C_LANG_LABEL + ".notavailable");
         String author = state;
         String name = null;
-        if(res instanceof CmsFile) {
+        if(res instanceof CmsFile) { 
             CmsNewsContentFile newsContentFile = getNewsContentFile(cms, res);
             state = newsContentFile.isNewsActive() ? lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_ACTIVE) : lang.getLanguageValue(C_LANG_LABEL + "." + C_NEWS_STATE_INACTIVE);
             author = newsContentFile.getNewsAuthor();
             name = newsContentFile.getNewsHeadline();
-        }
+        } 
         filelistTemplate.setData(C_NEWS_STATE_VALUE, state);
-        filelistTemplate.setData(C_NEWS_AUTHOR_VALUE, author);        
+        filelistTemplate.setData(C_NEWS_AUTHOR_VALUE, author);   
         if(name != null) {
              filelistTemplate.setData(C_FILELIST_NAME_VALUE, name);                    
-        }
+        } 
     }    
 
     /**
@@ -438,7 +438,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 
         // The given file object contains the news page file.
         // we have to read out the article
-        CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, (CmsFile)file);
+        CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, (CmsFile)file); 
         String readParam = newsPageFile.getElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_READ);
         String newsfolderParam = newsPageFile.getElementParameter(C_BODY_ELEMENT, C_NEWS_PARAM_NEWSFOLDER);
         

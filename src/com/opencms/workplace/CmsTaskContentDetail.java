@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
- * Date   : $Date: 2000/04/27 16:11:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2000/04/27 16:11:19 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/09 10:02:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -133,7 +133,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
 				// take the task
 				CmsTaskAction.take(cms, taskid);
 			} else if("forwardok".equals((String)parameters.get("action"))){
-				// forward the task
+				// forward the task 
 				CmsTaskAction.forward(cms, taskid, (String)parameters.get("USER"),
 									  (String)parameters.get("TEAM"));
 			} else if("due".equals((String)parameters.get("action"))){

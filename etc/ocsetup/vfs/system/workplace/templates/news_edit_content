@@ -40,7 +40,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td class="head">News-Artikel eingeben</td>
+           		<td class="head">]]><LABEL value="title.enternews" /><![CDATA[</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			

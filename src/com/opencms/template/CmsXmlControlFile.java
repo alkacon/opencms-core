@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/03/22 10:37:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/05/09 10:02:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/03/22 10:37:16 $
+ * @version $Revision: 1.14 $ $Date: 2000/05/09 10:02:57 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -287,7 +287,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      * @param elementName Name of the subelement.
      * @param parameterName Name of the requested parameter.
      */
-    public String getElementParameter(String elementName, String parameterName) throws CmsException {
+    public String getElementParameter(String elementName, String parameterName) throws CmsException { 
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
     }
 
