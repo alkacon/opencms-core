@@ -38,7 +38,7 @@
 			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/><![CDATA[
 		</td>
 		</form>
-		
+		]]><PROCESS>PUBLISH</PROCESS><![CDATA[
 		<td class=menubold><p class=tab>]]><LABEL value="label.view" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		
 		<form name="viewchange" id="viewchange" method="get">
@@ -70,5 +70,13 @@
 <SYNC_ENABLED>
 <![CDATA[<td class=dialogtxt>]]><BUTTON href="#" name="bt_sync" action="javascript:window.top.body.location.href='syncfolder.html'" alt="syncfolder"/><![CDATA[</td>]]>
 </SYNC_ENABLED>
+
+<PUBLISH_DISABLED>
+<![CDATA[<td><p class=tab><IMG width=32 border=0 name=bt_publish src="]]><METHOD name="picsUrl"/><![CDATA[bt_publish_in.gif" ></td>]]>
+</PUBLISH_DISABLED>	
+
+<PUBLISH_ENABLED>
+<![CDATA[<td class=dialogtxt><p class=tab>]]><BUTTON href="#" name="bt_publish" action="javascript:window.top.body.location.href='publish_project.html?fromExplorer=true'" alt="publish"/><![CDATA[</td>]]>
+</PUBLISH_ENABLED>
 
 </WORKPLACE>

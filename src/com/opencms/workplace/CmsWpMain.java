@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/02/21 16:53:27 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/03/12 14:46:49 $
+* Version: $Revision: 1.34 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2001/02/21 16:53:27 $
+ * @version $Revision: 1.34 $ $Date: 2001/03/12 14:46:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -100,6 +100,15 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         if(newView != null && !("".equals(newView))) {
             session = cms.getRequestContext().getSession(true);
             session.putValue(C_PARA_VIEW, newView);
+        }
+
+        // set the publishProject Button to enable if user has the right to publish the project
+        if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"head")){
+            if((reqCont.isProjectManager() || cms.isAdmin()) && (!reqCont.currentProject().equals(cms.onlineProject()))){
+                xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_ENABLED", this));
+            }else{
+                xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_DISABLED", this));
+            }
         }
 
         // set the sync button to enabled if no entries for synchronisation in registry
