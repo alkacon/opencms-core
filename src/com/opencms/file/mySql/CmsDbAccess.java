@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/20 14:15:12 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/10/04 18:44:14 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.35 $ $Date: 2000/09/20 14:15:12 $ * 
+ * @version $Revision: 1.36 $ $Date: 2000/10/04 18:44:14 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -419,6 +419,24 @@ protected void fillDefaults() throws CmsException
 	CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
 	rootFolder.setGroupId(users.getId());
 	writeFolder(online, rootFolder, false);
+	
+	/* Inserting some multisite initialization
+	 * insert a default site, create relation between default site and the default project
+	 * This needs to be done even if you're not using multisite functionality
+	 */
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] filling default multisite resources");	}
+	CmsCategory category = createCategory("Default", "Default category", "def", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created category with ID="+category.getId());	}
+	CmsLanguage language = createLanguage("Default Language", "def", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created language with ID="+language.getLanguageId());	}
+	CmsCountry country = createCountry("Master", "master", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created country with ID="+country.getCountryId());	}
+	CmsSite newSite = newSiteRecord("Default", "Default site", category.getId(), language.getLanguageId(), country.getCountryId(), online.getId());
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created new site with ID="+newSite.getId());	}
+	newSiteProjectsRecord(newSite.getId(), online.getId());
+	String url = "www.default.cms";
+	newSiteUrlRecord(url, newSite.getId(), url);
+
 }
 	/**
 	 * Finds an agent for a given role (group).

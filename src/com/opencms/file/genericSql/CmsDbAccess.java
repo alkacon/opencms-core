@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/04 14:48:39 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2000/10/04 18:44:11 $
+ * Version: $Revision: 1.153 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.152 $ $Date: 2000/10/04 14:48:39 $ * 
+ * @version $Revision: 1.153 $ $Date: 2000/10/04 18:44:11 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -366,6 +366,43 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		m_guard = createCmsConnectionGuard(m_pool, sleepTime);
 		m_guard.start();		
 	}
+/**
+ * Sorts a vector of files or folders alphabetically. 
+ * This method uses an insertion sort algorithm.
+ * NOT IN USE AT THIS TIME
+ * 
+ * @param unsortedList Array of strings containing the list of files or folders.
+ * @return Array of sorted strings.
+ */
+protected Vector SortEntrys(Vector list)
+{
+	int in, out;
+	int nElem = list.size();
+	long startTime = System.currentTimeMillis();
+	CmsResource[] unsortedList = new CmsResource[list.size()];
+	for (int i = 0; i < list.size(); i++)
+	{
+		unsortedList[i] = (CmsResource) list.elementAt(i);
+	}
+	for (out = 1; out < nElem; out++)
+	{
+		CmsResource temp = unsortedList[out];
+		in = out;
+		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
+		{
+			unsortedList[in] = unsortedList[in - 1];
+			--in;
+		}
+		unsortedList[in] = temp;
+	}
+	Vector sortedList = new Vector();
+	for (int i = 0; i < list.size(); i++)
+	{
+		sortedList.addElement(unsortedList[i]);
+	}
+	System.err.println("Zeit f?r SortEntrys von " + nElem + " Eintr?gen:" + (System.currentTimeMillis() - startTime));
+	return sortedList;
+}
 	/**
 	 * Creates a serializable object in the systempropertys.
 	 * 
@@ -1971,56 +2008,65 @@ public void deleteSite(int siteId) throws CmsException
 			}
 		}
 	}
-	/**
-	 * Private method to init all default-resources
+/**
+ * Private method to init all default-resources
+ */
+protected void fillDefaults() throws CmsException
+{
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] fillDefaults() starting NOW!");	}
+	// insert the first Id
+	initId();
+
+	// the resourceType "folder" is needed always - so adding it
+	Hashtable resourceTypes = new Hashtable(1);
+	resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, C_TYPE_FOLDER_NAME, ""));
+
+	// sets the last used index of resource types.
+	resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
+
+	// add the resource-types to the database
+	addSystemProperty(C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes);
+
+	// set the mimetypes
+	addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES, initMimetypes());
+
+	// set the groups
+	CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
+	CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER, null);
+	CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED | C_FLAG_GROUP_PROJECTMANAGER | C_FLAG_GROUP_PROJECTCOWORKER | C_FLAG_GROUP_ROLE, null);
+	CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED | C_FLAG_GROUP_ROLE | C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+
+	// add the users
+	CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER);
+	CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER);
+	addUserToGroup(guest.getId(), guests.getId());
+	addUserToGroup(admin.getId(), administrators.getId());
+	CmsTask task = createTask(0, 0, 1, // standart project type,
+	admin.getId(), admin.getId(), administrators.getId(), C_PROJECT_ONLINE, new java.sql.Timestamp(new java.util.Date().getTime()), new java.sql.Timestamp(new java.util.Date().getTime()), C_TASK_PRIORITY_NORMAL);
+	CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
+
+	// create the root-folder
+	CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
+	rootFolder.setGroupId(users.getId());
+	writeFolder(online, rootFolder, false);
+
+	/* Inserting some multisite initialization
+	 * insert a default site, create relation between default site and the default project
+	 * This needs to be done even if you're not using multisite functionality
 	 */
-	protected void fillDefaults() 
-		throws CmsException {
-		// insert the first Id
-		initId();
-		
-		// the resourceType "folder" is needed always - so adding it
-		Hashtable resourceTypes = new Hashtable(1);
-		resourceTypes.put(C_TYPE_FOLDER_NAME, new CmsResourceType(C_TYPE_FOLDER, 0, 
-																  C_TYPE_FOLDER_NAME, ""));
-			
-		// sets the last used index of resource types.
-		resourceTypes.put(C_TYPE_LAST_INDEX, new Integer(C_TYPE_FOLDER));
-			
-		// add the resource-types to the database
-		addSystemProperty( C_SYSTEMPROPERTY_RESOURCE_TYPE, resourceTypes );
-
-		// set the mimetypes
-		addSystemProperty(C_SYSTEMPROPERTY_MIMETYPES,initMimetypes());
-
-		// set the groups
-		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-		CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
-		CmsGroup projectleader = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
-		CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
-			   
-		// add the users
-		CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", C_USER_TYPE_SYSTEMUSER); 
-		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", " ", " ", " ", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, " ", " ", C_USER_TYPE_SYSTEMUSER); 
-		addUserToGroup(guest.getId(), guests.getId());
-		addUserToGroup(admin.getId(), administrators.getId());
-
-		CmsTask task=createTask(0,0,1, // standart project type,
-				     admin.getId(), 
-					 admin.getId(),						
-				     administrators.getId(),
-				     C_PROJECT_ONLINE,
-			         new java.sql.Timestamp(new java.util.Date().getTime()),
-				     new java.sql.Timestamp(new java.util.Date().getTime()),
-				     C_TASK_PRIORITY_NORMAL);
-		
-		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
-		
-		// create the root-folder
-		CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
-		rootFolder.setGroupId(users.getId());
-		writeFolder(online, rootFolder, false);
-	}
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] filling default multisite resources");	}
+	CmsCategory category = createCategory("Default", "Default category", "def", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created category with ID="+category.getId());	}
+	CmsLanguage language = createLanguage("Default Language", "def", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created language with ID="+language.getLanguageId());	}
+	CmsCountry country = createCountry("Master", "master", 0);
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created country with ID="+country.getCountryId());	}
+	CmsSite newSite = newSiteRecord("Default", "Default site", category.getId(), language.getLanguageId(), country.getCountryId(), online.getId());
+	if(A_OpenCms.isLogging()) {		A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] Created new site with ID="+newSite.getId());	}
+	newSiteProjectsRecord(newSite.getId(), online.getId());
+	String url = "www.default.cms";
+	newSiteUrlRecord(url, newSite.getId(), url);
+}
 	/**
 	 * Finds an agent for a given role (group).
 	 * @param roleId The Id for the role (group).
@@ -2375,43 +2421,6 @@ public Vector getAllLanguages() throws CmsException
 		 return(projects);
 	 }
 /**
- * Returns all sites in system
- * Creation date: (07-09-2000 13:45:00)
- * @return Vector
- */
-public Vector getAllSites() throws CmsException
-{
-	Vector sites = new Vector();
-	PreparedStatement statement = null;
-	CmsSite site = null;
-	try
-	{
-		statement = m_pool.getPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY);
-		ResultSet res = statement.executeQuery();
-		while (res.next())
-		{
-			sites.addElement(new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID")));
-		}
-		res.close();
-	}
-	catch (SQLException e)
-	{
-		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
-	}
-	catch (Exception e)
-	{
-		throw new CmsException("[" + this.getClass().getName() + "]", e);
-	}
-	finally
-	{
-		if (statement != null)
-		{
-			m_pool.putPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY, statement);
-		}
-	}
-	return sites;
-}
-/**
  * Returns all site urls
  * Creation date: (22-09-2000 13:11:32)
  * @return java.util.Vector all site urls
@@ -2447,6 +2456,43 @@ public Vector getAllSiteUrls() throws com.opencms.core.CmsException
 		}
 	}
 	return siteUrls;
+}
+/**
+ * Returns all sites in system
+ * Creation date: (07-09-2000 13:45:00)
+ * @return Vector
+ */
+public Vector getAllSites() throws CmsException
+{
+	Vector sites = new Vector();
+	PreparedStatement statement = null;
+	CmsSite site = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY);
+		ResultSet res = statement.executeQuery();
+		while (res.next())
+		{
+			sites.addElement(new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID")));
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY, statement);
+		}
+	}
+	return sites;
 }
 /**
  * Retrieves the onlineproject from the database based on the given project.
@@ -6581,43 +6627,6 @@ public CmsTask readTask(int id) throws CmsException {
 		}
 		return result;
 	}
-/**
- * Sorts a vector of files or folders alphabetically. 
- * This method uses an insertion sort algorithm.
- * NOT IN USE AT THIS TIME
- * 
- * @param unsortedList Array of strings containing the list of files or folders.
- * @return Array of sorted strings.
- */
-protected Vector SortEntrys(Vector list)
-{
-	int in, out;
-	int nElem = list.size();
-	long startTime = System.currentTimeMillis();
-	CmsResource[] unsortedList = new CmsResource[list.size()];
-	for (int i = 0; i < list.size(); i++)
-	{
-		unsortedList[i] = (CmsResource) list.elementAt(i);
-	}
-	for (out = 1; out < nElem; out++)
-	{
-		CmsResource temp = unsortedList[out];
-		in = out;
-		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
-		{
-			unsortedList[in] = unsortedList[in - 1];
-			--in;
-		}
-		unsortedList[in] = temp;
-	}
-	Vector sortedList = new Vector();
-	for (int i = 0; i < list.size(); i++)
-	{
-		sortedList.addElement(unsortedList[i]);
-	}
-	System.err.println("Zeit f?r SortEntrys von " + nElem + " Eintr?gen:" + (System.currentTimeMillis() - startTime));
-	return sortedList;
-}
 	/**
 	 * Undeletes the file.
 	 * 
