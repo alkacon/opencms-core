@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/06/25 13:52:24 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.19 $ $Date: 2003/06/25 13:52:24 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/04 16:00:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -293,7 +293,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
      */
 
     private boolean checkWriteable(CmsObject cms, String resPath)  throws CmsException {
-    	return cms.checkPermissions(resPath, C_WRITE_ACCESS);
+    	return cms.hasPermissions(resPath, C_WRITE_ACCESS);
     }
     /**
      * Parse the hashtable which holds all resources

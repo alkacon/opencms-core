@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.29 $
- * $Date: 2003/07/02 11:03:13 $
+ * $Revision: 1.30 $
+ * $Date: 2003/07/04 16:00:24 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -724,7 +724,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
     public boolean isReadable() {
         m_cms.setContextToCos();
         try {
-            return m_cms.checkPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_READ_ACCESS); 
+            return m_cms.hasPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_READ_ACCESS); 
             // TODO: remove this later
             // m_cms.accessRead();
         } catch(CmsException exc) {
@@ -743,7 +743,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_cms.setContextToCos();
         try {
             // return m_cms.accessWrite(cms.readPath(m_channel));
-            return m_cms.checkPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_WRITE_ACCESS);
+            return m_cms.hasPermissions(m_cms.readAbsolutePath(m_channel), I_CmsConstants.C_WRITE_ACCESS);
         } catch(CmsException exc) {
             // there was a cms-exception - no write-access!
             return false;

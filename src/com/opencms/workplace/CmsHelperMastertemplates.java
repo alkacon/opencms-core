@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.14 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/04 16:00:24 $
  */
 
 public class CmsHelperMastertemplates {
@@ -148,6 +148,6 @@ public class CmsHelperMastertemplates {
      * @throws CmsException if something goes wrong.
      */
     public static boolean checkVisible(CmsObject cms, CmsResource res) throws CmsException {
-        return cms.checkPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
+        return cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.66 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.67 $ $Date: 2003/07/04 16:00:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -166,7 +166,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
 
-		return cms.checkPermissions(res, C_VIEW_ACCESS);
+		return cms.hasPermissions(res, C_VIEW_ACCESS);
 		
     }
 

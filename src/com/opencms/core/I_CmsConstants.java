@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.236 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.237 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.236 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.237 $ $Date: 2003/07/04 16:00:24 $
  */
 public interface I_CmsConstants {
 
@@ -406,7 +406,7 @@ public interface I_CmsConstants {
  	/**
  	 * Permission set to check read and/or view access
  	 */
- 	CmsPermissionSet C_READVIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ|C_PERMISSION_VIEW);
+ 	CmsPermissionSet C_READ_OR_VIEW_ACCESS = new CmsPermissionSet(C_PERMISSION_READ|C_PERMISSION_VIEW);
  	
     /**
      * Group may read this resource

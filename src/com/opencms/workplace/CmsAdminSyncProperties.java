@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -454,6 +454,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
     private boolean checkWriteable(CmsObject cms, String resPath, int projectId)  throws CmsException {
 		CmsProject theProject = cms.readProject(projectId);
 		CmsResource res = cms.readFileHeader(resPath, projectId);
-        return cms.checkPermissions(theProject, res, C_WRITE_ACCESS);
+        return cms.hasPermissions(theProject, res, C_WRITE_ACCESS);
     }
 }

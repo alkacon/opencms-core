@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/04 12:03:06 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2003/07/04 12:03:06 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/04 16:00:24 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants {
 
@@ -773,7 +773,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException{
         //if(!cms.accessWrite(filename)){
-        if(!cms.checkPermissions(filename, I_CmsConstants.C_WRITE_ACCESS)) {
+        if(!cms.hasPermissions(filename, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(filename, CmsException.C_NO_ACCESS);
         }
         CmsFile file = cms.readFile(filename);
@@ -811,7 +811,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     */
     public void undoChanges(CmsObject cms, String resource) throws CmsException{
         //if(!cms.accessWrite(resource)){
-        if(!cms.checkPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
+        if(!cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
             throw new CmsException(resource, CmsException.C_NO_ACCESS);
         }
         CmsFile file = cms.readFile(resource);

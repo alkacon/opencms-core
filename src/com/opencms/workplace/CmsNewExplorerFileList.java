@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.70 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.71 $ $Date: 2003/07/04 16:00:24 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -277,7 +277,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // set the writeAccess for the current Folder
         boolean writeAccess = true;
         if (! vfslinkView) {        
-        	writeAccess = cms.checkPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS);
+        	writeAccess = cms.hasPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS);
         }
         content.append("top.enableNewButton(");
         content.append(writeAccess);

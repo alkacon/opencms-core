@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/04 12:03:06 $
-* Version: $Revision: 1.297 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.298 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.297 $
+ * @version $Revision: 1.298 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4502,9 +4502,9 @@ public int getBackupVersionId(){
 	 * @return						true if the required permissions are satisfied
 	 * @throws CmsException			if something goes wrong
 	 */
-	public boolean checkPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
+	public boolean hasPermissions(String resourceName, CmsPermissionSet requiredPermissions) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, true, false);		
+		return m_driverManager.hasPermissions(m_context.currentUser(), m_context.currentProject(), resource, requiredPermissions, false);
 	}
 		
 	/**
@@ -4515,8 +4515,8 @@ public int getBackupVersionId(){
 	 * @return						true if the required permissions are satisfied
 	 * @throws CmsException			if something goes wrong
 	 */
-	public boolean checkPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, true, false);		
+	public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+		return m_driverManager.hasPermissions(m_context.currentUser(), m_context.currentProject(), resource, requiredPermissions, false);
 	}
 		
 	/**
@@ -4528,8 +4528,8 @@ public int getBackupVersionId(){
 	 * @return						true if the required permissions are satisfied
 	 * @throws CmsException			if something goes wrong
 	 */
-	public boolean checkPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), project).check(resource, requiredPermissions, true, false);
+	public boolean hasPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+		return m_driverManager.hasPermissions(m_context.currentUser(), project, resource, requiredPermissions, false);
 	}
 	
 	/**

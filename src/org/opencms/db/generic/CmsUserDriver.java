@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/07/04 09:38:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/04 16:00:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2003/07/04 09:38:07 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/04 16:00:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -774,7 +774,10 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
         return users;
     }
     
-    protected void finalize() throws Throwable {
+    /**
+	 * @see java.lang.Object#finalize()
+	 */
+	protected void finalize() throws Throwable {
         if (m_sqlManager!=null) {
             m_sqlManager.finalize();
         }
@@ -907,9 +910,10 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
     /**
      * Returns a group object.<P/>
-     * @param groupname The name of the group that is to be read.
-     * @return Group.
-     * @throws CmsException  Throws CmsException if operation was not succesful
+     * 
+     * @param groupName the name of the group that is to be read
+     * @return group object
+     * @throws CmsException  if something goes wrong
      */
     public CmsGroup readGroup(String groupName) throws CmsException {
 
@@ -942,12 +946,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Reads a user from the cms, only if the password is correct.
+     * Reads a user from the cms.<p>
      *
-     * @param id the id of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws thorws CmsException if something goes wrong.
+     * @param id the id of the user
+     * @return the read user
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(CmsUUID id) throws CmsException {
         PreparedStatement stmt = null;
@@ -974,10 +977,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             return user;
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        }
-        // a.lucas: catch CmsException here and throw it again.
-        // Don't wrap another CmsException around it, since this may cause problems during login.
-        catch (CmsException e) {
+        } catch (CmsException e) {
+			// a.lucas: catch CmsException here and throw it again.
+			// Don't wrap another CmsException around it, since this may cause problems during login.
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
@@ -987,12 +989,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Reads a user from the cms.
+     * Reads a user from the cms.<p>
      *
-     * @param name the name of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws throws CmsException if something goes wrong.
+     * @param name the name of the user
+     * @param type the type of the user
+     * @return the read user
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(String name, int type) throws CmsException {
         PreparedStatement stmt = null;
@@ -1027,13 +1029,13 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Reads a user from the cms, only if the password is correct.
+     * Reads a user from the cms, only if the password is correct.<p>
      *
-     * @param name the name of the user.
-     * @param password the password of the user.
-     * @param type the type of the user.
-     * @return the read user.
-     * @throws throws CmsException if something goes wrong.
+     * @param name the name of the user
+     * @param password the password of the user
+     * @param type the type of the user
+     * @return the read user
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(String name, String password, int type) throws CmsException {
         PreparedStatement stmt = null;
@@ -1060,8 +1062,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             return user;
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        }
-        catch (CmsException e) {
+        } catch (CmsException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
@@ -1075,10 +1076,10 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 *
 	 * @param name the name of the user
 	 * @param password the password of the user
-	 * @param the remote address of the request
+	 * @param remoteAddress the remote address of the request
 	 * @param type the type of the user
 	 * @return the read user
-	 * @throws throws CmsException if something goes wrong
+	 * @throws CmsException if something goes wrong
 	 */
 	public CmsUser readUser(String name, String password, String remoteAddress, int type) throws CmsException {
 		CmsUser user = readUser(name, password, type);
@@ -1087,12 +1088,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 
     /**
-     * Sets the password, only if the user knows the recovery-password.
+     * Sets the password, only if the user knows the recovery-password.<p>
      *
-     * @param user the user to set the password for.
-     * @param recoveryPassword the recoveryPassword the user has to know to set the password.
+     * @param userName the user to set the password for
+     * @param recoveryPassword the recoveryPassword the user has to know to set the password
      * @param password the password to set
-     * @throws throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException {
         PreparedStatement stmt = null;
@@ -1125,9 +1126,9 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
      *
      * Only the admin can do this.<P/>
      *
-     * @param userid The id of the user that is to be added to the group.
-     * @param groupid The id of the group.
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @param userId The id of the user that is to be added to the group
+     * @param groupId The id of the group
+     * @throws CmsException if something goes wrong
      */
     public void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
         PreparedStatement stmt = null;
@@ -1152,7 +1153,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
      * 
      * @param additionalUserInfo the HashTable with additional information
      * @return byte[] the byte array which is written to the db
-     * @throws IOException
+     * @throws IOException if something goes wrong
      */
     protected final byte[] serializeAdditionalUserInfo(Hashtable additionalUserInfo) throws IOException {
         // this method is final to allow the java compiler to inline this code!
@@ -1167,11 +1168,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Sets a new password for a user.
+     * Sets a new password for a user.<p>
      *
-     * @param user the user to set the password for.
+     * @param userName the user to set the password for
      * @param password the password to set
-     * @throws throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setPassword(String userName, String password) throws CmsException {
         PreparedStatement stmt = null;
@@ -1191,11 +1192,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Sets a new password for a user.
+     * Sets a new password for a user.<p>
      *
-     * @param user the user to set the password for.
+     * @param userName the user to set the password for.
      * @param password the recoveryPassword to set
-     * @throws throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void setRecoveryPassword(String userName, String password) throws CmsException {
         PreparedStatement stmt = null;
@@ -1256,10 +1257,10 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }
 
     /**
-     * Writes a user to the database.
+     * Writes a user to the database.<p>
      *
      * @param user the user to write
-     * @throws thorws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void writeUser(CmsUser user) throws CmsException {
         byte[] value = null;
@@ -1301,9 +1302,15 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	//
 	
 	/**
-	 * Creates an access control entry.
+	 * Creates an access control entry.<p>
 	 * 
-	 * @param acEntry the new entry to write
+	 * @param project		the project to write the entry
+	 * @param resource		the id of the resource
+	 * @param principal		the id of the principal (user or group)
+	 * @param allowed		the bitset of allowed permissions
+	 * @param denied		the bitset of denied permissions
+	 * @param flags			flags
+	 * @throws CmsException	if something goes wrong
 	 */
 	public void createAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal, int allowed, int denied, int flags) throws CmsException {
 		
@@ -1330,10 +1337,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 
 	/**
-	 * Deletes all access control entries belonging to a resource
+	 * Deletes all access control entries belonging to a resource.<p>
 	 * 
+	 * @param project	the project to delete the entries
 	 * @param resource	the id of the resource
-	 * @throws CmsException
+	 * @throws CmsException if something goes wrong
 	 */
 	public void deleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
@@ -1357,10 +1365,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 
 	/**
-	 * Undeletes all access control entries belonging to a resource
+	 * Undeletes all access control entries belonging to a resource.<p>
 	 * 
+	 * @param project	the project to undelete the entries
 	 * @param resource	the id of the resource
-	 * @throws CmsException
+	 * @throws CmsException if something goes wrong
 	 */
 	public void undeleteAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
@@ -1384,11 +1393,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 	
 	/**
-	 * Removes an access control entry from the database
+	 * Removes an access control entry from the database.<p>
 	 * 
+	 * @param project 		the project to remove the entry
 	 * @param resource		the id of the resource	
 	 * @param principal		the id of the principal
-	 * @throws CmsException
+	 * @throws CmsException	if somethin goes wrong
 	 */
 	public void removeAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 
@@ -1412,10 +1422,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 	
 	/**
-	 * Removes all access control entries belonging to a resource from the database
+	 * Removes all access control entries belonging to a resource from the database.<p>
 	 * 
+	 * @param project		the project to remove the entries
 	 * @param resource 		the id of the resource
-	 * @throws CmsException
+	 * @throws CmsException	if something goes wrong
 	 */
 	public void removeAllAccessControlEntries(CmsProject project, CmsUUID resource) throws CmsException {
 		
@@ -1439,9 +1450,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	
 	/**
 	 * Writes an access control entry to the cms.
-	 * If the entry already exists in the database, it is updated with new values
+	 * If the entry already exists in the database, it is updated with new values.<p>
 	 * 
-	 * @param acEntry the entry to write
+	 * @param project	the project to write the entry
+	 * @param acEntry 	the entry to write
+	 * @throws CmsException if something goes wrong
 	 */
 	public void writeAccessControlEntry(CmsProject project, CmsAccessControlEntry acEntry) throws CmsException {
 		
@@ -1484,11 +1497,13 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 	
 	/**
-	 * Reads an access control entry from the cms.
+	 * Reads an access control entry from the cms.<p>
 	 * 
+	 * @param project 	the project to read the entry
 	 * @param resource	the id of the resource
 	 * @param principal	the id of a group or a user any other entity
 	 * @return			an access control entry that defines the permissions of the entity for the given resource
+	 * @throws CmsException if something goes wrong
 	 */	
 	public CmsAccessControlEntry readAccessControlEntry(CmsProject project, CmsUUID resource, CmsUUID principal) throws CmsException {
 		
@@ -1529,9 +1544,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * If an access control entry is inherited, additionally the flag C_ACCESSFLAGS_INHERITED will be set
 	 * in order to signal that this entry does not belong directly to the resource.
 	 * 
+	 * @param project 		the project to read the entries
 	 * @param resource		the id of the resource
 	 * @param inheritedOnly if set, only entries with the inherit flag are returned
 	 * @return				a vector of access control entries defining all permissions for the given resource
+	 * @throws CmsException if something goes wrong
 	 */
 	public Vector getAccessControlEntries(CmsProject project, CmsUUID resource, boolean inheritedOnly) throws CmsException {
 
@@ -1574,10 +1591,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	}
 	
 	/**
-	 * Internal helper method to create an access control entry from a database record
+	 * Internal helper method to create an access control entry from a database record.<p>
 	 * 
-	 * @param res resultset of the current query
-	 * @return a new CmsAccessControlEntry initialized with the values from the current database record.
+	 * @param res 		resultset of the current query
+	 * @param newId		the id of the new access control entry
+	 * @return a new CmsAccessControlEntry initialized with the values from the current database record
+	 * @throws SQLException if something goes wrong
 	 */
     private CmsAccessControlEntry createAceFromResultSet(ResultSet res, CmsUUID newId) throws SQLException {
         // this method is final to allow the java compiler to inline this code!
@@ -1591,10 +1610,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
     }	
     
     /**
-     * Internal helper method to create an access control entry from a database record
+     * Internal helper method to create an access control entry from a database record.<p>
      * 
      * @param res resultset of the current query
-     * @return a new CmsAccessControlEntry initialized with the values from the current database record.
+     * @return a new CmsAccessControlEntry initialized with the values from the current database record
+     * @throws SQLException if something goes wrong
      */
     private CmsAccessControlEntry createAceFromResultSet(ResultSet res) throws SQLException {
         // this method is final to allow the java compiler to inline this code!
@@ -1613,10 +1633,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	 * Within the given project, the resource is identified by its offlineId, in the online project,
 	 * it is identified by the given onlineId.
 	 * 
-	 * @param project
-	 * @param offlineId
-	 * @param onlineId
-	 * @throws CmsException
+	 * @param offlineProject	the project of which the entries are published
+	 * @param onlineProject		the online project to publish to 
+	 * @param offlineId			the id of the resource in the offline project
+	 * @param onlineId			the online id of the resource
+	 * @throws CmsException		if something goes wrong
 	 */
 	public void publishAccessControlEntries(CmsProject offlineProject, CmsProject onlineProject, CmsUUID offlineId, CmsUUID onlineId) throws CmsException {
 		PreparedStatement stmt = null;

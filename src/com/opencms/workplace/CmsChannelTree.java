@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/07/04 16:00:24 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/04 16:00:24 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -170,7 +170,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
             return false;
         }
         
-        return cms.checkPermissions(res, C_VIEW_ACCESS);
+        return cms.hasPermissions(res, C_VIEW_ACCESS);
     }
 
     /**
@@ -182,7 +182,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      */
 
     private boolean checkWriteable(CmsObject cms, CmsResource res) throws CmsException {
-    	return cms.checkPermissions(res, C_WRITE_ACCESS);
+    	return cms.hasPermissions(res, C_WRITE_ACCESS);
     }
 
     /**
