@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsDbPool.java,v $
- * Date   : $Date: 2000/09/06 15:50:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/09/08 12:19:20 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,26 +46,26 @@ public interface I_CmsDbPool {
 	 * @param key - the hashtable key
 	 * @return a prepared statement matching the key
 	 */	
-  public PreparedStatement getPreparedStatement(Integer key) throws CmsException;          
+  public PreparedStatement getPreparedStatement(Integer key) throws CmsException;  
 	/**
 	 * Gets a (Simple)Statement object and remove it from the list of available statements.
 	 * 
 	 * @return a statement to execute queries on.
 	 */
 
-  public Statement getStatement() throws CmsException;          
+  public Statement getStatement() throws CmsException;  
  	/**
 	 * Init the PreparedStatement on all connections.
 	 * 
 	 * @param key - the hashtable key
 	 * @param sql - a SQL statement that may contain one or more '?' IN parameter placeholders
 	 */  
-  public void initPreparedStatement(Integer key, String sql) throws CmsException;            
+  public void initPreparedStatement(Integer key, String sql) throws CmsException;  
   	/**
 	 * Add the given statement to the list of available statements.
 	 * 
 	 * @param key - the hashtable key
 	 * @param pstmt - the statement
 	 */
-  public void putPreparedStatement(Integer key, PreparedStatement pstmt);        
+  public void putPreparedStatement(Integer key, PreparedStatement pstmt);  
 }

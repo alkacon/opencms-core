@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/08 08:16:42 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2000/09/08 12:19:19 $
+ * Version: $Revision: 1.117 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.116 $ $Date: 2000/09/08 08:16:42 $
+ * @version $Revision: 1.117 $ $Date: 2000/09/08 12:19:19 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2956,10 +2956,12 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
  * @param project com.opencms.file.CmsProject
  * @param projectId int the project for witch to find the site. 
  */
-public CmsSite getSite(CmsUser user, CmsProject project, int projectId) 
+public CmsSite getSite(CmsUser user, CmsProject project, int projectId)
+throws com.opencms.core.CmsException 
 {
 	//just return a dummy site.
-	return getSite(user,project,"DummySite "+ projectId);
+//	return getSite(user, project, "DummySite " + projectId);
+	return m_dbAccess.getSite(projectId);
 }
 /**
  * Find the site with a given name.

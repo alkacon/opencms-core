@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/08 08:16:41 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2000/09/08 12:19:18 $
+ * Version: $Revision: 1.105 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.104 $ $Date: 2000/09/08 08:16:41 $
+ * @version $Revision: 1.105 $ $Date: 2000/09/08 12:19:18 $
  * 
  */
 
@@ -1179,7 +1179,8 @@ public interface I_CmsResourceBroker {
  * @param project com.opencms.file.CmsProject
  * @param projectId int the project for witch to find the site. 
  */
-CmsSite getSite(CmsUser user, CmsProject project, int projectId);
+CmsSite getSite(CmsUser user, CmsProject project, int projectId)
+		throws CmsException;
 /**
  * Get the sate with the specified name
  * 
@@ -1191,7 +1192,8 @@ CmsSite getSite(CmsUser user, CmsProject project, int projectId);
  * @param project com.opencms.file.CmsProject
  * @param siteName java.lang.String
  */
-CmsSite getSite(CmsUser user, CmsProject project, String siteName);
+CmsSite getSite(CmsUser user, CmsProject project, String siteName)
+		throws CmsException;
    	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 

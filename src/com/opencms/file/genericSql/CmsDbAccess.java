@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/06 15:50:04 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2000/09/08 12:19:18 $
+ * Version: $Revision: 1.121 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.120 $ $Date: 2000/09/06 15:50:04 $ * 
+ * @version $Revision: 1.121 $ $Date: 2000/09/08 12:19:18 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2076,6 +2076,16 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
 		 }	
 		 return(projects);
 	 }
+/**
+ * Retrieves the onlineproject from the database based on the given project.
+ * @return com.opencms.file.CmsProject the  onlineproject for the given project.
+ * @param project int the project for which to find the online project.
+ * @exception CmsException Throws CmsException if the resource is not found, or the database communication went wrong.
+ */
+public int getBaseProjectId(int project) throws CmsException
+{
+	return 1;
+}
 	 /**
 	 * Returns all child groups of a groups<P/>
 	 * 
@@ -2318,8 +2328,101 @@ public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, in
  */
 public CmsProject getOnlineProject(int project) throws CmsException
 {
-	//change this to actually find the correct online site.
-	return readProject(C_PROJECT_ONLINE_ID);
+	PreparedStatement statement = null;
+	int baseproject = project;
+	try
+	{
+		statement = m_pool.getPreparedStatement(CmsQuerys.C_PROJECTS_GETONLINEPROJECT_KEY);
+		statement.setInt(1, project);
+		ResultSet res = statement.executeQuery();
+		if (res.next())
+		{
+			baseproject = res.getInt(1);
+		}
+		else
+		{
+			// project not found!
+			throw new CmsException("[" + this.getClass().getName() + "] " + project, CmsException.C_NOT_FOUND);
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(CmsQuerys.C_PROJECTS_GETONLINEPROJECT_KEY, statement);
+		}
+	}
+	return readProject(baseproject);
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (07-09-2000 13:45:00)
+ * @return com.opencms.file.CmsSite
+ * @param projectId int
+ */
+public CmsSite getSite(int projectId) throws CmsException
+{
+	int baseproject_id = getBaseProjectId(projectId);
+//JAK: This method has to be extracted from getOnlineProject so that it can be used both places !!!! 
+
+	
+	PreparedStatement statement = null;
+	CmsSite site = null;
+	try
+	{
+		statement = m_pool.getPreparedStatement(CmsQuerys.C_PROJECTS_GETSITEFROMPROJECT_KEY);
+		statement.setInt(1, baseproject_id);
+		ResultSet res = statement.executeQuery();
+		if (res.next())
+		{
+/*		
+			site = new CmsSite(   //JAK: all the following parameters are copied from a different method
+				res.getInt(CmsQuerys.C_PROJECTS_PROJECT_ID), 
+				res.getString(CmsQuerys.C_PROJECTS_PROJECT_NAME), 
+				res.getString(CmsQuerys.C_PROJECTS_PROJECT_DESCRIPTION), 
+				res.getInt(CmsQuerys.C_PROJECTS_TASK_ID), 
+				res.getInt(CmsQuerys.C_PROJECTS_USER_ID), 
+				res.getInt(CmsQuerys.C_PROJECTS_GROUP_ID), 
+				res.getInt(CmsQuerys.C_PROJECTS_MANAGERGROUP_ID), 
+				res.getInt(CmsQuerys.C_PROJECTS_PROJECT_FLAGS), 
+				SqlHelper.getTimestamp(res, CmsQuerys.C_PROJECTS_PROJECT_CREATEDATE), 
+				SqlHelper.getTimestamp(res, CmsQuerys.C_PROJECTS_PROJECT_PUBLISHDATE), 
+				res.getInt(CmsQuerys.C_PROJECTS_PROJECT_PUBLISHED_BY), 
+				res.getInt(CmsQuerys.C_PROJECTS_PROJECT_TYPE));
+*/				
+		}
+		else
+		{
+			// project not found!
+			throw new CmsException("[" + this.getClass().getName() + "] " + projectId, CmsException.C_NOT_FOUND);
+		}
+		res.close();
+	}
+	catch (SQLException e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+	}
+	catch (Exception e)
+	{
+		throw new CmsException("[" + this.getClass().getName() + "]", e);
+	}
+	finally
+	{
+		if (statement != null)
+		{
+			m_pool.putPreparedStatement(CmsQuerys.C_PROJECTS_GETSITEFROMPROJECT_KEY, statement);
+		}
+	}
+	return site;
 }
    	/**
 	 * Returns a Vector with all subfolders.<BR/>
@@ -2917,6 +3020,7 @@ public CmsProject getOnlineProject(int project) throws CmsException
 		m_pool.initPreparedStatement(CmsQuerys.C_PROJECTS_READ_BYMANAGER_KEY, CmsQuerys.C_PROJECTS_READ_BYMANAGER);
 		m_pool.initPreparedStatement(CmsQuerys.C_PROJECTS_DELETE_KEY, CmsQuerys.C_PROJECTS_DELETE);
 		m_pool.initPreparedStatement(CmsQuerys.C_PROJECTS_WRITE_KEY, CmsQuerys.C_PROJECTS_WRITE);
+		m_pool.initPreparedStatement(CmsQuerys.C_PROJECTS_GETONLINEPROJECT_KEY, CmsQuerys.C_PROJECTS_GETONLINEPROJECT);
 
 		// init statements for systemproperties
 		m_pool.initPreparedStatement(CmsQuerys.C_SYSTEMPROPERTIES_MAXID_KEY, CmsQuerys.C_SYSTEMPROPERTIES_MAXID);

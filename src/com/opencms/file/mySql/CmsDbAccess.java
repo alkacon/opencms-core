@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/06 15:50:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/09/08 12:19:20 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.27 $ $Date: 2000/09/06 15:50:06 $ * 
+ * @version $Revision: 1.28 $ $Date: 2000/09/08 12:19:20 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -254,6 +254,69 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
 	/**
+	 * Destroys this access-module
+	 * @exception throws CmsException if something goes wrong.
+	 */
+	public void destroy() 
+		throws CmsException {
+
+		Vector statements;
+		Hashtable allStatements = ((com.opencms.file.mySql.CmsDbPool)m_pool).getAllPreparedStatement();
+		Enumeration keys = allStatements.keys();
+		
+		Vector connections = ((com.opencms.file.mySql.CmsDbPool)m_pool).getAllConnections();
+		
+		// stop the connection-guard
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] stop connection guard");
+		}
+		m_guard.destroy();
+		
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all statements.");
+		}
+		// close all statements
+		while(keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			if (allStatements.get(key) instanceof PreparedStatement){
+				try{
+					((PreparedStatement) allStatements.get(key)).close();
+				} catch(SQLException exc) {
+					if(A_OpenCms.isLogging()) {
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing Id-statement: " + exc.getMessage());
+						}
+				}	
+			}else{
+				statements = (Vector) allStatements.get(key);
+				for(int i = 0; i < statements.size(); i++) {
+					try {
+						((PreparedStatement) statements.elementAt(i)).close();
+					} catch(SQLException exc) {
+						if(A_OpenCms.isLogging()) {
+							A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing statement: " + exc.getMessage());
+						}
+					}
+				}
+			}
+		}
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] closing all connections.");
+		}
+		// close all connections
+		for(int i = 0; i < connections.size(); i++) {
+			try {
+				((Connection) connections.elementAt(i)).close();
+			} catch(SQLException exc) {
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] error closing connection: " + exc.getMessage());
+				}
+			}
+		}
+		if(A_OpenCms.isLogging()) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
+		}
+	}
+	/**
 	 * Finds an agent for a given role (group).
 	 * @param roleId The Id for the role (group).
 	 * 
@@ -265,7 +328,11 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		throws CmsException {
 		return super.findAgent(roleid);
 	}
-		
+/**
+ * Insert the method's description here.
+ * Creation date: (08-09-2000 13:00:11)
+ */
+public void newMethod() {}
 	/**
 	 * Private method to get the next id for a table.
 	 * This method is synchronized, to generate unique id's.
@@ -275,16 +342,15 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 	 */
 	private synchronized int nextId(int key) 
 		 throws CmsException {
-		com.opencms.file.mySql.CmsDbPool pool = (com.opencms.file.mySql.CmsDbPool) m_pool;
 		
 		int newId = C_UNKNOWN_INT;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {
-			statement = pool.getIdStatement(CmsQuerys.C_SYSTEMID_LOCK_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_LOCK_KEY);
 			statement.executeUpdate();
 			
-			statement = pool.getIdStatement(CmsQuerys.C_SYSTEMID_READ_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_READ_KEY);
 			statement.setInt(1,key);
 			res = statement.executeQuery();
 			if (res.next()){
@@ -293,12 +359,12 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 			}else{
 				 throw new CmsException("[" + this.getClass().getName() + "] "+" cant read Id! ",CmsException.C_NO_GROUP);		
 			}
-			statement = pool.getIdStatement(CmsQuerys.C_SYSTEMID_WRITE_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_WRITE_KEY);
 			statement.setInt(1,newId+1);
 			statement.setInt(2,key);
 			statement.executeUpdate();
 			
-			statement = pool.getIdStatement(CmsQuerys.C_SYSTEMID_UNLOCK_KEY);
+			statement = ((com.opencms.file.mySql.CmsDbPool)m_pool).getIdStatement(CmsQuerys.C_SYSTEMID_UNLOCK_KEY);
 			statement.executeUpdate();
 			
 		} catch (SQLException e){
