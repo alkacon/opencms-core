@@ -9,7 +9,10 @@ Legend:
 - General comment
 
 OpenCms 4.3.27 Bela Tegeuse - 18 July 2001
-* Bug in import module fixed: added the root folder in the system projects for module import and delete
+* Bug in import module fixed: added the root folder in the system projects for module 
+  import and delete.
+* Bug's in online-help solved.
+- Reorganisation for tomcat-support.
 
 OpenCms 4.3.26 Bela Tegeuse - 17 July 2001
 * Bug in admin module (lost of the parameters) fixed.

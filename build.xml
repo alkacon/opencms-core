@@ -1,6 +1,12 @@
 <project name="OpenCms" default="compile" basedir=".">
 
     <property name="env"                        environment="env"/>
+
+    <!-- Sets the version-number to the current date and time -->
+    <!-- For official builds this should be set to a proper value at the commandline -->
+    <!-- Set it like this: ant all -Dversion.number=4.3.28 -->
+    <property name="version.name"               value="Bela Tegeuse"/>
+
     <property name="app.name"                   value="opencms"/>
     <property name="build.home"                 value="../build"/>
     <property name="zip.home"                   value="../zip"/>
@@ -170,6 +176,10 @@
 
     <target name="cvs.update">
         <cvs command="update"/>
+    </target>
+
+    <target name="echo">
+        <echo message="${version.number} ${version.name}"/>
     </target>
 
 </project>
