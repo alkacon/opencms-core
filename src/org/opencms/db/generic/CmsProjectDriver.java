@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/30 09:26:57 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.36 $ $Date: 2003/07/30 09:26:57 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/30 13:22:24 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1157,17 +1157,13 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         long publishDate = System.currentTimeMillis();
         //int context.currentProject().getId() = context.currentProject().getId();
         Iterator i = null;
-        List projectResources = null;
         boolean publishCurrentResource = false;
-        int count = 0;
-       
+               
 
         if (backupEnabled) {
             backupVersionId = m_driverManager.getBackupVersionId();
             m_driverManager.backupProject(context, context.currentProject(), backupVersionId, publishDate, context.currentUser());
         }
-        
-        projectResources = m_driverManager.getVfsDriver().readProjectResources(context.currentProject());
 
         offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject(), false, true);
 
@@ -1178,12 +1174,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             currentLock = m_driverManager.getLock(context, currentResourceName);
             
             publishCurrentResource = false;
-            for (count=0;count<projectResources.size();count++) {
-                if (currentResourceName.startsWith((String)projectResources.get(count))) {
-                    publishCurrentResource = true;
-                    break;
-                }
-            }
+            publishCurrentResource = m_driverManager.isInsideProject(context.currentProject(), currentFolder);
             
             if (publishCurrentResource && currentLock.isNullLock()) {           
                 currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
@@ -1332,12 +1323,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             currentLock = m_driverManager.getLock(context, currentResourceName);
             
             publishCurrentResource = false;
-            for (count=0;count<projectResources.size();count++) {
-                if (currentResourceName.startsWith((String)projectResources.get(count))) {
-                    publishCurrentResource = true;
-                    break;
-                }
-            }
+            publishCurrentResource = m_driverManager.isInsideProject(context.currentProject(), currentFile);
             
             if (publishCurrentResource) {                  
                 currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFile, true));

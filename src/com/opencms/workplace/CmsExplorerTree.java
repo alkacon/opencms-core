@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -373,7 +373,8 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
                 }
                 
                 // test if the folder is in the current project
-                if(folder.inProject(cms.getRequestContext().currentProject())) {
+                //if(folder.inProject(cms.getRequestContext().currentProject())) {
+                if (cms.isInsideCurrentProject(folder)) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                 }
                 else {

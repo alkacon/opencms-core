@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.50 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -192,7 +192,8 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
     private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang)
             throws CmsException {
         StringBuffer output = new StringBuffer();
-        if(file.inProject(cms.getRequestContext().currentProject())) {
+        //if(file.inProject(cms.getRequestContext().currentProject())) {
+        if (cms.isInsideCurrentProject(file)) {
             int state = file.getState();
             output.append(lang.getLanguageValue("explorer.state" + state));
         }

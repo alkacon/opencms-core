@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.61 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -282,7 +282,8 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
     private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang)
             throws CmsException {
         StringBuffer output = new StringBuffer();
-        if(file.inProject(cms.getRequestContext().currentProject())) {
+        //if(file.inProject(cms.getRequestContext().currentProject())) {
+        if (cms.isInsideCurrentProject(file)) {
             int state = file.getState();
             output.append(lang.getLanguageValue("explorer.state" + state));
         }
@@ -304,13 +305,14 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values)
             throws CmsException {
         List folders = cms.getSubFolders(cms.readAbsolutePath(root));
-        CmsProject currentProject = cms.getRequestContext().currentProject();
+        //CmsProject currentProject = cms.getRequestContext().currentProject();
         Iterator enu = folders.iterator();
         while(enu.hasNext()) {
             CmsFolder folder = (CmsFolder)enu.next();
 
             // check if the current folder is part of the current project
-            if(folder.inProject(currentProject)) {
+            //if(folder.inProject(currentProject)) {
+            if (cms.isInsideCurrentProject(folder)) {
                 String name = cms.readAbsolutePath(folder);
                 name = name.substring(1, name.length() - 1);
                 names.addElement(name);

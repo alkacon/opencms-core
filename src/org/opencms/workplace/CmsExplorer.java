@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 11:56:16 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.1
  */
@@ -186,7 +186,8 @@ public class CmsExplorer extends CmsWorkplace {
      *
      * @return the html for the explorer file list
      */
-    public String getFileListFunction() {        
+    public String getFileListFunction() { 
+        boolean isInsideCurrentProject = false;       
         // if mode is "listonly", only the list will be shown
         boolean listonly = "listonly".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
@@ -279,7 +280,8 @@ public class CmsExplorer extends CmsWorkplace {
         if (! vfslinkView) {        
             try {
                 CmsFolder test = getCms().readFolder(currentFolder);
-                writeAccess = test.getProjectId() == getSettings().getProject();
+                //writeAccess = test.getProjectId() == getSettings().getProject();
+                writeAccess = getCms().isInsideCurrentProject(test);
             } catch (CmsException e) {
                 writeAccess = false;
             }
@@ -351,7 +353,9 @@ public class CmsExplorer extends CmsWorkplace {
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " error getting lock state for resource " + res + " " + e.getMessage());
                 }             
-            }            
+            }      
+            
+            isInsideCurrentProject = getCms().isInsideCurrentProject(res);      
             
             content.append("top.aF(");
             // position 1: name
@@ -401,8 +405,8 @@ public class CmsExplorer extends CmsWorkplace {
             content.append(res.getState());
             content.append(",");            
             // position 8: project
-            //int projectId = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
-            int projectId = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
+            int projectId = lock.isNullLock() ? res.getProjectId() : lock.getProjectId();
+            //int projectId = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             content.append(projectId);
             content.append(",");                             
             // position 9: date of last modification
@@ -488,6 +492,14 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\",");
             // position 17: id of project where resource belongs to
             content.append(lockedInProject);
+            content.append(",\"");
+            // position 18: project state, I=resource is inside current project, O=resource is outside current project
+            if (isInsideCurrentProject) {
+                content.append("I");
+            } else {
+                content.append("O");
+            }
+            content.append("\"");
             content.append(");\n");
         }
 
@@ -534,14 +546,20 @@ public class CmsExplorer extends CmsWorkplace {
                 Hashtable idMixer = new Hashtable();
                 CmsFolder rootFolder = (CmsFolder)tree.get(0);
                 String folderToIgnore = null;
+                /*
                 if (! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
                     //startAt = 2;
                     grey = false;
-                    /*
-                    CmsFolder folder = (CmsFolder)tree.get(1);
-                    CmsUUID id = rootFolder.getId();
-                    idMixer.put(folder, id);
-                    */
+//                    CmsFolder folder = (CmsFolder)tree.get(1);
+//                    CmsUUID id = rootFolder.getId();
+//                    idMixer.put(folder, id);
+                } else {
+                    grey = true;
+                }
+                */
+                
+                if (getCms().isInsideCurrentProject(rootFolder)) {
+                    grey = false;
                 } else {
                     grey = true;
                 }
@@ -563,7 +581,7 @@ public class CmsExplorer extends CmsWorkplace {
                         folderToIgnore = getCms().readAbsolutePath(folder);
                     } else {
                         if (! CmsProject.isOnlineProject(folder.getProjectId())) {
-                            grey = false;
+                            //grey = false;
                             parentId = folder.getParentId();
                             try {
                                 // the next res is the same res in the online-project: ignore it!
@@ -575,12 +593,19 @@ public class CmsExplorer extends CmsWorkplace {
                             // ignore the exception, this was the last resource
                             }
                         } else {
-                            grey = true;
+                            //grey = true;
                             parentId = folder.getParentId();
                             if (idMixer.containsKey(parentId)) {
                                 parentId = (CmsUUID) idMixer.get(parentId);
                             }
                         }
+                        
+                        if (getCms().isInsideCurrentProject(folder)) {
+                            grey = false;
+                        } else {
+                            grey = true;
+                        }                        
+                        
                         content.append("top.aC(\"");
                         // id
                         content.append(folder.getId().hashCode());

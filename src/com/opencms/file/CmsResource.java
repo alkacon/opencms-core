@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/07/29 16:27:47 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -459,7 +459,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the ID of the project if the resource is directly locked in the database<p>
+     * Returns the ID of the project if the resource is locked in the database<p>
      * 
      * Don't use this method to detect the lock state of a resource. 
      * Use {@link com.opencms.file.CmsObject#getLock(CmsResource)} instead.
@@ -608,20 +608,24 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        if (m_structureId != null)
+        if (m_structureId != null) {
             return m_structureId.hashCode();
+        }
+
         return CmsUUID.getNullUUID().hashCode();
     }
 
     /**
-     * Checks if this resource belongs to a project.<p>
+     * Proves is this resource is inside the specified project.<p>
      * 
-     * @param project the project which this resources is checked against
-     * @return true if this resource is in the project, false otherwise
+     * @param project the specified project
+     * @return false because this method is deprecated
+     * @deprecated the project state is not part of the resource anymore
+     * @see com.opencms.file.CmsObject#isInsideCurrentProject(CmsResource)
      */
     public boolean inProject(CmsProject project) {
-        // this code is suspicious...
-        return project.getId() == getProjectId();
+        //return project.getId() == getProjectId();
+        return false;
     }
     
     /**
@@ -779,8 +783,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /**
      * Sets the ID of the project where the resource has been last modified.<p>
+     * 
+     * It is unsafe to set the project state explicit, the project state is saved 
+     * implicit when the resource get modified. Thus, this value is never written 
+     * to the database.
      *
      * @param projectId the ID of the project where the resource has been last modified
+     * @deprecated the project state is not part of the resource anymore
+     * @see org.opencms.db.generic.CmsVfsDriver#updateResourceState(CmsProject, CmsResource, int)
      */
     public void setProjectId(int projectId) {
         m_projectId = projectId;

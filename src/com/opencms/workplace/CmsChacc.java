@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -301,7 +301,8 @@ public class CmsChacc extends CmsWorkplaceDefault implements I_CmsWpConstants {
 	 */
 	private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang)
 	throws CmsException {
-		if(file.inProject(cms.getRequestContext().currentProject())) {
+		//if(file.inProject(cms.getRequestContext().currentProject())) {
+        if (cms.isInsideCurrentProject(file)) {
 			int state = file.getState();
 			return lang.getLanguageValue("explorer.state" + state);
 		}

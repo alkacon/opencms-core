@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 10:34:31 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.64 $ $Date: 2003/07/30 10:34:31 $
+ * @version $Revision: 1.65 $ $Date: 2003/07/30 13:22:24 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -3002,6 +3002,10 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
         
+        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            return;
+        }
+        
         try {
             conn = m_sqlManager.getConnection(project);
             
@@ -3251,7 +3255,8 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(7, 0);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, folder.isLockedBy().toString());
-            stmt.setInt(10, folder.getProjectId());
+            //stmt.setInt(10, folder.getProjectId());
+            stmt.setInt(10, project.getId());
             stmt.setInt(11, this.countVfsLinks(project.getId(), folder.getResourceId()));
             stmt.setString(12, folder.getResourceId().toString());
             stmt.executeUpdate();

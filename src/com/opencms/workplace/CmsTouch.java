@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/22 00:29:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/30 13:22:24 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -163,7 +163,8 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 
 		// read the current state of the resource
 		String currentState = "";
-		if (m_Resource.inProject(cms.getRequestContext().currentProject())) {
+		//if (m_Resource.inProject(cms.getRequestContext().currentProject())) {
+        if (cms.isInsideCurrentProject(m_Resource)) {
 			int state = m_Resource.getState();
 			currentState += lang.getLanguageValue("explorer.state" + state);
 		}

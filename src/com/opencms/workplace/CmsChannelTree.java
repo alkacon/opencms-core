@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -518,7 +518,8 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                 }
 
                 // test if the folder is in the current project
-                if(res.inProject(cms.getRequestContext().currentProject())) {
+                //if(res.inProject(cms.getRequestContext().currentProject())) {
+                if (cms.isInsideCurrentProject(res)) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                 }
                 else {
@@ -539,7 +540,8 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
                 // test if the folder is in the current project and if the user has
 
                 // write access to this folder.
-                if((res.inProject(cms.getRequestContext().currentProject()) && checkWriteable(cms, res)) || offselect) {
+                //if((res.inProject(cms.getRequestContext().currentProject()) && checkWriteable(cms, res)) || offselect) {
+                if (cms.isInsideCurrentProject(res)) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                     output.append(template.getProcessedDataValue(C_TREELINE, this));
                 } else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.60 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.61 $ $Date: 2003/07/30 13:22:24 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -517,7 +517,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                 }
 
                 // test if the folder is in the current project
-                if(res.inProject(cms.getRequestContext().currentProject())) {
+                //if(res.inProject(cms.getRequestContext().currentProject())) {
+                if (cms.isInsideCurrentProject(res)) {
                     template.setData(C_TREESTYLE, C_FILE_INPROJECT);
                 }
                 else {

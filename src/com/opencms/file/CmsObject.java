@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/28 13:56:38 $
-* Version: $Revision: 1.351 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.352 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.351 $
+ * @version $Revision: 1.352 $
  */
 public class CmsObject extends Object {
 
@@ -4396,16 +4396,37 @@ public class CmsObject extends Object {
         m_driverManager.writeWebUser(m_context, user);
     }
     
-    public List readLockedFileHeaders() throws CmsException {
-        return m_driverManager.readLockedFileHeaders(m_context);
-    }
-    
+    /**
+     * Gets the lock state for a specified resource.<p>
+     * 
+     * @param resource the specified resource
+     * @return the CmsLock object for the specified resource
+     * @throws CmsException if somethong goes wrong
+     */
     public CmsLock getLock(CmsResource resource) throws CmsException {
         return m_driverManager.getLock(m_context, resource);
     }    
     
+    /**
+     * Gets the lock state for a specified resource name.<p>
+     * 
+     * @param resourcename the specified resource name
+     * @return the CmsLock object for the specified resource name
+     * @throws CmsException if somethong goes wrong
+     */
     public CmsLock getLock(String resourcename) throws CmsException {
         return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
+    }
+    
+    /**
+     * Proves if a specified resource is inside the current project.<p>
+     * 
+     * @param resource the specified resource
+     * @return true, if the resource name of the specified resource matches any of the current project's resources
+     * @throws CmsException if somethong goes wrong
+     */
+    public boolean isInsideCurrentProject(CmsResource resource) {
+        return m_driverManager.isInsideCurrentProject(m_context, resource);
     }
 
 }

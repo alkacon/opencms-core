@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/30 13:22:24 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/30 13:22:24 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -402,7 +402,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      */
     private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang) throws CmsException {
         StringBuffer output = new StringBuffer();
-        if(file.inProject(cms.getRequestContext().currentProject())) {
+        //if(file.inProject(cms.getRequestContext().currentProject())) {
+        if (cms.isInsideCurrentProject(file)) {
             int state = file.getState();
             output.append(lang.getLanguageValue("explorer.state" + state));
         }
