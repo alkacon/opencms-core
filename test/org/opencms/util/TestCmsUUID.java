@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/Attic/CmsLinkManagerTest.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,48 +29,58 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
  
-package org.opencms.staticexport;
+package org.opencms.util;
+
+import org.opencms.main.CmsException;
 
 import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
- * @since 5.1
+ * @since 5.0
  */
-public class CmsLinkManagerTest extends TestCase {
+public class TestCmsUUID extends TestCase {
 
+    // DEBUG flag
+    private static final boolean DEBUG = true;
+     
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsLinkManagerTest(String arg0) {
+    public TestCmsUUID(String arg0) {
         super(arg0);
     }
-    
+
     /**
-     * Tests the method getAbsoluteUri.<p>
+     * Tests UUID generation.<p>
      */
-    public void testToAbsolute() {
-        String test;
+    public void testUUID() {
+        try {
+            CmsUUID.init(CmsUUID.getDummyEthernetAddress());
+        } catch (CmsException e) {
+            // will not happen as the dummy address is always valid
+        }        
+        CmsUUID id1 = new CmsUUID();
+        CmsUUID id2 = new CmsUUID();
+        CmsUUID id3 = new CmsUUID();    
+        if (DEBUG) {
+            System.out.println("UUID 1: " + id1);
+            System.out.println("UUID 2: " + id2);
+            System.out.println("UUID 3: " + id3);
+        }
+        assertNotSame(id1, id2);
+        assertNotSame(id1, id3);
+        assertNotSame(id3, id2);  
         
-        test = CmsLinkManager.getRelativeUri("/dir1/dir2/index.html", "/dir1/dirB/index.html");
-        System.out.println(test);
-        assertEquals(test, "../dirB/index.html");
-
-        test = CmsLinkManager.getAbsoluteUri("../../index.html", "/dir1/dir2/dir3/");        
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
+        CmsUUID id4 = CmsUUID.getNullUUID();     
+        assertTrue(id4.isNullUUID());
         
-        test = CmsLinkManager.getAbsoluteUri("./../././.././dir2/./../index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dir1/index.html");
-
-        test = CmsLinkManager.getAbsoluteUri("/dirA/index.html", "/dir1/dir2/dir3/");
-        System.out.println(test);
-        assertEquals(test, "/dirA/index.html");
+        if (id4.equals(CmsUUID.getNullUUID())) {
+            System.out.println("id4 is null-UUID");
+        }
     }
-
 }

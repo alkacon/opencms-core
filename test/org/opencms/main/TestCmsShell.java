@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/Attic/CmsShellTest.java,v $
- * Date   : $Date: 2004/05/29 09:30:28 $
- * Version: $Revision: 1.5 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsShell.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,18 +42,18 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
-public class CmsShellTest extends OpenCmsTestCase {
+public class TestCmsShell extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsShellTest(String arg0) {
+    public TestCmsShell(String arg0) {
         super(arg0);
     }
 

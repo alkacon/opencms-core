@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsBrowserMatcherTest.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsBrowserMatcher.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,11 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
-public class CmsBrowserMatcherTest extends TestCase {
+public class TestCmsBrowserMatcher extends TestCase {
 
     // default browser match patterns (same as in "opencms.properties")
     private static String useragent[] = {    
@@ -90,7 +90,7 @@ public class CmsBrowserMatcherTest extends TestCase {
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsBrowserMatcherTest(String arg0) {
+    public TestCmsBrowserMatcher(String arg0) {
         super(arg0);
     }
 

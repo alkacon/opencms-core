@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/Attic/CmsEncoderTest.java,v $
- * Date   : $Date: 2004/06/08 08:47:03 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
-public class CmsEncoderTest extends TestCase {
+public class TestCmsEncoder extends TestCase {
 
     // working around encoding issues (e.g. of CVS) by using unicode values 
     // the values of C_STRING_1 are: ae oe ue Ae Oe Ue scharfes-s euro-symbol

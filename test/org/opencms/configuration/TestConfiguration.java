@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/Attic/CmsConfigurationTest.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,14 +50,14 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @since 5.3
  */
-public class CmsConfigurationTest extends TestCase {
+public class TestConfiguration extends TestCase {
   
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public CmsConfigurationTest(String arg0) {
+    public TestConfiguration(String arg0) {
         super(arg0);
         
         // set "OpenCms" system property to "test" for allowing the logger to be used

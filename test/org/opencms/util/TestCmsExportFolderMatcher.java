@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsExportFolderMatcherTest.java,v $
- * Date   : $Date: 2004/03/31 08:11:07 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsExportFolderMatcher.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * 
  * @since 5.0
  */
-public class CmsExportFolderMatcherTest extends TestCase {
+public class TestCmsExportFolderMatcher extends TestCase {
 
     // default folder (same as in "opencms.properties")
     private static String folders[] = {"\\/sites\\/.*",
@@ -55,7 +55,7 @@ public class CmsExportFolderMatcherTest extends TestCase {
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsExportFolderMatcherTest(String arg0) {
+    public TestCmsExportFolderMatcher(String arg0) {
         super(arg0);
     }
 

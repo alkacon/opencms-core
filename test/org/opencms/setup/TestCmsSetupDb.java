@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupDbTest.java,v $
- * Date   : $Date: 2004/05/25 09:43:49 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,18 +37,18 @@ import org.opencms.test.OpenCmsTestCase;
  * Tests the database creation / removal used during setup.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.3.5
  */
-public class CmsSetupDbTest extends OpenCmsTestCase {
+public class TestCmsSetupDb extends OpenCmsTestCase {
     
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */    
-    public CmsSetupDbTest(String arg0) {
+    public TestCmsSetupDb(String arg0) {
         super(arg0);
     }
         

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/Attic/CmsFlexCacheEntryTest.java,v $
- * Date   : $Date: 2004/06/06 10:47:44 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexCacheEntry.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,16 +37,16 @@ import junit.framework.TestCase;
  * Tests for the CmsFlexCacheEntry.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class CmsFlexCacheEntryTest extends TestCase {
+public class TestCmsFlexCacheEntry extends TestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsFlexCacheEntryTest(String arg0) {
+    public TestCmsFlexCacheEntry(String arg0) {
         super(arg0);
     }
     

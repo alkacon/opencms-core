@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsResourceTranslatorTest.java,v $
- * Date   : $Date: 2003/09/29 08:31:59 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsResourceTranslator.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,11 +35,11 @@ import junit.framework.TestCase;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
-public class CmsResourceTranslatorTest extends TestCase {
+public class TestCmsResourceTranslator extends TestCase {
 
     // default rules (same as in "opencms.properties")
     private static String rules[] = {    
@@ -63,7 +63,7 @@ public class CmsResourceTranslatorTest extends TestCase {
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsResourceTranslatorTest(String arg0) {
+    public TestCmsResourceTranslator(String arg0) {
         super(arg0);
     }
 

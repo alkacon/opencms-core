@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/Attic/CmsSetupBeanTest.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.4 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,11 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.0
  */
-public class CmsSetupBeanTest extends OpenCmsTestCase {
+public class TestCmsSetupBean extends OpenCmsTestCase {
 
     // DEBUG flag
     // private static final boolean DEBUG = true;
@@ -59,7 +59,7 @@ public class CmsSetupBeanTest extends OpenCmsTestCase {
      * 
      * @param arg0 JUnit parameters
      */
-    public CmsSetupBeanTest(String arg0) {
+    public TestCmsSetupBean(String arg0) {
         super(arg0);
     }
     

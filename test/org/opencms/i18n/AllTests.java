@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/AllTests.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/07 18:44:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class AllTests {
 
@@ -57,7 +57,7 @@ public final class AllTests {
 
         TestSuite suite = new TestSuite("Tests for package org.opencms.i18n");
         //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(CmsEncoderTest.class));
+        suite.addTest(new TestSuite(TestCmsEncoder.class));
         //$JUnit-END$
         return suite;
     }
