@@ -347,7 +347,7 @@ function reload(){
     <tr> 
       <td class=formular width=10%>&nbsp;</td>
       <td class=formular>
-        <input type=checkbox name="staticexport" value="staticexport" checked>]]><LABEL value="label.projectstaticexport"/><![CDATA[
+        <input type=checkbox name="staticexport" value="staticexport">]]><LABEL value="label.projectstaticexport"/><![CDATA[
       </td>
       <td class=formular>&nbsp;</td>
     </tr>
