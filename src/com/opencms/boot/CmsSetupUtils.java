@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2003/11/10 08:12:59 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/11/13 11:41:59 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class CmsSetupUtils {
 
@@ -135,7 +135,7 @@ public class CmsSetupUtils {
             }
 
             for (int j = 0; j < value.length; j++) {
-                // value = CmsStringSubstitution.substitute(value, "\\,", ",");
+                value[j] = CmsStringSubstitution.substitute(value[j], "\\,", ",");
                 value[j] = CmsStringSubstitution.substitute(value[j], "\\=", "=");
             }
 
