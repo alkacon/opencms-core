@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 13:14:10 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/06/09 13:57:31 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.49 $ $Date: 2000/06/09 13:14:10 $ * 
+ * @version $Revision: 1.50 $ $Date: 2000/06/09 13:57:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -3235,18 +3235,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	 * @return The created folder.
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder createFolder(CmsUser user,
-                                   CmsProject project, 
-                                   int resourceId, int parentId, int fileId,
-                                   String foldername,int resourceLastModifiedBy,
-                                   int flags)
-         throws CmsException {
-         if (resourceId == C_UNKNOWN_ID){
-				resourceId = nextId(C_TABLE_RESOURCES);
-         }
-         if (fileId == C_UNKNOWN_ID){
-			fileId = nextId(C_TABLE_FILES);
-		 }
+	 public CmsFolder createFolder(CmsUser user, CmsProject project, int parentId, 
+								   int fileId, String foldername, int flags)
+		 throws CmsException {
+		 
+		 int resourceId = nextId(C_TABLE_RESOURCES);
 			
 		 PreparedStatement statement = null;
          try {  
@@ -3269,7 +3262,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             statement.setTimestamp(15,new Timestamp(System.currentTimeMillis()));
             statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
             statement.setInt(17,0);
-            statement.setInt(18,resourceLastModifiedBy);
+            statement.setInt(18,user.getId());
             statement.executeUpdate();
             
            } catch (SQLException e){
@@ -3509,10 +3502,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		addUserToGroup(admin.getId(), administrators.getId());
 
 		// TODO: use real task here-when available!
-		createProject(admin, guests, projectleader, new CmsTask(), C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
+		CmsTask task = new CmsTask();
+		CmsProject online = createProject(admin, guests, projectleader, task, C_PROJECT_ONLINE, "the online-project", C_FLAG_ENABLED, C_PROJECT_TYPE_NORMAL);
 		
 		// create the root-folder
-		// TODO: createFolder(admin, project, C_ROOT, 0);
+		createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
 	}
 	
 	/**
