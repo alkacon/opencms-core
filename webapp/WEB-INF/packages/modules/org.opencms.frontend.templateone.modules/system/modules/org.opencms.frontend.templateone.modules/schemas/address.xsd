@@ -1,0 +1,36 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="Addresss" type="OpenCmsAddresss"/>
+	
+	<xsd:complexType name="OpenCmsAddresss">
+		<xsd:sequence>
+			<xsd:element name="Address" type="OpenCmsAddress" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsAddress">
+		<xsd:sequence>
+			<xsd:element name="Company" type="OpenCmsString" />
+			<xsd:element name="Name" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Street" type="OpenCmsString" minOccurs="0" maxOccurs="3" />
+			<xsd:element name="ZIP" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="City" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Country" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Phone" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Fax" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Email" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="Link" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="ContactData" type="OpenCmsString" minOccurs="0" maxOccurs="3" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<layouts>
+				<layout element="Link" widget="LinkGalleryWidget" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

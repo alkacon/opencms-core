@@ -1,0 +1,18 @@
+<cms:contentcheck ifexists="Contact">
+<cms:contentloop element="Contact">
+<p>
+<cms:contentshow element="Company" /><br>
+<cms:contentloop element="Name"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Street"><cms:contentshow /><br></cms:contentloop>
+<cms:contentcheck ifexists="ZIP"><cms:contentshow element="ZIP" /></cms:contentcheck>
+<cms:contentcheck ifexists="City"><cms:contentshow element="City" /></cms:contentcheck>
+<cms:contentcheck ifexistsone="ZIP,City"><br></cms:contentcheck>
+<cms:contentloop element="Country"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Phone">Phone: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Fax">Fax: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Email">Email: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+<cms:contentloop element="ContactData"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Link"><a href="<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+</p>
+</cms:contentloop>
+</cms:contentcheck>

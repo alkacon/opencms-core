@@ -1,0 +1,31 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="ExternalLinks" type="OpenCmsExternalLinks"/>
+	
+	<xsd:complexType name="OpenCmsExternalLinks">
+		<xsd:sequence>
+			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsExternalLink">
+		<xsd:sequence>
+			<xsd:element name="Href" type="OpenCmsString" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />			
+			<xsd:element name="NewWin" type="OpenCmsBoolean" default="false" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<layouts>
+				<layout element="Href" widget="LinkGalleryWidget" />			
+			</layouts>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

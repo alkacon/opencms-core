@@ -1,0 +1,50 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd"/>
+		
+	<xsd:element name="NewsArticles" type="OpenCmsNewsArticles"/>
+	
+	<xsd:complexType name="OpenCmsNewsArticles">
+		<xsd:sequence>
+			<xsd:element name="NewsArticle" type="OpenCmsNewsArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsNewsArticle">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml" />
+			<xsd:element name="Date" type="OpenCmsDateTime" />			
+			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
+			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="10"/>
+			<xsd:element name="Attachment" type="OpenCmsAttachment" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="InternalLink" type="OpenCmsInternalLink" minOccurs="0" maxOccurs="5"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Release" mapto="attribute:datereleased" />
+				<mapping element="Expiration" mapto="attribute:dateexpires" />
+			</mappings>
+			<validationrules/>
+			<defaults>
+				<default element="Date" value="${currenttime}"/>
+				<default element="Author" value="${currentuser:fullname}"/>
+			</defaults>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

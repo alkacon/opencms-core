@@ -1,0 +1,53 @@
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/attachment.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/externallink.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/internallink.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/address.xsd"/>
+		
+	<xsd:element name="EventArticles" type="OpenCmsEventArticles"/>
+	
+	<xsd:complexType name="OpenCmsEventArticles">
+		<xsd:sequence>
+			<xsd:element name="EventArticle" type="OpenCmsEventArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsEventArticle">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Subtitle" type="OpenCmsString" />
+			<xsd:element name="Number" type="OpenCmsString" />
+			<xsd:element name="ShortDescription" type="OpenCmsString" />	
+			<xsd:element name="LongDescription" type="OpenCmsHtml" />				
+			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Release" type="OpenCmsDateTime" minOccurs="0" />			
+			<xsd:element name="Expiration" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="EventOrganizer" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="EventLocation" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="3"/>
+			<xsd:element name="EventDirector" type="OpenCmsAddress" minOccurs="0" maxOccurs="3"/>
+			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="10"/>
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Release" mapto="attribute:datereleased" />
+				<mapping element="Expiration" mapto="attribute:dateexpires" />
+			</mappings>
+			<validationrules/>
+			<defaults>
+				<default element="RegistrationClose" value="${currenttime}"/>
+			</defaults>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

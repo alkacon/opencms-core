@@ -1,0 +1,70 @@
+<%@ page session="false" import="org.opencms.jsp.*, org.opencms.util.*, java.util.*, org.opencms.frontend.templateone.modules.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
+
+// get currently active locale to initialize message bundle
+String locale = cms.getRequestContext().getLocale().toString();
+pageContext.setAttribute("locale", locale);
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+
+--%><cms:include property="template" element="head" />
+
+<div class="element">
+
+<cms:contentload collector="singleFile" param="opencms:uri" editable="true">
+
+<h1><cms:contentshow element="Title" /></h1>
+
+
+<%-- begin short description --%>
+<p><b>
+<cms:contentshow element="ShortDescription" />
+</b></p>
+<%-- end short description --%>
+
+
+<%-- begin date --%>
+<%@ include file="../elements/detail-element-date.txt" %>
+<%-- end date --%>
+
+
+<%-- begin long description --%>
+<p>
+<cms:contentshow element="LongDescription" />
+</p>
+<%-- end long description --%>
+
+
+<%-- begin contact info --%>
+<cms:contentcheck ifexists="Contact">
+<p><fmt:message key="detail.label.JobArticle.Contact" />:<p>
+<%@ include file="../elements/detail-element-address.txt" %>
+</cms:contentcheck>
+<%-- end contact info --%>
+
+
+<%-- begin images --%>
+<%@ include file="../elements/detail-element-image.txt" %>
+<%-- end images --%>
+
+<%-- begin external links --%>
+<cms:contentcheck ifexistsone="ExternalLink">
+<p><fmt:message key="detail.label.JobArticle.ExternalLink" />:</p>
+<%@ include file="../elements/detail-element-externallink.txt" %>
+</cms:contentcheck>
+<%-- end external links --%>
+
+
+</cms:contentload>
+
+</div>
+
+<cms:include property="template" element="foot" /><%--
+--%></fmt:bundle>
+
+

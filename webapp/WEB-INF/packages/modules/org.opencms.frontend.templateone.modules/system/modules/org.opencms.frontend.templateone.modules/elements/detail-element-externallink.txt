@@ -1,0 +1,16 @@
+<cms:contentcheck ifexists="ExternalLink">
+<ul>
+<cms:contentloop element="ExternalLink">
+<c:set var="linkTarget">
+	<cms:contentshow element="NewWin" />
+</c:set>
+<c:set var="desc">
+	<cms:contentshow element="Description" />
+</c:set>
+<c:set var="href">
+	<cms:contentshow element="Href" />
+</c:set>
+<li><%= cms.getAnchor("href", "desc", "linkTarget") %></li>
+</cms:contentloop>
+</ul>
+</cms:contentcheck>

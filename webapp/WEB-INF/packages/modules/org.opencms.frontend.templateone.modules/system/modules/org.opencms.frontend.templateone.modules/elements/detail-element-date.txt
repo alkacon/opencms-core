@@ -1,0 +1,9 @@
+<cms:contentcheck ifexists="Date">
+<c:set var="dateString">
+	<cms:contentshow element="Date" />
+</c:set>
+<%
+	cms.setDate("dateString");
+%>
+<p><small><fmt:formatDate value="${date}" /></small></p>
+</cms:contentcheck>

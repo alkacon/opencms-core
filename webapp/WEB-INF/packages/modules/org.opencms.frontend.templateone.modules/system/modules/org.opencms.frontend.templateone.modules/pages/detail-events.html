@@ -1,0 +1,146 @@
+<%@ page session="false" import="org.opencms.jsp.*, org.opencms.util.*, java.util.*, org.opencms.frontend.templateone.modules.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
+
+// get currently active locale to initialize message bundle
+String locale = cms.getRequestContext().getLocale().toString();
+pageContext.setAttribute("locale", locale);
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+
+--%><cms:include property="template" element="head" />
+
+<div class="element">
+
+<cms:contentload collector="singleFile" param="opencms:uri" editable="true">
+
+<h1><cms:contentshow element="Title" /></h1>
+<h3><cms:contentshow element="Subtitle" /></h3>
+
+
+<%-- begin short description --%>
+<p><b>
+<cms:contentshow element="ShortDescription" />
+</b></p>
+<%-- end short description --%>
+
+
+<%-- begin event number --%>
+<cms:contentcheck ifexists="Number">
+<p><fmt:message key="editor.label.EventArticle.Number" />:&nbsp;<cms:contentshow element="Number" /></p>
+</cms:contentcheck>
+<%-- end event number --%>
+
+
+<%-- begin long description --%>
+<p>
+<cms:contentshow element="LongDescription" />
+</p>
+<%-- end long description --%>
+
+
+<%-- begin "end of registration" --%>
+<cms:contentcheck ifexists="EndOfRegistration">
+
+<c:set var="dateString">
+	<cms:contentshow element="EndOfRegistration" />
+</c:set><%
+
+	cms.setDate("dateString");
+
+%>
+
+<p><fmt:message key="editor.label.EventArticle.RegistrationClose" />:&nbsp;<fmt:formatDate value="${date}" /></p>
+</cms:contentcheck>
+<%-- end "end of registration" --%>
+
+
+<%-- begin event organizers --%>
+<cms:contentcheck ifexistsone="EventOrganizer">
+<p><fmt:message key="detail.label.EventArticle.EventOrganizer" />:</p>
+<ul>
+<cms:contentloop element="EventOrganizer">
+<c:set var="linkTarget">
+	<cms:contentshow element="NewWin" />
+</c:set>
+<c:set var="desc">
+	<cms:contentshow element="Description" />
+</c:set>
+<c:set var="href">
+	<cms:contentshow element="Href" />
+</c:set>
+<li><%= cms.getAnchor("href", "desc", "linkTarget") %></li>
+</cms:contentloop>
+</ul>
+</cms:contentcheck>
+<%-- end event organizers --%>
+
+
+<%-- begin event locations --%>
+<cms:contentcheck ifexistsone="EventLocation">
+<p><fmt:message key="detail.label.EventArticle.EventLocation" />:</p>
+<ul>
+<cms:contentloop element="EventLocation">
+<c:set var="linkTarget">
+	<cms:contentshow element="NewWin" />
+</c:set>
+<c:set var="desc">
+	<cms:contentshow element="Description" />
+</c:set>
+<c:set var="href">
+	<cms:contentshow element="Href" />
+</c:set>
+<li><%= cms.getAnchor("href", "desc", "linkTarget") %></li>
+</cms:contentloop>
+</ul>
+</cms:contentcheck>
+<%-- end event locations --%>
+
+
+<%-- begin event directors --%>
+<cms:contentcheck ifexistsone="EventDirector">
+<p><fmt:message key="detail.label.EventArticle.EventDirector" />:</p>
+<cms:contentloop element="EventDirector">
+<p>
+<cms:contentshow element="Company" /><br>
+<cms:contentloop element="Name"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Street"><cms:contentshow /><br></cms:contentloop>
+<cms:contentcheck ifexists="ZIP"><cms:contentshow element="ZIP" /></cms:contentcheck>
+<cms:contentcheck ifexists="City"><cms:contentshow element="City" /></cms:contentcheck>
+<cms:contentcheck ifexistsone="ZIP,City"><br></cms:contentcheck>
+<cms:contentloop element="Country"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Phone">Phone: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Fax">Fax: <cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Email">Email: <a href="mailto:<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+<cms:contentloop element="ContactData"><cms:contentshow /><br></cms:contentloop>
+<cms:contentloop element="Link"><a href="<cms:contentshow />"><cms:contentshow /></a><br></cms:contentloop>
+</p>
+</cms:contentloop>
+</cms:contentcheck>
+<%-- end event directors --%>
+
+
+<%-- begin images --%>
+<%@ include file="../elements/detail-element-image.txt" %>
+<%-- end images --%>
+
+
+<%-- begin external links --%>
+<cms:contentcheck ifexistsone="ExternalLink">
+<p><fmt:message key="detail.label.EventArticle.ExternalLink" />:</p>
+<%@ include file="../elements/detail-element-externallink.txt" %>
+</cms:contentcheck>
+<%-- end external links --%>
+
+</cms:contentload>
+
+</div>
+
+<cms:include property="template" element="foot" /><%--
+--%></fmt:bundle>
+
+
