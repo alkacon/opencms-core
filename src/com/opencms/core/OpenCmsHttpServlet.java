@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2003/07/21 14:22:47 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I_CmsLogChannels {
     
@@ -168,20 +168,22 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
     }
 
     /**
-     * Generates a formated exception output. <br>
+     * Generates a formated exception output.<p>
+     * 
      * Because the exception could be thrown while accessing the system files,
-     * the complete HTML code must be added here!
-     * @param e the caught CmsException
-     * @param cms the cms object
+     * the complete HTML code must be added here!<p>
+     * 
+     * @param t the caught Exception
+     * @param title the title to display
      * @return String containing the HTML code of the error message.
      */
-    private String createErrorBox(CmsException e, CmsObject cms) {
+    private String createErrorBox(Throwable t, String title) {
         StringBuffer output = new StringBuffer();
         output.append(this.getErrormsg("C_ERRORPART_1"));
-        output.append(cms.getRequestContext().getRequest().getWebAppUrl());
+        output.append(title);
         output.append(this.getErrormsg("C_ERRORPART_2"));
         output.append("\n\n");
-        output.append(Utils.getStackTrace(e));
+        output.append(Utils.getStackTrace(t));
         output.append("\n\n");
         output.append(this.getErrormsg("C_ERRORPART_3"));
         return output.toString();
@@ -241,8 +243,8 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
                 m_opencms.showResource(req, res, cms, file);
                 updateUser(cms, cmsReq);
             }
-        } catch (CmsException e) {
-            errorHandling(cms, cmsReq, cmsRes, e);
+        } catch (Throwable t) {
+            errorHandling(cms, req, res, t);
         }
     }
 
@@ -262,86 +264,119 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants, I
     }
     
     /**
-     * This method performs the error handling for the OpenCms.
-     * All CmsExetions throns in the OpenCms are forwared to this method and are
-     * processed here.
+     * This method performs the error handling for OpenCms.<p>
      *
-     * @param cms The CmsObject
-     * @param cmsReq   The clints request.
-     * @param cmsRes   The servlets response.
-     * @param e The CmsException to be processed.
+     * @param cms the current cms context
+     * @param req the client request
+     * @param res the client response
+     * @param t the exception that occured
      */
-    private void errorHandling(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, CmsException e) {
-        int errorType = e.getType();
-        HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();
-        HttpServletResponse res = (HttpServletResponse)cmsRes.getOriginalResponse();
-        boolean canWrite = ((!cmsRes.isRedirected()) && (!cmsRes.isOutputWritten()));
-        try {
-            switch(errorType) {
+    private void errorHandling(CmsObject cms, HttpServletRequest req, HttpServletResponse res, Throwable t) {
+        
+        boolean canWrite = !res.isCommitted() && !res.containsHeader("Location");
+        int status = -1;        
+        
+        boolean isNotGuest = false;
+                
+        if (t instanceof ServletException) {
+            ServletException s = (ServletException)t;
+            t = s.getRootCause();
+        }        
 
-              // access denied error - display login dialog
-              case CmsException.C_ACCESS_DENIED:
-              case CmsException.C_NO_ACCESS:
-                  if (canWrite) {
+        if (t instanceof CmsException) {
+            CmsException e = (CmsException)t;
+
+            int exceptionType = e.getType();
+            switch (exceptionType) {
+                // access denied error - display login dialog
+                case CmsException.C_ACCESS_DENIED :
+                case CmsException.C_NO_ACCESS :
                     if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Access denied. " + e.getMessage());
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Access denied: " + e.getMessage());
                     }
-                    requestAuthorization(req, res);
-                  }
+                    if (canWrite) {
+                        try {
+                            requestAuthorization(req, res);
+                        } catch (IOException ioe) {
+                            // there is nothing we can do about this
+                        }
+                        return;
+                    }
+                    break;
 
-                  break;
+                case CmsException.C_NOT_FOUND :
+                    // file not found - display 404 error.
+                    status = HttpServletResponse.SC_NOT_FOUND;
+                    break;
 
-              // file not found - display 404 error.
-              case CmsException.C_NOT_FOUND:
-                  if (canWrite) {
-                    res.setContentType("text/HTML");
+                case CmsException.C_SERVICE_UNAVAILABLE :
+                    status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+                    break;
+                    
+                case CmsException.C_NO_USER:
+                case CmsException.C_NO_GROUP:
+                    status = HttpServletResponse.SC_SERVICE_UNAVAILABLE;
+                    isNotGuest = true;
+                    break;
 
-                    //res.getWriter().print(createErrorBox(e));
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                  }
-                  break;
-
-              case CmsException.C_SERVICE_UNAVAILABLE:
-                  if (canWrite) {
-                    res.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.toString());
-                  }
-                  break;
-
-              // https page and http request - display 404 error.
-              case CmsException.C_HTTPS_PAGE_ERROR:
-                  if (canWrite) {
+                case CmsException.C_HTTPS_PAGE_ERROR :
+                    // http page and https request - display 404 error.
+                    status = HttpServletResponse.SC_NOT_FOUND;
                     if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. "+e.getMessage());
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a http page with a https request. " + e.getMessage());
                     }
-                    res.setContentType("text/HTML");
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                  }
-                  break;
+                    break;                                       
 
-              // https request and http page - display 404 error.
-              case CmsException.C_HTTPS_REQUEST_ERROR:
+                case CmsException.C_HTTPS_REQUEST_ERROR :
+                    // https request and http page - display 404 error.
+                    status = HttpServletResponse.SC_NOT_FOUND;
                     if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO)) {
-                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. "+e.getMessage());
+                        A_OpenCms.log(C_OPENCMS_INFO, "[OpenCmsServlet] Trying to get a https page with a http request. " + e.getMessage());
                     }
-                  if (canWrite) {
-                    res.setContentType("text/HTML");
-                    res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                  }
-                  break;
+                    break;
 
-              default:
-                  if (canWrite) {
-                    // send errorbox, but only if the request was not redirected
-                    res.setContentType("text/HTML");
-
-                    // set some HTTP headers preventing proxy servers from caching the error box
-                    res.setHeader("Cache-Control", "no-cache");
-                    res.setHeader("Pragma", "no-cache");
-                    res.getWriter().print(createErrorBox(e, cms));
-                  }
+                default :
+                    // other CmsException
+                    break;
             }
-        } catch (IOException ex) {
+            
+            if (e.getRootCause() != null) {
+                t = e.getRootCause();
+            }
+        }
 
+        if (status > 0) {
+            res.setStatus(status);
+        }   
+
+        try {
+            isNotGuest = isNotGuest || (((cms.getRequestContext().currentUser()) != null) 
+                && (! C_USER_GUEST.equals(cms.getRequestContext().currentUser().getName())) 
+                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_USERS)) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_PROJECTLEADER)) 
+                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))));
+        } catch (CmsException e) {
+            // result is false
+        }
+        
+        if (canWrite) {
+            res.setContentType("text/HTML");
+            res.setHeader("Cache-Control", "no-cache");
+            res.setHeader("Pragma", "no-cache");                
+            if (isNotGuest) {
+                try {
+                    res.getWriter().print(createErrorBox(t, cms.getRequestContext().getRequest().getWebAppUrl()));
+                } catch (IOException e) {
+                    // can be ignored
+                }
+            } else {
+                if (status < 1) status = HttpServletResponse.SC_NOT_FOUND;
+                try {
+                    res.sendError(status);
+                } catch (IOException e) {
+                    // can be ignored
+                }
+            }
         }
     }
 

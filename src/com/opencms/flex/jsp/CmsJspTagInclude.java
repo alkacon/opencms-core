@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/07/20 15:45:00 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/07/21 14:22:47 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.jsp.JspException;
@@ -55,7 +56,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -383,19 +384,44 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // Add an element to the include list (will be initialized if empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             
-            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);    
+            controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);                
             
         } catch (javax.servlet.ServletException e) {
             if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
-            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
-            throw new JspException(e);            
+            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            throw new JspException(imprintExceptionMessage(e, target), e);    
         } catch (java.io.IOException e) {
             if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
             if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
-            throw new JspException(e);
+            throw new JspException(imprintExceptionMessage(e, target), e);
         } finally {
             if (oldParamterMap != null) controller.getCurrentRequest().setParameterMap(oldParamterMap);            
         }           
+    }
+    
+    /**
+     * Generate a exception message that contains information about the
+     * cause of the problem, which is otherwise hard to pinpoint in case 
+     * of more complex include() scenarios.<p>
+     * 
+     * @param t the exception to generate the message for
+     * @param target the current include target
+     * @return the exception message 
+     */
+    private static String imprintExceptionMessage(Throwable t, String target) {
+        String message = t.getMessage();
+        if ((message == null) || !(message.startsWith("cause "))) {
+            String cause;
+            if (t instanceof ServletException) {
+                cause = "" + ((ServletException)t).getRootCause();
+            } else {
+                cause = "" + t;
+            }
+            message = "cause " + cause + " in " + target;
+        } else {
+            message += " included by " + target;
+        }
+        return message;        
     }
     
     /**

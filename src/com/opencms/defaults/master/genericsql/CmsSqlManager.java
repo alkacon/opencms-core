@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/07/21 11:07:17 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/21 14:22:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.flex.util.CmsStringSubstitution;
-import com.opencms.util.Utils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,7 +58,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/21 11:07:17 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/21 14:22:47 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     

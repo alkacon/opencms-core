@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/21 14:22:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import com.opencms.flex.cache.CmsFlexController;
 import com.opencms.flex.cache.CmsFlexRequest;
 import com.opencms.flex.cache.CmsFlexResponse;
 import com.opencms.util.Encoder;
-import com.opencms.util.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -80,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -423,7 +422,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         int oldMode = exportCheckMode(cms, req);
         
         // load and process the JSP 
-        try {
+        // try {
 
             long timer1;
             if (DEBUG > 0) {
@@ -538,14 +537,14 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 System.err.println("========== JspLoader time delivering JSP for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");
             }
 
-        } catch (Throwable t) {
-            // all Exceptions are caught here and get translated to a CmsException for display in the OpenCms error dialog
-            if (DEBUG > 1)
-                System.err.println("Error in Flex loader: " + t + Utils.getStackTrace(t));
-            throw new ServletException("Error in Flex loader", t);
-        } finally {
+//        } catch (Throwable t) {
+//            // all Exceptions are caught here and get translated to a CmsException for display in the OpenCms error dialog
+//            if (DEBUG > 1)
+//                System.err.println("Error in Flex loader: " + t + Utils.getStackTrace(t));
+//            throw new ServletException("Error in Flex loader", t);
+//        } finally {
             exportResetMode(cms, oldMode);
-        }
+//        }
     }
     
     /**
@@ -906,26 +905,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
-        try {
-            CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
-            // Get JSP target name on "real" file system
-            String target = updateJsp(cms, file, req, controller, new HashSet(11));
-            // Important: Indicate that all output must be buffered
-            controller.getCurrentResponse().setOnlyBuffering(true);
-            // Dispatch to external file
-            controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);
-        } catch (ServletException e) {
-            // Check if this Exception has already been marked
-            String msg = e.getMessage();
-            if (DEBUG > 1)
-                System.err.println("JspLauncher: Caught ServletException " + e);
-            if ((msg != null) && msg.startsWith(C_LOADER_EXCEPTION_PREFIX))
-                throw e;
-            // Not marked, imprint current JSP file and stack trace
-            throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);
-        } catch (Exception e) {
-            // Imprint current JSP file and stack trace
-            throw new ServletException(C_LOADER_EXCEPTION_PREFIX + " '" + cms.readAbsolutePath(file) + "'\n\nRoot cause:\n" + Utils.getStackTrace(e) + "\n--------------- End of root cause.\n", e);
-        }
+        CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
+        // Get JSP target name on "real" file system
+        String target = updateJsp(cms, file, req, controller, new HashSet(11));
+        // Important: Indicate that all output must be buffered
+        controller.getCurrentResponse().setOnlyBuffering(true);
+        // Dispatch to external file
+        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(file), target).include(req, res);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/21 14:22:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -87,10 +87,7 @@ public interface I_CmsResourceLoader {
     String C_LOADER_STREAMPROPERTY = "stream";
     
     /** Name of FlexCache runtime property */
-    String C_LOADER_CACHENAME = "flex.cache";
-    
-    /** Prefix for exception message that occurs in a loaded file */
-    String C_LOADER_EXCEPTION_PREFIX = "Resource loader error in file";         
+    String C_LOADER_CACHENAME = "flex.cache";       
                
     /** 
      * Initialize the ResourceLoader.<p>
