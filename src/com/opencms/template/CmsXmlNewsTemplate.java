@@ -12,17 +12,22 @@ import org.xml.sax.*;
  * <CODE>CmsXmlNewsContentDefinition</CODE>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/10 14:59:08 $
  * @see com.opencms.template.CmsXmlNewsContentDefinition
  */
 public class CmsXmlNewsTemplate extends CmsXmlTemplate implements I_CmsLogChannels {
     
-    /** 
-     * Any results of this class are cacheable since we don't include
-     * any subtemplates. So we can always return <code>true</code> here.
-     * @return <code>true</code>
+    /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable() {
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }
         

@@ -14,23 +14,22 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/10 10:24:53 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/10 14:59:00 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
     /**
      * Indicates if the results of this class are cacheable.
-     * <P>
-     * Complex classes that are able top include other subtemplates
-     * have to check the cacheability of their subclasses here!
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
