@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2000/04/14 15:41:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/04/20 08:55:06 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.9 $ $Date: 2000/04/14 15:41:40 $
+ * @version $Revision: 1.10 $ $Date: 2000/04/20 08:55:06 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 		
@@ -491,7 +491,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 			
 			return (servletPath+currentFolder);
 		}
-		return (servletPath+cms.getRequestContext().getUri());
+		return (servletPath + "/" + C_NAVINDEX + cmsframe);
 	}
 	
 	
