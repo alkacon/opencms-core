@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/14 12:50:53 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -212,7 +212,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 // update the existing resource with the new content
                 resource.setState(I_CmsConstants.C_STATE_CHANGED);
                 importedResource = cms.doImportResource(resource, content, properties, destination);
-                cms.lockResource(destination);  
+                //cms.lockResource(destination);  
                 //importedResource = cms.readFileHeader(destination);
                      
             }       

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/14 15:37:26 $
+ * @version $Revision: 1.5 $ $Date: 2003/08/15 16:09:41 $
  */
 public class CmsExport implements Serializable {
 
@@ -197,33 +197,17 @@ public class CmsExport implements Serializable {
         m_contentAge = contentAge;
         m_report = report;
         m_exportingModuleData = false;
-
-        // TODO  remove this after the new export is completed
-        if (I_CmsConstants.C_EXPORT_VERSION.equals("3")) {
-            openExportFile(moduleNode);
-            // export all the resources
-            exportAllResourcesVersion3(resourcesToExport);
-            // export userdata and groupdata if desired
-            if (m_exportUserdata) {
-                exportGroupsVersion3();
-                exportUsersVersion3();
-            }
-
-            closeExportFile();
-        } else {
-            // this is the new export
-            openExportFile(moduleNode);
-            // export all the resources
-            exportAllResources(resourcesToExport);
-            // export userdata and groupdata if desired
-            if (m_exportUserdata) {
-                exportGroups();
-                exportUsers();
-            }
-            closeExportFile();
+        
+        openExportFile(moduleNode);
+        // export all the resources
+        exportAllResources(resourcesToExport);
+        // export userdata and groupdata if desired
+        if (m_exportUserdata) {
+            exportGroups();
+            exportUsers();
         }
-
-    }
+        closeExportFile();
+     }
 
     /**
      * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
@@ -1089,18 +1073,6 @@ public class CmsExport implements Serializable {
         }
     }
 
-
-    /**
-     * Exports all groups with all data.<p>
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void exportGroupsVersion3() throws CmsException {
-        Vector allGroups = m_cms.getGroups();
-        for (int i = 0; i < allGroups.size(); i++) {
-            exportGroupVersion3((CmsGroup)allGroups.elementAt(i));
-        }
-    }
     
     /**
      * Exports all groups with all data.<p>
@@ -1114,18 +1086,6 @@ public class CmsExport implements Serializable {
         }
     }
     
-    
-    /**
-     * Exports all users with all data.<p>
-     *
-     * @throws CmsException if something goes wrong
-     */
-    private void exportUsersVersion3() throws CmsException {
-        Vector allUsers = m_cms.getUsers();
-        for (int i = 0; i < allUsers.size(); i++) {
-            exportUserVersion3((CmsUser)allUsers.elementAt(i));
-        }
-    }
 
     /**
      * Exports all users with all data.<p>
@@ -1139,26 +1099,6 @@ public class CmsExport implements Serializable {
         }
     }
 
-
-    /**
-     * Exports one single group with all it's data.<p>
-     *
-     * @param group the group to be exported
-     * @throws CmsException if something goes wrong
-     */
-    private void exportGroupVersion3(CmsGroup group) throws CmsException {
-        m_report.print(m_report.key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(group.getName());
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-        try {
-            // create the manifest entries
-            writeXmlGroupEntrysVersion3(group);
-        } catch (Exception e) {
-            m_report.println(e);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-        }
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-    }
 
     /**
      * Exports one single group with all it's data.<p>
@@ -1189,27 +1129,6 @@ public class CmsExport implements Serializable {
      * @param user the user to be exported
      * @throws CmsException if something goes wrong
      */
-    private void exportUserVersion3(CmsUser user) throws CmsException {
-        m_report.print(m_report.key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(user.getName());
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-        try {
-            // create the manifest entries
-            writeXmlUserEntrysVersion3(user);
-        } catch (Exception e) {
-            m_report.println(e);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
-        }
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-    }
-
-
-    /**
-     * Exports one single user with all its data.<p>
-     *
-     * @param user the user to be exported
-     * @throws CmsException if something goes wrong
-     */
     private void exportUser(CmsUser user) throws CmsException {
         m_report.print(m_report.key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
         m_report.print(user.getName());
@@ -1224,38 +1143,6 @@ public class CmsExport implements Serializable {
         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
-
-
-    /**
-     * Writes the data for a group to the <code>manifest.xml</code> file.<p>
-     * 
-     * @param group the group to get the data from
-     * @throws CmsException if something goes wrong
-     */
-    private void writeXmlGroupEntrysVersion3(CmsGroup group) throws CmsException {
-        String id, name, description, flags, parentgroup;
-
-        // get all needed information from the group
-        id = group.getId().toString();
-        name = group.getName();
-        description = group.getDescription();
-        flags = Integer.toString(group.getFlags());
-        CmsUUID parentId = group.getParentId();
-        if (!parentId.isNullUUID()) {
-            parentgroup = m_cms.getParent(name).getName();
-        } else {
-            parentgroup = "";
-        }
-
-        // write these informations to the xml-manifest
-        Element groupdata = m_docXml.createElement(I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
-        m_userdataElement.appendChild(groupdata);
-        addElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_ID, id);
-        addElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_NAME, name);
-        addCdataElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
-        addElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
-        addElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroup);
-    }
 
     /**
      * Writes the data for a group to the <code>manifest.xml</code> file.<p>
@@ -1286,92 +1173,6 @@ public class CmsExport implements Serializable {
         addElement(m_docXml, groupdata, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP, parentgroup);
     }
 
-
-
-    /**
-     * Writes the data for a user to the <code>manifest.xml</code> file.<p>
-     * 
-     * @param user The user to write into the manifest.
-     * @throws CmsException if something goes wrong
-     */
-    private void writeXmlUserEntrysVersion3(CmsUser user) throws CmsException {
-        String id, name, password, recoveryPassword, description, firstname;
-        String lastname, email, flags, defaultGroup, address, section, type;
-        String datfileName = new String();
-        Hashtable info = new Hashtable();
-        Vector userGroups = new Vector();
-        sun.misc.BASE64Encoder enc;
-        ObjectOutputStream oout;
-
-        // get all needed information from the group
-        id = user.getId().toString();
-        name = user.getName();
-        password = user.getPassword();
-        recoveryPassword = user.getRecoveryPassword();
-        description = user.getDescription();
-        firstname = user.getFirstname();
-        lastname = user.getLastname();
-        email = user.getEmail();
-        flags = Integer.toString(user.getFlags());
-        info = user.getAdditionalInfo();
-        defaultGroup = user.getDefaultGroup().getName();
-        address = user.getAddress();
-        section = user.getSection();
-        type = Integer.toString(user.getType());
-        userGroups = m_cms.getDirectGroupsOfUser(user.getName());
-
-        // write these informations to the xml-manifest
-        Element userdata = m_docXml.createElement(I_CmsConstants.C_EXPORT_TAG_USERDATA);
-        m_userdataElement.appendChild(userdata);
-
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_ID, id);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_NAME, name);
-        //Encode the info value, using any base 64 decoder
-        enc = new sun.misc.BASE64Encoder();
-        String passwd = new String(enc.encodeBuffer(password.getBytes()));
-        addCdataElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_PASSWORD, passwd);
-        enc = new sun.misc.BASE64Encoder();
-        String recPasswd = new String(enc.encodeBuffer(recoveryPassword.getBytes()));
-        addCdataElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD, recPasswd);
-
-        addCdataElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION, description);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_FIRSTNAME, firstname);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_LASTNAME, lastname);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_EMAIL, email);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_FLAGS, flags);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP, defaultGroup);
-        addCdataElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_ADDRESS, address);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_SECTION, section);
-        addElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_TYPE, type);
-        // serialize the hashtable and write the info into a file
-        try {
-            datfileName = "/~" + I_CmsConstants.C_EXPORT_TAG_USERINFO + "/" + name + ".dat";
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            oout = new ObjectOutputStream(bout);
-            oout.writeObject(info);
-            oout.close();
-            byte[] serializedInfo = bout.toByteArray();
-            // store the userinfo in zip-file
-            ZipEntry entry = new ZipEntry(datfileName);
-            m_exportZipStream.putNextEntry(entry);
-            m_exportZipStream.write(serializedInfo);
-            m_exportZipStream.closeEntry();
-        } catch (IOException ioex) {
-            m_report.println(ioex);
-        }
-        // create tag for userinfo
-        addCdataElement(m_docXml, userdata, I_CmsConstants.C_EXPORT_TAG_USERINFO, datfileName);
-
-        // append the node for groups of user
-        Element usergroup = m_docXml.createElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPS);
-        userdata.appendChild(usergroup);
-        for (int i = 0; i < userGroups.size(); i++) {
-            String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
-            Element group = m_docXml.createElement(I_CmsConstants.C_EXPORT_TAG_GROUPNAME);
-            usergroup.appendChild(group);
-            addElement(m_docXml, group, I_CmsConstants.C_EXPORT_TAG_NAME, groupName);
-        }
-    }
     
     /**
      * Writes the data for a user to the <code>manifest.xml</code> file.<p>

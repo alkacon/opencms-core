@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,6 +78,8 @@ public class CmsImportVersion4 extends A_CmsImport {
     public int getVersion() {
         return 4;
     }
+    
+    protected int m_importVersion = 4;
 
     /** storage to store content uuids during import */
     private Map m_resourceIdStorage=new HashMap();

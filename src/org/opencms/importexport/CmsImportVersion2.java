@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/08/15 08:36:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
     /** page file storage for page file and body coversion */
     private List m_pageStorage;
-    
+
     /** The path to the bodies in OpenCms 4.x */
      private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
 
@@ -100,6 +100,9 @@ public class CmsImportVersion2 extends A_CmsImport {
     public int getVersion() {
         return 2;
     }
+
+    protected int m_importVersion = 2;
+
 
     /**
      * Imports the resources for a module.<p>
@@ -466,6 +469,7 @@ public class CmsImportVersion2 extends A_CmsImport {
          CmsResource res = null;
 
          try {
+          
              if (m_importingChannelData) {
                  // try to read an existing channel to get the channel id
                  String channelId = null;

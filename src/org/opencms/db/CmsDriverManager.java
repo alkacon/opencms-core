@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/15 14:43:32 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.160 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.159 $ $Date: 2003/08/15 14:43:32 $
+ * @version $Revision: 1.160 $ $Date: 2003/08/15 16:09:41 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -236,7 +236,7 @@ public class CmsDriverManager extends Object {
                 return 509;
             } else {
                 return m_uuid.hashCode();
-            }            
+    }
         }
 
     }
@@ -3990,7 +3990,7 @@ public class CmsDriverManager extends Object {
             // read must still be possible, since the explorer file list needs some properties
             if (!context.currentUser().getId().equals(lock.getUserId())) {         
                 denied |= I_CmsConstants.C_PERMISSION_WRITE;
-            }
+        }
         }        
 
         if (isAdmin) {
@@ -4009,7 +4009,7 @@ public class CmsDriverManager extends Object {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
         } else {
             result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
-        }
+    }
         m_permissionCache.put(cacheKey, new Boolean(result));
         return result;
     }
@@ -4481,7 +4481,6 @@ public class CmsDriverManager extends Object {
             m_userDriver.writeUser(newUser);
             // update cache
             m_userCache.put(new CacheId(newUser), newUser);
-            
             // clear invalidated caches
             m_accessControlListCache.clear();
             m_groupCache.clear();
@@ -4684,12 +4683,19 @@ public class CmsDriverManager extends Object {
                     found=true;
                     readFileHeader(context, des);
                     // ....it's there, so add a postfix and try again
-                    if (destination.lastIndexOf(".")>0) {            
-                        des=destination.substring(0, destination.lastIndexOf("."));
-                    }
-                    des += "_"+postfix;
-                    if (destination.lastIndexOf(".")>0) {
-                        des += destination.substring(destination.lastIndexOf("."), destination.length());
+                    String path=destination.substring(0, destination.lastIndexOf("/")+1);
+                    String filename=destination.substring(destination.lastIndexOf("/")+1, destination.length());
+                    
+                    des=path;
+                    
+                    if (filename.lastIndexOf(".")>0) {            
+                        des +=filename.substring(0, filename.lastIndexOf("."));
+                    } else {
+                        des+=filename;
+                    }                       
+                    des +="_"+postfix;
+                    if (filename.lastIndexOf(".")>0) {
+                        des += filename.substring(filename.lastIndexOf("."), filename.length());
                     }
                     postfix++;                    
                 } catch (CmsException e3) {                         
@@ -4701,7 +4707,7 @@ public class CmsDriverManager extends Object {
             
             if (copyResource) {                
                 // move the existing resource to the lost and foud folder
-                moveResource(context,resourcename,destination);
+            moveResource(context,resourcename, destination) ;
             }           
           } catch (CmsException e2) {
             throw e2;           
@@ -7557,6 +7563,9 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void undeleteResource(CmsRequestContext context, String filename) throws CmsException {
+        // try to trad the resource
+        //CmsResource resource = readFileHeader(context, filename, true);
+        
         undoChanges(context, filename);
         /*
         // read the resource to check the access
@@ -8497,8 +8506,7 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-            }
-
+}
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/15 07:18:50 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/08/15 16:09:41 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.54 $ $Date: 2003/08/15 07:18:50 $
+ * @version $Revision: 1.55 $ $Date: 2003/08/15 16:09:41 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1357,16 +1357,16 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                         }
                     }
                     
-    				try {                	         
-    					m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
-    					m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceAceId());
-    				} catch (CmsException exc) {
-    					if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
-    						OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
-    					}
-    				}
-                      
                     try {                	         
+                    	m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
+                    	m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceAceId());
+                    } catch (CmsException exc) {
+                    	if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                    		OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[" + this.getClass().getName() + "] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+                    	}
+                    }
+                      
+                try {                	         
                         m_driverManager.getUserDriver().removeAllAccessControlEntries(onlineProject, currentOnlineFile.getResourceAceId());
                         m_driverManager.getUserDriver().removeAllAccessControlEntries(context.currentProject(), currentFile.getResourceAceId());
     
