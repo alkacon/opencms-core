@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/28 11:07:27 $
- * Version: $Revision: 1.147 $
+ * Date   : $Date: 2004/10/28 12:58:07 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.147 $
+ * @version $Revision: 1.148 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1039,7 +1039,7 @@ public final class OpenCmsCore {
         m_xmlContentTypeManager.initialize(adminCms);
 
         // intialize the module manager
-        m_moduleManager.initialize(adminCms);
+        m_moduleManager.initialize(adminCms, m_configurationManager);
     }
 
     /**

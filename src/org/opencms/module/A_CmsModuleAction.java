@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/28 12:58:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.module;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
@@ -57,9 +58,9 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     }
 
     /**
-     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsModule)
+     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsConfigurationManager, CmsModule)
      */
-    public void initialize(CmsObject adminCms, CmsModule module) {
+    public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Module '" + module.getName() + "' " + this.getClass().getName() + " initialized");

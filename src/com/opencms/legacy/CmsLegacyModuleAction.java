@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2004/10/25 14:17:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/10/28 12:58:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.legacy;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
@@ -116,9 +117,9 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
     }       
 
     /**
-     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsModule)
+     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsConfigurationManager, CmsModule)
      */
-    public void initialize(CmsObject adminCms, CmsModule module) {
+    public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
         
         ExtendedProperties config = adminCms.getConfigurations();
         String dbName = config.getString(CmsDbPool.C_KEY_DATABASE_NAME).toLowerCase();

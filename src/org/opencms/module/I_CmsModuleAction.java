@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2004/08/11 16:56:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/28 12:58:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.module;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.I_CmsEventListener;
@@ -40,7 +41,7 @@ import org.opencms.report.I_CmsReport;
  * Module action classes in OpenCms must implement this interface.<p>
  * 
  * A module action class allows to perform special functions on certain 
- * OpenCms lifecycle system events, like {@link #initialize(CmsObject, CmsModule)} or 
+ * OpenCms lifecycle system events, like {@link #initialize(CmsObject, CmsConfigurationManager, CmsModule)} or 
  * {@link #shutDown(CmsModule)}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
@@ -63,9 +64,10 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * exist create them as needed.<p> 
      * 
      * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param configurationManager the initialized OpenCms configuration manager
      * @param module the module of this action instance
      */
-    void initialize(CmsObject adminCms, CmsModule module);
+    void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module);
     
     /**
      * Will be called if a module is uninstalled from an OpenCms system.<p>
@@ -76,7 +78,7 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * Please note that there is no <code>install()</code> method. 
      * This is because the class loader will not have the module class 
      * instance available after module installation/upload. If you 
-     * need to execute setup/install code, do this in the {@link #initialize(CmsObject, CmsModule)}
+     * need to execute setup/install code, do this in the {@link #initialize(CmsObject, CmsConfigurationManager, CmsModule)}
      * method during the next server startup.<p>
      * 
      * This method is <i>not</i> called if the module this action instance belongs to 
@@ -85,7 +87,7 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
      * 
      * @param module the module of this action instance
      *
-     * @see #initialize(CmsObject, CmsModule)
+     * @see #initialize(CmsObject, CmsConfigurationManager, CmsModule)
      */
     void moduleUninstall(CmsModule module);
     

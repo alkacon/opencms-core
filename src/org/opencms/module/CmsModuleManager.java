@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2004/10/03 11:33:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/10/28 12:58:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
@@ -40,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 
@@ -74,7 +76,7 @@ public class CmsModuleManager {
 
     /** The map of configured modules. */
     private Map m_modules;
-
+   
     /**
      * Basic constructor.<p>
      * 
@@ -356,8 +358,9 @@ public class CmsModuleManager {
      * Initializes all module instance classes managed in this module manager.<p>
      * 
      * @param adminCms an initialized CmsObject with "Admin" permissions
+     * @param configurationManager the initialized OpenCms configuration manager
      */
-    public synchronized void initialize(CmsObject adminCms) {
+    public synchronized void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager) {
 
         if (((adminCms == null) && (OpenCms.getRunLevel() > 1)) || ((adminCms != null) && !adminCms.isAdmin())) {
             // null admin cms only allowed during test cases
@@ -415,7 +418,7 @@ public class CmsModuleManager {
                                 adminCms.getRequestContext().getRemoteAddress());
                         CmsObject adminCmsCopy = OpenCms.initCmsObject(adminCms, contextInfo);
                         // initialize the module
-                        moduleAction.initialize(adminCmsCopy, module);
+                        moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {
                         OpenCms.getLog(this).error("Error during module action instance initialize for class '" + moduleAction.getClass().getName() + "'", t);
                     }                    
@@ -554,4 +557,5 @@ public class CmsModuleManager {
         
         OpenCms.writeConfiguration(CmsModuleConfiguration.class);
     }
+    
 }

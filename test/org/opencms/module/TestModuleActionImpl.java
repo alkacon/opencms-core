@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
- * Date   : $Date: 2004/07/19 17:05:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/28 12:58:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.module;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
@@ -79,11 +80,11 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     }
     
     /**
-     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsModule)
+     * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsConfigurationManager, CmsModule)
      */
-    public void initialize(CmsObject adminCms, CmsModule module) {
+    public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
-        super.initialize(adminCms, module);
+        super.initialize(adminCms, configurationManager, module);
         m_initialize = true;
         
         // register as event listener for publish events
