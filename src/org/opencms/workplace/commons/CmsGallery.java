@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/11/03 14:55:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/08 09:04:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * Extend this class for every gallery type (e.g. image gallery) to build.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.2
  */
@@ -144,6 +144,7 @@ public abstract class CmsGallery extends CmsDialog {
     public String buildSelectGallery(int resTypeId) {
         List galleries = getGalleries(resTypeId);
         if (galleries != null && galleries.size() > 0) {
+            // at least one gallery present
             int galleryCount = galleries.size();
             List options = new ArrayList(galleryCount);
             List values = new ArrayList(galleryCount);
@@ -167,8 +168,14 @@ public abstract class CmsGallery extends CmsDialog {
             String attrs = "name=\"" + PARAM_GALLERYPATH;
             attrs += "\" size=\"1\" style=\"width: 100%;\" onchange=\"displayGallery();\"";
             return buildSelect(attrs, options, values, selectedIndex);
+        } else {
+            // no gallery present, create hidden input field to avoid JS errors
+            StringBuffer result = new StringBuffer(4);
+            result.append("<input type=\"hidden\" name=\"");
+            result.append(PARAM_GALLERYPATH);
+            result.append("\">");
+            return result.toString();
         }
-        return "";
     }
     
     /**
@@ -356,7 +363,7 @@ public abstract class CmsGallery extends CmsDialog {
     protected List getGalleries(int resourceType) {
         List galleries = null;
         try {
-            galleries = getCms().readResources("/", CmsResourceFilter.requireType(resourceType));
+            galleries = getCms().readResources(I_CmsConstants.C_ROOT, CmsResourceFilter.requireType(resourceType));
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(e);    
