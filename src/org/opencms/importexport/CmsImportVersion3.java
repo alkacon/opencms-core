@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/08/11 10:42:59 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/08/11 16:56:22 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -265,7 +265,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      */
     private void importAllResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
 
-        String source, destination, type, uuidstructure, uuidresource, uuidcontent, userlastmodified, usercreated, flags, timestamp;
+        String source, destination, type, uuidstructure, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
 
         List fileNodes, acentryNodes;
@@ -314,8 +314,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 uuidstructure = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 // <uuidresource>
                 uuidresource = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
-                // <uuidcontent>
-                uuidcontent = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 // <datelastmodified>
                 if ((timestamp = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED)) != null) {
                     datelastmodified = Long.parseLong(timestamp);
@@ -354,7 +352,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     properties = readPropertiesFromManifest(currentElement, propertyName, propertyValue, deleteProperties);
 
                     // import the resource               
-                    CmsResource res = importResource(source, destination, type, uuidstructure, uuidresource, uuidcontent, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, type, uuidstructure, uuidresource, datelastmodified, userlastmodified, datecreated, usercreated, flags, properties, writtenFilenames, fileCodes);
 
                     // if the resource was imported add the access control entrys if available
                     if (res != null) {
@@ -396,28 +394,27 @@ public class CmsImportVersion3 extends A_CmsImport {
     }
 
     /**
-      * Imports a resource (file or folder) into the cms.<p>
-      * 
-      * @param source the path to the source-file
-      * @param destination the path to the destination-file in the cms
-      * @param type the resource-type of the file
-      * @param uuidstructure  the structure uuid of the resource
-      * @param uuidresource  the resource uuid of the resource
-      * @param uuidcontent the file uuid of the resource
-      * @param datelastmodified the last modification date of the resource
-      * @param userlastmodified the user who made the last modifications to the resource
-      * @param datecreated the creation date of the resource
-      * @param usercreated the user who created 
-      * @param flags the flags of the resource     
-      * @param properties a hashtable with properties for this resource
-      * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-      *       not used when null
-      * @param fileCodes code of the written files (for the registry)
-      *       not used when null
-      * @return imported resource
-      */
-    // TODO: remove unneccessary content id
-    private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, String uuidcontent, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, List properties, Vector writtenFilenames, Vector fileCodes) {
+     * Imports a resource (file or folder) into the cms.<p>
+     * 
+     * @param source the path to the source-file
+     * @param destination the path to the destination-file in the cms
+     * @param type the resource-type of the file
+     * @param uuidstructure  the structure uuid of the resource
+     * @param uuidresource  the resource uuid of the resource
+     * @param datelastmodified the last modification date of the resource
+     * @param userlastmodified the user who made the last modifications to the resource
+     * @param datecreated the creation date of the resource
+     * @param usercreated the user who created 
+     * @param flags the flags of the resource     
+     * @param properties a hashtable with properties for this resource
+     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+     *       not used when null
+     * @param fileCodes code of the written files (for the registry)
+     *       not used when null
+     * 
+     * @return imported resource
+     */
+    private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -468,13 +465,9 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
             // get all UUIDs for the structure, resource and content        
             CmsUUID newUuidstructure = new CmsUUID();
-            CmsUUID newUuidcontent = new CmsUUID();
             CmsUUID newUuidresource = new CmsUUID();
             if (uuidstructure != null) {
                 newUuidstructure = new CmsUUID(uuidstructure);
-            }
-            if (uuidcontent != null) {
-                newUuidcontent = new CmsUUID(uuidcontent);
             }
             if (uuidresource != null) {
                 newUuidresource = new CmsUUID(uuidresource);

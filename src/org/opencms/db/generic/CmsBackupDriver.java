@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/08/11 10:41:46 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2004/08/11 16:56:22 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.96 $ $Date: 2004/08/11 10:41:46 $
+ * @version $Revision: 1.97 $ $Date: 2004/08/11 16:56:22 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -1073,7 +1073,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         Connection conn = null;
         PreparedStatement stmt = null;
         CmsUUID backupPkId = new CmsUUID();
-        byte[] content = null;
         int versionId;
 
         String lastModifiedName = "";
@@ -1157,7 +1156,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
-        content = null;
         // TODO: use this in later versions
         //return this.readBackupFileHeader(tagId, resource.getResourceId());
     }

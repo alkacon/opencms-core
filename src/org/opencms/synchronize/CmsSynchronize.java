@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/08/11 10:44:26 $
- * Version: $Revision: 1.39 $
- * Date   : $Date: 2004/08/11 10:44:26 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/08/11 16:56:21 $
+ * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/08/11 16:56:21 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsUUID;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -63,7 +62,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.39 $ $Date: 2004/08/11 10:44:26 $
+ * @version $Revision: 1.40 $ $Date: 2004/08/11 16:56:21 $
  */
 public class CmsSynchronize {
 

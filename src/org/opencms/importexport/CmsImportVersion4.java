@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/11 10:42:59 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/08/11 16:56:21 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -281,7 +281,7 @@ public class CmsImportVersion4 extends A_CmsImport {
     private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue)
     throws CmsException {
 
-        String source = null, destination = null, type = null, uuidresource = null, uuidcontent = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
+        String source = null, destination = null, type = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
         int resType = I_CmsConstants.C_UNKNOWN_ID;
         int loaderId = I_CmsConstants.C_UNKNOWN_ID;
@@ -352,13 +352,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                     uuidresource = CmsImport.getChildElementTextValue(
                         currentElement,
                         I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
-                    // <uuidcontent>
-                    uuidcontent = CmsImport.getChildElementTextValue(
-                        currentElement,
-                        I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 } else {
                     uuidresource = null;
-                    uuidcontent = null;
                 }
 
                 // <datelastmodified>
@@ -446,14 +441,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                         resType,
                         loaderId,
                         uuidresource,
-                        uuidcontent,
                         datelastmodified,
                         userlastmodified,
                         datecreated,
                         usercreated,
                         datereleased,
                         dateexpired,
-                        flags, 
+                        flags,
                         properties);
 
                     // if the resource was imported add the access control entrys if available
@@ -540,7 +534,6 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param resType the resource-type of the file
      * @param loaderId the loader id of the resource
      * @param uuidresource  the resource uuid of the resource
-     * @param uuidcontent the file uuid of the resource
      * @param datelastmodified the last modification date of the resource
      * @param userlastmodified the user who made the last modifications to the resource
      * @param datecreated the creation date of the resource
@@ -549,6 +542,7 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @param dateexpired the expire date of the resource
      * @param flags the flags of the resource     
      * @param properties a hashtable with properties for this resource
+     * 
      * @return imported resource
      */
     private CmsResource importResource(
@@ -557,7 +551,6 @@ public class CmsImportVersion4 extends A_CmsImport {
         int resType, 
         int loaderId, 
         String uuidresource, 
-        String uuidcontent, 
         long datelastmodified, 
         String userlastmodified, 
         long datecreated, 
@@ -607,18 +600,6 @@ public class CmsImportVersion4 extends A_CmsImport {
             } else {
                 // folders get always a new resource record UUID
                 newUuidresource = new CmsUUID();
-            }
-            
-            CmsUUID newUuidcontent = null;
-            if (uuidcontent != null) {
-                // create a UUID from the provided string
-                newUuidcontent = new CmsUUID(uuidcontent);
-            } else if (resType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
-                // folders don't have any "content"- use the Null UUID as the content UUID
-                newUuidcontent = CmsUUID.getNullUUID();
-            } else {
-                // create a new UUID
-                newUuidcontent = new CmsUUID();
             }
             
             // extract the name of the resource form the destination

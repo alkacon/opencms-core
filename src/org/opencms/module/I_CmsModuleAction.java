@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/I_CmsModuleAction.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/08/11 16:56:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,7 @@ public interface I_CmsModuleAction extends I_CmsEventListener {
     void moduleUpdate(CmsModule module);
     
     /**
-     * Will be called during a the publish process after the resource have been published,
+     * Will be called during a the publish process after the resources have been published,
      * but before the publish event is fired.<p>
      * 
      * If you require special code to be executed after a resource is published,

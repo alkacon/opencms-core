@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/11 10:50:48 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/08/11 16:56:21 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.3.5
  */
@@ -124,7 +124,7 @@ public class OpenCmsTestCase extends TestCase {
     /** The password of the user. */
     public static String m_userPassword;
     
-    /** The setup jdbc url */
+    /** The setup jdbc url. */
     public static String m_setupUrl;
     
     /** The name of the setup user. */
@@ -1906,11 +1906,11 @@ public class OpenCmsTestCase extends TestCase {
      */
     protected void echo(String message) {
         try {
-        	m_shell.printPrompt();
-        	System.out.println(message);
+            m_shell.printPrompt();
+            System.out.println(message);
         } catch (Throwable t) {
             throw new RuntimeException(t);
-    }   
+        }
     }   
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/11 10:40:26 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/08/11 16:54:44 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.84 $ $Date: 2004/08/11 10:40:26 $
+ * @version $Revision: 1.85 $ $Date: 2004/08/11 16:54:44 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -81,6 +81,7 @@ public interface I_CmsVfsDriver {
      * Creates a resource content with the specified id.<p>
      * 
      * @param project the current project
+     * @param resourceId the resource id to create the content for
      * @param content the content to write
      * @param versionId for the content of a backup file you need to insert the versionId of the backup
      * @param writeBackup true if the content should be written to the backup table
