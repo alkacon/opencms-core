@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/03/25 13:18:42 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/03/27 14:06:01 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.23 $ $Date: 2002/03/25 13:18:42 $
+ * @version $Revision: 1.24 $ $Date: 2002/03/27 14:06:01 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -299,7 +299,7 @@ public class CmsStaticExport implements I_CmsConstants{
         }
         // now the rules for linking between static and dynamic pages
         try{
-            // get the resources with the property "dynamic"
+            // get the resources with the property "export"
             Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORT);
             // generate the rules
             if(resWithProp != null && resWithProp.size() != 0){

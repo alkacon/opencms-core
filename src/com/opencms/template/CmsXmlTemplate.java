@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2002/03/20 12:37:30 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2002/03/27 14:06:01 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.92 $ $Date: 2002/03/20 12:37:30 $
+ * @version $Revision: 1.93 $ $Date: 2002/03/27 14:06:01 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -960,8 +960,11 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
      */
     public CmsMethodCacheDirectives getMethodCacheDirectives(CmsObject cms, String methodName){
         if("getTitle".equals(methodName) || "getUri".equals(methodName)
-                                        ||"getFileUri".equals(methodName)
-                                        ||"getPathUri".equals(methodName)){
+                                         || "getFileUri".equals(methodName)
+                                         || "getDescription".equals(methodName)
+                                         || "getKeywords".equals(methodName)
+                                         || "getProperty".equals(methodName)
+                                         || "getPathUri".equals(methodName)){
             CmsMethodCacheDirectives mcd = new CmsMethodCacheDirectives(true);
             mcd.setCacheUri(true);
             return mcd;
@@ -970,6 +973,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                                 || "getQueryString".equals(methodName)
                                 || "getRequestIp".equals(methodName)
                                 || "getSessionId".equals(methodName)
+                                || "getUriWithParameter".equals(methodName)
+                                || "parameters".equals(methodName)
                                 || "getStylesheet".equals(methodName)){
             return new CmsMethodCacheDirectives(false);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/03/21 16:52:12 $
-* Version: $Revision: 1.224 $
+* Date   : $Date: 2002/03/27 14:06:01 $
+* Version: $Revision: 1.225 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.224 $ $Date: 2002/03/21 16:52:12 $
+ * @version $Revision: 1.225 $ $Date: 2002/03/27 14:06:01 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2337,7 +2337,10 @@ public void publishProject(int id) throws CmsException {
         }else{
             if("false_ssl".equalsIgnoreCase(this.getStaticExportEnabledValue())){
                 // just generate the link rules, in case there were properties changed
+                int oldId = m_context.currentProject().getId();
+                m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
                 new CmsStaticExport(this, null, false, null, null);
+                m_context.setCurrentProject(oldId);
             }
         }
         success = true;
