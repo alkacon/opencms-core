@@ -32,6 +32,7 @@ createPropertydefinition Description compatiblePlain
 createPropertydefinition Keywords compatiblePlain
 createPropertydefinition Description script
 createPropertydefinition Keywords script
+createPropertydefinition module compatiblePlain
 addFileExtension doc binary
 addFileExtension pdf binary
 addFileExtension zip binary
