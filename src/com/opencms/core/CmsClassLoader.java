@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 15:29:51 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2001/02/20 16:25:06 $
+* Version: $Revision: 1.23 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,10 +107,15 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.22 $ $Date: 2001/02/20 15:29:51 $
+ * @version $Revision: 1.23 $ $Date: 2001/02/20 16:25:06 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
+
+    /**
+     * Indicates, if classes should be reloaded
+     */
+    private boolean m_shouldReload = false;
 
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = true;
@@ -501,5 +506,19 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      */
     public Vector getFilenames(){
         return m_filenames;
+    }
+
+    /**
+     * Sets the should reload value.
+     */
+    public void setShouldReload(boolean value) {
+        m_shouldReload = value;
+    }
+
+    /**
+     * Gets the should reload value.
+     */
+    public boolean shouldReload() {
+        return m_shouldReload;
     }
 }

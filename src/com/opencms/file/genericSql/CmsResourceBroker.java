@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/20 15:58:14 $
- * Version: $Revision: 1.230 $
+ * Date   : $Date: 2001/02/20 16:25:06 $
+ * Version: $Revision: 1.231 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.230 $ $Date: 2001/02/20 15:58:14 $
+ * @version $Revision: 1.231 $ $Date: 2001/02/20 16:25:06 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4056,7 +4056,8 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 	// check the security
 	if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
         // check, if we update class-files with this publishing
-        Vector classFiles = ((CmsClassLoader)getClass().getClassLoader()).getFilenames();
+        CmsClassLoader loader = (CmsClassLoader)getClass().getClassLoader();
+        Vector classFiles = loader.getFilenames();
         boolean shouldReload = shouldReloadClasses(id, classFiles);
 
 		m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
@@ -4092,7 +4093,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
 			deleteProject(currentUser, currentProject, id);
 		}
         // inform about the reload classes
-        OpenCmsHttpServlet.setShouldReloadClasses(shouldReload);
+        loader.setShouldReload(shouldReload);
 	} else {
 		throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
 	}
