@@ -38,20 +38,20 @@ SELECT
 }
 H2
 {
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 14px;
     FONT-WEIGHT: bold;
 }
 H2.darkblue
 {
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 14px;
     FONT-WEIGHT: bold;
     COLOR:#000066;
 }
 H3
 {
-    FONT-FAMILY: MS Sans Serif, Arial, helvetica, 'sans serif';
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-STYLE: normal
 }
@@ -69,7 +69,7 @@ A:link
     FONT-SIZE: 8px;
     TEXT-DECORATION: none
 }
-A:aktive
+A:active
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
@@ -118,7 +118,7 @@ TD.head
 {
     BACKGROUND-COLOR: #000066;
     COLOR: white;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8px;
     FONT-WEIGHT: bold
 }
@@ -314,7 +314,7 @@ TD.taskviewhead
 {
     BACKGROUND-COLOR: #ffffff;
     COLOR: #000066;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8px;
     FONT-WEIGHT: bold
 }
@@ -322,7 +322,7 @@ TD.taskviewhead2
 {
     BACKGROUND-COLOR: #ffffff;
     COLOR: #000066;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-WEIGHT: bold;
 }
@@ -330,7 +330,7 @@ TD.taskviewheadactive
 {
     BACKGROUND-COLOR: blue;
     COLOR: #ffffff;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-WEIGHT: bold;
 }
@@ -338,7 +338,7 @@ TD.taskviewheadnew
 {
     BACKGROUND-COLOR: #b1c7ff;
     COLOR: #000000;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-WEIGHT: bold;
 }
@@ -346,7 +346,7 @@ TD.taskviewheadalert
 {
     BACKGROUND-COLOR: #ff0000;
     COLOR: #ffffff;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-WEIGHT: bold
 }
@@ -354,7 +354,7 @@ TD.taskviewheadok
 {
     BACKGROUND-COLOR: #c0c0c0;
     COLOR: #000000;
-    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 10px;
     FONT-WEIGHT: bold;
 }
