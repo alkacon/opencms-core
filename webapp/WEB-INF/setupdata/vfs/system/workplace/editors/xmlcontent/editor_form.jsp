@@ -109,6 +109,7 @@ function exitEditor() {
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.C_PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
 <input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
 <input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">

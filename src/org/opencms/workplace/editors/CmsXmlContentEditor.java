@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/02 09:07:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/12/02 11:33:23 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -201,7 +202,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
     public void actionClear(boolean forceUnlock) {
-
+        
+        // delete the temporary file        
+        deleteTempFile();
         if ("true".equals(getParamDirectedit()) || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true
             try {
@@ -290,6 +293,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setParamResource(newFileName);
             setAction(ACTION_DEFAULT);
             
+            // create the temporary file to work with
+            setParamTempfile(createTempFile());
+            
             // set the member variables for the content 
             m_file = newFile;
             m_content = newContent;                         
@@ -364,7 +370,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         
         try {                        
             setEditorValues(locale);
-            writeContent();            
+            writeContent();  
+            commitTempFile();
         } catch (CmsXmlException e) {
             showErrorPage(e, "xml");
         } catch (CmsException e) {
@@ -776,19 +783,20 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         if (getParamNewLink() != null) {
             setParamAction(EDITOR_ACTION_NEW);
         } else {
-            try {
-                // lock resource if autolock is enabled
-                checkLock(getParamResource());
-                m_file = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-                m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);             
-            } catch (CmsException e) {
-                // error during initialization
+            // initialize a content object from the temporary file
+            if (getParamTempfile() != null && !"null".equals(getParamTempfile())) {
                 try {
-                    showErrorPage(this, e, "read");
-                } catch (JspException exc) {
-                    // should usually never happen
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(exc);
+                    m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                    m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+                } catch (CmsException e) {
+                    // error during initialization
+                    try {
+                        showErrorPage(this, e, "read");
+                    } catch (JspException exc) {
+                        // should usually never happen
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(exc);
+                        }
                     }
                 }
             }
@@ -827,8 +835,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     OpenCms.getLog(this).error("Failed to include the common error page");    
                 }    
             }
-            if (getAction() != ACTION_CANCEL) {
-                // no error ocurred, redisplay the form
+            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+                // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
@@ -839,8 +847,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     OpenCms.getLog(this).error("Failed to include the common error page");    
                 }    
             }
-            if (getAction() != ACTION_CANCEL) {
-                // no error ocurred, redisplay the form
+            if (getAction() != ACTION_CANCEL && getAction() != ACTION_SHOW_ERRORMESSAGE) {
+                // no error ocurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_NEW.equals(getParamAction())) {
@@ -849,6 +857,31 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } else {
             // initial call of editor
             setAction(ACTION_DEFAULT);
+            try {
+                // lock resource if autolock is enabled in configuration
+                if ("true".equals(getParamDirectedit())) {
+                    // set a temporary lock in direct edit mode
+                    checkLock(getParamResource(), CmsLock.C_MODE_TEMP);
+                } else {
+                    // set common lock
+                    checkLock(getParamResource());
+                }
+                // create the temporary file
+                setParamTempfile(createTempFile());
+                // initialize a content object from the created temporary file
+                m_file =  getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                m_content = CmsXmlContentFactory.unmarshal(getCms(), m_file);
+            } catch (CmsException e) {
+                // error during initialization
+                try {
+                    showErrorPage(this, e, "read");
+                } catch (JspException exc) {
+                    // should usually never happen
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                        OpenCms.getLog(this).info(exc);
+                    }       
+                }
+            }
             // set the initial element language if not given in request parameters
             if (getParamElementlanguage() == null) {
                 initElementLanguage();
