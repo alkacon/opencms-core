@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_choosebrowser.js,v $
- * Date   : $Date: 2000/03/22 16:59:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/03 13:31:19 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -187,4 +187,14 @@ function newObj(layerName,visibility){
 	eval('oCont=new makeObj("'+ layerName +'")');
 	eval('oCont.css.visibility="'+ visibility +'"');
 	eval('centerLayer("'+ layerName +'")');
+}
+
+function errorinit() {
+	newObj('errormain','hidden');
+	newObj('errordetails','hidden');
+	justifyLayers('errormain','errordetails');
+	showlyr('errormain');
+	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
+	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
+	window.onresize=resized;
 }

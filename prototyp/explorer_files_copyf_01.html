@@ -6,16 +6,6 @@ function show_help()
 {
 	return '2_2_2_2_5_5_1.html';
 }
-
-function init() {
-	newObj('errormain','hidden');
-	newObj('errordetails','hidden');
-	justifyLayers('errormain','errordetails');
-	showlyr('errormain');
-	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
-	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
-	window.onresize=resized;
-}
 	
 //-->
 </script>
@@ -36,7 +26,7 @@ function init() {
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_dialogscroll.js"></SCRIPT>
 
 </HEAD>
-<BODY onLoad="init();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY onLoad="errorinit();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 
 <div id="errormain">
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
