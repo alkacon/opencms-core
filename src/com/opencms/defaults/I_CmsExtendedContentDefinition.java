@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2001/10/23 13:38:15 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/10/29 09:55:11 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,4 +68,19 @@ public interface I_CmsExtendedContentDefinition {
      * @return int The id of the cd
      */
     public int getLockedInProject();
+
+    /**
+     * Publishes the content definition directly
+     *
+     * @param cms The CmsObject
+     */
+    public void publishResource(CmsObject cms) throws Exception;
+
+    /**
+     * Undelete method
+     * for undelete instance of content definition
+     *
+     * @param cms The CmsObject
+     */
+    public void undelete(CmsObject cms) throws Exception;
 }

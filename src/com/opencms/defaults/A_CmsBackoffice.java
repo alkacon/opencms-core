@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/29 07:41:37 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/10/29 09:55:10 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -115,10 +115,20 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
   }
 
   /**
-  * Gets the edit url of the module.
-  * @returns A string with the edit url
+  * Gets the undelete url of the module.
+  * @returns A string with the undelete url
   */
   public String getUndeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                             Object userObject) throws Exception {
+
+    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+  }
+
+  /**
+  * Gets the publish url of the module.
+  * @returns A string with the publish url
+  */
+  public String getPublishUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                              Object userObject) throws Exception {
 
     return getBackofficeUrl(cms, tagcontent,doc,userObject);
@@ -183,6 +193,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     String ok = (String) parameters.get("ok");
     String setaction = (String) parameters.get("setaction");
     String idundelete = (String)parameters.get("idundelete");
+    String idpublish = (String)parameters.get("idpublish");
 
         // debug-code
 /*
@@ -228,6 +239,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idnew");
 	  session.removeValue("iddelete");
       session.removeValue("idundelete");
+      session.removeValue("idpublish");
 	}
 	if (idedit != null) {
 	  id = idedit;
@@ -236,6 +248,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idnew");
 	  session.removeValue("iddelete");
       session.removeValue("idundelete");
+      session.removeValue("idpublish");
 	}
 	if (iddelete != null) {
 	  id = iddelete;
@@ -243,6 +256,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idedit");
 	  session.removeValue("idnew");
 	  session.removeValue("idlock");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
 	}
 	if (idundelete != null) {
 	  id = idundelete;
@@ -250,13 +265,26 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	  session.removeValue("idedit");
 	  session.removeValue("idnew");
 	  session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idpublish");
+	}
+	if (idpublish != null) {
+	  id = idpublish;
+	  session.putValue("idpublish", idpublish);
+	  session.removeValue("idedit");
+	  session.removeValue("idnew");
+	  session.removeValue("idlock");
+      session.removeValue("iddelete");
+      session.removeValue("idundelete");
 	}
 	if ((id != null) && (id.equals("new"))) {
 	  session.putValue("idnew", id);
 	  session.removeValue("idedit");
-	  session.removeValue("idnew");
+	  //session.removeValue("idnew");
 	  session.removeValue("iddelete");
 	  session.removeValue("idlock");
+      session.removeValue("idundelete");
+      session.removeValue("idpublish");
 	}
 
 	//get marker id from session
@@ -290,7 +318,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     }
 
     //go to the appropriate getContent methods
-    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idundelete == null) && (idedit == null))  {
+    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idundelete == null) && (idpublish == null) && (idedit == null))  {
       //process the head frame containing the filter
       returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
       //finally return processed data
@@ -342,6 +370,13 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //check if the cd should be undeleted
         if(idundelete != null){
             returnProcess = getContentUndelete(cms, template, elementName, parameters, templateSelector);
+            return returnProcess;
+        }
+        //get marker for accessing the publish dialog
+        //check if the cd should be published
+        String idpublishsave = (String) session.getValue("idpublish");
+        if(idpublish != null || idpublishsave != null){
+            returnProcess = getContentDirectPublish(cms, template, elementName, parameters, templateSelector);
             return returnProcess;
         }
         //get marker for accessing the delete dialog
@@ -612,7 +647,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             o = getContentDefinition(cms, cdClass, id);
             //get undelete method and delete content definition instance
             try {
-                ((A_CmsContentDefinition) o).undelete(cms);
+                ((I_CmsExtendedContentDefinition) o).undelete(cms);
             } catch (Exception e1) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
@@ -629,10 +664,106 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         o = getContentDefinition(cms, cdClass, idInteger);
         //get undelete method and undelete content definition instance
         try {
-            ((A_CmsContentDefinition) o).undelete(cms);
+            ((I_CmsExtendedContentDefinition) o).undelete(cms);
         }catch (Exception e) {
             templateSelector = "undeleteerror";
             template.setData("undeleteerror", e.getMessage());
+        }
+
+        //finally start the processing
+        processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+        return processResult;
+    }
+
+    /**
+     * Gets the content of a given template file.
+     * <P>
+     * While processing the template file the table entry
+     * <code>entryTitle<code> will be displayed in the direct publish dialog
+     *
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName not used here
+     * @param parameters get the parameters action for the button activity
+     * and id for the used content definition instance object
+     * @param templateSelector template section that should be processed.
+     * @return Processed content of the given template file.
+     * @exception CmsException
+     */
+    public byte[] getContentDirectPublish(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
+                                          Hashtable parameters, String templateSelector) throws CmsException {
+        //return var
+        byte[] processResult = null;
+
+        // session will be created or fetched
+        I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+        //get the class of the content definition
+        Class cdClass = getContentDefinitionClass();
+
+        //get (stored) id parameter
+        String id = (String) parameters.get("id");
+        if (id == null) {
+            id = "";
+        }
+
+        // get value of hidden input field action
+        String action = (String) parameters.get("action");
+
+        //no button pressed, go to the default section!
+        //publish dialog, displays the title of the entry to be published
+        if (action == null || action.equals("")) {
+            if (id != "") {
+                //set template section
+                templateSelector = "publish";
+                //create new language file object
+                CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+
+                //get the dialog from the langauge file and set it in the template
+                template.setData("publishtitle", lang.getLanguageValue("messagebox.title.publishresource"));
+                template.setData("publishdialog1", lang.getLanguageValue("messagebox.message1.publishresource"));
+                template.setData("newsentry", id);
+                template.setData("publishdialog2", lang.getLanguageValue("messagebox.message4.publishresource"));
+                template.setData("setaction", "default");
+            }
+            // confirmation button pressed, process data!
+        } else {
+            //set template section
+            templateSelector = "done";
+            //remove marker
+            session.removeValue("idsave");
+            //publish the content definition instance
+            Integer idInteger = null;
+            try {
+                idInteger = Integer.valueOf(id);
+            } catch (Exception e) {
+                //access content definition constructor by reflection
+                Object o = null;
+                o = getContentDefinition(cms, cdClass, id);
+                //get publish method and publish content definition instance
+                try {
+                    ((I_CmsExtendedContentDefinition) o).publishResource(cms);
+                } catch (Exception e1) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
+                    }
+                    templateSelector = "publisherror";
+                    template.setData("publisherror", e1.getMessage());
+                }
+                //finally start the processing
+                processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+                return processResult;
+            }
+
+            //access content definition constructor by reflection
+            Object o = null;
+            o = getContentDefinition(cms, cdClass, idInteger);
+            //get publish method and publish content definition instance
+            try {
+                ((I_CmsExtendedContentDefinition) o).publishResource(cms);
+            }catch (Exception e) {
+                templateSelector = "publisherror";
+                template.setData("publisherror", e.getMessage());
+            }
         }
 
         //finally start the processing
