@@ -14,7 +14,7 @@
             <changepasswd>Change Password</changepasswd>
             <color>Color</color>
             <copy>Copy</copy>
-            <cut>Paste</cut>
+            <cut>Cut</cut>
             <clear>Clear</clear>
             <close>Close</close>
             <default>Default</default>
@@ -37,7 +37,7 @@
             <indentout>Unindent</indentout>
             <italic>Italic</italic>
             <linkto>Link</linkto>
-			<linkinternal>Internal Link</linkinternal>
+            <linkinternal>Internal Link</linkinternal>
             <linklist>External links gallery</linklist>
             <login>Login</login>
             <new>New</new>
@@ -480,7 +480,7 @@
             <email>Email</email>
             <exportadd>add</exportadd>
             <exportchannels>Channels to export</exportchannels>
-			<exportmodules>Modules to export</exportmodules>
+            <exportmodules>Modules to export</exportmodules>
             <exportresources>resources to export</exportresources> 
             <filter>Filter</filter>
             <firstelement>at the first position</firstelement>
@@ -871,49 +871,49 @@
         <task>
             <email>
                 <create>
-                    <subject>OpenCms task management: new task</subject>                    
+                    <subject>OpenCms task management: new task for</subject>                    
                     <content>Automatic message from OpenCms task management:
 
 A new task was created for you or your role.</content>
                 </create>
                 <accept>
-                    <subject>OpenCms task management: task accepted</subject>
+                    <subject>OpenCms task management: task accepted by</subject>
                     <content>Automatic message from OpenCms task management:
 
 One of your created tasks was accepted by the editor.</content>
                 </accept>
                 <forward>
-                    <subject>OpenCms task management: task forwarded</subject>
+                    <subject>OpenCms task management: task forwarded to</subject>
                     <content>Automatic message from OpenCms task management:
 
 One of your tasks was forwarded.</content>
                 </forward>
                 <end>
-                    <subject>OpenCms task management: task completed</subject>
+                    <subject>OpenCms task management: task completed by</subject>
                     <content>Automatic message from OpenCms task management:
 
 One of your created tasks was completed by the editor.</content>
                 </end>
                 <message>
-                    <subject>OpenCms task management: message received</subject>
+                    <subject>OpenCms task management: message received from</subject>
                     <content>Automatic message from OpenCms task management:
 
 You received a new message concerning one of your tasks.</content>
                 </message>
                 <query>
-                    <subject>OpenCms task management: query received</subject>
+                    <subject>OpenCms task management: query received from</subject>
                     <content>Automatic message from OpenCms task management:
 
 You received a query concerning one of your created tasks.</content>
                 </query>
                 <take>
-                    <subject>OpenCms task management: task take-over</subject>
+                    <subject>OpenCms task management: task take-over by</subject>
                     <content>Automatic message from OpenCms task management:
 
 One of your created task was accepted by a third party.</content>
                 </take>
                 <reakt>
-                    <subject>OpenCms task management: task reactivated</subject>
+                    <subject>OpenCms task management: task reactivated for</subject>
                     <content>Automatic message from OpenCms task management:
 
 A new task was reactivated for you or your role.</content>

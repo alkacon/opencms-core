@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2001/12/18 16:38:23 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/03/12 16:14:50 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2001/12/18 16:38:23 $
+ * @version $Revision: 1.30 $ $Date: 2002/03/12 16:14:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -91,7 +91,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(task.getName());
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, taskid, projectid));
-            String subject = lang.getLanguageValue("task.email.accept.subject");
+            String subject = lang.getLanguageValue("task.email.accept.subject") + " " + Utils.getFullName(cms.readAgent(task));
             CmsUser[] users =  {
                 cms.readOwner(task)
             };
@@ -180,7 +180,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(Utils.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.create.subject");
+        String subject = lang.getLanguageValue("task.email.create.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -292,7 +292,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(Utils.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.end.subject");
+            String subject = lang.getLanguageValue("task.email.end.subject") + " " + Utils.getFullName(cms.readAgent(task));
             CmsUser[] users =  {
                 cms.readOwner(task)
             };
@@ -367,7 +367,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
             contentBuf.append(Utils.getFullName(cms.readAgent(task)));
             int projectid = cms.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.forward.subject");
+            String subject = lang.getLanguageValue("task.email.forward.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             if(cms.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
@@ -495,7 +495,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(Utils.getFullName(cms.readOwner(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.message.subject");
+        String subject = lang.getLanguageValue("task.email.message.subject") + " " + Utils.getFullName(cms.readOwner(task));
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -580,7 +580,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(Utils.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.query.subject");
+        String subject = lang.getLanguageValue("task.email.query.subject") + " " + Utils.getFullName(cms.readAgent(task));
         CmsUser[] users =  {
             cms.readOwner(task)
         };
@@ -668,7 +668,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(task.getName());
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.reakt.subject");
+        String subject = lang.getLanguageValue("task.email.reakt.subject") + " " + Utils.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
         CmsUser[] users =  {
             cms.readAgent(task)
         };
@@ -739,7 +739,7 @@ public class CmsTaskAction implements I_CmsConstants,I_CmsWpConstants,I_CmsLogCh
         contentBuf.append(Utils.getFullName(cms.readAgent(task)));
         int projectid = cms.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.take.subject");
+        String subject = lang.getLanguageValue("task.email.take.subject") + " " + Utils.getFullName(newEditor);
         CmsUser[] users =  {
             cms.readAgent(task)
         };

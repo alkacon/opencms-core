@@ -37,7 +37,7 @@
             <indentout>Einzug verkleinern</indentout>
             <italic>Kursiv</italic>
             <linkto>Link</linkto>
-			<linkinternal>Interner Link</linkinternal>
+            <linkinternal>Interner Link</linkinternal>
             <linklist>Externe Links-Galerie</linklist>
             <login>Anmelden</login>
             <new>Neu</new>
@@ -871,49 +871,49 @@
         <task>
             <email>
                 <create>
-                    <subject>OpenCms Aufgabenverwaltung: Neue Aufgabe</subject>                 
+                    <subject>OpenCms Aufgabenverwaltung: Neue Aufgabe für</subject>                 
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Für Sie oder Ihre Rolle wurde eine neue Aufgabe erstellt.</content>
                 </create>
                 <accept>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe angenommen</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe angenommen von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Eine von Ihnen gestellte Aufgabe wurde angenommen.</content>
                 </accept>
                 <forward>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe weitergeleitet</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe weitergeleitet an</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Eine Aufgabe wurde weitergeleitet.</content>
                 </forward>
                 <end>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe abgehakt</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe abgehakt von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Eine von Ihnen gestellte Aufgabe wurde abgehakt.</content>
                 </end>
                 <message>
-                    <subject>OpenCms Aufgabenverwaltung: Nachricht erhalten</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Nachricht erhalten von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Sie haben eine neue Nachricht zu einer Aufgabe erhalten.</content>
                 </message>
                 <query>
-                    <subject>OpenCms Aufgabenverwaltung: Rückfrage erhalten</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Rückfrage erhalten von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Sie haben eine Rückfrage zu einer Aufgabe erhalten.</content>
                 </query>
                 <take>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe übernommen</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe übernommen von</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Eine von Ihnen gestellte Aufgabe ist durch eine dritte Person übernommen worden.</content>
                 </take>
                 <reakt>
-                    <subject>OpenCms Aufgabenverwaltung: Aufgabe reaktiviert</subject>
+                    <subject>OpenCms Aufgabenverwaltung: Aufgabe reaktiviert für</subject>
                     <content>Automatische Nachricht der OpenCms-Aufgabenverwaltung:
 
 Für Sie oder Ihre Rolle wurde eine Aufgabe reaktiviert.</content>
