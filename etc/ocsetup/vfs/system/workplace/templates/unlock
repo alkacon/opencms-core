@@ -1,7 +1,40 @@
 <?xml version="1.0"?>
 <WORKPLACE>
 <TEMPLATE>
-<MESSAGEBOX title="messagebox.title.unlock" message1="messagebox.message1.unlock" message2="messagebox.message2.unlock" button1="button.ok" button2="button.cancel" link1="unlock.html?unlock=true" link2="unlock.html?unlock=false" />
+<![CDATA[
+<HTML>
+	
+	<script language=JavaScript>
+	<!--
+	function show_help()
+	{
+		return '2_2_2_2_5_2.html';
+	}
+	//-->
+	</script>
+	
+	<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	
+	<title>OpenCms</title>
+	<link rel=stylesheet type="text/css" href="../css/format.css">
+	
+	</HEAD>
+	<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+	
+	<!-- table to center the page-->
+	<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+	<tr><td align=middle valign=center>
+	
+	<!-- table to set up the dialog box-->
+	<form id=UNLOCK name=UNLOCK>
+	]]><MESSAGEBOX title="messagebox.title.unlock" message1="messagebox.message1.unlock" message2="messagebox.message2.unlock" button1="button.ok" button2="button.cancel" link1="unlock.html?unlock=true" link2="unlock.html?unlock=false" /><![CDATA[
+	</td></tr>
+	</table>
+		
+	</BODY>
+	</html>
+	]]>
 </TEMPLATE>
 
 <TEMPLATE name="error">

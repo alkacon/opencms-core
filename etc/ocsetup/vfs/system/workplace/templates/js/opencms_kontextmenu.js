@@ -206,7 +206,7 @@ function doAction(action) {
 		}
 		case 7:
 		{
-			location.href='explorer_files_delete.html';
+			location.href='delete.html?file='+ kontextparam;
 			break;
 		}
 		

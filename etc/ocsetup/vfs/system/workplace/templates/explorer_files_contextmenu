@@ -99,7 +99,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
@@ -158,7 +158,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
@@ -217,7 +217,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
@@ -279,7 +279,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
@@ -331,7 +331,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
@@ -383,7 +383,7 @@
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
 	<contextentry name="explorer.context.move" href="#"/>
-	<contextentry name="explorer.context.delete" href="#"/>
+	<contextentry name="explorer.context.delete" href="javascript:doAction(DO_DELETE)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="#"/>
 	<contextentry name="explorer.context.chgrp" href="#"/>
