@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/02/01 19:14:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/03 14:16:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.workplace;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
@@ -41,7 +42,6 @@ import com.opencms.template.CmsXmlTemplate;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
-import java.util.Locale;
 import java.util.Vector;
 
 /**
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -78,17 +78,12 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
                                               
         if (DEBUG > 1) System.err.println("\nCmsLoginNew: Login process started");
-
-        // Initialize the display - language
-        Vector v = cms.getRequestContext().getAcceptedLanguages();
-        for (int i=0; i<v.size(); i++) {
-            m_messages = new CmsMessages("com.opencms.workplace.workplace", new Locale((String)v.get(i), "", ""));  
-            if (m_messages.isInitialized()) break;                  
-        }        
-        // Still no initialized locale, so use "en".
-        if (! m_messages.isInitialized()) {
-            m_messages = new CmsMessages("com.opencms.workplace.workplace", new Locale("en", "", ""));  
-        }
+        
+        // Initialize language and encoding
+        CmsXmlLanguageFile langFile = new CmsXmlLanguageFile(cms);
+        m_messages = langFile.getMessages();
+        // Ensure encoding for the login page is set correctly accoring to selected language
+        cms.getRequestContext().setEncoding(langFile.getEncoding());
         
         // Check if a "logout=true" parameter is present, if so trash the session
         boolean logout = (null != (String)parameters.get("logout"));
@@ -179,7 +174,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
             if(preferences == null) {
                 preferences = getDefaultPreferences();
             }
-            session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);            
+            session.putValue(C_ADDITIONAL_INFO_PREFERENCES, preferences);    
+            session.putValue(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, langFile.getEncoding());        
             
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
