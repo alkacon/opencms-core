@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/02/19 14:23:14 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/02/19 14:23:14 $
+ * @version $Revision: 1.33 $ $Date: 2000/02/19 17:05:41 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -191,22 +191,21 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         I_CmsWpElement workplaceObject = null;        
         String tagname = n.getTagName().toLowerCase();
         String classname = null;
-
         
         classname = (String)m_wpTags.get(tagname);
         if(classname == null || "".equals(classname)) {
             throwException("Don't know which class handles " + tagname + " tags.");            
         }            
-    
+        
         Object loadedClass = CmsTemplateClassManager.getClassInstance(m_cms, classname);
         if(!(loadedClass instanceof I_CmsWpElement)) {
             throwException("Loaded class " + classname + " is not implementing I_CmsWpElement");            
         }
-    
+     
 		processNode(n, m_mainProcessTags, null, callingObject, userObj);
 		workplaceObject = (I_CmsWpElement)loadedClass;
         try {
-            result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
+             result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
         } catch(Exception e) {
             String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
             if(e instanceof CmsException) {
@@ -219,7 +218,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
                 throwException(errorMessage);
             }            
         }
-        return result; 
+             return result; 
     }                    
     
     /**

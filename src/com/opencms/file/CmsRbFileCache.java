@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 17:05:41 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -53,6 +53,11 @@ import com.opencms.core.*;
      
      /** The maximum filesize */
      private final static int C_MAXFILESIZE=350000;
+     
+     private final static String C_FILE="FILE";
+     
+     private final static String C_FOLDER="FOLDER";
+     
      /**
      * Constructor, creates a new File Resource Broker.
      * 
@@ -86,15 +91,13 @@ import com.opencms.core.*;
 	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
 		 throws CmsException {
          A_CmsResource res=null;
-         String key=project.getId()+filename;
+         String key=C_FILE+project.getId()+filename;
+         // check if resource is available in cache
          res=(A_CmsResource)m_filecache.get(key);
          // not found in cache, so get it from the database and add it to cache
          if (res == null) {
-            // System.err.println("Not found in Cache, got from DB "+key);
              res=m_accessFile.readFileHeader(project,filename);
              m_filecache.put(key,res);
-         } else {
-            // System.err.println("Found in Cache "+key);
          }
          return res;
      }
@@ -127,9 +130,8 @@ import com.opencms.core.*;
                                 A_CmsProject onlineProject,
                                 CmsFile file)
 		throws CmsException{
-        String key=project.getId()+file.getAbsolutePath();
-       // System.err.println("Update cache for "+key);
-        // check for max filesize
+        String key=C_FILE+project.getId()+file.getAbsolutePath();
+        // check for max filesize, add it to cache if file is not too big
         if (file.getLength()<C_MAXFILESIZE) {
             m_filecache.put(key,file);
         }
@@ -158,8 +160,8 @@ import com.opencms.core.*;
 	 */	
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException{
-        String key=project.getId()+filename;
-     //   System.err.println("Delete from cache for "+key);
+        String key=C_FILE+project.getId()+filename;
+        // delete file in cache
         m_filecache.remove(key);
         m_accessFile.deleteFile(project,filename);
      }
@@ -185,8 +187,8 @@ import com.opencms.core.*;
 	 */	
 	public void removeFile(A_CmsProject project, String filename)
 		throws CmsException{
-        String key=project.getId()+filename;
-      //  System.err.println("Delete from cache for "+key);
+        String key=C_FILE+project.getId()+filename;
+        // delete file in cache
         m_filecache.remove(key);
         m_accessFile.removeFile(project,filename);
      }
@@ -215,17 +217,73 @@ import com.opencms.core.*;
 	public CmsFolder readFolder(A_CmsProject project, String folder)
 		throws CmsException{
          CmsFolder res=null;
-         String key=project.getId()+folder;
+         String key=C_FOLDER+project.getId()+folder;
+         // try to read folder from cache
          res=(CmsFolder)m_filecache.get(key);
          // not found in cache, so get it from the database and add it to cache
          if (res == null) {
-        //     System.err.println("Not found in Cache, got from DB "+key);
              res= m_accessFile.readFolder(project,folder);
              m_filecache.put(key,res);
-         } else {
-           //  System.err.println("Found in Cache "+key);
          }
          return res;
+     }
+    
+      /**
+	 * Writes a folder to the Cms.<br>
+	 * 
+	 * A folder can only be written to an offline project, the folder state is set to
+	 * CHANGED (1).
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param folder The folder to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFolder(A_CmsProject project, CmsFolder folder)
+        throws CmsException {
+        String key=C_FOLDER+project.getId()+folder.getAbsolutePath();
+        m_filecache.put(key,folder);
+        m_accessFile.writeFolder(project, folder);
+    }
+ 
+    	
+     /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+	 * Only folders in an offline Project can be deleted. A folder is deleted by 
+	 * setting its state to DELETED (3). <br>
+	 *  
+	 * In its current implmentation, this method can ONLY delete empty folders.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path of the folder.
+	 * @param force If force is set to true, all sub-resources will be deleted.
+	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
+		throws CmsException {
+        String key=C_FOLDER+project.getId()+foldername;
+        m_filecache.remove(key);
+        m_accessFile.deleteFolder(project,foldername,force);
      }
     
 }

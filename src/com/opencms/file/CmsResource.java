@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,9 +36,10 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/19 17:05:41 $
  */
- public class CmsResource extends A_CmsResource implements I_CmsConstants {
+ public class CmsResource extends A_CmsResource implements I_CmsConstants,
+                                                           Cloneable {
      
      /**
       * The name of this resource.
@@ -540,4 +541,17 @@ import com.opencms.core.*;
 		str += ((m_accessFlags & C_ACCESS_INTERNAL_READ)>0?"i":"-");
 		return str;
 	}
+    
+    /** 
+     * Clones the CmsResource by creating a new CmsObject.
+     * @return Cloned CmsObject.
+     */
+    public Object clone() {
+        return new CmsResource(m_resourceName, m_resourceType, m_resourceFlags,
+                               m_userId, m_groupId, m_projectId,
+                               m_accessFlags, m_state, m_lockedBy,
+                               m_launcherType, m_launcherClassname,
+                               m_dateCreated, m_dateLastModified,
+                               m_size);                                   
+    }
 }

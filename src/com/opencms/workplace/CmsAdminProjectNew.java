@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/02/17 15:51:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/02/17 15:51:01 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/19 17:05:41 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -94,11 +94,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			(newManagerGroup != null) && (newFolder != null) ) {
 			// Yes: create new Project
 			try {
-				cms.createProject(newName, newDescription, newGroup, newManagerGroup);
+         		cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 				// change the current project
-				reqCont.setCurrentProject(newName);
+            	reqCont.setCurrentProject(newName);
 				// copy the resource the the project
-				cms.copyResourceToProject(newFolder);
+          		cms.copyResourceToProject(newFolder);
 				// try to copy the content resources to the project
 				try {
 					cms.copyResourceToProject(C_CONTENTBODYPATH);
@@ -108,6 +108,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 				}
 				templateSelector = C_PROJECTNEW_DONE;
 			} catch(CmsException exc) {
+
 				templateSelector = C_PROJECTNEW_ERROR;
 			}
 		}

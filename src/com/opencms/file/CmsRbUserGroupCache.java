@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
- * Date   : $Date: 2000/02/19 11:57:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/19 17:05:41 $
  */
  class CmsRbUserGroupCache extends CmsRbUserGroup {
 
@@ -93,9 +93,7 @@ import com.opencms.core.*;
         m_groupsofusercache=new CmsCache(C_GROUPSOFUSERCACHE);
         m_usersofgroupcache=new CmsCache(C_USERSOFGROUPCACHE);
         m_useringroupcache=new CmsCache(C_USERSINGROUPCACHE);
-        
-             System.err.println("Starting Cache Modules.....");
-        System.err.println("");
+
     }
     
      /**
@@ -142,6 +140,49 @@ import com.opencms.core.*;
          }                          
          return user;
      }
+    
+    	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param name The name of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	 public void deleteUser(String username)
+         throws CmsException {
+         A_CmsUser user=readUser(username);
+         m_accessUserGroup.deleteUser(username);
+         m_usercache.remove(user.getName());
+         m_usercache.remove(new Integer(user.getId()));
+         m_groupsofusercache.remove(username);       
+     }
+
+	/**
+	 * Updated the userinformation.<BR/>
+	 * 
+	 * Only the administrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param username The user to be updated.
+	 * @param additionalInfos A Hashtable with additional infos for the user. These
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public void writeUser(A_CmsUser user)
+         throws CmsException {
+         m_usercache.put(new Integer(user.getId()),user);
+         m_accessUserGroup.writeUser(user);     
+         m_usercache.put(user.getName(),user);
+     }
+    
+    
     
      /**
 	 * Returns a group object.<P/>
@@ -193,6 +234,49 @@ import com.opencms.core.*;
          return group;
       }
     
+      /**
+	 * Writes an already existing group in the Cms.<BR/>
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param group The group that should be written to the Cms.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 public void writeGroup(A_CmsGroup group)
+         throws CmsException{
+         m_accessUserGroup.writeGroup(group);
+         m_groupcache.put(group.getName(),group);
+         m_groupcache.put(new Integer(group.getId()),group);
+     }
+     
+	/**
+	 * Delete a group from the Cms.<BR/>
+	 * Only groups that contain no subgroups can be deleted.
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param delgroup The name of the group that is to be deleted.
+	 * @exception CmsException  Throws CmsException if operation was not succesfull.
+	 */	
+	 public void deleteGroup(String delgroup)
+         throws CmsException {
+         A_CmsGroup group = readGroup(delgroup);
+         Vector childs=null;
+         // get all child groups of the group
+         childs=getChild(delgroup);
+         // delete group only if it has no childs
+         if (childs == null) {
+            m_accessUserGroup.deleteGroup(delgroup);
+            m_groupcache.remove(group.getName());
+            m_groupcache.remove(new Integer(group.getId()));
+         } else {
+            throw new CmsException(CmsException.C_GROUP_NOT_EMPTY);	
+         }
+             
+     }
     
 	/**
 	 * Returns a list of groups of a user.<P/>
@@ -253,15 +337,55 @@ import com.opencms.core.*;
          if (uig==null) {
 		    Vector groups = getGroupsOfUser(username);
 		    A_CmsGroup group;
+            uig=new Boolean(false);
 		    for(int z = 0; z < groups.size(); z++) {
 			     group = (A_CmsGroup) groups.elementAt(z);
 			    if(m_accessUserGroup.userInGroup(username, group.getName())) {
 				     uig=new Boolean(true);
 			    }
 		    }
-          uig=new Boolean(false);
+       
           m_useringroupcache.put(username+groupname,uig);
          }
 		return uig.booleanValue();
     }
+     
+     	/**
+	 * Adds a user to a group.<BR/>
+     *
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param username The name of the user that is to be added to the group.
+	 * @param groupname The name of the group.
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */	
+	 public void addUserToGroup(String username, String groupname)
+         throws CmsException {
+         m_accessUserGroup.addUserToGroup(username,groupname);
+         m_groupsofusercache.remove(username);  
+         m_useringroupcache.clear();
+         
+     }
+
+	/**
+	 * Removes a user from a group.
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param username The name of the user that is to be removed from the group.
+	 * @param groupname The name of the group.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void removeUserFromGroup(String username, String groupname)
+         throws CmsException {
+         m_accessUserGroup.removeUserFromGroup(username,groupname);
+         m_groupsofusercache.remove(username);      
+         m_useringroupcache.clear();
+     }
  }

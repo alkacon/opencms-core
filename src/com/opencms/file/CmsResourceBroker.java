@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/17 18:44:31 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.64 $ $Date: 2000/02/17 18:44:31 $
+ * @version $Revision: 1.65 $ $Date: 2000/02/19 17:05:41 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -211,6 +211,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									   String name, String description, String groupname, 
 									   String managergroupname)
 		 throws CmsException {
+         
 		 if( isAdmin(currentUser, currentProject) || 
 			 isProjectManager(currentUser, currentProject)) {
 			 

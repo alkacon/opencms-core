@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProjectCache.java,v $
- * Date   : $Date: 2000/02/19 11:57:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/19 17:05:41 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/19 17:05:41 $
  */
 class CmsRbProjectCache extends CmsRbProject {
 	
@@ -76,6 +76,19 @@ class CmsRbProjectCache extends CmsRbProject {
              m_projectcache.put(name,project);
          }
 		 return project;
+	 }
+     
+     /**
+	 * Updates a project.
+	 * 
+	 * @param project The project that will be written.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject writeProject(A_CmsProject project)
+		 throws CmsException {
+         m_projectcache.put(project.getName(),project);
+		 return( m_accessProject.writeProject(project) );
 	 }
     
 }
