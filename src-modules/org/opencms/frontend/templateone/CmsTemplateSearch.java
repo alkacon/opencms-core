@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/16 11:47:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for the search result JSP page.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
     
@@ -316,7 +316,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             } else {
                 // first set request context URI to form URI to obtain right page links
                 getRequestContext().setUri(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/search.html");
-                result = search.getSearchResultForPage();
+                result = search.getSearchResult();
             }
         } finally {
             // reset URI to page

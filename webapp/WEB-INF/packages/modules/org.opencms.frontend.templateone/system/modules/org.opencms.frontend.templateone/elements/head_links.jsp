@@ -28,6 +28,7 @@ String separator = "";
 	<input type="hidden" name="uri" value="<%= cms.getRequestContext().getUri() %>" />
 	<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
 	<input type="hidden" name="query" value="" />
+	<input type="hidden" name="page" value="1" />
 	&nbsp;<span style="vertical-align: middle;"><input type="text" class="search" name="query2" /></span>
 	&nbsp;<span style="vertical-align: middle;"><input type="submit" name="startsearch" value="<%= cms.key("link.search") %>" class="formbutton" /></span>&nbsp;
 	</form>

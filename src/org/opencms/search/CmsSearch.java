@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/08/05 09:28:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/16 11:47:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -58,7 +58,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a resource</li>
  * </ul>
  * 
- * @version $Revision: 1.13 $ $Date: 2004/08/05 09:28:56 $
+ * @version $Revision: 1.14 $ $Date: 2004/12/16 11:47:52 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -81,7 +81,7 @@ public class CmsSearch implements Serializable, Cloneable {
     protected String m_query;
 
     /** The minimum length of the search query. */
-    protected int m_queryLength = -1;
+    protected int m_queryLength;
 
     /** The current search result. */
     protected List m_result;
@@ -93,13 +93,13 @@ public class CmsSearch implements Serializable, Cloneable {
     protected int m_page;
 
     /** The number of matches per page. */
-    protected int m_matchesPerPage = -1;
+    protected int m_matchesPerPage;
 
     /** The number of pages for the result list. */
     protected int m_pageCount;
 
     /** The number of displayed pages returned by getPageLinks(). */
-    protected int m_displayPages = -1;
+    protected int m_displayPages;
 
     /** The URL which leads to the previous result page. */
     protected String m_prevUrl;
@@ -112,6 +112,9 @@ public class CmsSearch implements Serializable, Cloneable {
 
     /** The search root. */
     protected String m_searchRoot;
+    
+    /** The total number of search results matching the query. */
+    protected int m_searchResultCount;
 
     /**
      * Default constructor, used to instanciate the search facility as a bean.<p>
@@ -119,7 +122,13 @@ public class CmsSearch implements Serializable, Cloneable {
     public CmsSearch() {
 
         super();
+        
         m_searchRoot = "";
+        m_page = 1;
+        m_searchResultCount = 0;
+        m_matchesPerPage = 10;
+        m_displayPages = 10;
+        m_queryLength = -1;
     }
 
     /**
@@ -335,7 +344,37 @@ public class CmsSearch implements Serializable, Cloneable {
             }
 
             try {
-                m_result = m_index.search(m_cms, m_searchRoot, m_query, m_fields);
+                List result = m_index.search(m_cms, m_searchRoot, m_query, m_fields, m_page, m_matchesPerPage);
+                
+                if (result.size() > 1) {
+                    // the total number of search results matching the query is saved at the last index in the result 
+                    // list. the search result list contains just m_matchesPerPage search results instead of all search 
+                    // results due to performance reasons.
+                    Integer searchResultCount = (Integer)result.get(result.size() - 1);
+                    m_searchResultCount = searchResultCount.intValue();
+                    m_result = result.subList(0, result.size() - 1);
+
+                    // re-caluclate the number of pages for this search result
+                    m_pageCount = m_searchResultCount / m_matchesPerPage;
+                    if ((m_searchResultCount % m_matchesPerPage) != 0) {
+                        m_pageCount++;
+                    }
+
+                    // re-calculate the URLs to browse forward and backward in the search result
+                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&page=";
+                    if (m_page > 1) {
+                        m_prevUrl = url + (m_page - 1);
+                    }
+                    if (m_page < m_pageCount) {
+                        m_nextUrl = url + (m_page + 1);
+                    }
+                } else {
+                    m_result = Collections.EMPTY_LIST;
+                    m_searchResultCount = 0;
+                    m_pageCount = 0;
+                    m_prevUrl = null;
+                    m_nextUrl = null;
+                }
             } catch (Exception exc) {
 
                 if (OpenCms.getLog(this).isDebugEnabled()) {
@@ -343,67 +382,14 @@ public class CmsSearch implements Serializable, Cloneable {
                 }
 
                 m_result = null;
+                m_searchResultCount = 0;
+                m_pageCount = 0;
+                
                 m_lastException = exc;
             }
         }
 
         return m_result;
-    }
-
-    /**
-     * Gets the search result for the current query and the current page.<p>
-     * 
-     * @return the search result for the current page (may be empty) or null if no index or query was set before
-     */
-    public List getSearchResultForPage() {
-
-        if (this.getMatchesPerPage() < 0) {
-            return getSearchResult();
-        }
-        if (this.getPage() <= 0) {
-            this.setPage(1);
-        }
-        List result = new ArrayList(this.getMatchesPerPage());
-
-        // get the complete list of search results
-        if (m_result == null) {
-            getSearchResult();
-            if (m_result == null) {
-                return null;
-            }
-        }
-
-        // calculate the start and end index for the current page
-        int startIndex = (this.getPage() - 1) * this.getMatchesPerPage();
-        int endIndex = this.getPage() * this.getMatchesPerPage();
-
-        // calculate the number of pages for the result list and the previous and next URLs
-        if (this.getMatchesPerPage() < 1) {
-            m_pageCount = 1;
-        } else {
-            m_pageCount = m_result.size() / this.getMatchesPerPage();
-            if ((m_result.size() % this.getMatchesPerPage()) != 0) {
-                m_pageCount++;
-            }
-        }
-        String url = m_cms.getRequestContext().getUri() + this.getSearchParameters() + "&page=";
-        if (this.getPage() > 1) {
-            m_prevUrl = url + (this.getPage() - 1);
-        }
-        if (this.getPage() < m_pageCount) {
-            m_nextUrl = url + (this.getPage() + 1);
-        }
-
-        // create the result list for the current page
-        for (int i = startIndex; i < endIndex; i++) {
-            try {
-                result.add(m_result.get(i));
-            } catch (IndexOutOfBoundsException e) {
-                // end of list reached, interrupt loop
-                break;
-            }
-        }
-        return result;
     }
 
     /**
@@ -580,4 +566,15 @@ public class CmsSearch implements Serializable, Cloneable {
 
         m_searchRoot = searchRoot;
     }
+    
+    /**
+     * Returns the total number of search results matching the query.<p>
+     * 
+     * @return the total number of search results matching the query
+     */
+    public int getSearchResultCount() {
+        
+        return m_searchResultCount;
+    }
+    
 }
