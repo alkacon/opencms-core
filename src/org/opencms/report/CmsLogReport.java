@@ -1,0 +1,209 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
+ * Date   : $Date: 2003/10/08 13:40:36 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.report;
+
+import org.opencms.main.OpenCms;
+
+import com.opencms.flex.util.CmsMessages;
+import com.opencms.linkmanagement.CmsPageLinks;
+import com.opencms.workplace.I_CmsWpConstants;
+
+import java.util.List;
+
+/**
+ * Report class used for the logfile.<p>
+ * 
+ * This prints all messages in the logfile at INFO level.<p>
+ * 
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)  
+ * @version $Revision: 1.1 $
+ */
+public class CmsLogReport implements I_CmsReport {
+
+    /** Localized message access object */
+    private List m_messages;  
+
+    /** The buffer to write the log messages to */
+    private StringBuffer m_buffer;
+    
+    /** The class name to use for the logger */
+    private Class m_clazz;
+        
+    /**
+     * Empty default constructor. 
+     * 
+     * @see java.lang.Object#Object()
+     */
+    public CmsLogReport() {
+        // generate a message object with the default (english) language
+        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LANGUAGE);    
+    }
+
+    /**
+     * Constructs a new report using the provided locale and resource bundle
+     * for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     * @param bundleName the name of the resource bundle with localized strings
+     */      
+    public CmsLogReport(String bundleName, String locale) {
+        this(bundleName, locale, CmsLogReport.class);        
+    }
+    
+
+    /**
+     * Constructs a new report using the provided locale and resource bundle
+     * for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     * @param bundleName the name of the resource bundle with localized strings
+     * @param clazz the the class for the logger channel 
+     */      
+    public CmsLogReport(String bundleName, String locale, Class clazz) {
+        addBundle(bundleName, locale);
+        m_buffer = new StringBuffer();
+        if (clazz == null) {
+            clazz = CmsLogReport.class;
+        }
+        m_clazz = clazz;
+    }    
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#addBundle(java.lang.String, java.lang.String)
+     */
+    public void addBundle(String bundleName, String locale) {
+        CmsMessages msg = new CmsMessages(bundleName, locale);
+        if (m_messages.contains(msg)) {
+            m_messages.remove(msg);
+        }
+        m_messages.add(msg);   
+    }       
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#getReportUpdate()
+     */
+    public synchronized String getReportUpdate() {
+        return "";
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#key(java.lang.String)
+     */
+    public String key(String keyName) {
+        for (int i=0, l=m_messages.size(); i < l; i++) {
+            CmsMessages msg = (CmsMessages)m_messages.get(i);
+            String key = msg.key(keyName, (i < (l-1)));
+            if (key != null) {
+                return key;
+            }
+        }         
+        // if not found, check in 
+        return CmsMessages.formatUnknownKey(keyName);
+    }
+
+    /**
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String)
+     */
+    public synchronized void print(String value) {
+        this.print(value, C_FORMAT_DEFAULT);
+    }
+        
+    /**
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
+     */
+    public synchronized void print(String value, int format) {
+        switch (format) {
+            case C_FORMAT_HEADLINE:
+                m_buffer.append("[ ");
+                m_buffer.append(value);
+                m_buffer.append(" ]");
+                break;
+            case C_FORMAT_WARNING:
+                m_buffer.append("!!! ");
+                m_buffer.append(value);
+                m_buffer.append(" !!!");
+                break;
+            case C_FORMAT_NOTE:
+            case C_FORMAT_OK:
+            case C_FORMAT_DEFAULT:
+            default:
+                m_buffer.append(value);
+        }       
+    }
+        
+    /**
+     * @see org.opencms.report.I_CmsReport#println()
+     */
+    public synchronized void println() {
+        if (OpenCms.getLog(m_clazz).isInfoEnabled()) {
+            OpenCms.getLog(m_clazz).info(m_buffer.toString());
+        }
+        m_buffer = new StringBuffer();
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
+     */
+    public synchronized void println(CmsPageLinks value) {        
+        println(value.getResourceName());
+        for (int index=0; index<value.getLinkTargets().size(); index++) {
+            println("     " + key("report.broken_link_to") + (String)value.getLinkTargets().elementAt(index));
+        }
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String)
+     */
+    public synchronized void println(String value) {
+       this.println(value, C_FORMAT_DEFAULT);
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
+     */
+    public synchronized void println(String value, int format) {
+        print(value, format);
+        println();
+    }
+    
+    /**
+     * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
+     */
+    public synchronized void println(Throwable t) {          
+        if (OpenCms.getLog(m_clazz).isInfoEnabled()) {
+            m_buffer.append(key("report.exception"));   
+            m_buffer.append(t.getMessage());        
+            OpenCms.getLog(m_clazz).info(m_buffer.toString(), t);
+        }
+        m_buffer = new StringBuffer();
+    }
+}
