@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/06 19:21:24 $
-* Version: $Revision: 1.365 $
+* Date   : $Date: 2003/03/18 01:53:50 $
+* Version: $Revision: 1.366 $
 
 *
 * This library is part of OpenCms -
@@ -76,8 +76,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.365 $ $Date: 2003/03/06 19:21:24 $
-
+ * @version $Revision: 1.366 $ $Date: 2003/03/18 01:53:50 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -180,7 +179,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
                                 CmsResource resource) throws CmsException {
 
         // check, if this is the onlineproject
-        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+        if(currentProject.isOnlineProject()){
             // the online-project is not writeable!
             return(false);
         }
@@ -300,7 +299,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
     public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
                               CmsResource resource) throws CmsException {
         // check, if this is the onlineproject
-        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+        if(currentProject.isOnlineProject()){
             // the online-project is not writeable!
             return(false);
         }
@@ -536,7 +535,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                                 CmsResource resource)
         throws CmsException {
             // check, if this is the onlineproject
-        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+        if(currentProject.isOnlineProject()){
             // the online-project is not writeable!
             return(false);
         }
@@ -595,7 +594,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
 
         // check, if this is the onlineproject
 
-        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+        if(currentProject.isOnlineProject()){
             // the online-project is not writeable!
             return(false);
         }
@@ -698,7 +697,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
 
         // check, if this is the onlineproject
 
-        if(onlineProject(currentUser, currentProject).equals(currentProject)){
+        if(currentProject.isOnlineProject()){
             // the online-project is not writeable!
             return(false);
         }
@@ -1603,7 +1602,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             if(( accessOther((CmsResource)folder, C_ACCESS_PUBLIC_WRITE) ||
                 accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
-                m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
+                m_dbAccess.createFolder(currentUser,currentProject, onlineProject(currentUser, currentProject), folder,cmsFolder.getResourceId(),destination);
                 this.clearResourceCache(destination, currentProject, currentUser);
                 // copy the properties
                 lockResource(currentUser, currentProject, destination, true);
@@ -1644,12 +1643,10 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                                       CmsProject currentProject,
                                       String resource)
         throws CmsException {
-        // read the onlineproject
-        CmsProject online = onlineProject(currentUser, currentProject);
         // is the current project the onlineproject?
         // and is the current user the owner of the project?
         // and is the current project state UNLOCKED?
-        if ((!currentProject.equals(online)) &&
+        if ((!currentProject.isOnlineProject()) &&
             (isManagerOfProject(currentUser, currentProject))
             && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
             // is offlineproject and is owner
@@ -1986,7 +1983,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             newResource.setDateLastModified(lastmodified);
             
             // write-acces  was granted - create the folder.
-            newResource = m_dbAccess.createResource(currentProject,onlineProject(currentUser, currentProject),newResource,filecontent, currentUser.getId(), isFolder);
+            newResource = m_dbAccess.createResource(currentProject, onlineProject(currentUser, currentProject), newResource, filecontent, currentUser.getId(), isFolder);
             
             this.clearResourceCache(newResourceName, currentProject, currentUser);
             // write metainfos for the folder
@@ -2371,7 +2368,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         CmsResource onlineFile;
         CmsResource file = readFileHeader(currentUser,currentProject, filename);
         try {
-            onlineFile = readFileHeader(currentUser,onlineProject(currentUser, currentProject), filename);
+            onlineFile = readFileHeader(currentUser, onlineProject(currentUser, currentProject), filename);
 
         } catch (CmsException exc) {
             // the file dosent exist
@@ -2437,7 +2434,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         // read the folder, that shold be deleted
         CmsFolder cmsFolder = readFolder(currentUser,currentProject,foldername);
         try {
-            onlineFolder = readFolder(currentUser,onlineProject(currentUser, currentProject), foldername);
+            onlineFolder = readFolder(currentUser, onlineProject(currentUser, currentProject), foldername);
         } catch (CmsException exc) {
             // the file dosent exist
             onlineFolder = null;
@@ -3342,7 +3339,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
             return new Vector();
         }
         Vector onlineFiles = null;
-        if (! currentProject.equals(onlineProject(currentUser, currentProject))){
+        if (! currentProject.isOnlineProject()){
             // this is not the onlineproject, get the files
             // from the onlineproject, too
             try {
@@ -3835,7 +3832,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             } catch (CmsException exc) {
                 // no folders, ignoring them
             }
-            if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+            if( !currentProject.isOnlineProject()) {
                 // this is not the onlineproject, get the files
                 // from the onlineproject, too
                 try {
@@ -5180,164 +5177,78 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
         return m_dbAccess.getDependingExportLinks(res);
      }
 
-/**
- * Reads a file from a previous project of the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param projectId The id of the project to read the file from.
- * @param filename The name of the file to be read.
- *
- * @return The file read from the Cms.
- *
- * @throws CmsException  Throws CmsException if operation was not succesful.
- * */
-public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, int projectId, String filename) throws CmsException
-{
-    CmsFile cmsFile = null;
-    // read the resource from the projectId,
-    try
-    {
-        //cmsFile=(CmsFile)m_resourceCache.get(projectId+C_FILECONTENT+filename);
-        if (cmsFile == null) {
-            cmsFile = m_dbAccess.readFileInProject(projectId, onlineProject(currentUser, currentProject).getId(), filename);
-            // only put it in thecache until the size is below the max site
-            /*if (cmsFile.getContents().length <m_cachelimit) {
-                m_resourceCache.put(projectId+C_FILECONTENT+filename,cmsFile);
-            } else {
-
-            }*/
-
+    /**
+     * Reads a file from the Cms.<p>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param currentUser the user who requested this method
+     * @param currentProject the current project of the user
+     * @param filename the name of the file to be read
+     *
+     * @return the file read from the VFS
+     *
+     * @throws CmsException  if operation was not succesful
+     * */
+    public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException {
+        CmsFile cmsFile = null;
+        try {
+            if (cmsFile == null) {
+                cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
+            }
+        } catch (CmsException exc) {
+            // the resource was not readable
+            throw exc;
         }
-        if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
-        {
-
+        if (accessRead(currentUser, currentProject, (CmsResource)cmsFile)) {
             // acces to all subfolders was granted - return the file.
             return cmsFile;
-        }
-        else
-        {
+        } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
         }
     }
-    catch (CmsException exc)
-    {
-        throw exc;
-    }
-}
-/**
- * Reads a file from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param filename The name of the file to be read.
- *
- * @return The file read from the Cms.
- *
- * @throws CmsException  Throws CmsException if operation was not succesful.
- * */
-public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename) throws CmsException
-{
-    CmsFile cmsFile = null;
-    // read the resource from the currentProject, or the online-project
-    try
-    {
-        //cmsFile=(CmsFile)m_resourceCache.get(currentProject.getId()+C_FILECONTENT+filename);
-        if (cmsFile == null) {
-
-            cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename);
-
-            // only put it in thecache until the size is below the max site
-            /*if (cmsFile.getContents().length <m_cachelimit) {
-                m_resourceCache.put(currentProject.getId()+C_FILECONTENT+filename,cmsFile);
-            } else {
-
-            }*/
+    
+    /**
+     * Reads a file from the Cms.<p>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can read the resource</li>
+     * </ul>
+     *
+     * @param currentUser the user who requested this method
+     * @param currentProject the current project of the user
+     * @param filename the name of the file to be read
+     *
+     * @return the file read from the VFS
+     *
+     * @throws CmsException if operation was not succesful
+     */
+    public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename, boolean includeDeleted) throws CmsException {
+        CmsFile cmsFile = null;
+        try {
+            if (cmsFile == null) {
+                cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename, includeDeleted);
+            }
+        } catch (CmsException exc) {
+            // the resource was not readable
+            throw exc;
         }
-
+        if (accessRead(currentUser, currentProject, (CmsResource)cmsFile)) {
+            // acces to all subfolders was granted - return the file.
+            return cmsFile;
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
         }
-    catch (CmsException exc)
-    {
-        // the resource was not readable
-        throw exc;
     }
-    if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
-    {
-        // acces to all subfolders was granted - return the file.
-        return cmsFile;
-    }
-    else
-    {
-        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
-    }
-}
-/**
- * Reads a file from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param filename The name of the file to be read.
- *
- * @return The file read from the Cms.
- *
- * @throws CmsException  Throws CmsException if operation was not succesful.
- * */
-public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String filename, boolean includeDeleted) throws CmsException
-{
-    CmsFile cmsFile = null;
-    // read the resource from the currentProject, or the online-project
-    try
-    {
-        //cmsFile=(CmsFile)m_resourceCache.get(currentProject.getId()+C_FILECONTENT+filename);
-        if (cmsFile == null) {
-
-            cmsFile = m_dbAccess.readFile(currentProject.getId(), onlineProject(currentUser, currentProject).getId(), filename, includeDeleted);
-            // only put it in thecache until the size is below the max site
-            /*if (cmsFile.getContents().length <m_cachelimit) {
-                m_resourceCache.put(currentProject.getId()+C_FILECONTENT+filename,cmsFile);
-            } else {
-
-            }*/
-        }
-
-        }
-    catch (CmsException exc)
-    {
-        // the resource was not readable
-        throw exc;
-    }
-    if (accessRead(currentUser, currentProject, (CmsResource) cmsFile))
-    {
-
-        // acces to all subfolders was granted - return the file.
-        return cmsFile;
-    }
-    else
-    {
-        throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
-    }
-}
+    
     /**
      * Gets the known file extensions (=suffixes)
      *
@@ -5349,13 +5260,13 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @return Hashtable with file extensions as Strings
      */
-
     public Hashtable readFileExtensions(CmsUser currentUser, CmsProject currentProject)
         throws CmsException {
         Hashtable res=(Hashtable) m_dbAccess.readSystemProperty(C_SYSTEMPROPERTY_EXTENSIONS);
         return ( (res!=null)? res : new Hashtable());
     }
-     /**
+    
+    /**
      * Reads a file header a previous project of the Cms.<BR/>
      * The reading excludes the filecontent. <br>
      *
@@ -5377,36 +5288,31 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-     public CmsResource readFileHeader(CmsUser currentUser,
-                                       CmsProject currentProject,
-                                       int projectId,
-                                       String filename)
-         throws CmsException  {
-         CmsResource cmsFile = null;
-         // check if this method is misused to read a folder
-         if (filename.endsWith("/")) {
-             return (CmsResource) readFolder(currentUser, currentProject, projectId,filename);
-         }
-         // read the resource from the currentProject
-         try {
-             String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
-             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
-             if (cmsFile==null) {
+    public CmsResource readFileHeader(CmsUser currentUser, CmsProject currentProject, int projectId, String filename) throws CmsException {
+        CmsResource cmsFile = null;
+        // check if this method is misused to read a folder
+        if (filename.endsWith("/")) {
+            return (CmsResource)readFolder(currentUser, currentProject, projectId, filename);
+        }
+        // read the resource from the currentProject
+        try {
+            String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
+            cmsFile = (CmsResource)m_resourceCache.get(cacheKey);
+            if (cmsFile == null) {
                 cmsFile = m_dbAccess.readFileHeaderInProject(projectId, filename);
                 m_resourceCache.put(cacheKey, cmsFile);
-             }
-             if( accessRead(currentUser, currentProject, cmsFile) ) {
+            }
+            if (accessRead(currentUser, currentProject, cmsFile)) {
                 // acces to all subfolders was granted - return the file-header.
                 return cmsFile;
             } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
-                 CmsException.C_ACCESS_DENIED);
-           }
-         } catch(CmsException exc) {
-             throw exc;
-         }
-
-     }
+                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_ACCESS_DENIED);
+            }
+        } catch (CmsException exc) {
+            throw exc;
+        }
+    }
+    
     /**
      * Reads a file header from the Cms.<BR/>
      * The reading excludes the filecontent. <br>
@@ -5428,37 +5334,37 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-     public CmsResource readFileHeader(CmsUser currentUser,
-                                         CmsProject currentProject, String filename)
-         throws CmsException {
-         CmsResource cmsFile = null;
-         // check if this method is misused to read a folder
-         if (filename.endsWith("/")) {
-             return (CmsResource) readFolder(currentUser,currentProject,filename);
-         }
-
-         // read the resource from the currentProject, or the online-project
-         try {
-             // try to read form cache first
-             String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
-             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
-             if (cmsFile==null) {
-                cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, false);
-                m_resourceCache.put(cacheKey, cmsFile);
-             }
-         } catch(CmsException exc) {
-             // the resource was not readable
-             throw exc;
-         }
-
-         if( accessRead(currentUser, currentProject, cmsFile) ) {
-            // acces to all subfolders was granted - return the file-header.
-            return cmsFile;
-        } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + filename,
-                 CmsException.C_ACCESS_DENIED);
+    public CmsResource readFileHeader(CmsUser currentUser,
+                                        CmsProject currentProject, String filename)
+        throws CmsException {
+        CmsResource cmsFile = null;
+        // check if this method is misused to read a folder
+        if (filename.endsWith("/")) {
+            return (CmsResource) readFolder(currentUser,currentProject,filename);
         }
-     }
+   
+        // read the resource from the currentProject, or the online-project
+        try {
+            // try to read form cache first
+            String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
+            cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
+            if (cmsFile==null) {
+               cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, false);
+               m_resourceCache.put(cacheKey, cmsFile);
+            }
+        } catch(CmsException exc) {
+            // the resource was not readable
+            throw exc;
+        }
+   
+        if( accessRead(currentUser, currentProject, cmsFile) ) {
+           // acces to all subfolders was granted - return the file-header.
+           return cmsFile;
+       } else {
+           throw new CmsException("[" + this.getClass().getName() + "] " + filename,
+                CmsException.C_ACCESS_DENIED);
+       }
+    }
 
     /**
      * Reads a file header from the Cms.<BR/>
@@ -5576,7 +5482,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
         return resource;
      }
 
-     /**
+    /**
      * Reads all file headers for a project from the Cms.<BR/>
      *
      * @param currentUser The user who requested this method.
@@ -6299,36 +6205,33 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         
         search = search && (siteRoot != null);
         // check if we have the result already cached
-        Map value = null;
+        HashMap value = null;
+        
         String cacheKey = getCacheKey("properties_" + search, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
-        value = (Map)m_propertyCache.get(cacheKey);
+        value = (HashMap)m_propertyCache.get(cacheKey);
         
         if (value == null) {
             // result not cached, let's look it up in the DB
             if (search) {
-                String cacheKey2 = getCacheKey("properties_" + false, null, new CmsProject(currentProject.getId(), -1), res.getResourceName());
-                value = (Map)m_propertyCache.get(cacheKey2);
-                if (value == null) {                    
-                    boolean cont;
-                    siteRoot += "/";
-                    value = new HashMap();
-                    Map parentValue;
-                    do {
-                        parentValue = readProperties(currentUser, currentProject, resource, siteRoot, false);
-                        parentValue.putAll(value);
-                        value.clear();
-                        value = parentValue;
-                        resource = CmsResource.getParent(resource);
-                        cont = (! siteRoot.equals(resource));
-                    } while (cont);
-                }
+                boolean cont;
+                siteRoot += "/";
+                value = new HashMap();
+                HashMap parentValue;
+                do {
+                    parentValue = (HashMap)readProperties(currentUser, currentProject, resource, siteRoot, false);
+                    parentValue.putAll(value);
+                    value.clear();
+                    value.putAll(parentValue);
+                    resource = CmsResource.getParent(resource);
+                    cont = (! siteRoot.equals(resource));
+                } while (cont);
             } else {
                 value = m_dbAccess.readProperties(currentProject.getId(), res, res.getType());
             }  
             // store the result in the cache
             m_propertyCache.put(cacheKey, value);
         }
-        return value;
+        return (Map)value.clone();
     }
              
     /**
