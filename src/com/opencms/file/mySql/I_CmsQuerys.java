@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracle/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/07 07:43:16 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/I_CmsQuerys.java,v $
+ * Date   : $Date: 2000/07/07 13:17:53 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.oracle;
+package com.opencms.file.mySql;
 
 import com.opencms.core.*;
 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ $Date: 2000/07/07 07:43:16 $
+ * @version $Revision: 1.1 $ $Date: 2000/07/07 13:17:53 $
  */
 public interface I_CmsQuerys {
     
@@ -77,15 +77,10 @@ public interface I_CmsQuerys {
 
     public static final Integer C_RESOURCES_GET_LOST_ID_KEY = new Integer(104);
 	
-    // generic SQL
-    //public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
-	//									+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
+    // mySQL specific statement (no use of nested select-statements.
+    public static final String C_RESOURCES_GET_LOST_ID = "SELECT A.FILE_ID FROM "+C_DATABASE_PREFIX+"FILES A LEFT JOIN "
+										+C_DATABASE_PREFIX+"RESOURCES B ON A.FILE_ID=B.FILE_ID WHERE B.FILE_ID is NULL";
     
-    // Use this for Oracle !!!!!
-    public static final String C_RESOURCES_GET_LOST_ID = "SELECT FILE_ID FROM "+
-                                                         C_DATABASE_PREFIX+"FILES WHERE FILE_ID NOT IN ( SELECT FILE_ID FROM "+C_DATABASE_PREFIX+"RESOURCES)";
-    
-        
     public static final Integer C_RESOURCES_DELETE_PROJECT_KEY = new Integer(105);
 	public static final String C_RESOURCES_DELETE_PROJECT = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES "
 															 + "WHERE PROJECT_ID = ?";

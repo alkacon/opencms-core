@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/06 15:55:20 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2000/07/07 13:17:52 $
+ * Version: $Revision: 1.91 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,11 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.90 $ $Date: 2000/07/06 15:55:20 $ * 
+<<<<<<< CmsDbAccess.java
+ * @version $Revision: 1.91 $ $Date: 2000/07/07 13:17:52 $ * 
+=======
+ * @version $Revision: 1.91 $ $Date: 2000/07/07 13:17:52 $ * 
+>>>>>>> 1.88
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -131,11 +135,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	/**
 	 * Constant to get property from configurations.
 	 */
-	private static final String C_CONFIGURATIONS_FILLDEFAULTS = "filldefaults";
-	
-	/**
-	 * Constant to get property from configurations.
-	 */
 	private static final String C_CONFIGURATIONS_DIGEST = "digest";
 	
 	/**
@@ -187,7 +186,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		String exportpoint = null;
 		String exportpath = null;
 		int sleepTime;
-		boolean fillDefaults;
+		boolean fillDefaults = true;
 		int maxConn;
 		
 		
@@ -235,11 +234,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read maxConn from configurations: " + maxConn);
 		}
 		
-		fillDefaults = config.getBoolean(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_FILLDEFAULTS, false);
-		if(A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read fillDefaults from configurations: " + fillDefaults);
-		}
-		
 		digest = config.getString(C_CONFIGURATION_RESOURCEBROKER + "." + rbName + "." + C_CONFIGURATIONS_DIGEST, "MD5");
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] read digest from configurations: " + digest);
@@ -281,6 +275,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		}
 		
 		// have we to fill the default resource like root and guest?
+		try {
+			CmsProject project = readProject(C_PROJECT_ONLINE_ID);
+			if( project.getName().equals( C_PROJECT_ONLINE ) ) {
+				// online-project exists - no need of filling defaults
+				fillDefaults = false;
+			}
+		} catch(Exception exc) {
+			// ignore the exception - fill defaults stays at true.
+		}
+
 		if(fillDefaults) {
 			// YES!
 			if(A_OpenCms.isLogging()) {

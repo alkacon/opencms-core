@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracle/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/07 07:43:16 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
+ * Date   : $Date: 2000/07/07 13:17:53 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.oracle;
+package com.opencms.file.mySql;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/07/07 07:43:16 $
+ * @version $Revision: 1.1 $ $Date: 2000/07/07 13:17:53 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
