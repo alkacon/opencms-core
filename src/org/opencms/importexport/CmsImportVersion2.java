@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/01/04 17:34:08 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/01/14 16:37:09 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -690,12 +690,12 @@ public class CmsImportVersion2 extends A_CmsImport {
                         + m_report.key("report.ok"));
                 }  
                 
-            } catch (Exception e) {
+            } catch (Throwable t) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
-                    OpenCms.getLog(this).error("Error merging page file " + resname, e);
+                    OpenCms.getLog(this).error("Error merging page file " + resname, t);
                 }
                 
-                m_report.println(e);
+                m_report.println(t);
             }
 
             counter++;

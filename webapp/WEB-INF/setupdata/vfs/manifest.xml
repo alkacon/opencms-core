@@ -2194,7 +2194,52 @@
 			</properties>
 			<accesscontrol/>
 		</file>
-		
+		<file>
+			<destination>system/workplace/administration/contenttools/merge</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 12 Jan 2005 11:31:38 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:05:33 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[title.mergepages]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_admin_contentmerge]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/contenttools/merge/index.html</source>
+			<destination>system/workplace/administration/contenttools/merge/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>e600b065-647b-11d9-871c-dfcae9eb3953</uuidresource>
+			<datelastmodified>Wed, 12 Jan 2005 12:41:24 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 10:25:28 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>			
 		<file>
 			<destination>system/workplace/administration/database</destination>
 			<type>folder</type>
@@ -9994,6 +10039,19 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/ic_admin_contentmerge.gif</source>
+			<destination>system/workplace/resources/ic_admin_contentmerge.gif</destination>
+			<type>image</type>
+			<uuidresource>0d255ab8-6485-11d9-a4f6-dfcae9eb3953</uuidresource>
+			<datelastmodified>Wed, 12 Jan 2005 16:50:57 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Jan 2005 11:30:59 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/resources/ic_admin_contenttools.gif</source>
 			<destination>system/workplace/resources/ic_admin_contenttools.gif</destination>
