@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
- * Date   : $Date: 2004/10/28 12:58:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/15 18:08:22 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
 
         super.initialize(adminCms, configurationManager, module);
         m_initialize = true;
+        m_shutDown = false;
         
         // register as event listener for publish events
         OpenCms.addCmsEventListener(this, new int[]{I_CmsEventListener.EVENT_PUBLISH_PROJECT});
