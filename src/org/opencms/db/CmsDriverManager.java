@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/29 13:00:59 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2003/07/29 13:32:04 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.95 $ $Date: 2003/07/29 13:00:59 $
+ * @version $Revision: 1.96 $ $Date: 2003/07/29 13:32:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7974,9 +7974,9 @@ public class CmsDriverManager extends Object {
         m_propertyCache.clear();
         // set the file-state to changed
         if (res.isFile()) {
-            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+            m_vfsDriver.writeFileHeader(context.currentProject(), (CmsFile) res, C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         } else {
-            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_STRUCTURE_STATE, context.currentUser().getId());
+            m_vfsDriver.writeFolder(context.currentProject(), readFolder(context, resource), C_UPDATE_RESOURCE_STATE, context.currentUser().getId());
         }
         
         if (res.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
@@ -7984,7 +7984,6 @@ public class CmsDriverManager extends Object {
         }
 
         // update the cache
-        //clearResourceCache(resource, context.currentProject(), context.currentUser());
         clearResourceCache();
     }
 
