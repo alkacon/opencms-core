@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/17 16:33:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexCacheKey {
     
@@ -115,13 +115,13 @@ public class CmsFlexCacheKey {
      */    
     public CmsFlexCacheKey(ServletRequest request, String target, boolean online, boolean workplace) {
                 
-        m_resource = getKeyName(target, online, workplace);     
-        m_variation = "never";
-        
         // Fetch the cms from the request
         CmsObject cms = ((CmsFlexController)request.getAttribute(CmsFlexController.ATTRIBUTE_NAME)).getCmsObject();        
+
+        m_resource = getKeyName(cms.getRequestContext().addSiteRoot(target), online, workplace);     
+        m_variation = "never";
+        
         // Get the top-level file name / uri
-        // m_uri = request.getCmsFile().getAbsolutePath();
         m_uri = cms.getRequestContext().getUri();
         // Fetch user from the current cms
         m_user = cms.getRequestContext().currentUser().getId();        
@@ -157,13 +157,13 @@ public class CmsFlexCacheKey {
      * and the hadParseError() flag is set to true. 
      * This is done to ensure that a valid key is always constructed with the constructor.<p>
      *
-     * @param target the requested resource
+     * @param resourcename the full name of the resource including site root
      * @param cacheDirectives the cache directives of the resource (value of the property "cache")
      * @param workplace must be true for all workplace resources
      * @param online must be true for an online resource, false for offline resources
      */        
-    public CmsFlexCacheKey(String target, String cacheDirectives, boolean online, boolean workplace) {
-        m_resource = getKeyName(target, online, workplace);     
+    public CmsFlexCacheKey(String resourcename, String cacheDirectives, boolean online, boolean workplace) {
+        m_resource = getKeyName(resourcename, online, workplace);     
         m_variation = "never";
         if (cacheDirectives != null) parseFlexKey(cacheDirectives);
         if (DEBUG) System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
@@ -173,13 +173,13 @@ public class CmsFlexCacheKey {
      * Calculates the cache key name that is used as key in 
      * the first level of the FlexCache.<p>
      *
-     * @param name the name of the resource
+     * @param resourcename the full name of the resource including site root
      * @param online must be true for an online resource, false for offline resources
      * @param workplace must be true for all workplace resources
      * @return fhe FlexCache key name
      */
-    public static String getKeyName(String name, boolean online, boolean workplace) {
-        StringBuffer result = new StringBuffer(name);
+    public static String getKeyName(String resourcename, boolean online, boolean workplace) {
+        StringBuffer result = new StringBuffer(resourcename);
         if (workplace) {
             result.append(CmsFlexCache.C_CACHE_WORKPLACESUFFIX);
         } else if (online) {

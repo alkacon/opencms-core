@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2003/07/14 20:12:41 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/17 16:33:34 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
         
@@ -210,7 +210,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                     try {
                         // Read caching property from requested VFS resource                                     
                         cacheProperty = cms.readProperty(m_vfsTarget, org.opencms.loader.I_CmsResourceLoader.C_LOADER_CACHEPROPERTY);                    
-                        cache.putKey(w_res.setCmsCacheKey(m_vfsTarget, cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
+                        cache.putKey(w_res.setCmsCacheKey(cms.getRequestContext().addSiteRoot(m_vfsTarget), cacheProperty, f_req.isOnline(), f_req.isWorkplace()));                                            
                     } catch (com.opencms.core.CmsException e) {
                         if (e.getType() == CmsException.C_FLEX_CACHE) {
                             // Invalid key is ignored but logged, used key is cache=never
