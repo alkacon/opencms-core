@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2004/11/11 13:10:09 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -320,14 +320,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }
-                // TODO: CW: remove 
-                /* if (channelId == null) {
-                    // the channel id does not exist, so generate a new one
-                    int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
-                    channelId = "" + newChannelId;
-                }
-                properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
-                */
                 if (channelId != null) {
                     properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CHANNELID, channelId, null));
                 }
@@ -377,7 +369,12 @@ public class CmsImportVersion3 extends A_CmsImport {
                         encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                     }                    
                     
-                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);
+                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(
+                        m_cms, 
+                        content, 
+                        getLocale(destination, properties), 
+                        encoding);
+                    
                     content = xmlPage.marshal();
                 }
                 resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
@@ -419,7 +416,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
             } catch (Exception e) {
-                // 
+                // noop
             }
         }
 

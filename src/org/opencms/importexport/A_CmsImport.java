@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/10 17:14:29 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/11/11 13:10:09 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -411,22 +410,18 @@ public abstract class A_CmsImport implements I_CmsImport {
      * 
      * @param destination the destination path (parent must exist)
      * @param properties the properties to check at first
+     * 
      * @return the locale
-     * @throws CmsException if something goes wrong
      */
-    protected Locale getLocale(String destination, List properties) throws CmsException {        
+    protected Locale getLocale(String destination, List properties) {        
         String localeName = CmsProperty.get(I_CmsConstants.C_PROPERTY_LOCALE, properties).getValue();
-        if (localeName == null) {
-            localeName = m_cms.readPropertyObject(CmsResource.getParentFolder(destination), I_CmsConstants.C_PROPERTY_LOCALE, true).getValue();
-        }
+                
         if (localeName != null) {
-            if (localeName.indexOf(",") >= 0) {
-                localeName = localeName.substring(0, localeName.indexOf(","));
-            }
-            return CmsLocaleManager.getLocale(localeName);
-        } else {            
-            return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(0);
-        }
+            // locale was already set on the files properties
+            return (Locale)OpenCms.getLocaleManager().getAvailableLocales(localeName).get(0);
+        } 
+        // locale not set in properties, read default locales
+        return (Locale)OpenCms.getLocaleManager().getDefaultLocales(m_cms, CmsResource.getParentFolder(destination)).get(0);        
     }
     
     /**

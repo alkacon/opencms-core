@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/11/10 16:12:32 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/11/11 13:10:09 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,8 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -44,7 +42,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
 import java.security.MessageDigest;
@@ -281,25 +278,6 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
             if (resname.lastIndexOf("/") > 0) {
                 resname = resname.substring(resname.lastIndexOf("/") + 1, resname.length());
-            }
-
-            // convert to xml page if wanted
-            if (m_convertToXmlPage 
-            && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID 
-                || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
-                
-                if (content != null) {
-                    //get the encoding
-                    String encoding = null;                    
-                    encoding = CmsProperty.get(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, properties).getValue();
-                    if (encoding == null) {
-                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                    }  
-                    
-                    CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content, encoding), "body", getLocale(destination, properties), encoding);                     
-                    content = xmlPage.marshal();
-                }
-                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
             }
             
             // create a new CmsResource                         

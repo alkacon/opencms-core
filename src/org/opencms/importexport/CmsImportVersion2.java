@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/10 17:14:16 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/11/11 13:10:09 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
@@ -671,8 +672,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         // and lower case letters, or have to be tested for equality ignoring upper/lower case...
         
         // get the header file
-        CmsFile pagefile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        Document contentXml = CmsImport.getXmlDocument(pagefile.getContents());
+        CmsFile pagefile = m_cms.readFile(resourcename, CmsResourceFilter.ALL);
+        Document contentXml = CmsXmlUtils.unmarshalHelper(pagefile.getContents(), null);
         
         // get the <masterTemplate> node to check the content. this node contains the name of the template file.
         String masterTemplateNodeName = "//masterTemplate";
@@ -750,7 +751,13 @@ public class CmsImportVersion2 extends A_CmsImport {
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Start converting to XML");
                 }
-                CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(bodyfile.getContents(), encoding), "body", getLocale(resourcename, properties), encoding); 
+                CmsXmlPage xmlPage = 
+                    CmsXmlPageConverter.convertToXmlPage(
+                        m_cms, 
+                        bodyfile.getContents(),
+                        getLocale(resourcename, properties), 
+                        encoding);
+                
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("End converting to XML");
                 }

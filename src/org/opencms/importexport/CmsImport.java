@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/09/28 15:16:55 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2004/11/11 13:10:09 $
+* Version: $Revision: 1.26 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,15 +40,14 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.xml.CmsXmlUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
@@ -60,7 +59,6 @@ import java.util.zip.ZipFile;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 /**
  * Holds the functionaility to import resources from the filesystem
@@ -71,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.25 $ $Date: 2004/09/28 15:16:55 $
+ * @version $Revision: 1.26 $ $Date: 2004/11/11 13:10:09 $
  */
 public class CmsImport implements Serializable {
     
@@ -214,7 +212,7 @@ public class CmsImport implements Serializable {
         getImportResource();
 
         // read the xml-config file
-        m_docXml = CmsImport.getXmlDocument(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME));
+        m_docXml = CmsXmlUtils.unmarshalHelper(getFileBytes(I_CmsConstants.C_EXPORT_XMLFILENAME), null);
 
         // try to read the export version number
         try {
@@ -446,68 +444,8 @@ public class CmsImport implements Serializable {
             resources.addElement(I_CmsConstants.C_ROOT);
         }
         return resources;
-    }
-    
-    /**
-     * Creates a dom4j document out a specified byte array.<p>
-     * 
-     * @param content the byte array
-     * @return a dom4j document
-     * @throws CmsException if something goes wrong
-     */
-    public static Document getXmlDocument(byte[] content) throws CmsException {
-        ByteArrayInputStream stream = null;
-        Document doc = null;
-        
-        try {
-            stream = new ByteArrayInputStream(content);
-            SAXReader saxReader = new SAXReader();
-            doc = saxReader.read(stream);
-        } catch (Exception e) {            
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
-        } finally {
-            try {
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
-        }
-        
-        return doc;
     }    
 
-    /**
-     * Creates a dom4j document out of a specified string.<p>
-     * 
-     * @param content the string
-     * @return a dom4j document
-     * @throws CmsException if something goes wrong
-     */
-    public static Document getXmlDocument(String content) throws CmsException {
-        StringReader reader = null;
-        Document doc = null;
-        
-        try {
-            reader = new StringReader(content);
-            SAXReader saxReader = new SAXReader();
-            doc = saxReader.read(reader);
-        } catch (Exception e) {            
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
-        }
-        
-        return doc;
-    }
-    
     /**
      * Returns the value of a child element with a specified name for a given parent element.<p>
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/11/11 13:10:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Iterator;
@@ -45,7 +46,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.14 $ $Date: 2004/08/03 07:19:03 $
+ * @version $Revision: 1.15 $ $Date: 2004/11/11 13:10:09 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
@@ -62,18 +63,17 @@ public final class CmsXmlPageConverter {
      * 
      * @param cms the cms object
      * @param content the content used with xml templates
-     * @param body the name of the default body element
      * @param locale the locale of the body element(s)
      * @param encoding the encoding to the xml page
      * @return the xml page content or null if conversion failed
      * @throws CmsException if something goes wrong
      */
-    public static CmsXmlPage convertToXmlPage(CmsObject cms, String content, String body, Locale locale, String encoding) throws CmsException {
-        CmsXmlPage xmlPage = null;
+    public static CmsXmlPage convertToXmlPage(CmsObject cms, byte[] content, Locale locale, String encoding) throws CmsException {
         
+        CmsXmlPage xmlPage = null;
+
         try {
-            xmlPage = new CmsXmlPage(locale, encoding);
-            Document page = CmsImport.getXmlDocument(content);
+            Document page = CmsXmlUtils.unmarshalHelper(content, null);            
             
             Element xmltemplate = page.getRootElement();
             if (xmltemplate == null || !"XMLTEMPLATE".equals(xmltemplate.getName())) {
@@ -89,12 +89,15 @@ public final class CmsXmlPageConverter {
                 useEditTemplates = false;
             }
             
+            // now create the XML page
+            xmlPage = new CmsXmlPage(locale, encoding);
+            
             while (i.hasNext()) {
                 Element currentTemplate = (Element)i.next();
                 String bodyName = currentTemplate.attributeValue("name");
                 if (bodyName == null || "".equals(bodyName)) {
                     // no template name found, use the parameter body name
-                    bodyName = body;
+                    bodyName = "body";
                 }
                 String bodyContent = null;
                 
@@ -126,8 +129,11 @@ public final class CmsXmlPageConverter {
                     throw new Exception("Body content not found");
                 }
                 
-                bodyContent = CmsStringUtil.substitute(bodyContent, I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, OpenCms.getSystemInfo().getOpenCmsContext());
-                
+                bodyContent = CmsStringUtil.substitute(
+                    bodyContent, 
+                    I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT, 
+                    OpenCms.getSystemInfo().getOpenCmsContext());
+
                 if (!"".equals(bodyContent.trim())) {
                     xmlPage.addValue(bodyName, locale);
                     xmlPage.setStringValue(cms, bodyName, locale, bodyContent);
