@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/05 16:40:53 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2000/06/06 07:13:35 $
+ * Version: $Revision: 1.72 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.71 $ $Date: 2000/06/05 16:40:53 $
+ * @version $Revision: 1.72 $ $Date: 2000/06/06 07:13:35 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1112,6 +1112,33 @@ interface I_CmsResourceBroker {
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
 	public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, 
+							 String name, String password, 
+					  String group, String description, 
+					  Hashtable additionalInfos, int flags)
+		throws CmsException;
+    
+    
+     /** 
+	 * Adds a web user to the Cms. <br>
+	 * 
+	 * A web user has no access to the workplace but is able to access personalized
+	 * functions controlled by the OpenCms.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The new name for the user.
+	 * @param password The new password for the user.
+	 * @param group The default groupname for the user.
+	 * @param description The description for the user.
+	 * @param additionalInfos A Hashtable with additional infos for the user. These
+	 * Infos may be stored into the Usertables (depending on the implementation).
+	 * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+	 * 
+	 * @return user The added user will be returned.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public CmsUser addWebUser(CmsUser currentUser, CmsProject currentProject, 
 							 String name, String password, 
 					  String group, String description, 
 					  Hashtable additionalInfos, int flags)
