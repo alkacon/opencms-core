@@ -6,98 +6,75 @@ import com.opencms.core.*;
 
 /**
  * This abstract class describes a resource broker for projects in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
- * is for security-reasons, to check if this current user has the rights to call the
- * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/13 16:34:38 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/16 18:55:53 $
  */
- abstract interface A_CmsRbProject {
+abstract class A_CmsRbProject {
 	
-	/**
-	 * Returns the onlineproject. This is the default project. All anonymous 
-	 * (A_CmsUser callingUSer, or guest) user will see the rersources of this project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @return the onlineproject object.
-	 */
-	abstract A_CmsProject onlineProject(A_CmsUser callingUSer);
-
-	/**
-	 * Tests if the user can access the project.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param projectname the name of the project.
-	 * 
-	 * @return true, if the user has access, else returns false.
-	 */
-	abstract boolean accessProject(A_CmsUser callingUSer, String projectname);
-
 	/**
 	 * Reads a project from the Cms.
 	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the project to read.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract A_CmsProject readProject(A_CmsUser callingUSer, String name)
-		throws CmsException;
+	 abstract A_CmsProject readProject(String name)
+		 throws CmsException ;
 	
 	/**
 	 * Creates a project.
 	 * 
-	 * <B>Security:</B>
-	 * Only users in the croup projectleaders are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param name The name of the project to read.
 	 * @param description The description for the new project.
-	 * @param flags The flags for the project (A_CmsUser callingUSer, e.g. visibility).
+	 * @param task The globe task.
+	 * @param owner The owner to be set.
+	 * @param group the group to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
 	 * a project with the same name for this resource-type exists already.
 	 */
-	abstract A_CmsProject createProject(A_CmsUser callingUSer, String name, String description, int flags)
-		throws CmsException, CmsDuplicateKeyException;
+	 abstract A_CmsProject createProject(String name, String description, A_CmsTask task, 
+										 A_CmsUser owner, A_CmsGroup group)
+		 throws CmsException, CmsDuplicateKeyException;
 	
 	/**
-	 * Publishes a project.
+	 * Updates a project.
 	 * 
-	 * <B>Security:</B>
-	 * Only the owner of the project is granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param name The name of the project to be published.
+	 * @param name The name of the project to read.
+	 * @param description The description for the new project.
+	 * @param task The globe task.
+	 * @param owner The owner to be set.
+	 * @param group the group to be set.
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
+	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if
+	 * a project with the same name for this resource-type exists already.
 	 */
-	abstract A_CmsProject publishProject(A_CmsUser callingUSer, String name)
-		throws CmsException;
-	
+	 abstract A_CmsProject updateProject(String name, String description, A_CmsTask task, 
+										 A_CmsUser owner, A_CmsGroup group)
+		 throws CmsException, CmsDuplicateKeyException;
+
 	/**
-	 * Returns all projects, which the user may access.
+	 * Returns all projects, which are owned by a user.
 	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param projectname the name of the project.
+	 * @param user The user to test.
 	 * 
 	 * @return a Vector of projects.
 	 */
-	abstract Vector getAllAccessibleProjects(A_CmsUser callingUSer, String projectname);
+	 abstract Vector getAllAccessibleProjectsByUser(A_CmsUser user)
+		 throws CmsException;
+
+	/**
+	 * Returns all projects, which the group may access.
+	 * 
+	 * @param group The group to test.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 abstract Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+		 throws CmsException;
 }

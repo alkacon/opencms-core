@@ -5,7 +5,7 @@ package com.opencms.file;
  * one resource.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/14 11:59:30 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/16 18:55:53 $
  */
 abstract public class A_CmsProject
 {
@@ -25,32 +25,33 @@ abstract public class A_CmsProject
 
 	/**
 	 * Returns the state of this project.<BR/>
-	 * This may be C_STATE_UNLOCKED, C_STATE_LOCKED, C_STATE_ARCHIVE.
+	 * This may be C_PROJECT_STATE_UNLOCKED, C_PROJECT_STATE_LOCKED, 
+	 * C_PROJECT_STATE_ARCHIVE.
 	 * 
 	 * @return the state of this project.
 	 */
-	abstract public int getState();
+	abstract public int getFlags();
 
 	/**
 	 * Returns the id of this project.
 	 * 
 	 * @return the id of this project.
 	 */	
-    abstract long getID();
+    abstract int getId();
 	
 	/**
 	 * Returns the userid of the project owner.
 	 * 
 	 * @return the userid of the project owner.
 	 */
-	abstract long getOwnerID();
+	abstract int getOwnerID();
 	
 	/**
 	 * Returns the groupid of this project.
 	 * 
 	 * @return the groupid of this project.
 	 */
-    abstract long getGroupID();
+    abstract int getGroupID();
 	
 	/**
 	 * Returns a string-representation for this object.

@@ -4,12 +4,19 @@ package com.opencms.file;
  * This abstract class describes a task in the Cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/14 11:59:30 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/16 18:55:53 $
  */
 public abstract class A_CmsTask
 {
 	
 	// TODO: add task-methods here.
+	
+	/**
+	 * Returns the id of this task.
+	 * 
+	 * @return the id of this task.
+	 */
+	abstract int getId();
 	
 	/**
 	 * Returns a string-representation for this object.

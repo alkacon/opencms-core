@@ -8,11 +8,52 @@ import javax.servlet.http.*;
  * into one abstract class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 1999/12/16 18:13:09 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/16 18:55:53 $
  */
 abstract class A_CmsResourceBroker {
 	
-    /**
+	/**
+	 * Returns the onlineproject. This is the default project. All anonymous 
+	 * (A_CmsUser callingUser, or guest) user will see the rersources of this project.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @return the onlineproject object.
+	 */
+	abstract A_CmsProject onlineProject(A_CmsUser callingUser);
+
+	/**
+	 * Tests if the user can access the project.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param projectname the name of the project.
+	 * 
+	 * @return true, if the user has access, else returns false.
+	 */
+	abstract boolean accessProject(A_CmsUser callingUser, String projectname);
+
+	/**
+	 * Publishes a project.
+	 * 
+	 * <B>Security:</B>
+	 * Only the owner of the project is granted.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param name The name of the project to be published.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	abstract A_CmsProject publishProject(A_CmsUser callingUser, String name)
+		throws CmsException;
+
+	// TODO: all abstract methods of all resource-brokers have to be declarated here?!
+
+	/**
 	 * Determines, if the users current group is the admin-group.
 	 * 
 	 * <B>Security:</B>
@@ -70,7 +111,5 @@ abstract class A_CmsResourceBroker {
 	abstract A_CmsUser loginUser(A_CmsUser callingUser, HttpSession session, 
 						String username, String password)
 		throws CmsException;
-	
-    
     
 }

@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 1999/12/15 16:43:21 $
+ * @version $Revision: 1.7 $ $Date: 1999/12/16 18:55:53 $
  */
 public interface I_CmsConstants
 {
@@ -153,20 +153,20 @@ public interface I_CmsConstants
 	 * This constant defines a unlocked project. 
 	 * Resources may be changed in this project.
 	 */
-	 static final int C_STATE_UNLOCKED			= 0;
+	 static final int C_PROJECT_STATE_UNLOCKED			= 0;
 
 	/**
 	 * This constant defines a locked project.
 	 * Resources can't be changed in this project.
 	 */
-	 static final int C_STATE_LOCKED			= 1;
+	 static final int C_PROJECT_STATE_LOCKED			= 1;
 
 	/**
 	 * This constant defines a project in a archive.
 	 * Resources can't be changed in this project. Its state will never
 	 * go back to the previos one.
 	 */
-	 static final int C_STATE_ARCHIVE			= 2;
+	 static final int C_PROJECT_STATE_ARCHIVE			= 2;
 
 	/**
 	 * This id will be returned for resources with no id.
@@ -288,6 +288,5 @@ public interface I_CmsConstants
       * This value will be returned for long's withaout a value.
       */
      static final int C_UNKNOWN_LONG        = -1;  
-  
-        
+	 
 }
