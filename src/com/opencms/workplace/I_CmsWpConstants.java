@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/08/26 13:00:40 $
-* Version: $Revision: 1.112 $
+* Date   : $Date: 2002/09/02 07:48:42 $
+* Version: $Revision: 1.113 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,18 +35,18 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.112 $ $Date: 2002/08/26 13:00:40 $
+ * @version $Revision: 1.113 $ $Date: 2002/09/02 07:48:42 $
  */
 
 public interface I_CmsWpConstants {
 
 
     /** Constant for the current language */
-    public final static String C_CURRENT_LANGUAGE = "uk";
+    public final static String C_CURRENT_LANGUAGE = "en";
 
     /** Parameter for the default language */
-    public static final String C_DEFAULT_LANGUAGE = "uk";
-
+    public static final String C_DEFAULT_LANGUAGE = "en";
+    
     /** Parameter for content body folder */
     // public static final String C_CONTENTBODYPATH = "/system/bodies/";
     public static final String C_CONTENTBODYPATH = "/content/bodys/";
