@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2004/12/20 09:17:23 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/12/20 15:18:18 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.59 $ $Date: 2004/12/20 09:17:23 $
+ * @version $Revision: 1.60 $ $Date: 2004/12/20 15:18:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -744,7 +744,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         taskService.setName(taskid, taskName);
 
         // try to reaktivate the task
-        taskService.reaktivateTask(taskid);
+        taskService.reactivateTask(taskid);
         int priority = Integer.parseInt(priorityString);
         taskService.setPriority(taskid, priority);
 
