@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.232 $
+* Date   : $Date: 2002/05/24 14:08:28 $
+* Version: $Revision: 1.233 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.232 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.233 $ $Date: 2002/05/24 14:08:28 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2343,7 +2343,7 @@ public void publishProject(int id) throws CmsException {
                 Vector linkChanges = new Vector();
                 this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
                                  linkChanges, allChanged, new CmsShellReport());
-// todo: got the right report here                         ^^^^^^^^^^^^^^^^^^^
+//mgm todo: got the right report here                         ^^^^^^^^^^^^^^^^^^^
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
             } catch (Exception ex){

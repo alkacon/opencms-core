@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2002/05/24 12:51:09 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/05/24 14:08:36 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,36 +47,34 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
 
     private CmsObject m_cms;
 
-    private I_CmsSession m_session;
 
     // the object to send the information to the workplace.
     private CmsReport m_report;
 
     public CmsAdminStaticExportThread(CmsObject cms, I_CmsSession session) {
         m_cms = cms;
-        m_session = session;
-        m_report = new CmsReport(new String[]{"<br>", "&nbsp;&nbsp;&nbsp;", "<b>", "</b>", "<b>Static Export</b><br>&nbsp; links to start:"});
+        m_report = new CmsReport(new String[]{"<br>", "&nbsp;&nbsp;&nbsp;", "<b>", "</b>", "<b>Static Export</b><br>&nbsp; links to start:","<span style='color:#009900'>","</span><br><br>"});
     }
 
     public void run() {
          // Dont try to get the session this way in a thread!
          // It will result in a NullPointerException sometimes.
          // !I_CmsSession session = m_cms.getRequestContext().getSession(true);
-        boolean everythingOk  = true;
-        String errormessage = "Error exporting resources:\n";
+        String errormessage = "Error exporting resources:<br>";
         try {
             // start the export
             m_cms.exportStaticResources(m_cms.getStaticExportProperties().getStartPoints(), null, null, m_report);
 
         }catch(CmsException e){
-            everythingOk = false;
-            errormessage += " "+e.getTypeText() +" "+e.getMessage() +"\n";
+            errormessage += " "+e.getTypeText() +" "+e.getMessage();
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,"error in static export "+e.getMessage());
             }
-        }
-        if(!everythingOk){
-            m_session.putValue(C_SESSION_THREAD_ERROR, errormessage );
+            m_report.addSeperator(0);
+            m_report.addSeperator(0);
+            m_report.addSeperator(5);
+            m_report.addString(errormessage);
+            m_report.addSeperator(6);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/05/24 12:51:08 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/05/24 14:08:28 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.26 $ $Date: 2002/05/24 12:51:08 $
+ * @version $Revision: 1.27 $ $Date: 2002/05/24 14:08:28 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -574,9 +574,9 @@ public class CmsStaticExport implements I_CmsConstants{
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
             }
             m_report.addSeperator(0);
-            m_report.addSeperator(1);
+            m_report.addSeperator(5);
             m_report.addString("  "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
-            m_report.addSeperator(0);
+            m_report.addSeperator(6);
             if(deleteFileOnError != null){
                 try{
                     File deleteMe = new File(deleteFileOnError);
@@ -594,8 +594,9 @@ public class CmsStaticExport implements I_CmsConstants{
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+Utils.getStackTrace(e));
             }
+            m_report.addSeperator(5);
             m_report.addString("  export "+link+" failed : "+Utils.getStackTrace(e));
-            m_report.addSeperator(0);
+            m_report.addSeperator(6);
         }
     }
 
