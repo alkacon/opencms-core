@@ -7,11 +7,12 @@ import com.opencms.core.*;
 
 /**
  * This class describes the access to files and folders in the Cms.<BR/>
+ * This implementation is the acces module to a MySql database.
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/22 17:56:21 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/22 19:12:24 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 

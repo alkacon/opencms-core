@@ -4,7 +4,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 1999/12/22 17:56:21 $
+ * @version $Revision: 1.8 $ $Date: 1999/12/22 19:12:24 $
  */
 public class CmsException extends Exception {
 	
@@ -77,11 +77,16 @@ public class CmsException extends Exception {
     * Definition of error code for no default group exception.
     */
     public final static int C_NO_DEFAULT_GROUP= 11;
+
+    /**
+    * Definition of error code for file exists exception.
+    */
+    public final static int C_FILE_EXISTS= 12;
     
     /**
     * Definition of error code for locked resource.
     */
-    public final static int C_LOCKED= 12;
+    public final static int C_LOCKED= 13;
 
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
@@ -96,6 +101,7 @@ public class CmsException extends Exception {
                             "Group not empty ",
                             "Unknown User ",
                             "No removal from Default Group ",
+                            "Resource already exists",
                             "Locked Resource "
 							};
     
