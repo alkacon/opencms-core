@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/03 14:54:02 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/07/03 15:14:48 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,9 +49,9 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.84 $ $Date: 2000/07/03 14:54:02 $ * 
+ * @version $Revision: 1.85 $ $Date: 2000/07/03 15:14:48 $ * 
  */
- class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
+public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
 	/**
 	 * The maximum amount of tables.

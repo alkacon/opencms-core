@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/07/03 14:54:02 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2000/07/03 15:14:48 $
+ * Version: $Revision: 1.47 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,9 +34,9 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.46 $ $Date: 2000/07/03 14:54:02 $
+ * @version $Revision: 1.47 $ $Date: 2000/07/03 15:14:48 $
  */
- interface I_CmsQuerys {
+public interface I_CmsQuerys {
     
     // Common constants   
 	static String C_DATABASE_PREFIX = "CMS_";
