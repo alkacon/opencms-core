@@ -4806,6 +4806,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/chtype.jsp</source>
+			<destination>system/workplace/commons/chtype.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>4b8be362-f1f5-11d8-9cbf-7f1f3bbc97b8</uuidresource>
+			<datelastmodified>Fri, 20 Aug 2004 12:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Aug 2004 17:34:44 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Change resource type]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/copy.jsp</source>
 			<destination>system/workplace/commons/copy.jsp</destination>
 			<type>jsp</type>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/20 09:52:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.CmsChtype;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -67,7 +68,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -81,15 +82,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public static final int ACTION_SHOWERROR = 150;
     /** The value for the resource name form submission action. */
     public static final int ACTION_SUBMITFORM2 = 130;  
-    
-    /** All allowed resource types for upload, used in form "suggested file type". */
-    private static String[] ALLOWED_RESOURCETYPES = new String[] {
-            // TODO: This must be made configurable in opencms-workplace.xml
-            CmsResourceTypeBinary.C_RESOURCE_TYPE_NAME, 
-            CmsResourceTypePlain.C_RESOURCE_TYPE_NAME, 
-            CmsResourceTypeImage.C_RESOURCE_TYPE_NAME, 
-            CmsResourceTypeJsp.C_RESOURCE_TYPE_NAME
-    };
     
     /** The name for the resource form submission action. */
     public static final String DIALOG_SHOWERROR = "showerror";   
@@ -292,34 +284,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * @return the list of possible files for the uploaded resource
      */
     public String buildTypeList() {
-        StringBuffer result = new StringBuffer(512);        
-        int currentResTypeId = -1;
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            currentResTypeId = res.getTypeId();
-         
-            for (int i=0; i<ALLOWED_RESOURCETYPES.length; i++) {
-                int resTypeId = OpenCms.getResourceManager().getResourceType(ALLOWED_RESOURCETYPES[i]).getTypeId();                
-                // get explorer type settings for current resource type
-                CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(ALLOWED_RESOURCETYPES[i]);
-                if (settings != null) {
-                    result.append("<tr><td>");
-                    result.append("<input type=\"radio\" name=\"" + PARAM_NEWRESOURCETYPE + "\" value=\"" + settings.getName() + "\"");
-                    if (resTypeId == currentResTypeId) {
-                        result.append(" checked=\"checked\"");
-                    }
-                    result.append("></td>");
-                    result.append("\t<td><img src=\"" + getSkinUri() + "filetypes/" + settings.getIcon() + "\" border=\"0\" title=\"" + key(settings.getKey()) + "\"></td>\n");
-                    result.append("<td>" + key(settings.getKey()));
-                    result.append("</td></tr>\n");
-                }
-            }
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error building resource type list for " + getParamResource());
-            }
-        }      
-        return result.toString();
+        return CmsChtype.buildTypeList(this, false);
     }
     
     /**
