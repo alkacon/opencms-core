@@ -227,9 +227,9 @@ function doAction(action) // which action on layer is clicked
 	
 	switch(action)
 	{
-		case 1:
+		case DO_LOCK:
 		{
-			location.href='explorer_files_lock.html';
+			location.href='lock.html?file='+ kontextparam;
 			break;
 		}
 		case 2:

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2000/02/08 17:41:55 $
+ * @version $Revision: 1.28 $ $Date: 2000/02/10 10:24:53 $
  */
 public interface I_CmsWpConstants {
 
@@ -39,6 +39,11 @@ public interface I_CmsWpConstants {
     /** Parameter for maximum pages */
     public static final String C_PARA_MAXPAGE = "maxpage";    
 
+    /** Parameter for locking pages */
+    public static final String C_PARA_LOCK = "lock";  
+  
+    /** Parameter for a filename */
+    public static final String C_PARA_FILE = "file";  
     
     // Filenames of workplace files
     
@@ -77,50 +82,41 @@ public interface I_CmsWpConstants {
      *  Name of the template containing error field definitions
      */
     public static final String C_ERRORTEMPLATE = "errorTemplate";    
-    
+
+     /**
+     *  Name of the template containing messagebox definitions
+     */
+    public static final String C_BOXTEMPLATE = "messageboxTemplate";    
     
     // tag defnitions
 	
-   /**
-    * Name of the label tag in the label definition template
-    */
+   /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_DEFAULT = "defaultprojectlist";   
     
-   /**
-    * Name of the label tag in the label definition template
-    */
+   /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_SNAPLOCK = "snaplock";   
    
-   /**
-    * Name of the label tag in the label definition template
-    */
+   /** Name of the label tag in the label definition template */
    public static final String C_TAG_LABEL="label";
    
-   /**
-    * Name of the label tag in the input definiton template
-    */
+   /** Name of the label tag in the input definiton template */
    public static final String C_TAG_INPUTFIELD="inputfield";
     
-   /**
-    * Name of the password tag in the input definiton template
-    */
+   /** Name of the password tag in the input definiton template */
    public static final String C_TAG_PASSWORD="password";
    
-   /**
-    * Name of the startup tag in the input definiton template
-    */
+   /** Name of the startup tag in the input definiton template */
    public static final String C_TAG_STARTUP="STARTUP";
       
-    /**
-    * Name of the submitbutton tag in the button definiton template
-    */
+    /** Name of the submitbutton tag in the button definiton template */
    public static final String C_TAG_SUBMITBUTTON="submitbutton";
 
-    /**
-    * Name if the errorbox tag in the error definiton template
-    */
+    /** Name of the errorbox tag in the error definiton template */
    public static final String C_TAG_ERRORBOX="errorbox";
 
+    /** Name of the errorbox tag in the error definiton template */
+   public static final String C_TAG_MESSAGEBOX="messagepage";
+   
    /**
     * Name of the select start tag in the input definiton template
     */
@@ -280,6 +276,28 @@ public interface I_CmsWpConstants {
     /** Button label of the error box */
     public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
 
+    // Parameters for error boxes and error pages
+    
+    /** Title of the messagebox */
+    public static final String C_MESSAGE_TITLE = "title";
+ 
+    /** First message of the messagebox */
+    public static final String C_MESSAGE_MESSAGE1 = "message1";
+
+    /** Second message of the messagebox */
+    public static final String C_MESSAGE_MESSAGE2 = "message2";
+    
+    /** First button of the messagebox */
+    public static final String C_MESSAGE_BUTTON1 = "button1";
+    
+    /** Second button of the messagebox */
+    public static final String C_MESSAGE_BUTTON2 = "button2";
+    
+    /** Link on button1 of the messagebox */
+    public static final String C_MESSAGE_LINK1 = "link1";
+  
+    /** Link on button2 of the messagebox */
+    public static final String C_MESSAGE_LINK2 = "link2";
     
     // Parameters for select boxes
     

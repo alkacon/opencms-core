@@ -17,7 +17,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/08 15:45:03 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/10 10:24:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -56,6 +56,12 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * Reference to the error defintion file
      */
     protected static CmsXmlWpErrorDefFile m_errordef = null;
+
+    
+     /**
+     * Reference to the box defintion file
+     */
+    protected static CmsXmlWpBoxDefFile m_boxdef = null;
     
     /**
      * Path to all worplace definition files (will be read once
@@ -202,6 +208,24 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
         return m_errordef;
     }
 
+      /**
+     * Reads the box definition file.
+     * @param cms The actual cms object
+     * @return Reference to the box defintion file.
+     * @exception CmsException
+     */
+     public CmsXmlWpBoxDefFile getBoxDefinitions(A_CmsObject cms) throws CmsException {
+        if(m_boxdef == null) {
+            if(m_workplaceElementPath == null) {
+                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+                m_workplaceElementPath = configFile.getWorkplaceElementPath();
+            }
+            m_boxdef = new CmsXmlWpBoxDefFile(cms, m_workplaceElementPath + C_BOXTEMPLATE);  
+        }
+        return m_boxdef;
+    }
+     
+     
     /**
      * Help method to print nice classnames in error messages
      * @return class name in [ClassName] format

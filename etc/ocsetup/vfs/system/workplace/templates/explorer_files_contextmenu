@@ -3,7 +3,7 @@
 
 <!-- context menues for folders start -->
 <contextmenue name="folder">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
@@ -51,7 +51,7 @@
 
 <!-- context menues for plain files start -->
 <contextmenue name="plain">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.htmledit"/>
 	<contextdisabled name="explorer.context.edit"/>
@@ -113,7 +113,7 @@
 
 <!-- context menues for XMLTemplates start -->
 <contextmenue name="XMLTemplate">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextspacer/>
@@ -172,7 +172,7 @@
 
 <!-- context menues for pages start -->
 <contextmenue name="page">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextdisabled name="explorer.context.edit"/>
 	<contextdisabled name="explorer.context.editcontrolfile" />
@@ -235,7 +235,7 @@
 
 <!-- context menues for image files start -->
 <contextmenue name="image">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
@@ -285,7 +285,7 @@
 
 <!-- context menues for binary files start -->
 <contextmenue name="binary">
-	<contextentry name="explorer.context.lock" href="#"/>
+	<contextentry name="explorer.context.lock" href="javascript:doAction(DO_LOCK)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="#"/>
 	<contextdisabled name="explorer.context.rename"/>
@@ -338,8 +338,6 @@
 
 <!-- context menues for file not in project or in online project start -->
 <contextmenue name="online">
-	<contextentry name="explorer.context.copy" href="#"/>
-	<contextspacer/>
 	<contextentry name="explorer.context.history" href="#"/>
 	<contextentry name="explorer.context.property" href="#"/>	
 </contextmenue>

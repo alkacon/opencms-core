@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/09 14:43:33 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/10 10:24:53 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -147,6 +147,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     
     /** The default context menu */
     private final static String C_DEFAULT_CONTEXTMENU="online";
+
+    /** The context link */
+    private final static String C_CONTEXT_LINK="CONTEXT_LINK";
     
     /** The context menu postfix for lock*/
     private final static String C_CONTEXT_LOCK="lock";
@@ -274,6 +277,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));   
                      // set the icon
+                    template.setXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
                     template.setXmlData("CONTEXT_MENU",getContextMenue(cms,res,template));
                     template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
                     
@@ -283,7 +287,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // set the link
                     template.setXmlData(C_LINK_VALUE,folder.getAbsolutePath());                      
                     // set the lock icon if nescessary
-                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),this));  
+                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),callingObject));  
                     // set the folder name
                     template.setXmlData(C_NAME_VALUE,folder.getName());
                     template.setXmlData(C_NAME_FILEFOLDER,template.getProcessedXmlDataValue(getName(cms,folder),this));     
@@ -326,6 +330,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // Set output style class according to the project and state of the file.
                     template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));                   
                     // set the icon
+                    template.setXmlData(C_CONTEXT_LINK,res.getAbsolutePath());
                     template.setXmlData("CONTEXT_MENU",getContextMenue(cms,res,template));
                     template.setXmlData("CONTEXT_NUMBER",new Integer(contextNumber++).toString());
                     
@@ -335,7 +340,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     // set the link         
                     template.setXmlData(C_LINK_VALUE,servlets+file.getAbsolutePath());  
                     // set the lock icon if nescessary
-                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));                      
+                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),callingObject));                      
                     // set the filename
                     //template.setXmlData(C_NAME_VALUE,template.getProcessedXmlDataValue("COLUMN_NAME_VALUE_FILE",this));   
                     template.setXmlData(C_NAME_VALUE,file.getName());     
@@ -553,7 +558,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          throws CmsException {
          StringBuffer output = new StringBuffer();
          // the file is locked
-         if (file.isLocked()) {
+        if (file.isLocked()) {
            int locked=file.isLockedBy();
            // it is locked by the actuel user
              if (cms.getRequestContext().currentUser().getId()==locked) {
@@ -566,6 +571,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          } else {
             output.append(C_LOCKED_VALUE_NOLOCK);
          }
+        //  output.append(C_LOCKED_VALUE_NOLOCK);
          return output.toString();
      }
      

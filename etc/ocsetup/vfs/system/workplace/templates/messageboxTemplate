@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<WP_MESSAGE>	
+	<messagepage>
+	<![CDATA[
+	<HTML>
+	
+	<script language=JavaScript>
+	<!--
+	function show_help()
+	{
+		return '2_2_2_2_6_1.html';
+	}
+	//-->
+	</script>
+	
+	<head>
+	<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+	
+	<title>OpenCms</title>
+	<link rel=stylesheet type="text/css" href="../css/format.css">
+	
+	</HEAD>
+	<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+	
+	<!-- table to center the page-->
+	<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+	<tr><td align=middle valign=center>
+	
+	<!-- table to set up the dialog box-->
+	<form id=LOCK name=LOCK>
+	<table cellspacing=0 cellpadding=0 border=2 width=300>
+		<tr><td>
+			<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+				
+				<!-- Begin tablehead blue-->
+				<tr> 
+	           		<td colspan=2 class="head">]]><PROCESS>title</PROCESS><![CDATA[</td>
+				</tr>
+				<!-- End tablehead blue-->
+				
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				
+				<tr>
+					<td class=dialogtxt colspan=2>
+						]]><PROCESS>message1</PROCESS><![CDATA[
+					</td>
+				</tr>
+				<tr>
+					<td class=dialogtxt colspan=2>
+						]]><PROCESS>message2</PROCESS><![CDATA[
+					</td>
+				</tr>
+				
+				<!-- Begin empty row-->
+				<tr> 
+	           		<td colspan=2 class="leerzeile">&nbsp;</td>
+				</tr>
+				<!-- End empty row-->
+				
+				<!-- Begin buttons-->
+				<tr><td class=dialogtxt colspan=2>
+					<table cellspacing=0 cellpadding=5 width=100%>
+					<tr>
+						<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><PROCESS>button1</PROCESS><![CDATA[" id=OK name=OK onClick="location.href=']]><PROCESS>link1</PROCESS><![CDATA['"></td>
+						<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><PROCESS>button2</PROCESS><![CDATA[" id=CANCEL name=CANCEL onClick="location.href=']]><PROCESS>link2</PROCESS><![CDATA['"></td>
+					</tr>
+					</table>
+				</td>
+				</tr>
+				<!-- End buttons-->
+				
+				</table>
+		</td></tr>
+	</table>
+	</form>
+   
+	</td></tr>
+	</table>
+	
+	</BODY>
+	</html>
+	]]>
+	</messagepage>
+</WP_MESSAGE>

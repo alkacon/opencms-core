@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<MESSAGEBOX title="messagebox.title.lock" message1="messagebox.message1.lock" message2="messagebox.message2.lock" button1="button.ok" button2="button.cancel" link1="lock.html?lock=true" link2="lock.html?lock=false" />
+</TEMPLATE>
+
+<TEMPLATE name="error">
+<ERRORPAGE title="error.title.lock" message="error.message.lock" reason="error.reason.lock" suggestion="error.suggestion.lock" ref="explorer_files.html" />
+</TEMPLATE>
+</WORKPLACE>

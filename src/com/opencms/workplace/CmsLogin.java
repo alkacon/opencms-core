@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/07 10:42:48 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/10 10:24:53 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -112,6 +112,8 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // set the default columns in the filelist
         int filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+        // HACK
+         filelist=4095;
         pref.put(C_USERPREF_FILELIST,new Integer(filelist));
         return pref;
     }
