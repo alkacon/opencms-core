@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/21 15:11:32 $
  */
  class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -87,12 +87,12 @@ import com.opencms.core.*;
      /**
       * The type of the launcher which is used to process this resource.
       */
-     private int launcherType;
+     private int m_launcherType;
      
      /**
       * The Java class thas is invoked by the launcher to process this resource.
       */
-     private String launcherClassname;
+     private String m_launcherClassname;
      
      
      
@@ -126,6 +126,8 @@ import com.opencms.core.*;
         m_groupId=groupId;
         m_projectId=projectId;
         m_accessFlags=accessFlags;
+        m_launcherType=launcherType;
+        m_launcherClassname=launcherClassname;
         m_state=state;
         m_lockedBy=lockedBy;
         m_dateCreated=dateCreated;
@@ -204,6 +206,51 @@ import com.opencms.core.*;
        return m_resourceType;
      }
 
+     /**
+	 * Sets the type id for this resource.
+	 * 
+	 * @param The new type id of this resource.
+	 */
+     void setType(int type) {
+         m_resourceType=type;
+     }
+     
+     /**
+	 * Gets the launcher type id for this resource.
+	 * 
+	 * @return the launcher type id of this resource.
+	 */
+     public int getLauncherType() {
+         return m_launcherType;
+     }
+         
+     /**
+	 * Sets launcher the type id for this resource.
+	 * 
+	 * @param The new launcher type id of this resource.
+	 */
+     void setLauncherType(int type){
+         m_launcherType=type;
+     }
+    
+	/**
+	 * Gets the launcher classname for this resource.
+	 * 
+	 * @return the launcher classname for this resource.
+	 */
+     public String getLauncherClassname() {
+         return m_launcherClassname;
+     }
+     
+     /**
+	 * Sets launcher classname for this resource.
+	 * 
+	 * @param The new launcher classname for this resource.
+	 */
+     void setLauncherClassname(String name) {
+      m_launcherClassname=name;
+         }
+     
 	/**
 	 * Returns the date of the creation for this resource.
 	 * 
@@ -268,6 +315,15 @@ import com.opencms.core.*;
          return m_userId;
       }
 	
+     /**
+	 * Sets the userid of the resource owner.
+	 * 
+	 * @param The userid of the new resource owner.
+	 */
+      void setOwnerId(int id){
+          m_userId=id;          
+      }
+    
 	/**
 	 * Returns the groupid of this resource.
 	 * 
@@ -276,15 +332,52 @@ import com.opencms.core.*;
       int getGroupId() {
          return  m_groupId;
       }
+      
+      /**
+	 * Sets the groupid of this resource.
+	 * 
+	 * @param The new groupid of this resource.
+	 */
+      void setGroupId(int id) {
+          m_groupId=id;
+      }
+                               
 	
+	/**
+	 * Returns the flags of this resource.
+	 * 
+	 * @return the flags of this resource.
+	 */
+      public int getFlags() {
+         return m_resourceFlags;
+      }
+      
+     /**
+	 * Sets the flags of this resource.
+	 * 
+	 * @param The new flags of this resource.
+	 */
+      void setFlags(int flags){
+          m_resourceFlags=flags;
+      }
+            	
 	/**
 	 * Returns the accessflags of this resource.
 	 * 
 	 * @return the accessflags of this resource.
 	 */
-      public int getFlags() {
+      public int getAccessFlags() {
          return m_accessFlags;
-             }
+      }
+      
+     /**
+	 * Sets the accessflags of this resource.
+	 * 
+	 * @param The new accessflags of this resource.
+	 */
+      void setAccessFlags(int flags){
+          m_accessFlags=flags;
+      }
 	  	
 	/**
 	 * Determines, if this resource is a folder.
@@ -323,6 +416,15 @@ import com.opencms.core.*;
       public int getState() {
       return m_state;
       }
+      
+      /**
+	 * Sets the state of this resource.
+	 * 
+	 * @param The new state of this resource.
+	 */
+      void setState(int state) {
+          m_state=state;
+      }
 	
 	/**
 	 * Determines, if this resource is locked by a user.
@@ -346,6 +448,15 @@ import com.opencms.core.*;
 	 */
       public int isLockedBy() {
         return m_lockedBy;
+      }
+      
+     /**
+	 * Sets the the user id that locked this resource.
+	 * 
+	 * @param The new the user id that locked this resource.
+	 */
+      void setLocked(int id) {
+          m_lockedBy=id;
       }
 
 	/**

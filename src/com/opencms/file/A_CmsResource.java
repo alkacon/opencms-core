@@ -8,7 +8,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/20 17:19:47 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/21 15:11:32 $
  */
 abstract class A_CmsResource {
 	/**
@@ -52,7 +52,42 @@ abstract class A_CmsResource {
 	 * @return the type id of this resource.
 	 */
 	abstract public int getType();
-
+    
+     /**
+	 * Sets the type id for this resource.
+	 * 
+	 * @param The new type id of this resource.
+	 */
+	abstract void setType(int type);
+        	
+	/**
+	 * Gets the launcher type id for this resource.
+	 * 
+	 * @return the launcher type id of this resource.
+	 */
+	abstract public int getLauncherType();
+    
+     /**
+	 * Sets launcher the type id for this resource.
+	 * 
+	 * @param The new launcher type id of this resource.
+	 */
+	abstract void setLauncherType(int type);
+    
+	/**
+	 * Gets the launcher classname for this resource.
+	 * 
+	 * @return the launcher classname for this resource.
+	 */
+	abstract public String getLauncherClassname();    
+    
+     /**
+	 * Sets launcher classname for this resource.
+	 * 
+	 * @param The new launcher classname for this resource.
+	 */
+	abstract void setLauncherClassname(String name);
+    
 	/**
 	 * Returns the date of the creation for this resource.
 	 * 
@@ -89,6 +124,13 @@ abstract class A_CmsResource {
 	 */
 	abstract int getOwnerId();
 	
+     /**
+	 * Sets the userid of the resource owner.
+	 * 
+	 * @param The userid of the new resource owner.
+	 */
+	abstract void setOwnerId(int id);
+    
 	/**
 	 * Returns the groupid of this resource.
 	 * 
@@ -96,13 +138,41 @@ abstract class A_CmsResource {
 	 */
     abstract int getGroupId();
 	
+     /**
+	 * Sets the groupid of this resource.
+	 * 
+	 * @param The new groupid of this resource.
+	 */
+	abstract void setGroupId(int id);
+    
 	/**
+	 * Returns the flags of this resource.
+	 * 
+	 * @return the flags of this resource.
+	 */
+    abstract int getFlags();
+    
+     /**
+	 * Sets the flags of this resource.
+	 * 
+	 * @param The new flags of this resource.
+	 */
+	abstract void setFlags(int flags);
+
+     /**
 	 * Returns the accessflags of this resource.
 	 * 
 	 * @return the accessflags of this resource.
 	 */
-    abstract public int getFlags();
-	  	
+    abstract int getAccessFlags();
+   
+     /**
+	 * Sets the accessflags of this resource.
+	 * 
+	 * @param The new accessflags of this resource.
+	 */
+	abstract void setAccessFlags(int flags);
+    
 	/**
 	 * Determines, if this resource is a folder.
 	 * 
@@ -125,6 +195,13 @@ abstract class A_CmsResource {
 	 */
 	abstract public int getState();
 	
+     /**
+	 * Sets the state of this resource.
+	 * 
+	 * @param The new state of this resource.
+	 */
+	abstract void setState(int state);
+    
 	/**
 	 * Determines, if this resource is locked by a user.
 	 * 
@@ -139,6 +216,13 @@ abstract class A_CmsResource {
 	 * If this resource is free it returns the unknown user id.
 	 */
 	abstract public int isLockedBy();
+    
+     /**
+	 * Sets the the user id that locked this resource.
+	 * 
+	 * @param The new the user id that locked this resource.
+	 */
+	abstract void setLocked(int id);
 
 	/**
 	 * Returns the project id for this resource.
