@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/02/04 16:42:08 $
-* Version: $Revision: 1.307 $
+* Date   : $Date: 2002/02/08 13:51:21 $
+* Version: $Revision: 1.308 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.307 $ $Date: 2002/02/04 16:42:08 $
+ * @version $Revision: 1.308 $ $Date: 2002/02/08 13:51:21 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3251,22 +3251,22 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
          CmsGroup group;
          // get all groups of the user
          Vector groups=m_dbAccess.getGroupsOfUser(username);
-         allGroups=groups;
+         allGroups = new Vector();
          // now get all childs of the groups
          Enumeration enu = groups.elements();
          while (enu.hasMoreElements()) {
              group=(CmsGroup)enu.nextElement();
 
              subGroup=getParent(currentUser, currentProject,group.getName());
-             while(subGroup != null) {
+             while((subGroup != null) && (!allGroups.contains(subGroup))) {
 
-                 // is the subGroup already in the vector?
-                 if(!allGroups.contains(subGroup)) {
-                     // no! add it
-                     allGroups.addElement(subGroup);
-                 }
+                 allGroups.addElement(subGroup);
                  // read next sub group
                  subGroup = getParent(currentUser, currentProject,subGroup.getName());
+             }
+
+             if(!allGroups.contains(group)) {
+                allGroups.add(group);
              }
          }
          m_usergroupsCache.put(C_USER+username,allGroups);
