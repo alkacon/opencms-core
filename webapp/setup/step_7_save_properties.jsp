@@ -21,14 +21,20 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_SCRIPT_HELP") %>
 <script type="text/javascript">
 	function checkSubmit() {
+		// checks the server URL and the ethernet MAC address
 		var regExp = "^(http|https|ftp)\://((([a-z_0-9\-]+)+(([\:]?)+([a-z_0-9\-]+))?)(\@+)?)?(((((([0-1])?([0-9])?[0-9])|(2[0-4][0-9])|(2[0-5][0-5])))\.(((([0-1])?([0-9])?[0-9])|(2[0-4][0-9])|(2[0-5][0-5])))\.(((([0-1])?([0-9])?[0-9])|(2[0-4][0-9])|(2[0-5][0-5])))\.(((([0-1])?([0-9])?[0-9])|(2[0-4][0-9])|(2[0-5][0-5]))))|((([a-z0-9\-])+\.)+([a-z]{2}\.[a-z]{2}|[a-z]{2,4})))(([\:])(([1-9]{1}[0-9]{1,3})|([1-5]{1}[0-9]{2,4})|(6[0-5]{2}[0-3][0-6])))?$";
-		var isOK = document.forms[0].workplaceSite.value.match(regExp);
-		if (isOK) {
+		var isUrlOK = document.forms[0].workplaceSite.value.match(regExp);
+		regExp = "^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$";
+		var macValue = document.forms[0].ethernetAddress.value;
+		var isMacOK = macValue.match(regExp);
+		if (isUrlOK && (isMacOK || macValue == "")) {
 			return true;
-		} else {
+		} else if (!isMacOK) {
+			alert("Please enter the valid MAC address of your server\nor leave the field empty to generate a random address.");
+		} else if (!isUrlOK) {
 			alert("Please enter a valid site for the OpenCms workplace.");
-			return false;
-		}		
+		}
+		return false;
 	}
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
@@ -112,7 +118,7 @@ because of the sandbox security model.<br>&nbsp;<br>
 You can leave this field empty, and a random ethernet address will be generated for your OpenCms server.
 This means there is a <i>very, very, very slight</i> chance that someone else in the universe might create some duplicate keys.<br>&nbsp;<br>
 <b>Please note:</b> The ethernet (MAC) address is NOT the IP address of the server.
-A vaild MAC ethernet address looks like this: <code>4f:a1:f1:c2:36:bf</code>.
+A valid MAC ethernet address looks like this: <code>4f:a1:f1:c2:36:bf</code>.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "3") %>
