@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/07 16:44:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/08 10:54:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -558,12 +558,15 @@ public class CmsDialog extends CmsWorkplace {
                     result.append(">\n");
                     break;
                 case BUTTON_CLOSE:
+                    String curAttributes = writeAttribute(attribute);
                     result.append("<input name=\"close\" type=\"button\" value=\"");
-                    result.append(key("button.close"));
-                    result.append("\" ");
-                    result.append(buttonActionClose());
+                    result.append(key("button.close")+"\"");
+                    if ("".equals(curAttributes)) {
+                        result.append(" ");
+                        result.append(buttonActionClose());
+                    }
                     result.append(" class=\"dialogbutton\"");
-                    result.append(writeAttribute(attribute));
+                    result.append(curAttributes);
                     result.append(">\n");
                     break;
                 default:

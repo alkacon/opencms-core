@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/07/07 16:44:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/08 10:54:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,11 +50,23 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
 public class CmsChaccBrowser extends CmsDialog {
+    
+    // always start individual action id's with 100 to leave enough room for more default actions
+    public static final int ACTION_GROUPS = 100;
+    public static final int ACTION_USERS = 200;
+    
+    public static final String DIALOG_TYPE = "chaccbrowser";
+    
+    public static final String DIALOG_FRAME_GROUPS = "groups";
+    public static final String DIALOG_FRAME_USERS = "users";
+    
+    
+    private String m_paramFrame;
 
     /**
      * Public constructor.<p>
@@ -80,6 +92,15 @@ public class CmsChaccBrowser extends CmsDialog {
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);    
+        if (DIALOG_FRAME_GROUPS.equals(getParamFrame())) {
+            setAction(ACTION_GROUPS);
+        } else if (DIALOG_FRAME_USERS.equals(getParamFrame())) {
+            setAction(ACTION_USERS);
+        }
     }
     
     /**
@@ -154,6 +175,30 @@ public class CmsChaccBrowser extends CmsDialog {
         }
         retValue.append("</span>");
         return retValue;
-        }
+    }
+    
+    /**
+     * Returns the value of the frame parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The frame parameter selects the frame which should be displayed.<p>
+     * 
+     * @return the value of the target parameter
+     */    
+    public String getParamFrame() {
+        return m_paramFrame;
+    }
+
+    /**
+     * Sets the value of the frame parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamFrame(String value) {
+        m_paramFrame = value;
+    }    
+
+        
+      
 
 }

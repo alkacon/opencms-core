@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/07/07 16:44:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/08 10:54:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -168,16 +168,21 @@ public class CmsMove extends CmsDialog {
      */
     private boolean performMoveOperation() throws CmsException {
 
-        // on folder copy display "please wait" screen, not for simple file copy
+        // on folder move display "please wait" screen, not for simple file copy
         if (CmsResource.isFolder(getParamFile()) && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
 
-        // calculate the target name
+        // get the target name
         String target = getParamTarget();
         if (target == null) target = "";
-
+        
+        if (target.equals(getParamFile())) {
+            throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
+        }
+        
+        // calculate the target name
         if (! target.startsWith("/")) {
             // target is not an absolute path, add the current parent folder
             target = CmsResource.getParent(getParamFile()) + target; 
