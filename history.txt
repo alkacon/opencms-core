@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/12/01 14:39:46 $
- * Version: $Revision: 1.594 $
+ * Date   : $Date: 2004/12/02 09:14:41 $
+ * Version: $Revision: 1.595 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,8 @@ OpenCms 5.x.x Caladan - xxx, 2004
 ! Added support for language - country based locales in the Workplace
 ! Added support for nesting XML content definitions
 ! Added internal caching for XML content definitions
+! XML content editor can now handle optional elements (min occurs = 0) from the XML schema
+! XML content editor can now handle multiple elements (max occurs > 1) from the XML schema
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 26, 2004
 ! Added 'templateone' default module as an extended template demo
