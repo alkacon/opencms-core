@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/07/05 14:16:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,15 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.CmsIndexException;
 import org.opencms.search.A_CmsIndexResource;
+import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexingThreadManager;
+import org.opencms.search.CmsSearchDocumentType;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchIndexSource;
 import org.opencms.search.I_CmsIndexer;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.defaults.master.CmsMasterContent;
@@ -61,15 +63,14 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.8 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/05 14:16:41 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
 public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     
-    public static final String C_PARAM_CLASSNAME = "classname";
-    public static final String C_PARAM_CHANNEL_DISPLAY_URI = "displayUri";
-    public static final String C_PARAM_CHANNEL_DISPLAY_PARAM = "displayPram";
+    public static final String C_PARAM_CHANNEL_DISPLAY_URI = "displayuri";
+    public static final String C_PARAM_CHANNEL_DISPLAY_PARAM = "displayparam";
     
     /** The index writer. */
     private IndexWriter m_writer;
@@ -98,6 +99,8 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     public void init(I_CmsReport report, CmsSearchIndex index, CmsSearchIndexSource indexSource, IndexWriter writer, CmsIndexingThreadManager threadManager) throws CmsIndexException {
         
         String cdClassName = null;
+        String resourceType = null;
+        CmsSearchDocumentType documentType = null;
         
         try {
             m_writer = writer;
@@ -106,7 +109,10 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             m_report = report;
             m_threadManager = threadManager;
             
-            cdClassName = m_indexSource.getParam(C_PARAM_CLASSNAME);
+            resourceType = (String)indexSource.getDocumentTypes().get(0);
+            documentType = OpenCms.getSearchManager().getDocumentTypeConfig(resourceType);            
+            cdClassName = (String)documentType.getResourceTypes().get(0);
+            
             m_contentDefinition = (CmsMasterContent)Class.forName(cdClassName).newInstance();
             m_subId = m_contentDefinition.getSubId();
 
@@ -143,16 +149,16 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
         
         boolean channelReported = false;
         CmsProject currentProject = null;
-        CmsRequestContext context = m_cms.getRequestContext();         
+        CmsRequestContext context = cms.getRequestContext();         
         
         try {
             // save the current project
             currentProject = context.currentProject();
             // switch to the configured project
-            context.setCurrentProject(m_cms.readProject(m_index.getProject()));
+            context.setCurrentProject(cms.readProject(m_index.getProject()));
             
-            String channelId = getChannelId(channel).toString();
-            Vector subChannels = CmsMasterContent.getAllSubChannelsOf(m_cms, channel);
+            String channelId = getChannelId(cms, channel).toString();
+            Vector subChannels = CmsMasterContent.getAllSubChannelsOf(cms, channel);
             
             // index subchannels
             for (int i = 0; i < subChannels.size(); i++) {
@@ -162,7 +168,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             } 
                 
             // now index channel
-            Vector resources = readAllByChannel(m_cms, channelId, m_subId);
+            Vector resources = readAllByChannel(cms, channelId, m_subId);
             for (Iterator i = resources.iterator(); i.hasNext();) {
                 
                 CmsMasterDataSet ds = (CmsMasterDataSet)i.next();
@@ -177,7 +183,10 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                     m_report.print("( " + (m_threadManager.getCounter()+1) + " ) ", I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(m_report.key("search.indexing_file_begin"), I_CmsReport.C_FORMAT_NOTE);
                     if (ds.m_title != null) {
-                        m_report.print(ds.m_title, I_CmsReport.C_FORMAT_DEFAULT);
+                        String title = ds.m_title;
+                        title = CmsStringSubstitution.substitute(title, "'", "\\'");
+                        title = CmsStringSubstitution.substitute(title, "\"", "\\\"");
+                        m_report.print(title, I_CmsReport.C_FORMAT_DEFAULT);
                     }
                     m_report.print(m_report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
@@ -209,22 +218,23 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     /**
      * Returns the uuid of the channel.<p>
      * 
+     * @param cms the current user's CmsObject
      * @param channelName name of the channel 
      * @return the uuid of the channel
      * @throws CmsIndexException if something goes wrong
      */
-    protected CmsUUID getChannelId(String channelName) throws CmsIndexException {
+    protected CmsUUID getChannelId(CmsObject cms, String channelName) throws CmsIndexException {
 
-        String siteRoot = m_cms.getRequestContext().getSiteRoot();
-        m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
         CmsUUID id = null;
         try {         
-            CmsResource channel = m_cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource channel = cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);
             id = channel.getResourceId();
         } catch (Exception exc) {
             throw new CmsIndexException("Can't access channel " + channelName, exc);
         } finally {
-            m_cms.getRequestContext().setSiteRoot(siteRoot);
+            cms.getRequestContext().setSiteRoot(siteRoot);
         }
         return id;
     }

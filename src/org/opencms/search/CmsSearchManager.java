@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/07/05 14:16:41 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.18 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.19 $ $Date: 2004/07/05 14:16:41 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -145,15 +145,16 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     /** The Admin cms object to index Cms resources. */
     private CmsObject m_cms;
     
-    /** Configured documenttypes for indexing using &lt;documenttype&gt;. */
-    private Map m_documenttypes;
+    /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
+    private Map m_documentTypes;
     
-    private List m_documentTypeConfigs;
+    /** A map of document factory configurations. */
+    private Map m_documentTypeConfigs;
            
-    /** Configured indexes using &lt;index&gt;. */
+    /** A list of search indexes. */
     private List m_indexes;
 
-    /** Path to index files. */
+    /** Path to index files below WEB-INF/. */
     private String m_path;
     
     /** The result cache size. */
@@ -230,11 +231,12 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         String resourceType = null;
         String resourceTypeId = null;        
         
-        m_documenttypes = new HashMap();
+        m_documentTypes = new HashMap();
         
-        for (int i = 0, n = m_documentTypeConfigs.size(); i < n; i++) {
+        List keys = new ArrayList(m_documentTypeConfigs.keySet());
+        for (int i = 0, n = keys.size(); i < n; i++) {
             
-            documenttype = (CmsSearchDocumentType)m_documentTypeConfigs.get(i);
+            documenttype = (CmsSearchDocumentType)(m_documentTypeConfigs.get(keys.get(i)));
             name = documenttype.getName();
             
             try {    
@@ -282,10 +284,10 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                                 OpenCms.getLog(this).debug("Configured document class: " + className + " for " + resourceType + ":" + mimeType);
                             }
                                     
-                            m_documenttypes.put(resourceTypeId + ":" + mimeType, documentFactory);
+                            m_documentTypes.put(resourceTypeId + ":" + mimeType, documentFactory);
                         }
                     } else {
-                        m_documenttypes.put(resourceTypeId + "", documentFactory);
+                        m_documentTypes.put(resourceTypeId + "", documentFactory);
                     }
                 }
             } catch (CmsException e) {
@@ -301,8 +303,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      */
     public CmsSearchManager() {
 
-        m_documenttypes = new HashMap();
-        m_documentTypeConfigs = new ArrayList();
+        m_documentTypes = new HashMap();
+        m_documentTypeConfigs = new HashMap();
         m_analyzers = new HashMap();
         m_indexes = new ArrayList();
         m_indexSources = new HashMap();
@@ -390,9 +392,9 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
 
         String documentTypeKey = resource.getDocumentKey();
         
-        I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documenttypes.get(documentTypeKey);                           
+        I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);                           
         if (factory == null) {
-            factory = (I_CmsDocumentFactory)m_documenttypes.get(resource.getType() + "");
+            factory = (I_CmsDocumentFactory)m_documentTypes.get(resource.getType() + "");
         }
         
         return factory;
@@ -403,10 +405,10 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * 
      * @return the set of names of all configured documenttypes
      */
-    public Set getDocumenttypes () {
+    protected Set getDocumentTypes () {
     
         Set names = new HashSet();
-        for (Iterator i = m_documenttypes.values().iterator(); i.hasNext();) {
+        for (Iterator i = m_documentTypes.values().iterator(); i.hasNext();) {
             I_CmsDocumentFactory factory = (I_CmsDocumentFactory)i.next();
             names.add(factory.getName());
         }
@@ -621,8 +623,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     report.println(report.key("search.indexing_failed"), I_CmsReport.C_FORMAT_WARNING);
                 }
                     
-                if (OpenCms.getLog(this).isWarnEnabled()) {
-                    OpenCms.getLog(this).warn("Rebuilding of search index " + index.getName() + " failed!", e);
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Rebuilding of search index " + index.getName() + " failed!", e);
                 }                
             } finally {
                 if (writer != null) { 
@@ -691,7 +693,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * 
      * @return the name of the directory below WEB-INF/ where the search indexes are stored
      */
-    public String getDirectory() {
+    protected String getDirectory() {
         
         return m_path;
     }    
@@ -713,7 +715,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      */
     public void addDocumentTypeConfig(CmsSearchDocumentType documentType) {    
         
-        m_documentTypeConfigs.add(documentType);
+        m_documentTypeConfigs.put(documentType.getName(), documentType);
     }
     
     /**
@@ -744,6 +746,17 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     public void addSearchIndexSource(CmsSearchIndexSource searchIndexSource) {
         
         m_indexSources.put(searchIndexSource.getName(), searchIndexSource);
-    }   
+    }    
+    
+    /**
+     * Returns a document type config.<p>
+     * 
+     * @param name the name of the document type config
+     * @return the document type config.
+     */
+    public CmsSearchDocumentType getDocumentTypeConfig(String name) {
+        
+        return (CmsSearchDocumentType)m_documentTypeConfigs.get(name);
+    }
     
 }

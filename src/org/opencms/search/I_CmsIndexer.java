@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2004/07/05 11:58:21 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/07/05 14:16:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,9 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Interface for the vfs and cos indexer.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/07/05 11:58:21 $
+ * @version $Revision: 1.4 $ $Date: 2004/07/05 14:16:41 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
  */
 public interface I_CmsIndexer {
 
