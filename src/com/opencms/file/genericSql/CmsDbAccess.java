@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 14:02:43 $
-* Version: $Revision: 1.281 $
+* Date   : $Date: 2003/05/15 15:18:35 $
+* Version: $Revision: 1.282 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.281 $ $Date: 2003/05/15 14:02:43 $ *
+ * @version $Revision: 1.282 $ $Date: 2003/05/15 15:18:35 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -812,47 +812,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void deleteAllProperties(int projectId, CmsResource resource)
-        throws CmsException {
-
+    public void deleteAllProperties(int projectId, CmsResource resource) throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
-        String usedPool = null;
-        String usedStatement = null;
-        //int onlineProject = getOnlineProject(projectId).getId();
-        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-            usedPool = m_poolNameOnline;
-            usedStatement = "_ONLINE";
-        } else {
-            usedPool = m_poolName;
-            usedStatement = "";
-        }
+
         try {
-            // create statement
-            con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROPERTIES_DELETEALL"+usedStatement));
+            con = m_SqlQueries.getConnection(projectId);
+            statement = m_SqlQueries.getPreparedStatement(con, projectId, "C_PROPERTIES_DELETEALL");
             statement.setString(1, resource.getResourceId().toString());
             statement.executeUpdate();
-        } catch( SQLException exc ) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
-                CmsException.C_SQL_ERROR, exc);
+        } catch (SQLException exc) { 
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);         
         } finally {
-            if(statement != null) {
-                 try {
-                     statement.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-             if(con != null) {
-                 try {
-                     con.close();
-                 } catch(SQLException exc) {
-                     // nothing to do here
-                 }
-             }
-          }
+            m_SqlQueries.closeAll(con, statement, null);
+        }
     }
 
     /**

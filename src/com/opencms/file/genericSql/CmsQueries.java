@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/15 12:39:35 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/05/15 15:18:35 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * TODO: multiple instances of this class should not load the same property hashes multiple times.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.48 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.49 $ $Date: 2003/05/15 15:18:35 $
  */
 public class CmsQueries extends Object {
 
@@ -226,7 +226,7 @@ public class CmsQueries extends Object {
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnectionForProject(int projectId) throws SQLException {
+    public Connection getConnection(int projectId) throws SQLException {
         String jdbcUrl = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) ? m_JdbcUrlOnline : m_JdbcUrlOffline;
         return DriverManager.getConnection(jdbcUrl);
     }
@@ -238,8 +238,8 @@ public class CmsQueries extends Object {
      * @return a JDBC connection from the pool specified by the project-ID 
      * @throws SQLException if a database access error occurs
      */
-    public Connection getConnectionForProject(CmsProject project) throws SQLException {
-        return getConnectionForProject(project.getId());
+    public Connection getConnection(CmsProject project) throws SQLException {
+        return getConnection(project.getId());
     }
     
     /**
@@ -253,7 +253,7 @@ public class CmsQueries extends Object {
     public Connection getConnection() throws SQLException {
         // To receive a JDBC connection from the offline pool, 
         // a non-existent dummy project-ID is used
-        return getConnectionForProject(Integer.MIN_VALUE);
+        return getConnection(Integer.MIN_VALUE);
     }
 
     /**
@@ -277,7 +277,7 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementForProject(Connection con, int projectId, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
         String rawSql = get(projectId, queryKey);
         return con.prepareStatement(rawSql);
     }
@@ -292,8 +292,8 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementForProject(Connection con, CmsProject project, String queryKey) throws SQLException {
-        return getPreparedStatementForProject(con, project.getId(), queryKey);
+    public PreparedStatement getPreparedStatement(Connection con, CmsProject project, String queryKey) throws SQLException {
+        return getPreparedStatement(con, project.getId(), queryKey);
     }
 
     /**
@@ -304,7 +304,7 @@ public class CmsQueries extends Object {
      * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
      * @throws SQLException if a database access error occurs
      */
-    public PreparedStatement getPreparedStatementForKey(Connection con, String queryKey) throws SQLException {
+    public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
         String rawSql = get(Integer.MIN_VALUE, queryKey);
         return con.prepareStatement(rawSql);
     }
@@ -380,7 +380,7 @@ public class CmsQueries extends Object {
                 res.close();
             }
         } catch (Exception e) {
-            if (A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+            if (A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + getClass().getName() + "] error closing JDBC connection/statement/result: " + e.toString());
             }
         } finally {
@@ -423,6 +423,14 @@ public class CmsQueries extends Object {
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {       
         return res.getBytes(attributeName);
+    }
+    
+    public CmsException getCmsException(Object o, String message, int type, Throwable rootCause) {
+        if (A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + o.getClass().getName() + "] " + ((message==null)?"":message) + rootCause.toString() );
+        }
+                
+        return new CmsException("[" + o.getClass().getName() + "] " + ((message==null)?"":message), type, rootCause);
     }
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsVfsAccess.java,v $
- * Date   : $Date: 2003/05/15 14:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/15 15:18:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the VFS access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 15:18:35 $
  */
 public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChannels {
 
@@ -451,8 +451,8 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         PreparedStatement statement = null;
 
         try {
-            con = m_SqlQueries.getConnectionForProject(project);
-            statement = m_SqlQueries.getPreparedStatementForProject(con, project, "C_RESOURCES_WRITE");
+            con = m_SqlQueries.getConnection(project);
+            statement = m_SqlQueries.getPreparedStatement(con, project, "C_RESOURCES_WRITE");
 
             statement.setString(1, resourceId.toString());
             statement.setString(2, parentId.toString());
@@ -560,8 +560,8 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         PreparedStatement statement = null;
 
         try {
-            con = m_SqlQueries.getConnectionForProject(project);
-            statement = m_SqlQueries.getPreparedStatementForProject(con, project, "C_RESOURCES_WRITE");
+            con = m_SqlQueries.getConnection(project);
+            statement = m_SqlQueries.getPreparedStatement(con, project, "C_RESOURCES_WRITE");
 
             statement.setString(1, resourceId.toString());
             statement.setString(2, parentId.toString());
@@ -647,7 +647,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
 
         try {
             con = m_SqlQueries.getConnection();
-            statement = m_SqlQueries.getPreparedStatementForKey(con, "C_PROJECTRESOURCES_CREATE");
+            statement = m_SqlQueries.getPreparedStatement(con, "C_PROJECTRESOURCES_CREATE");
 
             // write new resource to the database
             statement.setInt(1, projectId);
@@ -2573,8 +2573,8 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
         Connection con = null;
 
         try {
-            con = m_SqlQueries.getConnectionForProject(projectId);
-            statement = m_SqlQueries.getPreparedStatementForProject(con, projectId, "C_RESOURCES_READ");
+            con = m_SqlQueries.getConnection(projectId);
+            statement = m_SqlQueries.getPreparedStatement(con, projectId, "C_RESOURCES_READ");
 
             statement.setString(1, foldername);
             statement.setInt(2, projectId);
@@ -2742,7 +2742,7 @@ public class CmsVfsAccess extends Object implements I_CmsConstants, I_CmsLogChan
 
         try {
             con = m_SqlQueries.getConnection();
-            statement = m_SqlQueries.getPreparedStatementForKey(con, "C_PROJECTRESOURCES_READ");
+            statement = m_SqlQueries.getPreparedStatement(con, "C_PROJECTRESOURCES_READ");
 
             // select resource from the database
             statement.setInt(1, projectId);

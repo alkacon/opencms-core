@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 14:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/15 15:18:35 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 15:18:35 $
  */
 public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserAccess {
 
@@ -293,7 +293,6 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void addUserToGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
-
         Connection con = null;
         PreparedStatement statement = null;
 
@@ -302,8 +301,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             // if not, add this user to the group
             try {
                 // create statement
-                con = DriverManager.getConnection(m_poolName);
-                statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_ADDUSERTOGROUP"));
+                con = m_SqlQueries.getConnection();
+                statement = m_SqlQueries.getPreparedStatement(con, "C_GROUPS_ADDUSERTOGROUP");               
+                
                 // write the new assingment to the database
                 statement.setString(1, groupid.toString());
                 statement.setString(2, userid.toString());
@@ -312,8 +312,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
                 statement.executeUpdate();
 
             } catch (SQLException e) {
-
-                throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
             } finally {
                 m_SqlQueries.closeAll(con, statement, null);
             }
@@ -967,7 +966,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
         try {
             con = m_SqlQueries.getConnection();
-            statement = m_SqlQueries.getPreparedStatementForKey(con, "C_USERS_READID");
+            statement = m_SqlQueries.getPreparedStatement(con, "C_USERS_READID");
 
             statement.setString(1, id.toString());
             res = statement.executeQuery();
