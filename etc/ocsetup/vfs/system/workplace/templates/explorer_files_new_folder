@@ -12,6 +12,16 @@ function show_help()
 	return '2_2_2_2_3_2.html';
 }
 //-->
+
+
+function checkForName(){
+
+	if(LINK.NEUNAME.value!="")NEU.WEITER.disabled=false;
+	else NEU.WEITER.disabled=false;
+ 
+}
+
+
 </script>
 
 <head>
@@ -94,7 +104,7 @@ function show_help()
 		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
 	</tr>
 	<tr>
-		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+		<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;checkForName();"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 	</tr>
 	<tr><td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td></tr>
 	<tr>
