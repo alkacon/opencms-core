@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/07/10 08:02:28 $
-* Version: $Revision: 1.249 $
+* Date   : $Date: 2002/07/22 11:47:10 $
+* Version: $Revision: 1.250 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.249 $ $Date: 2002/07/10 08:02:28 $ *
+ * @version $Revision: 1.250 $ $Date: 2002/07/22 11:47:10 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2024,7 +2024,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         deleteAllProjectResources(project.getId());
 
         // delete all lost files
-        clearFilesTable();
+        // Removed because it takes too much time, ednfal 2002/07/19
+        //clearFilesTable();
 
         // finally delete the project
         Connection con = null;
