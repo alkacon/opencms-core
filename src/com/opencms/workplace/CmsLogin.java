@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2000/07/18 16:13:50 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/07/27 09:26:01 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.30 $ $Date: 2000/07/18 16:13:50 $
+ * @version $Revision: 1.31 $ $Date: 2000/07/27 09:26:01 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -173,7 +173,7 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
             try {
                 username=cms.loginUser(name,password);
             } catch (CmsException e) {
-              if (e.getType()==CmsException.C_NO_ACCESS) {
+              if (e.getType()==CmsException.C_NO_USER) {
                     // there was an authentification error during login
                     // set user to null and switch to error template
                     username=null;

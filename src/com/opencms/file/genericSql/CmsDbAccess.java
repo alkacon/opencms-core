@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/24 06:56:42 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2000/07/27 09:26:48 $
+ * Version: $Revision: 1.107 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.106 $ $Date: 2000/07/24 06:56:42 $ * 
+ * @version $Revision: 1.107 $ $Date: 2000/07/27 09:26:48 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -994,6 +994,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
+        // a.lucas: catch CmsException here and throw it again.
+        // Don't wrap another CmsException around it, since this may cause problems during login.
+        catch (CmsException e) {
+            throw e;
+        }
 		catch (Exception e) {
             throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
@@ -1065,6 +1070,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
+        // a.lucas: catch CmsException here and throw it again.
+        // Don't wrap another CmsException around it, since this may cause problems during login.
+        catch (CmsException e) {
+            throw e;
+        }
 		catch (Exception e) {
             throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
@@ -1133,6 +1143,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
+        // a.lucas: catch CmsException here and throw it again.
+        // Don't wrap another CmsException around it, since this may cause problems during login.
+        catch (CmsException e) {
+            throw e;
+        }
 		catch (Exception e) {
             throw new CmsException("["+this.getClass().getName()+"]", e);			
 		} finally {
