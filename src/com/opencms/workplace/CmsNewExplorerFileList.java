@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
- * Date   : $Date: 2000/12/04 16:15:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/12/05 13:49:51 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.1 $ $Date: 2000/12/04 16:15:43 $
+ * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/12/05 13:49:51 $
  */
 public class CmsNewExplorerFileList extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -217,10 +217,12 @@ private boolean folderExists(CmsObject cms, String path) {
 				for (int i=startAt; i<tree.size(); i++){
 					CmsFolder folder = (CmsFolder)tree.elementAt(i);
 					if(folder.getProjectId() != onlineProjectId){
-						i++;
 						grey = false;
 						parentId = folder.getParentId();
-						idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()), new Integer(folder.getResourceId()));
+						if(!(folder.getState() == 2)){
+							i++;
+							idMixer.put(new Integer(((CmsFolder)tree.elementAt(i)).getResourceId()), new Integer(folder.getResourceId()));
+						}
 					}else{
 						grey = true;
 						parentId = folder.getParentId();
