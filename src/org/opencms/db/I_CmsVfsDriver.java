@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/30 10:34:31 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/07/31 16:37:22 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/07/30 10:34:31 $
+ * @version $Revision: 1.26 $ $Date: 2003/07/31 16:37:22 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -451,17 +451,12 @@ public interface I_CmsVfsDriver {
     List readLockedFileHeaders() throws CmsException;
         
     /**
-     * Switches the link type between a specified VFS soft link and hard link.<p>
+     * Updates the project ID attrib. of a resource record.<p>
      * 
-     * Either one of the two CmsResource arguments may be null (passing null for both
-     * resources won't make much sense) to change the link-type of a single resource.
-     * 
-     * @param currentUser the current user
-     * @param currentProject the current project
-     * @param softLink a soft-link resource, which will become a hard-link
-     * @param hardLink a hard-link resource, which will become a soft-link
+     * @param project the resource record is updated with the ID of this project
+     * @param resource the resource that gets updated
      * @throws CmsException if something goes wrong
      */
-    //void switchLinkType(CmsUser currentUser, CmsProject currentProject, CmsResource softLink, CmsResource hardLink) throws CmsException;
+    void updateProjectId(CmsProject project, CmsResource resource) throws CmsException;
      
 }
