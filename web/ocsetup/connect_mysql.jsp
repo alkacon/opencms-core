@@ -13,7 +13,7 @@
 <jsp:setProperty name="Bean" property="*" />
 
 <% 
-
+	
 	/* next page to be accessed */
 	String nextPage ="create_database.jsp";
 	
@@ -58,6 +58,10 @@
 			
 			session.setAttribute("createDb",createDb);
 		
+		} else {
+			
+			// initialize the database name with the app name
+			Bean.setDb(Bean.getAppName());
 		}
 				
 		
@@ -160,7 +164,7 @@
 								<table border="0" cellpadding="5"  cellspacing="0" class="header">
 									<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 									<tr>
-										<td>Database Server Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
+										<td>Setup Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
 									</tr>																		
 									<tr>
 										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= Bean.getDbWorkUser() %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>

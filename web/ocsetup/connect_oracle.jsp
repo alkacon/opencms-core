@@ -67,6 +67,10 @@
 			session.setAttribute("createTables",createTables);
 			session.setAttribute("createDb",createDb);
 		
+		} else {
+			
+			// initialize the work user with the app name
+			Bean.setDbWorkUser(Bean.getAppName());
 		}
 				
 		
@@ -184,16 +188,16 @@
 								<table border="0" cellpadding="5" cellspacing="0" class="header">
 									<tr><td>&nbsp;</td><td>User</td><td>Password</td></tr>
 									<tr>
-										<td>Database Server Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
+										<td>Setup Connection</td><td><input type="text" name="dbCreateUser" size="8" style="width:120px;" value='<%= Bean.getDbCreateUser() %>'></td><td><input type="text" name="dbCreatePwd" size="8" style="width:120px;" value='<%= Bean.getDbCreatePwd() %>'></td>										
 									</tr>
 									<%
 									String user = Bean.getDbWorkUser();
-									if(user.equals(""))	{
-										user = request.getContextPath();
-									}
-									if(user.startsWith("/"))	{
-										user = user.substring(1,user.length());
-									}
+									//if(user.equals(""))	{
+									//	user = request.getContextPath();
+									//}
+									//if(user.startsWith("/"))	{
+									//	user = user.substring(1,user.length());
+									//}
 									%>
 									<tr>
 										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/07/02 15:12:07 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/07/04 10:19:00 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1141,4 +1141,21 @@ public class CmsSetup {
         this.setExtProperty("defaultContentEncoding", defaultContentEncoding);
     }
 
+	/**
+	 * Sets the webapp name
+	 * 
+	 * @param value the new webapp name
+	 */
+	public void setAppName(String value) {
+		this.setExtProperty("app.name", value);
+	}
+	
+	/**
+	 * Returns the webapp name
+	 * 
+	 * @return the webapp name
+	 */
+	public String getAppName() {
+		return this.getExtProperty("app.name");
+	}
 }

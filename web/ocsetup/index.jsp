@@ -19,9 +19,7 @@ try {
 	/* Initialize the name of the database */
 	String appName = request.getContextPath().replaceAll("\\W","");
 	if (appName != null && appName.length() > 0) {
-		
-		Bean.setDb(appName);
-		Bean.setDbWorkUser(appName);
+		Bean.setAppName(appName);
 	}
 	
 	/* check wizards accessability */
