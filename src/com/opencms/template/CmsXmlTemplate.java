@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2000/03/15 13:57:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/03/17 09:36:11 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.19 $ $Date: 2000/03/15 13:57:06 $
+ * @version $Revision: 1.20 $ $Date: 2000/03/17 09:36:11 $
  */
 public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -546,20 +546,13 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
      * @return <code>true</code> if all subtemplates are cacheable, <code>false</code> otherwise.
      */
     public boolean subtemplatesCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) { 
-        long time = System.currentTimeMillis();
-        A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ****************************************");
-        A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** " + time);
         boolean cacheable = true;
         CmsXmlTemplateFile doc = null;
         Vector subtemplates = null;
         try {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** " + (System.currentTimeMillis() - time));
             doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** " + (System.currentTimeMillis() - time));
             doc.init(cms, templateFile);               
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** " + (System.currentTimeMillis() - time));
             subtemplates = doc.getAllSubElements();
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** " + (System.currentTimeMillis() - time));
         } catch(Exception e) {
             System.err.println(e);
             return false;
@@ -592,8 +585,6 @@ public class CmsXmlTemplate implements I_CmsConstants, I_CmsXmlTemplate, I_CmsLo
                 System.err.println("E: " + e);
             }                
         }                
-        A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ***** GESAMT: " + (System.currentTimeMillis() - time));
-        A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] ****************************************");
         return cacheable;
     }    
 
