@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/11 13:10:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.I_CmsConstants;
@@ -47,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -74,6 +75,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testMoveSingleResource"));
         suite.addTest(new TestMoveRename("testMoveSingleNewResource"));
         suite.addTest(new TestMoveRename("testMultipleMoveResource"));
+        suite.addTest(new TestMoveRename("testRenameNewFolder"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -251,4 +253,41 @@ public class TestMoveRename extends OpenCmsTestCase {
         // now assert the filter for the rest of the attributes        
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);       
     }      
+
+    /**
+     * Tests a "multiple move" on a resource.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testRenameNewFolder() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing rename a new folder with content");
+        
+        // switch to the root context
+        cms.getRequestContext().setSiteRoot("/");
+        
+        String source = "/sites/default/folder1";
+        String newFolder = "/sites/default/newfolder";
+        String destination = newFolder + "/folder1";
+        String newFolder2 = "/sites/default/testfolder";
+
+        cms.createResource(newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        
+        cms.lockResource(source);
+        cms.moveResource(source, destination);                
+        cms.moveResource(newFolder, newFolder2);
+        
+        try {
+            cms.readResource(newFolder2, CmsResourceFilter.ALL);
+        } catch (CmsVfsResourceNotFoundException e) {
+            echo("ERROR: folder not found, try to create it.");
+            cms.createResource(newFolder2, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        }
+        
+        assertState(cms, newFolder2, I_CmsConstants.C_STATE_NEW);
+        
+        cms.undoChanges(source, false);
+    }
+    
 }
