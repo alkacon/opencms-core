@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/03/01 12:22:06 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -161,6 +161,25 @@ class CmsShellCommands implements I_CmsShellCommands {
         System.out.println("\nThe current folder is now '" + resolvedTarget + "'"); 
         System.out.println();        
     }
+    
+    /**
+     * Changes the access control for a given resource and a given principal(user/group).
+     * 
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (group or user)
+     * @param principalName name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @throws CmsException if something goes wrong
+     * @see CmsObject#chacc(String, String, String, String)
+     */
+    public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
+        if ("group".equals(principalType.toLowerCase().trim())) {
+            principalName = OpenCms.getDefaultUsers().translateGroup(principalName);
+        } else {
+            principalName = OpenCms.getDefaultUsers().translateUser(principalName);
+        }
+        m_cms.chacc(resourceName, principalType, principalName, permissionString);
+    }        
 
     /**
      * Prints the OpenCms copyright information.<p>
@@ -327,17 +346,6 @@ class CmsShellCommands implements I_CmsShellCommands {
         
         OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());  
     }
-    
-    /**
-     * Imports a resource into the Cms.<p>
-     * 
-     * @param importFile the name (absolute Path) of the import resource (zip or folder)
-     * @param importPath the name (absolute Path) of folder in which should be imported
-     * @throws Exception if something goes wrong
-     */
-    public void importResources(String importFile, String importPath) throws Exception {
-        OpenCms.getImportExportManager().importData(m_cms, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile), importPath, new CmsShellReport());
-    }
 
     /**
      * Exports a list of resources from the current site root and the user data to a ZIP file.<p>
@@ -427,6 +435,41 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Reads a given file from the local harddisk and imports
+     * it to the OpenCms system.<p>
+     *
+     * @param filename file to be uploaded
+     * @return the file content
+     * @throws CmsException if something goes wrong
+     */
+    private byte[] importFile(String filename) throws CmsException {
+        File file = null;
+        long len = 0;
+        FileInputStream importInput = null;
+        byte[] result;
+        // try to load the file
+        try {
+            file = new File(filename);
+        } catch (Exception e) {
+            file = null;
+        }
+        if (file == null) {
+            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
+        }
+        // now import the file
+        try {
+            len = file.length();
+            result = new byte[(int)len];
+            importInput = new FileInputStream(file);
+            importInput.read(result);
+            importInput.close();
+        } catch (Exception e) {
+            throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
+        }
+        return result;
+    }
+
+    /**
      * Imports a module.<p>
      *
      * @param importFile the absolute path of the import module file
@@ -449,6 +492,24 @@ class CmsShellCommands implements I_CmsShellCommands {
         String exportPath = m_cms.readPackagePath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);        
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
+    }
+    
+    /**
+     * Exists so that the script can run without the wizard, does nothing.<p>
+     */
+    public void importModulesFromSetupBean() {
+        // noop, exists so that the script can run without the wizard
+    }
+    
+    /**
+     * Imports a resource into the Cms.<p>
+     * 
+     * @param importFile the name (absolute Path) of the import resource (zip or folder)
+     * @param importPath the name (absolute Path) of folder in which should be imported
+     * @throws Exception if something goes wrong
+     */
+    public void importResources(String importFile, String importPath) throws Exception {
+        OpenCms.getImportExportManager().importData(m_cms, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile), importPath, new CmsShellReport());
     }
 
     /**
@@ -475,12 +536,21 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
+     */
+    public void initShellCmsObject(CmsObject cms, CmsShell shell) {
+        m_cms = cms;   
+        m_shell = shell; 
+    }
+
+    /**
      * Log a user in to the the CmsSell.<p>
      *
      * @param username the name of the user to log in
      * @param password the password of the user
      */
     public void login(String username, String password) {
+        username = OpenCms.getDefaultUsers().translateUser(username);
         try {
             m_cms.loginUser(username, password);
             System.out.println("You are now logged in as user '" + whoami().getName() + "'.");
@@ -713,6 +783,38 @@ class CmsShellCommands implements I_CmsShellCommands {
     }    
 
     /**
+     * @see org.opencms.main.I_CmsShellCommands#shellExit()
+     */
+    public void shellExit() {
+        System.out.println();        
+        System.out.println("Goodbye!");
+    }
+
+    /**
+     * @see org.opencms.main.I_CmsShellCommands#shellStart()
+     */
+    public void shellStart() {
+        System.out.println();
+        System.out.println("Welcome to the OpenCms shell!");
+        System.out.println();
+
+        // print the version information
+        version();
+        // print the copyright message
+        copyright();
+        // print the help information
+        help();        
+    }
+    
+    /**
+     * Unlocks the current project, required before publishing.<p>
+     * @throws Exception if something goes wrong
+     */
+    public void unlockCurrentProject() throws Exception {
+        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
+    }
+
+    /**
      * Updates all configured search indexes.<p>
      * 
      * @throws Exception if something goes wrong
@@ -748,14 +850,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
     
     /**
-     * Unlocks the current project, required before publishing.<p>
-     * @throws Exception if something goes wrong
-     */
-    public void unlockCurrentProject() throws Exception {
-        m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
-    }
-    
-    /**
      * Returns the version information for this OpenCms instance.<p>
      */
     public void version() {
@@ -770,79 +864,5 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsUser whoami() {
         return m_cms.getRequestContext().currentUser();
-    }
-
-    /**
-     * Reads a given file from the local harddisk and imports
-     * it to the OpenCms system.<p>
-     *
-     * @param filename file to be uploaded
-     * @return the file content
-     * @throws CmsException if something goes wrong
-     */
-    private byte[] importFile(String filename) throws CmsException {
-        File file = null;
-        long len = 0;
-        FileInputStream importInput = null;
-        byte[] result;
-        // try to load the file
-        try {
-            file = new File(filename);
-        } catch (Exception e) {
-            file = null;
-        }
-        if (file == null) {
-            throw new CmsException("Could not load local file " + filename, CmsException.C_NOT_FOUND);
-        }
-        // now import the file
-        try {
-            len = file.length();
-            result = new byte[(int)len];
-            importInput = new FileInputStream(file);
-            importInput.read(result);
-            importInput.close();
-        } catch (Exception e) {
-            throw new CmsException(e.toString(), CmsException.C_UNKNOWN_EXCEPTION);
-        }
-        return result;
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
-     */
-    public void initShellCmsObject(CmsObject cms, CmsShell shell) {
-        m_cms = cms;   
-        m_shell = shell; 
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsShellCommands#shellStart()
-     */
-    public void shellStart() {
-        System.out.println();
-        System.out.println("Welcome to the OpenCms shell!");
-        System.out.println();
-
-        // print the version information
-        version();
-        // print the copyright message
-        copyright();
-        // print the help information
-        help();        
-    }
-
-    /**
-     * @see org.opencms.main.I_CmsShellCommands#shellExit()
-     */
-    public void shellExit() {
-        System.out.println();        
-        System.out.println("Goodbye!");
-    }
-    
-    /**
-     * Exists so that the script can run without the wizard, does nothing.<p>
-     */
-    public void importModulesFromSetupBean() {
-        // noop, exists so that the script can run without the wizard
     }
 }
