@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/02/18 12:10:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/10 15:35:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.swing.border.Border;
  * This is a swing gui dialog for OpenCms module selection.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
@@ -100,7 +100,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
             public void windowClosed(WindowEvent e) {
 
                 m_aborted = true;
-                hide();
+                setVisible(false);
             }
         });
 
@@ -158,7 +158,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
         if (e.getActionCommand().equals(m_ok.getText()) || e.getActionCommand().equals(m_cancel.getText())) {
             m_aborted = !e.getActionCommand().equals(m_ok.getText());
-            hide();
+            setVisible(false);
         }  else if (e.getActionCommand().equals(m_selAll.getText())) {
             for (int i = 0; i < m_selections.length; i++) {
                 m_selections[i].setSelected(true);
@@ -179,7 +179,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     public String getSelection() {
 
         center();
-        show();
+        setVisible(true);
 
         String ret = "";
         for (int i = 0; i < m_selections.length; i++) {
