@@ -86,6 +86,7 @@ public class CmsMaster implements I_CmsLifeCycle, I_CmsEventListener {
                     CmsCommandContainer container = new CmsCommandContainer(user, password, false);
                     container.addCommand(new CmsCommand("clearcache", new Object[]{}));
                     container.addCommand(new CmsCommand("clearElementCache", new Object[]{}));
+                    container.addCommand(new CmsCommand("exportStaticResources", new Object[]{new Vector()}));
                     while(seperatedList.hasMoreTokens()){
                         // for each of this tokens we send a command to that server
                         try{
