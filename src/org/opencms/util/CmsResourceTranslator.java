@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2004/11/10 17:31:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/11/11 16:04:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.util;
 
 import org.opencms.main.OpenCms;
@@ -78,26 +78,23 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
 
-    /** Internal array containing the translations from opencms.properties. */
-    private String[] m_translations;
-    
-    /** Perl5 utility class. */
-    private Perl5Util m_perlUtil;
-    
-    /** Perl5 patter cache to avoid unecessary re-parsing of properties. */
-    private PatternCache m_perlPatternCache;   
-    
     /** Flag to indicate if one or more matchings should be tried. */
     private boolean m_continueMatching;
-    
-    /** DEBUG flag. */
-    private static final int DEBUG = 0;
-    
+
+    /** Perl5 patter cache to avoid unecessary re-parsing of properties. */
+    private PatternCache m_perlPatternCache;
+
+    /** Perl5 utility class. */
+    private Perl5Util m_perlUtil;
+
+    /** Internal array containing the translations from opencms.properties. */
+    private String[] m_translations;
+
     /**
      * Constructor for the CmsResourceTranslator.
      * 
@@ -107,12 +104,13 @@ public class CmsResourceTranslator {
      *      the first match was found
      */
     public CmsResourceTranslator(String[] translations, boolean continueMatching) {
+
         super();
         m_translations = translations;
         m_continueMatching = continueMatching;
         // Pre-cache the patterns 
-        m_perlPatternCache = new PatternCacheFIFO(m_translations.length+1);
-        for (int i=0; i<m_translations.length; i++) {
+        m_perlPatternCache = new PatternCacheFIFO(m_translations.length + 1);
+        for (int i = 0; i < m_translations.length; i++) {
             try {
                 m_perlPatternCache.addPattern(m_translations[i]);
             } catch (MalformedPatternException e) {
@@ -120,17 +118,26 @@ public class CmsResourceTranslator {
                     OpenCms.getLog(this).error("Malformed resource translation rule: \"" + m_translations[i] + "\"");
                 }
             }
-        }        
+        }
         // Initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
-        if (DEBUG > 0) {
-            System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
-        }
-        if (OpenCms.getLog(this).isDebugEnabled()) {
+        if (OpenCms.getLog(this).isDebugEnabled()) {            
             OpenCms.getLog(this).debug(". Resource translation : " + translations.length + " rules initialized");
-        }          
-    }    
-    
+        }
+    }
+
+    /**
+     * Returns a copy of the initialized translation rules.<p>
+     * 
+     * @return String[] a copy of the initialized translation rules
+     */
+    public String[] getTranslations() {
+
+        String[] copy = new String[m_translations.length];
+        System.arraycopy(m_translations, 0, copy, 0, m_translations.length);
+        return copy;
+    }
+
     /**
      * Translate a resource name according to the expressions set in 
      * the opencms.properties. If no match is found, 
@@ -139,7 +146,8 @@ public class CmsResourceTranslator {
      * @param resourceName The resource name to translate
      * @return The translated name of the resource
      */
-    public String translateResource(String resourceName) {  
+    public String translateResource(String resourceName) {
+
         if (m_translations.length == 0) {
             // no translations defined
             return resourceName;
@@ -147,30 +155,29 @@ public class CmsResourceTranslator {
         if (resourceName == null) {
             return null;
         }
-        // Check all translations in the list
-        if (DEBUG > 1) {
-            System.out.println("["+this.getClass().getName()+"] Resource Translation: Checking: " + resourceName);
-        }
+        // check all translations in the list
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Resource translation checking: " + resourceName);
+        }   
         StringBuffer result;
-        for (int i=0; i<m_translations.length; i++) {
+        for (int i = 0; i < m_translations.length; i++) {
             result = new StringBuffer(resourceName.length() * 2);
             try {
                 if (m_perlUtil.substitute(result, m_translations[i], resourceName) != 0) {
-                    // The pattern matched, return the result
-                    if (OpenCms.getLog(this).isDebugEnabled()) {
-                        OpenCms.getLog(this).debug("["+this.getClass().getName()+"] Resource translation: " + resourceName + " --> " + result);
-                    }                    
-                    if (DEBUG > 0) {
-                        System.out.println("Translation: " + resourceName + "\n        ---> " + result + "\n");
-                    }
                     if (m_continueMatching) {
+                        
                         // Continue matching
                         resourceName = result.toString();
-                    } else {
+                        
+                    } else {                        
+                        // the pattern matched, return the result
+                        if (OpenCms.getLog(this).isDebugEnabled()) {
+                            OpenCms.getLog(this).debug("Resource translation: " + resourceName + " --> " + result);
+                        }                        
                         // Return first match result
                         return result.toString();
                     }
-                    
+
                 }
             } catch (MalformedPerl5PatternException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -178,18 +185,12 @@ public class CmsResourceTranslator {
                 }
             }
         }
-        // Return last translation (or original if no matching translation found)
+        
+        // the pattern matched, return the result
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Resource translation result: " + resourceName);
+        }      
+        // return last translation (or original if no matching translation found)
         return resourceName;
-    }
-    
-    /**
-     * Returns a copy of the initialized translation rules.<p>
-     * 
-     * @return String[] a copy of the initialized translation rules
-     */
-    public String[] getTranslations() {
-        String[] copy = new String[m_translations.length];
-        System.arraycopy(m_translations, 0, copy, 0, m_translations.length);
-        return copy;
     }
 }
