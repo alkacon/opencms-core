@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/26 09:45:22 $
- * Version: $Revision: 1.429 $
+ * Date   : $Date: 2004/10/26 12:34:02 $
+ * Version: $Revision: 1.430 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.429 $ $Date: 2004/10/26 09:45:22 $
+ * @version $Revision: 1.430 $ $Date: 2004/10/26 12:34:02 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6554,37 +6554,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public void resetPassword(String username, String oldPassword, String newPassword) throws CmsException, CmsSecurityException {
         
-        
-        this.internalSetPassword(username, oldPassword, newPassword);
-        
-        
-        CmsUser user = null;
-        
-        // read the user as a system user to verify that the specified old password is correct
-        try {
-            user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException e) {
-            if (e.getType() != CmsException.C_NO_USER) {
-                throw new CmsException("[" + getClass().getName() + "] Error resetting password for user '" + username + "'", CmsException.C_UNKNOWN_EXCEPTION);
-            }
+        if (oldPassword != null && newPassword != null) {
+            this.internalSetPassword(username, oldPassword, newPassword);
+        } else {
+            throw new CmsException("[" + getClass().getName() + "] Missing old/new password", CmsException.C_UNKNOWN_EXCEPTION);
         }
-        
-        // dito as a web user
-        try {
-            user = (user != null) ? user : m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_WEBUSER);
-        } catch (CmsException e) {
-            if (e.getType() != CmsException.C_NO_USER) {
-                throw new CmsException("[" + getClass().getName() + "] Error resetting password for user '" + username + "'", CmsException.C_UNKNOWN_EXCEPTION);
-            }
-        }
-        
-        if (user == null) {
-            // the specified username + old password don't match
-            throw new CmsSecurityException(CmsSecurityException.C_SECURITY_LOGIN_FAILED);
-        } 
-        
-        validatePassword(newPassword);
-        m_userDriver.writePassword(username, user.getType(), oldPassword, newPassword);
     }
 
     /**
