@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
- * Author : $Author: a.schouten $
- * Date   : $Date: 2001/11/06 08:06:36 $
- * Version: $Revision: 1.4 $
+ * Author : $Author: e.falkenhan $
+ * Date   : $Date: 2001/11/09 07:18:43 $
+ * Version: $Revision: 1.5 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.4 $
- * $Date: 2001/11/06 08:06:36 $
+ * $Revision: 1.5 $
+ * $Date: 2001/11/09 07:18:43 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -57,6 +57,15 @@ public abstract class CmsMasterContent
 
     /** A private HashMap to store all data access-objects. */
     private static HashMap c_accessObjects = new HashMap();
+    
+    /** the root channel for all channels of this module */
+    protected static String c_rootChannel = null;
+    
+    /** Vector of currently selected channels */
+    protected Vector m_selectedChannels = null;
+    
+    /** Vector of currently available channels */
+    protected Vector m_availableChannels = null;
 
     /**
      * Registers a database access object for the contentdefinition type.
@@ -227,6 +236,8 @@ public abstract class CmsMasterContent
      * @param cms the CmsObject to use.
      */
     public void write(CmsObject cms) throws Exception {
+        // add or delete channels according to current selection
+        updateChannels();
         // is this a new row or an existing row?
         if(m_dataSet.m_masterId == I_CmsConstants.C_UNKNOWN_ID) {
             // this is a new row - call the create statement
@@ -664,5 +675,150 @@ public abstract class CmsMasterContent
      */
     public Object getVersionFromHistory(CmsObject cms, int versionId) throws Exception{
         return getDbAccessObject(this.getSubId()).getVersionFromHistory(cms, this.getClass(), m_dataSet.m_masterId, this.getSubId(), versionId);
+    }
+    
+    /**
+     * Get the root channel for this module
+     * @return name of the root channel for this module
+     */
+     public static String getRootChannel() {
+        return c_rootChannel;
+     }
+    
+    /**
+     * Set the root channel for this module
+     * @param newRootChannel a new value for the root channel
+     */
+    public static void setRootChannel(String newRootChannel) {
+        c_rootChannel = newRootChannel;
+    }
+    
+    /**
+     * Get all currently selected channels
+     * @return Vector of all currently selected channels
+     */
+     public Vector getSelectedChannels() throws CmsException{
+        if (m_selectedChannels == null) {
+            m_selectedChannels = getChannels();
+        }
+        return m_selectedChannels;  
+     }
+     
+     /**
+     * set Selected Channels
+     * @param channels a String containing the channels names as a comma separated list
+     */
+    public void setSelectedChannels(String channels) {
+        StringTokenizer tk = new StringTokenizer(channels, ",");
+        Vector v = new Vector();
+        int tokens = tk.countTokens();
+        if (channels != null && channels.equals("empty")) {
+            m_selectedChannels = v;
+        }else if (tokens > 0) {
+            for (int i=0; i<tokens; i++) {
+                v.addElement(tk.nextToken());
+            }
+            m_selectedChannels = v;   
+        } 
+    }
+     
+     /**
+      * Get all currently available channels
+      * @return a Vector of all channels that can be selected
+      */
+      public Vector getAvailableChannels(CmsObject cms) throws CmsException {
+        if (m_availableChannels == null) {
+            Vector selectedChannels = getSelectedChannels();
+            Vector subChannels = getAllSubChannelsOf(cms, getRootChannel());
+            for (int i=0; i<subChannels.size(); i++) {
+                for (int j=0; j<selectedChannels.size(); j++) {
+                    if (subChannels.elementAt(i).equals(selectedChannels.elementAt(j))) {
+                        subChannels.removeElementAt(i);
+                    }
+                }
+            }
+            m_availableChannels = subChannels;
+        }
+        return m_availableChannels;
+      }
+      
+    /**
+     * Set the Available Channels
+     * @param channels a String containing the channels to add as a comma separated list
+     */
+    public void setAvailableChannels(String channels) {
+        StringTokenizer tk = new StringTokenizer(channels, ",");
+        Vector v = new Vector();
+        int tokens = tk.countTokens();
+        if (channels != null && channels.equals("empty")) {
+            m_availableChannels = v;
+        } else if (tokens > 0) {
+            for (int i=0; i<tokens; i++) {
+                v.addElement(tk.nextToken());
+            }
+            m_availableChannels = v;    
+        }
+    }
+      
+    /**
+     * Get all subchannels of a channel
+     * @param cms object to access system resources
+     * @param channel channel to be searched for subchannels
+     * @return Vector with names of all subchannels
+     * @throws com.opencms.core.CmsException in case of unrecoverable errors
+     */
+    protected static Vector getAllSubChannelsOf (CmsObject cms, String channel)
+            throws CmsException {
+        Vector allChannels = new Vector();
+        cms.setContextToCos();
+        Vector subChannels = cms.getSubFolders(channel);
+        for (int i=0; i < subChannels.size(); i++) {
+            String folder = ((CmsFolder)subChannels.elementAt(i)).getAbsolutePath();
+            Vector v = getAllSubChannelsOf(cms, folder);
+            if (v.size() == 0) {
+                allChannels.addElement(folder);
+            }else {
+                for (int j=0; j < v.size(); j++) {
+                    allChannels.addElement(v.elementAt(j));
+                }
+            }
+        }
+        cms.setContextToVfs();
+        return allChannels;
+    }    
+    
+    /** 
+     * Add or remove channels 
+     * compares the currently selected channels with the selected 
+     * channels stored in the database and adds or deletes channels if necessary
+     */
+    protected void updateChannels() throws CmsException{
+        Vector dbChannels = getChannels();
+        Vector selectedChannels = getSelectedChannels();
+        // mark all channels to be deleted if not existing in m_selectedChannels but in datatabase
+        for (int i=0; i < dbChannels.size(); i++) {
+            boolean found = false;
+            for (int j=0; !found && j < selectedChannels.size(); j++) {
+                if (dbChannels.elementAt(i).equals(selectedChannels.elementAt(j))) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                deleteChannel((String)dbChannels.elementAt(i));
+            }
+        } 
+        
+        // mark all channels to be added if existing in m_selectedChannels but not in database
+        for (int i=0; i < selectedChannels.size(); i++) {
+            boolean found = false;
+            for (int j=0; !found && j < dbChannels.size(); j++) {
+                if (selectedChannels.elementAt(i).equals(dbChannels.elementAt(j))) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                addChannel((String)selectedChannels.elementAt(i));
+            }
+        }
     }
 }
