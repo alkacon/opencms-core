@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/03/22 07:26:56 $
- * Version: $Revision: 1.468 $
+ * Date   : $Date: 2003/03/28 10:56:43 $
+ * Version: $Revision: 1.469 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ OpenCms 5.0 (next version)
 ! Improved "new module" options, it's now possible to select if exportable 
   "classes/" and/or "lib/" folders should be created for the module
 ! Updated and improved english workplace online help is now available as a separate module "org.opencms.help.en"
+* Fixed issue #71: CronScheduler will now not re-open the DB connections if OpenCms is shut down
 * Fixed issue with JSP static export not always restoring the previous URI context
 * Fixed compatibility issues with MySQL 4 (note that MySQL 4 has not been extensivly tested with OpenCmd so far)
 * Fixed issue #56: Links in "Text" pages edited with the WYSIWYG "Edit as HTML"

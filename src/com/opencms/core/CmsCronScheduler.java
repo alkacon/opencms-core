@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduler.java,v $
-* Date   : $Date: 2001/11/16 09:36:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/03/28 10:56:33 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,6 +42,9 @@ class CmsCronScheduler extends Thread {
 
     /** The A_OpenCms to get access to the system */
     private A_OpenCms m_opencms;
+    
+    /** Flag to indicate if OpenCms has already been shut down */
+    private boolean m_destroyed = false;
 
     /**
      * Constructs a new scheduler.
@@ -68,7 +71,7 @@ class CmsCronScheduler extends Thread {
         Calendar lastRun = new GregorianCalendar();
         Calendar thisRun;
         CmsCronScheduleJobStarter jobStarter;
-        for(;;) { // ever
+        while(! m_destroyed) { // do this as long as OpenCms runs
             try {
                 Calendar tmp = new GregorianCalendar(lastRun.get(GregorianCalendar.YEAR),
                                                      lastRun.get(GregorianCalendar.MONTH),
@@ -84,12 +87,22 @@ class CmsCronScheduler extends Thread {
             } catch(InterruptedException exc) {
                 // ignore this exception - we are interrupted
             }
-            // read the actual values for the crontable from the system
-            m_opencms.updateCronTable();
-            thisRun = new GregorianCalendar();
-            jobStarter = new CmsCronScheduleJobStarter(m_opencms, m_table, thisRun, lastRun);
-            jobStarter.start();
-            lastRun = thisRun;
+            if(! m_destroyed) { 
+                // if not destroyed, read the current values for the crontable from the system
+                m_opencms.updateCronTable();
+                thisRun = new GregorianCalendar();
+                jobStarter = new CmsCronScheduleJobStarter(m_opencms, m_table, thisRun, lastRun);
+                jobStarter.start();
+                lastRun = thisRun;
+            }
         }
     }
+    
+    /** 
+     * Shut down this instance of the CronScheduler Thread.<p>
+     */
+    public void shutDown() {
+        interrupt();
+        m_destroyed = true; 
+    } 
 }
