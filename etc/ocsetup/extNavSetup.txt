@@ -1,14 +1,14 @@
 login Admin admin
-createPropertydefinition "Verzeichnislogo_img" folder 0
-createPropertydefinition "Verzeichnislogo_target" folder 0
-createPropertydefinition "Hauptlogo_img" folder 0
-createPropertydefinition "Hauptlogo_target" folder 0	
-createPropertydefinition "Sektionslogo_img" folder 0
-createPropertydefinition "Sektionslogo_target" folder 0
-createPropertydefinition "FreierLink_navtext" folder 0
-createPropertydefinition "FreierLink_target" folder 0
-createPropertydefinition "Templ_fontcolor_hover" folder 0
-createPropertydefinition "Templ_fontcolor" folder 0
-createPropertydefinition "Templ_bgcolor" folder 0
-createPropertydefinition "Templ_bordercolor" folder 0 
-createPropertydefinition "Templ_leadcolor" folder 0
+createPropertydefinition "Verzeichnislogo_img" folder
+createPropertydefinition "Verzeichnislogo_target" folder
+createPropertydefinition "Hauptlogo_img" folder
+createPropertydefinition "Hauptlogo_target" folder
+createPropertydefinition "Sektionslogo_img" folder
+createPropertydefinition "Sektionslogo_target" folder
+createPropertydefinition "FreierLink_navtext" folder
+createPropertydefinition "FreierLink_target" folder
+createPropertydefinition "Templ_fontcolor_hover" folder
+createPropertydefinition "Templ_fontcolor" folder
+createPropertydefinition "Templ_bgcolor" folder
+createPropertydefinition "Templ_bordercolor" folder
+createPropertydefinition "Templ_leadcolor" folder
