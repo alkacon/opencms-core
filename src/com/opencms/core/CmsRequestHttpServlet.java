@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/02/13 12:33:57 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/04/24 08:57:49 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -55,7 +55,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2001/02/13 12:33:57 $
+ * @version $Revision: 1.17 $ $Date: 2001/04/24 08:57:49 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -564,7 +564,10 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
             // This is a file
             byte[] value = readAndSaveFile(in, boundary);
             filecounter++;
+            // stroe the filecontent
             m_files.put(filename, value);
+            // store the name of the file to the parameters
+            m_parameters.put(name, filename);
         }
 
         // there's more to read
