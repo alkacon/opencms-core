@@ -11057,6 +11057,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/ic_galleryoverview.gif</source>
+			<destination>system/workplace/resources/ic_galleryoverview.gif</destination>
+			<type>image</type>
+			<uuidresource>f98cad3c-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/ic_group.gif</source>
 			<destination>system/workplace/resources/ic_group.gif</destination>
 			<type>image</type>
@@ -11116,6 +11129,19 @@
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/ic_imagegallery.gif</source>
+			<destination>system/workplace/resources/ic_imagegallery.gif</destination>
+			<type>image</type>
+			<uuidresource>f9975b9f-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -11194,6 +11220,19 @@
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/ic_linkgallery.gif</source>
+			<destination>system/workplace/resources/ic_linkgallery.gif</destination>
+			<type>image</type>
+			<uuidresource>f99bef82-4a9c-11d9-af9b-dbc8387ed1a1</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 12:16:44 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
