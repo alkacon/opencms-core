@@ -100,9 +100,10 @@
 		
 		<database>
 			<label>
+				<includewp>Ordner 'system' miteinbeziehen</includewp>
 				<titleexport>Datenbank exportieren</titleexport>
 				<titleimport>Datenbank importieren</titleimport>
-				<filename>Dateiname</filename>
+				<filename>Exportdatei</filename>
 				<files>bestehende Dateien</files>
 			</label>
 		</database>
@@ -376,6 +377,9 @@
 			<editpropertyinfo>Wert ändern in</editpropertyinfo>
 			<editor>Editor</editor>
 			<email>EMail</email>
+			<exportadd>hinzufügen</exportadd>
+			<exportresources>zu exportierende Resourcen</exportresources>
+			<exportfilename>Name der Exportdatei</exportfilename>
 			<filter>Filter</filter>
 			<firstelement>an erster Position</firstelement>
 			<firstname>Vorname</firstname>

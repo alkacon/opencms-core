@@ -100,10 +100,10 @@
 		
 		<database>
 			<label>
-				<titleexport>Export Database</titleexport>
+				<includewp>include system folder</includewp>
+				<filename>Name of Exportfile</filename>
+				<files>existing Files</files><titleexport>Export Database</titleexport>
 				<titleimport>Import Database</titleimport>
-				<filename>Filename</filename>
-				<files>existing Files</files>
 			</label>
 		</database>
 		
@@ -376,6 +376,8 @@
 			<editpropertyinfo>Change value to</editpropertyinfo>
 			<editor>Editor</editor>
 			<email>Email</email>
+			<exportadd>add</exportadd>
+			<exportresources>resources to export</exportresources> 
 			<filter>Filter</filter>
 			<firstelement>at the first position</firstelement>
 			<firstname>First Name</firstname> 
