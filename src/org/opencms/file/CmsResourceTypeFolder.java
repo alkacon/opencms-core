@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/05/24 17:23:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/01 15:27:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -372,6 +372,14 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
         // get the updated folder
         return importedResource;
+    }
+        
+    /**
+     * @see org.opencms.file.I_CmsResourceType#initConfiguration()
+     */
+    public void initConfiguration() {
+
+        // no initialization is required for folders
     }
 
     /**

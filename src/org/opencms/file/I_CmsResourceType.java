@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/05/05 12:53:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/01 15:27:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -190,6 +190,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @throws CmsException if operation was not successful
      */
     CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException;
+    
+    /**
+     * Initializes the resource type, called only once after class instance generation
+     * for the driver / loader manager.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    void initConfiguration() throws CmsException;
 
     /**
      * Returns if a resource type is direct editable.<p>
@@ -302,5 +310,5 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     *
      * @throws CmsException if something goes wrong
      */
-    CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException;      
+    CmsFile writeFile(CmsObject cms, CmsFile file) throws CmsException;   
 }

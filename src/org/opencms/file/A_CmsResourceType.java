@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/01 15:27:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -182,6 +182,22 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         return importedResource;
     }
+    
+    
+    /**
+     * @see org.opencms.file.I_CmsResourceType#initConfiguration()
+     */
+    public void initConfiguration() throws CmsException {
+
+        // most resource types do not require initialization
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration called on " + this);
+            if (this == null) {
+                // this is just to supress a compiler warning
+                throw new CmsException();
+            }
+        }
+    }    
 
     /**
      * @see org.opencms.file.I_CmsResourceType#isDirectEditable()
@@ -274,5 +290,4 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         cms.doWriteFile(file);
         return file;
     }
-    
 }

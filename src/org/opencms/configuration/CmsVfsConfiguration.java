@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/01 15:27:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.configuration;
 import org.opencms.file.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.loader.I_CmsResourceLoader;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsResourceTranslator;
@@ -152,7 +153,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      * @param resourceType the resource type to add
      */
     public void addResourceType(I_CmsResourceType resourceType) {
-        m_resourceTypes.add(resourceType);
+        try {
+            resourceType.initConfiguration();
+            m_resourceTypes.add(resourceType);
+        } catch (CmsException e) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Unable to configure resource type " + resourceType.getClass().getName(), e);
+        }
     }
 
     /**
