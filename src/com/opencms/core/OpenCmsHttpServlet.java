@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2003/08/12 08:46:39 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     
@@ -261,7 +261,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
     /**
      * This method performs the error handling for OpenCms.<p>
      *
-     * @param cms the current cms context
+     * @param cms the current cms context, might be null !
      * @param req the client request
      * @param res the client response
      * @param t the exception that occured
@@ -347,11 +347,13 @@ public class OpenCmsHttpServlet extends HttpServlet {
         }   
 
         try {
-            isNotGuest = isNotGuest || (((cms.getRequestContext().currentUser()) != null) 
-                && (! A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
-                && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers())) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
-                    || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators()))));
+            isNotGuest = isNotGuest 
+                || (cms != null 
+                    && cms.getRequestContext().currentUser() != null 
+                    && (! A_OpenCms.getDefaultUsers().getUserGuest().equals(cms.getRequestContext().currentUser().getName())) 
+                    && ((cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupUsers())) 
+                        || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupProjectmanagers())) 
+                        || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), A_OpenCms.getDefaultUsers().getGroupAdministrators()))));
         } catch (CmsException e) {
             // result is false
         }
@@ -360,7 +362,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
             res.setContentType("text/HTML");
             res.setHeader("Cache-Control", "no-cache");
             res.setHeader("Pragma", "no-cache");                
-            if (isNotGuest) {
+            if (isNotGuest && cms != null) {
                 try {
                     res.getWriter().print(createErrorBox(t, cms.getRequestContext().getRequest().getWebAppUrl()));
                 } catch (IOException e) {
@@ -369,7 +371,7 @@ public class OpenCmsHttpServlet extends HttpServlet {
             } else {
                 if (status < 1) status = HttpServletResponse.SC_NOT_FOUND;
                 try {
-                    res.sendError(status);
+                    res.sendError(status, t.toString());
                 } catch (IOException e) {
                     // can be ignored
                 }
