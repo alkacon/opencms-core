@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/01/28 09:30:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -297,37 +297,68 @@ public class TestPermissions extends OpenCmsTestCase {
         echo("Testing inheritance of permissions");
         
         String foldername = "testPermissionInheritance";
+        String subfoldername = foldername + "/" + "subfolder";
         String resourcename = foldername + "/test.txt";
+        String subresourcename = subfoldername + "/subtest.txt";
+        
         cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource(subfoldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
         cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(subresourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
         
         assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
         
         cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "+o");
-        assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        /* Folder settings are now valid for immediate resources, even if they are not inherited */
+        assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v+c", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
         cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "+o+i");
         assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
         cms.createGroup("GroupA", "", 0, "");
+        cms.createGroup("GroupB", "", 0, "");
+        cms.createGroup("GroupC", "", 0, "");
+        cms.createGroup("GroupD", "", 0, "");
+        
         cms.addUserToGroup("testUser", "GroupA");
+        cms.addUserToGroup("testUser", "GroupB");
+        cms.addUserToGroup("testUser", "GroupC");
+        cms.addUserToGroup("testUser", "GroupD");
+        
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupA", "+r");
+        assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
         cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupA", "+r+i");
         assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_USER, "testUser", "+w+i");
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupB", "+w");
         assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.createGroup("GroupB", "", 0, "");
-        cms.addUserToGroup("testUser", "GroupB");
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupB", "+w+i");
+        assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupB", "-r+i");
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupC", "-r");
         assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_USER, "testUser", "-w+i");
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupC", "-r+i");
+        assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+        
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupD", "-w");
         assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+        
+        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupD", "-w+i");
+        assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r-w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
     }
-    
         
     /**
      * Test the resource filter files in a folder.<p>
