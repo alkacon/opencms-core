@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2004/05/08 03:12:26 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 5.1.12
  */
@@ -131,7 +131,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         // remove unwanted "&amp;" from links
         content = filterAnchors(content);
         // ensure all chars in the content are valid for the selected encoding
-        content = CmsEncoder.encodeForHtml(content, getFileEncoding());        
+        content = CmsEncoder.adjustHtmlEncoding(content, getFileEncoding());        
         
         if (! ("edit".equals(getParamEditormode()) || save)) {
             // editor is in html mode, add tags for stylesheet

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/05/08 03:12:08 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1.12
  */
@@ -381,19 +382,21 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected void commitTempFile() throws CmsException {
         switchToTempProject();
-        CmsFile tempFile = null;
-        List properties = null;
+        CmsFile tempFile;
+        List properties;
         try {
             tempFile = getCms().readFile(getParamTempfile());
             properties = getCms().readPropertyObjects(getParamTempfile(), false);
         } finally {
+            // make sure the project is reset in case of any exception
             switchToCurrentProject();
         }
-        // set current project
+        // update properties of original file first (required if change in encoding occured)
+        getCms().writePropertyObjects(getParamResource(), properties);
+        // now replace the content of the original file
         CmsFile orgFile = getCms().readFile(getParamResource());
         orgFile.setContents(tempFile.getContents());
         getCms().writeFile(orgFile);
-        getCms().writePropertyObjects(getParamResource(), properties);
     }
     
     /**
@@ -520,7 +523,10 @@ public abstract class CmsEditor extends CmsDialog {
                 return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
             } else if (PARAM_RESOURCE.equals(paramName) || PARAM_TEMPFILE.equals(paramName)) {
                 String filename = CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
-                setFileEncoding(getFileEncoding(getCms(), filename));
+                if (PARAM_TEMPFILE.equals(paramName) || CmsStringSubstitution.isEmpty(getParamTempfile())) {
+                    // always use value from temp file if it is available
+                    setFileEncoding(getFileEncoding(getCms(), filename));
+                }
                 return filename;
             } else {
                 return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsXmlPage.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/05/08 03:09:50 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.staticexport.CmsLinkTable;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -81,7 +82,7 @@ import org.xml.sax.SAXException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsXmlPage {
     
@@ -155,19 +156,25 @@ public class CmsXmlPage {
     private Set m_locales;
     
     /**
-     * Creates a new CmsXmlPage based on the provided document.<p>
+     * Creates a new CmsXmlPage based on the provided document and encoding.<p>
+     * 
+     * The encoding is used when saving/serializing the XML document.<p>
      * 
      * @param document the document to create the CmsXmlPage from
+     * @param encoding the encoding of the xml page
      */
-    public CmsXmlPage(Document document) {
+    public CmsXmlPage(Document document, String encoding) {
         m_document = document;
+        m_encoding = encoding;
         initBookmarks();
     }
 
     /**
-     * Creates a new empty CmsXmlPage.<p>
+     * Creates a new empty CmsXmlPage with the provided encoding.<p>
      * 
      * The page is initialized according to the minimal neccessary xml structure.
+     * The encoding is used when saving/serializing the XML document.<p>
+     * 
      * @param encoding the encoding of the xml page
      */
     public CmsXmlPage(String encoding) {
@@ -185,6 +192,24 @@ public class CmsXmlPage {
      * @throws CmsXmlPageException if something goes wrong
      */
     public static CmsXmlPage read(CmsObject cms, CmsFile file) throws CmsXmlPageException {
+        return read(cms, file, true);
+    }
+        
+    /**
+     * Reads the xml contents of a file into the page, using wither the encoding set
+     * in the xml file header, or the encoding set in the VFS file property.<p>
+     * 
+     * If you are not sure about the implications of the encoding issues, 
+     * use {@link #read(byte[], String)} instead.<p>
+     * 
+     * @param cms the current cms object
+     * @param file the file with xml data
+     * @param keepEncoding if true, the encoding spefified in the xml file head is used, 
+     *    otherwise the encoding from the file poperty is used
+     * @return the concrete PageObject instanciated with the xml data
+     * @throws CmsXmlPageException if something goes wrong
+     */
+    public static CmsXmlPage read(CmsObject cms, CmsFile file, boolean keepEncoding) throws CmsXmlPageException {
 
         CmsXmlPage newPage = null;
         
@@ -194,7 +219,7 @@ public class CmsXmlPage {
         try {
             allowRelative = cms.readPropertyObject(cms.readAbsolutePath(file), C_PROPERTY_ALLOW_RELATIVE, false).getValue("false");
         } catch (CmsException e) {
-            allowRelative = "false";
+            allowRelative = Boolean.toString(false);
         }
         
         String encoding;
@@ -203,29 +228,28 @@ public class CmsXmlPage {
         } catch (CmsException e) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         }        
-        
+                
         if (content.length > 0) {
             // content is initialized
-            
-            String xmlData;
-            try {
-                xmlData = new String(content, encoding);
-            } catch (UnsupportedEncodingException e) {
+            if (keepEncoding) {
+                // use the encoding from the content
+                newPage = read(content, encoding);
+            } else {
+                // use the encoding from the file property
+                // this usually only triggered by a save operation                
                 try {
-                    xmlData = new String(content, OpenCms.getSystemInfo().getDefaultEncoding());
-                }  catch (UnsupportedEncodingException e2) {
-                    xmlData = new String();
-                }
-            }            
-            newPage = read(xmlData);
-            
+                    String contentStr = new String(content, encoding);
+                    newPage = read(contentStr, encoding);
+                } catch (UnsupportedEncodingException e) {
+                    throw new CmsXmlPageException("Invalid encoding selected for xmlPage: " + encoding, e);
+                }                
+            }
         } else {
             // content is empty
             newPage = new CmsXmlPage(encoding);
         }
         
         newPage.m_file = file;
-        newPage.m_encoding = encoding;
         newPage.m_allowRelativeLinks = Boolean.valueOf(allowRelative).booleanValue();
         
         return newPage;
@@ -235,17 +259,37 @@ public class CmsXmlPage {
      * Reads the xml contents from a string into the page.<p>
      * 
      * @param xmlData the xml data in a String 
+     * @param encoding the encoding to use when serializing/saving the xml page
      * @return the page initialized with the given xml data
      * @throws CmsXmlPageException if something goes wrong
      */
-    public static CmsXmlPage read(String xmlData) throws CmsXmlPageException {        
+    public static CmsXmlPage read(String xmlData, String encoding) throws CmsXmlPageException {        
         try {
             SAXReader reader = new SAXReader();
             reader.setEntityResolver(m_resolver);
-            Document document = reader.read(new StringReader(xmlData));            
-            return new CmsXmlPage(document);
+            Document document = reader.read(new StringReader(xmlData));
+            return new CmsXmlPage(document, encoding);
         } catch (DocumentException e) {
             throw new CmsXmlPageException("Reading xml page from a String failed: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Reads the xml contents from a byte array into the page.<p>
+     * 
+     * @param xmlData the xml data in a byte array
+     * @param encoding the encoding to use when serializing/saving the xml page
+     * @return the page initialized with the given xml data
+     * @throws CmsXmlPageException if something goes wrong
+     */
+    public static CmsXmlPage read(byte[] xmlData, String encoding) throws CmsXmlPageException {
+        try {
+            SAXReader reader = new SAXReader();
+            reader.setEntityResolver(m_resolver);
+            Document document = reader.read(new ByteArrayInputStream(xmlData));
+            return new CmsXmlPage(document, encoding);
+        } catch (DocumentException e) {
+            throw new CmsXmlPageException("Reading xml page from a byte array failed: " + e.getMessage(), e);
         }
     }
     
@@ -506,7 +550,7 @@ public class CmsXmlPage {
         CmsLinkTable linkTable = new CmsLinkTable();
         
         // ensure all chars in the given content are valid chars for the selected charset
-        content = CmsEncoder.encodeForHtml(content, getEncoding());
+        content = CmsEncoder.adjustHtmlEncoding(content, getEncoding());
         
         try {
 
