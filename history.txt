@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/10/25 14:27:54 $
- * Version: $Revision: 1.577 $
+ * Date   : $Date: 2004/10/26 07:49:02 $
+ * Version: $Revision: 1.578 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,10 +21,10 @@ Legend:
 
 OpenCms 5.5.3 Caladan (aka 6.0 alpha 2) - October 25, 2004
 ! Updated included libaries to their latest available release versions
-! Split the CmsDriverManager into CmsSecurityManager and CmsDriverMAnager,
+! Split the CmsDriverManager into CmsSecurityManager and CmsDriverManager,
   for more efficient handling of permission checks during DB operations
 ! XML content editor now allows "direct publish" from the editor
-* Fixed issue with link replace mode in XML content editor operating in the roor site
+* Fixed issue with link replace mode in XML content editor operating in the root site
 * Fixed issue with default XML default value creation not having an OpenCms context available
 ! Added support for MySQL 4.1 
 ! Added feature to set web application context name in web.xml (required e.g. for Jboss)
