@@ -25,7 +25,9 @@
 			</parameters>
 			<resourcetypes>
                 <type class="org.opencms.file.types.CmsResourceTypeXmlContent">
-                    <param name="resource.type.id">12</param>
+                    <param name="property.create.Title">Test title</param>
+					<param name="property.create.template-elements">/system/modules/org.opencms.frontend.templateone.form/pages/form.html</param>
+					<param name="resource.type.id">12</param>
                     <param name="resource.type.name">article</param>
                     <param name="schema">/sites/default/xmlcontent/article.xsd</param>
                 </type>
