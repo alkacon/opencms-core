@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
- * Date   : $Date: 2000/04/07 15:22:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/05/30 09:41:28 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/07 15:22:17 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/30 09:41:28 $
  */
 public class CmsFile extends CmsResource implements Cloneable,Serializable { 	
 
@@ -128,12 +128,15 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
     * @return Cloned CmsFile.
     */
     public Object clone() {
+		byte[] newContent = new byte[ this.getContents().length ];
+		System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
+		
         return new CmsFile(new String(this.getAbsolutePath()),this.getType(),
                              this.getFlags(), this.getOwnerId(), this.getGroupId(),
                              this.getProjectId(),this.getAccessFlags(), 
                              this.getState(),this.isLockedBy(), this.getLauncherType(),
                              new String(this.getLauncherClassname()), this.getDateCreated(),
-                             this.getDateLastModified(), this.getContents(),
+                             this.getDateLastModified(), newContent,
                              this.getLength());                             
     }
 }

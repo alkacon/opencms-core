@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCachedObject.java,v $
- * Date   : $Date: 2000/02/29 16:44:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/30 09:41:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,8 @@ package com.opencms.file;
  * This class defines one individual object stored in the DBCacheFile and method to access it
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/29 16:44:46 $
+ * @author Andreas Schoutem
+ * @version $Revision: 1.3 $ $Date: 2000/05/30 09:41:28 $
  */
 public class CmsCachedObject implements Cloneable
 {
@@ -90,21 +91,24 @@ public class CmsCachedObject implements Cloneable
 		return m_contents;
 	}
 	
-     /**
+    /**
 	 * Clones the CachedObject. 
 	 * This is needed to return only clones of the objects stored in the cache
 	 * @param content Flag for cloning the file content, too.
 	 */
-	 public  Object clone() {
-		try { 
-		    CmsCachedObject clonedObj = (CmsCachedObject)super.clone();
-		    return clonedObj;
-		  }			catch (CloneNotSupportedException e) 		{ 
-		    // this shouldn't happen, since we are Cloneable
-		    throw new InternalError();
+	public  Object clone() {		// spceial clone-method for each content		// if there is an easy way to do this - it may be replaced
+		if(m_contents == null) {			return new CmsCachedObject(null);
+		} else if(m_contents instanceof Boolean) {			return new CmsCachedObject(new Boolean(((Boolean)m_contents).booleanValue()));
+		} else if(m_contents instanceof CmsResource) {			return new CmsCachedObject(((CmsResource)m_contents).clone());
+		} else if(m_contents instanceof CmsFile) {			return new CmsCachedObject(((CmsFile)m_contents).clone());
+		} else if(m_contents instanceof CmsFolder) {			return new CmsCachedObject(((CmsFolder)m_contents).clone());
+		} else if(m_contents instanceof CmsUser) {			return new CmsCachedObject(((CmsUser)m_contents).clone());
+		} else if(m_contents instanceof CmsGroup) {			return new CmsCachedObject(((CmsGroup)m_contents).clone());
+		} else if(m_contents instanceof CmsProject) {			return new CmsCachedObject(((CmsProject)m_contents).clone());
+		} else if(m_contents instanceof java.util.Vector) {			return new CmsCachedObject(((java.util.Vector)m_contents).clone());
+		} else if(m_contents instanceof String) {			return new CmsCachedObject( new String((String)m_contents));
+		} else {
+			System.err.println( m_contents.getClass().getName() );			throw new InternalError();
 		}
-	
-    }
-
-}
+	}}
 

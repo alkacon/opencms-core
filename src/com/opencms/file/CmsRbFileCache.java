@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/05/18 13:39:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/05/30 09:41:28 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/05/18 13:39:47 $
+ * @version $Revision: 1.16 $ $Date: 2000/05/30 09:41:28 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -142,7 +142,8 @@ import com.opencms.core.*;
 	 * @return The file read from the Cms.
 	 * 
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
+	 *
+	 */
 	 public CmsFile readFile(A_CmsProject project,
                              A_CmsProject onlineProject,
                              String filename)
@@ -171,7 +172,6 @@ import com.opencms.core.*;
          
         return (CmsFile)res;
      }
-     
      
      /**
 	 * Writes the fileheader to the Cms.<br>

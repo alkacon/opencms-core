@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/05/19 11:19:38 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2000/05/30 09:41:28 $
+ * Version: $Revision: 1.121 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.120 $ $Date: 2000/05/19 11:19:38 $
+ * @version $Revision: 1.121 $ $Date: 2000/05/30 09:41:28 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4321,6 +4321,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			return(false);					
 		}
 		
+		// check the rights vor the current resource
+        if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
+			// no write access to this resource!
+			return false;
+		}
+			
         // read the parent folder
 		if(resource.getParent() != null) {
 			resource = m_fileRb.readFolder(currentProject, resource.getParent());
