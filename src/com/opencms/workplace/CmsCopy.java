@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/05/30 11:44:51 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/05/31 12:10:59 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.29 $ $Date: 2000/05/30 11:44:51 $
+ * @version $Revision: 1.30 $ $Date: 2000/05/31 12:10:59 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -369,6 +369,8 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
        */
      private void checkFolders(A_CmsObject cms, String path) 
           throws CmsException {
+         
+         
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
           // check if all folders are there
@@ -376,6 +378,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
               String foldername=t.nextToken();
                try {
                 // try to read the folder. if this fails, an exception is thrown  
+      
                 cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
                   // the folder could not be read, so create it.
@@ -522,14 +525,20 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         throws CmsException {
 
         // copy the file and set the access flags if nescessary
+
         cms.copyFile(file.getAbsolutePath(),newFolder+newFile);
+
 	    //is file type plain
 		if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+        
  	        String bodyPath = getBodyPath(cms, (CmsFile)file);
 			int help = C_CONTENTBODYPATH.lastIndexOf("/");
 			String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-  			if (hbodyPath.equals(bodyPath)){                
-			        checkFolders(cms, newFolder);
+  			if (hbodyPath.equals(bodyPath)){      
+             
+                    String contentPath=newFolder+newFile;
+                    contentPath=contentPath.substring(0,contentPath.lastIndexOf("/")+1);                    
+			        checkFolders(cms, contentPath);
 				    String newbodyPath=(C_CONTENTBODYPATH.substring(0,help))+newFolder+newFile;
 		            CmsFile newContent = cms.readFile(newFolder+newFile);
          
