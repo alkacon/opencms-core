@@ -15631,7 +15631,20 @@
 			<datecreated>Tue, 18 Jan 2005 09:16:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[admin-fs.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[New Administration]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
