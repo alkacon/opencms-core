@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/02/26 15:29:33 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsConstants;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, Serializable {
 
@@ -294,7 +295,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String newFileName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newFileName, Map properties, byte[] contents, Object parameter) throws CmsException{
         CmsResource res;
         if (m_resourceTypeName == null) {
             res = cms.doCreateFile(newFileName, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties); 
@@ -367,7 +368,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
                                        String user, String group, String access, long lastmodified, 
-                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
+                                       Map properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/03/02 18:43:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import com.opencms.file.CmsResource;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 /**
  * Bean to provide a convenient way to build navigation structures.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -112,15 +112,15 @@ public class CmsJspNavBuilder {
      * @return a CmsJspNavElement for the given resource
      */
     public static CmsJspNavElement getNavigationForResource(CmsObject cms, String resource) {
-        Hashtable h;
+        Map properties;
         try {
-            h = cms.readAllProperties(resource);
+            properties = cms.readPropertiesMap(resource);
         } catch (Exception e) {
             return null;
         }
         int level =  CmsResource.getPathLevel(resource);
         if (resource.endsWith("/")) level--;
-        return new CmsJspNavElement(resource, h, level);
+        return new CmsJspNavElement(resource, properties, level);
     }    
  
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -128,7 +128,7 @@ public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement,I_Cm
         
         // check if we are in the onlineProject
         CmsRequestContext reqCont = cms.getRequestContext();
-        if(reqCont.currentProject().equals(cms.onlineProject())) {
+        if(reqCont.currentProject().isOnlineProject()) {
             listdef.setData("menue", "menueonline");
         }
         else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/01/30 19:14:23 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,8 +39,8 @@ import com.opencms.file.CmsResource;
 import com.opencms.util.Encoder;
 
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/01/30 19:14:23 $
+ * @version $Revision: 1.32 $ $Date: 2003/03/02 18:43:54 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -224,11 +224,11 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                             }
                         }
                         if(checkurl){
-                            HashMap targetProperties = null;
+                            Map targetProperties = null;
                             
                             if (keepTargetProperties) {
                                 try {
-                                    targetProperties = new HashMap( cms.readAllProperties(link) );
+                                    targetProperties = cms.readPropertiesMap(link);
                                 } 
                                 catch (Exception e) {}
                             }

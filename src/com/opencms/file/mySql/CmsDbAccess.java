@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/22 15:15:41 $
-* Version: $Revision: 1.82 $
+* Date   : $Date: 2003/03/02 18:43:58 $
+* Version: $Revision: 1.83 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -62,11 +64,30 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.82 $ $Date: 2003/02/22 15:15:41 $ *
+ * @version $Revision: 1.83 $ $Date: 2003/03/02 18:43:58 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
     private static Boolean m_escapeStrings = null;
+
+    /**
+     * Returns <code>true</code> if Strings must be escaped before they are stored in the DB, 
+     * this is required because MySQL does not support multi byte unicode strings.<p>
+     * 
+     * @return boolean <code>true</code> if Strings must be escaped before they are stored in the DB
+     */
+    private boolean singleByteEncoding() {
+        if (m_escapeStrings == null) {    
+            String encoding = A_OpenCms.getDefaultEncoding();
+            m_escapeStrings = new Boolean (
+                "ISO-8859-1".equalsIgnoreCase(encoding) || 
+                "ISO-8859-15".equalsIgnoreCase(encoding) || 
+                "US-ASCII".equalsIgnoreCase(encoding) || 
+                "Cp1252".equalsIgnoreCase(encoding) 
+            ); 
+        }
+        return m_escapeStrings.booleanValue();          
+    }
 
     /**
      * Escapes a String to prevent issues with UTF-8 encoding, same style as
@@ -75,21 +96,11 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param value String to be escaped
      * @return the escaped String
      */
-    private String escape(String value) {
-        // check if we have already checked the need for encoding or not
-        if (m_escapeStrings == null) {        
-            String encoding = A_OpenCms.getDefaultEncoding();
-            m_escapeStrings = new Boolean (
-                "ISO-8859-1".equalsIgnoreCase(encoding) || 
-                "ISO-8859-15".equalsIgnoreCase(encoding) || 
-                "US-ASCII".equalsIgnoreCase(encoding) || 
-                "Cp1252".equalsIgnoreCase(encoding) 
-                ); 
-        }            
+    private String escape(String value) {          
         // no need to encode if OpenCms is not running in Unicode mode
-        if (m_escapeStrings.booleanValue()) return value;
+        if (singleByteEncoding()) return value;
         return Encoder.encode(value);
-    }
+    }    
 
     /**
      * Unescapes a String to prevent issues with UTF-8 encoding, same style as
@@ -98,19 +109,9 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
      * @param value String to be unescaped
      * @return the unescaped String
      */
-    private String unescape(String value) {
-        // check if we have already checked the need for encoding or not
-        if (m_escapeStrings == null) {        
-            String encoding = A_OpenCms.getDefaultEncoding();
-            m_escapeStrings = new Boolean (
-                "ISO-8859-1".equalsIgnoreCase(encoding) || 
-                "ISO-8859-15".equalsIgnoreCase(encoding) || 
-                "US-ASCII".equalsIgnoreCase(encoding) || 
-                "Cp1252".equalsIgnoreCase(encoding) 
-                ); 
-        }            
+    private String unescape(String value) {        
         // no need to encode if OpenCms is not running in Unicode mode
-        if (m_escapeStrings.booleanValue()) return value;
+        if (singleByteEncoding()) return value;
         return Encoder.decode(value);
     }
     
@@ -984,15 +985,16 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
      * 
      * @see com.opencms.file.genericSql.CmsDbAccess#readAllProperties(int, CmsResource, int)
      */
-    public Hashtable readAllProperties(int projectId, CmsResource resource,
-        int resourceType) throws CmsException {
-        Hashtable result = super.readAllProperties(projectId, resource, resourceType);
-        Iterator keys = result.keySet().iterator();
+    public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
+        Map original = super.readProperties(projectId, resource, resourceType);
+        if (singleByteEncoding()) return original; 
+        HashMap result = new HashMap(original.size());
+        Iterator keys = original.keySet().iterator();        
         while (keys.hasNext()) {
-            Object key = keys.next();
-            String value = (String)result.get(key);         
-            result.put(key, unescape(value));
+            Object key = keys.next();       
+            result.put(key, unescape((String)original.get(key)));
         }
+        original.clear();
         return result;
     }
 

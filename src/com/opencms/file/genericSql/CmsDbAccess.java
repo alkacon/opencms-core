@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/26 15:29:34 $
-* Version: $Revision: 1.272 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.273 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -55,7 +55,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -71,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.272 $ $Date: 2003/02/26 15:29:34 $ *
+ * @version $Revision: 1.273 $ $Date: 2003/03/02 18:43:55 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4949,9 +4952,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(newFolder.getResourceId()));
                 // copy properties
-                Hashtable props = new Hashtable();
+                Map props = new HashMap();
                 try {
-                    props = readAllProperties(projectId, currentFolder, currentFolder.getType());
+                    props = readProperties(projectId, currentFolder, currentFolder.getType());
                     writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -5036,10 +5039,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 }
                 folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
                 // copy properties
-                Hashtable props = new Hashtable();
+                Map props = new HashMap();
                 try {
                     deleteAllProperties(onlineProject.getId(), onlineFolder);
-                    props = readAllProperties(projectId, currentFolder, currentFolder.getType());
+                    props = readProperties(projectId, currentFolder, currentFolder.getType());
                     writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
                 } catch (CmsException exc){
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
@@ -5085,7 +5088,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 CmsFile currentOnlineFile = readFile(onlineProject.getId(), onlineProject.getId(), currentFile.getResourceName());
                 if (enableHistory){
                     // read the properties for backup
-                    Hashtable props = readAllProperties(projectId, currentFile, currentFile.getType());
+                    Map props = readProperties(projectId, currentFile, currentFile.getType());
                     // backup the offline resource
                     backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
                 }
@@ -5191,10 +5194,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     }
                 }
                 // copy properties
-                Hashtable props = new Hashtable();
+                Map props = new HashMap();
                 try {
                     deleteAllProperties(onlineProject.getId(), onlineFile);
-                    props = readAllProperties(projectId, currentFile, currentFile.getType());
+                    props = readProperties(projectId, currentFile, currentFile.getType());
                     writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
                 } catch (CmsException exc) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -5302,9 +5305,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     }
                 }
                 // copy properties
-                Hashtable props = new Hashtable();
+                Map props = new HashMap();
                 try{
-                    props = readAllProperties(projectId, currentFile, currentFile.getType());
+                    props = readProperties(projectId, currentFile, currentFile.getType());
                     writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
                 }catch (CmsException exc){
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()){
@@ -5330,7 +5333,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 discAccess.removeResource(currentFolder.getAbsolutePath(), exportKey);
             }
             if (enableHistory){
-                Hashtable props = readAllProperties(projectId, currentFolder,currentFolder.getType());
+                Map props = readProperties(projectId, currentFolder,currentFolder.getType());
                 // backup the offline resource
                 backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
             }
@@ -5509,7 +5512,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
 
     public void backupResource(int projectId, CmsResource resource, byte[] content,
-                               Hashtable properties, int versionId, long publishDate) throws CmsException {
+                               Map properties, int versionId, long publishDate) throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
         String ownerName = null;
@@ -5573,11 +5576,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             statement.close();
             // now write the properties
             // get all metadefs
-            Enumeration keys = properties.keys();
+            Iterator keys = properties.keySet().iterator();
             // one metainfo-name:
             String key;
-            while(keys.hasMoreElements()) {
-                key = (String) keys.nextElement();
+            while(keys.hasNext()) {
+                key = (String) keys.next();
                 CmsPropertydefinition propdef = readPropertydefinition(key, resource.getType());
                 String value = (String) properties.get(key);
                 if( propdef == null) {
@@ -5840,19 +5843,20 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Returns a list of all properties of a file or folder.
+     * Returns a list of all properties of a file or folder.<p>
      *
-     * @param resourceId The id of the resource.
-     * @param resourceType The Type of the resource.
+     * @param resourceId the id of the resource
+     * @param resource the resource to read the properties from
+     * @param resourceType the type of the resource
      *
-     * @return Vector of properties as Strings.
+     * @return a Map of Strings representing the properties of the resource
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public Hashtable readAllProperties(int projectId, CmsResource resource, int resourceType)
+    public Map readProperties(int projectId, CmsResource resource, int resourceType)
         throws CmsException {
 
-        Hashtable returnValue = new Hashtable();
+        HashMap returnValue = new HashMap();
         ResultSet result = null;
         PreparedStatement statement = null;
         Connection con = null;
@@ -11730,10 +11734,11 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType)
+    public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType)
         throws CmsException {
         this.writeProperties(propertyinfos, projectId, resource, resourceType, false);
     }
+    
     /**
      * Writes a couple of Properties for a file or folder.
      *
@@ -11745,16 +11750,16 @@ public CmsTask readTask(int id) throws CmsException {
      *
      * @throws CmsException Throws CmsException if operation was not succesful
      */
-    public void writeProperties(Hashtable propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition)
+    public void writeProperties(Map propertyinfos, int projectId, CmsResource resource, int resourceType, boolean addDefinition)
         throws CmsException {
 
         // get all metadefs
-        Enumeration keys = propertyinfos.keys();
+        Iterator keys = propertyinfos.keySet().iterator();
         // one metainfo-name:
         String key;
 
-        while(keys.hasMoreElements()) {
-            key = (String) keys.nextElement();
+        while(keys.hasNext()) {
+            key = (String) keys.next();
             writeProperty(key, projectId, (String) propertyinfos.get(key), resource, resourceType, addDefinition);
         }
     }

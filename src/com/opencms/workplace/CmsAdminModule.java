@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModule.java,v $
-* Date   : $Date: 2003/01/23 10:39:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
         
         // Set the New Module Icon  
         CmsRequestContext reqCont = cms.getRequestContext();
-        if(reqCont.currentProject().equals(cms.onlineProject())){
+        if(reqCont.currentProject().isOnlineProject()){
             xmlTemplateDocument.setData("activeIcon","online");
         }else{
             xmlTemplateDocument.setData("activeIcon","");

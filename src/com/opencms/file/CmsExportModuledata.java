@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -58,7 +61,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.11 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.12 $ $Date: 2003/03/02 18:43:53 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -471,21 +474,21 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         file.appendChild(properties);
 
         // read the properties
-        Hashtable fileProperties = new Hashtable();
+        Map fileProperties = new HashMap();
         try{
             m_cms.setContextToCos();
-            fileProperties = m_cms.readAllProperties(resource.getAbsolutePath());
+            fileProperties = m_cms.readPropertiesMap(resource.getAbsolutePath());
         } catch (CmsException e){
             throw e;
         } finally {
             m_cms.setContextToVfs();
         }
-        Enumeration keys = fileProperties.keys();
+        Iterator i = fileProperties.keySet().iterator();
 
         // create xml-elements for the properties
-        while(keys.hasMoreElements()) {
+        while(i.hasNext()) {
             // append the node for a property
-            String key = (String) keys.nextElement();
+            String key = (String) i.next();
             if(!key.equals(I_CmsConstants.C_PROPERTY_CHANNELID)){
                 Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
                 properties.appendChild(property);

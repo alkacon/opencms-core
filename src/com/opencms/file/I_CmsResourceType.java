@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/02/26 15:29:33 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.file;
 
 import com.opencms.core.CmsException;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 public interface I_CmsResourceType
 {
@@ -220,7 +220,7 @@ public interface I_CmsResourceType
     * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) throws CmsException;
+    public CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException;
 
 
     /**
@@ -259,7 +259,7 @@ public interface I_CmsResourceType
      *
      * @param file is the file that has to be changed
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Hashtable properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
+    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 
     /**
     * Locks a given resource.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import java.lang.reflect.Modifier;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -48,7 +50,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.64 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.65 $ $Date: 2003/03/02 18:43:53 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -2255,15 +2257,15 @@ class CmsShellCommands implements I_CmsConstants {
      * @param resource The name of the resource of which the propertyinformation has to be
      * read.
      */
-    public void readAllProperties(String resource) {
+    public void readProperties(String resource) {
         try {
-            Hashtable propertyinfos = m_cms.readAllProperties(resource);
-            Enumeration keys = propertyinfos.keys();
+            Map properties = m_cms.readPropertiesMap(resource);
+            Iterator i = properties.keySet().iterator();
             Object key;
-            while(keys.hasMoreElements()) {
-                key = keys.nextElement();
+            while(i.hasNext()) {
+                key = i.next();
                 System.out.print(key + "=");
-                System.out.println(propertyinfos.get(key));
+                System.out.println(properties.get(key));
             }
         }
         catch(Exception exc) {

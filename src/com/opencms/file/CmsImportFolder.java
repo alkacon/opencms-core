@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2003/02/15 11:14:54 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -46,7 +47,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2003/02/15 11:14:54 $
+ * @version $Revision: 1.18 $ $Date: 2003/03/02 18:43:53 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -343,14 +344,14 @@ public class CmsImportFolder implements I_CmsConstants {
                 }
 
                 filename = actImportPath + path[path.length-1];
-                Hashtable oldProperties = null;
+                Map oldProperties = null;
                 
                 try { 
                     // lock the filename to see whether it already exists
                     m_cms.lockResource(filename, true);
                     
                     // save the properties of the old file
-                    oldProperties = m_cms.readAllProperties(filename);
+                    oldProperties = m_cms.readPropertiesMap(filename);
                     
                     // trash the old file
                     m_cms.deleteResource( filename );

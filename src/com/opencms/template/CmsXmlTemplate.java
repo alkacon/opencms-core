@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/02/26 10:30:37 $
-* Version: $Revision: 1.109 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.110 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.109 $ $Date: 2003/02/26 10:30:37 $
+ * @version $Revision: 1.110 $ $Date: 2003/03/02 18:43:55 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1154,7 +1154,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         String cacheKey = getCacheDirectives(cms, templateName, elementName,
                                 parameters, templateSelector).getCacheKey(cms, parameters);
         if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
-                (cms.getRequestContext().currentProject().equals(cms.onlineProject()) )) {
+                (cms.getRequestContext().currentProject().isOnlineProject()) ) {
             boolean exportmode = cms.getMode() == CmsObject.C_MODUS_EXPORT;
             Hashtable externVarDeps = cms.getVariantDependencies();
             long exTimeForVariant = Long.MAX_VALUE;

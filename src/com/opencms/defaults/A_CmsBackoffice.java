@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/02/15 11:14:57 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/03/02 18:43:56 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1449,7 +1449,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       template.setData("createbutton", cb);
     } else {
         boolean buttonActiv = true;
-        if(isExtendedList() && (cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())){
+        if(isExtendedList() && (cms.getRequestContext().currentProject().isOnlineProject())){
             buttonActiv = false;
         }
         if(buttonActiv){

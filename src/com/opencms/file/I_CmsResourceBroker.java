@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/26 15:29:33 $
-* Version: $Revision: 1.193 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.194 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.core.CmsException;
 import com.opencms.report.I_CmsReport;
 
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -44,7 +45,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.193 $ $Date: 2003/02/26 15:29:33 $
+ * @version $Revision: 1.194 $ $Date: 2003/03/02 18:43:53 $
  *
  */
 
@@ -562,7 +563,7 @@ public interface I_CmsResourceBroker {
      public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup,
                                CmsProject currentProject,
                                String newFileName, byte[] contents, String type,
-                               Hashtable propertyinfos)
+                               Map propertyinfos)
 
          throws CmsException;
     /**
@@ -593,7 +594,7 @@ public interface I_CmsResourceBroker {
     public CmsFolder createFolder(CmsUser currentUser, CmsGroup currentGroup,
                                   CmsProject currentProject,
                                   String folderName,
-                                  Hashtable propertyinfos)
+                                  Map propertyinfos)
         throws CmsException;
 
     /**
@@ -632,7 +633,7 @@ public interface I_CmsResourceBroker {
      */
     public CmsResource importResource(CmsUser currentUser, CmsProject currentProject,
                                        String newResourceName,
-                                       int resourceType, Hashtable propertyinfos, int launcherType,
+                                       int resourceType, Map propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
                                        long lastmodified, byte[] filecontent)
@@ -2029,25 +2030,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public Vector readAllProjectResources(int projectId) throws CmsException;
-
-    /**
-     * Returns a list of all propertyinformations of a file or folder.
-     *
-     * <B>Security</B>
-     * Only the user is granted, who has the right to view the resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The name of the resource of which the propertyinformation has to be
-     * read.
-     *
-     * @return Vector of propertyinformation as Strings.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject,
-                                             String resource)
-        throws CmsException;
+        
     /**
      * Reads all propertydefinitions for the given resource type.
      *
@@ -2834,7 +2817,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
          throws CmsException;
 
     /**
-     * Reads a property from a resource.<p>
+     * Looks up a specified property from a resource.<p>
      *
      * <B>Security</B>
      * Only a user is granted who has the right to read the resource
@@ -2857,6 +2840,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
+     * @param siteroot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if false not (ie. normal 
@@ -2868,7 +2852,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
     throws CmsException;
 
     /**
-     * Looks up a specified property with optional direcory upward cascading, 
+     * Looks up a specified property with optional direcory upward cascading,
      * a default value will be returned if the property is not found on the
      * resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
@@ -2877,6 +2861,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
+     * @param siteroot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
@@ -2888,6 +2873,24 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      */
     public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search, String propertyDefault)
     throws CmsException;
+        
+    /**
+     * Looks up all properties for a resource with optional direcory upward cascading.<p>
+     * 
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project of the user
+     * @param resource the resource to look up the property for
+     * @param siteroot the site root where to stop the cascading
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders
+     *   and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     */
+    public Map readProperties(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, boolean search)
+    throws CmsException; 
         
     /**
      * Reads a definition for the given resource type.
@@ -3499,7 +3502,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void writeResource(CmsUser currentUser, CmsProject currentProject,
-                               String resourcename, Hashtable properties,
+                               String resourcename, Map properties,
                                String username, String groupname, int accessFlags,
                                int resourceType, byte[] filecontent)
         throws CmsException;
@@ -3571,7 +3574,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(CmsUser currentUser, CmsProject currentProject,
-                                      String resource, Hashtable propertyinfos)
+                                      String resource, Map propertyinfos)
         throws CmsException;
     /**
      * Writes a propertyinformation for a file or folder.

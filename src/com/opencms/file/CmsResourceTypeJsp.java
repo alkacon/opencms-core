@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@ package com.opencms.file;
 import com.opencms.core.CmsException;
 import com.opencms.flex.CmsJspLoader;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Describes the resource type "JSP", ensures that some needed VFS
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsResourceTypeJsp extends com.opencms.file.CmsResourceTypePlain {
 
@@ -55,7 +55,7 @@ public class CmsResourceTypeJsp extends com.opencms.file.CmsResourceTypePlain {
      * 
      * @throws CmsException in case of an exception while manipulating the new file
      */
-    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) 
+    public CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) 
     throws CmsException {
         com.opencms.file.CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);
         // Lock the new file

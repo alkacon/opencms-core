@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/02/26 15:29:33 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 //import com.opencms.file.genericSql.linkmanagement.*;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/02/26 15:29:33 $
+ * @version $Revision: 1.47 $ $Date: 2003/03/02 18:43:53 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -442,7 +443,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      *
      * @throws CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newPageName, Map properties, byte[] contents, Object parameter) throws CmsException{
 
         String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPARATOR, newPageName.length())+1);
         String pageName = newPageName.substring(folderName.length(), newPageName.length());
@@ -594,7 +595,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
                                        String user, String group, String access, long lastmodified, 
-                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
+                                       Map properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;

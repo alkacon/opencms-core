@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/03/02 18:43:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,14 +34,14 @@ package com.opencms.flex.jsp;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Bean to extract navigation information from the OpenCms VFS folder
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -56,7 +56,7 @@ public class CmsJspNavElement implements Comparable {
     private String m_resource = null;
     private String m_fileName = null;
     private String m_text = null;
-    private Hashtable m_properties = null;
+    private Map m_properties = null;
     private float m_position;
     private int m_navTreeLevel = Integer.MIN_VALUE;
     private Boolean m_hasNav = null;
@@ -93,7 +93,7 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @see #init(String, Hashtable)
      */
-    public CmsJspNavElement(String resource, Hashtable properties) {
+    public CmsJspNavElement(String resource, Map properties) {
         init(resource, properties, -1);
     }
     
@@ -107,7 +107,7 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @see #init(String, Hashtable, int)
      */    
-    public CmsJspNavElement(String resource, Hashtable properties, int navTreeLevel) {
+    public CmsJspNavElement(String resource, Map properties, int navTreeLevel) {
         init(resource, properties, navTreeLevel);
     }
     
@@ -119,7 +119,7 @@ public class CmsJspNavElement implements Comparable {
      *     information from
      * @param properties the properties of the resource read from the vfs
      */
-    public void init(String resource, Hashtable properties) {
+    public void init(String resource, Map properties) {
         init(resource, properties, -1);
     }
 
@@ -145,7 +145,7 @@ public class CmsJspNavElement implements Comparable {
      * @see com.opencms.flex.jsp.CmsJspNavBuilder#getNavigationForResource
      * (String)
      */    
-    public void init(String resource, Hashtable properties, int navTreeLevel) {
+    public void init(String resource, Map properties, int navTreeLevel) {
         m_resource = resource;
         m_properties = properties;
         m_navTreeLevel = navTreeLevel;
@@ -385,7 +385,7 @@ public class CmsJspNavElement implements Comparable {
      * @return the original Hashtable of all file properties of the resource that
      * the nav element belongs to
      */    
-    public Hashtable getProperties() {
+    public Map getProperties() {
         return m_properties;
     }    
 }

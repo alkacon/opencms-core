@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/02/03 19:47:02 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,8 @@ import com.opencms.util.Utils;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -50,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/02/03 19:47:02 $
+ * @version $Revision: 1.34 $ $Date: 2003/03/02 18:43:54 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -283,7 +285,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     }
 
     /**
-     * Gets all property of a resource.<p>
+     * Gets all properties of a resource.<p>
      * 
      * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
@@ -301,11 +303,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String filename = (String)session.getValue(C_PARA_FILE);
         if(filename != null) {
-            Hashtable property = cms.readAllProperties(filename);
-            Enumeration enu = property.keys();
-            while(enu.hasMoreElements()) {
-                String key = (String)enu.nextElement();
-                String value = (String)property.get(key);
+            Map properties = cms.readPropertiesMap(filename);
+            Iterator i = properties.keySet().iterator();
+            while(i.hasNext()) {
+                String key = (String)i.next();
+                String value = (String)properties.get(key);
                 names.addElement(Encoder.escapeXml(key + ":" + value));
                 values.addElement(Encoder.escapeXml(key));
             }
@@ -318,8 +320,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     }
 
     /**
-     * Gets all unused propertydefintions for the file.
-     * <P>
+     * Gets all unused propertydefintions for the file.<p>
+     * 
      * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
@@ -339,15 +341,15 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             CmsResource file = (CmsResource)cms.readFileHeader(filename);
             I_CmsResourceType type = cms.getResourceType(file.getType());
 
+            // get all existing properties of this file
+            Map properties = cms.readPropertiesMap(filename);
+
             // get all propertydefinitions for this type
             Vector propertydef = cms.readAllPropertydefinitions(type.getResourceTypeName());
-
-            // get all existing properties of this file
-            Hashtable property = cms.readAllProperties(filename);
             Enumeration enu = propertydef.elements();
             while(enu.hasMoreElements()) {
                 CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
-                String propertyvalue = (String)property.get(prop.getName());
+                String propertyvalue = (String)properties.get(prop.getName());
                 if(propertyvalue == null) {
                     names.addElement(Encoder.escapeXml(prop.getName()));
                     values.addElement(Encoder.escapeXml(prop.getName()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/02/26 15:19:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/03/02 18:43:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -116,7 +116,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_includeCalls = java.util.Collections.synchronizedSet(new java.util.HashSet(23));
         m_parameters = req.getParameterMap();
         try {
-            m_isOnline = (m_cms.onlineProject().equals(m_cms.getRequestContext().currentProject()));
+            m_isOnline = m_cms.getRequestContext().currentProject().isOnlineProject();
         } catch (Exception e) {}        
         String[] paras = req.getParameterValues("_flex");
         boolean nocachepara = false;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.50 $ $Date: 2003/03/02 18:43:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -105,7 +105,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// set the publishProject Button to enable if user has the right to publish the project
 		if (templateFile.equalsIgnoreCase(CmsXmlTemplateFile.C_TEMPLATEPATH + "head")) {
-			if ((cms.isAdmin() || cms.isManagerOfProject()) && (!reqCont.currentProject().equals(cms.onlineProject()))) {
+			if ((cms.isAdmin() || cms.isManagerOfProject()) && (!reqCont.currentProject().isOnlineProject())) {
 				xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_ENABLED", this));
 			}
 			else {

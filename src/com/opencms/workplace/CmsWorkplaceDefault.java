@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.56 $ $Date: 2003/03/02 18:43:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -420,7 +420,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     public Boolean isNotOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
-        return new Boolean(!reqCont.currentProject().equals(cms.onlineProject()));
+        return new Boolean(!reqCont.currentProject().isOnlineProject());
     }
 
     /**
@@ -438,7 +438,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      */
     public Boolean isOnlineProject(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
-        return new Boolean(reqCont.currentProject().equals(cms.onlineProject()));
+        return new Boolean(reqCont.currentProject().isOnlineProject());
     }
 
     /**

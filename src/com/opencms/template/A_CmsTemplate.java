@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.10 $ $Date: 2003/03/02 18:43:55 $
  */
 public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_CmsLogChannels {
 
@@ -74,7 +74,7 @@ public abstract class A_CmsTemplate implements I_CmsConstants, I_CmsTemplate, I_
      */
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         try {
-            return cms.getRequestContext().currentProject().equals(cms.onlineProject());
+            return cms.getRequestContext().currentProject().isOnlineProject();
         } catch(Exception e) {
             return false;
         }

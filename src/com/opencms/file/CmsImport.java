@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/02/28 13:26:50 $
-* Version: $Revision: 1.80 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.81 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,8 +46,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -68,7 +70,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Schouten
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.80 $ $Date: 2003/02/28 13:26:50 $
+ * @version $Revision: 1.81 $ $Date: 2003/03/02 18:43:54 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -439,7 +441,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      *       not used when null
      */
     private void importResource(String source, String destination, String type, String user, 
-    String group, String access, long lastmodified, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+    String group, String access, long lastmodified, Map properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -538,11 +540,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     public void importResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, 
     String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes;
-        Element currentElement, currentProperty;
+        Element currentElement, currentProperty;               
         String source, destination, type, user, group, access, launcherStartClass, dummy;
         long lastmodified = 0;
-        Hashtable properties;
+        Map properties;
+        
         Vector types = new Vector(); // stores the file types for which the property already exists
+        if (excludeList == null) excludeList = new Vector();
         
         m_webAppNames = (List)A_OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
         if (m_webAppNames == null)
@@ -612,7 +616,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // get all properties for this file
                     propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
                     // clear all stores for property information
-                    properties = new Hashtable();
+                    properties = new HashMap();
                     // add the module property to properties
                     if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
                         if (!types.contains(type)) {
@@ -1029,14 +1033,14 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         for (int i=0; i<rules.length; i++) {
             String actRule = rules[i];
             // cut String "/default/vfs/" from rule
-            actRule = actRule.substring(root.length());
+            actRule = CmsStringSubstitution.substitute(actRule, root, "");
             // divide rule into search and replace parts and delete regular expressions
             StringTokenizer ruleT = new StringTokenizer(actRule, "#");
             ruleT.nextToken();
             String search = ruleT.nextToken();
-            search = search.substring(0,search.lastIndexOf("(.*)"));
+            search = search.substring(0, search.lastIndexOf("(.*)"));
             String replace = ruleT.nextToken();
-            replace = "$1" + replace.substring(0,replace.lastIndexOf("$1"));
+            replace = replace.substring(0,replace.lastIndexOf("$1"));
             // scan content for paths if the replace String is not present
             if (content.indexOf(replace) == -1 && content.indexOf(search) != -1) {
                 // ensure subdirectories of the same name are not replaced

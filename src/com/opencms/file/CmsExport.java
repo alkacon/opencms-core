@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/02/26 10:02:17 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/03/02 18:43:53 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -69,7 +69,7 @@ import org.w3c.dom.Text;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.48 $ $Date: 2003/02/26 10:02:17 $
+ * @version $Revision: 1.49 $ $Date: 2003/03/02 18:43:53 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -222,7 +222,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
-        m_isOnlineProject = cms.getRequestContext().currentProject().equals(cms.onlineProject());
+        m_isOnlineProject = cms.getRequestContext().currentProject().isOnlineProject();
         m_contentAge = contentAge;
         m_report = report;
 
@@ -704,16 +704,16 @@ public class CmsExport implements I_CmsConstants, Serializable {
         file.appendChild(properties);
 
         // read the properties
-        Hashtable fileProperties = m_cms.readAllProperties(resource.getAbsolutePath());
-        Enumeration keys = fileProperties.keys();
+        Map fileProperties = m_cms.readPropertiesMap(resource.getAbsolutePath());
+        Iterator i = fileProperties.keySet().iterator();
 
         // create xml-elements for the properties
-        while (keys.hasMoreElements()) {
+        while (i.hasNext()) {
             // append the node for a property
             Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
             properties.appendChild(property);
 
-            String key = (String)keys.nextElement();
+            String key = (String)i.next();
             String value = (String)fileProperties.get(key);
             String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeImage.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,18 +30,18 @@ package com.opencms.file;
 
 import com.opencms.core.CmsException;
 
-import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * This class describes the resource type "image".
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsResourceTypeImage extends CmsResourceTypePlain{
 
     public static final String C_TYPE_RESOURCE_NAME = "image";
 
-    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException{
         CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);
         // lock the new file
         cms.lockResource(newResourceName);

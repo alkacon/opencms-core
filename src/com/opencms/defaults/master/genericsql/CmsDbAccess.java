@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/26 15:39:41 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1262,16 +1262,7 @@ public class CmsDbAccess {
      * @return true, if this is the onlineproject, else returns false
      */
     protected boolean isOnlineProject(CmsObject cms) {
-        boolean retValue = false;
-        try {
-             if(cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
-                // yes, this is the onlineproject!
-                retValue = true;
-             }
-        } catch(CmsException exc) {
-            // ignore the exception
-        }
-        return retValue;
+        return cms.getRequestContext().currentProject().isOnlineProject();
     }
 
     /**

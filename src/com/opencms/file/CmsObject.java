@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/02/26 15:29:34 $
-* Version: $Revision: 1.258 $
+* Date   : $Date: 2003/03/02 18:43:53 $
+* Version: $Revision: 1.259 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,9 @@ import com.opencms.util.Utils;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -62,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.258 $
+ * @version $Revision: 1.259 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -911,39 +913,19 @@ public CmsFolder createChannel(String parentChannel, String newChannelName) thro
     }
 }
 
-/**
- * Creates a new folder.
- *
- * @param folder the complete path to the folder in which the new folder will
- * be created.
- * @param newFolderName the name of the new folder.
- * @param properties A Hashtable of properties, that should be set for this folder.
- * The keys for this Hashtable are the names for property-definitions, the values are
- * the values for the properties.
- *
- * @return a <code>CmsFolder</code> object representing the newly created folder.
- * @throws CmsException if the foldername is not valid, or if the user has not the appropriate rights to create
- * a new folder.
- *
- * @deprecated Use createResource instead.
- */
-public CmsFolder createFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
-    return (CmsFolder)this.createResource(folder, newFolderName, C_TYPE_FOLDER_NAME, properties, null);
-}
-
 public CmsResource createResource(String folder, String name, String type) throws CmsException {
-    return this.createResource(folder + name, type, new Hashtable(), new byte[0], null );
+    return this.createResource(folder + name, type, new HashMap(), new byte[0], null );
 }
 
-public CmsResource createResource(String folder, String name, String type, Hashtable properties) throws CmsException {
+public CmsResource createResource(String folder, String name, String type, Map properties) throws CmsException {
     return this.createResource(folder + name, type, properties, new byte[0], null);
 }
 
-public CmsResource createResource(String folder, String name, String type, Hashtable properties, byte[] contents) throws CmsException {
+public CmsResource createResource(String folder, String name, String type, Map properties, byte[] contents) throws CmsException {
     return this.createResource(folder + name, type, properties, contents, null);
 }
 
-public CmsResource createResource(String newResourceName, String type, Hashtable properties, byte[] contents, Object parameter) throws CmsException {
+public CmsResource createResource(String newResourceName, String type, Map properties, byte[] contents, Object parameter) throws CmsException {
     I_CmsResourceType rt = getResourceType(type);
     return rt.createResource(this, newResourceName, properties, contents, parameter);
 }
@@ -964,7 +946,7 @@ public CmsResource createResource(String newResourceName, String type, Hashtable
 protected CmsFile doCreateFile(String newFileName, byte[] contents, String type) throws CmsException {
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
                                    m_context.currentProject(), getSiteRoot(newFileName), contents,
-                                   type, new Hashtable());
+                                   type, new HashMap());
     return file;
 }
 /**
@@ -984,7 +966,7 @@ protected CmsFile doCreateFile(String newFileName, byte[] contents, String type)
  * The CmsException is also thrown, if the filename is not valid or if the user
  * has not the appropriate rights to create a new file.
  */
-protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, Hashtable properties) throws CmsException {
+protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, Map properties) throws CmsException {
     // avoid null-pointer exceptions
     if(properties == null) {
         properties = new Hashtable();
@@ -1028,7 +1010,7 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  * a new folder.
  *
  */
-protected CmsFolder doCreateFolder(String newFolderName, Hashtable properties) throws CmsException {
+protected CmsFolder doCreateFolder(String newFolderName, Map properties) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
                                             getSiteRoot(newFolderName), properties);
     return cmsFolder;
@@ -1056,7 +1038,7 @@ protected CmsFolder doCreateFolder(String newFolderName, Hashtable properties) t
 	 * a new resource.
 	 *
 	 */
-	protected CmsResource doImportResource(String newResourceName, int resourceType, Hashtable properties, int launcherType,
+	protected CmsResource doImportResource(String newResourceName, int resourceType, Map properties, int launcherType,
                                         String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
     	CmsResource cmsResource = m_rb.importResource(m_context.currentUser(), m_context.currentProject(),
                                             getSiteRoot(newResourceName), resourceType, properties, launcherType,
@@ -1079,7 +1061,7 @@ protected CmsFolder doCreateFolder(String newFolderName, Hashtable properties) t
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    protected void doWriteResource(String resourcename, Hashtable properties,
+    protected void doWriteResource(String resourcename, Map properties,
                                String username, String groupname, int accessFlags,
                                int resourceType, byte[] filecontent)
         throws CmsException{
@@ -1844,15 +1826,12 @@ public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
      *
      * @return int The modus of this cmsObject.
      */
-    public int getMode(){
-        if(m_mode == C_MODUS_AUTO){
-            try{
-                if(getRequestContext().currentProject().getId() == onlineProject().getId()){
-                    return C_MODUS_ONLINE;
-                }else{
-                    return C_MODUS_OFFLINE;
-                }
-            }catch(CmsException e){
+    public int getMode() {
+        if (m_mode == C_MODUS_AUTO) {
+            if (getRequestContext().currentProject().isOnlineProject()) {
+                return C_MODUS_ONLINE;
+            } else {
+                return C_MODUS_OFFLINE;
             }
         }
         return m_mode;
@@ -2150,7 +2129,7 @@ public void importFolder(String importFile, String importPath) throws CmsExcepti
  */
 public CmsResource importResource(String source, String destination, String type,
                                   String user, String group, String access, long lastmodified,
-                                  Hashtable properties, String launcherStartClass,
+                                  Map properties, String launcherStartClass,
                                   byte[] content, String importPath)
     throws CmsException {
     I_CmsResourceType rt = getResourceType(type);
@@ -2674,18 +2653,6 @@ public Vector readAllFileHeadersForHist(String filename) throws CmsException {
     public Vector readAllProjectResources(int projectId) throws CmsException {
         return m_rb.readAllProjectResources(projectId);
     }
-/**
- * Returns a list of all properties of a file or folder.
- *
- * @param name the name of the resource for which the property has to be read.
- *
- * @return a Vector of properties as Strings.
- *
- * @throws CmsException if operation was not succesful.
- */
-public Hashtable readAllProperties(String name) throws CmsException {
-    return (m_rb.readAllProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name)));
-}
 
 /**
  * Reads all property-definitions for the given resource type.
@@ -3309,7 +3276,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
 }
 
     /**
-     * Reads a property from a resource.<p>
+     * Looks up a specified property from a resource.<p>
      *
      * @param resource the resource to look up the property for
      * @param property the name of the property to look up
@@ -3321,7 +3288,7 @@ public Vector readProjectLogs(int projectId) throws CmsException {
     }
 
     /**
-     * Looks up a specified property with optional direcory upward cascading.
+     * Looks up a specified property with optional direcory upward cascading.<p>
      * 
      * @param resource the resource to look up the property for
      * @param property the name of the property to look up
@@ -3336,9 +3303,9 @@ public Vector readProjectLogs(int projectId) throws CmsException {
     }
 
     /**
-     * Looks up a specified property with optional direcory upward cascading.
-     * A default value will be returned if the property is not found on the
-     * resource (or it's parent folders in case search is set to <code>true</code>).
+     * Looks up a specified property with optional direcory upward cascading,
+     * a default value will be returned if the property is not found on the
+     * resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
      * @param resource the resource to look up the property for
      * @param property the name of the property to look up
@@ -3353,6 +3320,47 @@ public Vector readProjectLogs(int projectId) throws CmsException {
     public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
         return m_rb.readProperty(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), property, search, propertyDefault);
     }
+    
+    /**
+     * Looks up all properties for a resource.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     */    
+    public Map readPropertiesMap(String resource) throws CmsException {
+        return m_rb.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), false);    
+    }    
+        
+    /**
+     * Looks up all properties for a resource with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders
+     *   and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     */           
+    public Map readProperties(String resource, boolean search) throws CmsException {
+        return m_rb.readProperties(m_context.currentUser(), m_context.currentProject(), m_context.getSiteRoot(resource), m_context.getSiteRoot(), search);    
+    } 
+                    
+    /**
+     * Returns a list of all properties of a file or folder.
+     *
+     * @param name the name of the resource for which the property has to be read
+     *
+     * @return a Vector of Strings
+     *
+     * @throws CmsException if operation was not succesful
+     * @deprecated use readPropertiesMap(String) instead
+     */
+    public Hashtable readAllProperties(String resource) throws CmsException {
+        Hashtable result = new Hashtable();
+        Map properties = readProperties(resource, false);
+        if (properties != null) result.putAll(properties);
+        return result;
+    }    
 
 /**
  * Reads the property-definition for the resource type.
@@ -3880,7 +3888,7 @@ public void writeGroup(CmsGroup group) throws CmsException {
  *
  * @throws CmsException if operation was not successful.
  */
-public void writeProperties(String name, Hashtable properties) throws CmsException {
+public void writeProperties(String name, Map properties) throws CmsException {
     m_rb.writeProperties(m_context.currentUser(), m_context.currentProject(), getSiteRoot(name), properties);
 }
 /**

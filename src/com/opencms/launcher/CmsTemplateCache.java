@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2003/02/16 19:31:08 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@ package com.opencms.launcher;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
-import com.opencms.file.CmsCache;
+import com.opencms.flex.util.CmsLruHashMap;
 
 class CmsTemplateCache implements I_CmsTemplateCache,I_CmsLogChannels {
     
     /** Hashtable to store the cached data */
     
-    private CmsCache templateCache = new CmsCache(1000);
+    private CmsLruHashMap templateCache = new CmsLruHashMap(1000);
     
     /** Default constructor to create a template cache */
     public CmsTemplateCache() {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/02/26 15:29:34 $
-* Version: $Revision: 1.356 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.357 $
 
 *
 * This library is part of OpenCms -
@@ -35,6 +35,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.*;
+import com.opencms.flex.util.CmsLruHashMap;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
@@ -50,7 +51,9 @@ import java.net.URLConnection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -71,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.356 $ $Date: 2003/02/26 15:29:34 $
+ * @version $Revision: 1.357 $ $Date: 2003/03/02 18:43:55 $
 
  *
  */
@@ -125,24 +128,22 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     protected int m_limitedWorkplacePort = -1;
 
     /**
-     *  Define the caches
-    */
-    protected CmsCache m_userCache = null;
-    protected CmsCache m_groupCache = null;
-    protected CmsCache m_usergroupsCache = null;
-    protected CmsCache m_projectCache = null;
+     *  Define some caches for often read resources
+     */
+    protected CmsLruHashMap m_userCache = null;
+    protected CmsLruHashMap m_groupCache = null;
+    protected CmsLruHashMap m_usergroupsCache = null;
+    protected CmsLruHashMap m_projectCache = null;
+    protected CmsLruHashMap m_propertyCache = null;
+    protected CmsLruHashMap m_propertyDefCache = null;
+    protected CmsLruHashMap m_propertyDefVectorCache = null;
+    protected CmsLruHashMap m_accessCache = null;
+    protected CmsLruHashMap m_resourceCache = null;
+    protected CmsLruHashMap m_resourceListCache = null;    
+    
     protected CmsProject m_onlineProjectCache = null;
-    protected CmsCache m_propertyCache = null;
-    protected CmsCache m_propertyDefCache = null;
-    protected CmsCache m_propertyDefVectorCache = null;
-    protected CmsCache m_accessCache = null;
     protected int m_cachelimit = 0;
     protected String m_refresh = null;
-
-    // cache for single resources
-    protected CmsResourceCache m_resourceCache = null;
-    // cache for resource lists
-    protected CmsResourceCache m_subresCache = null; // resources in folder
 
 
 /**
@@ -1169,14 +1170,14 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 }
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             } else {
                 m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true, currentUser.getId());
                 if (resource.getState()==C_STATE_UNCHANGED) {
                      resource.setState(C_STATE_CHANGED);
                 }
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             }
             // inform about the file-system-change
             fileSystemChanged(false);
@@ -1238,14 +1239,14 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 }
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             } else {
                 m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true, currentUser.getId());
                 if (resource.getState()==C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
                 }
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             }
             m_accessCache.clear();
             // inform about the file-system-change
@@ -1301,14 +1302,14 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             }
             m_dbAccess.writeFolder(currentProject, (CmsFolder) resource, true, currentUser.getId());
             // update the cache
-            this.clearResourceCache(filename);
+            this.clearResourceCache(filename, currentProject);
         } else {
             m_dbAccess.writeFileHeader(currentProject, (CmsFile) resource, true, currentUser.getId());
             if (resource.getState() == C_STATE_UNCHANGED) {
                 resource.setState(C_STATE_CHANGED);
             }
             // update the cache
-            this.clearResourceCache(filename);
+            this.clearResourceCache(filename, currentProject);
         }
         m_accessCache.clear();
         // inform about the file-system-change
@@ -1347,7 +1348,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 }
                 
                 m_dbAccess.writeFolder( currentProject, (CmsFolder)resource, true, currentUser.getId() );
-                this.clearResourceCache( resourceName );
+                this.clearResourceCache( resourceName, currentProject );
             } 
             else {
                 m_dbAccess.writeFileHeader (currentProject, (CmsFile)resource, true, currentUser.getId() );
@@ -1355,7 +1356,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                     resource.setState(C_STATE_CHANGED);
                 }
                 
-                this.clearResourceCache( resourceName );
+                this.clearResourceCache( resourceName, currentProject );
             }
                  
             m_accessCache.clear();
@@ -1406,11 +1407,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             if (filename.endsWith("/")) {
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             } else {
                 m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             }
             // inform about the file-system-change
             fileSystemChanged(isFolder);
@@ -1465,7 +1466,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 resource.setState(C_STATE_CHANGED);
             }
             // update the cache
-            this.clearResourceCache(filename);
+            this.clearResourceCache(filename, currentProject);
 
             // inform about the file-system-change
             fileSystemChanged(false);
@@ -1483,7 +1484,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         m_usergroupsCache.clear();
         m_projectCache.clear();
         m_resourceCache.clear();
-        m_subresCache.clear();
+        m_resourceListCache.clear();
         m_propertyCache.clear();
         m_propertyDefCache.clear();
         m_propertyDefVectorCache.clear();
@@ -1543,11 +1544,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject),
                               currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
 
-                this.clearResourceCache(foldername + filename);
+                this.clearResourceCache(foldername + filename, currentProject);
                 // copy the metainfos
                 lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
-                            readAllProperties(currentUser,currentProject,file.getResourceName()));
+                            readProperties(currentUser, currentProject, file.getResourceName(), null, false));
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(file.isFolder());
@@ -1598,12 +1599,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
                 accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
                 m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
-                this.clearResourceCache(destination);
+                this.clearResourceCache(destination, currentProject);
                 // copy the properties
                 lockResource(currentUser, currentProject, destination, true);
                 writeProperties(currentUser,currentProject, destination,
-                            readAllProperties(currentUser,currentProject,folder.getResourceName()));
-                m_subresCache.clear();
+                            readProperties(currentUser, currentProject, folder.getResourceName(), null, false));
+                m_resourceListCache.clear();
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(true);
@@ -1650,18 +1651,18 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
             try{
-                m_resourceCache.remove(resource);
+                m_resourceCache.remove(getCacheKey(null, currentProject, resource));
                 Vector subFiles = getFilesInFolder(currentUser, currentProject, resource, true);
                 Vector subFolders = getSubFolders(currentUser, currentProject, resource, true);
                 for(int i=0; i<subFolders.size(); i++){
                     String foldername = ((CmsResource)subFolders.elementAt(i)).getResourceName();
-                    m_resourceCache.remove(foldername);
+                    m_resourceCache.remove(getCacheKey(null, currentProject, foldername));
                 }
                 for(int i=0; i<subFiles.size(); i++){
                     String filename = ((CmsResource)subFiles.elementAt(i)).getResourceName();
-                    m_resourceCache.remove(filename);
+                    m_resourceCache.remove(getCacheKey(null, currentProject, filename));
                 }
-                this.clearResourceCache(resource);
+                this.clearResourceCache(resource, currentProject);
                 m_accessCache.clear();
                 offlineRes = readFileHeader(currentUser, currentProject, currentProject.getId(), resource);
             } catch (CmsException exc){
@@ -1766,7 +1767,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup,
                                CmsProject currentProject,
                                String newFileName, byte[] contents, String type,
-                               Hashtable propertyinfos)
+                               Map propertyinfos)
 
          throws CmsException {
 
@@ -1802,7 +1803,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 
             m_dbAccess.writeFileHeader(currentProject, file,false);
 
-            this.clearResourceCache(newFileName);
+            this.clearResourceCache(newFileName, currentProject);
 
             // write the metainfos
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(),file, file.getType());
@@ -1847,7 +1848,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
     public CmsFolder createFolder(CmsUser currentUser, CmsGroup currentGroup,
                                   CmsProject currentProject,
                                   String newFolderName,
-                                  Hashtable propertyinfos)
+                                  Map propertyinfos)
         throws CmsException {
             
         // append C_FOLDER_SEPARATOR if required
@@ -1884,7 +1885,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             newFolder.setState(C_STATE_NEW);
 
             m_dbAccess.writeFolder(currentProject, newFolder, false);
-            this.clearResourceCache(newFolderName);
+            this.clearResourceCache(newFolderName, currentProject);
 
             // write metainfos for the folder
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), newFolder, newFolder.getType());
@@ -1935,7 +1936,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      */
     public CmsResource importResource(CmsUser currentUser, CmsProject currentProject,
                                        String newResourceName,
-                                       int resourceType, Hashtable propertyinfos, int launcherType,
+                                       int resourceType, Map propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
                                        long lastmodified, byte[] filecontent)
@@ -1982,7 +1983,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             // write-acces  was granted - create the folder.
             newResource = m_dbAccess.createResource(currentProject,onlineProject(currentUser, currentProject),newResource,filecontent, currentUser.getId(), isFolder);
             
-            this.clearResourceCache(newResourceName);
+            this.clearResourceCache(newResourceName, currentProject);
             // write metainfos for the folder
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(),true);
 
@@ -2385,7 +2386,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
 
             }
             // update the cache
-            this.clearResourceCache(filename);
+            this.clearResourceCache(filename, currentProject);
             m_accessCache.clear();
 
             // inform about the file-system-change
@@ -2448,7 +2449,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 m_dbAccess.deleteFolder(currentProject,cmsFolder);
             }
             // update cache
-            this.clearResourceCache(foldername);
+            this.clearResourceCache(foldername, currentProject);
             m_accessCache.clear();
             // inform about the file-system-change
             fileSystemChanged(true);
@@ -2502,11 +2503,11 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             if (filename.endsWith("/")) {
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             } else {
                 m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false, currentUser.getId());
                 // update the cache
-                this.clearResourceCache(filename);
+                this.clearResourceCache(filename, currentProject);
             }
             // inform about the file-system-change
             fileSystemChanged(isFolder);
@@ -2638,7 +2639,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
             this.clearResourceCache();
             // delete the project
             m_dbAccess.deleteProject(deleteProject);
-            m_projectCache.remove(id);
+            m_projectCache.remove(new Integer(id));
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] " + id,
                 CmsException.C_NO_ACCESS);
@@ -2688,7 +2689,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true, currentUser.getId());
             }
             // update the cache
-            this.clearResourceCache(resource);
+            this.clearResourceCache(resource, currentProject);
             m_propertyCache.clear();
         } else {
             // yes - throw exception
@@ -3156,7 +3157,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     info.put("GroupCache",""+m_groupCache.size());
     info.put("UserGroupCache",""+m_usergroupsCache.size());
     info.put("ResourceCache",""+m_resourceCache.size());
-    info.put("SubResourceCache",""+m_subresCache.size());
+    info.put("SubResourceCache",""+m_resourceListCache.size());
     info.put("ProjectCache",""+m_projectCache.size());
     info.put("PropertyCache",""+m_propertyCache.size());
     info.put("PropertyDefinitionCache",""+m_propertyDefCache.size());
@@ -3314,10 +3315,9 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
  * @throws CmsException  Throws CmsException if operation was not succesful.
  */
 public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, String foldername, boolean includeDeleted) throws CmsException{
-    Vector files;
-
-    // Todo: add caching for getFilesInFolder
-    files=(Vector)m_subresCache.get(currentUser.getId()+"FILES"+foldername, currentProject.getId());
+    if (! foldername.endsWith(C_FOLDER_SEPARATOR)) foldername += C_FOLDER_SEPARATOR;
+    String cacheKey = getCacheKey(currentUser.getName() + "_files_" + includeDeleted, currentProject, foldername);
+    Vector files = (Vector)m_resourceListCache.get(cacheKey);    
     if ((files==null) || (files.size()==0)) {
         // try to get the files in the current project
         try {
@@ -3335,7 +3335,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
             return new Vector();
         }
         Vector onlineFiles = null;
-        if (!currentProject.equals(onlineProject(currentUser, currentProject))){
+        if (! currentProject.equals(onlineProject(currentUser, currentProject))){
             // this is not the onlineproject, get the files
             // from the onlineproject, too
             try {
@@ -3351,9 +3351,9 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
             //if it was null, the folder was marked deleted -> no files in online project.
             files = mergeResources(files, onlineFiles);
         }
-        m_subresCache.put(currentUser.getId()+"FILES"+foldername, currentProject.getId(), files);
+        m_resourceListCache.put(cacheKey, files);
     }
-    return files;
+    return (files == null)?null:(Vector)files.clone();
 }
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3427,7 +3427,8 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
  */
 public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, String rootName) throws CmsException {
     // try to read from cache
-    Vector retValue = (Vector)m_subresCache.get(currentUser.getId()+"TREE"+rootName, currentProject.getId());
+    String cacheKey = getCacheKey(currentUser.getName() + "_tree", currentProject, rootName);
+    Vector retValue = (Vector)m_resourceListCache.get(cacheKey);
     if (retValue == null || retValue.size() == 0){
         Vector resources = m_dbAccess.getFolderTree(currentProject.getId(), rootName);
         retValue = new Vector(resources.size());
@@ -3448,9 +3449,9 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
                 }
             }
         }
-        m_subresCache.put(currentUser.getId()+"TREE"+rootName, currentProject.getId(), retValue);
+        m_resourceListCache.put(cacheKey, retValue);
     }
-    return retValue;
+    return (retValue == null)?null:(Vector)retValue.clone();    
 }
     /**
      * Returns all groups<P/>
@@ -3555,11 +3556,11 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
     }
 
     // try to read from cache
-    CmsGroup parent = (CmsGroup) m_groupCache.get(group.getParentId());
+    CmsGroup parent = (CmsGroup) m_groupCache.get(new Integer(group.getParentId()));
     if (parent == null)
     {
         parent = m_dbAccess.readGroup(group.getParentId());
-        m_groupCache.put(group.getParentId(), parent);
+        m_groupCache.put(new Integer(group.getParentId()), parent);
     }
     return parent;
 }
@@ -3638,7 +3639,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
     } else {
         // try to read from cache
-        retValue = (Vector)m_subresCache.get(currentUser.getId()+"RESOURCES"+folder, currentProject.getId());
+        String cacheKey = getCacheKey(currentUser.getName() + "_resources", currentProject, offlineFolder.getResourceName());
+        retValue = (Vector)m_resourceListCache.get(cacheKey);
         if(retValue == null || retValue.size() == 0){
             resources = m_dbAccess.getResourcesInFolder(currentProject.getId(), offlineFolder);
             retValue = new Vector(resources.size());
@@ -3651,10 +3653,10 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     retValue.addElement(res);
                 }
             }
-            m_subresCache.put(currentUser.getId()+"RESOURCES"+folder, currentProject.getId(), retValue);
+            m_resourceListCache.put(cacheKey, retValue);
         }
     }
-    return retValue;
+    return (retValue == null)?null:(Vector)retValue.clone();
 }
 
     /**
@@ -3812,8 +3814,10 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         throws CmsException {
         Vector folders = new Vector();
 
-        // Todo: add caching for getSubFolders
-        folders=(Vector)m_subresCache.get(currentUser.getId()+"FOLDERS"+foldername, currentProject.getId());
+        if (! foldername.endsWith(C_FOLDER_SEPARATOR)) foldername += C_FOLDER_SEPARATOR;
+
+        String cacheKey = getCacheKey(currentUser.getName() + "_folders", currentProject, foldername);
+        folders=(Vector)m_resourceListCache.get(cacheKey);
 
         if ((folders==null) || (folders.size()==0)){
 
@@ -3838,11 +3842,11 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     // no onlinefolders, ignoring them
                 }
             }
-            m_subresCache.put(currentUser.getId()+"FOLDERS"+foldername, currentProject.getId(), folders);
+            m_resourceListCache.put(cacheKey, folders);
         }
 
         // return the folders
-        return(folders);
+        return (folders == null)?null:(Vector)folders.clone();
     }
     /**
      * Get a parameter value for a task.
@@ -4173,16 +4177,16 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_dbAccess = createDbAccess(config);
 
         // initalize the caches
-        m_userCache=new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
-        m_groupCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50));
-        m_usergroupsCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50));
-        m_projectCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50));
-        m_resourceCache=new CmsResourceCache(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000));
-        m_subresCache = new CmsResourceCache(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100));
-        m_propertyCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
-        m_propertyDefCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));
-        m_propertyDefVectorCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
-        m_accessCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
+        m_userCache=new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
+        m_groupCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50));
+        m_usergroupsCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50));
+        m_projectCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50));
+        m_resourceCache=new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000));
+        m_resourceListCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100));
+        m_propertyCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
+        m_propertyDefCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));
+        m_propertyDefVectorCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
+        m_accessCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
         m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
@@ -4396,7 +4400,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             //update resource
             m_dbAccess.updateLockstate(cmsResource, currentProject.getId());
             // update the cache
-            this.clearResourceCache(resourcename);
+            this.clearResourceCache(resourcename, currentProject);
 
             // if this resource is a folder -> lock all subresources, too
             if(cmsResource.isFolder()) {
@@ -4771,7 +4775,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY){
                     m_dbAccess.deleteProject(publishProject);
                     try{
-                        m_projectCache.remove(id);
+                        m_projectCache.remove(new Integer(id));
                     } catch (Exception e){
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
@@ -4924,53 +4928,6 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      */
     public Vector readAllProjectResources(int projectId) throws CmsException {
         return m_dbAccess.readAllProjectResources(projectId);
-    }
-
-    /**
-     * Returns a list of all propertyinformations of a file or folder.
-     *
-     * <B>Security</B>
-     * Only the user is granted, who has the right to view the resource.
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param resource The name of the resource of which the propertyinformation has to be
-     * read.
-     *
-     * @return Vector of propertyinformation as Strings.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Hashtable readAllProperties(CmsUser currentUser, CmsProject currentProject,
-                                             String resource)
-        throws CmsException {
-        CmsResource res;
-        // read the resource from the currentProject, or the online-project
-        try {
-            res = readFileHeader(currentUser,currentProject, resource);
-        } catch(CmsException exc) {
-            // the resource was not readable
-            if(currentProject.equals(onlineProject(currentUser, currentProject))) {
-                // this IS the onlineproject - throw the exception
-                throw exc;
-            } else {
-                // try to read the resource in the onlineproject
-                res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
-                                              resource);
-            }
-        }
-        // check the security
-        if( ! accessRead(currentUser, currentProject, res) ) {
-             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
-                CmsException.C_NO_ACCESS);
-        }
-        Hashtable returnValue = null;
-        returnValue = (Hashtable)m_propertyCache.get(currentProject.getId()+"_"+Integer.toString(res.getResourceId()) +"_"+ Integer.toString(res.getType()));
-        if (returnValue == null){
-            returnValue = m_dbAccess.readAllProperties(currentProject.getId(),res,res.getType());
-            m_propertyCache.put(currentProject.getId()+"_"+Integer.toString(res.getResourceId()) +"_"+ Integer.toString(res.getType()),returnValue);
-        }
-        return returnValue;
     }
 
     /**
@@ -5425,10 +5382,11 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
          }
          // read the resource from the currentProject
          try {
-             cmsFile=(CmsResource)m_resourceCache.get(filename, projectId);
+             String cacheKey = getCacheKey(null, currentProject, filename);
+             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
              if (cmsFile==null) {
                 cmsFile = m_dbAccess.readFileHeaderInProject(projectId, filename);
-                m_resourceCache.put(filename,projectId,cmsFile);
+                m_resourceCache.put(cacheKey, cmsFile);
              }
              if( accessRead(currentUser, currentProject, cmsFile) ) {
                 // acces to all subfolders was granted - return the file-header.
@@ -5475,10 +5433,11 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
          // read the resource from the currentProject, or the online-project
          try {
              // try to read form cache first
-             cmsFile=(CmsResource)m_resourceCache.get(filename, currentProject.getId());
+             String cacheKey = getCacheKey(null, currentProject, filename);
+             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
              if (cmsFile==null) {
                 cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename);
-                m_resourceCache.put(filename,currentProject.getId(),cmsFile);
+                m_resourceCache.put(cacheKey, cmsFile);
              }
          } catch(CmsException exc) {
              // the resource was not readable
@@ -5528,10 +5487,11 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
          // read the resource from the currentProject, or the online-project
          try {
              // try to read form cache first
-             cmsFile=(CmsResource)m_resourceCache.get(filename,currentProject.getId());
+             String cacheKey = getCacheKey(null, currentProject, filename);
+             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
              if (cmsFile==null) {
                 cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, includeDeleted);
-                m_resourceCache.put(filename,currentProject.getId(),cmsFile);
+                m_resourceCache.put(cacheKey, cmsFile);
              }
          } catch(CmsException exc) {
              // the resource was not readable
@@ -5661,11 +5621,13 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  */
 protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int project, String folder) throws CmsException {
     if (folder == null) return null;
-    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(folder, currentProject.getId());
+    if (! folder.endsWith(C_FOLDER_SEPARATOR)) folder += C_FOLDER_SEPARATOR;
+    String cacheKey = getCacheKey(null, currentProject, folder);
+    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
     if (cmsFolder == null) {
         cmsFolder = m_dbAccess.readFolderInProject(project, folder);
         if (cmsFolder != null){
-            m_resourceCache.put(folder, currentProject.getId(), (CmsFolder) cmsFolder);
+            m_resourceCache.put(cacheKey, cmsFolder);
         }
     }
     if (cmsFolder != null) {
@@ -5721,15 +5683,17 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  * for this resource.
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, boolean includeDeleted) throws CmsException {
+    if (folder == null) return null;
     if (! folder.endsWith(C_FOLDER_SEPARATOR)) folder += C_FOLDER_SEPARATOR;
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {
-        cmsFolder = (CmsFolder) m_resourceCache.get(folder, currentProject.getId());
+        String cacheKey = getCacheKey(null, currentProject, folder);
+        cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
         if (cmsFolder == null) {
             cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
             if (cmsFolder.getState() != C_STATE_DELETED) {
-                m_resourceCache.put(folder, currentProject.getId(), (CmsFolder) cmsFolder);
+                m_resourceCache.put(cacheKey, cmsFolder);
             }
         }
     } catch (CmsException exc) {
@@ -5837,7 +5801,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
 
         CmsGroup group=null;
         // try to read group form cache
-        group=(CmsGroup)m_groupCache.get(project.getGroupId());
+        group=(CmsGroup)m_groupCache.get(new Integer(project.getGroupId()));
 
         if (group== null) {
             try {
@@ -5848,7 +5812,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getGroupId() + "", "deleted group", 0);
                 }
             }
-            m_groupCache.put(project.getGroupId(),group);
+            m_groupCache.put(new Integer(project.getGroupId()),group);
         }
 
         return group;
@@ -5870,7 +5834,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         throws CmsException {
         CmsGroup group=null;
         // try to read group form cache
-        group=(CmsGroup)m_groupCache.get(resource.getGroupId());
+        group=(CmsGroup)m_groupCache.get(new Integer(resource.getGroupId()));
 
         if (group== null) {
             try {
@@ -5880,7 +5844,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, resource.getGroupId() + "", "deleted group", 0);
                 }
             }
-            m_groupCache.put(resource.getGroupId(),group);
+            m_groupCache.put(new Integer(resource.getGroupId()), group);
         }
         return group;
     }
@@ -5964,7 +5928,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         throws CmsException {
              CmsGroup group=null;
         // try to read group form cache
-        group=(CmsGroup)m_groupCache.get(project.getManagerGroupId());
+        group=(CmsGroup)m_groupCache.get(new Integer(project.getManagerGroupId()));
         if (group== null) {
             try {
                 group=m_dbAccess.readGroup(project.getManagerGroupId()) ;
@@ -5974,7 +5938,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                     return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getManagerGroupId() + "", "deleted group", 0);
                 }
             }
-            m_groupCache.put(project.getManagerGroupId(),group);
+            m_groupCache.put(new Integer(project.getManagerGroupId()), group);
         }
         return group;
     }
@@ -6106,10 +6070,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      */
         public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
           CmsProject project=null;
-          project=(CmsProject)m_projectCache.get(id);
+          project=(CmsProject)m_projectCache.get(new Integer(id));
           if (project==null) {
              project=m_dbAccess.readProject(id);
-             m_projectCache.put(id,project);
+             m_projectCache.put(new Integer(id), project);
          }
          return project;
      }
@@ -6219,10 +6183,10 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     }
     
     /**
-     * Reads a property from a resource.<p>
+     * Looks up a specified property from a resource.<p>
      *
      * <B>Security</B>
-     * Only the user is granted, who has the right to read the resource
+     * Only a user is granted who has the right to read the resource
      *
      * @param currentUser the current user
      * @param currentProject the current project of the user
@@ -6230,9 +6194,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param property the name of the property to look up
      * @return the value of the property found, null if nothing was found
      * @throws CmsException in case there where problems reading the property
-     */    
-    public String readProperty(CmsUser currentUser, CmsProject currentProject,
-                                      String resource, String property)
+     */  
+    public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String property)
         throws CmsException {
         CmsResource res;
         // read the resource from the currentProject
@@ -6249,9 +6212,9 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
                 CmsException.C_NO_ACCESS);
         }
         String returnValue = null;
+        String cacheKey = getCacheKey("property_false_" + property , currentProject, res.getResourceName());
 
-        returnValue = (String)m_propertyCache.get(currentProject.getId()+property +
-                    Integer.toString(res.getResourceId()) +","+ Integer.toString(res.getType()));
+        returnValue = (String)m_propertyCache.get(cacheKey);
 
         if (returnValue == null){
             returnValue = m_dbAccess.readProperty(property,currentProject.getId(),res,res.getType());
@@ -6259,8 +6222,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             if (returnValue == null) {
                 returnValue="";
             }
-            m_propertyCache.put(currentProject.getId()+property +Integer.toString(res.getResourceId()) +
-                            ","+ Integer.toString(res.getType()), returnValue);
+            m_propertyCache.put(cacheKey, returnValue);
 
         }
         if (returnValue.equals("")){returnValue=null;}
@@ -6270,13 +6232,12 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     /**
      * Looks up a specified property with optional direcory upward cascading.<p>
      * 
-     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}<p>
-     * 
-     * TODO: caching of results to prevent multiple "search" lookups
+     * <B>Security</B> see {@link #readProperty(CmsUser, CmsProject, String, String)}
      * 
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
+     * @param siteroot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if false not (ie. normal 
@@ -6287,14 +6248,18 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search)
     throws CmsException {
         if (search) {
-            String value;
-            boolean cont;
-            siteRoot += "/";
-            do {
-                value = readProperty(currentUser, currentProject, resource, property);
-                cont = !((value != null) || siteRoot.equals(resource));
-                if (cont) resource = CmsResource.getParent(resource);
-            } while (cont);
+            String cacheKey = getCacheKey("property_true_" + property , currentProject, siteRoot + resource);
+            String value = (String)m_propertyCache.get(cacheKey);
+            if (value == null) {
+                boolean cont;
+                siteRoot += "/";
+                do {
+                    value = readProperty(currentUser, currentProject, resource, property);
+                    cont = !((value != null) || siteRoot.equals(resource));
+                    if (cont) resource = CmsResource.getParent(resource);
+                } while (cont);
+                m_propertyCache.put(cacheKey, value);
+            }
             return value;
         } else {
             return readProperty(currentUser, currentProject, resource, property);
@@ -6311,6 +6276,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      * @param currentUser the current user
      * @param currentProject the current project of the user
      * @param resource the resource to look up the property for
+     * @param siteroot the site root where to stop the cascading
      * @param property the name of the property to look up
      * @param search if <code>true</code>, the property will be looked up on all parent folders
      *   if it is not attached to the the resource, if <code>false</code> not (ie. normal 
@@ -6329,6 +6295,94 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
         return value;        
     }    
     
+    /**
+     * Looks up all properties for a resource with optional direcory upward cascading.<p>
+     * 
+     * <b>Security:</b>
+     * Only a user is granted who has the right to read the resource.
+     * 
+     * @param currentUser the current user
+     * @param currentProject the current project of the user
+     * @param resource the resource to look up the property for
+     * @param siteRoot the current site root
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders
+     *   and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     */
+    public Map readProperties(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, boolean search) 
+    throws CmsException {
+        CmsResource res;
+        // read the resource from the currentProject, or the online-project
+        try {
+            res = readFileHeader(currentUser,currentProject, resource);
+        } catch(CmsException exc) {
+            // the resource was not readable
+            if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+                // this IS the onlineproject - throw the exception
+                throw exc;
+            } else {
+                // try to read the resource in the onlineproject
+                res = readFileHeader(currentUser,onlineProject(currentUser, currentProject),
+                                              resource);
+            }
+        }
+        // check the security
+        if( ! accessRead(currentUser, currentProject, res) ) {
+             throw new CmsException("[" + this.getClass().getName() + "] " + resource,
+                CmsException.C_NO_ACCESS);
+        }
+        // check if we have the result already cached
+        Map returnValue = null;
+        String cacheKey = getCacheKey("properties_" + search, currentProject, res.getResourceName());
+        returnValue = (Map)m_propertyCache.get(cacheKey);
+        
+        if (returnValue == null) {
+            // result not cached, let's look it up in the DB
+            if (search) {
+                boolean cont;
+                siteRoot += "/";
+                returnValue = new HashMap();
+                do {
+                    Map parentValue = readProperties(currentUser, currentProject, resource, siteRoot, false);
+                    parentValue.putAll(returnValue);
+                    returnValue.clear();
+                    returnValue = parentValue;                 
+                    cont = (! siteRoot.equals(resource));
+                    if (cont) resource = CmsResource.getParent(resource);
+                } while (cont);
+            } else {
+                returnValue = m_dbAccess.readProperties(currentProject.getId(), res, res.getType());
+            }  
+            // store the result in the cache
+            m_propertyCache.put(cacheKey, returnValue);
+        }
+        return returnValue;
+    }
+    
+    /**
+     * Return a cache key build from the provided information.<p>
+     * 
+     * @param prefix a prefix for the key
+     * @param project the project for which to genertate the key
+     * @param resource the resource for which to genertate the key
+     * @return String a cache key build from the provided information
+     */
+    private String getCacheKey(String prefix, CmsProject project, String resource) {
+        StringBuffer buffer = new StringBuffer(32);
+        if (prefix != null) {
+            buffer.append(prefix);
+            buffer.append("_");
+        }
+        if (project.isOnlineProject()) {
+            buffer.append("o_");
+        } else {
+            buffer.append("x_");
+        }
+        buffer.append(resource);
+        return buffer.toString();
+    }
+             
     /**
      * Reads a definition for the given resource type.
      *
@@ -6513,10 +6567,10 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         try {
             CmsUser user=null;
             // try to read the user from cache
-            user=(CmsUser)m_userCache.get(id);
+            user=(CmsUser)m_userCache.get(new Integer(id));
             if (user==null) {
                 user=m_dbAccess.readUser(id);
-                m_userCache.put(id,user);
+                m_userCache.put(new Integer(id), user);
             }
             return user;
         } catch (CmsException ex) {
@@ -7170,11 +7224,11 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 m_dbAccess.writeFolder(currentProject, restoredFolder, false, currentUser.getId());
                 // restore the properties in the offline project
                 m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFolder);
-                Hashtable propertyInfos = m_dbAccess.readAllProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
+                Map propertyInfos = m_dbAccess.readProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
                 m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFolder,restoredFolder.getType());
                 m_propertyCache.clear();
                 // update the cache
-                this.clearResourceCache(restoredFolder.getResourceName());
+                this.clearResourceCache(restoredFolder.getResourceName(), currentProject);
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(false);
@@ -7206,11 +7260,11 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                                onlineProject(currentUser, currentProject), restoredFile, false);
                 // restore the properties in the offline project
                 m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFile);
-                Hashtable propertyInfos = m_dbAccess.readAllProperties(onlineProject.getId(),onlineFile,onlineFile.getType());
+                Map propertyInfos = m_dbAccess.readProperties(onlineProject.getId(),onlineFile,onlineFile.getType());
                 m_dbAccess.writeProperties(propertyInfos,currentProject.getId(),restoredFile,restoredFile.getType());
                 m_propertyCache.clear();
                 // update the cache
-                this.clearResourceCache(restoredFile.getResourceName());
+                this.clearResourceCache(restoredFile.getResourceName(), currentProject);
                 m_accessCache.clear();
                 // inform about the file-system-change
                 fileSystemChanged(false);
@@ -7299,7 +7353,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 m_dbAccess.updateLockstate(cmsResource, cmsResource.getLockedInProject());
 
                 // update the cache
-                this.clearResourceCache(resourcename);
+                this.clearResourceCache(resourcename, currentProject);
             } else {
                  throw new CmsException("[" + this.getClass().getName() + "] " +
                     resourcename + CmsException.C_NO_ACCESS);
@@ -7547,7 +7601,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             }
 
             // update the cache
-            this.clearResourceCache(file.getResourceName());
+            this.clearResourceCache(file.getResourceName(), currentProject);
             m_accessCache.clear();
             // inform about the file-system-change
             fileSystemChanged(false);
@@ -7587,7 +7641,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void writeResource(CmsUser currentUser, CmsProject currentProject,
-                               String resourcename, Hashtable properties,
+                               String resourcename, Map properties,
                                String username, String groupname, int accessFlags,
                                int resourceType, byte[] filecontent)
         throws CmsException {
@@ -7625,7 +7679,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             // write the properties
             m_dbAccess.writeProperties(properties, currentProject.getId(),resource, resource.getType(),true);
             // update the cache
-            this.clearResourceCache(resource.getResourceName());
+            this.clearResourceCache(resource.getResourceName(), currentProject);
             m_accessCache.clear();
             // inform about the file-system-change
             fileSystemChanged(false);
@@ -7702,7 +7756,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 file.setState(C_STATE_CHANGED);
             }
             // update the cache
-            this.clearResourceCache(file.getResourceName());
+            this.clearResourceCache(file.getResourceName(), currentProject);
             // inform about the file-system-change
             m_accessCache.clear();
             fileSystemChanged(false);
@@ -7749,7 +7803,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void writeProperties(CmsUser currentUser, CmsProject currentProject,
-                                      String resource, Hashtable propertyinfos)
+                                      String resource, Map propertyinfos)
         throws CmsException {
         // read the resource
 
@@ -7762,8 +7816,7 @@ protected void validName(String name, boolean blank) throws CmsException {
                 CmsException.C_NO_ACCESS);
         }
 
-
-        m_dbAccess.writeProperties(propertyinfos,currentProject.getId(),res,res.getType());
+        m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), res, res.getType());
         m_propertyCache.clear();
         if (res.getState()==C_STATE_UNCHANGED) {
             res.setState(C_STATE_CHANGED);
@@ -7774,7 +7827,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false, currentUser.getId());
         }
         // update the cache
-        this.clearResourceCache(resource);
+        this.clearResourceCache(resource, currentProject);
     }
     /**
      * Writes a propertyinformation for a file or folder.
@@ -7819,7 +7872,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true, currentUser.getId());
         }
         // update the cache
-        this.clearResourceCache(resource);
+        this.clearResourceCache(resource, currentProject);
     }
 
     /**
@@ -7964,7 +8017,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException{
         m_dbAccess.changeLockedInProject(projectId, resourcename);
-        this.clearResourceCache(resourcename);
+        this.clearResourceCache(resourcename, new CmsProject(projectId));
     }
 
     /**
@@ -8093,18 +8146,18 @@ protected void validName(String name, boolean blank) throws CmsException {
      *
      * @param resourcename The name of the changed resource
      */
-    public void clearResourceCache(String resourcename){
+    protected void clearResourceCache(String resourcename, CmsProject currentProject){
         m_resourceCache.remove(resourcename);
-        m_subresCache.clear();
+        m_resourceListCache.clear();
     }
 
     /**
      * Clears all the depending caches when a resource was changed
      *
      */
-    public void clearResourceCache(){
+    protected void clearResourceCache(){
         m_resourceCache.clear();
-        m_subresCache.clear();
+        m_resourceListCache.clear();
     }
 
     /**
@@ -8112,7 +8165,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public void clearUserCache(CmsUser user){
         try{
-            m_userCache.remove(user.getId());
+            m_userCache.remove(new Integer(user.getId()));
         } catch (Exception e){
         }
         try{
@@ -8124,7 +8177,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         } catch (Exception e){
         }
         m_accessCache.clear();
-        m_subresCache.clear();
+        m_resourceListCache.clear();
     }
 
     /**

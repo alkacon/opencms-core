@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.29 $ $Date: 2003/03/02 18:43:54 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -253,7 +253,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
 
             // check if the new resource button must be enabeld.
             // this is only done if the project is not the online project.
-            if(cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+            if(cms.getRequestContext().currentProject().isOnlineProject()) {
                 xmlTemplateDocument.setData(C_NEW, xmlTemplateDocument.getProcessedDataValue(C_NEW_DISABLED, this));
             }
             else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/03/02 18:43:55 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.32 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.33 $ $Date: 2003/03/02 18:43:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -189,7 +189,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         if(action == null) {
             // This is an initial request of the database administration page
             // Generate datablocks for checkboxes in the HTML form
-            if(!cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+            if(!cms.getRequestContext().currentProject().isOnlineProject()) {
                 xmlTemplateDocument.setData("nounchanged",
                         xmlTemplateDocument.getProcessedDataValue("nounchangedbox", this, parameters));
             }

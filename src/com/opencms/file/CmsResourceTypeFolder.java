@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/02/26 15:29:34 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,13 +35,16 @@ import com.opencms.core.I_CmsConstants;
 
 import java.io.Serializable;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -597,7 +600,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String newFolderName, Hashtable properties, byte[] contents, Object parameter) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException{
         if (! newFolderName.endsWith(C_FOLDER_SEPARATOR)) newFolderName += C_FOLDER_SEPARATOR;
         CmsFolder res = cms.doCreateFolder(newFolderName, properties);        
         cms.lockResource(newFolderName);
@@ -731,7 +734,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
      */
     public CmsResource importResource(CmsObject cms, String source, String destination, String type,
                                        String user, String group, String access, long lastmodified, 
-                                       Hashtable properties, String launcherStartClass, byte[] content, String importPath) 
+                                       Map properties, String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;
@@ -773,9 +776,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         	changed = false;
             //the resource exists, check if properties has to be updated
             importedResource = cms.readFolder(destination);
-            Hashtable oldProperties = cms.readAllProperties(importedResource.getAbsolutePath());
+            Map oldProperties = cms.readPropertiesMap(importedResource.getAbsolutePath());
             if(oldProperties == null){
-                oldProperties = new Hashtable();
+                oldProperties = new HashMap();
             }
             if(properties == null){
                 properties = new Hashtable();
@@ -786,9 +789,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                     changed = true;
                 } else {
                     // check each of the properties
-                    Enumeration keys = properties.keys();
-                    while (keys.hasMoreElements()) {
-                        String curKey = (String) keys.nextElement();
+                    Iterator i = properties.keySet().iterator();
+                    while (i.hasNext()) {
+                        String curKey = (String) i.next();
                         String value = (String) properties.get(curKey);
                         String oldValue = (String) oldProperties.get(curKey);
                         if ((oldValue == null) || !(value.trim().equals(oldValue.trim()))) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/02/03 15:25:20 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/03/02 18:43:54 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.59 $ $Date: 2003/02/03 15:25:20 $
+ * @version $Revision: 1.60 $ $Date: 2003/03/02 18:43:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -310,7 +310,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         if(res.getState() != C_STATE_DELETED) {
 
             // test if the resource is in the project or if the online project is displayed
-            if((cms.getRequestContext().currentProject().equals(cms.onlineProject()))
+            if((cms.getRequestContext().currentProject().isOnlineProject())
                     || (!res.inProject(cms.getRequestContext().currentProject()))) {
                 if(res.isFile()) {
                     contextMenu = C_DEFAULT_CONTEXTMENU;
@@ -791,7 +791,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             output.append(C_STYLE_NOTINPROJECT);
         }
         else {
-            if(cms.getRequestContext().currentProject().equals(cms.onlineProject())) {
+            if(cms.getRequestContext().currentProject().isOnlineProject()) {
 
                 // check if the actual project is the online project
                 output.append(C_STYLE_UNCHANGED);
