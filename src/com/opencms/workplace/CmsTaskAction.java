@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskAction.java,v $
- * Date   : $Date: 2000/05/26 10:13:55 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/30 14:38:21 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2000/05/26 10:13:55 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/30 14:38:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLogChannels {
@@ -125,6 +125,7 @@ public class CmsTaskAction implements I_CmsConstants, I_CmsWpConstants, I_CmsLog
 		// has the user the correct role?
 		if(cms.userInGroup(newEditor.getName(), oldRole.getName())) {
 			cms.forwardTask(taskid, oldRole.getName(), newEditor.getName());
+			cms.acceptTask(taskid);
 			String comment = lang.getLanguageValue("task.dialog.take.logmessage");
 			comment += " " + Utils.getFullName(newEditor);
 			cms.writeTaskLog(taskid, comment, C_TASKLOGTYPE_TAKE);
