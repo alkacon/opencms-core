@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/07 12:47:14 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/08 08:18:05 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.11 $ $Date: 2003/07/07 12:47:14 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/08 08:18:05 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1919,16 +1919,17 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
         String orderClause = " ORDER BY CMS_OFFLINE_STRUCTURE.STRUCTURE_ID";        
         String whereClause = new String();
 
+		// TODO: dangerous - move this somehow into query.properties
         if ("new".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_NEW;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_NEW;
         } else if ("changed".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_CHANGED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
         } else if ("deleted".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE=" + I_CmsConstants.C_STATE_DELETED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_DELETED;
         } else if ("locked".equalsIgnoreCase(filter)) {
             whereClause = " AND CMS_OFFLINE_RESOURCES.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
         } else {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
         }        
 
         try {

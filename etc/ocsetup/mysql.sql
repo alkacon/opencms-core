@@ -151,7 +151,7 @@ create table CMS_ONLINE_RESOURCES       (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          key resource_fileid (FILE_ID),
                                          key resources_type (RESOURCE_TYPE));
                                          
-create table CMS_BACKUP_RESOURCES       (ID VARCHAR(36) NOT NULL,
+create table CMS_BACKUP_RESOURCES       (BACKUP_ID VARCHAR(36) NOT NULL,
 										 RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_TYPE int not null,
                                          RESOURCE_FLAGS int not null,
@@ -167,7 +167,7 @@ create table CMS_BACKUP_RESOURCES       (ID VARCHAR(36) NOT NULL,
                                          DATE_LASTMODIFIED datetime not null,
                                          RESOURCE_SIZE int not null,
                                          VERSION_ID int not null,
-                                         primary key(ID),
+                                         primary key(BACKUP_ID),
                                          key resource_fileid (FILE_ID),
                                          key resource_group (GROUP_ID),
                                          key resources_type (RESOURCE_TYPE),
@@ -181,11 +181,11 @@ create table CMS_ONLINE_FILES           (FILE_ID VARCHAR(36) NOT NULL,
                                          FILE_CONTENT mediumblob not null,
                                          primary key(FILE_ID));
 
-create table CMS_BACKUP_FILES           (ID VARCHAR(36) NOT NULL,
+create table CMS_BACKUP_FILES           (BACKUP_ID VARCHAR(36) NOT NULL,
 										 FILE_ID VARCHAR(36) NOT NULL,
                                          FILE_CONTENT mediumblob not null,
                                          VERSION_ID int,
-                                         primary key(ID));
+                                         primary key(BACKUP_ID));
 
 create table CMS_SYSTEMID               (TABLE_KEY varchar(255) not null,
                                          ID int not null,
@@ -734,8 +734,8 @@ CREATE TABLE CMS_OFFLINE_STRUCTURE (
 	PROJECT_ID				SMALLINT UNSIGNED NOT NULL,
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
-	STATE 					SMALLINT UNSIGNED NOT NULL,
-    LOCKED_BY				VARCHAR(36) NOT NULL,
+	RESOURCE_STATE			SMALLINT UNSIGNED NOT NULL,
+    LOCKED_BY 				VARCHAR(36) NOT NULL,
     USER_CREATED			VARCHAR(36) NOT NULL,
 	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,	
 	PRIMARY KEY				(STRUCTURE_ID),
@@ -745,7 +745,7 @@ CREATE TABLE CMS_OFFLINE_STRUCTURE (
 	INDEX IDX4 				(STRUCTURE_ID, RESOURCE_ID),
 	INDEX IDX5				(LOCKED_BY),
 	INDEX IDX6				(PROJECT_ID),
-	INDEX IDX7				(STATE),
+	INDEX IDX7				(RESOURCE_STATE),
 	INDEX IDX8 				(PARENT_ID)
 );
 
@@ -756,8 +756,8 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 	PROJECT_ID				SMALLINT UNSIGNED NOT NULL,
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
-	STATE 					SMALLINT UNSIGNED NOT NULL,
-    LOCKED_BY				VARCHAR(36) NOT NULL,
+	RESOURCE_STATE 			SMALLINT UNSIGNED NOT NULL,
+    LOCKED_BY 				VARCHAR(36)	NOT NULL,
     USER_CREATED			VARCHAR(36) NOT NULL,
 	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,	
 	PRIMARY KEY				(STRUCTURE_ID),
@@ -767,12 +767,12 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 	INDEX IDX4 				(STRUCTURE_ID, RESOURCE_ID),
 	INDEX IDX5				(LOCKED_BY),
 	INDEX IDX6				(PROJECT_ID),
-	INDEX IDX7				(STATE),
+	INDEX IDX7				(RESOURCE_STATE),
 	INDEX IDX8 				(PARENT_ID)
 );
 
 CREATE TABLE CMS_BACKUP_STRUCTURE (
-	ID VARCHAR(36) 			NOT NULL,
+	BACKUP_ID VARCHAR(36) 	NOT NULL,
     VERSION_ID				INT NOT NULL,
 	STRUCTURE_ID			VARCHAR(36) NOT NULL,
 	PARENT_ID				VARCHAR(36) NOT NULL,
@@ -780,19 +780,19 @@ CREATE TABLE CMS_BACKUP_STRUCTURE (
 	PROJECT_ID				SMALLINT UNSIGNED NOT NULL,
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
 	LINK_TYPE				SMALLINT UNSIGNED DEFAULT 0,
-	STATE 					SMALLINT UNSIGNED NOT NULL,
+	RESOURCE_STATE			SMALLINT UNSIGNED NOT NULL,
     LOCKED_BY				VARCHAR(36) NOT NULL,
 	USER_LASTMODIFIED		VARCHAR(36) NOT NULL,
 	USER_LASTMODIFIED_NAME	VARCHAR(167),
 	USER_CREATED			VARCHAR(36) NOT NULL,
 	USER_CREATED_NAME		VARCHAR(167),	
-	PRIMARY KEY				(ID),
+	PRIMARY KEY				(BACKUP_ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
 	INDEX IDX3 				(STRUCTURE_ID, PARENT_ID),
 	INDEX IDX4 				(STRUCTURE_ID, RESOURCE_ID),
 	INDEX IDX5				(LOCKED_BY),
 	INDEX IDX6				(PROJECT_ID),
-	INDEX IDX7				(STATE),
+	INDEX IDX7				(RESOURCE_STATE),
 	INDEX IDX8				(VERSION_ID,PROJECT_ID)	
 );
