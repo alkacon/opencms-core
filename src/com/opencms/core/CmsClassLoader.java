@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 15:20:17 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/02/20 15:29:51 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,7 +107,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/02/20 15:20:17 $
+ * @version $Revision: 1.22 $ $Date: 2001/02/20 15:29:51 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -144,6 +144,9 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      */
     private Vector m_filenames = new Vector();
 
+    /**
+     * Some Objects we need to read classes from the virtual file system.
+     */
     private Object m_cms;
     private Class m_cmsObjectClass;
     private Class m_cmsFileClass;
@@ -184,6 +187,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                         + " is not a valid \"String\" instance");
             }
         }
+        // get the method we need to read files from opencms.
         try{
             m_cmsObjectClass = Class.forName("com.opencms.file.CmsObject", true, this);
             m_cmsFileClass = Class.forName("com.opencms.file.CmsFile", true, this);
@@ -489,6 +493,12 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 
     }
 
+    /**
+     * Returns all the files loaded from the virtual file system
+     * this is for checking if the classes are changed.
+     *
+     * @return  a Vector with Strings containing absolute path of the classes.
+     */
     public Vector getFilenames(){
         return m_filenames;
     }
