@@ -144,7 +144,7 @@
 		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>
-		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>
+		<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle" action="onchange='javascript:doTemplSubmit(1);'"/><![CDATA[</td>
 		<td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
