@@ -20,6 +20,7 @@ OpenCms 4.5.14 Gom Jabbar   - xx September 2001
   the control file might exist in the history.
 * Pic and downloadgalleries now work with tomcat 4.0. There are no '=' alowed in
   the parameters.
+* When writing an online resource date_lastmodified always equals the date of the resource, not the systems date.
 - System startup time decreased. The system starts faster, even with a full registry.
 - Removed unused method createResource in resourcebroker and DbAccess.
 
