@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/20 18:06:36 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/21 14:15:33 $
  */
 class CmsAccessProjectMySql extends A_CmsAccessProject {
 
@@ -138,8 +138,11 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 A_CmsProject readProject(String name)
 		 throws CmsException {		 
 		 try {
-			 m_statementReadProject.setString(1,name);
-			 ResultSet result = m_statementReadProject.executeQuery();
+			 ResultSet result;
+			 synchronized(m_statementReadProject) {
+				m_statementReadProject.setString(1,name);
+				result = m_statementReadProject.executeQuery();
+			 }
 			 
 			 // if resultset exists - return it
 			 if(result.next()) {
@@ -175,13 +178,15 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 								A_CmsUser owner, A_CmsGroup group, int flags)
 		throws CmsException {
 		 try {
-			 m_statementCreateProject.setInt(1,owner.getId());
-			 m_statementCreateProject.setInt(2,group.getId());
-			 m_statementCreateProject.setInt(3,task.getId());
-			 m_statementCreateProject.setString(4,name);
-			 m_statementCreateProject.setString(5,description);
-			 m_statementCreateProject.setInt(6,flags);
-			 m_statementCreateProject.executeUpdate();
+			 synchronized(m_statementCreateProject) {
+				m_statementCreateProject.setInt(1,owner.getId());
+				m_statementCreateProject.setInt(2,group.getId());
+				m_statementCreateProject.setInt(3,task.getId());
+				m_statementCreateProject.setString(4,name);
+				m_statementCreateProject.setString(5,description);
+				m_statementCreateProject.setInt(6,flags);
+				m_statementCreateProject.executeUpdate();
+			 }
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
@@ -198,13 +203,15 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
 	 A_CmsProject writeProject(A_CmsProject project)
 		 throws CmsException {
 		 try {    
-			 m_statementUpdateProject.setInt(1,project.getOwnerId());
-			 m_statementUpdateProject.setInt(2,project.getGroupId());
-			 m_statementUpdateProject.setInt(3,project.getTaskId());
-			 m_statementUpdateProject.setString(4,project.getDescription());
-			 m_statementUpdateProject.setInt(5,project.getFlags());
-			 m_statementUpdateProject.setString(6,project.getName());
-			 m_statementUpdateProject.executeUpdate();
+			 synchronized(m_statementUpdateProject) {
+				m_statementUpdateProject.setInt(1,project.getOwnerId());
+				m_statementUpdateProject.setInt(2,project.getGroupId());
+				m_statementUpdateProject.setInt(3,project.getTaskId());
+				m_statementUpdateProject.setString(4,project.getDescription());
+				m_statementUpdateProject.setInt(5,project.getFlags());
+				m_statementUpdateProject.setString(6,project.getName());
+				m_statementUpdateProject.executeUpdate();
+			 }
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
@@ -223,8 +230,11 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
  		 Vector projects = new Vector();
 
 		 try {
-			 m_statementGetProjectsByUser.setInt(1,user.getId());
-			 ResultSet result = m_statementGetProjectsByUser.executeQuery();
+			 ResultSet result;
+			 synchronized(m_statementGetProjectsByUser) {
+				m_statementGetProjectsByUser.setInt(1,user.getId());
+				result = m_statementGetProjectsByUser.executeQuery();
+			 }
 			 
 			 while(result.next()) {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
@@ -253,8 +263,11 @@ class CmsAccessProjectMySql extends A_CmsAccessProject {
  		 Vector projects = new Vector();
 
 		 try {
-			 m_statementGetProjectsByGroup.setInt(1,group.getId());
-			 ResultSet result = m_statementGetProjectsByGroup.executeQuery();
+			 ResultSet result;
+			 synchronized(m_statementGetProjectsByGroup) {
+				m_statementGetProjectsByGroup.setInt(1,group.getId());
+				result = m_statementGetProjectsByGroup.executeQuery();
+			 }
 			 
 			 while(result.next()) {
 				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),

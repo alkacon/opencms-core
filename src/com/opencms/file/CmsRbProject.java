@@ -6,14 +6,11 @@ import com.opencms.core.*;
 
 /**
  * This class describes a resource broker for projects in the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
- * is for security-reasons, to check if this current user has the rights to call the
- * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/17 17:25:36 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/21 14:15:33 $
  */
 class CmsRbProject extends A_CmsRbProject implements I_CmsConstants {
 	

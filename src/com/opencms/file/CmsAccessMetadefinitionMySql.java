@@ -55,7 +55,27 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	/**
 	 * A prepared statement to access the database.
 	 */
+	private PreparedStatement m_statementReadAllMetainfo;
+
+	/**
+	 * A prepared statement to access the database.
+	 */
+	private PreparedStatement m_statementReadAllMetainfoCount;
+
+	/**
+	 * A prepared statement to access the database.
+	 */
 	private PreparedStatement m_statementUpdateMetainfo;
+
+	/**
+	 * A prepared statement to access the database.
+	 */
+	private PreparedStatement m_statementDeleteAllMetainfo;
+
+	/**
+	 * A prepared statement to access the database.
+	 */
+	private PreparedStatement m_statementDeleteMetainfo;
 
 	/**
 	 * Column name
@@ -107,9 +127,12 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
      */    
     private static final String C_METAINFO_UPDATE = "UPDATE METAINFO SET " + 
 													C_METAINFO_VALUE + " = ? WHERE " +
-													C_METAINFO_ID + " = ?";
+													C_RESOURCE_NAME + " = ? and " +
+													C_PROJECT_ID + " = ? and " +
+													C_METADEF_ID + " = ? ";
+	
 	/**
-     * SQL Command for creating metainformations.
+     * SQL Command for reading metainformations.
      */    
     private static final String C_METAINFO_READ = "SELECT METAINFO.* FROM METAINFO, METADEF " + 
 												  "WHERE METAINFO.METADEF_ID = METADEF.METADEF_ID and " +
@@ -117,6 +140,36 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 												  "METAINFO.PROJECT_ID = ? and " +
 												  "METADEF.NAME = ? and " +
 												  "METADEF.RESOURCE_TYPE = ?";
+
+	/**
+     * SQL Command for reading metainformations.
+     */    
+    private static final String C_METAINFO_READALL = "SELECT METAINFO.*, METADEF.METADEF_NAME FROM METAINFO, METADEF " + 
+													 "WHERE METAINFO.METADEF_ID = METADEF.METADEF_ID and " +
+													 "METAINFO.RESOURCE_NAME = ? and " +
+													 "METAINFO.PROJECT_ID = ? and " +
+													 "METADEF.RESOURCE_TYPE = ?";
+
+	/**
+     * SQL Command for reading metainformations.
+     */    
+    private static final String C_METAINFO_READALL_COUNT = "SELECT count(*) FROM METAINFO WHERE " +
+														   C_METADEF_ID + " = ?";
+	/**
+     * SQL Command for reading metainformations.
+     */    
+    private static final String C_METAINFO_DELETEALL = "DELETE FROM METAINFO " + 
+													   "WHERE RESOURCE_NAME = ? and " +
+													   "PROJECT_ID = ? and " +
+													   "RESOURCE_TYPE = ?";
+
+	/**
+     * SQL Command for reading metainformations.
+     */    
+    private static final String C_METAINFO_DELETE = "DELETE FROM METAINFO " + 
+													"WHERE " + C_METADEF_ID + " = ? and" +
+													C_RESOURCE_NAME + " = ? and" +
+													C_PROJECT_ID + " = ? ";
 
 	/**
      * SQL Command for creating metadefinitions.
@@ -188,23 +241,27 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	A_CmsMetadefinition readMetadefinition(String name, int type)
 		throws CmsException {
 		 try {
-			 m_statementReadMetadef.setString(1,name);
-			 m_statementReadMetadef.setInt(2,type);
-			 ResultSet result = m_statementReadMetadef.executeQuery();
+			 ResultSet result;
 			 
-			 // if resultset exists - return it
-			 if(result.next()) {
-				 return( new CmsMetadefinition( result.getInt(C_METADEF_ID),
-												result.getString(C_METADEF_NAME),
-												result.getInt(C_RESOURCE_TYPE),
-												result.getInt(C_METADEF_TYPE) ) );
-			 } else {
-				 // not found!
-				 throw new CmsException("Metadefinition " + name + " not found.", 
-					 CmsException.C_NOT_FOUND);
+			 synchronized(m_statementReadMetadef) {
+				m_statementReadMetadef.setString(1,name);
+				m_statementReadMetadef.setInt(2,type);
+				result = m_statementReadMetadef.executeQuery();
 			 }
+			 
+			// if resultset exists - return it
+			if(result.next()) {
+			    return( new CmsMetadefinition( result.getInt(C_METADEF_ID),
+			   								result.getString(C_METADEF_NAME),
+			   								result.getInt(C_RESOURCE_TYPE),
+			   								result.getInt(C_METADEF_TYPE) ) );
+			} else {
+			    // not found!
+			    throw new CmsException("Metadefinition " + name + " not found.", 
+			   	 CmsException.C_NOT_FOUND);
+			}
 		 } catch( SQLException exc ) {
-			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	}
 	
@@ -223,8 +280,11 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
  		 Vector metadefs = new Vector();
 
 		 try {
-			 m_statementReadAllMetadefA.setInt(1,resourcetype);
-			 ResultSet result = m_statementReadAllMetadefA.executeQuery();
+			 ResultSet result;
+			 synchronized(m_statementReadAllMetadefA) {
+				m_statementReadAllMetadefA.setInt(1,resourcetype);
+				result = m_statementReadAllMetadefA.executeQuery();
+			 }
 			 
 			 while(result.next()) {
 				 metadefs.addElement( new CmsMetadefinition( result.getInt(C_METADEF_ID),
@@ -254,9 +314,12 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
  		 Vector metadefs = new Vector();
 
 		 try {
-			 m_statementReadAllMetadefB.setInt(1,resourcetype);
-			 m_statementReadAllMetadefB.setInt(2,type);
-			 ResultSet result = m_statementReadAllMetadefB.executeQuery();
+			 ResultSet result;
+			 synchronized(m_statementReadAllMetadefB) {
+				m_statementReadAllMetadefB.setInt(1,resourcetype);
+				m_statementReadAllMetadefB.setInt(2,type);
+				result = m_statementReadAllMetadefB.executeQuery();
+			 }
 			 
 			 while(result.next()) {
 				 metadefs.addElement( new CmsMetadefinition( result.getInt(C_METADEF_ID),
@@ -285,10 +348,12 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 											 int type)
 		throws CmsException {
 		try {
-			 m_statementCreateMetadef.setString(1,name);
-			 m_statementCreateMetadef.setInt(2,resourcetype);
-			 m_statementCreateMetadef.setInt(3,type);
-			 m_statementCreateMetadef.executeUpdate();
+			synchronized( m_statementCreateMetadef ) {
+				m_statementCreateMetadef.setString(1,name);
+				m_statementCreateMetadef.setInt(2,resourcetype);
+				m_statementCreateMetadef.setInt(3,type);
+				m_statementCreateMetadef.executeUpdate();
+			}
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
@@ -307,13 +372,48 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	void deleteMetadefinition(A_CmsMetadefinition metadef)
 		throws CmsException {
 		try {
-			// TODO: Check, if there are some metainfos, so don't delete this?!
-			m_statementDeleteMetadef.setString(1, metadef.getName() );
-			m_statementDeleteMetadef.setInt(2, metadef.getType() );
-			m_statementDeleteMetadef.executeUpdate();
+			if(countMetainfos(metadef) != 0) {
+				throw new CmsException("Existing metainfos for metadefinition " + metadef, 
+					CmsException.C_UNKNOWN_EXCEPTION);
+			}
+			synchronized(m_statementDeleteMetadef) {
+				m_statementDeleteMetadef.setString(1, metadef.getName() );
+				m_statementDeleteMetadef.setInt(2, metadef.getType() );
+				m_statementDeleteMetadef.executeUpdate();
+			}
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
+	}
+
+	/**
+	 * Returns the amount of metainfos for a metadefinition.
+	 * 
+	 * @param metadef The Metadefinition to test.
+	 * 
+	 * @return the amount of metainfos for a metadefinition.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	private int countMetainfos(A_CmsMetadefinition metadef)
+		throws CmsException {
+	
+		try {
+			ResultSet result;
+			synchronized(m_statementReadAllMetainfoCount) {
+				m_statementReadAllMetainfoCount.setInt(1, metadef.getId());
+				result = m_statementReadAllMetainfoCount.executeQuery();
+			}
+			if( result.next() ) {
+				return( result.getInt(1) );
+			} else {
+				throw new CmsException("Error in statement.", 
+					CmsException.C_UNKNOWN_EXCEPTION);
+			}
+			
+		} catch(SQLException exc) {
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		}		
 	}
 
 	/**
@@ -331,9 +431,11 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 		throws CmsException {
 		
 		try {
-			m_statementUpdateMetadef.setInt(1, metadef.getMetadefType() );
-			m_statementDeleteMetadef.setInt(2, metadef.getId() );
-			m_statementDeleteMetadef.executeUpdate();
+			synchronized(m_statementUpdateMetadef) {
+				m_statementUpdateMetadef.setInt(1, metadef.getMetadefType() );
+				m_statementDeleteMetadef.setInt(2, metadef.getId() );
+				m_statementDeleteMetadef.executeUpdate();
+			}
 			return( readMetadefinition(metadef.getName(), metadef.getMetadefType()) );
 		 } catch( SQLException exc ) {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
@@ -353,12 +455,16 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	String readMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
 		 try {
-			 m_statementReadMetainfo.setString(1, resource.getName());
-			 m_statementReadMetainfo.setInt(2, resource.getProjectId());
-			 m_statementReadMetainfo.setString(3, meta);
-			 m_statementReadMetainfo.setInt(4, resource.getType());
+			 ResultSet result;
+			 
+			 synchronized(m_statementReadMetainfo) {
+				m_statementReadMetainfo.setString(1, resource.getName());
+				m_statementReadMetainfo.setInt(2, resource.getProjectId());
+				m_statementReadMetainfo.setString(3, meta);
+				m_statementReadMetainfo.setInt(4, resource.getType());
 
-			 ResultSet result = m_statementReadMetainfo.executeQuery();
+				result = m_statementReadMetainfo.executeQuery();
+			 }
 			 
 			 // if resultset exists - return it
 			 if(result.next()) {
@@ -381,7 +487,7 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
 	void writeMetainformation(A_CmsResource resource, String meta,
-											  String value)
+							  String value)
 		throws CmsException {
 		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
 		
@@ -389,16 +495,29 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 			// there is no metadefinition for with the overgiven name for the resource
 			throw new CmsException("Metadefinition " + meta + " not found.", CmsException.C_NOT_FOUND);
 		} else {
-			// write the metainfo to the db
-			if( readMetainformation(resource, metadef.getName()) != null) {
-				// metainfo exists already - use update.
-				try {
-					m_statementUpdateMetainfo.setString(1, value);
-					m_statementUpdateMetainfo.setInt(2, metadef.getId());
-				} catch(SQLException exc) {
+			// write the metainfo into the db
+			try {
+				if( readMetainformation(resource, metadef.getName()) != null) {
+					// metainfo exists already - use update.
+					synchronized(m_statementUpdateMetainfo) {
+						m_statementUpdateMetainfo.setString(1, value);
+						m_statementUpdateMetainfo.setString(2, resource.getAbsolutePath());
+						m_statementUpdateMetainfo.setInt(3, resource.getProjectId());
+						m_statementUpdateMetainfo.setInt(4, metadef.getId());
+						m_statementUpdateMetainfo.executeUpdate();
+					}
+				} else {
+					// metainfo dosen't exist - use create.
+					synchronized(m_statementCreateMetainfo) {
+						m_statementCreateMetainfo.setInt(1, metadef.getId());
+						m_statementCreateMetainfo.setString(2, resource.getAbsolutePath());
+						m_statementCreateMetainfo.setInt(3, resource.getProjectId());
+						m_statementCreateMetainfo.setString(4, value);
+						m_statementCreateMetainfo.executeUpdate();
+					}
 				}
-			} else {
-				// metainfo dosen't exist - use create.
+			} catch(SQLException exc) {
+				throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 			}
 		}
 	}
@@ -413,7 +532,17 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 */
 	void writeMetainformations(A_CmsResource resource, Hashtable metainfos)
 		throws CmsException {
-		// TODO: implement this!
+		
+		// get all metadefs
+		Enumeration keys = metainfos.keys();
+		
+		// one metainfo-name:
+		String key;
+		
+		while(keys.hasMoreElements()) {
+			key = (String) keys.nextElement();
+			this.writeMetainformation(resource, key, (String) metainfos.get(key));
+		}		
 	}
 
 	/**
@@ -425,9 +554,31 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	Vector readAllMetainformations(A_CmsResource resource)
+	Hashtable readAllMetainformations(A_CmsResource resource)
 		throws CmsException {
-		return null; // TODO: implement this!
+		
+		Hashtable returnValue = new Hashtable();
+		
+		try {
+			ResultSet result;
+			synchronized(m_statementReadAllMetainfo) {
+				m_statementReadAllMetainfo.setString(1, resource.getAbsolutePath());
+				m_statementReadAllMetainfo.setInt(2, resource.getProjectId());
+				m_statementReadAllMetainfo.setInt(3, resource.getType());
+
+				result = m_statementReadAllMetainfo.executeQuery();
+			}
+			
+			 while(result.next()) {
+				 returnValue.put(result.getString(C_METADEF_NAME),
+								 result.getString(C_METAINFO_VALUE));
+			 }
+			 return(returnValue);		
+			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		}
+		
 	}
 	
 	/**
@@ -439,7 +590,18 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 */
 	void deleteAllMetainformations(A_CmsResource resource)
 		throws CmsException {
-		// TODO: implement this!
+		
+		try {
+			synchronized(m_statementDeleteAllMetainfo) {
+				m_statementDeleteAllMetainfo.setString(1, resource.getAbsolutePath());
+				m_statementDeleteAllMetainfo.setInt(2, resource.getProjectId());
+				m_statementDeleteAllMetainfo.setInt(3, resource.getType());
+
+				m_statementDeleteAllMetainfo.executeQuery();
+			}			
+		} catch( SQLException exc ) {
+			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		}
 	}
 
 	/**
@@ -452,7 +614,24 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 	 */
 	void deleteMetainformation(A_CmsResource resource, String meta)
 		throws CmsException {
-		// TODO: implement this!
+		A_CmsMetadefinition metadef = readMetadefinition(meta, resource.getType());
+		
+		if( metadef == null) {
+			// there is no metadefinition with the overgiven name for the resource
+			throw new CmsException("Metadefinition " + meta + " not found.", CmsException.C_NOT_FOUND);
+		} else {
+			// delete the metainfo into the db
+			try {
+				synchronized(m_statementDeleteMetainfo) {
+					m_statementDeleteMetainfo.setInt(1, metadef.getId());
+					m_statementDeleteMetainfo.setString(2, resource.getAbsolutePath());
+					m_statementDeleteMetainfo.setInt(3, resource.getProjectId());
+					m_statementDeleteMetainfo.executeUpdate();
+				}
+			} catch(SQLException exc) {
+				throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+			}
+		}
 	}
 
 	/**
@@ -491,6 +670,10 @@ class CmsAccessMetadefinitionMySql extends A_CmsAccessMetadefinition {
 			m_statementReadMetainfo = m_con.prepareStatement(C_METAINFO_READ);
 			m_statementCreateMetainfo = m_con.prepareStatement(C_METAINFO_CREATE);
 			m_statementUpdateMetainfo = m_con.prepareStatement(C_METAINFO_UPDATE);
+			m_statementReadAllMetainfo = m_con.prepareStatement(C_METAINFO_READALL);
+			m_statementDeleteAllMetainfo = m_con.prepareStatement(C_METAINFO_DELETEALL);
+			m_statementDeleteMetainfo = m_con.prepareStatement(C_METAINFO_DELETE);
+			m_statementReadAllMetainfoCount = m_con.prepareStatement(C_METAINFO_READALL_COUNT);
 			
 		} catch (SQLException exc) {
 			throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);

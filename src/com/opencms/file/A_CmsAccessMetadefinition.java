@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/20 18:06:36 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/21 14:15:33 $
  */
 abstract class A_CmsAccessMetadefinition {
 
@@ -144,7 +144,7 @@ abstract class A_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	abstract Vector readAllMetainformations(A_CmsResource resource)
+	abstract Hashtable readAllMetainformations(A_CmsResource resource)
 		throws CmsException;
 	
 	/**
