@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/03/18 10:09:29 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/03/18 10:36:28 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -120,9 +120,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The size of the content. */
     protected int m_length;
-
-    /** The custom comparator key to use for special sort operations. */
-    private Object m_comparatorKey;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
@@ -426,16 +423,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the custom comparator key to use for special sort operations.<p>
-     *
-     * @return the custom comparator key to use for special sort operations
-     */
-    public Object getComparatorKey() {
-
-        return m_comparatorKey;
-    }
-
-    /**
      * Returns the date of the creation of this resource.<p>
      *
      * @return the date of the creation of this resource
@@ -681,16 +668,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public boolean isTouched() {
 
         return m_isTouched;
-    }
-
-    /**
-     * Sets the custom comparator key to use for special sort operations.<p>
-     *
-     * @param comparatorKey the custom comparator key to set
-     */
-    public void setComparatorKey(Object comparatorKey) {
-
-        m_comparatorKey = comparatorKey;
     }
 
     /**
