@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/03/17 10:31:08 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/17 10:46:07 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -66,7 +66,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public static final String C_CONFIGURATION_JSP_ENCODING = "default.encoding";
 
     /** The type id of this resource type. */
-    private static final int C_RESOURCE_TYPE_ID = 8;
+    private static final int C_RESOURCE_TYPE_ID = 4;
 
     /** The name of this resource type. */
     private static final String C_RESOURCE_TYPE_NAME = "jsp";

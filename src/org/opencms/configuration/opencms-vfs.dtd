@@ -32,7 +32,7 @@
 
 <!ELEMENT resourcetypes (type+)>
 <!ELEMENT type (mapping*, param*)>
-<!ATTLIST type class CDATA #REQUIRED name CDATA #IMPLIED id CDATA #IMPLIED>
+<!ATTLIST type class CDATA #REQUIRED name CDATA #REQUIRED id CDATA #REQUIRED>
 
 <!--
 # Collectors for gathering Lists of resources from the VFS.	

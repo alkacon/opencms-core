@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/17 10:46:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,13 +61,13 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
 
     /** The type id of this resource type. */
-    private static final int C_RESOURCE_TYPE_ID = 10;
+    private static final int C_RESOURCE_TYPE_ID = 6;
 
     /** The name of this resource type. */
     private static final String C_RESOURCE_TYPE_NAME = "xmlpage";
