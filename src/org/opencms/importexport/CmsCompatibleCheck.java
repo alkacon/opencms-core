@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2004/02/17 11:40:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/17 11:48:02 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsCompatibleCheck {
 
@@ -74,11 +74,11 @@ public class CmsCompatibleCheck {
             return false;
         }
         // now the templateclass only the standard class is allowed
-        String elClass = CmsImport.getChildElementTextValue(el,"CLASS");
+        String elClass = CmsImport.getChildElementTextValue(el, "CLASS");
         if (!I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS.equals(elClass)) {
             return false;
         }
-        String elTemplate = CmsImport.getChildElementTextValue(el,"TEMPLATE");
+        String elTemplate = CmsImport.getChildElementTextValue(el, "TEMPLATE");
         if (elTemplate == null || elTemplate.indexOf(elementName) < 1) {
             // it must be in the path /content/"elementName"/ or in
             // the path /system/modules/"modulename"/"elementName"/
