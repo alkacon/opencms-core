@@ -80,6 +80,7 @@
             <launcher4>com.opencms.launcher.CmsPdfLauncher</launcher4>
         </launchers>
         <tempfileproject></tempfileproject>
+        <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
     </system>
     <modules/>
 </registry>

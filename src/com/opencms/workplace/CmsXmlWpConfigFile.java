@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/11/12 16:20:08 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,10 +44,13 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.37 $ $Date: 2001/11/12 16:20:08 $
  */
 
 public class CmsXmlWpConfigFile {
+
+    /** The cms object to get access to OpenCms */
+    private CmsObject m_cms = null;
 
     /**
      * Default constructor.
@@ -63,6 +66,7 @@ public class CmsXmlWpConfigFile {
      * @param cms CmsObject object for accessing system resources.
      */
     public CmsXmlWpConfigFile(CmsObject cms) throws CmsException {
+        m_cms = cms;
     }
 
     /**
@@ -117,7 +121,13 @@ public class CmsXmlWpConfigFile {
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWpPicturePath() throws CmsException {
-        return "/pics/system/";
+        if(new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS")).booleanValue()) {
+            // read the wp images from the vfs - so add the servlet url to the return value
+            return m_cms.getRequestContext().getRequest().getServletUrl() + "/pics/system/";
+        } else {
+            // read the wp images from the webapps context
+            return "/pics/system/";
+        }
     }
 
     public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {
