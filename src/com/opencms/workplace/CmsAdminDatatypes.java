@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
- * Date   : $Date: 2000/04/10 08:45:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/10 09:20:16 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,25 +30,37 @@ package com.opencms.workplace;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
-import com.opencms.util.*;
 import com.opencms.template.*;
 
 import java.util.*;
 import java.io.*;
 
-import javax.servlet.http.*;
-
 /**
- * Template class for displaying OpenCms workplace task head screens.
- * <P>
+ * Template class for displaying OpenCms workplace datatype administration.
  * 
- * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/04/10 08:45:41 $
+ * @author Alexander Lucas
+ * @version $Revision: 1.2 $ $Date: 2000/04/10 09:20:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConstants {
 	
-	/**
+    /** XML datablock tag used for setting the resource type name */
+    private static final String C_TAG_RESTYPE = "restype";
+
+    /** XML datablock tag used for setting all collected entries */
+    private static final String C_TAG_ALLENTRIES = "allentries";
+
+    /** XML datablock tag used for getting a processed resource type entry */
+    private static final String C_TAG_RESTYPEENTRY = "restypeentry";
+
+    /** XML datablock tag used for getting a processed separator entry */
+    private static final String C_TAG_SEPARATORENTRY = "separatorentry";
+
+    /** XML datablock tag used for getting the complete and processed content to be returned */
+    private static final String C_TAG_SCROLLERCONTENT = "scrollercontent";
+    
+    
+    /**
      * Indicates if the results of this class are cacheable.
      * 
      * @param cms A_CmsObject Object for accessing system resources
@@ -63,72 +75,11 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
     }    
 
     /**
-     * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
-     * @see getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters)
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    /*public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
-        }
-		
-		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		
-		// get the parameters
-        String folder = (String)parameters.get("selectallfolders");
-		String fileName = (String)parameters.get("filename");
-		String existingFile = (String)parameters.get("existingfile");
-		String action = (String)parameters.get("action");
-
-        // modify the folderaname if nescessary (the root folder is always given
-        // as a nice name)
-        if (folder!= null) {
-            CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
-            if (folder.equals(lang.getLanguageValue("title.rootfolder"))) {
-                folder="/";
-            }
-        }
-		
-		try{
-			if("export".equals(action)) {
-				// export the database
-				cms.exportDb(cms.readExportPath() + fileName, folder, C_EXPORTONLYFILES); 
-				templateSelector = "done";
-			} else if("import".equals(action)) {
-				// import the database
-				cms.importDb(cms.readExportPath() + existingFile, folder); 
-				templateSelector = "done";
-			}
-		}
-		catch(CmsException exc) {
-			xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
-			templateSelector = "error";
-		}
-
-		// Now load the template file and start the processing
-		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }*/
-
-
-    /**
-     * Gets all export-files from the export-path.
+     * Used by the <code>&lt;PREFSSCROLLER&gt;</code> tag for getting
+     * the content of the scroller window.
      * <P>
-     * The given vectors <code>names</code> and <code>values</code> will 
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     * <P>
-     * <code>names</code> will contain language specific view descriptions
-     * and <code>values</code> will contain the correspondig URL for each
-     * of these views after returning from this method.
-     * <P>
+     * Gets all available resource types and returns a list
+     * using the datablocks defined in the own template file.
      * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param lang reference to the currently valid language file
@@ -148,13 +99,13 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         while(allResTypes.hasMoreElements()) {
             A_CmsResourceType currResType = (A_CmsResourceType)allResTypes.nextElement();
             
-            templateFile.setData("restype", currResType.getResourceName());
-            result.append(templateFile.getProcessedDataValue("restypeentry", callingObj));
-            result.append(templateFile.getProcessedDataValue("separatorentry", callingObj));
+            templateFile.setData(C_TAG_RESTYPE, currResType.getResourceName());
+            result.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObj));
+            result.append(templateFile.getProcessedDataValue(C_TAG_SEPARATORENTRY, callingObj));
         }
      
-        templateFile.setData("allentries", result.toString());        
-        return templateFile.getProcessedDataValue("scrollercontent", callingObj);
+        templateFile.setData(C_TAG_ALLENTRIES, result.toString());        
+        return templateFile.getProcessedDataValue(C_TAG_SCROLLERCONTENT, callingObj);
     }        
 
 }
