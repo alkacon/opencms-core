@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/02/16 02:23:17 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/02/17 08:53:08 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.70 $ $Date: 2003/02/16 02:23:17 $
+ * @version $Revision: 1.71 $ $Date: 2003/02/17 08:53:08 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -730,7 +730,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * 
      * @throws CmsException 
      */
-    protected void callAllUncalledMethodsSoThatEcliüseDosentComplaintAboutThem() throws CmsException {
+    protected void callAllUncalledMethodsSoThatEclipseDoesntComplainAboutThem() throws CmsException {
         this.handleDataTag(null, null, null);
         this.handleIncludeTag(null, null, null);
         this.handleLinkTag(null, null, null);
