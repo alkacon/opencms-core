@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/03 11:04:13 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/07 08:55:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -70,8 +70,8 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         Method groupsMethod = null;
         int selectedOption = 0;
         try {
-            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class});
-            selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, lang, values, names})).intValue();
+            groupsMethod = callingObject.getClass().getMethod(selectMethod, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Vector.class, Vector.class, Hashtable.class});
+            selectedOption = ((Integer)groupsMethod.invoke(callingObject, new Object[] {cms, lang, values, names, parameters})).intValue();
         } catch(NoSuchMethodException exc) {
             // The requested method was not found.
             throwException("Could not find method " + selectMethod + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);

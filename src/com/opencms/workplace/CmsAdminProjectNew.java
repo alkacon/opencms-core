@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/02/04 08:50:42 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/07 08:55:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -90,10 +90,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param cms A_CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
-    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
+    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -118,11 +119,12 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param cms A_CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
     public Integer getManagerGroups(A_CmsObject cms, CmsXmlLanguageFile lang, 
-									Vector names, Vector values) 
+									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// get all groups
 		Vector groups = cms.getGroups();
@@ -147,11 +149,12 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param cms A_CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
     public Integer getAllFolders(A_CmsObject cms, CmsXmlLanguageFile lang, 
-									Vector names, Vector values) 
+									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 
 		// add the root
@@ -190,11 +193,12 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param cms A_CmsObject Object for accessing system resources.
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
      */
     public Integer getSelectedFolders(A_CmsObject cms, CmsXmlLanguageFile lang, 
-									Vector names, Vector values) 
+									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
 		// no current folder, set index to -1
         return new Integer(-1);

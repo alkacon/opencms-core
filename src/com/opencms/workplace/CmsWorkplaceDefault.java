@@ -17,7 +17,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/03 09:38:18 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/07 08:54:51 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -156,10 +156,11 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFonts(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+    public Integer getFonts(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTS);
         return new Integer(0);
     }
@@ -176,10 +177,11 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFontStyles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+    public Integer getFontStyles(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTSTYLES);
         return new Integer(0);
     }
@@ -196,10 +198,11 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getFontSizes(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) {
+    public Integer getFontSizes(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) {
         getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES);
         return new Integer(0);
     }

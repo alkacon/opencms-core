@@ -15,7 +15,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/28 17:10:17 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/07 08:55:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -119,10 +119,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current group in the vectors.
      * @exception CmsException
      */
-    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
+    public Integer getGroups(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
 
         // Get a vector of all of the user's groups by asking the request context
@@ -161,10 +162,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current project in the vectors.
      * @exception CmsException
      */
-    public Integer getProjects(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
+    public Integer getProjects(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         // Get all project information
         A_CmsRequestContext reqCont = cms.getRequestContext();
@@ -203,10 +205,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
      * @param lang reference to the currently valid language file
      * @param names Vector to be filled with the appropriate values in this method.
      * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the user's current workplace view in the vectors.
      * @exception CmsException
      */
-    public Integer getViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values) 
+    public Integer getViews(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
             throws CmsException {
         
         // Let's see if we have a session
