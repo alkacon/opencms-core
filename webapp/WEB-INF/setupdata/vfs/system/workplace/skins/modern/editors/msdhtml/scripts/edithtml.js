@@ -623,17 +623,17 @@ function checkTableElSelection(type) {
 					// get values from dialog and set attributes of table element
 					for ( elem in args2 ) {
 						if ("bgColor" == elem && args2["bgColor"] != null) {
-							Elt.setAttribute("bgColor", args2["bgColor"]);
+							elt.setAttribute("bgColor", args2["bgColor"]);
 						} else if ("borderColor" == elem && args2["borderColor"] != null) {
-							Elt.borderColor = args2["borderColor"];
+							elt.borderColor = args2["borderColor"];
 						} else if ("height" == elem && args2["height"] != null) {
-							Elt.height = args2["height"];
+							elt.height = args2["height"];
 						} else if ("width" == elem && args2["width"] != null) {
-							Elt.width = args2["width"];
+							elt.width = args2["width"];
 						} else if ("align" == elem && args2["align"] != null) {
-							Elt.align = args2["align"];
+							elt.align = args2["align"];
 						} else if ("vAlign" == elem && args2["vAlign"] != null) {
-							Elt.vAlign = args2["vAlign"];
+							elt.vAlign = args2["vAlign"];
 						}
 					}
 				}
