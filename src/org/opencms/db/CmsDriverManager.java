@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 10:34:31 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2003/07/30 10:41:14 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.100 $ $Date: 2003/07/30 10:34:31 $
+ * @version $Revision: 1.101 $ $Date: 2003/07/30 10:41:14 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1083,6 +1083,7 @@ public class CmsDriverManager extends Object {
                 m_userDriver.createAccessControlEntry(context.currentProject(), newResource.getResourceAceId(), ace.getPrincipal(), ace.getPermissions().getAllowedPermissions(), ace.getPermissions().getDeniedPermissions(), ace.getFlags());
 
             }
+            m_vfsDriver.updateResourceState(context.currentProject(),newResource,C_UPDATE_ALL);            
         }
         
         if (lockCopy) {
@@ -1725,19 +1726,19 @@ public class CmsDriverManager extends Object {
                 resourceName,
                 CmsResourceTypePointer.C_RESOURCE_TYPE_ID,
                 targetResource.getFlags(),
-                context.currentProject().getId(), 
-                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS, 
-                com.opencms.core.I_CmsConstants.C_STATE_NEW, 
+                context.currentProject().getId(),
+                com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
+                com.opencms.core.I_CmsConstants.C_STATE_NEW,
                 CmsUUID.getNullUUID(),
-                targetResource.getLoaderId(),  
+                targetResource.getLoaderId(),
                 System.currentTimeMillis(),
                 context.currentUser().getId(),
-                System.currentTimeMillis(), 
-                context.currentUser().getId(), 
+                System.currentTimeMillis(),
+                context.currentUser().getId(),
                 0,
                 context.currentProject().getId(),
-                targetResource.getLinkCount()+1);            
-            
+                targetResource.getLinkCount()+1);
+
         // write the link
         linkResource = m_vfsDriver.createVfsLink(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         // write its properties
