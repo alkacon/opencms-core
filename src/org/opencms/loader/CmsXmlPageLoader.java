@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/14 17:09:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/20 11:06:43 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import com.opencms.file.CmsResource;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -57,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -166,7 +167,9 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             String elementName = req.getParameter(C_TEMPLATE_ELEMENT);
             
             // check the current locales
-            String localeProp = OpenCms.getUserDefaultLanguage();
+            // String localeProp = OpenCms.getUserDefaultLanguage();
+            Locale l = OpenCms.getLocaleManager().getLocale(cms, absolutePath, page.getLanguages()); 
+            String localeProp = l.toString();
             
             // get the appropriate content and convert it to bytes
             byte[] result = page.getContent(cms, elementName, localeProp).getBytes(); 
