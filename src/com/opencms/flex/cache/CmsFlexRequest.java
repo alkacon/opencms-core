@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
-* Date   : $Date: 2002/08/30 14:05:14 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/09/03 19:41:51 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import com.opencms.core.A_OpenCms;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper {
     
@@ -220,13 +220,29 @@ public class CmsFlexRequest extends javax.servlet.http.HttpServletRequestWrapper
     } 
     
     /** 
-     * Returns the resource currently requested.
-     * This might be the name of an included resource that is currently processed.
-     *
-     * @return The resource target of this request.
+     * Returns the resource currently processed.
+     * 
+     * This might be the name of an included resource,
+     * not neccesarily the name the resource requested by the user.
+     * 
+     * @see getCmsRequestedResource
+     * @return The resource currently processed.
      */    
     public String getCmsResource() {
         return m_resource;
+    }
+    
+    /** 
+     * Returns the resource requested by the user.
+     * 
+     * This might not be the resource currently processed,
+     * which might be an included resource.
+     * 
+     * @see getCmsResource
+     * @return The resource requested by the user.
+     */     
+    public String getCmsRequestedResource() {
+        return m_cms.getRequestContext().getUri();
     }
     
     /** Convert (if necessary) and return the absolute URI that represents the
