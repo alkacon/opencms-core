@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/06 10:13:30 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/12/06 12:34:48 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -410,7 +410,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 m_content.removeValue(getParamElementName(), getElementLocale(), index);
             } else {
                 // add the new value after the clicked element
-                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index + 1);
+                if (m_content.hasValue(getParamElementName(), getElementLocale())) {
+                    // when other values are present, increase index to use right position
+                    index += 1;    
+                }
+                m_content.addValue(getCms(), getParamElementName(), getElementLocale(), index);
             }
             
             if (getErrorHandler().hasWarnings()) {
