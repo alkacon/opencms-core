@@ -28,22 +28,29 @@
 	<tr>
 		<td class=menu><img src="]]><METHOD name="picsUrl">logokunde.gif</METHOD><![CDATA[" border=0 width=109 height=32></td>
 		<td class=menubold><p class=einzug>]]><LABEL value="label.site" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
+		
+		<form name="sitechange" id="sitechange" method="get">
 		<td class=dialogtxt>
-			<form name="sitechange" id="sitechange" method="get">]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.sitechange.submit()"/><![CDATA[</form>
+			]]><SELECT class="textfeld" name="site" width="150" method="getSites" onchange="javascript:document.sitechange.submit()"/><![CDATA[
 		</td>
+		</form>
+		
 		<td class=menubold><p class=einzug>]]><LABEL value="label.project" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
+		
+		<form name="projectchange" id="projectchange" method="get">
 		<td class=dialogtxt>
-			<form name="projectchange" id="projectchange" method="get">]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/><![CDATA[</form>
+			]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/><![CDATA[
 		</td>
+		</form>
+		
 		<td class=menubold><p class=tab>]]><LABEL value="label.view" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
+		
+		<form name="viewchange" id="viewchange" method="get">
 		<td class=dialogtxt>
-			<form name="viewchange" id="viewchange" method="get">]]><SELECT class="textfeld" name="view" width="150" method="getRegViews" onchange="document.viewchange.submit()"/><![CDATA[</form>
-			<!-- <select class=textfeld name="view" width=100 style="width:100px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value">
-			<option value="explorer.html">Explorer
-			<option value="tasks.html">Aufgaben
-			<option value="administration.html">Administration
-			</select> -->
+			]]><SELECT class="textfeld" name="view" width="150" method="getRegViews" onchange="document.viewchange.submit()"/><![CDATA[
 		</td>
+		</form>
+		
 		<td class=dialogtxt><p class=tab>]]><BUTTON href="javascript:window.location.reload(true)" name="bt_reload" action="" alt="reload"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="#" name="bt_einstellungen" action="javascript:window.top.body.location.href='preferences.html?panel=explorer'" alt="preferences"/><![CDATA[</td>
 		<td class=dialogtxt>]]><BUTTON href="javascript:url='../help/de/help_frameset.html'; openwin(url, 'Hilfe', 310, 600);" name="bt_hilfe" action="" alt="help"/><![CDATA[</td>
