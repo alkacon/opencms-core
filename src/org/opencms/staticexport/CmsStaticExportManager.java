@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/11/15 09:46:23 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/12/10 15:50:27 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
@@ -81,7 +82,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1747,8 +1748,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 String exportName = (String)i.next();
                 if (rfsName.startsWith(exportName)) {
                     // prefix match
-                    match = true;
-                    // TODO: handle multiple matches         
+                    match = true;    
                     vfsName = exportnameFolders.get(exportName) + rfsName.substring(exportName.length());
                     try {
                         resource = cms.readResource(vfsName);
@@ -1760,10 +1760,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                                 vfsName += "/";
                             }
                         }
+                        break;
+                    } catch (CmsVfsResourceNotFoundException e) { 
+                        // continue with trying out the other exportname to find a match (may be a multiple prefix)
+                        match = false;
+                        continue;
                     } catch (CmsException e) {
                         rfsName = null;
+                        break;
                     }
-                    break;
                 }
             }
         }
