@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,16 +69,12 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2003/07/11 19:44:24 $
+ * @version $Revision: 1.50 $ $Date: 2003/07/11 21:35:49 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
-
-    public static final String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
-    
-    public static final String C_XML_CONTROL_TEMPLATE_PROPERTY = "template";
     
     /**
      * Starts generating the output.
@@ -101,19 +97,22 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
         String templateProp = cms.readProperty(absolutePath, C_XML_CONTROL_TEMPLATE_PROPERTY);
         String xmlTemplateContent = null;
         if (templateProp != null) {
-            // i got a black magic template, 
-            xmlTemplateContent = 
-                "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
-                + "<PAGE>\n<class>com.opencms.template.CmsXmlTemplate</class>\n"
-                + "<masterTemplate>"
-                // i got a black magic template,
-                + templateProp
-                + "</masterTemplate>\n<ELEMENTDEF name=\"body\">\n"
-                + "<CLASS>com.opencms.template.CmsXmlTemplate</CLASS>\n<TEMPLATE>"
-                // i got a black magic template got me so blind I can't see,
-                + uri
-                + "</TEMPLATE>\n</ELEMENTDEF>\n</PAGE>\n";              
+            // i got a black magic template,
+            StringBuffer buf = new StringBuffer(256);
+            buf.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n");
+            buf.append("<PAGE>\n<class>");
+            buf.append(C_XML_CONTROL_DEFAULT_CLASS);
+            buf.append("</class>\n<masterTemplate>");
+            // i got a black magic template,
+            buf.append(templateProp);
+            buf.append("</masterTemplate>\n<ELEMENTDEF name=\"body\">\n<CLASS>");
+            buf.append(C_XML_CONTROL_DEFAULT_CLASS);
+            buf.append("</CLASS>\n<TEMPLATE>");
+            // i got a black magic template got me so blind I can't see,
+            buf.append(uri);
+            buf.append("</TEMPLATE>\n</ELEMENTDEF>\n</PAGE>\n");              
             // i got a black magic template it's try'in to make a devil out of me...
+            xmlTemplateContent = buf.toString();
             uri += C_XML_CONTROL_FILE_SUFFIX; 
         }
         
@@ -148,7 +147,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                 elementreplace = true;
                 cmsUri = null;
                 replaceDef = new CmsElementDefinition(replace.substring(0,index),
-                                        "com.opencms.template.CmsXmlTemplate",
+                                        C_XML_CONTROL_DEFAULT_CLASS,
                                         replace.substring(index+1), null, new Hashtable());
             }
         }
@@ -186,7 +185,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                 templateClass = startTemplateClass;
             }
             if(templateClass == null || "".equals(templateClass)) {
-                templateClass = "com.opencms.template.CmsXmlTemplate";
+                templateClass = C_XML_CONTROL_DEFAULT_CLASS;
             }
             templateName = doc.getMasterTemplate();
             if(templateName != null && !"".equals(templateName)){

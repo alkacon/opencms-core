@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.102 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -40,7 +42,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsStringSubstitution;
-import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsTemplateClassManager;
@@ -58,7 +59,6 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.w3c.dom.Element;
 
 /**
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.102 $ $Date: 2003/07/11 19:44:24 $
+ * @version $Revision: 1.103 $ $Date: 2003/07/11 21:35:49 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -373,7 +373,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support
-        String templateProp = cms.readProperty(file, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY);
+        String templateProp = cms.readProperty(file, C_XML_CONTROL_TEMPLATE_PROPERTY);
         boolean isSimplePage = (templateProp != null);
 
         // Check, if the selected page file is locked
@@ -386,9 +386,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             
             if (isSimplePage) {
                 
-                bodyElementClassName = "com.opencms.template.CmsXmlTemplate";
+                bodyElementClassName = C_XML_CONTROL_DEFAULT_CLASS;
                 bodyElementFilename = file;
-                layoutTemplateClassName = "com.opencms.template.CmsXmlTemplate";
+                layoutTemplateClassName = C_XML_CONTROL_DEFAULT_CLASS;
                 layoutTemplateFilename = templateProp;
                 layoutTemplatFilenameRelative = templateProp;
                 
@@ -544,7 +544,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 // The user requested a change of the layout template
                 if (isSimplePage) {
                     cms.getRequestContext().setCurrentProject(tempProject);
-                    cms.writeProperty(tempPageFilename, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
+                    cms.writeProperty(tempPageFilename, C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
                     cms.getRequestContext().setCurrentProject(curProject);                                        
                 } else { 
                     temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );

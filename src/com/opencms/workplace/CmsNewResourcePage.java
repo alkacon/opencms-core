@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/09 10:58:09 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,21 +41,17 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.I_CmsXmlParser;
 import com.opencms.util.Encoder;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Template class for displaying the new resource screen for a new page
@@ -63,69 +59,9 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.69 $ $Date: 2003/07/09 10:58:09 $
+ * @version $Revision: 1.70 $ $Date: 2003/07/11 21:35:49 $
  */
-
-public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
-
-
-    /** Definition of the class */
-    private final static String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
-
-    /**
-     * Create the pagefile for this new page.
-     * @classname The name of the class used by this page.
-     * @template The name of the template (content) used by this page.
-     * @return Bytearray containgin the XML code for the pagefile.
-     */
-
-    private byte[] createPagefile(String classname, String template,
-            String contenttemplate) throws CmsException {
-        byte[] xmlContent = null;
-        try {
-            I_CmsXmlParser parser = A_CmsXmlContent.getXmlParser();
-            Document docXml = parser.createEmptyDocument("page");
-            Element firstElement = docXml.getDocumentElement();
-
-            // add element CLASS
-            Element elClass = docXml.createElement("CLASS");
-            firstElement.appendChild(elClass);
-            Node noClass = docXml.createTextNode(classname);
-            elClass.appendChild(noClass);
-
-            // add element MASTERTEMPLATE
-            Element elTempl = docXml.createElement("MASTERTEMPLATE");
-            firstElement.appendChild(elTempl);
-            Node noTempl = docXml.createTextNode(template);
-            elTempl.appendChild(noTempl);
-
-            //add element ELEMENTDEF
-            Element elEldef = docXml.createElement("ELEMENTDEF");
-            elEldef.setAttribute("name", "body");
-            firstElement.appendChild(elEldef);
-
-            //add element ELEMENTDEF.CLASS
-            Element elElClass = docXml.createElement("CLASS");
-            elEldef.appendChild(elElClass);
-            Node noElClass = docXml.createTextNode(classname);
-            elElClass.appendChild(noElClass);
-
-            //add element ELEMENTDEF.TEMPLATE
-            Element elElTempl = docXml.createElement("TEMPLATE");
-            elEldef.appendChild(elElTempl);
-            Node noElTempl = docXml.createTextNode(contenttemplate);
-            elElTempl.appendChild(noElTempl);
-
-            // generate the output
-            StringWriter writer = new StringWriter();
-            parser.getXmlText(docXml, writer);
-            xmlContent = writer.toString().getBytes();
-        }
-        catch(Exception e) {
-            throw new CmsException(e.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, e);
-        }
-        return xmlContent;
-    }
+public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -138,7 +74,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      * @return Bytearry containing the processed data of the template.
      * @throws Throws CmsException if something goes wrong.
      */
-
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
@@ -190,22 +125,21 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
                 try {
 
+                    /*
                     // create the content for the page file
-                    createPagefile(C_CLASSNAME, templatefile, C_VFS_PATH_BODIES
+                    createPagefile(C_XML_CONTROL_DEFAULT_CLASS, templatefile, C_VFS_PATH_BODIES
                             + currentFilelist.substring(1, currentFilelist.length()) + newFile);
-
-                    // create the page file
+                    */
+                    
                     Hashtable prop = new Hashtable();
-                    prop.put(C_PROPERTY_TITLE, title);
-                    CmsResource file = null;
-                    if (! currentFilelist.endsWith(C_FOLDER_SEPARATOR)) currentFilelist += C_FOLDER_SEPARATOR;
-                    file = ((CmsResourceTypePage)cms.getResourceType("page")).createResourceForTemplate(cms, currentFilelist + newFile, prop, "".getBytes(), templatefile) ;
-
+                    if( title != null && !title.equals("") ) {
+                        prop.put(C_PROPERTY_TITLE, title);
+                    }
                     if( keywords != null && !keywords.equals("") ) {
-                        cms.writeProperty(cms.readAbsolutePath(file), C_PROPERTY_KEYWORDS, keywords);
+                        prop.put(C_PROPERTY_KEYWORDS, keywords);
                     }
                     if( description != null && !description.equals("") ) {
-                        cms.writeProperty(cms.readAbsolutePath(file), C_PROPERTY_DESCRIPTION, description);
+                        prop.put(C_PROPERTY_DESCRIPTION, description);
                     }
 
                     byte[] bodyBytes = null;
@@ -218,9 +152,23 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                         bodyBytes = ensureBodyEncoding(cms, layoutFilePath);
                         layoutFileDefined = true;
                     }
-                    CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,currentFilelist.length()), newFile);
-                    bodyFile.setContents(bodyBytes);
-                    cms.writeFile(bodyFile);
+
+                    byte[] content = null;
+                    if (CmsResourceTypePage.C_SIMPLE_PAGE) {
+                        content = bodyBytes; 
+                    } else {
+                        content = "".getBytes();
+                    }
+
+                    CmsResource file = null;
+                    if (! currentFilelist.endsWith(C_FOLDER_SEPARATOR)) currentFilelist += C_FOLDER_SEPARATOR;
+                    file = ((CmsResourceTypePage)cms.getResourceType("page")).createResourceForTemplate(cms, currentFilelist + newFile, prop, content, templatefile);
+                        
+                    if (! CmsResourceTypePage.C_SIMPLE_PAGE) {    
+                        CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,currentFilelist.length()), newFile);
+                        bodyFile.setContents(bodyBytes);
+                        cms.writeFile(bodyFile);
+                    }
 
                     // care about the linkmanagement if a default body was selected
                     if(layoutFileDefined){
@@ -244,13 +192,13 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 try {
                     cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                             + CmsWorkplaceAction.getExplorerFileUri(cms));
-                }catch(Exception e) {
+                } catch (Exception e) {
                     throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                             + CmsWorkplaceAction.getExplorerFileUri(cms), CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             }
-        }else {
+        } else {
             String putValue = (String)parameters.get("root.pagetype");
             if(putValue != null){
                 session.putValue("resourctype_for_new_page", (String)parameters.get("root.pagetype"));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,12 +27,17 @@
 */
 package com.opencms.linkmanagement;
 
-import java.util.*;
-import com.opencms.file.*;
-import com.opencms.launcher.CmsXmlLauncher;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.report.*;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
+import com.opencms.report.I_CmsReport;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.CmsXmlTemplateFile;
+
+import java.util.Vector;
 
 /**
  * Extracts all links (anchors) out of a OpenCms page.
@@ -66,11 +71,11 @@ public class LinkChecker {
         String bodyClassName = null;
         CmsXmlTemplateFile bodyTemplateFile = null;
 
-        boolean isSimplePage = (null != cms.readProperty(page, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY));
+        boolean isSimplePage = (null != cms.readProperty(page, I_CmsConstants.C_XML_CONTROL_TEMPLATE_PROPERTY));
         
         if (isSimplePage) {
             
-            CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsXmlTemplate");
+            CmsXmlTemplate bodyClassObject = (CmsXmlTemplate)CmsTemplateClassManager.getClassInstance(cms, I_CmsConstants.C_XML_CONTROL_DEFAULT_CLASS);
             bodyTemplateFile = bodyClassObject.getOwnTemplateFile(cms, page, I_CmsConstants.C_TYPE_BODY_NAME, null, null);
 
         } else {

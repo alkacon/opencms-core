@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,8 +29,8 @@
 package com.opencms.template.cache;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
-import com.opencms.launcher.CmsXmlLauncher;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -99,7 +99,7 @@ public class CmsElementCache {
             for(int i=0; i<changedResources.size(); i++){
                 String current = (String)changedResources.elementAt(i);
                 resForUpdate.add(current);
-                resForUpdate.add(current + CmsXmlLauncher.C_XML_CONTROL_FILE_SUFFIX);
+                resForUpdate.add(current + I_CmsConstants.C_XML_CONTROL_FILE_SUFFIX);
             }
         }
         m_uriLocator.deleteUris(resForUpdate);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.launcher.CmsXmlLauncher;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -46,21 +45,20 @@ import java.util.StringTokenizer;
 /**
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
- * @version $Revision: 1.66 $ $Date: 2003/07/11 19:44:24 $
+ * @version $Revision: 1.67 $ $Date: 2003/07/11 21:35:49 $
  */
 public class CmsResourceTypePage extends CmsResourceTypePlain {
 
-    /** definition of the class name */
-    private static final String C_CLASSNAME = "com.opencms.template.CmsXmlTemplate";
-
     /** internal debug flag */
     private static final int DEBUG = 0;
+
+    /** use neu "simple" or traditional body files */
+    public static final boolean C_SIMPLE_PAGE = true;
 
     /**
      * @see com.opencms.file.I_CmsResourceType#init(int, int, java.lang.String, java.lang.String)
      */
     public void init(int resourceType, int launcherType, String resourceTypeName, String launcherClass) {
-
         m_resourceType = resourceType;
         m_launcherType = launcherType;
         m_resourceTypeName = resourceTypeName;
@@ -136,12 +134,18 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
      */
-    public void touch(CmsObject cms, String resourceName, long timestamp, boolean touchRecursive) throws CmsException {
+    public void touch(CmsObject cms, String resourcename, long timestamp, boolean touchRecursive) throws CmsException {
+        
+        if (isSimpleType(cms, resourcename)) {
+            super.touch(cms, resourcename, timestamp, touchRecursive);
+            return;
+        }
+
         // create a valid resource
-        CmsFile file = cms.readFile(resourceName);
+        CmsFile file = cms.readFile(resourcename);
 
         // touch the page itself
-        cms.doTouch(resourceName, timestamp);
+        cms.doTouch(resourcename, timestamp);
 
         // touch its counterpart under content/bodies
         String bodyPath = this.checkBodyPath(cms, (CmsFile)file);
@@ -153,12 +157,18 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#chtype(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public void chtype(CmsObject cms, String filename, String newType) throws CmsException {
-        CmsFile file = cms.readFile(filename);
+    public void chtype(CmsObject cms, String resourcename, String newType) throws CmsException {
+
+        if (isSimpleType(cms, resourcename)) {
+            super.chtype(cms, resourcename, newType);
+            return;
+        }
+        
+        CmsFile file = cms.readFile(resourcename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
         if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) || (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))) {
-            cms.doChtype(filename, newType);
+            cms.doChtype(resourcename, newType);
             //check if the file type name is page
             String bodyPath = checkBodyPath(cms, (CmsFile)file);
             if (bodyPath != null) {
@@ -170,78 +180,96 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String newPageName, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+        String masterTemplate = (String)properties.get(C_XML_CONTROL_TEMPLATE_PROPERTY);        
+        if ((masterTemplate == null) || ! C_SIMPLE_PAGE) {
+            masterTemplate = "";        
+            // Scan for mastertemplates
+            List allMasterTemplates = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
+    
+            // Select the first mastertemplate as default
+            if (allMasterTemplates.size() > 0) {
+                masterTemplate = cms.readAbsolutePath((CmsFile)allMasterTemplates.get(0));
+            }
+        }
+        CmsFile file = null;
+        if (C_SIMPLE_PAGE) {
 
-        String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPARATOR, newPageName.length()) + 1);
-        String pageName = newPageName.substring(folderName.length(), newPageName.length());
+            Hashtable props = new Hashtable();
+            props.putAll(properties);
+            props.put(C_XML_CONTROL_TEMPLATE_PROPERTY, masterTemplate);
+            
+            if (contents == null) {
+                contents = (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(); 
+            }
+            
+            file = cms.doCreateFile(resourcename, contents, I_CmsConstants.C_TYPE_PAGE_NAME, props);
+            cms.doLockResource(resourcename, true);           
 
-        // Scan for mastertemplates
-        List allMasterTemplates = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES);
+        } else {
+            String folderName = resourcename.substring(0, resourcename.lastIndexOf(C_FOLDER_SEPARATOR, resourcename.length()) + 1);
+            String pageName = resourcename.substring(folderName.length(), resourcename.length());
 
-        // Select the first mastertemplate as default
-        String masterTemplate = "";
-        if (allMasterTemplates.size() > 0) {
-            masterTemplate = cms.readAbsolutePath((CmsFile)allMasterTemplates.get(0));
+            // Evaluate the absolute path to the new body file
+            String bodyFolder = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
+    
+            // Create the new page file
+            file = cms.doCreateFile(resourcename, "".getBytes(), m_resourceTypeName, properties);
+            cms.doLockResource(resourcename, true);
+            CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, file);
+            pageXml.setTemplateClass(C_XML_CONTROL_DEFAULT_CLASS);
+            pageXml.setMasterTemplate(masterTemplate);
+            pageXml.setElementClass("body", C_XML_CONTROL_DEFAULT_CLASS);
+            pageXml.setElementTemplate("body", bodyFolder + pageName);
+            pageXml.write();
+    
+            // Check, if the body path exists and create missing folders, if neccessary
+            checkFolders(cms, folderName);
+    
+            // Create the new body file
+            CmsFile bodyFile = cms.doCreateFile(bodyFolder + pageName, (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
+            cms.doLockResource(bodyFolder + pageName, true);        
         }
 
-        // Evaluate the absolute path to the new body file
-        String bodyFolder = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + folderName;
-
-        // Create the new page file
-        CmsFile file = cms.doCreateFile(newPageName, "".getBytes(), m_resourceTypeName, properties);
-        cms.doLockResource(newPageName, true);
-        CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, file);
-        pageXml.setTemplateClass(C_CLASSNAME);
-        pageXml.setMasterTemplate(masterTemplate);
-        pageXml.setElementClass("body", C_CLASSNAME);
-        pageXml.setElementTemplate("body", bodyFolder + pageName);
-        pageXml.write();
-
-        // Check, if the body path exists and create missing folders, if neccessary
-        checkFolders(cms, folderName);
-
-        // Create the new body file
-        CmsFile bodyFile = cms.doCreateFile(bodyFolder + pageName, (getDefaultBodyStart() + new String(contents) + getDefaultBodyEnd()).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
-        cms.doLockResource(bodyFolder + pageName, true);
-        int flags = bodyFile.getAccessFlags();
-        if ((flags & C_ACCESS_INTERNAL_READ) == 0) {
-            flags += C_ACCESS_INTERNAL_READ;
-        }
-        // TODO: ACL's for body files 
-        //        cms.chmod(cms.readAbsolutePath(bodyFile), flags);
         // linkmanagement: create the links of the new page (for the case that the content was not empty
         if (contents.length > 1) {
-            CmsPageLinks linkObject = cms.getPageLinks(newPageName);
+            CmsPageLinks linkObject = cms.getPageLinks(resourcename);
             cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
         }
         return file;
     }
-
-    public CmsResource createResourceForTemplate(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException {
-        CmsFile resource = (CmsFile)this.createResource(cms, newPageName, properties, contents, null);
-        CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
-        pageXml.setMasterTemplate(masterTemplate);
-        pageXml.write();
+    
+    public CmsResource createResourceForTemplate(CmsObject cms, String resourcename, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException {        
+        CmsFile resource = null;
+        if (C_SIMPLE_PAGE) {
+            properties.put(C_XML_CONTROL_TEMPLATE_PROPERTY, masterTemplate);
+            resource = (CmsFile)this.createResource(cms, resourcename, properties, contents, null);                
+        } else {
+            resource = (CmsFile)this.createResource(cms, resourcename, properties, contents, null);                
+            CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
+            pageXml.setMasterTemplate(masterTemplate);
+            pageXml.write();
+        }
         return resource;
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException {
+    public void copyResource(CmsObject cms, String resourcename, String destination, boolean keepFlags) throws CmsException {
         
-        if (isSimpleType(cms, source)) {
-            super.copyResource(cms, source, destination, keepFlags);
+        if (isSimpleType(cms, resourcename)) {
+            super.copyResource(cms, resourcename, destination, keepFlags);
             return;
         }
         
         // Read and parse the source page file
-        CmsFile file = cms.readFile(source);
+        CmsFile file = cms.readFile(resourcename);
         CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
 
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
-        String bodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + (source);
+        String bodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"))) + (resourcename);
         String body = hXml.getElementTemplate("body");
         body = hXml.validateBodyPath(cms, body, file);
         String bodyXml = cms.getRequestContext().getDirectoryTranslator().translateResource(C_VFS_DEFAULT + body);
@@ -257,7 +285,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
             // Instead, we re-use the already parsed XML content of the source
             hXml.setElementTemplate("body", newbodyPath);
-            cms.doCopyFile(source, destination);
+            cms.doCopyFile(resourcename, destination);
             CmsFile newPageFile = cms.readFile(destination);
             newPageFile.setContents(hXml.getXmlText().getBytes());
             cms.writeFile(newPageFile);
@@ -271,23 +299,23 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
             // the default place. Leave it there, don't make
             // a copy and simply make a copy of the page file.
             // So the new page links to the old body.
-            cms.doCopyFile(source, destination);
+            cms.doCopyFile(resourcename, destination);
         }
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#copyResourceToProject(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
+    public void copyResourceToProject(CmsObject cms, String resourcename) throws CmsException {
         
-        if (isSimpleType(cms, resourceName)) {
-            super.copyResourceToProject(cms, resourceName);
+        if (isSimpleType(cms, resourcename)) {
+            super.copyResourceToProject(cms, resourcename);
             return;
         }
         
         //String resourceName = linkManager.getResourceName(resourceId);
-        CmsFile file = cms.readFile(resourceName, true);
-        cms.doCopyResourceToProject(resourceName);
+        CmsFile file = cms.readFile(resourcename, true);
+        cms.doCopyResourceToProject(resourcename);
         //check if the file type name is page
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null) {
@@ -298,15 +326,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void deleteResource(CmsObject cms, String filename) throws CmsException {
+    public void deleteResource(CmsObject cms, String resourcename) throws CmsException {
         
-        if (isSimpleType(cms, filename)) {
-            super.deleteResource(cms, filename);
+        if (isSimpleType(cms, resourcename)) {
+            super.deleteResource(cms, resourcename);
             return;
         }
         
-        CmsFile file = cms.readFile(filename);
-        cms.doDeleteFile(filename);
+        CmsFile file = cms.readFile(resourcename);
+        cms.doDeleteFile(resourcename);
         // linkmanagement: delete the links on the page
         cms.deleteLinkEntrys(file.getResourceId());
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
@@ -324,21 +352,21 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
+        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#undeleteResource(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void undeleteResource(CmsObject cms, String filename) throws CmsException {
+    public void undeleteResource(CmsObject cms, String resourcename) throws CmsException {
         
-        if (isSimpleType(cms, filename)) {
-            super.undeleteResource(cms, filename);
+        if (isSimpleType(cms, resourcename)) {
+            super.undeleteResource(cms, resourcename);
             return;
         }
         
-        CmsFile file = cms.readFile(filename, true);
-        cms.doUndeleteFile(filename);
+        CmsFile file = cms.readFile(resourcename, true);
+        cms.doUndeleteFile(resourcename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null) {
             try {
@@ -354,7 +382,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
-        CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
+        CmsXmlControlFile.clearFileCache(currentProject + ":" + resourcename);
 
         // linkmanagement: create the links of the restored page
         CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
@@ -364,16 +392,16 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#moveResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
+    public void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException {
         
-        if (isSimpleType(cms, source)) {
-            super.moveResource(cms, source, destination);
+        if (isSimpleType(cms, resourcename)) {
+            super.moveResource(cms, resourcename, destination);
             return;
         }
         
-        CmsFile file = cms.readFile(source);
+        CmsFile file = cms.readFile(resourcename);
         String bodyPath = checkBodyPath(cms, file);
-        cms.doMoveResource(source, destination);
+        cms.doMoveResource(resourcename, destination);
         if (bodyPath != null) {
             String hbodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
@@ -392,15 +420,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#renameResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
-    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException {
+    public void renameResource(CmsObject cms, String resourcename, String newname) throws CmsException {
         
-        if (isSimpleType(cms, oldname)) {
-            super.renameResource(cms, oldname, newname);
+        if (isSimpleType(cms, resourcename)) {
+            super.renameResource(cms, resourcename, newname);
             return;
         }
         
         // the file that should be renamed
-        CmsFile file = cms.readFile(oldname);
+        CmsFile file = cms.readFile(resourcename);
         // the current body path as it is saved in the XML page file
         String currentBodyPath = readBodyPath(cms, file);
 
@@ -408,10 +436,10 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         // body path in the XML page is a path where the Cms expects
         // it's body files
         int lastSlashIndex = I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/");
-        String defaultBodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + oldname;
+        String defaultBodyPath = (I_CmsWpConstants.C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + resourcename;
 
         // rename the file itself
-        cms.doRenameResource(oldname, newname);
+        cms.doRenameResource(resourcename, newname);
 
         // unless somebody edited the body path by hand, rename the file in the body path additionally
         if (defaultBodyPath.equals(currentBodyPath)) {
@@ -431,19 +459,19 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#restoreResource(com.opencms.file.CmsObject, int, java.lang.String)
      */
-    public void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException {
+    public void restoreResource(CmsObject cms, int versionId, String resourcename) throws CmsException {
         
-        if (isSimpleType(cms, filename)) {
-            super.restoreResource(cms, versionId, filename);
+        if (isSimpleType(cms, resourcename)) {
+            super.restoreResource(cms, versionId, resourcename);
             return;
         }
         
         //if(!cms.accessWrite(filename)){
-        if (!cms.hasPermissions(filename, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(filename, CmsException.C_NO_ACCESS);
+        if (!cms.hasPermissions(resourcename, I_CmsConstants.C_WRITE_ACCESS)) {
+            throw new CmsException(resourcename, CmsException.C_NO_ACCESS);
         }
-        CmsFile file = cms.readFile(filename);
-        cms.doRestoreResource(versionId, filename);
+        CmsFile file = cms.readFile(resourcename);
+        cms.doRestoreResource(versionId, resourcename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null) {
             try {
@@ -464,33 +492,32 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         // linkmanagement: create the links of the restored page
         CmsPageLinks linkObject = cms.getPageLinks(cms.readAbsolutePath(file));
         cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
-    }
-    
+    }    
 
     /**
      * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
-    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, String newResType) throws CmsException {
+    public void replaceResource(CmsObject cms, String resourcename, Map resourceProperties, byte[] resourceContent, String newResType) throws CmsException {
         // page files cannot be replaced yet...
     }    
 
     /**
      * @see com.opencms.file.I_CmsResourceType#undoChanges(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void undoChanges(CmsObject cms, String resource) throws CmsException {
+    public void undoChanges(CmsObject cms, String resourcename) throws CmsException {
         
-        if (isSimpleType(cms, resource)) {
-            super.undoChanges(cms, resource);
+        if (isSimpleType(cms, resourcename)) {
+            super.undoChanges(cms, resourcename);
             return;
         }            
            
         
         //if(!cms.accessWrite(resource)){
-        if (!cms.hasPermissions(resource, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(resource, CmsException.C_NO_ACCESS);
+        if (!cms.hasPermissions(resourcename, I_CmsConstants.C_WRITE_ACCESS)) {
+            throw new CmsException(resourcename, CmsException.C_NO_ACCESS);
         }
-        CmsFile file = cms.readFile(resource);
-        cms.doUndoChanges(resource);
+        CmsFile file = cms.readFile(resourcename);
+        cms.doUndoChanges(resourcename);
         String bodyPath = checkBodyPath(cms, (CmsFile)file);
         if (bodyPath != null) {
             cms.doUndoChanges(bodyPath);
@@ -504,15 +531,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#lockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException {
+    public void lockResource(CmsObject cms, String resourcename, boolean force) throws CmsException {
         
-        if (isSimpleType(cms, resource)) {
-            super.lockResource(cms, resource, force);
+        if (isSimpleType(cms, resourcename)) {
+            super.lockResource(cms, resourcename, force);
             return;
         }
         
         // First read the page file.
-        CmsFile pageFile = cms.readFile(resource);
+        CmsFile pageFile = cms.readFile(resourcename);
 
         CmsResource bodyFile = null;
         String bodyPath = null;
@@ -525,7 +552,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
             bodyFile = null;
         }
         // first lock the page file
-        cms.doLockResource(resource, force);
+        cms.doLockResource(resourcename, force);
 
         if (bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
@@ -536,15 +563,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#unlockResource(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException {
+    public void unlockResource(CmsObject cms, String resourcename, boolean forceRecursive) throws CmsException {
         
-        if (isSimpleType(cms, resource)) {
-            super.unlockResource(cms, resource, forceRecursive);
+        if (isSimpleType(cms, resourcename)) {
+            super.unlockResource(cms, resourcename, forceRecursive);
             return;
         }        
         
         // First read the page file.
-        CmsFile pageFile = cms.readFile(resource);
+        CmsFile pageFile = cms.readFile(resourcename);
 
         CmsResource bodyFile = null;
         String bodyPath = null;
@@ -557,7 +584,7 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
             bodyFile = null;
         }
 
-        cms.doUnlockResource(resource);
+        cms.doUnlockResource(resourcename);
 
         if (bodyFile != null) {
             // Everything with the page file is ok. We have write access. XML is valid.
@@ -592,15 +619,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
     /**
      * @see com.opencms.file.I_CmsResourceType#exportResource(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
-    public CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException {
+    public CmsFile exportResource(CmsObject cms, CmsFile resourcename) throws CmsException {
         // nothing special to do here
-        return file;
+        return resourcename;
     }
 
     /**
      * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, String resourcename, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;
 
@@ -756,8 +783,15 @@ public class CmsResourceTypePage extends CmsResourceTypePlain {
         }
     }
     
-    private boolean isSimpleType(CmsObject cms, String path) throws CmsException {
-        return (null != cms.readProperty(path, CmsXmlLauncher.C_XML_CONTROL_TEMPLATE_PROPERTY));
+    /**
+     * Returns true if the page is a "simple" page, i.e. does not use the /system/bodies folder.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourcename the resource to check
+     * @return true if the page is a "simple" page
+     * @throws CmsException
+     */
+    private boolean isSimpleType(CmsObject cms, String resourcename) throws CmsException {
+        return (null != cms.readProperty(resourcename, C_XML_CONTROL_TEMPLATE_PROPERTY));
     }
-
 }

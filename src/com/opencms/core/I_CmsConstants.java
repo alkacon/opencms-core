@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/11 14:54:01 $
-* Version: $Revision: 1.241 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.242 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.241 $ $Date: 2003/07/11 14:54:01 $
+ * @version $Revision: 1.242 $ $Date: 2003/07/11 21:35:49 $
  */
 public interface I_CmsConstants {
 
@@ -1428,6 +1428,15 @@ public interface I_CmsConstants {
     
     /** name of the special body element from an XMLTemplate */
     String C_XML_BODY_ELEMENT = "body"; 
+  
+    /** suffix for caching of simple pages */
+    String C_XML_CONTROL_FILE_SUFFIX = ".xmlcontrol";
+    
+    /** template property for simple pages */
+    String C_XML_CONTROL_TEMPLATE_PROPERTY = "template";
+    
+    /** default class for templates */
+    String C_XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";  
   
 }
 

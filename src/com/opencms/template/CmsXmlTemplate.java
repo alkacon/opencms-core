@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/07/10 12:28:51 $
-* Version: $Revision: 1.113 $
+* Date   : $Date: 2003/07/11 21:35:49 $
+* Version: $Revision: 1.114 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.113 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.114 $ $Date: 2003/07/11 21:35:49 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -1611,7 +1611,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                 Hashtable templateParameters = xmlTemplateDocument.getParameters(elName);
                 if(className != null || templateName != null || templateSelector != null || templateParameters.size() > 0) {
                     if(className == null){
-                        className = "com.opencms.template.CmsXmlTemplate";
+                        className = C_XML_CONTROL_DEFAULT_CLASS;
                     }
                     if(templateName != null){
                         templateName = Utils.mergeAbsolutePath(templateFile, templateName);
