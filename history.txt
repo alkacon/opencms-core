@@ -1,0 +1,31 @@
+History of changes for the OpenCms project.
+
+Changes are chronologically ordered from top (most recent) to bottom (least recent).
+For more information about the OpenCms project, see the OpenCms website at http://www.opencms.com.
+
+Ledgend: 
+! New Feature
+* Bug fixed
+- General comment
+ 
+OpenCms 4.0a20 Giedi Prime: Rabban - 01 March 2000
+
+! Added example templates and pages to the database which demonstrate the use of templates and subtemplates.
+  Templates are located at /content/templates/, sample pages can be found at /examples/.
+! Most links on the workplace that cause an exception because of a feature not yet implemented
+  now show a more user - friendly message.
+! Multiple log messages have been added to the startup phase of the system, to help indentify problems
+  with the installation.
+* Fixed bug in displaying new files in filelist. 
+  A new file in a project now appears blue, not red.
+* Locking / Unlocking of files does not change file state anymore.
+* Fixed bug in writing Metainformations back into MetaInformationCache.
+* Fixed bug in XML caching. Parsed XML content in now cached and reused.
+* Unused local variables have been removed from code.
+
+
+OpenCms 4.0a19 Giedi Prime: Rabban - 24 February 2000
+
+- Public Open Source release of OpenCms
+
+
