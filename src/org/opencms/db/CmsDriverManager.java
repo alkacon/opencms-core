@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/05 12:31:53 $
- * Version: $Revision: 1.350 $
+ * Date   : $Date: 2004/04/05 14:23:12 $
+ * Version: $Revision: 1.351 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.350 $ $Date: 2004/04/05 12:31:53 $
+ * @version $Revision: 1.351 $ $Date: 2004/04/05 14:23:12 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -8052,7 +8052,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 report = (I_CmsReport) new CmsLogReport();
             }
 
-            // create a disc driver to write exports
+            // create the driver to write the export points
             exportPointDriver = new CmsExportPointDriver(exportPoints);
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
@@ -8144,7 +8144,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 return;
             }            
             
-            // create a disc driver to write exports
+            // create the driver to write the export points
             exportPointDriver = new CmsExportPointDriver(exportPoints);
 
             // iterate over all published resources to export them eventually

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2004/03/07 19:22:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/05 14:23:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsExportPointDriver {
 
@@ -61,7 +62,10 @@ public class CmsExportPointDriver {
      * @param exportpoints the list of export points
      */
     public CmsExportPointDriver(Set exportpoints) {
-        m_exportpoints = exportpoints;
+        m_exportpoints = new HashSet();         
+        m_exportpoints.addAll(exportpoints);
+        // TODO: registry based export points must be removed 
+        m_exportpoints.addAll(OpenCms.getRegistry().getExportpoints());
         m_exportpointLookupMap = new HashMap();
         Iterator i = m_exportpoints.iterator();
         while (i.hasNext()) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/04/05 14:23:13 $
+ * Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsExportPoint;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
 import org.opencms.main.CmsException;
@@ -75,7 +76,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -118,6 +119,9 @@ public class CmsRegistry extends A_CmsXmlContent {
     /** A message digest to check the resource codes */
     private MessageDigest m_digest;
 
+    /** A hashtable with all exportpoints and paths */
+    private Set m_exportpoints;
+
     /** A hashtable with shortcuts into the dom-structure for each module */
     private Hashtable m_modules = new Hashtable();
 
@@ -140,7 +144,7 @@ public class CmsRegistry extends A_CmsXmlContent {
         super();
         // there is no need of a real copy for this parameters
         m_modules = reg.m_modules;
-        // m_exportpoints = reg.m_exportpoints;
+        m_exportpoints = reg.m_exportpoints;
         m_regFileName = reg.m_regFileName;
         m_xmlReg = reg.m_xmlReg;
         // store the cms-object for this instance.
@@ -781,6 +785,34 @@ public class CmsRegistry extends A_CmsXmlContent {
         return "Registry";
     }
 
+    /**
+     * This method returns the exportpoints and the destination paths in the RFS.<p>
+     *
+     * @return Hashtable with the exportpoints and the destination paths in the RFS
+     * @deprecated this needs to be replaced with the new XML configuration 
+     */
+    public Set getExportpoints() {
+        m_exportpoints = new HashSet();
+        try {
+            NodeList exportpointsList = m_xmlReg.getElementsByTagName("exportpoint");
+            for (int x = 0; x < exportpointsList.getLength(); x++) {
+                try {
+                    String curExportpoint = ((Element)exportpointsList.item(x)).getElementsByTagName("source").item(0).getFirstChild().getNodeValue();
+                    String curPath = ((Element)exportpointsList.item(x)).getElementsByTagName("destination").item(0).getFirstChild().getNodeValue();
+                    CmsExportPoint exportPoint = new CmsExportPoint(curExportpoint, curPath);
+                    m_exportpoints.add(exportPoint); 
+                } catch (Exception exc) {
+                    exc.printStackTrace();
+                    // ignore the exception and try the next view-pair.
+                }
+            }
+        } catch (Exception exc) {
+            exc.printStackTrace();
+            // no return-values
+        }
+        return m_exportpoints;
+    }    
+    
     /**
      * Returns the author of a module.<p>
      *
