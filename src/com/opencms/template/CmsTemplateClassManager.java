@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateClassManager.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/13 13:48:59 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * be cached and re-used. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/13 13:48:59 $
  */
 public class CmsTemplateClassManager implements I_CmsLogChannels { 
     
@@ -135,7 +135,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
                 
                 // Construct error message for the different exceptions
                 if(e instanceof ClassNotFoundException) {                    
-                    errorMessage = "Could not load template class " + classname;
+                    errorMessage = "Could not load template class " + classname + ". " + e.getMessage();
                 } else if(e instanceof InstantiationException) {
                     errorMessage = "Could not instantiate template class " + classname;
                 } else if(e instanceof NoSuchMethodException) {
@@ -147,7 +147,7 @@ public class CmsTemplateClassManager implements I_CmsLogChannels {
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
                 }
-                throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR);
+                throw new CmsException(errorMessage, CmsException.C_CLASSLOADER_ERROR, e);
             }
                                                 
             instanceCache.put(classname, o);
