@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/12/17 12:09:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.5.0
  */
@@ -71,6 +71,35 @@ public class TestCmsXmlPage extends TestCase {
      */    
     public TestCmsXmlPage(String arg0) {
         super(arg0);
+    }
+    
+    /**
+     * Tests accessing element names in the XML page.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageRenameElement() throws Exception {
+        
+        // create a XML entity resolver for test case
+        CmsXmlContentTypeManager.createTypeManagerForTestCases();
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        
+        System.out.println("Testing renaming element in the XML page\n");
+        
+        // load stored XML page
+        String pageStr = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+        
+        // create a new XML page with this content
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(pageStr, UTF8, resolver);        
+           
+        page.renameValue("body2", "bodyNEW", Locale.ENGLISH);
+        page.validateXmlStructure(resolver); 
+        page.marshal();
+        // check if page has the element 'body2NEW'
+        assertTrue(page.hasValue("bodyNEW", Locale.ENGLISH)); 
+        // check if page has the element 'body2'
+        assertFalse(page.hasValue("body2", Locale.ENGLISH));
+        System.out.println(page.toString());
     }
     
     /**
@@ -413,7 +442,7 @@ public class TestCmsXmlPage extends TestCase {
         
         // update xml page link with components
         link.updateLink("/test/link1/changed2.gif", "foo", "a=b&c=d");
-        page.marshal();
+        // page.marshal();
         link = page.getLinkTable("body", Locale.ENGLISH).getLink("link0");
         assertEquals("/test/link1/changed2.gif", link.getTarget());
         assertEquals("foo", link.getAnchor());

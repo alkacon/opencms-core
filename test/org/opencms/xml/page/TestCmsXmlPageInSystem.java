@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2004/12/02 15:30:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/17 12:09:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,10 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.workplace.administration.CmsElementRename;
 import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.0
  */
@@ -76,6 +78,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlPageInSystem("testSchemaCachePublishIssue"));
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
         suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
+        suite.addTest(new TestCmsXmlPageInSystem("testXmlPageRenameElement"));        
         
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -228,5 +231,50 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.setStringValue(cms, element, Locale.ENGLISH, content);                
         result = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(content, result);          
-    }    
+    } 
+    
+    /**
+     * Tests accessing element names in the XML page.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageRenameElement() throws Exception {
+        
+        String folder = "/folder1/";
+        String recursive = "true";
+        String template = "ALL";
+        String locale = "ALL";
+        String oldElement = "body";
+        String newElement = "NewElement";
+        String removeEmptyElements = "false";
+        String validateNewElement = "false";
+        
+        echo("Testing XML page rename element handling");
+        CmsElementRename wp = new CmsElementRename(null,
+                                                   getCmsObject(),
+                                                   folder,
+                                                   recursive,
+                                                   template,
+                                                   locale,
+                                                   oldElement,
+                                                   newElement,
+                                                   removeEmptyElements,
+                                                   validateNewElement);
+        
+        echo("Testing initialize CmsElementRename class");
+        assertEquals(folder, wp.getParamResource());
+        assertEquals(recursive, wp.getParamRecursive());
+        assertEquals(template, wp.getParamTemplate());
+        assertEquals(locale, wp.getParamLocale());
+        assertEquals(oldElement, wp.getParamOldElement());
+        assertEquals(newElement, wp.getParamNewElement());
+        assertEquals(removeEmptyElements, wp.getParamRemoveEmptyElements());
+        assertEquals(validateNewElement, wp.getParamValidateNewElement());
+        echo("CmsElementRename class initialized successfully");        
+        echo("Xml Page Element Rename Start");
+        wp.actionRename(new CmsShellReport());    
+        echo("Xml Page Element Rename End");
+    }
+    
+    
 }

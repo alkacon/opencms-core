@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/12/05 02:54:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/12/17 12:09:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
 
@@ -178,6 +178,48 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         getContentDefinition().createLocale(cms, this, m_document.getRootElement(), locale);
         // re-initialize the bookmarks
         initDocument(m_document, m_encoding, null);
+    }
+    
+    /**
+     * Renames the page-element value from the old to the new one.<p>
+     * 
+     * @param oldValue the old value 
+     * @param newValue the new value
+     * @param locale the locale
+     */
+    public void renameValue(String oldValue, String newValue, Locale locale) {
+        
+        CmsXmlHtmlValue oldXmlHtmlValue = (CmsXmlHtmlValue)getValue(oldValue, locale);
+        if (oldXmlHtmlValue == null) {
+            throw new IllegalArgumentException("XML page does not contain the element '"
+                + oldValue
+                + "' for language '"
+                + locale
+                + "'");
+        }
+
+        if (hasValue(newValue, locale)) {
+            throw new IllegalArgumentException("XML page does already contain the element '"
+                + newValue
+                + "' for language '"
+                + locale
+                + "'");
+        }
+
+        if (newValue.indexOf('[') >= 0) {
+            throw new IllegalArgumentException("XML page element names must not contain indexes, invalid name '"
+                + newValue
+                + "''");
+        }
+
+        // get the element 
+        Element element = oldXmlHtmlValue.getElement();
+
+        // update value of the element attribute 'NAME'         
+        element.addAttribute(ATTRIBUTE_NAME, newValue);
+
+        // re-initialize the document to update the bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
     }
 
     /**
@@ -430,6 +472,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         }
 
         // initialize the bookmarks
+        clearBookmarks();
         Element pages = m_document.getRootElement();
         try {
             for (Iterator i = pages.elementIterator(NODE_PAGE); i.hasNext();) {

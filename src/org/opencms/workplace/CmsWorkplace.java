@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/12/11 13:20:06 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2004/12/17 12:09:28 $
+ * Version: $Revision: 1.100 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.99 $
+ * @version $Revision: 1.100 $
  * 
  * @since 5.1
  */
@@ -427,7 +427,7 @@ public abstract class CmsWorkplace {
      * @param useLineFeed if true, adds some formatting "\n" to the output String
      * @return a String representing a html select box
      */
-    public String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
+    public static String buildSelect(String parameters, List options, List values, int selected, boolean useLineFeed) {
 
         StringBuffer result = new StringBuffer(1024);
         result.append("<select ");
@@ -446,8 +446,8 @@ public abstract class CmsWorkplace {
                     value = (String)values.get(i);
                 } catch (Exception e) {
                     // can usually be ignored
-                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                        OpenCms.getLog(this).info(e);
+                    if (OpenCms.getLog(CmsWorkplace.class).isInfoEnabled()) {
+                        OpenCms.getLog(CmsWorkplace.class).info(e);
                     }
                     // lists are not properly initialized, just don't use the value                    
                     value = null;

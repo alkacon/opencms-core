@@ -2023,6 +2023,178 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		
+		<file>
+			<destination>system/workplace/administration/contenttools</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 17 Dec 2004 10:18:31 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:17:24 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.4028235E38]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.contenttools]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_admin_contenttools]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/contenttools/change</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 09 Nov 2004 14:30:02 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:19:46 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[title.propertychange]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_admin_properties_change]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/contenttools/change/index.html</source>
+			<destination>system/workplace/administration/contenttools/change/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>cb6ce0ab-500c-11d9-8b72-01dd5ed54f5e</uuidresource>
+			<datelastmodified>Mon, 13 Dec 2004 10:09:08 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:19:46 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Change property value]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/contenttools/delete</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 09 Nov 2004 16:13:45 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:19:57 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[title.propertydelete]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_admin_properties_delete]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/contenttools/delete/index.html</source>
+			<destination>system/workplace/administration/contenttools/delete/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>d1b3c7e8-500c-11d9-8b72-01dd5ed54f5e</uuidresource>
+			<datelastmodified>Tue, 09 Nov 2004 15:15:04 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:19:57 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Delete property]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/contenttools/renameelement</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 17 Dec 2004 10:20:53 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:20:07 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.renameelement]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_admin_renameelement]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/contenttools/renameelement/index.html</source>
+			<destination>system/workplace/administration/contenttools/renameelement/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>d8127ce5-500c-11d9-8b72-01dd5ed54f5e</uuidresource>
+			<datelastmodified>Fri, 17 Dec 2004 11:20:33 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Dec 2004 10:20:07 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		
 		<file>
 			<destination>system/workplace/administration/database</destination>
 			<type>folder</type>
@@ -3779,138 +3951,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/properties</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 23 Nov 2004 13:54:26 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 08 Nov 2004 18:07:04 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[33.0]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.properties]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_admin_properties]]></value>
-				</property>
-				<property>
-					<name>activemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isNotOnlineProject]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/properties/change</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 09 Nov 2004 14:30:02 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 08 Nov 2004 18:07:28 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[title.propertychange]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_admin_properties_change]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/properties/change/index.html</source>
-			<destination>system/workplace/administration/properties/change/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>f6fa639d-322a-11d9-b683-dd5f89ac8843</uuidresource>
-			<datelastmodified>Tue, 09 Nov 2004 12:57:43 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Nov 2004 09:40:09 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dialog - Change property value]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/properties/delete</destination>
-			<type>folder</type>
-			<datelastmodified>Tue, 09 Nov 2004 16:13:45 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Nov 2004 15:00:20 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[title.propertydelete]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_admin_properties_delete]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/properties/delete/index.html</source>
-			<destination>system/workplace/administration/properties/delete/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>b17839ac-3257-11d9-997d-dd5f89ac8843</uuidresource>
-			<datelastmodified>Tue, 09 Nov 2004 15:15:04 GMT+01:00</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 09 Nov 2004 15:00:20 GMT+01:00</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dialog - Delete property]]></value>
-				</property>
-			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -9955,6 +9995,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/ic_admin_contenttools.gif</source>
+			<destination>system/workplace/resources/ic_admin_contenttools.gif</destination>
+			<type>image</type>
+			<uuidresource>2707a14e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/ic_admin_contenttools_in.gif</source>
+			<destination>system/workplace/resources/ic_admin_contenttools_in.gif</destination>
+			<type>image</type>
+			<uuidresource>270ecd44-c0f9-11d7-8d80-80884c2772a5</uuidresource>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/ic_admin_datatypes.gif</source>
 			<destination>system/workplace/resources/ic_admin_datatypes.gif</destination>
 			<type>image</type>
@@ -10137,19 +10203,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/ic_admin_properties.gif</source>
-			<destination>system/workplace/resources/ic_admin_properties.gif</destination>
-			<type>image</type>
-			<uuidresource>2707a14e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/ic_admin_properties_change.gif</source>
 			<destination>system/workplace/resources/ic_admin_properties_change.gif</destination>
 			<type>image</type>
@@ -10176,13 +10229,13 @@
 			<accesscontrol/>
 		</file> 
 		<file>
-			<source>system/workplace/resources/ic_admin_properties_in.gif</source>
-			<destination>system/workplace/resources/ic_admin_properties_in.gif</destination>
+			<source>system/workplace/resources/ic_admin_renameelement.gif</source>
+			<destination>system/workplace/resources/ic_admin_renameelement.gif</destination>
 			<type>image</type>
-			<uuidresource>270ecd44-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<uuidresource>a2780842-5019-11d9-8515-01dd5ed54f5e</uuidresource>
+			<datelastmodified>Fri, 17 Dec 2004 11:51:41 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<datecreated>Fri, 17 Dec 2004 11:51:41 CET</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

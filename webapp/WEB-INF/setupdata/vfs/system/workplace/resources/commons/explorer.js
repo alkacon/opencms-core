@@ -1310,7 +1310,11 @@ function setFormValue(filename) {
 		if (treeField == "tempChannel") {
 			window.body.admin_content.copyChannelSelection();
 		} else {
-			window.body.admin_content.copySelection();
+			try {
+				window.body.admin_content.copySelection();
+			} catch (e) {
+				
+			}
 		}
 	}
 }
