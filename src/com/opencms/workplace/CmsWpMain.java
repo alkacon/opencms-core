@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2001/08/02 14:56:08 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.40 $ $Date: 2001/08/02 14:56:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -104,7 +104,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
         // set the publishProject Button to enable if user has the right to publish the project
         if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"head")){
-            if((reqCont.isProjectManager() || cms.isAdmin() || cms.isManagerOfProject())
+            if((cms.isAdmin() || cms.isManagerOfProject())
                             && (!reqCont.currentProject().equals(cms.onlineProject()))){
                 xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_ENABLED", this));
             }else{

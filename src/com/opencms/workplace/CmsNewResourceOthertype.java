@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2001/08/02 13:29:50 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2001/08/02 14:56:08 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2001/08/02 13:29:50 $
+ * @version $Revision: 1.28 $ $Date: 2001/08/02 14:56:08 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -75,21 +75,17 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial == null) {
-            int i = 0;
-            System.out.println(i++);
 
             filename = cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
             title = cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE);
             keywords = (String)parameters.get(C_PARA_KEYWORDS);
             description = (String)parameters.get(C_PARA_DESCRIPTION);
             foldername = (String)session.getValue(C_PARA_FILELIST);
-            System.out.println(i++);
             if(foldername == null) {
                 foldername = cms.rootFolder().getAbsolutePath();
             }
             type = (String)session.getValue("type");
             // create the new file
-            System.out.println(i++);
             Hashtable prop = new Hashtable();
             prop.put(C_PROPERTY_TITLE, title);
             cms.createResource(foldername, filename, type, prop, new byte[0]);
@@ -97,18 +93,15 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
             if( keywords != null && !keywords.equals("") ) {
                 cms.writeProperty(foldername + filename, C_PROPERTY_KEYWORDS, keywords);
             }
-            System.out.println(i++);
             if( description != null && !description.equals("") ) {
                 cms.writeProperty(foldername + filename, C_PROPERTY_DESCRIPTION, description);
             }
 
             // now return to filelist
             try {
-                System.out.println("a");
                 cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST);
             }
             catch(Exception e) {
-                System.out.println("b");
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
             }
             return null;
