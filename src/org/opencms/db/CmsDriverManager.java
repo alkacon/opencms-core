@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/30 12:30:57 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2003/07/30 13:25:31 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.102 $ $Date: 2003/07/30 12:30:57 $
+ * @version $Revision: 1.103 $ $Date: 2003/07/30 13:25:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7248,7 +7248,8 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void undeleteResource(CmsRequestContext context, String filename) throws CmsException {
-
+        undoChanges(context, filename);
+        /*
         // read the resource to check the access
         CmsResource resource = readFileHeader(context, filename, true);
         
@@ -7277,6 +7278,7 @@ public class CmsDriverManager extends Object {
 
         // inform about the file-system-change
         fileSystemChanged(resource.isFolder());
+        */
     }
 
     /**
@@ -7289,46 +7291,42 @@ public class CmsDriverManager extends Object {
      */
     public void undoChanges(CmsRequestContext context, String resourceName) throws CmsException {
         CmsProject onlineProject = readProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID);
-        CmsResource resource = readFileHeader(context, resourceName);
+        CmsResource resource = readFileHeader(context, resourceName, true);
         
-        
+        // check if the user has write access
+        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
+                
         // change folder or file?
         if (resource.isFolder()) {
-            // read the resource from the offline project and change the data
-            CmsFolder offlineFolder = readFolder(context, resourceName);
+
             // read the resource from the online project
             CmsFolder onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resourceName);
             readPath(context,onlineFolder,true);
             
             CmsFolder restoredFolder =
                 new CmsFolder(
-                    offlineFolder.getId(),
-                    offlineFolder.getResourceId(),
-                    offlineFolder.getParentId(),
-                    offlineFolder.getFileId(),
-                    offlineFolder.getResourceName(),
+                    resource.getId(),
+                    resource.getResourceId(),
+                    resource.getParentId(),
+                    resource.getFileId(),
+                    resource.getResourceName(),
                     onlineFolder.getType(),
                     onlineFolder.getFlags(),
-                    /* onlineFolder.getOwnerId(),
-                    onlineFolder.getGroupId(), */
                     context.currentProject().getId(),
                     onlineFolder.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
-                    offlineFolder.isLockedBy(),
-                    offlineFolder.getDateCreated(),
-                    context.currentUser().getId(),
-                    offlineFolder.getDateLastModified(),
-                    context.currentUser().getId(),
+                    resource.isLockedBy(),
+                    onlineFolder.getDateCreated(),
+                    onlineFolder.getUserCreated(),
+                    onlineFolder.getDateLastModified(),
+                    onlineFolder.getUserLastModified(),
                     context.currentProject().getId(),
-                    offlineFolder.getLinkCount());
+                    resource.getLinkCount());
+                    
             // write the file in the offline project
-
-            // check if the user has write access
-            checkPermissions(context, restoredFolder, I_CmsConstants.C_WRITE_ACCESS);
-
             // this sets a flag so that the file date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
-            // write-access  was granted - write the folder without setting state = changed
+            // write the folder without setting state = changed
             m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, context.currentUser().getId());
             // restore the properties in the offline project
             readPath(context,restoredFolder,true);
@@ -7336,42 +7334,36 @@ public class CmsDriverManager extends Object {
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFolder, restoredFolder.getType());
         } else {
-            // read the file from the offline project and change the data
-            CmsFile offlineFile = readFile(context, resourceName);
+
             // read the file from the online project
-            CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, offlineFile.getId(), false);
+            CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resource.getId(), false);
             //(context, resourceName);
             readPath(context,onlineFile,true);
 
             CmsFile restoredFile =
                 new CmsFile(
-                    offlineFile.getId(),
-                    offlineFile.getResourceId(),
-                    offlineFile.getParentId(),
-                    offlineFile.getFileId(),
-                    offlineFile.getResourceName(),
+                    resource.getId(),
+                    resource.getResourceId(),
+                    resource.getParentId(),
+                    resource.getFileId(),
+                    resource.getResourceName(),
                     onlineFile.getType(),
                     onlineFile.getFlags(),
-                    /* onlineFile.getOwnerId(),
-                    onlineFile.getGroupId(), */
                     context.currentProject().getId(),
                     onlineFile.getAccessFlags(),
                     I_CmsConstants.C_STATE_UNCHANGED,
-                    offlineFile.isLockedBy(),
+                    resource.isLockedBy(),
                     onlineFile.getLoaderId(),
-                    offlineFile.getDateCreated(),
-                    context.currentUser().getId(),
-                    offlineFile.getDateLastModified(),
-                    context.currentUser().getId(),
+                    onlineFile.getDateCreated(),
+                    onlineFile.getUserCreated(),
+                    onlineFile.getDateLastModified(),
+                    onlineFile.getUserLastModified(),
                     onlineFile.getContents(),
                     onlineFile.getLength(),
                     context.currentProject().getId(),
-                    offlineFile.getLinkCount());
+                    resource.getLinkCount());
+            
             // write the file in the offline project
-
-            // check if the user has write access 
-            checkPermissions(context, restoredFile, I_CmsConstants.C_WRITE_ACCESS);
-
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
             // write-acces  was granted - write the file without setting state = changed
