@@ -3035,6 +3035,10 @@
 					<value><![CDATA[-60]]></value>
 				</property>
 				<property>
+					<name>visiblemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+				</property>
+				<property>
 					<name>NavText</name>
 					<value><![CDATA[icon.linkmanagement]]></value>
 				</property>
@@ -4354,6 +4358,14 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.4028235E38]]></value>
+				</property>
+				<property>
+					<name>visiblemethod</name>
+					<value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+				</property>
 				<property>
 					<name>NavText</name>
 					<value><![CDATA[icon.reinitworkplace]]></value>
