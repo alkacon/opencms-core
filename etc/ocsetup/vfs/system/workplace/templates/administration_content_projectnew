@@ -13,6 +13,35 @@ function show_help()
 {
 	return '5_2_2_1.html';
 }
+
+function deleteAnItem(theList,itemNo) {
+   var n=theList.length;
+   if ((n > 0) && (itemNo > -1)) {
+	   for (i=itemNo; i<n-1; i++) {
+		  theList.options[i]=theList.options[i+1];
+	   }
+	   theList.options[n-1]=null; 
+   }
+}
+
+function addFolder(theList, item) { 
+	if (item != null && item != "") {
+		newOption = new Option(item, item, false, false); 
+		theList.options[theList.length] = newOption;
+	}
+}
+
+function copySelection() { 
+	addFolder(PROJECTNEW.new_ressources, PROJECTNEW.tempFolder.value);
+}
+
+function selectAll(theList) {
+	var n=theList.length;
+	for (i=0; i<n; i++) {
+		theList.options[i].selected=true;
+	}
+}
+
 //-->
 </script>
 
@@ -66,14 +95,34 @@ function show_help()
 								<td class=formular>&nbsp;</td>
 							</tr>
 							<tr>
+								<td class=formular>&nbsp;</td>
+								<td class=dialogtxt> 
+								<input type="text" name="selectallfolders" class="textfeld3" size=31 value=""
+									   onSubmit="">	
+
+								</td> 
+								<td class=formular valign=bottom> 
+									<a href="javascript:addFolder(PROJECTNEW.new_ressources, PROJECTNEW.selectallfolders.value);" ><img src="]]><METHOD name="picsUrl">ic_admin_enter.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.addnew" /><![CDATA[" border=0 width=16 heigth=16></a> 
+								</td>								 
+							</tr>
+							<tr> 
 								<td class=formular valign=top>]]><LABEL value="label.allfolders" /><![CDATA[:</td>
 								<td class=dialogtxt>
-								     <input type="text" name="selectallfolders" class="textfeld3" size=31 value="]]><PROCESS>new_project_folder</PROCESS><![CDATA[">	
+									<select name="new_ressources" id="new_ressources" size=5 style="width:300px" width="300" multiple></select>
 								</td>
-								
-								<td class=formular><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
-								
+								<td valign=top>
+									<table border=0 cellspacing=0 width=100% height=100% valign=top> 
+										<tr>
+											<td class=formular valign=top><a href="javascript:treewin=opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=tempFolder&viewfile=no', 'explorer_viewer', 150, 300),treewin.focus();"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="]]><LABEL value="label.selectfolder" /><![CDATA["></a></td>
+										</tr>
+										<tr>
+											 <td class=formular><a href="javascript:deleteAnItem(PROJECTNEW.new_ressources , PROJECTNEW.new_ressources.selectedIndex);"><img src="]]><METHOD name="picsUrl">ic_admin_deleteext.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.delete" /><![CDATA[" border=0 width=16 heigth=16></a></td>
+										</tr>
+									</table>
+								</td>
 							</tr>
+							<input type="hidden" name="tempFolder" id="tempFolder" > 
+							
 							<tr>
 								<td colspan=3 class=leerzeile>&nbsp;</td>
 							</tr>
@@ -98,7 +147,7 @@ function show_help()
 			<tr><td class=dialogtxt>
 				<table cellspacing=0 border=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="selectAll(PROJECTNEW.new_ressources);" /><![CDATA[</td>
 					<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='administration_content_project.html'" /><![CDATA[</td>
 				</tr>
 				</table>

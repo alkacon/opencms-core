@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/05/19 08:29:12 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/05/29 12:04:01 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.23 $ $Date: 2000/05/19 08:29:12 $
+ * @version $Revision: 1.24 $ $Date: 2000/05/29 12:04:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -65,6 +65,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
 	/** Session key */
 	private static String C_NEWFOLDER = "new_project_folder";
+	
+	/** Session key */
+	private static String C_NEWRESOURCES = "new_ressources";
 
     /**
      * Indicates if the results of this class are cacheable.
@@ -98,8 +101,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-		A_CmsRequestContext reqCont = cms.getRequestContext();  
-		  
+		A_CmsRequestContext reqCont = cms.getRequestContext();   
+		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
+		 
 		// clear session values on first load 
         String initial=(String)parameters.get(C_PARA_INITIAL); 
 		
@@ -109,7 +113,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue(C_NEWGROUP); 
 			session.removeValue(C_NEWDESCRIPTION);
             session.removeValue(C_NEWMANAGERGROUP); 
-			session.removeValue(C_NEWFOLDER); 
+			session.removeValue(C_NEWFOLDER);  
+			session.removeValue(C_NEWRESOURCES);
         }
 		
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;
@@ -120,7 +125,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		newGroup = (String) parameters.get(C_PROJECTNEW_GROUP);
 		newDescription = (String) parameters.get(C_PROJECTNEW_DESCRIPTION);
 		newManagerGroup = (String) parameters.get(C_PROJECTNEW_MANAGERGROUP);
-		newFolder = (String) parameters.get(C_PROJECTNEW_FOLDER);
+		String[] newProjectResources = reqCont.getRequest().getParameterValues(C_NEWRESOURCES); 
 		
 		// if there are still values in the session (like after an error), use them
 		if (newName == null) {
@@ -134,10 +139,11 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		}
 		if (newManagerGroup == null) {
 			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP);
-		}
-		if (newFolder == null) {
-			newFolder = (String) session.getValue(C_NEWFOLDER);
 		} 
+		if (newProjectResources == null) {
+			newProjectResources = (String[]) session.getValue(C_NEWRESOURCES);
+		} 
+		
 			 
 		if (newName == null) {
 			newName	= "";  
@@ -150,10 +156,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		}
 		if (newManagerGroup == null) {
 			newManagerGroup	= "";  
-		}
-		if (newFolder == null) {
-			newFolder= "";  
-		}
+		}  
 		
         reqCont.setCurrentProject(cms.onlineProject().getId());
         
@@ -164,12 +167,12 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			session.putValue(C_NEWNAME, newName); 
 			session.putValue(C_NEWGROUP, newGroup); 
 			session.putValue(C_NEWDESCRIPTION, newDescription);  
-			session.putValue(C_NEWMANAGERGROUP, newManagerGroup); 
-			session.putValue(C_NEWFOLDER, newFolder);  
+			session.putValue(C_NEWMANAGERGROUP, newManagerGroup);  
 			
-			if (newName.equals("") || newGroup.equals("") || newManagerGroup.equals("") || newFolder.equals("") ) {
+			if (newName.equals("") || newGroup.equals("") || newManagerGroup.equals("") || newProjectResources==null) {
 				templateSelector = "datamissing";
 			} else {
+				session.putValue(C_NEWRESOURCES, newProjectResources); 
 				// all the required data has been entered, display 'Please wait'
 				templateSelector = "wait";
 			}
@@ -181,23 +184,42 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 			newName = (String) session.getValue(C_NEWNAME);
 			newGroup = (String) session.getValue(C_NEWGROUP);
 			newDescription = (String) session.getValue(C_NEWDESCRIPTION);
-			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP);
-			newFolder = (String) session.getValue(C_NEWFOLDER);			
+			newManagerGroup = (String) session.getValue(C_NEWMANAGERGROUP); 
+			newProjectResources = (String[]) session.getValue(C_NEWRESOURCES);
 			// create new Project
-			try {
-				// modify the foldername if nescessary (the root folder is always given
-				// as a nice name)
-				CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
-				if (newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
-					newFolder="/";
+			try { 
+				int numRes=newProjectResources.length;
+				for (int i=0; i<numRes; i++) {
+					// modify the foldername if nescessary (the root folder is always given
+					// as a nice name)
+					if (lang.getLanguageValue("title.rootfolder").equals(newProjectResources[i])) {
+						newProjectResources[i]="/";
+					} 
 				} 
+				// check if all the resources are writeable
+				// if not don't create a project
+				Vector notWriteable = new Vector();
+				for (int i=0; i<numRes; i++) {
+					if (!checkWriteable(cms, cms.readFolder(newProjectResources[i]))) {
+						notWriteable.addElement(newProjectResources[i]);
+						templateSelector = "errornewproject";
+					}
+				}
+				 
+				
                 //test if the given folder is existing and writeable  
-				if(checkWriteable(cms, cms.readFolder(newFolder))) {  
+				if(!"errornewproject".equals(templateSelector)) {  
+					
          			A_CmsProject project = cms.createProject(newName, newDescription, newGroup, newManagerGroup);
 					// change the current project
 					reqCont.setCurrentProject(project.getId());
-					// copy the resource the the project 
-					cms.copyResourceToProject(newFolder); 
+					// copy the resources to the project 
+					Vector folders=checkRedundancies(newProjectResources);
+					
+					for (int i=0; i<folders.size(); i++) { 
+						cms.copyResourceToProject((String) folders.elementAt(i));
+					} 
+					
 					// try to copy the content resources to the project
 					try { 
 						cms.copyResourceToProject(C_CONTENTPATH); 
@@ -212,10 +234,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 					session.removeValue(C_NEWMANAGERGROUP);
 					session.removeValue(C_NEWFOLDER); 
 				} else { 
-					// the choosen folder was not writeable -> don't create the project. 
-					// NOTE: this doesn't work properly since cms.readFolder throws an exception 
-					xmlTemplateDocument.setData("details", "The choosen folder was not writeable.");
-					templateSelector = "errornewproject";
+					// at least one of the choosen folders was not writeable -> don't create the project. 
+					xmlTemplateDocument.setData("details", "The following folders were not writeable:" +
+														   notWriteable.toString()); 
 				}
 			} catch(CmsException exc) { 
 				xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
@@ -224,8 +245,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		} 
 		// after an error the form data is retrieved and filled into the template
 		xmlTemplateDocument.setData(C_NEWNAME, newName);
-		xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription);
-		xmlTemplateDocument.setData(C_NEWFOLDER, newFolder);
+		xmlTemplateDocument.setData(C_NEWDESCRIPTION, newDescription); 
 		
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -331,7 +351,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
-     */
+      
     public Integer getAllFolders(A_CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
@@ -375,10 +395,25 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @return Index representing the current value in the vectors.
      * @exception CmsException
-     */
+     
     public Integer getSelectedFolders(A_CmsObject cms, CmsXmlLanguageFile lang, 
 									Vector names, Vector values, Hashtable parameters) 
 		throws CmsException {
+		// no current folder, set index to -1
+        return new Integer(-1);
+    } */
+	
+	public Integer getSelectedResources(A_CmsObject cms, CmsXmlLanguageFile lang, 
+									Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		String[] newProjectResources = (String[]) session.getValue(C_NEWRESOURCES);
+		if (newProjectResources != null)  {
+			for (int i=0; i<newProjectResources.length; i++) {
+				names.addElement(newProjectResources[i]);
+				values.addElement(newProjectResources[i]);
+			}
+		}
 		// no current folder, set index to -1
         return new Integer(-1);
     }
@@ -411,4 +446,50 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                
          return access;
      }
+	 
+	 /** Check whether some of the resources are redundant because a superfolder has also
+	  *  been selected. 
+      *  
+      * @param cms The CmsObject 
+      * @return A vector with the same resources, but the paths in the return value are disjoint 
+      */
+	 
+	private Vector checkRedundancies(String[] resources){
+		int n=resources.length;
+		int i,j;
+		boolean[] redundant;
+		Vector ret = new Vector(); 
+		
+		if (n<1) {
+			return ret;	
+		}
+		if (n<2) {
+			// no check needed
+			ret.addElement(resources[1]);
+			return ret;
+		}
+		redundant = new boolean[n];
+		for (i=0; i<n; i++) {
+			redundant[i]=false;
+		}
+		for (i=0; i<n-1; i++) {
+			for (j=i+1; j<n; j++) { 
+				if (resources[i].length() <	resources[j].length()) {
+					if (resources[j].startsWith(resources[i])) {
+						redundant[j] = true;	
+					}
+				} else {
+					if (resources[i].startsWith(resources[j])) {
+						redundant[i] = true;
+					}
+				}
+			}
+		}
+		for (i=0; i<n; i++) {
+			if (! redundant[i]) {
+				ret.addElement(resources[i]);
+			}
+		} 
+		return ret;
+	}
 }

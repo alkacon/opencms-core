@@ -12,6 +12,9 @@
 <!--
 function selectFolder(pathStr){
 	window.opener.self.document.]]><PROCESS>FORMNAME</PROCESS><![CDATA[.]]><PROCESS>VARIABLE</PROCESS><![CDATA[.value = pathStr;
+	if (top.window.opener.copySelection) { 
+		top.window.opener.copySelection();
+	}
 }
 //-->
 </script>
