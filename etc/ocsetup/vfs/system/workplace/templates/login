@@ -48,7 +48,7 @@
         </tr>
         <tr>
             <td width=35% class=formular>]]><LABEL value="input.username" /><![CDATA[:</td>
-		    <td class=formular>]]><INPUTFIELD name="NAME" class="textfeld" size="15" length="16" /><![CDATA[</td>
+		    <td class=formular>]]><INPUTFIELD name="NAME" class="textfeld" size="15" length="32" /><![CDATA[</td>
         </tr>
          <tr>
             <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>	
