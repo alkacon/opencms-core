@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/10/04 14:48:39 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2000/10/06 11:21:29 $
+ * Version: $Revision: 1.129 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.128 $ $Date: 2000/10/04 14:48:39 $ 
+ * @version $Revision: 1.129 $ $Date: 2000/10/06 11:21:29 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -427,6 +427,18 @@ public void copyFile(String source, String destination) throws CmsException {
  */
 public void copyFolder(String source, String destination) throws CmsException {
 	m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
+}
+/**
+ * Insert the method's description here.
+ * Creation date: (06-10-2000 08:55:42)
+ * @param fromProject com.opencms.file.CmsProject
+ * @param resource java.lang.String
+ * @exception com.opencms.core.CmsException The exception description.
+ * @author Martin Langelund
+ */
+public void copyResourceToProject(CmsProject fromProject, String resource) throws com.opencms.core.CmsException
+{
+	m_rb.copyResourceToProject(m_context.currentUser(), m_context.currentProject(), fromProject, resource);
 }
 /**
  * Copies a resource from the online project to a new, specified project.
