@@ -50,7 +50,6 @@
 			<workplace-server>http://localhost:8080</workplace-server>
 			<default-uri>/sites/default/</default-uri>
 			<site server="http://localhost:8080" uri="/sites/default/"/>
-			<site server="http://localhost:8081" uri="/sites/default/folder1/"/>
 		</sites>
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
