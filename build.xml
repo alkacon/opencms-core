@@ -10,7 +10,7 @@
     You can also uncomment the line below. -->
     <property name="version.number"             value="5.1.2"/>
     
-    <property name="version.name"               value="Kaitain"/>
+    <property name="version.name"               value="Salusa Secundus"/>
     <property name="app.name"                   value="opencms"/>
 
     <property name="destdir"                    location="../"/>
