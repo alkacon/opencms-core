@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0 beta 2 Corrin</opencms_version>
-		<createdate>4/6/05 11:48 AM</createdate>
+		<createdate>4/6/05 4:46 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 
 
 (c) 2004-2005 by Alkacon Software (http://www.alkacon.com).]]></description>
-		<version>0.9.9</version>
+		<version>0.9.10</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Thu, 23 Dec 2004 11:07:27 GMT</datecreated>
@@ -140,7 +140,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 29 Mar 2005 08:22:29 GMT</datecreated>
+			<datecreated>Wed, 06 Apr 2005 11:09:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -253,7 +253,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Tue, 05 Apr 2005 13:00:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:09:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -266,7 +266,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>bf2685cf-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Tue, 05 Apr 2005 13:01:35 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:11:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:28:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -278,7 +278,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/classes/org/opencms/frontend/templateone/modules/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>ab074eda-4f6e-11d9-a0f3-2de49c45b2e5</uuidresource>
-			<datelastmodified>Tue, 05 Apr 2005 13:00:49 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:09:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 16 Dec 2004 14:27:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -403,10 +403,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[params=(site,count,elementcount,folder,collector)]]></value>
-				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -414,6 +410,10 @@
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(site,count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -507,10 +507,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[params=(site,count,elementcount,folder,collector)]]></value>
-				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -518,6 +514,10 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(site,count,elementcount,folder,collector)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -537,10 +537,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[params=(site,count,elementcount,folder,collector,pageIndex)]]></value>
-				</property>
 				<property type="shared">
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
@@ -548,6 +544,10 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(site,count,elementcount,folder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -883,7 +883,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>
 			<type>plain</type>
 			<uuidresource>58e1421e-4d20-11d9-b991-636f59544321</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 07:54:12 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 12:26:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 13 Dec 2004 16:02:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -949,7 +949,7 @@
 			<destination>xmlmodules/events/event_0001.html</destination>
 			<type>event</type>
 			<uuidresource>687cb2d5-5436-11d9-a9f0-5777c119166f</uuidresource>
-			<datelastmodified>Tue, 05 Apr 2005 08:07:30 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 11:41:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 16:27:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -957,11 +957,7 @@
 			<properties>
 				<property>
 					<name>collector.date</name>
-					<value><![CDATA[1112891280000]]></value>
-				</property>
-				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[3]]></value>
+					<value><![CDATA[1106670480000]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -973,7 +969,7 @@
 		<file>
 			<destination>xmlmodules/faq</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 06 Apr 2005 10:36:32 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:45:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 12:30:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1121,7 +1117,7 @@
 			<destination>xmlmodules/news/news_0001.html</destination>
 			<type>news</type>
 			<uuidresource>f8257305-542f-11d9-94b2-5777c119166f</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 08:50:07 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 11:40:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 22 Dec 2004 15:41:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1130,10 +1126,6 @@
 				<property>
 					<name>collector.date</name>
 					<value><![CDATA[1103730060000]]></value>
-				</property>
-				<property>
-					<name>collector.priority</name>
-					<value><![CDATA[3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1185,19 +1177,19 @@
 			<destination>system/shared/templateone/center/events</destination>
 			<type>plain</type>
 			<uuidresource>860fe69b-a5db-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:40:34 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:43:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 14:03:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[List events in center]]></value>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.center.events]]></value>
 				</property>
 				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}events/]]></value>
+					<name>Title</name>
+					<value><![CDATA[List events in center]]></value>
 				</property>
 				<property>
 					<name>layout.1.type</name>
@@ -1211,19 +1203,19 @@
 			<destination>system/shared/templateone/center/faq</destination>
 			<type>plain</type>
 			<uuidresource>2940661c-a5da-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:40:47 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 13:53:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[List faqs in center]]></value>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.center.faq]]></value>
 				</property>
 				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}faq/]]></value>
+					<name>Title</name>
+					<value><![CDATA[List faqs in center]]></value>
 				</property>
 				<property>
 					<name>layout.1.type</name>
@@ -1237,12 +1229,16 @@
 			<destination>system/shared/templateone/center/jobs</destination>
 			<type>plain</type>
 			<uuidresource>00bd79de-a504-11d9-8374-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:40:21 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Apr 2005 12:20:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.center.jobs]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[List jobs in center]]></value>
@@ -1250,10 +1246,6 @@
 				<property>
 					<name>layout.1.type</name>
 					<value><![CDATA[jobs]]></value>
-				</property>
-				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}jobs/]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1263,19 +1255,19 @@
 			<destination>system/shared/templateone/center/news</destination>
 			<type>plain</type>
 			<uuidresource>76835725-a5db-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:40:55 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 14:03:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[List news in center]]></value>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.center.news]]></value>
 				</property>
 				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}news/]]></value>
+					<name>Title</name>
+					<value><![CDATA[List news in center]]></value>
 				</property>
 				<property>
 					<name>layout.1.type</name>
@@ -1300,12 +1292,16 @@
 			<destination>system/shared/templateone/right/events</destination>
 			<type>plain</type>
 			<uuidresource>54fd9291-a5dd-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:41:16 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 14:16:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.right.events]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[List events on right side]]></value>
@@ -1313,10 +1309,6 @@
 				<property>
 					<name>layout.1.type</name>
 					<value><![CDATA[events]]></value>
-				</property>
-				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}events/]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1326,19 +1318,19 @@
 			<destination>system/shared/templateone/right/events_news</destination>
 			<type>plain</type>
 			<uuidresource>caf21b1b-a5dd-11d9-b9ed-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:41:29 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 14:19:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>layout.2.type</name>
-					<value><![CDATA[events]]></value>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.right.events_news]]></value>
 				</property>
 				<property>
-					<name>layout.2.folder</name>
-					<value><![CDATA[${microsite.folder}events/]]></value>
+					<name>layout.2.type</name>
+					<value><![CDATA[events]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1348,10 +1340,6 @@
 					<name>layout.1.type</name>
 					<value><![CDATA[news]]></value>
 				</property>
-				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}news/]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -1360,12 +1348,16 @@
 			<destination>system/shared/templateone/right/news</destination>
 			<type>plain</type>
 			<uuidresource>d49139ca-a5ae-11d9-9395-916a98ed6cbb</uuidresource>
-			<datelastmodified>Wed, 06 Apr 2005 10:41:40 GMT</datelastmodified>
+			<datelastmodified>Wed, 06 Apr 2005 15:44:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 05 Apr 2005 08:43:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.right.news]]></value>
+				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[List news on right side]]></value>
@@ -1373,10 +1365,6 @@
 				<property>
 					<name>layout.1.type</name>
 					<value><![CDATA[news]]></value>
-				</property>
-				<property>
-					<name>layout.1.folder</name>
-					<value><![CDATA[${microsite.folder}news/]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

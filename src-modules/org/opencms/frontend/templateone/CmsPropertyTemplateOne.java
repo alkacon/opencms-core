@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/03/17 10:31:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/04/06 16:00:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,9 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.frontend.templateone.modules.CmsTemplateContentListItem;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -45,8 +47,12 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.I_CmsDialogHandler;
+import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyCustom;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -90,7 +96,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         CmsTemplateBean.C_PROPERTY_SHOW_NAVLEFT,
         CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI,
         CmsTemplateBean.C_PROPERTY_SIDE_URI,
-        CmsTemplateBean.C_PROPERTY_CONFIGPATH
+        CmsTemplateBean.C_PROPERTY_CONFIGPATH,
+        CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER,
+        CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT
     };
     
     /** Mode used for switching between different radio types. */
@@ -116,6 +124,15 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
     /** The path of the "template one" template. */
     private static final String C_TEMPLATE_ONE = "/system/modules/org.opencms.frontend.templateone/templates/main";
+    
+    /** The VFS path to the global configuration files for content lists. */
+    private static final String C_VFS_PATH_CONFIGFILES = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/templateone/";
+    
+    /** The VFS path to the global configuration files for center content lists. */
+    private static final String C_VFS_PATH_CONFIGFILES_CENTER = C_VFS_PATH_CONFIGFILES + "center/";
+    
+    /** The VFS path to the global configuration files for right content lists. */
+    private static final String C_VFS_PATH_CONFIGFILES_RIGHT = C_VFS_PATH_CONFIGFILES + "right/";
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -279,7 +296,12 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         // build side uri search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_SIDE_URI, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_SIDE_URI, editable));                        
         
-        // build navleft element search input 
+        // build center layout selector
+        result.append(buildPropertySelectbox(CmsTemplateContentListItem.C_DISPLAYAREA_CENTER, CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER, editable));
+        // build right layout selector
+        result.append(buildPropertySelectbox(CmsTemplateContentListItem.C_DISPLAYAREA_RIGHT, CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, editable));
+        
+        // build configuration path search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_CONFIGPATH, C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_CONFIGPATH, editable));
         
         
@@ -525,6 +547,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * 
      * @param propertyName the name of the property
      * @param propertyTitle the nice name of the property
+     * @param editable indicates if the properties are editable
      * 
      * @return the html for a single text input property row
      */
@@ -597,6 +620,109 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     }
     
     /**
+     * Builds the html for a single selectbox property row to select the list layout.<p>
+     * 
+     * @param listType determines the content list type, "center" or "right"
+     * @param propertyName the name of the property
+     * @param propertyTitle the nice name of the property
+     * @param editable indicates if the properties are editable
+     * 
+     * @return the html for a single text input property row
+     */
+    private StringBuffer buildPropertySelectbox(String listType, String propertyName, String propertyTitle, boolean editable) {
+        
+        StringBuffer result = new StringBuffer(128);
+        result.append(buildTableRowStart(key(propertyTitle)));
+        String disabled = "";
+        if (!editable) {
+            disabled = " disabled=\"disabled\"";
+        }
+        String propValue = "";
+        // get property object from active properties
+        CmsProperty currentProperty = (CmsProperty)getActiveProperties().get(propertyName);
+        String inheritedValue = "";
+        if (currentProperty != null) {
+            // property value is directly set on resource
+            propValue = currentProperty.getValue(); 
+            inheritedValue = getDefault(propertyName);
+        } else {
+            // property is not set on resource
+            propValue = getDefault(propertyName);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(propValue)) {
+                propValue = "";
+            }
+        }  
+        
+        List resources = getConfigurationFiles(listType);
+        List options = new ArrayList(resources.size() + 1);
+        List values = new ArrayList(resources.size() + 1);
+        int selectedIndex = 0;
+        
+        // add the "none" option manually to selectbox
+        options.add(key(C_KEY_PREFIX + "nolayout"));
+        if ("".equals(propValue) || ("".equals(inheritedValue)) || (CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(inheritedValue))) {
+            // value is not set anywhere or is inherited from ancestor folder
+            values.add("");
+        } else {
+            values.add(CmsTemplateBean.C_PROPERTY_VALUE_NONE);
+        }
+              
+        for (int i=0; i<resources.size(); i++) {
+            // loop all found resources defining the layout
+            CmsResource res = (CmsResource)resources.get(i);
+            String path = getCms().getSitePath(res);
+            // determine description to show for layout
+            String description = "";
+            try {
+                description = getCms().readPropertyObject(path, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue(path);
+            } catch (CmsException e) {
+                // should never happen
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(e);
+                }
+            }
+            // try to find a localized key for the description property value
+            String localized = key(description);
+            if (localized.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                localized = description;
+            }
+            options.add(localized);
+            // check if this item is selected
+            if (path.equals(propValue)) {
+                selectedIndex = i + 1;
+            }           
+            // determine value to add
+            if (path.equals(inheritedValue)) {
+                // the current path is like inherited path, so do not write property in this case
+                path = "";
+            }
+            values.add(path);
+        }
+        // create select tag attributes
+        StringBuffer attrs = new StringBuffer(4);
+        attrs.append("name=\"").append(PREFIX_VALUE).append(propertyName).append("\"");
+        attrs.append(" class=\"maxwidth\"");
+        attrs.append(disabled);
+        // create the select box
+        result.append(buildSelect(attrs.toString(), options, values, selectedIndex));    
+        
+        // build the hidden field with old property value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_HIDDEN);
+        result.append(propertyName);
+        result.append("\" id=\"");
+        result.append(PREFIX_HIDDEN);
+        result.append(propertyName);
+        result.append("\" value=\"");
+        result.append(propValue);
+        result.append("\">");
+        result.append("</td>\n");
+        result.append("</tr>");        
+        
+        return result;
+    }
+    
+    /**
      * Builds the HTML for a complete Row with three radio Buttons.<p>
      * 
      * The propertyName will be translated in workplace.properties
@@ -657,5 +783,31 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append("\">");
         
         return result; 
-    }   
+    }
+    
+    /**
+     * Returns the layout configuration files for the specified list type.<p>
+     *
+     * @param listType the type of the layout list, "center" or "right"
+     * @return the layout configuration files for the specified list type
+     */
+    private List getConfigurationFiles(String listType) {
+
+        List result = new ArrayList();
+        String configFolder;
+        if (listType.equals(CmsTemplateContentListItem.C_DISPLAYAREA_CENTER)) {
+            configFolder = C_VFS_PATH_CONFIGFILES_CENTER;
+        } else {
+            configFolder = C_VFS_PATH_CONFIGFILES_RIGHT;
+        }
+        try {
+            result = getCms().readResources(configFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+        } catch (CmsException e) {
+            // error reading resources
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error(e);
+            }
+        }
+        return result;
+    }
 }

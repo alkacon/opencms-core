@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/03/18 17:01:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/04/06 16:00:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,14 @@ import java.util.List;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.7.2
  */
 public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
+    
+    /** The standard priority value if no value was set. */
+    public static final int C_PRIORITY_STANDARD = 3;
     
     /** The name of the priority property to read. */
     public static final String C_PROPERTY_PRIORITY = "collector.priority";
