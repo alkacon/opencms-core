@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/08/27 13:59:02 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @see org.opencms.flex.CmsFlexCacheKey
  * @see org.opencms.flex.CmsFlexCacheEntry
@@ -301,19 +301,19 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (DEBUG > 0) {
-                    System.err.println("FlexCache: Recieved event, clearing cache!");
+                    System.err.println("FlexCache: Received event, clearing cache!");
                 }
                 clear();
                 break;
             case I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY:
                 if (DEBUG > 0) {
-                    System.err.println("FlexCache: Recieved event, purging JSP repository!");
+                    System.err.println("FlexCache: Received event, purging JSP repository!");
                 }
                 purgeJspRepository();
                 break;
             case I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR:
                 if (DEBUG > 0) {
-                    System.err.println("FlexCache: Recieved event, clearing part of cache!");
+                    System.err.println("FlexCache: Received event, clearing part of cache!");
                 }
                 Map m = event.getData();
                 if (m == null) {
@@ -492,7 +492,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * 
      * In case a found entry has a timeout set, it will be checked upon lookup.
      * In case the timeout of the entry has been reached, it will be removed from
-     * the cache (and null will be returend in this case).<p>
+     * the cache (and null will be returned in this case).<p>
      *
      * @param key The key to look for in the cache
      * @return the entry found for the key, or null if key is not in the cache
@@ -740,7 +740,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (OpenCms.getLog(CmsFlexCache.class).isInfoEnabled()) {
             OpenCms.getLog(CmsFlexCache.class).info("Clearing all entries");
         }
-        Iterator i = m_keyCache.keySet().iterator();
+        // create new set to avoid ConcurrentModificationExceptions
+        Set cacheKeys = new HashSet(m_keyCache.keySet());
+        Iterator i = cacheKeys.iterator();
         while (i.hasNext()) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)m_keyCache.get(i.next());
             Iterator allEntries = v.m_map.values().iterator();
