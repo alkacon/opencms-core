@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLinkLauncher.java,v $
-* Date   : $Date: 2002/03/07 13:42:40 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/05/07 11:57:33 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2002/03/07 13:42:40 $
+ * @version $Revision: 1.13 $ $Date: 2002/05/07 11:57:33 $
  */
 public class CmsLinkLauncher extends A_CmsLauncher {
 
@@ -54,6 +54,12 @@ public class CmsLinkLauncher extends A_CmsLauncher {
      * The currently running OpenCms instance.
      */
     private A_OpenCms m_openCms;
+
+    /**
+     * The html-code for returning the export file for external links
+     */
+    private static String C_EXPORTED_LINKHTML_01 = "<html><head><meta http-equiv="+'"'+"refresh"+'"'+" content="+'"'+"0; url=";
+    private static String C_EXPORTED_LINKHTML_02 = '"'+"></body></html>";
 
     /**
      * Gets the ID that indicates the type of the launcher.
@@ -95,13 +101,24 @@ public class CmsLinkLauncher extends A_CmsLauncher {
             openCms.showResource(cms, linkFile);
         } else {
             // redirect to external link ...
-            HttpServletResponse response =
-                (HttpServletResponse)
-                    cms.getRequestContext().getResponse().getOriginalResponse();
-            try {
-                response.sendRedirect(link);
-            } catch (IOException e) {
-
+            if (cms.getMode() != I_CmsConstants.C_MODUS_EXPORT){
+                HttpServletResponse response =
+                    (HttpServletResponse)
+                        cms.getRequestContext().getResponse().getOriginalResponse();
+                try {
+                    response.sendRedirect(link);
+                } catch (IOException e) {
+                }
+            } else {
+                try{
+                    OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
+                    StringBuffer htmlStream = new StringBuffer(C_EXPORTED_LINKHTML_01);
+                    htmlStream.append(link);
+                    htmlStream.append(C_EXPORTED_LINKHTML_02);
+                    responsestream.write(htmlStream.toString().getBytes());
+                    responsestream.close();
+                } catch (IOException e){
+                }
             }
         }
     }
