@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/06/07 15:05:39 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/06/10 09:53:22 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.18 $
- * $Date: 2002/06/07 15:05:39 $
+ * $Revision: 1.19 $
+ * $Date: 2002/06/10 09:53:22 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -838,7 +838,12 @@ public abstract class CmsMasterContent
     }
 
     /**
-     * Get all subchannels of a channel
+     * Get all subchannels of a channel.
+     * Method returns only channels that doesn't have further subchannels because
+     * it is it not intended to add contentdefinitions to channels that are not
+     * endpoints of the channel folder structure. If different functionality
+     * is needed this method has to be overridden in derived
+     * contentdefinition classes.
      * @param cms object to access system resources
      * @param channel channel to be searched for subchannels
      * @return Vector with names of all subchannels
@@ -854,8 +859,9 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
-                allChannels.addElement(folder);
-                if (v.size() != 0) {
+                if (v.size() == 0) {
+                    allChannels.addElement(folder);
+                }else {
                     for (int j=0; j < v.size(); j++) {
                         allChannels.addElement(v.elementAt(j));
                     }
@@ -867,8 +873,13 @@ public abstract class CmsMasterContent
         return allChannels;
     }
 
-     /**
+    /**
      * Get all subchannels of the module root channel without the root channel in the channel names
+     * Method returns only channels that doesn't have further subchannels because
+     * it is it not intended to add contentdefinitions to channels that are not
+     * endpoints in the channel folder structure. If different functionality
+     * is needed this method has to be overridden in derived
+     * contentdefinition classes.
      * @param cms object to access system resources
      * @param channel channel to be searched for subchannels
      * @return Vector with names of all subchannels
@@ -886,8 +897,9 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
-                allChannels.addElement(folder.substring(offset));
-                if (v.size() != 0) {
+                if (v.size() == 0) {
+                    allChannels.addElement(folder.substring(offset));
+                }else {
                     for (int j=0; j < v.size(); j++) {
                         allChannels.addElement(((String)v.elementAt(j)).substring(offset));
                     }
