@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2000/11/03 16:03:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/11/07 15:01:52 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.16 $ $Date: 2000/11/03 16:03:56 $
+ * @version $Revision: 1.17 $ $Date: 2000/11/07 15:01:52 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -2627,6 +2627,30 @@ public void writeTaskLog(String taskid, String comment, String taskType) {
 		try {
 			// get the user, which has to be written
 			CmsUser user = m_cms.readUser(name);
+			
+			if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
+				user.setDisabled();
+			} else {
+				user.setEnabled();
+			}
+			
+			// write it back
+			m_cms.writeUser(user);		
+
+		} catch( Exception exc ) {
+			CmsShell.printException(exc);
+		}
+	}
+	/** 
+	 * Writes a webuser to the Cms.
+	 * 
+	 * @param name The name of the user to be written.
+	 * @param flags The flags of the user to be written.
+	 */
+	public void writeWebUser( String name, String flags ) {
+		try {
+			// get the user, which has to be written
+			CmsUser user = m_cms.readUser(name, C_USER_TYPE_WEBUSER);
 			
 			if(Integer.parseInt(flags) == C_FLAG_DISABLED) {
 				user.setDisabled();
