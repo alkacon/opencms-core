@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/08 15:55:27 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/07/08 16:51:47 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.28 $ $Date: 2003/07/08 15:55:27 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/08 16:51:47 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -3491,6 +3491,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
     public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
                                 String foldername, boolean includeDeleted)
         throws CmsException {
+        CmsFolder folder = null;
         Vector folders = new Vector();
 
         if (! foldername.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
@@ -3498,9 +3499,13 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
         String cacheKey = getCacheKey(currentUser.getName() + "_folders", currentUser, currentProject, foldername);
         folders = (Vector) m_resourceListCache.get(cacheKey);
         
-        CmsFolder folder = readFolder(currentUser, currentProject, foldername, includeDeleted);                
-        // check if the user has read access 
-        checkPermissions(currentUser, currentProject, folder, I_CmsConstants.C_READ_ACCESS);        
+        try {
+            folder = readFolder(currentUser, currentProject, foldername, includeDeleted);                
+            // check if the user has read access 
+            checkPermissions(currentUser, currentProject, folder, I_CmsConstants.C_READ_ACCESS);
+        } catch (CmsException e) {
+            return new Vector();
+        }        
 
         if ((folders == null) || (folders.size() == 0)) {
 
