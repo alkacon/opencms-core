@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/16 16:19:39 $
-* Version: $Revision: 1.78 $
+* Date   : $Date: 2003/06/24 15:42:15 $
+* Version: $Revision: 1.79 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,14 @@
 
 package com.opencms.core;
 
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.I_CmsPrincipal;
+
+import com.opencms.file.*;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.CmsShellReport;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
@@ -40,23 +48,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import com.opencms.file.CmsBackupProject;
-import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
-import com.opencms.file.CmsGroup;
-import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
-import com.opencms.file.CmsPropertydefinition;
-import com.opencms.file.CmsResource;
-import com.opencms.file.CmsTask;
-import com.opencms.file.CmsUser;
-import com.opencms.file.I_CmsRegistry;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.CmsShellReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.I_CmsPrincipal;
-
 /**
  * This class is a commad line interface to OpenCms which 
  * can be used for the initial setup and to test the system.<p>
@@ -64,7 +55,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.78 $ $Date: 2003/06/16 16:19:39 $
+ * @version $Revision: 1.79 $ $Date: 2003/06/24 15:42:15 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -131,7 +122,7 @@ class CmsShellCommands implements I_CmsConstants {
      * Tests if the user can write the resource.
      *
      * @param resource the name of the resource.
-     */
+     *//*
     public void accessWrite(String resource) {
         try {
             System.out.println(m_cms.accessWrite(resource));
@@ -139,7 +130,7 @@ class CmsShellCommands implements I_CmsConstants {
         catch(Exception exc) {
             CmsShell.printException(exc);
         }
-    }
+    }*/
 
     /**
      * adds a file extension.
@@ -3643,6 +3634,21 @@ class CmsShellCommands implements I_CmsConstants {
 		}		
 	}
 	
+	/**
+	 * Removes an access control entry of a given resource for a given user/group
+	 * 
+	 * @param resourceName			the name of the resource
+	 * @param principalType			the principalType (user or group)
+	 * @param principalName			the name of the principal
+	 */
+	public void rmacc(String resourceName, String principalType, String principalName) {
+		try {
+			m_cms.rmacc(resourceName, principalType, principalName);
+		} catch (Exception e) {
+			CmsShell.printException(e);
+		}
+	}
+	
     /**
      * Lists the access control entries of a given resource
      * 
@@ -3695,9 +3701,9 @@ class CmsShellCommands implements I_CmsConstants {
 	public void getAcl(String resourceName){
     	try {
     		CmsAccessControlList acList = m_cms.getAccessControlList(resourceName);
-    		Enumeration principals = acList.getPrincipals();
-			while (principals.hasMoreElements()) {
-				I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.nextElement()); 
+    		Iterator principals = acList.getPrincipals().iterator();
+			while (principals.hasNext()) {
+				I_CmsPrincipal p = m_cms.lookupPrincipal((CmsUUID)principals.next()); 
 				System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
 			}
     	} catch (Exception e) {
