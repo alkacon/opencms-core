@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
- * Date   : $Date: 2000/06/05 13:37:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/07/10 14:31:30 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P> 
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/06/05 13:37:59 $
+ * @version $Revision: 1.6 $ $Date: 2000/07/10 14:31:30 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
@@ -310,9 +310,12 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
      * @exception CmsException if access to system resources failed.
      * @see I_CmsFileListUsers
      */
-    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
+      
+	public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate, CmsResource res, CmsXmlLanguageFile lang) 
         throws CmsException { 
-		filelistTemplate.setData("fullpath", res.getAbsolutePath());
+		String servletPath = ((HttpServletRequest) cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		String downloadPath = servletPath + res.getAbsolutePath();
+		filelistTemplate.setData("fullpath", downloadPath); 
 		filelistTemplate.setData("name_value", res.getName()); 
 	}
 
