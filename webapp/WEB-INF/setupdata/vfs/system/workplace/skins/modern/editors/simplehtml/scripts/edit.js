@@ -134,7 +134,7 @@ function doTemplSubmit(para) {
 	case 3:
 		// change body;
 		doSubmit();
-		document.EDITOR.action.value = "changebody";
+		document.EDITOR.action.value = "changeelement";
 		document.EDITOR.target = "_self";
 		document.EDITOR.submit();
 		break;

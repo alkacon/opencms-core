@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/02/08 20:13:23 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/02/09 12:32:08 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 5.1.12
  */
@@ -108,9 +108,9 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                 // ignore this exception
             }
         }
-        // re-initialize the body element name if the language has changed
+        // re-initialize the element name if the language has changed
         if (!getParamBodylanguage().equals(getParamOldbodylanguage())) {
-            initBodyElementName();
+            initBodyElementName(getParamOldbodyname());
         }
         // get the new editor content 
         initContent();
@@ -486,32 +486,24 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * Initializes the body element name of the editor.<p>
      * 
      * This has to be called after the element language has been set with setParamBodylanguage().<p>
+     * 
+     * @param elementName the name of the element to initialize or null, if default element should be used
      */
-    protected void initBodyElementName() {
-        // set the initial body element name
-       List bodies = m_page.getNames(getElementLocale());
-       if (bodies.size() == 0) {
-           // no body present, so create an empty default body
-            m_page.addElement(I_CmsConstants.C_XML_BODY_ELEMENT, getElementLocale());
-            try {
-            getCms().writeFile(m_page.write(m_file));
-            } catch (CmsException e) {
-                // writing file failed, show error page
-                try {
-                showErrorPage(this, e, "save");
-                } catch (JspException exc) {
-                    // ignore this exception
-                }
-            }
-            setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
-        } else {
-            // body present, set body to default body if possible
-            if (bodies.contains(I_CmsConstants.C_XML_BODY_ELEMENT)) {
+    protected void initBodyElementName(String elementName) { 
+        if (elementName == null || (m_page.hasElement(elementName, getElementLocale()) && !m_page.isEnabled(elementName, getElementLocale()))) {                  
+            // elementName not specified or given element is disabled, set to default element
+            List elements = m_page.getNames(getElementLocale());
+            if (elements.contains(I_CmsConstants.C_XML_BODY_ELEMENT)) {
+                // default element present
                 setParamBodyname(I_CmsConstants.C_XML_BODY_ELEMENT);
             } else {
-                setParamBodyname((String)bodies.get(0));
+                // get first element from element list
+                setParamBodyname((String)elements.get(0));
             }
-        }
+        } else {
+            // elementName specified and element is enabled or not present, set to elementName
+            setParamBodyname(elementName);
+        }    
     }
     
     /** 
@@ -550,8 +542,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // prepare the content for saving
         String content = prepareContent(true);
 
-        // create the element if necessary
-        if (!m_page.hasElement(body, locale)) {
+        // create the element if necessary and if content is present
+        if (!m_page.hasElement(body, locale) && !"".equals(content)) {
             m_page.addElement(body, locale);
         }
         
@@ -559,8 +551,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         boolean enabled = m_page.isEnabled(body, locale);
         
         // set the element data
-        m_page.setContent(getCms(), body, locale, content);
-        m_page.setEnabled(body, locale, enabled);
+        if (m_page.hasElement(body, locale)) {
+            m_page.setContent(getCms(), body, locale, content);
+            m_page.setEnabled(body, locale, enabled);
+        }
 
         // write the file
         getCms().writeFile(m_page.write(m_file));
