@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2001/11/15 15:43:58 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/12/04 08:07:56 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2001/11/15 15:43:58 $
+ * @version $Revision: 1.31 $ $Date: 2001/12/04 08:07:56 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -198,7 +198,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         // Print out some error messages
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + e);
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + com.opencms.util.Utils.getStackTrace(e));
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
 
@@ -305,7 +305,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
                 resp.setContentLength(result.length);
                 resp.setHeader("Connection", "keep-alive");
                 out.write(result);
-                out.flush();
+                // DEBUG for BEA WEBLOGIC out.flush();
                 out.close();
             }
         }
