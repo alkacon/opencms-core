@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2003/09/12 15:39:04 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -555,7 +555,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the current state of this resource contains the full resource path
      */
     public boolean hasFullResourceName() {
-        return (m_fullResourceName != null);
+        return m_fullResourceName != null;
     }
 
     /**
@@ -784,15 +784,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public void setType(int type) {
         m_type = type;
-    }
-
-    /**
-     * Sets the user id of the user who created this resource.
-     * 
-     * @param resourceCreatedByUserId user id
-     */
-    public void setUserCreated(CmsUUID resourceCreatedByUserId) {
-        m_userCreated = resourceCreatedByUserId;
     }
     
     /**
