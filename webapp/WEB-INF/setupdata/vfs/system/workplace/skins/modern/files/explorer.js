@@ -323,8 +323,8 @@ function printList(wo) {
 	+ "a.cme { color: MenuText; text-decoration: none;} "
 	+ "span.cmenorm { cursor: hand; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; } "
 	+ "span.cmehigh { cursor: hand; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; color:CaptionText; background-color: ActiveCaption; } "
-	+ "span.inanorm { cursor: default; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; color:HighLightText; } "
-	+ "span.inahigh { cursor: default; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; color:InactiveCaptionText; background-color: InactiveCaption; } "
+	+ "span.inanorm { cursor: default; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; color: InactiveCaption; } "
+	+ "span.inahigh { cursor: default; display: block; height: 16px; width: 100%; padding-left: 10px; padding-top: 2px; color:InactiveCaptionText; background-color: ActiveCaption; } "
 
 	+ ".selected { background: ActiveCaption; color: CaptionText; } "
 	+ ".unselected { background: Window; color:WindowText; } "
