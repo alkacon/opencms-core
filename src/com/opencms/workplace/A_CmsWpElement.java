@@ -2,6 +2,7 @@ package com.opencms.workplace;
 
 import com.opencms.core.*;
 import com.opencms.file.*;
+import com.opencms.template.*;
 
 /**
  * Abstract class for all workplace elements.
@@ -16,10 +17,10 @@ import com.opencms.file.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/26 19:22:42 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/28 11:40:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
+public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
     
     /**
      * Reference to to buttons definition file
@@ -114,4 +115,37 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
         }
         return m_errordef;
     }
+
+    /**
+     * Help method to print nice classnames in error messages
+     * @return class name in [ClassName] format
+     */
+    protected String getClassName() {
+        String name = getClass().getName();
+        return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
+    }
+    /**
+     * Help method that handles any occuring exception by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the type "unknown".
+     * @param errorMessage String with the error message to be printed.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage) throws CmsException {
+        throwException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
+    }
+
+    /**
+     * Help method that handles any occuring exception by writing
+     * an error message to the OpenCms logfile and throwing a 
+     * CmsException of the given type.
+     * @param errorMessage String with the error message to be printed.
+     * @param type Type of the exception to be thrown.
+     * @exception CmsException
+     */
+    protected void throwException(String errorMessage, int type) throws CmsException {
+        if(A_OpenCms.isLogging()) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+        }        throw new CmsException(errorMessage, type);
+    }              
 }

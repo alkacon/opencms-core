@@ -31,7 +31,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/01/27 15:04:23 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/28 11:39:39 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         
@@ -181,15 +181,14 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels {
         // Print out some error messages
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + e);
-            e.printStackTrace();
+            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: "+ e);
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }        
 
         // If the user is "Guest", we send an servlet error.
         // Otherwise we try to throw an exception.
         A_CmsRequestContext reqContext = cms.getRequestContext();        
-        if(cms.anonymousUser().equals(reqContext.currentUser())) {
+        if((! C_DEBUG) && cms.anonymousUser().equals(reqContext.currentUser())) {
             throw new CmsException(errorText, CmsException.C_SERVICE_UNAVAILABLE, e);
         } else {                        
             if(e instanceof CmsException) {

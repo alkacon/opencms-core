@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.11 $ $Date: 2000/01/24 19:13:05 $  
+* @version $Revision: 1.12 $ $Date: 2000/01/28 11:38:33 $  
 * 
 */
 
@@ -132,7 +132,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
        
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
-            System.err.println(cms.getRequestContext().currentUser().getName());
             CmsFile file=m_opencms.initResource(cms); 
             System.err.println(file.toString());
             m_opencms.setResponse(cms,file);
@@ -290,8 +289,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                 }                                                                                                    
 			    			 }
                         }
-                 } else {
-                        System.err.println("Guest");
                  }
             }
        } catch (CmsException e) {
@@ -366,26 +363,28 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
             // access denied error - display login dialog
             case CmsException.C_NO_ACCESS: 
                 requestAuthorization(req,res);  
-                System.err.println(e.toString());
+                //System.err.println(e.toString());
+                e.printStackTrace();
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
-                System.err.println(e.toString());
+                //System.err.println(e.toString());
                 res.setContentType("text/plain");
+                e.printStackTrace();
                 //res.getWriter().print(e.toString());
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
             case CmsException.C_SERVICE_UNAVAILABLE:
-                System.err.println(e.toString());
+                //System.err.println(e.toString());
                 res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
-                System.err.println(e.toString());
+                //System.err.println(e.toString());
                 res.setContentType("text/plain");
+                e.printStackTrace();
                 //res.getWriter().print(e.toString());
                 //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
-            e.printStackTrace();
         } catch (IOException ex) {
            
         }
