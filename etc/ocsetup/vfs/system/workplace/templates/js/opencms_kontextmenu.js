@@ -211,10 +211,8 @@ function doAction(action) {
 		} case 10: {
 			location.href='chmod.html?file='+ kontextparam;
 			break;
-		}
-		case 11:
-		{
-			location.href='explorer_files_type.html';
+		} case 11: {
+			location.href='chtype.html?file='+ kontextparam;
 			break;
 		}
 		case 12:

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/09 15:38:27 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/09 15:38:27 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -74,6 +74,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         // the template to be displayed
         String template=null;
         String filename=null;
+        String title=null;
         String foldername=null;
         String type=null;
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
@@ -88,10 +89,13 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 template="step1";
                 filename=cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
                 session.putValue(C_PARA_FILE,filename);
+                title=cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE);
+                session.putValue(C_PARA_TITLE,title);
             } else if (step.equals("2")) {
                 // step 2 - create the file
                 // get folder- and filename
                 foldername=(String)session.getValue(C_PARA_FILELIST);
+                title=(String)session.getValue(C_PARA_TITLE);
                 if (foldername==null) {
                    foldername=cms.getRequestContext().currentFolder().getAbsolutePath();
                 }   
@@ -101,7 +105,10 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 cms.createFile(foldername,filename,new byte[0],type);
                 // lock the new file
                 cms.lockResource(foldername+filename);
+                cms.writeMetainformation(foldername+filename,C_METAINFO_TITLE,title);
+                // remove values from session
                 session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_TITLE);     
                 // TODO: ErrorHandling
                 
                 // now return to filelist

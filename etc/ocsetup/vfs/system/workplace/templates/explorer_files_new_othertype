@@ -33,8 +33,12 @@ function show_help()
 	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
 	<tr>
 		<td class=formular width=35%>]]><LABEL value="input.name" /><![CDATA[:</td>
-	<!--	<td class=dialogtxt><INPUT type="text" value=" " size=40 class="textfeld2" id=NEUNAME name=NEUNAME size=20 onfocus="NEU.WEITER.disabled=false;"></td> -->
 		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="40" method="setValue" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
+	</tr>
+	<tr>
+		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
+		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
+		
 	</tr>
 	<tr>
 		<td colspan=2 class=leerzeile>&nbsp;</td>
@@ -43,7 +47,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_textfeld('NEU', 'NEUNAME'); if(a==true)location='explorer_files_new_othertype.html?step=1&file='+document.NEU.NEUNAME.value;"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_textfeld('NEU', 'NEUNAME'); if(a==true)location='explorer_files_new_othertype.html?step=1&file='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value;"></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
 			</table>
