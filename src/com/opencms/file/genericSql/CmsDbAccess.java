@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/07/19 14:32:34 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2000/07/19 15:30:42 $
+ * Version: $Revision: 1.101 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.util.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.100 $ $Date: 2000/07/19 14:32:34 $ * 
+ * @version $Revision: 1.101 $ $Date: 2000/07/19 15:30:42 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -4928,7 +4928,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		
 		// create the root-folder
 		CmsFolder rootFolder = createFolder(admin, online, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
-		rootFolder.setUserId(users.getId());
+		rootFolder.setGroupId(users.getId());
 		writeFolder(online, rootFolder, false);
 	}
 	
