@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/08 17:22:50 $
- * Version: $Revision: 1.268 $
+ * Date   : $Date: 2003/10/09 15:30:13 $
+ * Version: $Revision: 1.269 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.268 $ $Date: 2003/10/08 17:22:50 $
+ * @version $Revision: 1.269 $ $Date: 2003/10/09 15:30:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5197,17 +5197,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, cmsFile, I_CmsConstants.C_READ_ACCESS);
 
         // access to all subfolders was granted - return the file-history (newest version first)
-        List tempHeaders =  m_backupDriver.readBackupFileHeaders(cmsFile.getResourceId());
-        if (tempHeaders != null && tempHeaders.size() > 1) {
+        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(cmsFile.getResourceId());
+        if (backupFileHeaders != null && backupFileHeaders.size() > 1) {
             // change the order of the list
-            List headers = new ArrayList(tempHeaders.size());
-            for (int i=tempHeaders.size()-1; i>=0; i--) {
-                headers.add(tempHeaders.get(i));
-            }       
-            return headers;
-        } else {
-            return tempHeaders;
+            Collections.reverse(backupFileHeaders);
         }
+        
+        setFullResourceNames(context, backupFileHeaders);
+        return backupFileHeaders;        
     }
 
     /**
