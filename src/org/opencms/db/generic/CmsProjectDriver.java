@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/11/02 12:41:56 $
- * Version: $Revision: 1.196 $
+ * Date   : $Date: 2004/11/04 13:57:40 $
+ * Version: $Revision: 1.197 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.196 $ $Date: 2004/11/02 12:41:56 $
+ * @version $Revision: 1.197 $ $Date: 2004/11/04 13:57:40 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -342,32 +342,6 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Database init        : filling default values");
         }
-        
-        /* CW/02.11 moved to generic user driver initialization
-        // set the groups
-        String guestGroup = OpenCms.getDefaultUsers().getGroupGuests();
-        CmsGroup guests = m_driverManager.getUserDriver().createGroup(null, CmsUUID.getConstantUUID(guestGroup), guestGroup, "The guest group", I_CmsConstants.C_FLAG_ENABLED, null, null);
-        String administratorsGroup = OpenCms.getDefaultUsers().getGroupAdministrators();
-        CmsGroup administrators = m_driverManager.getUserDriver().createGroup(null, CmsUUID.getConstantUUID(administratorsGroup), administratorsGroup, "The administrators group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER, null, null);
-        String usersGroup = OpenCms.getDefaultUsers().getGroupUsers();
-        CmsGroup users = m_driverManager.getUserDriver().createGroup(null, CmsUUID.getConstantUUID(usersGroup), usersGroup, "The users group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_ROLE | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER, null, null);
-        String projectmanagersGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        CmsGroup projectmanager = m_driverManager.getUserDriver().createGroup(null, CmsUUID.getConstantUUID(projectmanagersGroup), projectmanagersGroup, "The projectmanager group", I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER | I_CmsConstants.C_FLAG_GROUP_ROLE, users.getName(), null);
-
-        // add the users
-        String guestUser = OpenCms.getDefaultUsers().getUserGuest();
-        CmsUser guest = m_driverManager.getUserDriver().importUser(null, CmsUUID.getConstantUUID(guestUser), guestUser, m_driverManager.digest(""), "The guest user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
-        String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
-        CmsUser admin = m_driverManager.getUserDriver().importUser(null, CmsUUID.getConstantUUID(adminUser), adminUser, m_driverManager.digest("admin"), "The admin user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
-        m_driverManager.getUserDriver().createUserInGroup(null, guest.getId(), guests.getId(), null);
-        m_driverManager.getUserDriver().createUserInGroup(null, admin.getId(), administrators.getId(), null);
-        // add the export user (if it is not set to guest or admin)
-        if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin()) 
-                && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
-            String exportUser = OpenCms.getDefaultUsers().getUserExport();
-            CmsUser export = m_driverManager.getUserDriver().importUser(null, CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.digest((new CmsUUID()).toString()), "The static export user", " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
-            m_driverManager.getUserDriver().createUserInGroup(null, export.getId(), guests.getId(), null);
-        }*/
         
         String adminUser = OpenCms.getDefaultUsers().getUserAdmin();
         CmsUser admin = m_driverManager.readUser((I_CmsRuntimeInfo)null, adminUser);

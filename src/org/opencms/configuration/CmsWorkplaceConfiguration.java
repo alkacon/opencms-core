@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/11/03 17:20:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/11/04 13:57:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -652,7 +652,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add <dialoghandlers> subnode
         Element dialogElement = workplaceElement.addElement(N_DIALOGHANDLERS);
         Map dialogs = m_workplaceManager.getDialogHandler();
-        //i = dialogs.keySet().iterator();
         String keys[] = (String[])dialogs.keySet().toArray(new String[0]);
         Arrays.sort(keys);
 
