@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/10/11 22:05:02 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/10/12 12:36:46 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/10/11 22:05:02 $
+ * @version $Revision: 1.13 $ $Date: 2000/10/12 12:36:46 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -52,7 +52,7 @@ public class CmsCache implements I_CmsConstants {
 	public CmsCache(int cacheSize) {
 		// Illegal cach size? Set Default
 		// If cacheSize=0 then cache is disabled (superflous)
-		if (cacheSize <0) {
+		if (cacheSize < 0) {
 			max_objects=10;    
 		} else {
 			max_objects=cacheSize;
@@ -253,8 +253,8 @@ public class CmsCache implements I_CmsConstants {
 		if (max_objects > 0)
 		{
 			cache.remove(keyLRUObject);
+			index.remove(new Integer(indexKeyLRU));  		
 		}
-		index.remove(new Integer(indexKeyLRU));  		
 	}
 	/**
 	* Returnes the number of Elements in the cache
