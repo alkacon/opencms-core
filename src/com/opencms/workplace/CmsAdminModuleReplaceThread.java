@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/07/23 09:58:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/01 07:53:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -63,11 +63,11 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
      * 
      * @param cms the current cms context  
      * @param reg the registry to write the new module information to
+     * @param zipName the name of the module ZIP file
      * @param moduleName the name of the module 
      * @param conflictFiles vector of conflict files 
-     * @param projectFiles vector of project files
      */
-    public CmsAdminModuleReplaceThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles, Vector projectFiles) {
+    public CmsAdminModuleReplaceThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
         super("OpenCms: Module replacement of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
@@ -75,9 +75,8 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
         m_zipName = zipName;
         m_registry = reg;
         m_conflictFiles = conflictFiles;
-        m_projectFiles = projectFiles;
         m_deleteThread = new CmsAdminModuleDeleteThread(m_cms, m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
-        m_importThread = new CmsAdminModuleImportThread(m_cms, m_registry, m_moduleName, m_zipName, m_conflictFiles, m_projectFiles);
+        m_importThread = new CmsAdminModuleImportThread(m_cms, m_registry, m_moduleName, m_zipName, m_conflictFiles);
         if (DEBUG) System.err.println("CmsAdminModuleReplaceThread() constructed"); 
         m_phase = 0;
     }
@@ -104,7 +103,7 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
      * 
      * @return the part of the report that is ready
      */
-    public String getReportUpdate(){
+    public String getReportUpdate() {
         switch (m_phase) {
             case 1:
                 return m_deleteThread.getReportUpdate();
@@ -117,6 +116,8 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
                     content = "";
                 }
                 return content + m_importThread.getReportUpdate();
+            default:
+                // NOOP
         }
         return "";
     }

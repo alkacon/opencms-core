@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/07/31 13:19:36 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/08/01 07:53:00 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -305,14 +305,12 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         }
         	
         // add root folder as file list for the project
-        Vector projectFiles = new Vector();
-        projectFiles.add("/");
         if (importNewModule) {
-            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, moduleName, zipName, conflictFiles, projectFiles);
+            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, moduleName, zipName, conflictFiles);
             doTheImport.start();
             session.putValue(C_MODULE_THREAD, doTheImport);
         } else {
-            A_CmsReportThread doTheReplace = new CmsAdminModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles, projectFiles);
+            A_CmsReportThread doTheReplace = new CmsAdminModuleReplaceThread(cms, reg, moduleName, zipName, conflictFiles);
             doTheReplace.start();
             session.putValue(C_MODULE_THREAD, doTheReplace);
         }

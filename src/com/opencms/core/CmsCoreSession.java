@@ -1,30 +1,33 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2003/07/31 17:02:45 $
-* Version: $Revision: 1.13 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
+ * Date   : $Date: 2003/08/01 07:53:00 $
+ * Version: $Revision: 1.14 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.core;
 
@@ -46,9 +49,8 @@ import java.util.Vector;
  * One of the main purposes of this stored user session list is the 
  * <code>sendBroadcastMessage()</code> method.
  *
- * @author Michael Emmerich
- * 
- * @version $Revision: 1.13 $ $Date: 2003/07/31 17:02:45 $
+ * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @version $Revision: 1.14 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -67,77 +69,91 @@ public class CmsCoreSession {
     }
 
     /**
-     * Removes a user from the session storage.
-     * This is done when the session of the User is destroyed.
+     * Removes a user from the session storage,
+     * this is done when the session of the user is destroyed.<p>
      *
-     * @param sessionID The actual session Id.
+     * @param sessionId the users session id
      */
     public void deleteUser(String sessionId) {
         m_sessions.remove(sessionId);
     }
 
     /**
-     * Gets the current usergroup of a user from the session storage.
+     * Returns the current group of a user from the session storage.<p>
      *
-     * @param sessionID The actual session Id.
-     * @return The name of the current group of the user or the default guest group;
+     * @param sessionId the users session id
+     * @return the current group of a user from the session storage
      */
     public String getCurrentGroup(String sessionId) {
-        Hashtable userinfo = null;
-        String currentGroup = I_CmsConstants.C_GROUP_GUEST;
-        userinfo = getUser(sessionId);
-
-        // this user does exist, so get his current Group.
-        if(userinfo != null) {
+        String currentGroup = null;
+        Hashtable userinfo = getUser(sessionId);
+        // this user does exist, so get his current group
+        if (userinfo != null) {
             currentGroup = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTGROUP);
-            if(currentGroup == null) {
-                currentGroup = I_CmsConstants.C_GROUP_GUEST;
-            }
         }
-        return currentGroup;
+        if (currentGroup == null) {
+            return I_CmsConstants.C_GROUP_GUEST;
+        } else {
+            return currentGroup;
+        }
     }
 
     /**
-     * Gets the current project of a user from the session storage.<p>
+     * Returns the current project of a user from the session storage.<p>
      *
-     * @param sessionID the current session id
-     * @return the current project of a user
+     * @param sessionId the users session id
+     * @return the current project of a user from the session storage
      */
     public Integer getCurrentProject(String sessionId) {
-        Hashtable userinfo = null;
-        Integer currentProject = new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
-        userinfo = getUser(sessionId);
-
+        Integer currentProject = null;
+        Hashtable userinfo = getUser(sessionId);
         // this user does exist, so get his current project
-        if(userinfo != null) {
+        if (userinfo != null) {
             currentProject = (Integer)userinfo.get(I_CmsConstants.C_SESSION_PROJECT);
-            if(currentProject == null) {
-                currentProject = new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
-            }
         }
-        return currentProject;
+        if (currentProject == null) {
+            return new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        } else {
+            return currentProject;
+        }        
     }
     
     /**
-     * Gets the current site of a user from the session storage.
+     * Returns the current site of a user from the session storage.<p>
      *
-     * @param sessionID the current session id
-     * @return the current site of a user
+     * @param sessionId the users session id
+     * @return the current site of a user from the session storage
      */
     public String getCurrentSite(String sessionId) {
-        Hashtable userinfo = null;
-        String currentSite = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
-        userinfo = getUser(sessionId);
-
+        String currentSite = null;
+        Hashtable userinfo = getUser(sessionId);
         // this user does exist, so get his current site
-        if(userinfo != null) {
+        if (userinfo != null) {
             currentSite = (String)userinfo.get(I_CmsConstants.C_SESSION_CURRENTSITE);
-            if(currentSite == null) {
-                currentSite = I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
-            }
         }
-        return currentSite;
+        if (currentSite == null) {
+            return I_CmsConstants.VFS_FOLDER_DEFAULT_SITE;
+        } else {
+            return currentSite;
+        }
     }    
+
+    /**
+     * Returns the name of a user from the session storage,
+     * or <code>null</code> if that user is not in the session storage.<p>
+     *
+     * @param sessionId the users session id
+     * @return the name of a user from the session storage
+     */
+    public String getUserName(String sessionId) {
+        String username = null;
+        Hashtable userinfo = getUser(sessionId);
+        // this user does exist, so get his name.
+        if (userinfo != null) {
+            username = (String)userinfo.get(I_CmsConstants.C_SESSION_USERNAME);
+        }
+        return username;
+    }
 
     /**
      * Gets the complete user information of a user from the session storage.
@@ -146,37 +162,17 @@ public class CmsCoreSession {
      * @return table with user information or null
      */
     public Hashtable getUser(String sessionId) {
-        Hashtable userinfo = null;
-        userinfo = (Hashtable)m_sessions.get(sessionId);
-        return userinfo;
-    }
-
-    /**
-     * Gets the username of a user from the session storage.
-     *
-     * @param sessionId A currently valid session id.
-     * @return The name of the requested user or null.
-     */
-    public String getUserName(String sessionId) {
-        Hashtable userinfo = null;
-        String username = null;
-        userinfo = getUser(sessionId);
-
-        // this user does exist, so get his name.
-        if(userinfo != null) {
-            username = (String)userinfo.get(I_CmsConstants.C_SESSION_USERNAME);
-        }
-        return username;
+        return (Hashtable)m_sessions.get(sessionId);
     }
 
     /**
      * Puts a new user into the sesstion storage.<p>
      * 
      * A user is stored with its current
-     * session id after a positive authentification.
+     * session id after a positive authentification.<p>
      *
-     * @param sessionId  A currently valid session id.
-     * @param username The name of the user to be stored.
+     * @param sessionId  a currently valid session id
+     * @param username the name of the user to be stored
      */
     public void putUser(String sessionId, String username) {
         Hashtable userinfo = new Hashtable();
@@ -188,12 +184,12 @@ public class CmsCoreSession {
      * Puts a new user into the sesstion storage.<p>
      * 
      * A user is stored with its current
-     * session id after a positive authentification.
+     * session id after a positive authentification.<p>
      *
-     * @param sessionId  A currently valid session id.
-     * @param username The name of the user to be stored.
-     * @param group The name of the users current group.
-     * @param project The id of the users current project.
+     * @param sessionId  a currently valid session id
+     * @param username the name of the user to be stored
+     * @param group the name of the users current group
+     * @param project the id of the users current project
      */
     public void putUser(String sessionId, String username, String group, Integer project) {
         Hashtable userinfo = new Hashtable();
@@ -209,29 +205,26 @@ public class CmsCoreSession {
      * user information.<p>
      * 
      * A user is stored with its current
-     * session id after a positive authentification.
+     * session id after a positive authentification.<p>
      *
-     * @param session  A currently valid session id.
-     * @param userinfo A Hashtable containing information (including the name) about the user.
+     * @param sessionId a currently valid session id
+     * @param userinfo a Hashtable containing information (including the name) about the user
      */
     public void putUser(String sessionId, Hashtable userinfo) {
         m_sessions.put(sessionId, userinfo);
     }
 
     /**
-     * Returns the number of current sessions in the system.
+     * Returns the number of current core sessions in the system.<p>
      *
-     * @return the number of current sessions in the system
+     * @return the number of current core sessions in the system
      */
     public int size() {
         return m_sessions.size();
     }
 
     /**
-     * Returns a string-representation for this object which
-     * can be used for debugging.
-     *
-     * @return string-representation for this object.
+     * @see java.lang.Object#toString()
      */
     public String toString() {
         StringBuffer output = new StringBuffer();
@@ -240,7 +233,7 @@ public class CmsCoreSession {
         String name;
         Enumeration enu = m_sessions.keys();
         output.append("[CmsCoreSessions]:\n");
-        while(enu.hasMoreElements()) {
+        while (enu.hasMoreElements()) {
             key = (String)enu.nextElement();
             output.append(key + " : ");
             value = (Hashtable)m_sessions.get(key);
@@ -255,7 +248,7 @@ public class CmsCoreSession {
      * 
      * The Vector elements are <code>Hashtables</code> with the users name, 
      * the current project, the current group a Boolean if current messages
-     * are pending.
+     * are pending.<p>
      *
      * @return a Vector with all currently logged in users
      */
@@ -268,14 +261,14 @@ public class CmsCoreSession {
         Hashtable userentry;
 
         Enumeration enu = m_sessions.keys();
-        while(enu.hasMoreElements()) {
+        while (enu.hasMoreElements()) {
             userentry = new Hashtable(4);
             key = (String)enu.nextElement();
             value = (Hashtable)m_sessions.get(key);
             userentry.put(I_CmsConstants.C_SESSION_USERNAME, value.get(I_CmsConstants.C_SESSION_USERNAME));
             userentry.put(I_CmsConstants.C_SESSION_PROJECT, value.get(I_CmsConstants.C_SESSION_PROJECT));
             userentry.put(I_CmsConstants.C_SESSION_CURRENTGROUP, value.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
-            userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean( ((Hashtable)value.get(I_CmsConstants.C_SESSION_DATA)).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) ));
+            userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(((Hashtable)value.get(I_CmsConstants.C_SESSION_DATA)).containsKey(I_CmsConstants.C_SESSION_BROADCASTMESSAGE)));
 
             output.addElement(userentry);
         }
@@ -283,9 +276,9 @@ public class CmsCoreSession {
     }
 
     /**
-     * Sends a broadcast message to all logged in users.
+     * Broadcasts a message to all logged in users.<p>
      * 
-     * @param message the message to send to all users.
+     * @param message the message to broadcast
      */
     public void sendBroadcastMessage(String message) {
         String key;
@@ -295,12 +288,12 @@ public class CmsCoreSession {
         String session_message;
 
         Enumeration enu = m_sessions.keys();
-        while(enu.hasMoreElements()) {
+        while (enu.hasMoreElements()) {
             key = (String)enu.nextElement();
             value = (Hashtable)m_sessions.get(key);
             session_data = (Hashtable)value.get(I_CmsConstants.C_SESSION_DATA);
             session_message = (String)session_data.get(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-            if(session_message == null) {
+            if (session_message == null) {
                 session_message = "";
             }
             session_message += message;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/07/23 09:58:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/08/01 07:53:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
@@ -54,7 +54,6 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
     private String m_moduleName;
     private String m_zipName;
     private Vector m_conflictFiles;
-    private Vector m_projectFiles;
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
     private I_CmsReport m_report;
@@ -68,10 +67,10 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
      * @param cms the current cms context  
      * @param reg the registry to write the new module information to
      * @param moduleName the name of the module 
+     * @param zipName the name of the module ZIP file
      * @param conflictFiles vector of conflict files 
-     * @param projectFiles vector of project files
      */
-    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles, Vector projectFiles) {
+    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles) {
         super("OpenCms: Module import of " + moduleName);
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
@@ -79,7 +78,6 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
         m_zipName = zipName;
         m_registry = reg;
         m_conflictFiles = conflictFiles;
-        m_projectFiles = projectFiles;
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
         if (DEBUG) System.err.println("CmsAdminModuleImportThread() constructed"); 
@@ -92,21 +90,26 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
         try {            
             if (DEBUG) System.err.println("CmsAdminModuleImportThread() started");            
             String moduleName = m_moduleName.replace('\\', '/');
-
-            // create a Project to import the module.
-            CmsProject project = m_cms.createProject("ImportModule", "A System generated project to import the module " + moduleName, 
-                I_CmsConstants.C_GROUP_ADMIN, 
-                I_CmsConstants.C_GROUP_ADMIN, 
-                I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
-            m_cms.getRequestContext().setCurrentProject(project.getId());
+            CmsProject project = null;
+            
+            try {
+                m_cms.getRequestContext().saveSiteRoot();
+                m_cms.getRequestContext().setSiteRoot("/");
+                // create a Project to import the module.
+                project = m_cms.createProject("ImportModule", "A System generated project to import the module " + moduleName, 
+                    I_CmsConstants.C_GROUP_ADMIN, 
+                    I_CmsConstants.C_GROUP_ADMIN, 
+                    I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+                m_cms.getRequestContext().setCurrentProject(project.getId());
+                // copy the root folder to the project
+                m_cms.copyResourceToProject("/");
+            } finally {
+                m_cms.getRequestContext().restoreSiteRoot();
+            } 
 
             m_report.print(m_report.key("report.import_module_begin"), I_CmsReport.C_FORMAT_HEADLINE);
             m_report.println(" <i>" + moduleName + "</i>", I_CmsReport.C_FORMAT_HEADLINE);
-
-            // copy the resources to the project
-            for(int i = 0;i < m_projectFiles.size();i++) {
-                m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
-            }                        
+                       
             // import the module
             m_registry.importModule(m_zipName, m_conflictFiles, m_report);   
 
@@ -119,10 +122,9 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
             m_report.println(m_report.key("report.import_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
             
             if (DEBUG) System.err.println("CmsAdminModuleImportThread() finished");          
-        }
-        catch(CmsException e) {
+        } catch (CmsException e) {
             m_report.println(e);
-            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL) ) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, e.getMessage());
             }
             if (DEBUG) System.err.println("CmsAdminModuleImportThread() Exception:" + e.getMessage());            
@@ -134,7 +136,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
      * 
      * @return the part of the report that is ready
      */
-    public String getReportUpdate(){
+    public String getReportUpdate() {
         return m_report.getReportUpdate();
     }
 }

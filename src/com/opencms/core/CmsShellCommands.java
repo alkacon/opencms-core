@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/07/31 19:20:09 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2003/08/01 07:53:00 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.101 $ $Date: 2003/07/31 19:20:09 $
+ * @version $Revision: 1.102 $ $Date: 2003/08/01 07:53:00 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -496,18 +496,17 @@ class CmsShellCommands {
      * 
      */    
     public void createDefaultProject(String name, String description) {              
-        String oldRoot = m_cms.getRequestContext().getSiteRoot();
         try {
-            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
-            int id = project.getId();
-            m_cms.getRequestContext().setCurrentProject(id);
+            m_cms.getRequestContext().saveSiteRoot();
             m_cms.getRequestContext().setSiteRoot("/");
+            CmsProject project = m_cms.createProject(name, description, I_CmsConstants.C_GROUP_USERS, I_CmsConstants.C_GROUP_PROJECTLEADER, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+            m_cms.getRequestContext().setCurrentProject(project.getId());
             // copy the VFS folders to the project
             m_cms.copyResourceToProject("/");        
         } catch (Exception exc) {
             CmsShell.printException(exc);
         } finally {
-            m_cms.getRequestContext().setSiteRoot(oldRoot);
+            m_cms.getRequestContext().restoreSiteRoot();
         }
     }    
     
