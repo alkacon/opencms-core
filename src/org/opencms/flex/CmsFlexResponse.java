@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2004/03/29 10:39:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/04/10 13:22:24 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -104,8 +104,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          * @see java.io.OutputStream#close()
          */
         public void close() throws IOException {
-            m_stream = null;
-            m_servletStream = null;
+            if (m_stream != null) {
+                m_stream.close();
+            }
+            if (m_servletStream != null) {
+                m_servletStream.close();
+            }
             super.close();
         }
         
@@ -389,7 +393,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.ServletResponse#getOutputStream()
      */
-    public javax.servlet.ServletOutputStream getOutputStream() throws IOException {
+    public ServletOutputStream getOutputStream() throws IOException {
         if (m_out == null) {
             initStream();
         }
@@ -401,7 +405,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.ServletResponse#getWriter()
      */
-    public java.io.PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter() throws IOException {
         if (m_writer == null) {
             initStream();
         }

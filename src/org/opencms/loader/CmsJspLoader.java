@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/04/05 16:12:53 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/04/10 13:22:24 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -751,22 +751,22 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         if (i2 > 0) {
             // the content of the JSP was changed 
             buf.append(content.substring(p0, content.length()));
-            if (found) {
-                content = buf.toString();
-            } else if (! isHardInclude) {
-                // encoding setting was not found
-                // if this is not a "hard" include then add the encoding to the top of the page
-                // checking for the hard include is important to prevent errors with 
-                // multiple page encoding settings if a templete is composed from several hard included elements
-                // this is an issue in Tomcat 4.x but not 5.x
-                StringBuffer buf2 = new StringBuffer(buf.length() + 32);
-                buf2.append("<%@ page pageEncoding=\"");
-                buf2.append(encoding);
-                buf2.append("\" %>");
-                buf2.append(buf);
-                content = buf2.toString();
-            }
         }
+        if (found) {
+            content = buf.toString();
+        } else if (! isHardInclude) {
+            // encoding setting was not found
+            // if this is not a "hard" include then add the encoding to the top of the page
+            // checking for the hard include is important to prevent errors with 
+            // multiple page encoding settings if a templete is composed from several hard included elements
+            // this is an issue in Tomcat 4.x but not 5.x
+            StringBuffer buf2 = new StringBuffer(buf.length() + 32);
+            buf2.append("<%@ page pageEncoding=\"");
+            buf2.append(encoding);
+            buf2.append("\" %>");
+            buf2.append(buf);
+            content = buf2.toString();
+        }        
         return content;
     }
     
@@ -894,7 +894,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         try {
             // all JSP must be exported with full "root path" site root information
             cms.getRequestContext().setSiteRoot("");
-
+            
             String jspVfsName = cms.readAbsolutePath(resource);
             String extension;
             boolean isHardInclude;
@@ -906,7 +906,8 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             } else {
                 // not a JSP resource or already ends with ".jsp"
                 extension = "";
-                isHardInclude = true;
+                // if this is a JSP we don't treat it as hard include
+                isHardInclude = (resource.getLoaderId() != CmsJspLoader.C_RESOURCE_LOADER_ID);
             }            
             
             String jspTargetName = getJspUri(m_jspWebAppRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());
@@ -1011,7 +1012,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     private String updateJsp(String vfsName, CmsFlexController controller, Set includes) {
         String jspVfsName = CmsLinkManager.getAbsoluteUri(
             vfsName, 
-            controller.getCurrentRequest().getElementUri());
+            controller.getCurrentRequest().getElementRootPath());
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("JspLoader: Trying to update JSP from VFS file '" + jspVfsName + "'");
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/04/05 11:05:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/04/10 13:22:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
     
@@ -91,11 +91,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /** Stores the request URI after it was once calculated */
     private String m_requestUri;
     
-    /** Stores the request URI after it was once calculated */
+    /** Stores the request URL after it was once calculated */
     private StringBuffer m_requestUrl;
            
-    /** The requested resource (target resource) */    
-    private String m_resource;
+    /** The requested resources element URI in the OpenCms VFS */    
+    private String m_elementUri;
+    
+    /** The site root of the requested resource */
+    private String m_elementUriSiteRoot;
             
     /**
      * Creates a new CmsFlexRequest wrapper which is most likley the "Top"
@@ -108,8 +111,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public CmsFlexRequest(HttpServletRequest req, CmsFlexController controller) {
         super(req);
         m_controller = controller;
-        m_resource =  m_controller.getCmsObject().readAbsolutePath(m_controller.getCmsResource());
         CmsObject cms = m_controller.getCmsObject();
+        m_elementUri =  cms.readAbsolutePath(m_controller.getCmsResource());
+        m_elementUriSiteRoot = cms.getRequestContext().getSiteRoot();
         m_includeCalls = Collections.synchronizedSet(new HashSet(8));
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();      
@@ -163,11 +167,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 }
             }
         }  
-        m_isWorkplaceResource = m_resource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
+        m_isWorkplaceResource = m_elementUri.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
         m_canCache = (((m_isOnline || m_isWorkplaceResource || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (DEBUG) {
-            System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_resource);
+            System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_elementUri);
         }
     }
         
@@ -181,14 +185,15 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     CmsFlexRequest(HttpServletRequest req, CmsFlexController controller, String resource) {
         super(req);
         m_controller = controller;
-        m_resource = CmsLinkManager.getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
+        m_elementUri = CmsLinkManager.getAbsoluteUri(resource, m_controller.getCurrentRequest().getElementUri());
+        m_elementUriSiteRoot = m_controller.getCurrentRequest().m_elementUriSiteRoot;
         m_isOnline = m_controller.getCurrentRequest().isOnline();
         m_canCache = m_controller.getCurrentRequest().isCacheable();
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();        
         m_parameters = req.getParameterMap();
         if (DEBUG) {
-            System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_resource);
+            System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_elementUri);
         }
     }
     
@@ -242,7 +247,8 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     }
     
     /** 
-     * Returns the name of the resource currently processed.<p>
+     * Returns the element URI of the resource currently processed,
+     * relative to the current site root.<p>
      * 
      * This might be the name of an included resource,
      * not neccesarily the name the resource requested by the user.
@@ -250,8 +256,17 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the name of the resource currently processed
      */    
     public String getElementUri() {
-        return m_resource;
+        return m_elementUri;
     }    
+    
+    /** 
+     * Returns the full element URI site root path to the resource currently processed.<p>
+     * 
+     * @return the name of the resource currently processed
+     */    
+    public String getElementRootPath() {
+        return m_elementUriSiteRoot.concat(m_elementUri);
+    }      
             
     /**
      * Return the value of the specified request parameter, if any; otherwise,
@@ -490,7 +505,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     CmsFlexCacheKey getCmsCacheKey() {
         // The key for this request is only calculated if actually requested
         if (m_key == null) {
-            m_key = new CmsFlexCacheKey(this, m_resource, m_isOnline, m_isWorkplaceResource);
+            m_key = new CmsFlexCacheKey(this, m_elementUri, m_isOnline, m_isWorkplaceResource);
         }
         return m_key;
     }
