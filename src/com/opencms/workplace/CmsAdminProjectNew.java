@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/03/27 15:45:27 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.46 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.45 $ $Date: 2001/03/27 15:45:27 $
+ * @version $Revision: 1.46 $ $Date: 2001/04/11 10:30:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -380,7 +380,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
-                Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders);
+                Thread doProjectNew = new CmsAdminNewProjectThread(cms, folders, session);
                 doProjectNew.start();
                 session.putValue(C_PROJECTNEW_THREAD, doProjectNew);
                 xmlTemplateDocument.setData("time", "10");

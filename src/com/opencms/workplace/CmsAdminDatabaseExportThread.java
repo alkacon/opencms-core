@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/02/19 13:09:48 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.6 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -56,6 +56,8 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 
     private boolean m_exportUserdata;
 
+    private I_CmsSession m_session;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
@@ -63,24 +65,24 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 
     public CmsAdminDatabaseExportThread(CmsObject cms, String fileName,
             String[] exportPaths, boolean excludeSystem, boolean excludeUnchanged,
-            boolean exportUserdata) {
+            boolean exportUserdata, I_CmsSession session) {
         m_cms = cms;
         m_exportPaths = exportPaths;
         m_fileName = fileName;
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
+        m_session = session;
     }
 
     public void run() {
-        I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
 
             // do the export
             m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata);
         }
         catch(CmsException e) {
-            session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }

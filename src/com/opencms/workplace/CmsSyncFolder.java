@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2001/02/12 10:45:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/02/12 10:45:59 $
+ * @version $Revision: 1.4 $ $Date: 2001/04/11 10:30:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -208,7 +208,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants
 				    if(session.getValue(C_SESSION_THREAD_ERROR) != null) {
 				    	session.removeValue(C_SESSION_THREAD_ERROR);
 				    }
-				    Thread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject);
+				    Thread doSyncFolder = new CmsSyncFolderThread(cms, synchronizeResources, m_newProject, session);
 				    doSyncFolder.start();
 				    session.putValue(C_SYNCFOLDER_THREAD, doSyncFolder);
 				    xmlTemplateDocument.setData("time", "5");

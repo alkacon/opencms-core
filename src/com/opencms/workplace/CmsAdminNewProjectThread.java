@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:26 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.3 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -43,32 +43,34 @@ import java.io.*;
  */
 
 public class CmsAdminNewProjectThread extends Thread implements I_CmsConstants {
-    
+
     private Vector m_folders;
-    
+
     private CmsObject m_cms;
-    
+
+    private I_CmsSession m_session;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
      */
-    
-    public CmsAdminNewProjectThread(CmsObject cms, Vector folders) {
+
+    public CmsAdminNewProjectThread(CmsObject cms, Vector folders, I_CmsSession session) {
         m_cms = cms;
         m_folders = folders;
+        m_session = session;
     }
-    
+
     public void run() {
-        I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
-            
-            // copy the resources to the actual project   
+
+            // copy the resources to the actual project
             for(int i = 0;i < m_folders.size();i++) {
                 m_cms.copyResourceToProject((String)m_folders.elementAt(i));
             }
         }
         catch(CmsException e) {
-            session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }

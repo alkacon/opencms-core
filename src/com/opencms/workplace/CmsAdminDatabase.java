@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2001/04/06 13:30:19 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.17 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2001/04/06 13:30:19 $
+ * @version $Revision: 1.17 $ $Date: 2001/04/11 10:30:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -165,7 +165,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                     session.removeValue(C_SESSION_THREAD_ERROR);
                 }
                 Thread doExport = new CmsAdminDatabaseExportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                        + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata);
+                        + fileName, exportPaths, excludeSystem, excludeUnchanged, exportUserdata, session);
                 doExport.start();
                 session.putValue(C_DATABASE_THREAD, doExport);
                 xmlTemplateDocument.setData("time", "10");
@@ -180,7 +180,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
                         session.removeValue(C_SESSION_THREAD_ERROR);
                     }
                     Thread doImport = new CmsAdminDatabaseImportThread(cms, CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator
-                            + existingFile);
+                            + existingFile, session);
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
                     xmlTemplateDocument.setData("time", "10");

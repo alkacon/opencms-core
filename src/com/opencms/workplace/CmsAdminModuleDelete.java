@@ -1,11 +1,11 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/01/24 09:43:25 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.3 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -52,11 +52,11 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_ERROR = "error";
     private final String C_SESSION_MODULENAME = "deletemodulename";
     private final String C_MODULE_THREAD = "moduledeletethread";
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
-     * with the given parameters. 
-     * 
+     * with the given parameters.
+     *
      * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
      * @param cms CmsObject Object for accessing system resources.
      * @param templateFile Filename of the template file.
@@ -77,7 +77,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
         if((step != null) && ("working".equals(step))) {
-            
+
             // Thread is already running
             Thread doDelete = (Thread)session.getValue(C_MODULE_THREAD);
             if(doDelete.isAlive()) {
@@ -99,7 +99,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             if(C_DELETE.equals(step)) {
                 Vector otherModules = reg.deleteCheckDependencies(moduleName);
                 if(!otherModules.isEmpty()) {
-                    
+
                     // Don't delete; send message error
                     xmlDocument.setData("name", moduleName);
                     xmlDocument.setData("version", "" + reg.getModuleVersion(moduleName));
@@ -111,7 +111,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
                     templateSelector = C_ERROR;
                 }
                 else {
-                    
+
                     // now we will look if ther are any conflicting files
                     Vector filesWithProperty = new Vector();
                     Vector missingFiles = new Vector();
@@ -149,16 +149,16 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
             xmlDocument.setData("time", "10");
             templateSelector = C_WAIT;
         }
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, xmlDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.

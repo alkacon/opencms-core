@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/02/12 10:45:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/04/11 10:30:29 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -50,19 +50,21 @@ public class CmsSyncFolderThread extends Thread implements I_CmsConstants {
 
     private boolean m_newProject;
 
+    private I_CmsSession m_session;
+
     /**
      * Insert the method's description here.
      *
      */
 
-    public CmsSyncFolderThread(CmsObject cms, Vector folders, boolean newProject) {
+    public CmsSyncFolderThread(CmsObject cms, Vector folders, boolean newProject, I_CmsSession session) {
         m_cms = cms;
         m_folders = folders;
         m_newProject = newProject;
+        m_session = session;
     }
 
     public void run() {
-        I_CmsSession session = m_cms.getRequestContext().getSession(true);
         try {
             // synchronize the resource
             for(int i = 0;i < m_folders.size();i++) {
@@ -74,7 +76,7 @@ public class CmsSyncFolderThread extends Thread implements I_CmsConstants {
             }
         }
         catch(CmsException e) {
-            session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
+            m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
