@@ -428,6 +428,7 @@ function doEditHTML(para)
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
 {
+    document.EDITOR.EDIT_HTML.SourceCodePreservation = true;
     document.EDITOR.EDIT_HTML.DocumentHTML = decodeURIComponent(text);
     GeneralContextMenu[0] = new ContextMenuItem(LANG_CUT, DECMD_CUT);
     GeneralContextMenu[1] = new ContextMenuItem(LANG_COPY, DECMD_COPY);
@@ -451,14 +452,13 @@ function doSubmit()
 {
     if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
         // IE5
-        //Gridnine AB Aug 12, 2002
-        //document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
-        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
+        document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DocumentHTML));
     } else {
         // IE4
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.DocumentHTML);
     }
 }
+
 
 
 // Main Function to access HTML-Editor functions.
