@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 08:48:24 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/06/08 09:03:42 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.27 $ $Date: 2000/06/08 08:48:24 $ * 
+ * @version $Revision: 1.28 $ $Date: 2000/06/08 09:03:42 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -628,7 +628,71 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         return groups;
     }
 
-    
+    /**
+	 * Returns a list of users of a group.<P/>
+	 * 
+	 * @param name The name of the group.
+	 * @param type the type of the users to read.
+	 * @return Vector of users
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public Vector getUsersOfGroup(String name, int type)
+		throws CmsException {
+        CmsGroup group;
+        Vector users = new Vector();
+
+        PreparedStatement statement = null;
+		ResultSet res = null;
+		
+        try {
+			statement = m_pool.getPreparedStatement(C_GROUPS_GETUSERSOFGROUP_KEY);
+			statement.setString(1,name);
+			statement.setInt(2,type);
+			
+            res = statement.executeQuery();
+
+			while( res.next() ) {
+				// read the additional infos.
+                byte[] value = res.getBytes(C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(C_USERS_USER_ID),
+										   res.getString(C_USERS_USER_NAME),
+										   res.getString(C_USERS_USER_PASSWORD),
+										   res.getString(C_USERS_USER_DESCRIPTION),
+										   res.getString(C_USERS_USER_FIRSTNAME),
+										   res.getString(C_USERS_USER_LASTNAME),
+										   res.getString(C_USERS_USER_EMAIL),
+										   res.getTimestamp(C_USERS_USER_LASTLOGIN).getTime(),
+										   res.getTimestamp(C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+														res.getInt(C_GROUPS_PARENT_GROUP_ID),
+														res.getString(C_GROUPS_GROUP_NAME),
+														res.getString(C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(C_GROUPS_GROUP_FLAGS)),
+										   res.getString(C_USERS_USER_ADDRESS),
+										   res.getString(C_USERS_USER_SECTION),
+										   res.getInt(C_USERS_USER_TYPE));
+				
+				users.addElement(user);
+			} 
+            res.close();  
+         } catch (SQLException e){
+              throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);		
+		} catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);			
+        } finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_GROUPS_GETUSERSOFGROUP_KEY, statement);
+			}
+		}             
+        return users;
+    }
     
 	/**
 	 * Adds a user to a group.<BR/>
@@ -661,9 +725,9 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                  throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
              } finally {
 			    if( statement != null) {
-				m_pool.putPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY, statement);
-			}
-		}             
+					m_pool.putPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY, statement);
+				}
+			}             
         }        
     }
 
@@ -696,7 +760,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		 } finally {
 			 if( statement != null) {
-				m_pool.putPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY, statement);
+				m_pool.putPreparedStatement(C_GROUPS_USERINGROUP_KEY, statement);
             }            
         }
          return userInGroup;
@@ -764,32 +828,55 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
 		try	{			
             // serialize the hashtable
+			System.out.println("a1");
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+			System.out.println("a2");
             ObjectOutputStream oout=new ObjectOutputStream(bout);
+			System.out.println("a3");
             oout.writeObject(additionalInfos);
+			System.out.println("a4");
             oout.close();
+			System.out.println("a5");
             value=bout.toByteArray();
+			System.out.println("a6");
 			
             // write data to database     
             statement = m_pool.getPreparedStatement(C_USERS_ADD_KEY);
+			System.out.println("a7");
 			
             statement.setInt(1,id);
+			System.out.println("a8");
 			statement.setString(2,name);
+			System.out.println("a9");
 			// crypt the password with MD5
 			statement.setString(3, digest(password));
+			System.out.println("a10");
 			statement.setString(4,description);
+			System.out.println("a11");
 			statement.setString(5,firstname);
+			System.out.println("a12");
 			statement.setString(6,lastname);
+			System.out.println("a13");
 			statement.setString(7,email);
+			System.out.println("a14");
 			statement.setTimestamp(8, new Timestamp(lastlogin));
+			System.out.println("a15");
 			statement.setTimestamp(9, new Timestamp(lastused));
+			System.out.println("a16");
 			statement.setInt(10,flags);
+			System.out.println("a17");
 			statement.setBytes(11,value);
+			System.out.println("a18");
 			statement.setInt(12,defaultGroup.getId());
+			System.out.println("a19");
 			statement.setString(13,address);
+			System.out.println("a20");
 			statement.setString(14,section);
+			System.out.println("a21");
 			statement.setInt(15,type);
+			System.out.println("a22");
 			statement.executeUpdate();
+			System.out.println("a23");
          }
         catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -1644,6 +1731,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		  }		
 	}
 
+	
 	/**
 	 * Returns a property of a file or folder.
 	 * 
@@ -1739,7 +1827,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	}
 	
 
-
 	/**
 	 * Private method to init all statements in the pool.
 	 */
@@ -1758,6 +1845,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_GETGROUPSOFUSER_KEY,C_GROUPS_GETGROUPSOFUSER);
         m_pool.initPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY,C_GROUPS_ADDUSERTOGROUP);
         m_pool.initPreparedStatement(C_GROUPS_USERINGROUP_KEY,C_GROUPS_USERINGROUP);
+        m_pool.initPreparedStatement(C_GROUPS_GETUSERSOFGROUP_KEY,C_GROUPS_GETUSERSOFGROUP);
         m_pool.initPreparedStatement(C_GROUPS_REMOVEUSERFROMGROUP_KEY,C_GROUPS_REMOVEUSERFROMGROUP);
         
 		// init statements for users
@@ -1808,12 +1896,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		// TODO: init all default-resources
 
 		CmsGroup guests = createGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-        CmsGroup adminstrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
-		CmsGroup projectleaders = createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
-        CmsGroup users = createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
+        CmsGroup administrators = createGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);            
+		createGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group",C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,null);
+        createGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
                
         CmsUser guest = addUser(C_USER_GUEST, "", "the guest-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), guests, "", "", C_USER_TYPE_SYSTEMUSER); 
-		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), adminstrators, "", "", C_USER_TYPE_SYSTEMUSER); 
+		CmsUser admin = addUser(C_USER_ADMIN, "admin", "the admin-user", "", "", "", 0, 0, C_FLAG_ENABLED, new Hashtable(), administrators, "", "", C_USER_TYPE_SYSTEMUSER); 
+		
+		addUserToGroup(guest.getId(), guests.getId());
+		addUserToGroup(admin.getId(), administrators.getId());
 	}
 	
 	/**

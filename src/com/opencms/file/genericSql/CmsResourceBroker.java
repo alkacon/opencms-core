@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/08 08:48:24 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/06/08 09:03:42 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2000/06/08 08:48:24 $
+ * @version $Revision: 1.24 $ $Date: 2000/06/08 09:03:42 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1392,7 +1392,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, 
 								  String groupname)
         throws CmsException {
-     return null;
+		// check the security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getUsersOfGroup(groupname, C_USER_TYPE_SYSTEMUSER);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 
 	/**

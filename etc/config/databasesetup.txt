@@ -60,7 +60,7 @@ create table CMS_PROPERTIES             (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
                                          RESOURCE_ID int not null,
                                          PROPERTY_VALUE VARCHAR(255) not null,
-                                         primary key(PROPERTY_ID), unique(PROPERTYDEF_ID, RESOURCE_ID, PROJECT_ID));
+                                         primary key(PROPERTY_ID), unique(PROPERTYDEF_ID, RESOURCE_ID));
 
 create table CMS_RESOURCES              (RESOURCE_NAME VARCHAR(248) not null,
                                          RESOURCE_TYPE int not null,

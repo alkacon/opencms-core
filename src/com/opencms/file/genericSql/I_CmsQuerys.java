@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 08:48:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/06/08 09:03:42 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.16 $ $Date: 2000/06/08 08:48:24 $
+ * @version $Revision: 1.17 $ $Date: 2000/06/08 09:03:42 $
  */
 public interface I_CmsQuerys {
     
@@ -89,9 +89,18 @@ public interface I_CmsQuerys {
     public static final Integer C_GROUPS_USERINGROUP_KEY = new Integer(211);
     public static final String C_GROUPS_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
 
-    public static final Integer C_GROUPS_REMOVEUSERFROMGROUP_KEY = new Integer(213);
+    public static final Integer C_GROUPS_GETUSERSOFGROUP_KEY = new Integer(212);
+    public static final String C_GROUPS_GETUSERSOFGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPS AS G, "
+														  + C_DATABASE_PREFIX + "USERS AS U, "
+														  + C_DATABASE_PREFIX + "GROUPUSERS AS GU, "
+														  + C_DATABASE_PREFIX + "GROUPS AS DG "
+														  + "where G.GROUP_NAME = ? AND U.USER_ID=GU.USER_ID "
+														  + "AND GU.GROUP_ID = G.GROUP_ID "
+														  + "AND U.USER_DEFAULT_GROUP_ID = DG.GROUP_ID "
+														  + "AND U.USER_TYPE = ?";
+
+	public static final Integer C_GROUPS_REMOVEUSERFROMGROUP_KEY = new Integer(213);
     public static final String C_GROUPS_REMOVEUSERFROMGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
-    
     
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";
@@ -176,7 +185,6 @@ public interface I_CmsQuerys {
 	public static final Integer C_PROPERTIES_CREATE_KEY = new Integer(354);	
 	public static final String C_PROPERTIES_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROPERTIES VALUES(?,?,?,?)";
 
-	
 	
     // Constants for Projects table
 	public static final String C_PROJECTS_PROJECT_ID = "PROJECT_ID";
