@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2003/01/20 23:59:17 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/01/30 19:36:48 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2003/01/20 23:59:17 $
+ * @version $Revision: 1.53 $ $Date: 2003/01/30 19:36:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -151,18 +151,14 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
      * @param content String array containing the elements to be set.
      * @param lang reference to the currently valid language file
      */
-
     protected void getConstantSelectEntries(Vector names, Vector values, String[] contents,
             CmsXmlLanguageFile lang) throws CmsException {
         for(int i = 0;i < contents.length;i++) {
             String value = contents[i];
             values.addElement(value);
-            if(lang.hasLanguageValue("select." + value)) {
-                names.addElement(lang.getLanguageValue("select." + value));
-            }
-            else {
-                names.addElement(value);
-            }
+            String s = lang.getLanguageValue("select." + value);
+            if ((s == null) || s.startsWith("???")) s = value;
+            names.addElement(s);
         }
     }
 
@@ -249,13 +245,8 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 
     public Object getKey(CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
 
-        //Vector v = new Vector();
         CmsRequestContext reqContext = cms.getRequestContext();
 
-        //v.addElement(templateFile);
-        //v.addElement(parameters);
-        //v.addElement(templateSelector);
-        //return v;
         String result = "" + reqContext.currentProject().getId() + ":"
                 + reqContext.currentUser().getName() + templateFile;
         Enumeration keys = parameters.keys();

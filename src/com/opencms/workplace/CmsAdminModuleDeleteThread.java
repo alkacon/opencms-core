@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2003/01/20 23:59:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/01/30 19:36:48 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends Thread {
@@ -78,10 +78,7 @@ public class CmsAdminModuleDeleteThread extends Thread {
         m_registry = reg;
         m_conflictFiles = conflictFiles;
         m_projectFiles = projectFiles;
-        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        try {
-            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        } catch (CmsException e) {} // we will have the default then
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
         if (DEBUG) System.err.println("CmsAdminModuleDeleteThread() constructed");
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2003/01/20 23:53:00 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/01/30 19:36:48 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,422 +28,209 @@
 package com.opencms.workplace;
 
 /**
- * Content definition for language files.
+ * Provides access to the localized lables for the workplace.<p>
+ * 
+ * This class used to read language files from the OpenCms VFS in a proprietary 
+ * XML format, hence the name "XmlLanguageFile". Since 5.0rc2 this class has
+ * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
+ * 
+ * TODO: Implement a fallback-mechanism to read from the old format if all else fails.<p>
  *
- * @author Edna Falkenhan
- * @version $Revision: 1.37 $ $Date: 2003/01/20 23:53:00 $
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
+ * @version $Revision: 1.38 $ $Date: 2003/01/30 19:36:48 $
  */
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.CmsFile;
+import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.I_CmsXmlContent;
-import com.opencms.template.I_CmsXmlParser;
+import com.opencms.flex.util.CmsMessages;
 
-import java.io.OutputStream;
-import java.io.Writer;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.Vector;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+public class CmsXmlLanguageFile { 
 
-public class CmsXmlLanguageFile implements I_CmsXmlContent{
-	
-	private CmsXmlLanguageFileContent m_languageFile;
-	
-    /**
-     * Default constructor.
-     */
-    public CmsXmlLanguageFile() throws CmsException {
-        m_languageFile = new CmsXmlLanguageFileContent();
-    }
+    /** The name of the property file */
+    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
+        
+    /** Localized message access object for the default workplace */
+    private CmsMessages m_messages;
     
-    /**
-     * Default constructor.
-     */
-    public CmsXmlLanguageFile(CmsXmlLanguageFileContent langFile) throws CmsException {
-        m_languageFile = langFile;
-    }
+    /** Set of locales form the installed modules */
+    private static Set m_moduleMessages = null;     
     
+    /** DEBUG flag */
+    private static final int DEBUG = 0;
+    	 
     /**
      * Constructor for creating a new language file object containing the content
-     * of the corresponding system language file for the actual user.
-     * <P>
-     * The position of the language file will be looked up in workplace.ini.
-     * The selected language of the current user can be searched in the user object.
-     *
-     * @param cms CmsObject object for accessing system resources.
+     * of the corresponding system language file for the current user.<p>
+     * 
+     * @param cms for accessing system resources
      */    
-	public CmsXmlLanguageFile(CmsObject cms) throws CmsException{
-		String curLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-		m_languageFile = (CmsXmlLanguageFileContent)(CmsXmlWpTemplateFile.getLangFileFromCache(curLanguage));
-		if(m_languageFile == null){
-			m_languageFile = new CmsXmlLanguageFileContent(cms);
-		}
+	public CmsXmlLanguageFile(CmsObject cms) throws CmsException {
+        m_messages = new CmsMessages(C_BUNDLE_NAME, getCurrentUserLanguage(cms));
+        m_moduleMessages = collectModuleMessages(cms);
+//		String curLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
+//		m_languageFile = (CmsXmlLanguageFileContent)(CmsXmlWpTemplateFile.getLangFileFromCache(curLanguage));
+//		if(m_languageFile == null){
+//			m_languageFile = new CmsXmlLanguageFileContent(cms);
+//		}
 	}
 
     /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     *
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */
-    public CmsXmlLanguageFile(CmsObject cms, CmsFile file) throws CmsException {
-        m_languageFile = new CmsXmlLanguageFileContent(cms, file);
-    }
-
-    /**
-     * Constructor for creating a new object containing the content
-     * of the given filename.
-     *
-     * @param cms CmsObject object for accessing system resources.
-     * @param filename Name of the body file that shoul be read.
-     */
-    public CmsXmlLanguageFile(CmsObject cms, String filename) throws CmsException {
-        m_languageFile = new CmsXmlLanguageFileContent(cms, filename);
-    }
-    
-	//
-	// The methods from the interface
-	//
-    /**
-     * Creates a clone of this object.
-     * @return cloned object
-     * @throws CloneNotSupportedException
-     */
-    public Object clone() throws CloneNotSupportedException{
-    	return m_languageFile.clone();
-    }
-    
-    /**
-     * Gets the absolute filename of the XML file represented by this content class
-     * @return Absolute filename
-     */
-    public String getAbsoluteFilename(){
-    	return m_languageFile.getAbsoluteFilename();
-    }
-    
-    /**
-     * Gets a short filename (without path) of the XML file represented by this content class
-     * of the template file.
-     * @return filename
-     */
-    public String getFilename(){
-    	return m_languageFile.getFilename();
-    }
-    
-    /**
-     * Prints the XML parsed content to a String
-     * @return String with XML content
-     */
-    public String getXmlText(){
-    	return m_languageFile.getXmlText();
-    }
-    
-    /**
-     * Prints the XML parsed content of this template file
-     * to the given Writer.
+     * Gathers all localization files for the workplace from the different modules.<p>
      * 
-     * @param out Writer to print to.
-     */
-    public void getXmlText(Writer out){
-    	m_languageFile.getXmlText(out);
-    }
-    
-    /**
-     * Prints the XML parsed content of the given Node and
-     * its subnodes to the given Writer.
+     * For a module named "my.module.name" the locale file must be named 
+     * "my.module.name.workplace" and be localed in the classpath so that the resource loader
+     * can find it.<p>
      * 
-     * @param out Writer to print to.
-     * @param n Node that should be printed.
+     * @param cms for accessing system resources
      */
-    public void getXmlText(Writer out, Node n){
-    	m_languageFile.getXmlText(out,n);
+    private Set collectModuleMessages(CmsObject cms) {
+        HashSet bundles = new HashSet();
+        Enumeration en = null;
+        try {
+            en = cms.getRegistry().getModuleNames();
+        } catch (CmsException e) {
+            // no bundles will be read in this case, this is o.k.
+        }
+        if (en != null) {
+            while (en.hasMoreElements()) {
+                String bundleName = ((String)en.nextElement()) + ".workplace";
+                // this should result in a name like "my.module.name.workplace"
+                try {
+                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale("en"));
+                    bundles.add(bundle);
+                } catch (MissingResourceException e) {
+                    // can be ignored
+                }
+            }
+        }
+        return bundles;
     }
-    
+
+
     /**
-     * Prints the XML parsed content of a given node and 
-     * its subnodes to a String
-     * @param n Node that should be printed.
-     * @return String with XML content
+     * Constructor for creating a new language file object containing the contents
+     * of the given filename.<p>
+     *
+     * @param cms for accessing system resources
+     * @param filename name of the file to be read
      */
-    public String getXmlText(Node n){
-    	return m_languageFile.getXmlText(n);
+    public CmsXmlLanguageFile(CmsObject cms, String locale) throws CmsException {
+        m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
+//        m_languageFile = new CmsXmlLanguageFileContent(cms, filename);
     }
-    
+
     /**
-     * Initialize the XML content class.
-     * Load and parse the content of the given CmsFile object.
-     * @param cms CmsObject Object for accessing resources.
-     * @param file CmsFile object of the file to be loaded and parsed.
-     * @throws CmsException
-     */
-    public void init(CmsObject cms, CmsFile file) throws CmsException{
-    	m_languageFile.init(cms, file);
-    }
-    
-    /**
-     * Initialize the XML content class.
-     * Load and parse the file given by filename,
-     * @param cms CmsObject Object for accessing resources.
-     * @param filename Filename of the file to be loaded.
-     * @throws CmsException
-     */
-    public void init(CmsObject cms, String filename) throws CmsException{
-    	m_languageFile.init(cms, filename);
-    }
-    
-    /**
-     * Initialize the class with the given parsed XML DOM document.
-     * @param cms CmsObject Object for accessing system resources.
-     * @param document DOM document object containing the parsed XML file.
-     * @param filename OpenCms filename of the XML file.
-     * @throws CmsException
-     */
-    public void init(CmsObject cms, Document content, String filename) throws CmsException{
-    	m_languageFile.init(cms, content, filename);
-    }
-    
-    /**
-     * Parses the given file and stores it in the internal list of included files and
-     * appends the relevant data structures of the new file to its own structures.
+     * Returns the content encoding defined for this language.<p>
      * 
-     * @param include Filename of the XML file to be included
-     * @throws CmsException
+     * @return String the the content encoding defined for this language
      */
-    public A_CmsXmlContent readIncludeFile(String filename) throws CmsException{
-    	return m_languageFile.readIncludeFile(filename);
-    }
-    
-
-	/**
-	 * Method returns content encoding attached to this language.
- 	 * @param cms
-	 * @return String
-	 */
-	public String getEncoding() {
-	   String result = null;
-	   try {
-		   result = getLanguageValue(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
-	   } catch (CmsException e) {;}
-	   if ((result != null) && result.startsWith("?") && result.endsWith("?")) {
-		   return null;
-	   }
-	   return result;
-	}
-
-
-    /**
-     * Writes the XML document back to the OpenCms system. 
-     * @throws CmsException  
-     */
-    public void write() throws CmsException{
-    	m_languageFile.write();
-    }
-
-	//
-	// Methods from the Abstract XmlContent class
-	//
-	/**
-     * Deletes all files from the file cache.
-     */
-    public static void clearFileCache() {
-    	CmsXmlLanguageFileContent.clearFileCache();
+    public String getEncoding() {
+        String result = null;
+        try {
+            result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
+        } catch (MissingResourceException e) {
+            result = A_OpenCms.getDefaultEncoding();
+        }
+        return result;
     }
 
     /**
-     * Deletes the file represented by the given A_CmsXmlContent from
-     * the file cache.
-     * @param doc A_CmsXmlContent representing the XML file to be deleted.
-     */
-    public static void clearFileCache(A_CmsXmlContent doc) {
-    	CmsXmlLanguageFileContent.clearFileCache(doc);
-    }
-
-    /**
-     * Deletes the file with the given key from the file cache.
-     * If no such file exists nothing happens.
-     * @param key Key of the template file to be removed from the cache.
-     */
-    public static void clearFileCache(String key) {
-    	CmsXmlLanguageFileContent.clearFileCache(key);	
-    }
-
-    /**
-     * Gets the currently used XML Parser.
-     * @return currently used parser.
-     */
-    public static I_CmsXmlParser getXmlParser() {
-        return CmsXmlLanguageFileContent.getXmlParser();
-    }
-    
-    /**
-     * Create a new CmsFile object containing an empty XML file of the
-     * current content type.
-     * The String returned by <code>getXmlDocumentTagName()</code>
-     * will be used to build the XML document element.
-     * @param cms Current cms object used for accessing system resources.
-     * @param filename Name of the file to be created.
-     * @param documentType Document type of the new file.
-     * @throws CmsException if no absolute filename is given or write access failed.
-     */
-    public void createNewFile(CmsObject cms, String filename, String documentType) throws CmsException {
-    	m_languageFile.createNewFile(cms, filename, documentType);
-    }
-    
-    //[added by Gridnine AB, 2002-06-17]    
-    public void getXmlText(OutputStream out) {
-    	m_languageFile.getXmlText(out);
-    }
-    
-    //[added by Gridnine AB, 2002-06-17]
-    public void getXmlText(OutputStream out, Node n) {
-    	m_languageFile.getXmlText(out, n);
-    }    
-
-    /**
-     * Read the datablocks of the given content file and include them
-     * into the own Hashtable of datablocks.
+     * Returns the language value of the requested label key.<p>
      *
-     * @param include completely initialized A_CmsXmlObject to be included
-     * @throws CmsExeption
+     * @param keyName the key for the desired string 
+     * @return the resource string for the given key 
      */
-    public void readIncludeFile(A_CmsXmlContent include) throws CmsException {
-    	m_languageFile.readIncludeFile(include);
-    }
+    public String getLanguageValue(String keyName) {       
+        if (m_moduleMessages.size() == 0) return m_messages.key(keyName);
+        try {
+            return m_messages.getString(keyName);
+        } catch (MissingResourceException e) {}
+        // key was not found in default workplace bundles
+        Iterator i = m_moduleMessages.iterator();
+        while (i.hasNext()) {
+            try {
+                return ((ResourceBundle) i.next()).getString(keyName);
+                // if no exception is thrown here we have found the result
+            } catch (MissingResourceException e) {
+                // ignore and continue looking in the other bundles
+            }
+        }
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, this.getClass().getName() + 
+                ".getLanguageValue() - Missing value for locale key: " + keyName);
+        }
+        return "??? " + keyName + " ???";
 
-    /**
-     * Registers the given tag to be "known" by the system.
-     * So this tag will not be handled by the default method of processNode.
-     * Under normal circumstances this feature will only be used for
-     * the XML document tag.
-     * @param tagname Tag name to register.
-     */
-    public void registerTag(String tagname) {
-    	m_languageFile.registerTag(tagname);
-    }
-
-    /**
-     * Registeres a tagname together with a corresponding method for processing
-     * with processNode. Tags can be registered for two different runs of the processNode
-     * method. This can be selected by the runSelector.
-     * <P>
-     * C_REGISTER_FIRST_RUN registeres the given tag for the first
-     * run of processNode, just after parsing a XML document. The basic functionality
-     * of this class uses this run to scan for INCLUDE and DATA tags.
-     * <P>
-     * C_REGISTER_MAIN_RUN registeres the given tag for the main run of processNode.
-     * This will be initiated by getProcessedData(), processDocument() or any
-     * PROCESS tag.
-     *
-     * @param tagname Tag name to register.
-     * @param c Class containing the handling method.
-     * @param methodName Name of the method that should handle a occurance of tag "tagname".
-     * @param runSelector see description above.
-     */
-    public void registerTag(String tagname, Class c, String methodName, int runSelector) {
-    	m_languageFile.registerTag(tagname, c, methodName, runSelector);
-    }  
-
-    /**
-     * Deletes this object from the internal XML file cache
-     */
-    public void removeFromFileCache() {
-    	m_languageFile.removeFromFileCache();	
-    }
-
-    /**
-     * Creates a datablock element by parsing the data string
-     * and stores this block into the datablock-hashtable.
-     *
-     * @param tag Key for this datablock.
-     * @param data String to be put in the datablock.
-     */
-    public void setParsedData(String tag, String data) throws CmsException{
-    	m_languageFile.setParsedData(tag,data);	
-    }                                      	
-
-    /**
-     * Gets a string representation of this object.
-     * @return String representation of this object.
-     */
-    public String toString() {
-    	return m_languageFile.toString();
-    }
-    
-	//
-	// The methods of the LanguageFile class
-	// 
-    /**
-     * Gets a description of this content type.
-     * @return Content type description.
-     */
-    public String getContentDescription() {
-        return m_languageFile.getContentDescription();
-    }
-
-    /**
-     * Get the code of the language the user prefers.
-     * This language will be taken from the user's start settings.
-     * If the user hasn't configured a language yet, if will be
-     * taken from the "Accept-Language" header of the request.
-     * Finally, there is a fallback value (English), if no preferred
-     * language can be found or none of the preferred languages exists.
-     *
-     * @param cms CmsObject for accessing system resources.
-     * @return Code of the preferred language (e.g. "en" or "de")
-     */
-    public static String getCurrentUserLanguage(CmsObject cms) throws CmsException {
-    	return CmsXmlLanguageFileContent.getCurrentUserLanguage(cms);
-    }
-
-    /**
-     * Overridden internal method for getting datablocks.
-     * This method first checkes, if the requested value exists.
-     * Otherwise it throws an exception of the type C_XML_TAG_MISSING.
-     *
-     * @param tag requested datablock.
-     * @return Value of the datablock.
-     * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
-     */
-    public String getDataValue(String tag) throws CmsException {
-    	return m_languageFile.getDataValue(tag);	
+//    	return m_languageFile.getDataValue(tag);	
     }
         
     /**
-     * Gets the language value vor the requested tag.
-     * @param tag requested tag.
-     * @return Language value.
+     * Returns the language set for the current user.<p>
+     * 
+     * This is look up in the following places:<ol>
+     * <li>the current users session
+     * <li>the current users workplace preferences
+     * <li>the current users browser settings</ol>
+     * 
+     * If a result is found it is stored in the users session.<p>
+     * 
+     * @param cms for accessing system resources
+     * @return 2-letter ISO code of the preferred language (e.g. "en", "de", ...)
      */
-    public String getLanguageValue(String tag) throws CmsException {
-    	return m_languageFile.getLanguageValue(tag);
-    }
-
-    /**
-     * Gets the expected tagname for the XML documents of this content type
-     * @return Expected XML tagname.
-     */
-    public String getXmlDocumentTagName() {
-        return m_languageFile.getXmlDocumentTagName();
-    }
-    
-    /**
-     * Checks if there exists a language value vor the requested tag.
-     * @param tag requested tag.
-     * @return Language value.
-     */
-    public boolean hasLanguageValue(String tag) {
-    	return m_languageFile.hasLanguageValue(tag);
-    }
-    
-    /**
-     * Sets the class specific language section.
-     * When requesting a language value this section will be
-     * checked first, before looking up the global value.
-     * @param section class specific language section.
-     */
-    public void setClassSpecificLangSection(String section) {
-    	m_languageFile.setClassSpecificLangSection(section);
+    public static String getCurrentUserLanguage(CmsObject cms) {
+        // check out the which language is to be used as default
+        String currentLanguage = null;                                   
+        I_CmsSession session = cms.getRequestContext().getSession(false);
+        // check if there is a session        
+        if (session != null) {
+            // if so, try to read users current language from the session
+            currentLanguage = (String)session.getValue(I_CmsConstants.C_START_LANGUAGE); 
+        }                 
+        if (currentLanguage == null) {
+            // language is not stored in the session yet, must check it out the hard way
+            Hashtable startSettings =
+                (Hashtable) cms.getRequestContext().currentUser().getAdditionalInfo(I_CmsConstants.C_ADDITIONAL_INFO_STARTSETTINGS);  
+            // try to read it form the user additional info
+            if (startSettings != null) {
+                currentLanguage = (String) startSettings.get(I_CmsConstants.C_START_LANGUAGE);
+            }    
+            // no startup language in user settings found, so check the users browser locale settings
+            if (currentLanguage == null) {
+                Vector language = (Vector)cms.getRequestContext().getAcceptedLanguages();
+                int numlangs = language.size();
+                for (int i = 0; i < numlangs; i++) {
+                    String lang = (String) language.elementAt(i);
+                    try {
+                        cms.readFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + lang);
+                        currentLanguage = lang;
+                        break;
+                    } catch (CmsException e) {
+                        // browser language is not supported in OpenCms, continue looking
+                    }
+                }
+            }
+            // if no language was found so far, set it to the default language
+            if (currentLanguage == null) {
+                currentLanguage = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
+            }
+            // store language in session
+            if (session != null) {
+                session.putValue(I_CmsConstants.C_START_LANGUAGE, currentLanguage);
+            }
+        }
+        return currentLanguage;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2003/01/20 17:57:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/01/30 19:36:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 
 import com.opencms.boot.I_CmsLogChannels;
@@ -59,10 +59,7 @@ public class CmsAdminLinkmanagementThread extends Thread {
         m_projectId = projectId;
         m_oldProjectId = m_cms.getRequestContext().currentProject().getId();
         m_directPublishResourceName = directPublishResourceName;
-        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        try {
-            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        } catch (CmsException e) {} // we will have the default then
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
     }
 

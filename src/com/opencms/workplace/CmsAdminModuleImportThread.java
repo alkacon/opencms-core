@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/01/20 17:57:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/30 19:36:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends Thread {
@@ -76,10 +76,7 @@ public class CmsAdminModuleImportThread extends Thread {
         m_registry = reg;
         m_conflictFiles = conflictFiles;
         m_projectFiles = projectFiles;
-        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        try {
-            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        } catch (CmsException e) {} // we will have the default then
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
         if (DEBUG) System.err.println("CmsAdminModuleImportThread() constructed"); 
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResourceThread.java,v $
- * Date   : $Date: 2003/01/20 17:57:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/01/30 19:36:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,10 +51,7 @@ public class CmsPublishResourceThread extends Thread {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_resourceName = resourceName;
-        String locale = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
-        try {
-            locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        } catch (CmsException e) {} // we will have the default then
+        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);
     }
 
