@@ -23,13 +23,7 @@
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu90.className='over';" onMouseOut="bu90.className='norm';" onMouseDown="bu90.className='push';doEditHTML(51);"><img name="bu90" src="]]><METHOD name="resourcesUri">bu_table_tr.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablerow"/><![CDATA["></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu91.className='over';" onMouseOut="bu91.className='norm';" onMouseDown="bu91.className='push';doEditHTML(52);"><img name="bu91" src="]]><METHOD name="resourcesUri">bu_table_td.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.tablecell"/><![CDATA["></td>
 						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
-						<script language="JavaScript">					
-						if (USE_WORKINGLINKDIALOG) {
-							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu50.className=\'over\';" onMouseOut="bu50.className=\'norm\';" onMouseDown="bu50.className=\'push\';doEditHTML(50);"><img name="bu50" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkto"/><![CDATA["></td>');
-						} else {
-							document.write('<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu46.className=\'over\';" onMouseOut="bu46.className=\'norm\';" onMouseDown="bu46.className=\'push\';doEditHTML(46);"><img name="bu46" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkinternal"/><![CDATA["></td>');
-						}
-						</script>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu50.className='over';" onMouseOut="bu50.className='norm';" onMouseDown="bu50.className='push';doEditHTML(50);"><img name="bu50" src="]]><METHOD name="resourcesUri">bu_link.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.linkto"/><![CDATA["></td>
 						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
 						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu42.className='over';" onMouseOut="bu42.className='norm';" onMouseDown="bu42.className='push';" onMouseUp="bu42.className='over';doEditHTML(42);"><img name="bu42" src="]]><METHOD name="resourcesUri">bu_image.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.image"/><![CDATA["></a></td>
 						<script language="JavaScript">					
