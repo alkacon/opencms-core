@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/07 17:07:02 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -156,6 +156,7 @@ public final class CmsHighlightExtractor {
         this.m_analyzer = analyzer;
         // get m_terms in m_query
         getTerms(m_query, m_terms, false);
+                
     }
 
     /**
@@ -182,15 +183,6 @@ public final class CmsHighlightExtractor {
             getTermsFromPhraseQuery((PhraseQuery) query, terms);
         } else if (query instanceof TermQuery) {
             getTermsFromTermQuery((TermQuery) query, terms);
-        } else if (query instanceof PrefixQuery) {
-            getTermsFromPrefixQuery((PrefixQuery) query, terms, prohibited);
-        } else if (query instanceof RangeQuery) {
-            getTermsFromRangeQuery((RangeQuery) query, terms, prohibited);
-        } else if (query instanceof MultiTermQuery) {
-            getTermsFromMultiTermQuery(
-                (MultiTermQuery) query,
-                terms,
-                prohibited);
         }
     }
 
@@ -221,34 +213,6 @@ public final class CmsHighlightExtractor {
             }
         }
     }
-
-    /**
-     * Extracts all term texts of a given MultiTermQuery. Term texts will be
-     * returned in lower-case.
-     * 
-     * @param query
-     *            MultiTermQuery to extract term texts from
-     * @param terms
-     *            HashSet where extracted term texts should be put into
-     *            (Elements: String)
-     * @param prohibited
-     *            <code>true</code> to extract "prohibited" m_terms, too
-     */
-    private static void getTermsFromMultiTermQuery(
-        MultiTermQuery query,
-        HashSet terms,
-        boolean prohibited) {
-        
-        //could use m_query.getEnum(IndexReader reader) if it wasn't protected
-        // :(
-        //MH getTerms(m_query.getQuery(), m_terms, prohibited);
-        
-        // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
-                    + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
-        }
-    }
     
     /**
      * Extracts all term texts of a given PhraseQuery. Term texts will be
@@ -271,57 +235,6 @@ public final class CmsHighlightExtractor {
         }
     }
 
-    /**
-     * Extracts all term texts of a given PrefixQuery. Term texts will be
-     * returned in lower-case.
-     * 
-     * @param query
-     *            PrefixQuery to extract term texts from
-     * @param terms
-     *            HashSet where extracted term texts should be put into
-     *            (Elements: String)
-     * @param prohibited
-     *            <code>true</code> to extract "prohibited" m_terms, too
-     */
-    private static void getTermsFromPrefixQuery(
-        PrefixQuery query,
-        HashSet terms,
-        boolean prohibited) {
-
-        //MH getTerms(m_query.getQuery(), m_terms, prohibited);
-        
-        // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
-                + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
-        }
-    }
-
-    /**
-     * Extracts all term texts of a given RangeQuery. Term texts will be
-     * returned in lower-case.
-     * 
-     * @param query
-     *            RangeQuery to extract term texts from
-     * @param terms
-     *            HashSet where extracted term texts should be put into
-     *            (Elements: String)
-     * @param prohibited
-     *            <code>true</code> to extract "prohibited" m_terms, too
-     */
-    private static void getTermsFromRangeQuery(
-        RangeQuery query,
-        HashSet terms,
-        boolean prohibited) {
-        
-        //MH getTerms(m_query.getQuery(), m_terms, prohibited);
-
-        // just to avoid warnings
-        if (org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).isDebugEnabled()) {
-            org.opencms.main.OpenCms.getLog(org.opencms.search.documents.CmsHighlightExtractor.class).debug("Not implemented: getTermsFromPrefixQuery "
-                    + "(" + query.toString() + "," + terms.toString() + "," + Boolean.toString(prohibited) + ")");
-        }
-    }
 
     /**
      * Extracts the term of a given Term. The term will be returned in
@@ -417,7 +330,7 @@ public final class CmsHighlightExtractor {
                     if (tokenText.length() > fragmentSize / 2) {
                         newText.append(
                             tokenText.substring(0, fragmentSize / 2));
-                        newText.append("..");
+                        newText.append("...");
                     } else {
                         newText.append(tokenText);
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/03/07 15:30:50 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/03/07 17:07:02 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import java.util.Map;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
@@ -65,7 +66,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.33 $ $Date: 2005/03/07 15:30:50 $
+ * @version $Revision: 1.34 $ $Date: 2005/03/07 17:07:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -363,8 +364,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         int page,
         int matchesPerPage) throws CmsException {
 
-        Searcher searcher = null;
-        Hits hits = null;
         Document luceneDocument = null;
         double maxScore = -1.0;
         CmsSearchResult searchResult = null;
@@ -382,8 +381,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         CmsRequestContext context = cms.getRequestContext();
         CmsProject currentProject = context.currentProject();
 
+        // the searcher to perform the operation in
+        Searcher searcher = null;
+        
+        // the hits found during the search
+        Hits hits;
+
         // storage for the results found
-        List searchResults = new ArrayList();
+        List searchResults = new ArrayList();        
         
         int previousPriority = Thread.currentThread().getPriority();
                 
@@ -394,55 +399,55 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 Thread.currentThread().setPriority(m_priority);
             }
 
-            if (hits == null) {
-                // change the project     
-                context.setCurrentProject(cms.readProject(m_project));
+            // change the project     
+            context.setCurrentProject(cms.readProject(m_project));
 
-                // complete the search root
-                if (searchRoot != null && !"".equals(searchRoot)) {
-                    // add the site root to the search root
-                    searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
-                } else {
-                    // just use the site root as the search root
-                    searchRoot = cms.getRequestContext().getSiteRoot();
-                }
+            // complete the search root
+            if (searchRoot != null && !"".equals(searchRoot)) {
+                // add the site root to the search root
+                searchRoot = cms.getRequestContext().getSiteRoot() + searchRoot;
+            } else {
+                // just use the site root as the search root
+                searchRoot = cms.getRequestContext().getSiteRoot();
+            }
 
-                luceneSearchDuration = -System.currentTimeMillis();
+            luceneSearchDuration = -System.currentTimeMillis();
 
-                // the language analyzer to use for creating the queries
-                Analyzer languageAnalyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
+            // the language analyzer to use for creating the queries
+            Analyzer languageAnalyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
 
-                // the main query to use, will be constructed in the next lines 
-                BooleanQuery query = new BooleanQuery();
-                // add query to search only in the selected site root
-                query.add(new PrefixQuery(new Term(I_CmsDocumentFactory.DOC_PATH, searchRoot)), true, false);
+            // the main query to use, will be constructed in the next lines 
+            BooleanQuery query = new BooleanQuery();
+            // add query to search only in the selected site root
+            query.add(new PrefixQuery(new Term(I_CmsDocumentFactory.DOC_PATH, searchRoot)), true, false);
 
-                if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery) && (fields != null) && (fields.length > 0)) {
-                    // this is a "regular" query over one or more fields
-                    BooleanQuery fieldsQuery = new BooleanQuery();
-                    // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
-                    for (int i = 0; i < fields.length; i++) {
-                        fieldsQuery.add(
-                            QueryParser.parse(searchQuery, fields[i], languageAnalyzer), 
-                            false, 
-                            false);
-                    }
-                    // finally add the field queries to the main query
-                    query.add(fieldsQuery, true, false);                
-                } else {
-                    // if no fields are provided, just use the "content" field by default
-                    query.add(
-                        QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer),
-                        true,
+            if (!C_SEARCH_QUERY_RETURN_ALL.equals(searchQuery) && (fields != null) && (fields.length > 0)) {
+                // this is a "regular" query over one or more fields
+                BooleanQuery fieldsQuery = new BooleanQuery();
+                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
+                for (int i = 0; i < fields.length; i++) {
+                    fieldsQuery.add(
+                        QueryParser.parse(searchQuery, fields[i], languageAnalyzer), 
+                        false, 
                         false);
                 }
-
-                // perform the search operation
-                searcher = new IndexSearcher(m_path);
-                hits = searcher.search(query);
-                
-                luceneSearchDuration += System.currentTimeMillis();
+                // finally add the field queries to the main query
+                query.add(fieldsQuery, true, false);                
+            } else {
+                // if no fields are provided, just use the "content" field by default
+                query.add(
+                    QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer),
+                    true,
+                    false);
             }
+            
+            // create the index searcher
+            searcher = new IndexSearcher(m_path);
+            
+            // perform the search operation
+            hits = searcher.search(query);
+            
+            luceneSearchDuration += System.currentTimeMillis();
             
             if (hits != null) {
                 maxScore = (hits.length() > 0) ? hits.score(0) : 0.0;
@@ -524,7 +529,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 } catch (IOException exc) {
                     // noop
                 }
-            }
+            }          
 
             // switch back to the original project
             context.setCurrentProject(currentProject);
@@ -622,16 +627,25 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         I_TermHighlighter termHighlighter = null;
         int maxExcerptLength = OpenCms.getSearchManager().getMaxExcerptLength();
 
+        // the index reader, required for excerpt generation with wildcards
+        IndexReader reader = null;
+        
         try {
-
+            
             if (rawContent != null) {
 
                 // there are no search terms to highlight if the query 
                 // was a search query to return all documents from the index                 
                 if (!C_SEARCH_QUERY_RETURN_ALL.equalsIgnoreCase(searchQuery)) {
 
+                    // open the index reader
+                    reader = IndexReader.open(m_path);    
+
                     analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
+                    // create the query 
                     query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, analyzer);
+                    // rewrite the query, this will remove wildcards and replace them with full terms
+                    query = query.rewrite(reader);
                     termHighlighter = OpenCms.getSearchManager().getHighlighter();
                     highlighter = new CmsHighlightExtractor(termHighlighter, query, analyzer);
 
@@ -641,6 +655,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                         maxNumFragmentsRequired,
                         fragmentSeparator);
                     excerpt = excerpt.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
+                    
                 } else {
 
                     excerpt = rawContent.replaceAll("[\\t\\n\\x0B\\f\\r]", "");
@@ -668,6 +683,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             throw new CmsException(message, e);
+        } finally {
+            // close the reader            
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException exc) {
+                    // noop
+                }
+            }            
         }
 
         return excerpt;
