@@ -102,6 +102,7 @@ function show_help()
 	return '2_2_2_2_4_1.html';
 }
 //-->
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>
 
 <head>
@@ -192,13 +193,19 @@ function show_help()
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
-<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
-	updateFrame('body.explorer_content.explorer_files','explorer_files.html');
-	updateFrame('body.explorer_tree','explorer_tree.html');
+<SCRIPT LANGUAGE=JavaScript>
+function update_frames()
+{
+	var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+	location.href=lasturl;
+	
+	if (window.top.body.explorer_tree)
+		window.top.body.explorer_tree.location.href='explorer_tree.html'; 
+}
 </SCRIPT>
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload="update_frames();">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
