@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 18:15:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/11/02 14:08:33 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.18 $ $Date: 2000/11/01 18:15:32 $
+ * @version $Revision: 1.19 $ $Date: 2000/11/02 14:08:33 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1394,7 +1394,7 @@ private void saveRegistry() throws CmsException {
  * @param String the name of the module.
  * @param String the name of the author.
  */
-public void setModuleAuthor(String modulename, String author) {
+public void setModuleAuthor(String modulename, String author) throws CmsException {
 	setModuleData(modulename, "author", author);
 }
 /**
@@ -1403,15 +1403,7 @@ public void setModuleAuthor(String modulename, String author) {
  * @param String the name of the module.
  * @param String the email of author of the module.
  */
-public void setModuleAuthorEmail(String email) {
-}
-/**
- * This method sets the email of author of the module.
- *
- * @param String the name of the module.
- * @param String the email of author of the module.
- */
-public void setModuleAuthorEmail(String modulename, String email) {
+public void setModuleAuthorEmail(String modulename, String email) throws CmsException {
 	setModuleData(modulename, "email", email);
 }
 /**
@@ -1420,7 +1412,7 @@ public void setModuleAuthorEmail(String modulename, String email) {
  * @param String the name of the module.
  * @param long the create date of the module.
  */
-public void setModuleCreateDate(String modulname, long createdate) {
+public void setModuleCreateDate(String modulname, long createdate) throws CmsException {
 	setModuleData(modulname, "creationdate", m_dateFormat.format(new Date(createdate)));
 }
 /**
@@ -1430,9 +1422,11 @@ public void setModuleCreateDate(String modulname, long createdate) {
  * @param String dataName the name of the tag to set the data for.
  * @param String the value to be set.
  */
-private void setModuleData(String module, String dataName, String value) {
+private void setModuleData(String module, String dataName, String value) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleData'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
-		// TODO: check the access rights!
 		Element moduleElement = getModuleElement(module);
 		Node tag = moduleElement.getElementsByTagName(dataName).item(0);
 		setTagValue(tag, value);
@@ -1450,7 +1444,10 @@ private void setModuleData(String module, String dataName, String value) {
  * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
  * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
  */
-public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
+public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleDependencies'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
 		Element module = getModuleElement(modulename);
 		Element dependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
@@ -1487,7 +1484,7 @@ public void setModuleDependencies(String modulename, Vector modules, Vector minV
  * @param String the name of the module.
  * @param String the description of the module.
  */
-public void setModuleDescription(String module, String description) {
+public void setModuleDescription(String module, String description) throws CmsException {
 	setModuleData(module, "description", description);
 }
 /**
@@ -1496,7 +1493,7 @@ public void setModuleDescription(String module, String description) {
  * @param String the name of the module.
  * @param java.lang.String the url to the documentation of the module.
  */
-public void setModuleDocumentPath(String modulename, String url) {
+public void setModuleDocumentPath(String modulename, String url) throws CmsException {
 	setModuleData(modulename, "documentation", url);
 }
 /**
@@ -1505,7 +1502,7 @@ public void setModuleDocumentPath(String modulename, String url) {
  * @param String the name of the module.
  * @param String the name of the class that receives all maintenance-events for the module.
  */
-public void setModuleMaintenanceEventClass(String modulname, String classname) {
+public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException {
 	setModuleData(modulname, "maintenance_class", classname);
 }
 /**
@@ -1514,7 +1511,7 @@ public void setModuleMaintenanceEventClass(String modulname, String classname) {
  * @param String the name of the module.
  * @param String the nice name of the module.
  */
-public void setModuleNiceName(String module, String nicename) {
+public void setModuleNiceName(String module, String nicename) throws CmsException {
 	setModuleData(module, "nicename", nicename);
 }
 	/**
@@ -1685,16 +1682,19 @@ public void setModuleParameter(String modulename, String parameter, boolean valu
  * @param types Vector with parametertypes (string, float,...)
  * @param values Vector with defaultvalues for parameters
  */
-public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) {
+public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleParameterdef'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
 		Element module = getModuleElement(modulename);
 		Element params = (Element) (module.getElementsByTagName("parameters").item(0));
 
 		// delete all subnodes
-		while(params.hasChildNodes()) {
+		while (params.hasChildNodes()) {
 			params.removeChild(params.getFirstChild());
 		}
-		
+
 		// create the new parameters
 		for (int i = 0; i < names.size(); i++) {
 			Element para = m_xmlReg.createElement("para");
@@ -1725,8 +1725,11 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
  * @param String modulname the name of the module.
  * @param String[] the reprositories of a module.
  */
-public void setModuleRepositories(String modulename, String[] repositories) {
+public void setModuleRepositories(String modulename, String[] repositories) throws CmsException {
 	String[] retValue = null;
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleRepositories'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
 		Element module = getModuleElement(modulename);
 		Element repository = (Element) (module.getElementsByTagName("repository").item(0));
@@ -1756,7 +1759,7 @@ public void setModuleRepositories(String modulename, String[] repositories) {
  * @param String the name of the module.
  * @param int the version of the module.
  */
-public void setModuleVersion(String modulename, int version) {
+public void setModuleVersion(String modulename, int version) throws CmsException {
 	setModuleData(modulename, "version", version + "");
 }
 /**
@@ -1766,11 +1769,14 @@ public void setModuleVersion(String modulename, int version) {
  * @param String the name of the view, that is implemented by the module.
  * @param String the url of the view, that is implemented by the module.
  */
-public void setModuleView(String modulename, String viewname, String viewurl) {
+public void setModuleView(String modulename, String viewname, String viewurl) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'setModuleView'", CmsException.C_REGISTRY_ERROR);
+	}
 	try {
 		Element module = getModuleElement(modulename);
 		Element view = (Element) (module.getElementsByTagName("view").item(0));
-		if(!view.hasChildNodes()) {
+		if (!view.hasChildNodes()) {
 			view.appendChild(m_xmlReg.createElement("name"));
 			view.appendChild(m_xmlReg.createElement("url"));
 		}

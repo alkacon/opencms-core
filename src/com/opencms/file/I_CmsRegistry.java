@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/11/01 18:15:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/11/02 14:08:33 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/11/01 18:15:32 $
+ * @version $Revision: 1.16 $ $Date: 2000/11/02 14:08:33 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -498,21 +498,21 @@ public boolean moduleExists(String modulename);
  * @param String the name of the module.
  * @param String the name of the author.
  */
-public void setModuleAuthor(String modulename, String author);
+public void setModuleAuthor(String modulename, String author) throws CmsException;
 /**
  * This method sets the email of author of the module.
  *
  * @param String the name of the module.
  * @param String the email of author of the module.
  */
-public void setModuleAuthorEmail(String modulename, String email);
+public void setModuleAuthorEmail(String modulename, String email) throws CmsException;
 /**
  * Sets the create date of the module.
  *
  * @param String the name of the module.
  * @param long the create date of the module.
  */
-public void setModuleCreateDate(String modulname, long createdate);
+public void setModuleCreateDate(String modulname, long createdate) throws CmsException;
 /**
  * Sets the module dependencies for the module.
  *
@@ -521,35 +521,35 @@ public void setModuleCreateDate(String modulname, long createdate);
  * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
  * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
  */
-public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions);
+public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) throws CmsException;
 /**
  * Sets the description of the module.
  *
  * @param String the name of the module.
  * @param String the description of the module.
  */
-public void setModuleDescription(String module, String description);
+public void setModuleDescription(String module, String description) throws CmsException;
 /**
  * Sets the url to the documentation of the module.
  * 
  * @param String the name of the module.
  * @param java.lang.String the url to the documentation of the module.
  */
-public void setModuleDocumentPath(String modulename, String url);
+public void setModuleDocumentPath(String modulename, String url) throws CmsException;
 /**
  * Sets the classname, that receives all maintenance-events for the module.
  * 
  * @param String the name of the module.
  * @param java.lang.Class that receives all maintenance-events for the module.
  */
-public void setModuleMaintenanceEventClass(String modulname, String classname);
+public void setModuleMaintenanceEventClass(String modulname, String classname) throws CmsException;
 /**
  * Sets the description of the module.
  *
  * @param String the name of the module.
  * @param String the nice name of the module.
  */
-public void setModuleNiceName(String module, String nicename);
+public void setModuleNiceName(String module, String nicename) throws CmsException;
 /**
  * Sets a parameter for a module.
  * 
@@ -663,21 +663,21 @@ public void setModuleParameter(String modulename, String parameter, boolean valu
  * @param types Vector with parametertypes (string, float,...)
  * @param values Vector with defaultvalues for parameters
  */
-public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values);
+public void setModuleParameterdef(String modulename, Vector names, Vector descriptions, Vector types, Vector values) throws CmsException;
 /**
  * Sets all repositories for a module.
  *
  * @param String modulname the name of the module.
  * @param String[] the reprositories of a module.
  */
-public void setModuleRepositories(String modulename, String[] repositories);
+public void setModuleRepositories(String modulename, String[] repositories) throws CmsException;
 /**
  * This method sets the version of the module.
  *
  * @param String the name of the module.
  * @param int the version of the module.
  */
-public void setModuleVersion(String modulename, int version);
+public void setModuleVersion(String modulename, int version) throws CmsException;
 /**
  * Sets a view for a module
  * 
@@ -685,5 +685,5 @@ public void setModuleVersion(String modulename, int version);
  * @param String the name of the view, that is implemented by the module.
  * @param String the url of the view, that is implemented by the module.
  */
-public void setModuleView(String modulename, String viewname, String viewurl);
+public void setModuleView(String modulename, String viewname, String viewurl) throws CmsException;
 }
