@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2003/07/12 11:29:22 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,19 +39,9 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.27 $ $Date: 2003/07/14 13:28:23 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
-
-    /**
-     * Static array of all known launcher.
-     * Not all of these launchers must be integrated into the OpenCms system.
-     * Only really relevant launchers are required.
-     */
-    //private static final String[] C_KNOWN_LAUNCHERS =  {
-    //    "CmsXmlLauncher", "CmsDumpLauncher", "CmsLinkLauncher",
-    //    "CmsPdfLauncher"
-    //};
 
     /**
      * Hashtable to store instances of all launchers.
@@ -59,7 +49,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
      * once at startup
      */
     private Hashtable launchers;
-
+    
     /**
      * Constructor for building a new launcher manager.
      * Uses the C_KNOWN_LAUNCHERS array to scan for all available

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/11 19:44:24 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,14 +72,13 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
      * @param launcherClass The Java class that should be invoked by the launcher.
      * This value is <b> null </b> if the default invokation class should be used.
      */
-    public void init(int resourceType, int launcherType,
-                           String resourceTypeName, String launcherClass){
-
+    public void init(int resourceType, int launcherType, String resourceTypeName, String launcherClass){
         m_resourceType=resourceType;
         m_launcherType=launcherType;
         m_resourceTypeName=resourceTypeName;
         m_launcherClass=launcherClass;
     }
+    
      /**
      * Returns the name of the Java class loaded by the launcher.
      * This method returns <b>null</b> if the default class for this type is used.
@@ -199,7 +198,7 @@ public class CmsResourceTypePlain extends Object implements I_CmsResourceType, I
      */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException{
         cms.doCopyResourceToProject(resourceName);
-    };
+    }
 
     /**
      * Creates a new resource

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/07/14 13:28:23 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -316,12 +316,16 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
         }
                        
-        // try to figure out if the target is a page or XMLTemplate file        
+        // try to figure out if the target is a page, a new page or a XMLTemplate file        
         boolean isPageTarget = false;         
+        boolean isNewPageTarget = false;         
         try {
             target = controller.getCurrentRequest().toAbsolute(target);
             CmsResource resource = controller.getCmsObject().readFileHeader(target);
             isPageTarget = ((controller.getCmsObject().getResourceType("page").getResourceType() == resource.getType()));
+            if (! isPageTarget) {
+                isNewPageTarget = ((controller.getCmsObject().getResourceType("newpage").getResourceType() == resource.getType()));
+            }
         } catch (CmsException e) {
             // any exception here and we will treat his as non-Page file
             throw new JspException("File not found: " + target, e);
@@ -334,11 +338,13 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 // add body file path to target 
                 if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
                     target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
-                }              
-                // save target as "element replace" parameter  
+                }                          
+            }
+            if (isPageTarget || isNewPageTarget) {
+                // save target as "element replace" parameter for body loader
                 addParameter(parameterMap, CmsXmlLauncher.C_ELEMENT_REPLACE, "body:" + target, true);  
-                target = C_BODYLOADER_URI;              
-            } 
+                target = C_BODYLOADER_URI;                   
+            }
             // for other cases setting of "target" is fine 
         } else {
             // body attribute is set: this is a sub-element in a XML mastertemplate

@@ -55,6 +55,12 @@
             <launcherClass/>
             <resourceClass>com.opencms.file.CmsResourceTypeJsp</resourceClass>
         </restype>   
+        <restype>
+            <name>newpage</name>
+            <launcherType>8</launcherType>
+            <launcherClass/>
+            <resourceClass>com.opencms.file.CmsResourceTypeNewPage</resourceClass>
+        </restype>   
         <view>
             <name>select.explorer</name>
             <url>/system/workplace/action/explorer_new.html</url>
@@ -92,6 +98,7 @@
             <launcher2>com.opencms.flex.CmsDumpLoader</launcher2>
             <launcher3>com.opencms.launcher.CmsLinkLauncher</launcher3>
             <launcher4>com.opencms.flex.CmsJspLoader</launcher4>     
+            <launcher5>com.opencms.launcher.CmsPageLauncher</launcher5>     
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.A_CmsXmlContent;
@@ -59,9 +60,11 @@ import org.w3c.dom.Document;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.71 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/14 13:28:23 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
+
+    public static final boolean C_SIMPLE_PAGE = true;
 
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -154,7 +157,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
 
                     byte[] content = null;
-                    if (CmsResourceTypePage.C_SIMPLE_PAGE) {
+                    if (C_SIMPLE_PAGE) {
                         content = bodyBytes; 
                     } else {
                         content = "".getBytes();
@@ -162,9 +165,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
                     CmsResource file = null;
                     if (! currentFilelist.endsWith(C_FOLDER_SEPARATOR)) currentFilelist += C_FOLDER_SEPARATOR;
-                    file = ((CmsResourceTypePage)cms.getResourceType("page")).createResourceForTemplate(cms, currentFilelist + newFile, prop, content, templatefile);
+                    file = ((CmsResourceTypeNewPage)cms.getResourceType("newpage")).createResourceForTemplate(cms, currentFilelist + newFile, prop, content, templatefile);
                         
-                    if (! CmsResourceTypePage.C_SIMPLE_PAGE) {    
+                    if (! C_SIMPLE_PAGE) {    
                         CmsFile bodyFile = cms.readFile(C_VFS_PATH_BODIES + currentFilelist.substring(1,currentFilelist.length()), newFile);
                         bodyFile.setContents(bodyBytes);
                         cms.writeFile(bodyFile);

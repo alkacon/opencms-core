@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/14 11:05:23 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/07/14 13:28:23 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.38 $ $Date: 2003/07/14 11:05:23 $
+ * @version $Revision: 1.39 $ $Date: 2003/07/14 13:28:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -2997,25 +2997,23 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      *
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public List getFolderTree(CmsRequestContext context, CmsResource parentResource) throws CmsException {      
-        CmsUser currentUser = context.currentUser();
-        CmsProject currentProject = context.currentProject();        
+    public List getFolderTree(CmsRequestContext context, CmsResource parentResource) throws CmsException {             
         // try to read from cache
-        String cacheKey = getCacheKey(currentUser.getName() + "_tree", currentUser, currentProject, parentResource.getFullResourceName());
+        String cacheKey = getCacheKey(context.currentUser().getName() + "_tree", context.currentUser(), context.currentProject(), parentResource.getFullResourceName());
         List retValue = (List) m_resourceListCache.get(cacheKey);        
         if (retValue == null || retValue.size() == 0) {
-            List resources = m_vfsDriver.getFolderTree(currentProject, parentResource);
+            List resources = m_vfsDriver.getFolderTree(context.currentProject(), parentResource);
             retValue = (List) new ArrayList();
             String lastcheck = "#"; // just a char that is not valid in a filename
 
             // make sure that we have access to all these.
             for (Iterator e = resources.iterator(); e.hasNext();) {
                 CmsResource res = (CmsResource) e.next();
-                if (!context.removeSiteRoot(readPath(currentUser, currentProject, res, true)).startsWith(lastcheck)) {
-                    if (hasPermissions(currentUser, currentProject, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
+                if (!context.removeSiteRoot(readPath(context.currentUser(), context.currentProject(), res, true)).startsWith(lastcheck)) {
+                    if (hasPermissions(context.currentUser(), context.currentProject(), res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         retValue.add(res);
                     } else {
-                        lastcheck = context.removeSiteRoot(readPath(currentUser, currentProject, res, false));
+                        lastcheck = context.removeSiteRoot(readPath(context.currentUser(), context.currentProject(), res, false));
                     }
                 }
             }

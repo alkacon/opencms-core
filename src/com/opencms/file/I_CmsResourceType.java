@@ -1,31 +1,34 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2003/07/11 14:00:14 $
-* Version: $Revision: 1.22 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
+ * Date   : $Date: 2003/07/14 13:28:23 $
+ * Version: $Revision: 1.23 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2002 - 2003 Alkacon Software (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+ 
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
@@ -36,247 +39,240 @@ import java.util.Map;
  * Defines of all methods that a specific resource type has to implement.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @author Alexander Kandzior (a.kandzior@alkacon.com)
  */
 public interface I_CmsResourceType {
     
     /**
-     * init a new CmsResourceType object.
+     * Init a new CmsResourceType object.<p>
      *
-     * @param resourceType The id of the resource type.
-     * @param launcherType The id of the required launcher.
-     * @param resourceTypeName The printable name of the resource type.
-     * @param launcherClass The Java class that should be invoked by the launcher.
+     * @param resourceType the id of the resource type
+     * @param launcherType the id of the required launcher
+     * @param resourceTypeName the printable name of this resource type
+     * @param launcherClass the {@link com.opencms.launcher.I_CmsLauncher} class name for this resource type
      * This value is <b> null </b> if the default invokation class should be used.
      */
-    void init(int resourceType, int launcherType,
-                           String resourceTypeName, String launcherClass);
+    void init(int resourceType, int launcherType, String resourceTypeName, String launcherClass);
 
      /**
-     * Returns the name of the Java class loaded by the launcher.
-     * This method returns <b>null</b> if the default class for this type is used.
-     *
-     * @return the name of the Java class.
-     */
+      * Returns the name of the the {@link com.opencms.launcher.I_CmsLauncher} of this resource type.<p> 
+      *
+      * @return the name of the launcher class
+      */
      String getLauncherClass();
 
      /**
-     * Returns the launcher type needed for this resource-type.
-     *
-     * @return the launcher type for this resource-type.
-     */
+      * Returns the launcher type id needed for this resource type.<p>
+      *
+      * @return the launcher type id for this resource type
+      */
      int getLauncherType();
 
     /**
-     * Returns the name for this resource-type.
+     * Returns the name for this resource type.<p>
      *
-     * @return the name for this resource-type.
+     * @return the name for this resource type
      */
      String getResourceTypeName();
 
     /**
-     * Returns the type of this resource-type.
+     * Returns the type id of this resource type.<p>
      *
-     * @return the type of this resource-type.
+     * @return the type id of this resource type
      */
     int getResourceType();
+
+    /**
+     * Creates a new resource of this resource type.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the file to create
+     * @param contents the contents of the new file
+     * @param properties the properties of the new file
+     * @param parameter additional parameters for the create operation
+     * @return file a CmsResource representing the newly created file
+     * @throws CmsException if something goes wrong
+     */
+    CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException;
+        
+    /**
+     * Locks a resource.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param force if true, locking is forced even if resource is already locked by someone else
+     * @throws CmsException if something goes wrong
+     */
+    void lockResource(CmsObject cms, String resourcename, boolean force) throws CmsException;
+
+    /**
+     * Unlocks a resource.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @throws CmsException if something goes wrong
+     */
+    void unlockResource(CmsObject cms, String resourcename, boolean recursive) throws CmsException;
     
     /**
-     * Change the timestamp of a resource.
+     * Copies a Resource.
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param destination the complete path of the destinationfolder
+     * @param keeppermissions <code>true</code> if the copy should keep the source file's permissions,
+     *        <code>false</code> if the copy should get the user's default flags
+     * @throws CmsException if something goes wrong
+     */
+    void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions) throws CmsException;
+
+    /**
+     * Moves a file to the given destination.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param destination the destination resource name
+     * @throws CmsException if something goes wrong
+     */
+    void moveResource(CmsObject cms, String resourcename, String destination) throws CmsException;
+
+    /**
+     * Renames a file to a new name.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param destination the destination resource name
+     * @throws CmsException if something goes wrong
+     */
+    void renameResource(CmsObject cms, String resourcename, String destination) throws CmsException;
+
+    /**
+     * Deletes a resource.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     */
+    void deleteResource(CmsObject cms, String resourcename) throws CmsException;
+
+    /**
+     * Undeletes a resource.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     */
+    void undeleteResource(CmsObject cms, String resourcename) throws CmsException;
+            
+    /**
+     * Change the timestamp of a resource.<p>
      * 
-     * @param resourceName the name of the resource to change
-     * @param timestamp timestamp the new timestamp of the changed resource
-     * @param boolean flag to touch recursively all sub-resources in case of a folder
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param timestamp the new timestamp of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @throws CmsException if something goes wrong
      */
-    void touch( CmsObject cms, String resourceName, long timestamp, boolean touchRecursive ) throws CmsException;
+    void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive) throws CmsException;
 
     /**
-    * Changes the resourcetype of a resource.
-    * <br>
-    * Only the resourcetype of a resource in an offline project can be changed. The state
-    * of the resource is set to CHANGED (1).
-    * If the content of this resource is not exisiting in the offline project already,
-    * it is read from the online project and written into the offline project.
-    * The user may change this, if he is admin of the resource.
-    * <p>
-    * <B>Security:</B>
-    * Access is granted, if:
-    * <ul>
-    * <li>the user has access to the project</li>
-    * <li>the user is owner of the resource or is admin</li>
-    * <li>the resource is locked by the callingUser</li>
-    * </ul>
-    *
-    * @param filename the complete path to the resource.
-    * @param newType the name of the new resourcetype for this resource.
-    *
-    * @throws CmsException if operation was not successful.
-    */
-    void chtype(CmsObject cms, String filename, String newType) throws CmsException;
-
-
-    /**
-    * Copies a Resource.
-    *
-    * @param source the complete path of the sourcefile.
-    * @param destination the complete path of the destinationfolder.
-    * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
-    *        <code>false</code> if the copy should get the user's default flags.
-    *
-    * @throws CmsException if the file couldn't be copied, or the user
-    * has not the appropriate rights to copy the file.
-    */
-    void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException;
-
-
-    /**
-     * Copies the resourcename to the current offline project
-     * @param cms The CmsObject
-     * @param resourceName The name of the resource
+     * Changes the resource type of a resource.<p>
      *
-     * @throws CmsException if operation was not successful.
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param newtype the name of the new resource type for this resource
+     * @throws CmsException if something goes wrong
      */
-    void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException;
+    void chtype(CmsObject cms, String resourcename, String newtype) throws CmsException;
+    
+    /**
+     * Replaces the content and properties of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param properties the new properties of the resource
+     * @param content the new content of the resource
+     * @param type the new type of the resource
+     * @throws CmsException if something goes wrong
+     */
+    // TODO: Allow null valued for properties / content / type
+    void replaceResource(CmsObject cms, String resourcename, Map properties, byte[] content, String type) throws CmsException;
 
     /**
-    * Creates a new resource.<br>
-    *
-    * @param folder the complete path to the folder in which the file will be created.
-    * @param filename the name of the new file.
-    * @param contents the contents of the new file.
-    * @param type the resourcetype of the new file.
-    *
-    * @return file a <code>CmsFile</code> object representing the newly created file.
-    *
-    * @throws CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
-    * filename is not valid or if the user has not the appropriate rights to create a new file.
-    */
-    CmsResource createResource(CmsObject cms, String newResourceName, Map properties, byte[] contents, Object parameter) throws CmsException;
-
-    /**
-    * Deletes a resource.
-    *
-    * @param filename the complete path of the file.
-    *
-    * @throws CmsException if the file couldn't be deleted, or if the user
-    * has not the appropriate rights to delete the file.
-    */
-    void deleteResource(CmsObject cms, String filename) throws CmsException;
-
-    /**
-    * Deletes a resource.
-    *
-    * @param filename the complete path of the file.
-    *
-    * @throws CmsException if the file couldn't be deleted, or if the user
-    * has not the appropriate rights to delete the file.
-    */
-    void undeleteResource(CmsObject cms, String filename) throws CmsException;
-
-    /**
-     * Does the Linkmanagement when a resource will be exported.
-     * When a resource has to be exported, the ID큦 inside the
-     * Linkmanagement-Tags have to be changed to the corresponding URL큦
+     * Undo all changes in the resource, restoring the online version.<p>
      *
-     * @param file is the file that has to be changed
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong
      */
+    void undoChanges(CmsObject cms, String resourcename) throws CmsException;
+
+    /**
+     * Restores a file in the current project with a version from the backup.<p>
+     *
+     * @param cms the current cms context
+     * @param version the version id to resource form the backup
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     */
+    void restoreResource(CmsObject cms, int version, String resourcename) throws CmsException;
+
+    /**
+     * Copies a resource to the currently selected project.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     */
+    void copyResourceToProject(CmsObject cms, String resourcename) throws CmsException;
+
+    /**
+     * Changes the project id of the resource to the new project.<p>
+     *
+     * @param cms the current cms context
+     * @param project the project id to change the status of the resource to
+     * @param resourcename the name of the resource to apply this operation to
+     * @throws CmsException if something goes wrong     
+     */
+    void changeLockedInProject(CmsObject cms, int project, String resourcename) throws CmsException;
+
+    /**
+     * Does the Linkmanagement when a resource is exported.<p>
+     * 
+     * When a resource is exported, the ID큦 inside the
+     * link tags have to be changed to the corresponding URL큦.<p>
+     *
+     * @param cms the current cms context
+     * @param file the file to apply this operation to
+     * @throws CmsException if something goes wrong
+     * @return CmsFile
+     */
+    // TODO: Check where this method is called
     CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException;
 
     /**
-     * Does the Linkmanagement when a resource is imported.
-     * When a resource has to be imported, the URL큦 of the
-     * Links inside the resources have to be saved and changed to the corresponding ID큦
-     *
-     * @param file is the file that has to be changed
-     */
-    CmsResource importResource(CmsObject cms, String source, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
-
-    /**
-    * Locks a given resource.
-    * <br>
-    * A user can lock a resource, so he is the only one who can write this
-    * resource.
-    *
-    * @param resource the complete path to the resource to lock.
-    * @param force if force is <code>true</code>, a existing locking will be overwritten.
-    *
-    * @throws CmsException if the user has not the rights to lock this resource.
-    * It will also be thrown, if there is a existing lock and force was set to false.
-    */
-    void lockResource(CmsObject cms, String resource, boolean force) throws CmsException;
-
-    /**
-    * Moves a file to the given destination.
-    *
-    * @param source the complete path of the sourcefile.
-    * @param destination the complete path of the destinationfile.
-    *
-    * @throws CmsException if the user has not the rights to move this resource,
-    * or if the file couldn't be moved.
-    */
-    void moveResource(CmsObject cms, String source, String destination) throws CmsException;
-
-    /**
-    * Renames the file to the new name.
-    *
-    * @param oldname the complete path to the file which will be renamed.
-    * @param newname the new name of the file.
-    *
-    * @throws CmsException if the user has not the rights
-    * to rename the file, or if the file couldn't be renamed.
-    */
-    void renameResource(CmsObject cms, String oldname, String newname) throws CmsException;
-
-    /**
-     * Restores a file in the current project with a version in the backup
-     *
-     * @param cms The CmsObject
-     * @param versionId The version id of the resource
-     * @param filename The name of the file to restore
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     */
-    void restoreResource(CmsObject cms, int versionId, String filename) throws CmsException;
-
-    /**
-     * Undo all changes in the resource, restore the online file.
-     *
-     * @param resourceName The name of the resource to be restored.
-     *
-     * @throws CmsException Throws CmsException if something goes wrong.
-     */
-    void undoChanges(CmsObject cms, String filename) throws CmsException;
-
-    /**
-    * Unlocks a resource.
-    * <br>
-    * A user can unlock a resource, so other users may lock this file.
-    *
-    * @param resource the complete path to the resource to be unlocked.
-    *
-    * @throws CmsException if the user has not the rights
-    * to unlock this resource.
-    */
-    void unlockResource(CmsObject cms, String resource, boolean forceRecursive) throws CmsException;
-
-    /**
-     * Changes the project-id of the resource to the new project
-     * for publishing the resource directly
-     *
-     * @param newProjectId The Id of the new project
-     * @param resourcename The name of the resource to change
-     */
-    void changeLockedInProject(CmsObject cms, int newProjectId, String resourcename)
-        throws CmsException;
-
-    /**
-     * Replaces the content and properties of an existing resource.<p>
+     * Imports a resource to the VFS.<p>
      * 
-     * @param cms the CmSsObject
-     * @param resourceName the absolute path and name of the resource that is replaced
-     * @param resourceProperties the properties of the resource
-     * @param resourceContent the content of the resource
+     * When a resource is imported, the URL큦 of the
+     * links inside the link tags have to be saved and changed to the corresponding ID큦.<p>
+     *
+     * @param cms the current cms context
+     * @param resourcename the name of the resource to apply this operation to
+     * @param destination the destination
+     * @param type the type of the resource
+     * @param user the user (deprecated)
+     * @param group the group (deprecated)
+     * @param access the access flags (deprecated)
+     * @param lastmodified the date of last modification
+     * @param properties properties of the resource
+     * @param launcherStartClass the name of the launcher class
+     * @param content the contents
+     * @param importPath the import path
      * @throws CmsException if something goes wrong
+     * @return CmsResource the imported resources
      */
-    void replaceResource(CmsObject cms, String resName, Map newResProperties, byte[] newResContent, String newResType) throws CmsException;
-
+    // TODO: Remove user / group / access
+    // TODO: Add "creation date" (?)
+    CmsResource importResource(CmsObject cms, String resourcename, String destination, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException;
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.104 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.105 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.104 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.105 $ $Date: 2003/07/14 13:28:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,7 +94,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     }
 
     protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
-        String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getResourceName();
+        String temporaryFilename = CmsResource.getPath(cms.readAbsolutePath(file)) + C_TEMP_PREFIX + file.getResourceName();
         boolean ok = true;
         
         cms.getRequestContext().setCurrentProject(tempProject);
@@ -481,11 +481,23 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // This can be done by calling the getOwnTemplateFile() method of the
         // layout's template class.
         // The content is needed to determine the HTML style of the body element.
-        Object tempObj = CmsTemplateClassManager.getClassInstance(cms, layoutTemplateClassName);
-        CmsXmlTemplate layoutTemplateClassObject = (CmsXmlTemplate)tempObj;
-        CmsXmlTemplateFile layoutTemplateFile = layoutTemplateClassObject.getOwnTemplateFile(cms,
-                layoutTemplateFilename, null, parameters, null);
-
+        Object tempObj = null;
+        CmsXmlTemplateFile layoutTemplateFile = null;
+        if (isSimplePage) {
+            StringBuffer layoutBuffer = new StringBuffer(512);            
+            layoutBuffer.append("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<xmltemplate>\n<stylesheet>");
+            layoutBuffer.append("none");
+            layoutBuffer.append("</stylesheet>\n<template><element name=\"jsptemplate\"/></template>\n<elementdef name=\"jsptemplate\">\n<class>com.opencms.flex.CmsJspTemplate</class>\n<template>");
+            layoutBuffer.append(templateFile);
+            layoutBuffer.append("</template>\n</elementdef>\n</xmltemplate>\n");
+            layoutTemplateFile = new CmsXmlTemplateFile(cms, templateFile + C_XML_CONTROL_FILE_SUFFIX, layoutBuffer.toString());
+        } else {
+            tempObj = CmsTemplateClassManager.getClassInstance(cms, layoutTemplateClassName);
+            CmsXmlTemplate layoutTemplateClassObject = (CmsXmlTemplate)tempObj;
+            layoutTemplateFile = layoutTemplateClassObject.getOwnTemplateFile(cms,
+                    layoutTemplateFilename, null, parameters, null);
+        }
+        
         // Get the XML parsed content of the body file.
         // This can be done by calling the getOwnTemplateFile() method of the
         // body's template class.
@@ -505,22 +517,29 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 body = (String)allBodys.elementAt(0);
             }
             bodytitle = body.equals("(default)") ? "" : body;
-            if (! isSimplePage) {
+            if (isSimplePage) {
+                style = cms.readProperty(layoutTemplateFilename, "stylesheet");
+                if (style != null) {
+                    style =  hostName + A_OpenCms.getOpenCmsContext() + style;
+                } else {
+                    style = "";
+                }
+            } else {
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
                 // change the current project to temp file project
                 cms.getRequestContext().setCurrentProject(tempProject);
                 temporaryControlFile.write();
                 cms.getRequestContext().setCurrentProject(curProject);
-            }
-            try {
-                style = getStylesheet(cms, null, layoutTemplateFile, null);
+                try {
+                    style = getStylesheet(cms, null, layoutTemplateFile, null);
+                } catch (Exception e) {
+                    style = "";
+                }
                 if(style != null && !"".equals(style)) {
                     style = hostName + style;
-                }
-            }catch(Exception e) {
-                style = "";
-            }
+                }                                   
+            }         
             session.putValue("te_stylesheet", style);
         } else {
             // There exists a content parameter.
@@ -545,18 +564,24 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 if (isSimplePage) {
                     cms.getRequestContext().setCurrentProject(tempProject);
                     cms.writeProperty(tempPageFilename, C_XML_CONTROL_TEMPLATE_PROPERTY, layoutTemplatFilenameRelative);
-                    cms.getRequestContext().setCurrentProject(curProject);                                        
+                    cms.getRequestContext().setCurrentProject(curProject);         
+                    style = cms.readProperty(layoutTemplateFilename, "stylesheet");    
+                    if (style != null) {
+                        style = hostName + A_OpenCms.getOpenCmsContext() + style;
+                    } else {
+                        style = "";
+                    }
                 } else { 
                     temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );
-                }
-                try {
-                    style = getStylesheet(cms, null, layoutTemplateFile, null);
+                    try {
+                        style = getStylesheet(cms, null, layoutTemplateFile, null);
+                    }catch(Exception e) {
+                        style = "";
+                    }
                     if(style != null && !"".equals(style)) {
                         style = hostName + style;
-                    }
-                }catch(Exception e) {
-                    style = "";
-                }
+                    }   
+                }             
                 session.putValue("te_stylesheet", style);
             }
             if(bodytitlechangeRequested) {
@@ -714,7 +739,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         // So the "bodytag" and "style" data can be accessed by the body file.
         Element bodyTag = layoutTemplateFile.getBodyTag();
         bodyTemplateFile.setBodyTag(bodyTag);
-		
+        
 		// Load the body!
 		content = bodyTemplateFile.getEditableTemplateContent(this, parameters, body, editor.equals(C_SELECTBOX_EDITORVIEWS[0]), style);
 		

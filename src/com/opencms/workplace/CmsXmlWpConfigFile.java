@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2003/07/11 14:00:46 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.51 $ $Date: 2003/07/11 14:00:46 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/14 13:28:23 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -164,7 +164,7 @@ public class CmsXmlWpConfigFile {
         } else {
             names.add("plain");     values.add("plain");
             names.add("jsp");       values.add("jsp"); 
-            names.add("page");      values.add("page");
+            names.add("newpage");       values.add("newpage");
             names.add("XMLTemplate");   values.add("XMLTemplate");            
             names.add("binary");    values.add("binary");
             names.add("image");     values.add("image");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2003/07/12 12:49:03 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,16 +32,16 @@ package com.opencms.launcher;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
-import com.opencms.template.*;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateCache;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsTemplateCache;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -69,9 +69,9 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.43 $ $Date: 2003/07/12 12:49:03 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/14 13:28:23 $
  */
-abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants {
+abstract class A_CmsLauncher implements I_CmsLauncher {
 
     /** Debug flag */
     private static final boolean DEBUG = false;
@@ -160,7 +160,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
      */
     protected I_CmsTemplate getTemplateClass(CmsObject cms, String classname) throws CmsException {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && DEBUG) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
         }
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
 
@@ -170,7 +170,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
         if (!(o instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + classname + " is no OpenCms template class.";
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsTemplateClassManager] " + errorMessage);
             }
             throw new CmsException(errorMessage, CmsException.C_XML_NO_TEMPLATE_CLASS);
         }
@@ -202,9 +202,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
 
         // Print out some error messages
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + com.opencms.util.Utils.getStackTrace(e));
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorText);
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + com.opencms.util.Utils.getStackTrace(e));
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
 
         // if the user is "Guest", we send an servlet error,
@@ -239,7 +239,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
 
         // first some debugging output.
         if (DEBUG && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getResourceName());
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getResourceName());
         }
 
         // check all values to be valid
@@ -252,7 +252,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
         }
         if (errorMessage != null) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
             } 
             throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
         }
@@ -337,9 +337,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
             }
         }
         catch(IOException ioe) {
-            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_DEBUG) ) {
-                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
-                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + ioe);
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_DEBUG) ) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, getClassName() + ioe);
             }
         }
         catch(Exception e) {

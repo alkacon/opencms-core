@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/07/06 13:45:09 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.71 $ $Date: 2003/07/06 13:45:09 $
+ * @version $Revision: 1.72 $ $Date: 2003/07/14 13:28:23 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -106,6 +106,16 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
         }
         init(cms, filename);
     }
+    
+    public CmsXmlTemplateFile(CmsObject cms, String filename, String content) throws CmsException {
+        super();
+        if(!cms.getRequestContext().isElementCacheEnabled()) {
+            registerMyTags();
+        }
+        init(cms, filename, content);
+    }
+        
+    
     public int createNewSection(String sectionName) {
         int loop = 2;
         String tempName = sectionName + loop;

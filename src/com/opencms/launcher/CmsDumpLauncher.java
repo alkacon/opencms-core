@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/14 13:28:23 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,9 +57,9 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2003/07/02 11:03:13 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/14 13:28:23 $
  */
-public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
+public class CmsDumpLauncher extends A_CmsLauncher {
 
     /**
      * Gets the ID that indicates the type of the launcher.
@@ -94,7 +94,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
         CmsUri cmsUri = null;
 
         String templateClass = startTemplateClass;
-        if(templateClass == null || "".equals(templateClass) || (startTemplateClass.equals(C_UNKNOWN_LAUNCHER))) {
+        if(templateClass == null || "".equals(templateClass) || (startTemplateClass.equals(I_CmsConstants.C_UNKNOWN_LAUNCHER))) {
             templateClass = "com.opencms.template.CmsDumpTemplate";
         }
 
@@ -142,7 +142,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
             else {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, getClassName() + "Empty URL parameter \"" + pname + "\" found.");
                 }
             }
         }
@@ -158,7 +158,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
         } 
         if(elementCacheEnabled) {
             // lets check if ssl is active
-            if(cms.getMode() == C_MODUS_ONLINE){
+            if(cms.getMode() == I_CmsConstants.C_MODUS_ONLINE){
                 String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
                 boolean httpsReq = "https".equalsIgnoreCase(scheme);
                 if(cmsUri.isHttpsResource() != httpsReq){
@@ -178,7 +178,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             if(!(tmpl instanceof com.opencms.template.I_CmsDumpTemplate)) {
                 String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a Cms dump template class.";
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
                 throw new CmsException(errorMessage, CmsException.C_XML_WRONG_TEMPLATE_CLASS);
             }
@@ -188,7 +188,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
             catch(CmsException e) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + cms.readAbsolutePath(file) + "\" and template class \"" + templateClass + "\". See above for details.");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "There were errors while building output for template file \"" + cms.readAbsolutePath(file) + "\" and template class \"" + templateClass + "\". See above for details.");
                 }
                 throw e;
             }
