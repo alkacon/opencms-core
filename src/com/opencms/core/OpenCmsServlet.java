@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/10/11 10:09:22 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2000/10/11 18:26:16 $
+ * Version: $Revision: 1.60 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.59 $ $Date: 2000/10/11 10:09:22 $  
+* @version $Revision: 1.60 $ $Date: 2000/10/11 18:26:16 $  
 * 
 * */
 
@@ -657,8 +657,7 @@ private CmsObject initMultisite(I_CmsRequest cmsReq, I_CmsResponse cmsRes) throw
 		}
 		catch (CmsException ce)
 		{
-			System.err.println("Warning could not find site:" + requestUrl);
-			//do nothing. The site cannot be found, so fallback to default.
+			//do nothing. The site cannot be found, so fallback to project C_ONLINE_PROJECT.
 		}
 		// check if a parameter "opencms=login" was included in the request.
 		// this is used to force the HTTP-Authentification to appear.
