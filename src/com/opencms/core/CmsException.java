@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2003/05/21 14:35:55 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/06/17 16:23:46 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.49 $ $Date: 2003/05/21 14:35:55 $
+ * @version $Revision: 1.50 $ $Date: 2003/06/17 16:23:46 $
  */
 public class CmsException extends Exception {
 
@@ -187,6 +187,9 @@ public class CmsException extends Exception {
 
     /** Unspecified Flex error code */
     public final static int C_FLEX_OTHER = 41;
+    
+    /** Error code for unimplemented methods */
+    public final static int C_NOT_IMPLEMENTED = 42;
 
     /** Default prefix for a CmsException message */
     public static final String C_CMS_EXCEPTION_PREFIX = "com.opencms.core.CmsException";
@@ -237,7 +240,8 @@ public class CmsException extends Exception {
         "Wrong scheme for https resource",
         "Error in Flex cache", 
         "Error in Flex loader", 
-        "Error in Flex engine"
+        "Error in Flex engine",
+        "Method not implemented"
     };
 
     /**
