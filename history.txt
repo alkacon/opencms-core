@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/12/13 23:03:21 $
- * Version: $Revision: 1.426 $
+ * Date   : $Date: 2002/12/15 14:25:21 $
+ * Version: $Revision: 1.427 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,7 @@ OpenCms 5.0 (next release)
 ! Help system will now look up if a directory for the current locale exists and display the "online help" button only in this case
 ! Preference panel for startup options will not display language selection if only one locale directory exists
 ! New "relativeroot" property tells the link substitution in the editor to generate relative URLs instead of absolute URLs
+* It's now possible to use "special" HTML chars (like < > " &) in resource property values
 * "Undo changes" now also returns the file-last-modified date to the value from the online project
 * JSP based templates now work with linked files in the VFS
 * Improved spelling for english language locale
@@ -35,7 +36,7 @@ OpenCms 5.0 (next release)
 * Fixed issue with response.setContentType() in JSP pages
 - Added Ant 1.5 support for build.xml (thanks to Thorsten Guenther for the patch)
 - WYSIWYG editor now tries to preserve the HTML source formatting
-- WYSIWYS editor now uses the "script save" variation of the control,
+- WYSIWYG editor now uses the "script save" variation of the control,
   so it sould not longer be neccessary to change IE security settings for this editor
   Note: it is still required for the LEdit text editor
 - Changed behaviour for deleted files that reside in a folder that is locked:
