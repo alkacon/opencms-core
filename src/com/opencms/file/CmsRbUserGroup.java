@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/04 17:06:05 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/05 11:53:52 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -410,25 +410,27 @@ import com.opencms.core.*;
 	 */
      public Vector getChilds(String groupname)
       throws CmsException {
-        Vector childs=null;
-        Vector allChilds=null;
-        Vector subchilds=null;
+        Vector childs=new Vector();
+        Vector allChilds=new Vector();
+        Vector subchilds=new Vector();
         A_CmsGroup group=null;
         
         // get all child groups if the user group
         childs=m_accessUserGroup.getChild(groupname);
-        allChilds=childs;
-        // now get all subchilds for each group
-        Enumeration enu=childs.elements();
-        while (enu.hasMoreElements()) {
-            group=(A_CmsGroup)enu.nextElement();
-            subchilds=getChilds(group.getName());
-            //add the subchilds to the already existing groups
-            Enumeration enusub=subchilds.elements();
-            while (enusub.hasMoreElements()) {
-                group=(A_CmsGroup)enusub.nextElement();
-                allChilds.addElement(group);
-            }       
+        if (childs!=null) {
+            allChilds=childs;
+            // now get all subchilds for each group
+            Enumeration enu=childs.elements();
+            while (enu.hasMoreElements()) {
+                group=(A_CmsGroup)enu.nextElement();
+                subchilds=getChilds(group.getName());
+                //add the subchilds to the already existing groups
+                Enumeration enusub=subchilds.elements();
+                while (enusub.hasMoreElements()) {
+                    group=(A_CmsGroup)enusub.nextElement();
+                    allChilds.addElement(group);
+                }       
+            }
         }
         return allChilds;
      }
