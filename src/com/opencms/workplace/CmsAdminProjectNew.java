@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/03/09 15:15:35 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/03/09 15:36:14 $
+* Version: $Revision: 1.43 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.42 $ $Date: 2001/03/09 15:15:35 $
+ * @version $Revision: 1.43 $ $Date: 2001/03/09 15:36:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -169,14 +169,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-System.err.println("mgm--******");
-Enumeration enu=parameters.keys();
-while (enu.hasMoreElements()) {
-String key=(String)enu.nextElement();
-String values=(String)parameters.get(key);
-System.err.println(key+" : "+values);
-}
-System.err.println("******");
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName()
                     + "getting content of element " + ((elementName == null) ? "<root>" : elementName));
