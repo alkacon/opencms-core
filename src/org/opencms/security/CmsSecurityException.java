@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/25 17:04:51 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.main.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -59,9 +59,12 @@ public class CmsSecurityException extends CmsException {
     /** No permissions to change registry values */    
     public static final int C_SECURITY_NO_REGISTRY_PERMISSIONS = 304;
        
-    /** Invalid password */    
-    public static final int C_SECURITY_INVALID_PASSWORD = 305;       
-        
+    /** Invalid password (only for password change and validation of password) */    
+    public static final int C_SECURITY_INVALID_PASSWORD = 305;
+    
+    /** Login failed */
+    public static final int C_SECURITY_LOGIN_FAILED = 306;
+
     /**
      * Default constructor for a CmsSecurityException.<p>
      */
@@ -89,6 +92,16 @@ public class CmsSecurityException extends CmsException {
     }
     
     /**
+     * Constructs a CmsSecurityException with the specified description message and root exception.<p>
+     * 
+     * @param type the type of the exception
+     * @param rootCause root cause exception
+     */
+    public CmsSecurityException(int type, Throwable rootCause) {
+        super(type, rootCause);
+    }    
+    
+    /**
      * Returns the description String for the provided CmsException type.<p>
      * 
      * @param type exception error code 
@@ -108,6 +121,8 @@ public class CmsSecurityException extends CmsException {
                 return "No permissions to modify the registry";
             case C_SECURITY_INVALID_PASSWORD:
                 return "Invalid password";                
+            case C_SECURITY_LOGIN_FAILED:
+                return "Login failed";                
             default:
                 return super.getErrorDescription(type);
         }
