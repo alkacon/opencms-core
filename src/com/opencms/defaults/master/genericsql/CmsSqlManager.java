@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/25 14:38:59 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/10/24 13:20:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $ $Date: 2003/09/25 14:38:59 $
+ * @version $Revision: 1.18 $ $Date: 2003/10/24 13:20:57 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -70,10 +70,12 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     public CmsSqlManager(String dbPoolUrl, Class currentClass) {
         super(dbPoolUrl, false);
         
-        // collect all query.properties in all packages of superclasses
-        m_queries = new Properties();
-        loadQueries(currentClass);
-        combineQueries();   
+        if (m_queries == null) {
+            // collect all query.properties in all packages of superclasses
+            m_queries = new Properties();
+            loadQueries(currentClass);
+            combineQueries();   
+        }
     }
     
     /**
@@ -83,7 +85,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      *
      * @param the current Class of the dbaccess module.
      */
-    private void loadQueries(Class currentClass) {
+    protected void loadQueries(Class currentClass) {
         // creates the queryFilenam from the packagename and
         // filename query.properties
         String className = currentClass.getName();
@@ -112,7 +114,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * automatically by the corresponding property-entrys:
      * ${property_key}<p>
      */
-    private void combineQueries() {
+    protected void combineQueries() {
         Enumeration keys = m_queries.keys();
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
@@ -127,7 +129,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @param key the key for the query to compute.
      * @return true if in this run replacements are done.
      */
-    private boolean replace(String key) {
+    protected boolean replace(String key) {
         boolean retValue = false;
         String value = m_queries.getProperty(key);
         String newValue = new String();
@@ -173,7 +175,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @param queryKey the key for the query to use.
      */
     public PreparedStatement sqlPrepare(CmsObject cms, Connection conn, String queryKey) throws SQLException {
-        return this.sqlPrepare(cms, conn, queryKey, null);
+        return sqlPrepare(cms, conn, queryKey, null);
     }
 
     /**

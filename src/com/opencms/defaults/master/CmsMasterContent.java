@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/10/20 13:01:01 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/10/24 13:20:57 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,10 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsPublishedResource;
+import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -37,16 +41,9 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
-
-import org.opencms.loader.CmsXmlTemplateLoader;
-import org.opencms.main.CmsEvent;
-import org.opencms.main.I_CmsEventListener;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
 
 /**
  * This class is the master of several Modules. It carries a lot of generic
@@ -56,8 +53,8 @@ import org.opencms.util.CmsUUID;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.48 $
- * $Date: 2003/10/20 13:01:01 $
+ * $Revision: 1.49 $
+ * $Date: 2003/10/24 13:20:57 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -645,7 +642,11 @@ public abstract class CmsMasterContent
         if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
         }
-        OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));
+
+        CmsUUID publishId = new CmsUUID();
+        cms.postPublishBoResource(new CmsPublishedResource(this.getClass().getName(), m_dataSet.m_masterId, getSubId(), m_dataSet.m_state), publishId, versionId);        
+        
+        //OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));        
     }
 
     /**
