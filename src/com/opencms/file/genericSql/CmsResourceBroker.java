@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/03/01 13:43:24 $
- * Version: $Revision: 1.233 $
+ * Date   : $Date: 2001/03/02 13:14:42 $
+ * Version: $Revision: 1.234 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.233 $ $Date: 2001/03/01 13:43:24 $
+ * @version $Revision: 1.234 $ $Date: 2001/03/02 13:14:42 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5442,12 +5442,13 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 		throws CmsException {
 
 		CmsUser user = null;
-		user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMUSER);
+        // ednfal: don't read user from cache because password may be changed
+		//user = (CmsUser)m_userCache.get(username+C_USER_TYPE_SYSTEMUSER);
 		// store user in cache
 		if (user == null) {
 			user = m_dbAccess.readUser(username, password, C_USER_TYPE_SYSTEMUSER);
 			m_userCache.put(username+C_USER_TYPE_SYSTEMUSER, user);
-		}
+        }
  		return user;
 	}
 	/**
@@ -5817,7 +5818,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 							String username, String oldPassword, String newPassword)
 		throws CmsException {
 		// check the length of the new password.
-		if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
+        if(newPassword.length() < C_PASSWORD_MINIMUMSIZE) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + username,
 				CmsException.C_SHORT_PASSWORD);
 		}
@@ -5828,7 +5829,11 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 			user = readUser(currentUser, currentProject, username, oldPassword);
 		} catch(CmsException exc) {
 			// this is no system-user - maybe a webuser?
-			user = readWebUser(currentUser, currentProject, username, oldPassword);
+            try{
+			    user = readWebUser(currentUser, currentProject, username, oldPassword);
+            } catch(CmsException e) {
+                throw exc;
+            }
 		}
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) &&
 			( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
