@@ -2,11 +2,11 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/01/29 15:13:28 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2001/02/01 17:00:13 $
+ * Version: $Revision: 1.47 $
  *
- * Copyright (C) 2000  The OpenCms Group 
- * 
+ * Copyright (C) 2000  The OpenCms Group
+ *
  * This File is part of OpenCms -
  * the Open Source Content Mananagement System
  *
@@ -14,15 +14,15 @@ package com.opencms.file.mySql;
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * For further information about OpenCms, please see the
  * OpenCms Website: http://www.opencms.com
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * long with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -45,12 +45,12 @@ import com.opencms.util.*;
 /**
  * This is the generic access module to load and store resources from and into
  * the database.
- * 
+ *
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.46 $ $Date: 2001/01/29 15:13:28 $ * 
+ * @version $Revision: 1.47 $ $Date: 2001/02/01 17:00:13 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -58,14 +58,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	 * @param config The OpenCms configuration.
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public CmsDbAccess(Configurations config) 
+	public CmsDbAccess(Configurations config)
 		throws CmsException {
 
 		super(config);
 	}
 	/**
 	 * Adds a user to the database.
-	 * 
+	 *
 	 * @param name username
 	 * @param password user-password
 	 * @param description user-description
@@ -80,32 +80,32 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	 * @param address user-defauladdress
 	 * @param section user-section
 	 * @param type user-type
-	 * 
+	 *
 	 * @return the created user.
 	 * @exception thorws CmsException if something goes wrong.
-	 */ 
-	public CmsUser addUser(String name, String password, String description, 
-						  String firstname, String lastname, String email, 
-						  long lastlogin, long lastused, int flags, Hashtable additionalInfos, 
-						  CmsGroup defaultGroup, String address, String section, int type) 
+	 */
+	public CmsUser addUser(String name, String password, String description,
+						  String firstname, String lastname, String email,
+						  long lastlogin, long lastused, int flags, Hashtable additionalInfos,
+						  CmsGroup defaultGroup, String address, String section, int type)
 		throws CmsException {
 		int id = nextId(C_TABLE_USERS);
 		byte[] value=null;
 		PreparedStatement statement = null;
 		Connection con = null;
-		
-		try	{			
+
+		try	{
 			con = DriverManager.getConnection(m_poolName);
 			// serialize the hashtable
-			ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+			ByteArrayOutputStream bout= new ByteArrayOutputStream();
 			ObjectOutputStream oout=new ObjectOutputStream(bout);
 			oout.writeObject(additionalInfos);
 			oout.close();
 			value=bout.toByteArray();
-			
-			// write data to database     
+
+			// write data to database
 			statement = con.prepareStatement(m_cq.C_USERS_ADD);
-			
+
 			statement.setInt(1,id);
 			statement.setString(2,name);
 			// crypt the password with MD5
@@ -126,10 +126,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 			statement.executeUpdate();
 		 }
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		catch (IOException e){
-			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
+			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
 		} finally {
 			// close all db-resources
 			if(statement != null) {
@@ -151,10 +151,10 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	}
 	/**
 	 * Deletes all files in CMS_FILES without fileHeader in CMS_RESOURCES
-	 * 
+	 *
 	 *
 	 */
-	protected void clearFilesTable()	
+	protected void clearFilesTable()
 	  throws CmsException{
 		PreparedStatement statementSearch = null;
 		PreparedStatement statementDestroy = null;
@@ -204,7 +204,7 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					 // nothing to do here
 				 }
 			}
-		}	
+		}
 	}
 
 	/**
@@ -218,51 +218,59 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 	 * @param parentId The parentId of the resource.
 	 * @param contents The contents of the new file.
 	 * @param resourceType The resourceType of the new file.
-	 * 
+	 *
 	 * @return file The created file.
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */    
+	 */
 	 public CmsFile createFile(CmsUser user,
 							   CmsProject project,
 							   CmsProject onlineProject,
-							   String filename, int flags,int parentId, 
+							   String filename, int flags,int parentId,
 							   byte[] contents, CmsResourceType resourceType)
-							
+
 		 throws CmsException {
-		 
-		  if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
+        	  if (filename.length() > C_MAX_LENGTH_RESOURCE_NAME){
 			throw new CmsException("["+this.getClass().getName()+"] "+"Resourcename too long(>"+C_MAX_LENGTH_RESOURCE_NAME+") ",CmsException.C_BAD_NAME);
 		  }
-		
+
 
 		  int state= C_STATE_NEW;
 		   // Test if the file is already there and marked as deleted.
 		   // If so, delete it
 		   try {
-	
-			readFileHeader(project.getId(),filename);     
-	   
+			readFileHeader(project.getId(),filename);
+
 		   } catch (CmsException e) {
 			   // if the file is maked as deleted remove it!
 			   if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-		
+
 				   removeFile(project.getId(),filename);
-		
+
 				   state=C_STATE_CHANGED;
-			   }              
+			   }
+                           if (e.getType()==CmsException.C_NOT_FOUND){
+                                try{
+                                  readFileHeader(C_PROJECT_ONLINE_ID, filename);
+                                  throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+                                }catch(CmsException e2){
+                                  if(e2.getType()==CmsException.C_FILE_EXISTS){
+                                    throw e2;
+                                  }
+                                }
+                            }
 		   }
-	
+
 		   int	resourceId = nextId(C_TABLE_RESOURCES);
 		   int fileId = nextId(C_TABLE_FILES);
-		   
+
 		   PreparedStatement statement = null;
 		   PreparedStatement statementFileWrite = null;
 		   Connection con = null;
-	
+
 		   try {
 			   con = DriverManager.getConnection(m_poolName);
-	  
+
 				statement = con.prepareStatement(m_cq.C_RESOURCES_WRITE);
 				 // write new resource to the database
 				statement.setInt(1,resourceId);
@@ -284,14 +292,14 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 				statement.setInt(17,contents.length);
 				statement.setInt(18,user.getId());
 				statement.executeUpdate();
-				
+
 				statementFileWrite = con.prepareStatement(m_cq.C_FILES_WRITE);
 				statementFileWrite.setInt(1,fileId);
 				statementFileWrite.setBytes(2,contents);
 				statementFileWrite.executeUpdate();
-	  
-		  } catch (SQLException e){                        
-			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+
+		  } catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		 }finally {
    			// close all db-resources
 			if(statement != null) {
@@ -315,22 +323,22 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 					 // nothing to do here
 				 }
 			}
-		   }	
+		   }
 		 return readFile(project.getId(),onlineProject.getId(),filename);
 	 }
-	 
+
 	/**
 	 * Add a new group to the Cms.<BR/>
-	 * 
+	 *
 	 * Only the admin can do this.<P/>
-	 * 
+	 *
 	 * @param name The name of the new group.
 	 * @param description The description for the new group.
 	 * @int flags The flags for the new group.
 	 * @param name The name of the parent group (or null).
 	 *
 	 * @return Group
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
   public CmsGroup createGroup (String name, String description, int flags,
@@ -393,13 +401,13 @@ public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess impleme
 
 	}
 	return group;
-  }  
-  
+  }
+
 /**
  * Deletes all properties for a project.
- * 
+ *
  * @param project The project to delete.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public void deleteProjectProperties(CmsProject project) throws CmsException {
@@ -416,13 +424,13 @@ public void deleteProjectProperties(CmsProject project) throws CmsException {
 	 * Destroys this access-module
 	 * @exception throws CmsException if something goes wrong.
 	 */
-	public void destroy() 
+	public void destroy()
 		throws CmsException {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsDbAccess] destroy complete.");
 		}
 	}
-	
+
 /**
  * Private method to init all default-resources
  */
@@ -466,16 +474,16 @@ protected void fillDefaults() throws CmsException
 	/**
 	 * Finds an agent for a given role (group).
 	 * @param roleId The Id for the role (group).
-	 * 
+	 *
 	 * @return A vector with the tasks
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	protected int findAgent(int roleid)
 		throws CmsException {
 		return super.findAgent(roleid);
 	}
-	
+
 /**
  * retrieve the correct instance of the queries holder.
  * This method should be overloaded if other query strings should be used.
@@ -503,7 +511,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 	Vector offlineFolders;
 	Vector offlineFiles;
 	Vector deletedFolders = new Vector();
-	// folderIdIndex:    offlinefolderId   |   onlinefolderId  
+	// folderIdIndex:    offlinefolderId   |   onlinefolderId
 	Hashtable folderIdIndex = new Hashtable();
 
 	// read all folders in offlineProject
@@ -517,7 +525,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		if (currentFolder.getState() == C_STATE_DELETED)
 		{
 			deletedFolders.addElement(currentFolder);
-			// C_STATE_NEW	
+			// C_STATE_NEW
 		}
 		else
 			if (currentFolder.getState() == C_STATE_NEW)
@@ -550,7 +558,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
 						} catch (CmsException exc) {
 							throw exc;
-						} // end of catch	
+						} // end of catch
 						PreparedStatement statement = null;
 						Connection con = null;
 						try {
@@ -611,7 +619,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, copy properties for " + newFolder.toString() + " Message= " + exc.getMessage());
 					}
 				}
-				// C_STATE_CHANGED	 		
+				// C_STATE_CHANGED
 
 			}
 			else
@@ -643,7 +651,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 								parentId = new Integer(currentOnlineParent.getResourceId());
 								folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
 							}
-							// create the new folder 
+							// create the new folder
 							onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 							onlineFolder.setState(C_STATE_UNCHANGED);
 							writeFolder(onlineProject, onlineFolder, false);
@@ -736,7 +744,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 									parentId = new Integer(currentOnlineParent.getResourceId());
 									folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
 								}
-								// create the new folder 
+								// create the new folder
 								onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(), currentFolder.getAbsolutePath());
 								onlineFolder.setState(C_STATE_UNCHANGED);
 								writeFolder(onlineProject, onlineFolder, false);
@@ -760,7 +768,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							}
 						} // end of catch
 						folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
-					} // end of else if 
+					} // end of else if
 	} // end of for(...
 
 
@@ -823,7 +831,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 				}
 
 
-				// C_STATE_CHANGED	
+				// C_STATE_CHANGED
 			}
 			else
 				if (currentFile.getState() == C_STATE_CHANGED)
@@ -936,7 +944,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 							parentId = new Integer(currentOnlineParent.getResourceId());
 							folderIdIndex.put(new Integer(currentFile.getParentId()), parentId);
 						}
-						// create the new file 
+						// create the new file
 						removeFile(onlineProject.getId(), currentFile.getAbsolutePath());
 						CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(), currentFile.getAbsolutePath(), false);
 						newFile.setState(C_STATE_UNCHANGED);
@@ -983,13 +991,13 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 }
 /**
  * Reads a file from the Cms.<BR/>
- * 
+ *
  * @param projectId The Id of the project in which the resource will be used.
  * @param onlineProjectId The online projectId of the OpenCms.
  * @param filename The complete name of the new file (including pathinformation).
- * 
+ *
  * @return file The read file.
- * 
+ *
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public CmsFile readFile(int projectId, int onlineProjectId, String filename) throws CmsException {
@@ -1095,7 +1103,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename) thr
 }
 /**
  * Reads a session from the database.
- * 
+ *
  * @param sessionId, the id og the session to read.
  * @return the read session as Hashtable.
  * @exception thorws CmsException if something goes wrong.
@@ -1148,11 +1156,11 @@ public Hashtable readSession(String sessionId) throws CmsException {
 }
 /**
  * Reads a task from the Cms.
- * 
+ *
  * @param id The id of the task to read.
- * 
+ *
  * @return a task object or null if the task is not found.
- * 
+ *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public CmsTask readTask(int id) throws CmsException {
@@ -1188,8 +1196,8 @@ public CmsTask readTask(int id) throws CmsException {
 			int state = res.getInt(m_cq.C_TASK_STATE);
 			int tasktype = res.getInt(m_cq.C_TASK_TASKTYPE);
 			String htmllink = res.getString(m_cq.C_TASK_HTMLLINK);
-			task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser, 
-								originaluser, starttime, wakeuptime, timeout, endtime, percentage, 
+			task = new CmsTask(id, name, state, tasktype, root, parent, initiatoruser, role, agentuser,
+								originaluser, starttime, wakeuptime, timeout, endtime, percentage,
 								permission, priority, escalationtype, htmllink, milestone, autofinish);
 		}
 	} catch (SQLException exc) {
@@ -1225,15 +1233,15 @@ public CmsTask readTask(int id) throws CmsException {
 /**
  * Reads all tasks of a user in a project.
  * @param project The Project in which the tasks are defined.
- * @param agent The task agent   
+ * @param agent The task agent
  * @param owner The task owner .
- * @param group The group who has to process the task.	 
+ * @param group The group who has to process the task.
  * @tasktype C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
  * @param orderBy Chooses, how to order the tasks.
  * @param sort Sort Ascending or Descending (ASC or DESC)
- * 
+ *
  * @return A vector with the tasks
- * 
+ *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGroup role, int tasktype, String orderBy, String sort) throws CmsException {
@@ -1302,26 +1310,26 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 
 		// if resultset exists - return vector of tasks
 		while (recset.next()) {
-			task = new CmsTask(recset.getInt(m_cq.C_TASK_ID), 
-								recset.getString(m_cq.C_TASK_NAME), 
-								recset.getInt(m_cq.C_TASK_STATE), 
-								recset.getInt(m_cq.C_TASK_TASKTYPE), 
-								recset.getInt(m_cq.C_TASK_ROOT), 
-								recset.getInt(m_cq.C_TASK_PARENT), 
-								recset.getInt(m_cq.C_TASK_INITIATORUSER), 
-								recset.getInt(m_cq.C_TASK_ROLE), 
-								recset.getInt(m_cq.C_TASK_AGENTUSER), 
-								recset.getInt(m_cq.C_TASK_ORIGINALUSER), 
-								SqlHelper.getTimestamp(recset, m_cq.C_TASK_STARTTIME), 
-								SqlHelper.getTimestamp(recset, m_cq.C_TASK_WAKEUPTIME), 
-								SqlHelper.getTimestamp(recset, m_cq.C_TASK_TIMEOUT), 
-								SqlHelper.getTimestamp(recset, m_cq.C_TASK_ENDTIME), 
-								recset.getInt(m_cq.C_TASK_PERCENTAGE), 
-								recset.getString(m_cq.C_TASK_PERMISSION), 
-								recset.getInt(m_cq.C_TASK_PRIORITY), 
-								recset.getInt(m_cq.C_TASK_ESCALATIONTYPE), 
-								recset.getString(m_cq.C_TASK_HTMLLINK), 
-								recset.getInt(m_cq.C_TASK_MILESTONE), 
+			task = new CmsTask(recset.getInt(m_cq.C_TASK_ID),
+								recset.getString(m_cq.C_TASK_NAME),
+								recset.getInt(m_cq.C_TASK_STATE),
+								recset.getInt(m_cq.C_TASK_TASKTYPE),
+								recset.getInt(m_cq.C_TASK_ROOT),
+								recset.getInt(m_cq.C_TASK_PARENT),
+								recset.getInt(m_cq.C_TASK_INITIATORUSER),
+								recset.getInt(m_cq.C_TASK_ROLE),
+								recset.getInt(m_cq.C_TASK_AGENTUSER),
+								recset.getInt(m_cq.C_TASK_ORIGINALUSER),
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_STARTTIME),
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_WAKEUPTIME),
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_TIMEOUT),
+								SqlHelper.getTimestamp(recset, m_cq.C_TASK_ENDTIME),
+								recset.getInt(m_cq.C_TASK_PERCENTAGE),
+								recset.getString(m_cq.C_TASK_PERMISSION),
+								recset.getInt(m_cq.C_TASK_PRIORITY),
+								recset.getInt(m_cq.C_TASK_ESCALATIONTYPE),
+								recset.getString(m_cq.C_TASK_HTMLLINK),
+								recset.getInt(m_cq.C_TASK_MILESTONE),
 								recset.getInt(m_cq.C_TASK_AUTOFINISH));
 			tasks.addElement(task);
 		}
@@ -1350,21 +1358,21 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 }
 	/**
 	 * Writes a property for a file or folder.
-	 * 
+	 *
 	 * @param meta The property-name of which the property has to be read.
 	 * @param value The value for the property to be set.
 	 * @param resourceId The id of the resource.
 	 * @param resourceType The Type of the resource.
-	 * 
+	 *
 	 * @exception CmsException Throws CmsException if operation was not succesful
 	 */
-	public void writeProperty(String meta, String value, int resourceId, 
+	public void writeProperty(String meta, String value, int resourceId,
 									  int resourceType)
 		throws CmsException {
 		CmsPropertydefinition propdef = readPropertydefinition(meta, resourceType);
 		if( propdef == null) {
 			// there is no propertydefinition for with the overgiven name for the resource
-			throw new CmsException("[" + this.getClass().getName() + "] " + meta, 
+			throw new CmsException("[" + this.getClass().getName() + "] " + meta,
 				CmsException.C_NOT_FOUND);
 		} else {
 			// write the property into the db
@@ -1395,7 +1403,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 					newprop=true;
 				}
 			} catch(SQLException exc) {
-				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),
 					CmsException.C_SQL_ERROR, exc);
 			}finally {
 				// close all db-resources
@@ -1416,31 +1424,31 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 			}
 		}
 	}
-	
+
 	/**
 	 * Writes a user to the database.
-	 * 
+	 *
 	 * @param user the user to write
 	 * @exception thorws CmsException if something goes wrong.
-	 */ 
-	public void writeUser(CmsUser user) 
+	 */
+	public void writeUser(CmsUser user)
 		throws CmsException {
 		byte[] value=null;
 		PreparedStatement statement = null;
 		Connection con = null;
-		
-		try	{			
+
+		try	{
 			con = DriverManager.getConnection(m_poolName);
 			// serialize the hashtable
-			ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+			ByteArrayOutputStream bout= new ByteArrayOutputStream();
 			ObjectOutputStream oout=new ObjectOutputStream(bout);
 			oout.writeObject(user.getAdditionalInfo());
 			oout.close();
 			value=bout.toByteArray();
-			
-			// write data to database     
+
+			// write data to database
 			statement = con.prepareStatement(m_cq.C_USERS_WRITE);
-			
+
 			statement.setString(1,user.getDescription());
 			statement.setString(2,user.getFirstname());
 			statement.setString(3,user.getLastname());
@@ -1448,7 +1456,7 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 			statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
 			statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
 			statement.setInt(7,user.getFlags());
-			statement.setBytes(8,value); 
+			statement.setBytes(8,value);
  			statement.setInt(9, user.getDefaultGroupId());
  			statement.setString(10,user.getAddress());
  			statement.setString(11,user.getSection());
@@ -1457,10 +1465,10 @@ public Vector readTasks(CmsProject project, CmsUser agent, CmsUser owner, CmsGro
 			statement.executeUpdate();
 		}
 		catch (SQLException e){
-			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 		catch (IOException e){
-			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
+			throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);
 		} finally {
 			// close all db-resources
 			if(statement != null) {
