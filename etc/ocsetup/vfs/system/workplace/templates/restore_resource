@@ -29,50 +29,50 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/restore_resource.h
 
 <form id=COPY name=COPY>
 <table cellspacing=0 cellpadding=0 border=2 width=310px>
-	<tr><td>
-		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
-			
-			<!-- Begin tablehead blue -->
-			<tr> 
-           		<td colspan=3 class="head">]]><LABEL value="messagebox.title.undochanges" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
-			</tr>
-			<!-- Ende tablehead blue -->
-			
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<tr>
-				<td class=dialogtxt colspan=3>
-					]]><LABEL value="messagebox.message1.undochanges" /><![CDATA[ ]]><PROCESS>FILENAME</PROCESS><![CDATA[<br>
-					]]><LABEL value="messagebox.message2.undochanges" /><![CDATA[ ]]><PROCESS>CHANGEDATE</PROCESS><![CDATA[<br>
-					]]><LABEL value="messagebox.message3.undochanges" /><![CDATA[ ]]><PROCESS>USER</PROCESS><![CDATA[.<br>
-					]]><LABEL value="messagebox.message4.restoreresource" /><![CDATA[
-				</td>
-			</tr>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+            
+            <!-- Begin tablehead blue -->
+            <tr> 
+                <td colspan=3 class="head">]]><LABEL value="messagebox.title.undochanges" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+            </tr>
+            <!-- Ende tablehead blue -->
+            
+            <!-- Begin empty row -->
+            <tr> 
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+            
+            <tr>
+                <td class=dialogtxt colspan=3>
+                    ]]><LABEL value="messagebox.message1.undochanges" /><![CDATA[ ]]><PROCESS>FILENAME</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="messagebox.message2.undochanges" /><![CDATA[ ]]><PROCESS>CHANGEDATE</PROCESS><![CDATA[<br>
+                    ]]><LABEL value="messagebox.message3.undochanges" /><![CDATA[ ]]><PROCESS>USER</PROCESS><![CDATA[.<br>
+                    ]]><LABEL value="messagebox.message4.restoreresource" /><![CDATA[
+                </td>
+            </tr>
 
-			<!-- Begin empty row -->
-			<tr> 
-           		<td colspan=3 class="leerzeile">&nbsp;</td>
-			</tr>
-			<!-- End empty row -->
-			
-			<!-- Begin buttons -->
-			<tr><td class=dialogtxt colspan=3>
-				<table cellspacing=0 cellpadding=5 width=100%>
-				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='restore_resource.html?restore=true';"></td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="window.top.head.location.href='head.html';"></td>
-				</tr>
-				</table>
-			</td>
-			</tr>
-			<!-- End buttons -->
-			
-			</table>
-	</td></tr>
+            <!-- Begin empty row -->
+            <tr> 
+                <td colspan=3 class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- End empty row -->
+            
+            <!-- Begin buttons -->
+            <tr><td class=dialogtxt colspan=3>
+                <table cellspacing=0 cellpadding=5 width=100%>
+                <tr>
+                    <td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='restore_resource.html?restore=true';"></td>
+                    <td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="window.top.head.location.href='head.html';"></td>
+                </tr>
+                </table>
+            </td>
+            </tr>
+            <!-- End buttons -->
+            
+            </table>
+    </td></tr>
 </table>
 </form>
 </td></tr>
@@ -97,9 +97,9 @@ top.help_url='ExplorerAnsicht/Kontextmenue/allgemeineAktionen/restore_resource.h
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
-	</tr>
+    <tr>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+    </tr>
 </table>
 <!-- End Logo opencms -->
 

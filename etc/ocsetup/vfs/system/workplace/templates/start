@@ -4,15 +4,15 @@
 <![CDATA[
 <html>
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-<title>OpenCMS</title>
+<title>OpenCms</title>
 </head>
 
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
-	</tr>
+    <tr>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+    </tr>
 </table>
 <!-- End Logo opencms -->
 

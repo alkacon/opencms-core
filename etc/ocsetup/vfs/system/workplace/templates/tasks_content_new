@@ -17,9 +17,9 @@ top.help_url='Aufgaben/aufgabeerstellen.html';
 
 function fillDate()
 {
-	if(aktTag<10){aktTag='0'+aktTag;}
-	if(aktMonat<10){aktMonat='0'+aktMonat;}
-	document.NEWTASK.DATE.value=aktTag+'.'+aktMonat+'.'+aktJahr;
+    if(aktTag<10){aktTag='0'+aktTag;}
+    if(aktMonat<10){aktMonat='0'+aktMonat;}
+    document.NEWTASK.DATE.value=aktTag+'.'+aktMonat+'.'+aktJahr;
 }
 
 ]]><METHOD name="getUsers" /><![CDATA[
@@ -27,10 +27,10 @@ function fillDate()
 var iMaxOpts = 0;
 for(var bereiche in aRolle)
 {
-	if( iMaxOpts< aRolle[bereiche].length)
-	{
-		iMaxOpts = aRolle[bereiche].length;
-	}
+    if( iMaxOpts< aRolle[bereiche].length)
+    {
+        iMaxOpts = aRolle[bereiche].length;
+    }
 }
 iMaxOpts = iMaxOpts + 1;
 
@@ -61,92 +61,92 @@ iMaxOpts = iMaxOpts + 1;
 <table border=2 cellspacing=0 cellpadding=0 width=500px>
 <tr><td><table cellspacing=0 cellpadding=3 border=0 width=100% height=100%>
 
-	<!-- Beginn Überschrift blau-->
-	<tr><td colspan=5 class=head>]]><label value="task.label.newtask"/><![CDATA[</td></tr>
-	<!-- Ende Überschrift blau-->
-	
-	<!-- Beginn Leerzele-->
-	<tr><td colspan=5 class=dialogtxt><img src="]]><METHOD name="picsUrl">ic_taskdoku_start.gif</METHOD><![CDATA[" border=0 width=16 height=16></td></td></tr>
-	<!-- Ende Leerzeile-->
-	
-	<!-- Beginn Inhalt -->
-	<tr>
-		<td class=formular>]]><label value="task.label.taskfor"/><![CDATA[</td>
-		<td class=dialogtxt colspan=2>
-			]]><SELECT class="textfeld" name="TEAM" width="150" method="getTeams" onchange="if(this.selectedIndex)setUser(document.NEWTASK.USER, this.options[this.selectedIndex].value);"/><![CDATA[
-		</td>
-		<td class=dialogtxt colspan=2>
-			<SCRIPT LANGUAGE="JavaScript">
-				writeUser();
-			</SCRIPT>
-		</td>
-	</tr>
-	<tr>
-		<td class=formular>]]><label value="task.label.task"/><![CDATA[:</td>
-		<td class=dialogtxt colspan=4>
-			]]><INPUTFIELD name="TASKNAME" class="textfeld2" size="53" length="150"/><![CDATA[
-		</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt colspan=5>
-		<TEXTAREA rows=6 cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION></TEXTAREA>
-		</td>
-	</tr>
-	<tr nowrap>
-		<td class=formular>]]><label value="task.label.timeout"/><![CDATA[:</td>
-		<td class=dialogtxt valign=top >
-			<input type="text" class="textfeld" maxlength=10 name="DATE" id="DATE">
-		</td>
-		<td class=dialogtxt width=80px align=left>
-			<a href="javascript:treewin=opensmallwin('timerrefresh.html', 'Kalender', 250, 350),treewin.focus();"><img alt="]]><LABEL value="task.label.selectdate"/><![CDATA[" src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a>
-		</td>
-		<td class=formular>]]><label value="task.label.priority"/><![CDATA[:</td>
-		<td class=dialogtxt>
-			<select name="PRIO" width=150 style="width:150px" >
-				<option value="1">]]><label value="task.label.prioritylevel.high"/><![CDATA[
-				<option value="2" selected>]]><label value="task.label.prioritylevel.middle"/><![CDATA[
-				<option value="3">]]><label value="task.label.prioritylevel.low"/><![CDATA[
-			</select>
-		</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" ]]><PROCESS>acceptation</PROCESS><![CDATA[ id="MSG_ACCEPTATION" name="MSG_ACCEPTATION" value="checked"> ]]><label value="task.label.messageat.acceptation"/><![CDATA[
-		</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" ]]><PROCESS>delivery</PROCESS><![CDATA[ id="MSG_DELIVERY" name="MSG_DELIVERY" value="checked"> ]]><label value="task.label.messageat.delivery"/><![CDATA[
-		</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" ]]><PROCESS>completion</PROCESS><![CDATA[ id="MSG_COMPLETION" name="MSG_COMPLETION" value="checked"> ]]><label value="task.label.messageat.completion"/><![CDATA[
-		</td>
-	</tr>
-	<tr>
-		<td class=dialogtxt colspan=5>
-			<INPUT type="checkbox" ]]><PROCESS>all</PROCESS><![CDATA[ id="MSG_ALL" name="MSG_ALL" value="checked"> ]]><label value="task.label.messageat.all"/><![CDATA[
-		</td>
-	</tr>
-	<!-- Ende Inhalt -->
-	
-	<!-- Beginn Leerzele-->
-	<tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
-	<!-- Ende Leerzeile-->
+    <!-- Beginn Überschrift blau-->
+    <tr><td colspan=5 class=head>]]><label value="task.label.newtask"/><![CDATA[</td></tr>
+    <!-- Ende Überschrift blau-->
+    
+    <!-- Beginn Leerzele-->
+    <tr><td colspan=5 class=dialogtxt><img src="]]><METHOD name="picsUrl">ic_taskdoku_start.gif</METHOD><![CDATA[" border=0 width=16 height=16></td></td></tr>
+    <!-- Ende Leerzeile-->
+    
+    <!-- Beginn Inhalt -->
+    <tr>
+        <td class=formular>]]><label value="task.label.taskfor"/><![CDATA[</td>
+        <td class=dialogtxt colspan=2>
+            ]]><SELECT class="textfeld" name="TEAM" width="150" method="getTeams" onchange="if(this.selectedIndex)setUser(document.NEWTASK.USER, this.options[this.selectedIndex].value);"/><![CDATA[
+        </td>
+        <td class=dialogtxt colspan=2>
+            <SCRIPT LANGUAGE="JavaScript">
+                writeUser();
+            </SCRIPT>
+        </td>
+    </tr>
+    <tr>
+        <td class=formular>]]><label value="task.label.task"/><![CDATA[:</td>
+        <td class=dialogtxt colspan=4>
+            ]]><INPUTFIELD name="TASKNAME" class="textfeld2" size="53" length="150"/><![CDATA[
+        </td>
+    </tr>
+    <tr>
+        <td class=dialogtxt colspan=5>
+        <TEXTAREA rows=6 cols=60 class="textarea1" id=DESCRIPTION name=DESCRIPTION></TEXTAREA>
+        </td>
+    </tr>
+    <tr nowrap>
+        <td class=formular>]]><label value="task.label.timeout"/><![CDATA[:</td>
+        <td class=dialogtxt valign=top >
+            <input type="text" class="textfeld" maxlength=10 name="DATE" id="DATE">
+        </td>
+        <td class=dialogtxt width=80px align=left>
+            <a href="javascript:treewin=opensmallwin('timerrefresh.html', 'Kalender', 250, 350),treewin.focus();"><img alt="]]><LABEL value="task.label.selectdate"/><![CDATA[" src="]]><METHOD name="picsUrl">ic_timer.gif</METHOD><![CDATA[" border=0 width=16 height=16 align=left hspace=0></a>
+        </td>
+        <td class=formular>]]><label value="task.label.priority"/><![CDATA[:</td>
+        <td class=dialogtxt>
+            <select name="PRIO" width=150 style="width:150px" >
+                <option value="1">]]><label value="task.label.prioritylevel.high"/><![CDATA[
+                <option value="2" selected>]]><label value="task.label.prioritylevel.middle"/><![CDATA[
+                <option value="3">]]><label value="task.label.prioritylevel.low"/><![CDATA[
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td class=dialogtxt colspan=5>
+            <INPUT type="checkbox" ]]><PROCESS>acceptation</PROCESS><![CDATA[ id="MSG_ACCEPTATION" name="MSG_ACCEPTATION" value="checked"> ]]><label value="task.label.messageat.acceptation"/><![CDATA[
+        </td>
+    </tr>
+    <tr>
+        <td class=dialogtxt colspan=5>
+            <INPUT type="checkbox" ]]><PROCESS>delivery</PROCESS><![CDATA[ id="MSG_DELIVERY" name="MSG_DELIVERY" value="checked"> ]]><label value="task.label.messageat.delivery"/><![CDATA[
+        </td>
+    </tr>
+    <tr>
+        <td class=dialogtxt colspan=5>
+            <INPUT type="checkbox" ]]><PROCESS>completion</PROCESS><![CDATA[ id="MSG_COMPLETION" name="MSG_COMPLETION" value="checked"> ]]><label value="task.label.messageat.completion"/><![CDATA[
+        </td>
+    </tr>
+    <tr>
+        <td class=dialogtxt colspan=5>
+            <INPUT type="checkbox" ]]><PROCESS>all</PROCESS><![CDATA[ id="MSG_ALL" name="MSG_ALL" value="checked"> ]]><label value="task.label.messageat.all"/><![CDATA[
+        </td>
+    </tr>
+    <!-- Ende Inhalt -->
+    
+    <!-- Beginn Leerzele-->
+    <tr><td colspan=5 class=leerzeile>&nbsp;</td></tr>
+    <!-- Ende Leerzeile-->
 
-	<!-- Beginn Buttonleiste Zurück inaktiv-->
-	<tr><td colspan=5 class=formular>
-			<table cellspacing=0 cellpadding=5 width=100%>
-			<tr>
-				<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( true );" /><![CDATA[</td>
-				<td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content.html'" /><![CDATA[</td>
-			</tr>
-			</table>
-		</td>
-	</tr>
-	<!-- Ende Buttonleiste-->
-	</table>
+    <!-- Beginn Buttonleiste Zurück inaktiv-->
+    <tr><td colspan=5 class=formular>
+            <table cellspacing=0 cellpadding=5 width=100%>
+            <tr>
+                <td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="return( true );" /><![CDATA[</td>
+                <td class=formular align=left width=50%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="100" action="location.href='tasks_content.html'" /><![CDATA[</td>
+            </tr>
+            </table>
+        </td>
+    </tr>
+    <!-- Ende Buttonleiste-->
+    </table>
 </td>
 </tr>
 </table>
@@ -178,9 +178,9 @@ iMaxOpts = iMaxOpts + 1;
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>
-	<tr>
-		<td><IMG alt=OpenCMS border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
-	</tr>
+    <tr>
+        <td><IMG alt=OpenCms border=0 hspace=0 src="]]><METHOD name="picsUrl">opencms.gif</METHOD><![CDATA["></td>
+    </tr>
 </table>
 <!-- End Logo opencms -->
 

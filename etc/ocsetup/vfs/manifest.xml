@@ -8901,12 +8901,12 @@
                 <property>
                     <name>NavText</name>
                     <type>0</type>
-                    <value><![CDATA[MERKMALE VON OPENCMS]]></value>
+                    <value><![CDATA[Merkmale von OpenCms]]></value>
                 </property>
                 <property>
                     <name>Title</name>
                     <type>0</type>
-                    <value><![CDATA[Merkmale von OpenCMS]]></value>
+                    <value><![CDATA[Merkmale von OpenCms]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>
@@ -8931,7 +8931,7 @@
                 <property>
                     <name>Title</name>
                     <type>2</type>
-                    <value><![CDATA[Merkmale von OpenCMS]]></value>
+                    <value><![CDATA[Merkmale von OpenCms]]></value>
                 </property>
             </properties>
         </file>
@@ -8994,7 +8994,7 @@
                 <property>
                     <name>Title</name>
                     <type>0</type>
-                    <value><![CDATA[Der OpenCMS Seiteneditor]]></value>
+                    <value><![CDATA[Der OpenCms Seiteneditor]]></value>
                 </property>
                 <property>
                     <name>NavPos</name>

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/19 09:29:40 $
- * Version: $Revision: 1.249 $
+ * Date   : $Date: 2001/07/20 09:36:16 $
+ * Version: $Revision: 1.250 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.249 $ $Date: 2001/07/19 09:29:40 $
+ * @version $Revision: 1.250 $ $Date: 2001/07/20 09:36:16 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1934,7 +1934,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
-        validFilename(taskName);   // check for valid Filename
+        validTaskname(taskName);   // check for valid Filename
 
         CmsTask task = m_dbAccess.createTask(projectid,
                                              projectid,
@@ -1950,6 +1950,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         }
         return task;
     }
+
     /**
      * Creates a new task.
      *
@@ -1978,7 +1979,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
         int agentId = C_UNKNOWN_ID;
-        validFilename(taskname);   // check for valid Filename
+        validTaskname(taskname);   // check for valid Filename
         try {
             agentId = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
@@ -6443,6 +6444,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
          }
          return false;
     }
+
     /**
      * Checks ii characters in a String are allowed for filenames
      *
@@ -6471,13 +6473,54 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 ((c < '0') || (c > '9')) &&
                 ((c < 'A') || (c > 'Z')) &&
                 (c != '-') && (c != '.') &&
-                (c != '_') &&	(c != '~')
+                (c != '_') && (c != '~')
                 ) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                     CmsException.C_BAD_NAME);
             }
         }
     }
+
+    /**
+     * Checks ii characters in a String are allowed for filenames
+     *
+     * @param filename String to check
+     *
+     * @exception throws a exception, if the check fails.
+     */
+    protected void validTaskname( String taskname )
+        throws CmsException {
+        if (taskname == null) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+                CmsException.C_BAD_NAME);
+        }
+
+        int l = taskname.length();
+
+        if (l == 0) {
+            throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+                CmsException.C_BAD_NAME);
+        }
+
+        for (int i=0; i<l; i++) {
+            char c = taskname.charAt(i);
+            if (
+                ((c < 'ä') || (c > 'ü')) &&
+                ((c < 'Ä') || (c > 'ü')) &&
+                ((c < 'a') || (c > 'z')) &&
+                ((c < '0') || (c > '9')) &&
+                ((c < 'A') || (c > 'Z')) &&
+                (c != '-') && (c != '.') &&
+                (c != '_') && (c != '~') &&
+                (c != ' ') && (c != 'ß')
+                ) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + taskname,
+                    CmsException.C_BAD_NAME);
+            }
+        }
+    }
+
+
 /**
  * Checks ii characters in a String are allowed for names
  *

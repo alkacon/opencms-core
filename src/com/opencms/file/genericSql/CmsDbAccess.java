@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/19 13:18:40 $
- * Version: $Revision: 1.206 $
+ * Date   : $Date: 2001/07/20 09:36:16 $
+ * Version: $Revision: 1.207 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.206 $ $Date: 2001/07/19 13:18:40 $ *
+ * @version $Revision: 1.207 $ $Date: 2001/07/20 09:36:16 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1731,9 +1731,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 			task.setName(taskname);
 			task.setTaskType(tasktype);
 			task.setRole(roleId);
+
 			if(agentId==C_UNKNOWN_ID){
 				agentId = findAgent(roleId);
 			}
+            if(agentId == C_UNKNOWN_ID) {
+                throw new CmsException(CmsException.C_NO_USER);
+            }
 			task.setAgentUser(agentId);
 			task.setOriginalUser(agentId);
 			task.setWakeupTime(wakeuptime);
