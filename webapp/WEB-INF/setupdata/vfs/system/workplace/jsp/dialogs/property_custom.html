@@ -1,24 +1,20 @@
-<%@ page import="org.opencms.workplace.editor.*" buffer="none" %><%	
+<%@ page import="org.opencms.workplace.*" buffer="none" %><%	
 
 	// initialize the workplace class
-	CmsDialogProperty wp = new CmsDialogProperty(pageContext, request, response);
+	CmsPropertyCustom wp = new CmsPropertyCustom(pageContext, request, response);
 	String additionalScript = "";
 	
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
 
-case CmsDialogProperty.ACTION_CLOSEPOPUP_SAVE:
+case CmsPropertyCustom.ACTION_CLOSEPOPUP_SAVE:
 //////////////////// ACTION: save edited properties for the current resource type and close the popup window
 
 	wp.actionEdit(request);
-	if (wp.hasTemplateChanged()) {
-		// add script to refresh editor content when template has changed
-		additionalScript = "function closeAction() {\n\tthis.refreshOpener = true;\n}\nvar closeObj = new closeAction();\nif (window.opener.popupCloseAction) {\nwindow.opener.popupCloseAction(closeObj);\n}";
-	}
 
 
-case CmsDialogProperty.ACTION_CLOSEPOPUP:
+case CmsPropertyCustom.ACTION_CLOSEPOPUP:
 //////////////////// ACTION: close the popup window
 %>
 	
@@ -32,7 +28,7 @@ case CmsDialogProperty.ACTION_CLOSEPOPUP:
 <%
 break;
 
-case CmsDialogProperty.ACTION_CANCEL:
+case CmsPropertyCustom.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed, close dialog
 
 	wp.actionDeleteResource();
@@ -41,7 +37,7 @@ case CmsDialogProperty.ACTION_CANCEL:
 break;
 
 
-case CmsDialogProperty.ACTION_SAVE_EDIT:
+case CmsPropertyCustom.ACTION_SAVE_EDIT:
 //////////////////// ACTION: save edited properties for the current resource type
 
 	wp.actionEdit(request);
@@ -50,7 +46,7 @@ case CmsDialogProperty.ACTION_SAVE_EDIT:
 break;
 
 
-case CmsDialogProperty.ACTION_EDIT:
+case CmsPropertyCustom.ACTION_EDIT:
 default:
 //////////////////// ACTION: show edit properties window
 
@@ -131,7 +127,7 @@ function submitAdvanced() {
 	document.forms["main"].action.value = "<%= wp.DIALOG_SHOW_DEFAULT %>";
 	document.forms["main"].submit();
 }
-
+<% if (wp.showNavigation()) { %>
 function toggleNav() {
 	var checked = document.getElementById("enablenav").checked;
 	var disableFields = false;
@@ -156,6 +152,7 @@ function toggleNav() {
 	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").disabled = disableFields;
 	document.getElementById("navpos").disabled = disableFields;
 }
+<% } %>
 
 //-->
 </script>
@@ -177,11 +174,13 @@ function toggleNav() {
 
 <%= wp.dialogEnd() %>
 
+<% if (wp.showNavigation()) { %>
 <script type="text/javascript">
 <!--
 toggleNav();
 //-->
 </script>
+<% } %>
 
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

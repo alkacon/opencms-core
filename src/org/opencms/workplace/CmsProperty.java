@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/03/18 16:13:59 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.file.I_CmsResourceType;
-
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -43,6 +42,8 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1
  */
@@ -80,6 +81,8 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     
     /** Constant for the "Define" button in the build button method */
     public static final int BUTTON_DEFINE = 201;
+    /** Constant for the "Finish" button in the build button method */
+    public static final int BUTTON_FINISH = 202;
     
     /** Request parameter value for the action: show edit properties form */
     public static final String DIALOG_SHOW_EDIT = "edit";
@@ -93,6 +96,13 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     /** Request parameter value for the action: save defined property */
     public static final String DIALOG_SAVE_DEFINE = "savedefine";
     
+    /** Value for the dialog mode: new resource wizard */
+    public static final String MODE_WIZARD = "wizard";
+    /** Value for the dialog mode: new resource wizard with creation of index page for new folder */
+    public static final String MODE_WIZARD_CREATEINDEX = "wizardcreateindex";
+    /** Value for the dialog mode: new resource wizard with index page created in new folder */
+    public static final String MODE_WIZARD_INDEXCREATED = "wizardindexcreated";
+    
     /** Prefix for the input values */
     public static final String PREFIX_VALUE = "value-";
     /** Prefix for the hidden fields */
@@ -101,14 +111,19 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
     public static final String PREFIX_USEPROPERTY = "use-";
     
     /** Request parameter name for the new property definition */
+    public static final String PARAM_DIALOGMODE = "dialogmode";
+    /** Request parameter name for the new property definition */
     public static final String PARAM_NEWPROPERTY = "newproperty";   
     
     /** The URI to the standard property dialog */
-    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html"; 
+    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_standard.html";
+    /** The URI to the customized property dialog */
+    public static final String URI_PROPERTY_CUSTOM_DIALOG = C_PATH_DIALOGS + "property_custom.html"; 
 
     /** Request parameter members */
     private String m_paramNewproperty;
     private String m_paramUseTempfileProject;
+    private String m_paramDialogMode;
     
     /** Helper object storing the current editable state of the resource */
     private Boolean m_isEditable = null;
@@ -147,7 +162,14 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         try {
             CmsResource res = jsp.getCmsObject().readFileHeader(resource);
             if (res.getType() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                // display special property dialog for xmlpage types
                 return C_PATH_WORKPLACE + "editors/dialogs/property.html";
+            }
+            String resTypeName = jsp.getCmsObject().getResourceType(res.getType()).getResourceTypeName();
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getEplorerTypeSetting(resTypeName);
+            if (settings.isPropertiesEnabled()) {
+                // special properties for this type enabled, display customized dialog
+                return URI_PROPERTY_CUSTOM_DIALOG;
             }
         } catch (CmsException e) {
             // ignore this exception
@@ -204,6 +226,28 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      */
     public void setParamUsetempfileproject(String value) {
         m_paramUseTempfileProject = value;
+    }
+    
+    /**
+     * Returns the value of the dialogmode parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The dialogmode parameter stores the different modes of the property dialog,
+     * e.g. for displaying other buttons in the new resource wizard.<p>
+     * 
+     * @return the value of the usetempfileproject parameter
+     */    
+    public String getParamDialogmode() {
+        return m_paramDialogMode;
+    }
+
+    /**
+     * Sets the value of the dialogmode parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamDialogmode(String value) {
+        m_paramDialogMode = value;
     }
     
     /**
@@ -270,6 +314,13 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             result.append(attribute);
             result.append(">\n");
             break;
+        case BUTTON_FINISH :
+            result.append("<input name=\"finish\" type=\"submit\" value=\"");
+            result.append(key("button.endwizard"));
+            result.append("\" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
         default :
             super.dialogButtonsHtml(result, button, attribute);
         }
@@ -282,7 +333,12 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
      */
     public String dialogButtonsOkCancelDefine() {
         if (isEditable()) {
-            return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {null, null, "onclick=\"definePropertyForm();\""});
+            int okButton = BUTTON_OK;
+            if (getParamDialogmode() != null && getParamDialogmode().startsWith(MODE_WIZARD)) {
+                // in wizard mode, display finish button instead of ok button
+                okButton = BUTTON_FINISH;
+            }
+            return dialogButtons(new int[] {okButton, BUTTON_CANCEL, BUTTON_DEFINE}, new String[] {null, null, "onclick=\"definePropertyForm();\""});
         } else {
             return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {null});
             
@@ -455,6 +511,83 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
         }
         
         return m_isEditable.booleanValue();
+    }
+    
+    /**
+     * Used to close the current JSP dialog.<p>
+     * 
+     * This method overwrites the close dialog method in the super class,
+     * because in case a new folder is created, after this dialog a new xml page might be created.<p>
+     *  
+     * It tries to include the URI stored in the workplace settings.
+     * This URI is determined by the frame name, which has to be set 
+     * in the framename parameter.<p>
+     * 
+     * @throws JspException if including an element fails
+     */
+    public void actionCloseDialog() throws JspException {
+        if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
+            // special case: a new xmlpage resource will be created in wizard mode after closing the dialog
+            String newFolder = getParamResource();
+            if (!newFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                newFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+            }
+            // set the current explorer resource to the new created folder
+            getSettings().setExplorerResource(newFolder);
+
+            String newUri = OpenCms.getWorkplaceManager().getEplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
+            newUri += "?" + PARAM_DIALOGMODE + "=" + MODE_WIZARD_CREATEINDEX;
+            try {
+                // redirect to new xmlpage dialog
+                sendCmsRedirect(C_PATH_DIALOGS + newUri);
+                return;
+            } catch (Exception e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error redirecting to new xmlpage dialog " + C_PATH_DIALOGS + newUri);
+                }      
+            }
+        } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
+            // set request attribute to reload the folder tree after creating a folder in wizard mode
+            try {
+                CmsResource res = getCms().readFileHeader(getParamResource());
+                if (res.isFolder()) {
+                    List folderList = new ArrayList(1);
+                    folderList.add(CmsResource.getParentFolder(getParamResource()));
+                    getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+                }
+            } catch (CmsException e) {
+                // ignore
+            }
+        } else if (MODE_WIZARD_INDEXCREATED.equals(getParamDialogmode())) {
+            // set request attribute to reload the folder tree after creating an xml page in a new created folder in wizard mode
+            getSettings().setExplorerResource(CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())));
+            List folderList = new ArrayList(1);
+            folderList.add(CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())));
+            getJsp().getRequest().setAttribute(C_REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+        }
+        super.actionCloseDialog();
+    }
+    
+    /**
+     * Deletes the current resource if the dialog is in wizard mode.<p>
+     * 
+     * If the dialog is not in wizard mode, the resource is not deleted.<p>
+     * 
+     * @throws JspException if including the error page fails
+     */
+    public void actionDeleteResource() throws JspException {
+        if (getParamDialogmode() != null && getParamDialogmode().startsWith(MODE_WIZARD)) {
+            // only delete resource if dialog mode is a wizard mode
+            try {
+                getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            } catch (CmsException e) {
+                // error deleting the resource, show error dialog
+                getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+                setParamErrorstack(e.getStackTraceAsString());
+                setParamReasonSuggestion(getErrorSuggestionDefault());
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            }
+        }
     }
 
     /**

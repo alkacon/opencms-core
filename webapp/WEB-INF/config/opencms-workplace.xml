@@ -26,14 +26,18 @@
 		<labeledfolders/>
 		<explorertypes>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
-				<newresource uri="explorer_files_new_xmlpage.html?initial=true" order="10"/>
+				<newresource uri="newresource_xmlpage.html" order="10"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+						<property name="Keywords"/>
+						<property name="Description"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
@@ -66,14 +70,16 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
-				<newresource uri="explorer_files_new_folder.html?initial=true" order="20"/>
+				<newresource uri="newresource_folder.html" order="20"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
@@ -98,14 +104,17 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
-				<newresource uri="explorer_files_new_othertype.html?initial=true&amp;type=plain" order="30"/>
+				<newresource uri="newresource.html?newresourcetype=plain" order="30"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+						<property name="export"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
@@ -172,14 +181,19 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
-				<newresource uri="explorer_files_new_othertype.html?initial=true&amp;type=jsp" order="50"/>
+				<newresource uri="newresource.html?newresourcetype=jsp" order="50"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="false">
+						<property name="Title"/>
+						<property name="cache"/>
+						<property name="content-encoding"/>
+						<property name="export"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
@@ -247,14 +261,16 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
-				<newresource uri="explorer_files_new_externallink.html?initial=true" order="70"/>
+				<newresource uri="newresource_pointer.html" order="70"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
-					<defaultproperties enabled="false" shownavigation="false"/>
+					<defaultproperties enabled="true" shownavigation="false">
+						<property name="Title"/>
+					</defaultproperties>
 					<contextmenu>
 						<entry key="explorer.context.lock" uri="dialogs/lock.html" rules="d d aaai dddd dddd" order="10"/>
 						<entry key="explorer.context.overridelock" uri="dialogs/lockchange.html" rules="d d dddd dddd aaai" order="20"/>
@@ -316,6 +332,23 @@
 						<entry key="explorer.context.property" uri="dialogs/property.html" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
+			</explorertype>
+			<explorertype name="link" key="fileicon.link" icon="link.gif">
+				<newresource uri="newresource_sibling.html" order="90"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="upload" key="fileicon.upload" icon="upload.gif">
+				<newresource uri="explorer_files_new_upload.html?initial=true" order="100"/>
+				<!--<newresource uri="newresource_upload.html" order="100"/>-->
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.ProjectManagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
 			</explorertype>
 		</explorertypes>
 	</workplace>

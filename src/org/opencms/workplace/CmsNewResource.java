@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/03/16 11:46:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/03/18 16:13:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,11 @@
 
 package org.opencms.workplace;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 
@@ -42,13 +44,14 @@ import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
  * The new resource entry dialog which displays the possible "new actions" for the current user.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.3
  */
@@ -56,14 +59,29 @@ public class CmsNewResource extends CmsDialog {
     
     /** The dialog type */
     public static final String DIALOG_TYPE = "newresource";
+    /** The name for the resource form action */
+    public static final String DIALOG_NEWFORM = "newform";
+    /** The name for the resource form submission action */
+    public static final String DIALOG_SUBMITFORM = "submitform";
+    
+    /** The value for the resource name form action */
+    public static final int ACTION_NEWFORM = 100;
+    /** The value for the resource name form submission action */
+    public static final int ACTION_SUBMITFORM = 110;
 
     /** Constant for the "Next" button in the build button methods */
     public static final int BUTTON_NEXT = 20;
     
     /** Request parameter name for the new resource uri */
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
+    /** Request parameter name for the new resource type */
+    public static final String PARAM_NEWRESOURCETYPE = "newresourcetype";
+    /** Request parameter name for the new resource edit properties flag */
+    public static final String PARAM_NEWRESOURCEEDITPROPS = "newresourceeditprops";
     
     private String m_paramNewResourceUri;
+    private String m_paramNewResourceType;
+    private String m_paramNewResourceEditProps;
     
     /**
      * Public constructor with JSP action element.<p>
@@ -96,8 +114,13 @@ public class CmsNewResource extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);                            
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);  
+        } else if (DIALOG_NEWFORM.equals(getParamAction())) {
+            setAction(ACTION_NEWFORM);
+            setParamTitle(key("title.new" + getParamNewResourceType()));
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);                            
+            setAction(ACTION_CANCEL);
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
@@ -118,7 +141,7 @@ public class CmsNewResource extends CmsDialog {
         while (i.hasNext()) {
             CmsExplorerTypeSettings currSettings = (CmsExplorerTypeSettings)i.next();
             if ("".equals(currSettings.getNewResourceUri())) {
-                // no new resource URI specified for the current settings, dont't show them
+                // no new resource URI specified for the current settings, dont't show the type
                 continue;
             } else {
                 // check permissions for the type
@@ -134,7 +157,7 @@ public class CmsNewResource extends CmsDialog {
                     }      
                 }
                 if (permissions.getPermissionString().indexOf("+c") == -1) {
-                    // the type has no permission for the current user to be created
+                    // the type has no permission for the current user to be created, don't show the type
                     continue;
                 }
             }
@@ -155,27 +178,128 @@ public class CmsNewResource extends CmsDialog {
     }
     
     /**
-     * Redirects to the next page of the new resource wizard.<p>
+     * Creates the resource using the specified resource name and the newresourcetype parameter.<p>
+     * 
+     * @throws JspException if inclusion of error dialog fails
+     */
+    public void actionCreateResource() throws JspException {
+        try {
+            // store the new resource name
+            String resourceName = getParamResource();
+            // create the full resource name
+            String fullResourceName = computeFullResourceName();
+            // create the folder            
+            getCms().createResource(CmsResource.getParentFolder(fullResourceName), resourceName, getCms().getResourceTypeId(getParamNewResourceType()));           
+            setParamResource(fullResourceName);          
+        } catch (CmsException e) {
+            // error creating file, show error dialog
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamMessage(key("error.message.newresource"));
+            setParamReasonSuggestion(getErrorSuggestionDefault());
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        }
+    }
+    
+    /**
+     * Redirects to the property dialog if the resourceeditprops parameter is true.<p>
+     * 
+     * If the parameter is not true, the dialog will be closed.<p>
+     * 
+     * @throws IOException if redirecting to the property dialog fails
+     * @throws JspException if an inclusion fails
+     */
+    public void actionEditProperties() throws IOException, JspException {
+        boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
+        if (editProps) {
+            // edit properties checkbox checked, redirect to property dialog
+            String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
+            params += "&" + CmsProperty.PARAM_DIALOGMODE + "=" + CmsProperty.MODE_WIZARD; 
+            sendCmsRedirect(CmsWorkplace.C_PATH_DIALOGS + "property.html" + params);
+        } else {
+            // edit properties not checked, close the dialog
+            actionCloseDialog();
+        }
+    }
+    
+    /**
+     * Redirects to the next page of the new resource wizard after selecting the new resource type.<p>
      * 
      * @throws IOException if redirection fails
      */
-    public void actionNext() throws IOException {
-        // String nextUri = C_PATH_DIALOGS + getParamNewResourceUri();
-        // getJsp().include(nextUri);
-        String nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
-        sendCmsRedirect(nextUri);
+    public void actionSelect() throws IOException {
+        String nextUri = C_PATH_DIALOGS + getParamNewResourceUri();
+        if (nextUri.indexOf("initial=true") == -1) {
+            setParamAction(DIALOG_NEWFORM);
+            String paramSep = "?";
+            if (nextUri.indexOf("?") != -1) {
+                paramSep = "&";
+            }
+            sendCmsRedirect(nextUri + paramSep + paramsAsRequest());
+        } else {
+            try {
+                getJsp().include(nextUri);
+            } catch (JspException e) {
+                // JSP dialog not present, display legacy XMLTemplate dialog
+                nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
+                sendCmsRedirect(nextUri);
+            }
+        }
+    }
+    
+    /**
+     * Appends the full path to the new resource name given in the resource parameter.<p>
+     * 
+     * @return the full path of the new resource
+     */
+    protected String computeFullResourceName() {
+        String currentFolder = getSettings().getExplorerResource();
+        if (currentFolder == null) {
+            // set current folder to root folder
+            try {
+                currentFolder = getCms().readAbsolutePath(getCms().rootFolder());
+            } catch (CmsException e) {
+                currentFolder = I_CmsConstants.C_ROOT;
+            }
+        }           
+        if (!currentFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            // add folder separator to currentFolder
+            currentFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
+        // return the full resource name
+        return currentFolder + getParamResource();
     }
     
     /**
      * Builds a button row with an "next" and a "cancel" button.<p>
      * 
+     * @param nextAttrs optional attributes for the next button
+     * @param cancelAttrs optional attributes for the cancel button
      * @return the button row 
      */
-    public String dialogButtonsNextCancel() {
-        return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[2]);
+    public String dialogButtonsNextCancel(String nextAttrs, String cancelAttrs) {
+        return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
     }
     
-    
+    /**
+     * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
+     */
+    protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
+        attribute = appendDelimiter(attribute);
+
+        switch (button) {
+        case BUTTON_NEXT :
+            result.append("<input name=\"next\" type=\"submit\" value=\"");
+            result.append(key("button.nextscreen"));
+            result.append("\" class=\"dialogbutton\"");
+            result.append(attribute);
+            result.append(">\n");
+            break;
+        default :
+            super.dialogButtonsHtml(result, button, attribute);
+        }
+    }
+      
     /**
      * Returns the new resource URI parameter.<p>
      * 
@@ -192,6 +316,42 @@ public class CmsNewResource extends CmsDialog {
      */
     public void setParamNewResourceUri(String newResourceUri) {
         m_paramNewResourceUri = newResourceUri;
+    }
+    
+    /**
+     * Returns the new resource type parameter.<p>
+     * 
+     * @return the new resource type parameter
+     */
+    public String getParamNewResourceType() {
+        return m_paramNewResourceType;
+    }
+    
+    /**
+     * Sets the new resource type parameter.<p>
+     * 
+     * @param newResourceType the new resource type parameter
+     */
+    public void setParamNewResourceType(String newResourceType) {
+        m_paramNewResourceType = newResourceType;
+    }
+    
+    /**
+     * Returns the new resource edit properties flag parameter.<p>
+     * 
+     * @return the new resource edit properties flag parameter
+     */
+    public String getParamNewResourceEditProps() {
+        return m_paramNewResourceEditProps;
+    }
+    
+    /**
+     * Sets the new resource edit properties flag parameter.<p>
+     * 
+     * @param newResourceEditProps the new resource edit properties flag parameter
+     */
+    public void setParamNewResourceEditProps(String newResourceEditProps) {
+        m_paramNewResourceEditProps = newResourceEditProps;
     }
 
 }

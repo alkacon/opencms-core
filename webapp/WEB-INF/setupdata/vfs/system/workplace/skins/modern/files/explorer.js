@@ -47,7 +47,7 @@ var win;
 
 var buttonType = 1;
 
-var link_newresource = "/system/workplace/action/explorer_files_new.html";
+var link_newresource = "/system/workplace/jsp/dialogs/newresource.html";
 var link_showresource = "/system/workplace/action/explorerShowResource.html";
 
 var last_id = -1;

@@ -5,7 +5,9 @@
 	
 	// initialize the workplace class
 	CmsChacc wp = new CmsChacc(pageContext, request, response);
-	wp.init();
+	if (wp.getAction() != CmsChacc.ACTION_CANCEL) {
+		wp.init();
+	}
 	boolean displayForm = true;
 
 // perform the users submitted action: create, delete or modify ace

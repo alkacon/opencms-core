@@ -1,35 +1,45 @@
 <%@ page import="org.opencms.workplace.*" buffer="none" %><%	
 
 	// initialize the workplace class
-	CmsNewResource wp = new CmsNewResource(pageContext, request, response);
-	
+	CmsNewResourceUpload wp = new CmsNewResourceUpload(pageContext, request, response);
+
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
 
-case CmsNewResource.ACTION_CANCEL:
+case CmsNewResourceUpload.ACTION_CANCEL:
 //////////////////// ACTION: cancel button pressed
 	wp.actionCloseDialog();
 break;
 
 
-case CmsNewResource.ACTION_OK:
+case CmsNewResourceUpload.ACTION_OK:
 //////////////////// ACTION: ok button pressed
 	wp.actionSelect();
 break;
 
 
-case CmsNewResource.ACTION_SUBMITFORM:
-//////////////////// ACTION: resource name specified and form submitted
-	wp.actionCreateResource();
+case CmsNewResourceUpload.ACTION_SUBMITFORM2:
+//////////////////// ACTION: upload name specified and form submitted
+	wp.actionUpdateFile();
 	wp.actionEditProperties(); // redirects only if the edit properties option was checked
 break;
 
 
-case CmsNewResource.ACTION_NEWFORM:
+
+case CmsNewResourceUpload.ACTION_SUBMITFORM:
+//////////////////// ACTION: upload name specified and form submitted
+	wp.actionUpload();
+	if (wp.unzipUpload()) {
+		wp.actionCloseDialog();
+		break;
+	}
+
+
+case CmsNewResourceUpload.ACTION_NEWFORM2:
 //////////////////// ACTION: show the form to specify the resource name and the edit properties checkbox
 	
-	wp.setParamAction(wp.DIALOG_SUBMITFORM);
+	wp.setParamAction(wp.DIALOG_SUBMITFORM2);
 
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
@@ -73,7 +83,7 @@ case CmsNewResource.ACTION_NEWFORM:
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCENAME %>" id="newresfield" type="text" value="<%= wp.getParamNewResourceName() %>" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
@@ -81,16 +91,22 @@ case CmsNewResource.ACTION_NEWFORM:
 </tr>
 </table>
 
+
 <%= wp.dialogSpacer() %>
 
+<%= wp.dialogBlockStart(wp.key("input.suggestfiletype")) %>
+
+<%= wp.dialogWhiteBoxStart() %>
 <table border="0">
-
+<%= wp.buildTypeList() %> 
 </table>
+<%= wp.dialogWhiteBoxEnd() %>
 
+<%= wp.dialogBlockEnd() %>
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null) %>
+<%= wp.dialogButtonsNextCancel("id=\"nextButton\"", null) %>
 
 </form>
 
@@ -102,19 +118,40 @@ case CmsNewResource.ACTION_NEWFORM:
 break;
 
 
-case CmsNewResource.ACTION_DEFAULT:
+case CmsNewResourceUpload.ACTION_NEWFORM:
+case CmsNewResourceUpload.ACTION_DEFAULT:
 default:
-//////////////////// ACTION: show new resource selection dialog
-
-	wp.setParamAction(wp.DIALOG_OK);
+//////////////////// ACTION: show the form to specify the upload file and the unzip option
+	
+	wp.setParamAction(wp.DIALOG_SUBMITFORM);
 
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
 <!--
-	function enableButton() {
+	var labelFinish = "<%= wp.key("button.endwizard") %>";
+	var labelNext = "<%= wp.key("button.nextscreen") %>";
+
+	function checkValue() {
+		var resName = document.getElementById("newresfield").value;
 		var theButton = document.getElementById("nextButton");
-		if (theButton.disabled == true) {
-			theButton.disabled = false;
+		if (resName.length == 0) { 
+			if (theButton.disabled == false) {
+				theButton.disabled =true;
+			}
+		} else {
+			if (theButton.disabled == true) {
+				theButton.disabled = false;
+			}
+		}
+	}
+	
+	function toggleButtonLabel() {
+		var theCheckBox = document.getElementById("unzipfile");
+		var theButton = document.getElementById("nextButton");
+		if (theCheckBox.checked == true) {
+			theButton.value = labelFinish;
+		} else {
+			theButton.value = labelNext;
 		}
 	}
 //-->
@@ -127,13 +164,17 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("select.new") %>
+<table border="0" width="100%">
+<tr>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" class="maxwidth" onchange="checkValue();"></td>
+</tr> 
+<tr>
+	<td>&nbsp;</td>
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_UNZIPFILE %>" id="unzipfile" type="checkbox" value="true" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("button.unzip") %></td>    
+</tr> 
+</table>
 
-<%= wp.dialogSpacer() %>
-
-<%= wp.dialogWhiteBoxStart() %>
-<%= wp.buildNewList("onclick=\"enableButton();\"") %>
-<%= wp.dialogWhiteBoxEnd() %>
 
 <%= wp.dialogContentEnd() %>
 

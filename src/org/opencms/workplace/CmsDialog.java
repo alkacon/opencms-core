@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/03/18 16:13:59 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 5.1
  */
@@ -289,10 +289,11 @@ public class CmsDialog extends CmsWorkplace {
      * @return the value of the file parameter
      */    
     public String getParamResource() {
-        if (m_paramResource == null) {
-            m_paramResource = "";
+        if (m_paramResource != null && !"null".equals(m_paramResource)) {
+            return m_paramResource;
+        } else {
+            return null;
         }
-        return m_paramResource;
     }
     
     /**
