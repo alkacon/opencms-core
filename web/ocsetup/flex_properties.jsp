@@ -11,10 +11,34 @@
 <title>OpenCms Setup Wizard</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link rel="Stylesheet" type="text/css" href="style.css">
+<script language="Javascript">
+
+	function checkSubmit()	{
+		if(document.forms[0].ethernetAddress.value != "")	{
+			var octet = document.forms[0].ethernetAddress.value.split(":");
+			var i = octet.length;
+
+			if (i == 6) {			
+				for (; i > 0; i--) {
+					var o = parseInt(octet[i-1],16)
+					if (isNaN(o) || o < 0 || o > 0xFF) break;
+				}
+			}
+			if (i) {
+				alert("MAC address format must be FF:FF:FF:FF:FF:FF");			
+				document.forms[0].ethernetAddress.focus();
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+</script>	
 </head>
 <body>
 
-<form action="<%=nextPage%>" method="POST" name="">
+<form action="<%=nextPage%>" method="POST" name="" onSubmit="return checkSubmit()">
 <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>	
 <td align="center" valign="middle">
@@ -176,6 +200,28 @@
 						</tr>						
 						
 						
+						<tr>
+							<td align="center" valign="top" colspan="2">
+								<table width="440" border="0" valign="top"  cellspacing="0">
+									<tr>
+										<td align="center" class="header">
+											Server ethernet address
+										</td>
+									</tr>	
+									<tr>
+										<td align="left">
+											MAC address:
+										</td>
+									</tr>									
+									<tr>
+										<td align="center">
+											<input type="text" size="70" name="ethernetAddress" value="<%= Bean.getEthernetAddress()%>">
+										</td>
+									</tr>										
+								</table>
+							</td>
+						</tr>	
+												
 					</table>																			
 					</td>
 				</tr>

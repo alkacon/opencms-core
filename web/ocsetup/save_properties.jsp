@@ -21,7 +21,7 @@
 	
 	Vector errors = new Vector();
 
-	if(setupOk)	{		
+	if(setupOk && (setupOk = Bean.checkProperties()))	{	
 		/* Save Properties to file "opencms.properties" */
 		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
 		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);
