@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2004/07/19 17:05:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/23 13:32:34 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
   
@@ -547,8 +547,9 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertEquals(module.getAuthorName(), "Alexander Kandzior");
         assertEquals(module.getAuthorEmail(), "alex@opencms.org");
         // check if "additionalresources" where converted to module resources        
-        assertTrue(module.getResources().size() == 1);
+        assertTrue(module.getResources().size() == 2);
         assertEquals(module.getResources().get(0), "/alkacon-documentation/documentation-flexcache/");
+        assertEquals(module.getResources().get(1), "/system/modules/org.opencms.test.modules.testOld/");
     }      
     
     /**

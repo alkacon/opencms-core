@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2004/07/19 17:05:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/07/23 13:32:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -115,6 +116,9 @@ public class CmsModuleXmlHandler {
 
     /** The generated module. */
     private CmsModule m_module;
+    
+    /** Indicates if the module was an old (5.0.x) style module. */
+    private boolean m_oldModule;
     
     /** The module parameters. */
     private Map m_parameters;
@@ -323,6 +327,9 @@ public class CmsModuleXmlHandler {
      */
     private static void addXmlDigesterRulesForVersion5Modules(Digester digester) {
         
+        // mark method
+        digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
+        
         // base module information
         digester.addCallParam("*/" + N_MODULE + "/author", 5);   
         digester.addCallParam("*/" + N_MODULE + "/email", 6);    
@@ -340,7 +347,7 @@ public class CmsModuleXmlHandler {
         // parameters        
         digester.addCallMethod("*/" + N_MODULE + "/parameters/para" , "addParameter", 2);        
         digester.addCallParam("*/" + N_MODULE + "/parameters/para/name", 0);        
-        digester.addCallParam("*/" + N_MODULE + "/parameters/para/value", 1);        
+        digester.addCallParam("*/" + N_MODULE + "/parameters/para/value", 1);           
     }
     
     /**
@@ -426,11 +433,15 @@ public class CmsModuleXmlHandler {
         String userInstalled,
         String dateInstalled) {
         
+        String moduleName;
+        
         if (! CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
             OpenCms.getLog(this).error("Invalid module name imported: '" + name + "'");
-            name = makeValidJavaClassName(name);
+            moduleName = makeValidJavaClassName(name);
             OpenCms.getLog(this).error("Corrected module name is: '" + name + "'");                        
+        } else {
+            moduleName = name;
         }
         
         // parse the module version
@@ -456,10 +467,16 @@ public class CmsModuleXmlHandler {
             }
         }
         
+        if (m_oldModule) {
+            // make sure module path is added to resources for "old" (5.0.x) modules
+            String modulePath = I_CmsWpConstants.C_VFS_PATH_MODULES + name + "/";
+            m_resources.add(modulePath);
+        }
+        
         // now create the module
         CmsModule module = 
             new CmsModule(
-                name, 
+                moduleName, 
                 niceName, 
                 actionClass, 
                 description, 
@@ -486,5 +503,16 @@ public class CmsModuleXmlHandler {
     public CmsModule getModule() {
         
         return m_module;
+    }
+    
+    /** 
+     * Sets the current imported module to an old (5.0.x) style module. 
+     */
+    public void setOldModule() {
+        
+        m_oldModule = true;
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("Imported module is an old (5.0.x) style module.");
+        }          
     }
 }
