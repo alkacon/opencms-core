@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  * 
  * @since 5.3.5
  */
@@ -1724,10 +1724,10 @@ public class OpenCmsTestCase extends TestCase {
      * @param cms the CmsObject
      * @param propertyDefinition the propertsdefinition
      */
-    public void assertPropertydefinitionExist(CmsObject cms, CmsPropertydefinition propertyDefinition) {
+    public void assertPropertydefinitionExist(CmsObject cms, CmsPropertyDefinition propertyDefinition) {
 
         try {
-            CmsPropertydefinition prop = cms.readPropertydefinition(propertyDefinition.getName());
+            CmsPropertyDefinition prop = cms.readPropertyDefinition(propertyDefinition.getName());
             if (prop != null) {
                 if (!prop.getName().equals(propertyDefinition.getName())) {
                     fail("propertsdefinitions do not match: " + prop + " != " + propertyDefinition);
@@ -1747,11 +1747,11 @@ public class OpenCmsTestCase extends TestCase {
      * @param propertyDefintions the list of propertydefintions 
      * @param exclude the exclude propertydefinition
      */
-    public void assertPropertydefinitions(CmsObject cms, List propertyDefintions, CmsPropertydefinition exclude) {
+    public void assertPropertydefinitions(CmsObject cms, List propertyDefintions, CmsPropertyDefinition exclude) {
 
         try {
             String noMatches = "";
-            List allPropertydefintions = cms.readAllPropertydefinitions();
+            List allPropertydefintions = cms.readAllPropertyDefinitions();
             noMatches += comparePropertydefintions(propertyDefintions, allPropertydefintions, exclude);
             noMatches += comparePropertydefintions(allPropertydefintions, propertyDefintions, exclude);
             if (noMatches.length() > 0) {
@@ -2517,12 +2517,12 @@ public class OpenCmsTestCase extends TestCase {
      * @param exclude the exclude propertydefintion
      * @return String of missing propertydefinitions
      */
-    private String comparePropertydefintions(List source, List target, CmsPropertydefinition exclude) {
+    private String comparePropertydefintions(List source, List target, CmsPropertyDefinition exclude) {
 
         String noMatches = "";
         Iterator i = source.iterator();
         while (i.hasNext()) {
-            CmsPropertydefinition prop = (CmsPropertydefinition)i.next();
+            CmsPropertyDefinition prop = (CmsPropertyDefinition)i.next();
             if ((!target.contains(prop)) && (!prop.getName().equals(exclude.getName()))) {
                 noMatches += "[" + prop + "]";
             }

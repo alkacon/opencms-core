@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2004/12/17 18:40:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -542,7 +542,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
-     * @param dateLastModified timestamp the new timestamp of the changed resource.
+     * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource,
      *              set it to <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource, 

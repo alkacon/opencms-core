@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/12/20 11:35:43 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.155 $
+ * @version $Revision: 1.156 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1505,7 +1505,7 @@ public final class OpenCmsCore {
      * @param t the caught Exception
      * @param request the servlet request
      * @param cms the CmsObject
-     * @return String containing the HTML code of the error message.
+     * @return String containing the HTML code of the error message
      */
     private String createErrorBox(Throwable t, HttpServletRequest request, CmsObject cms) {
         

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/12/23 10:32:03 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.main.CmsException;
 
 import com.opencms.core.I_CmsSession;
@@ -48,7 +48,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.14 $ $Date: 2004/07/18 16:27:13 $
+ * @version $Revision: 1.15 $ $Date: 2004/12/23 10:32:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -193,14 +193,14 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
         values.add("");
 
         if((resourcetype != null) && (!"".equals(resourcetype.trim()))){
-            List propdefs = cms.readAllPropertydefinitions();
+            List propdefs = cms.readAllPropertyDefinitions();
 
             int i = 0;
             Iterator j = propdefs.iterator();
             while (j.hasNext()) {
-                names.add(((CmsPropertydefinition)j.next()).getName());
-                values.add(((CmsPropertydefinition)j.next()).getName());
-                if((((CmsPropertydefinition)j.next()).getName()).equals(selectedDef)){
+                names.add(((CmsPropertyDefinition)j.next()).getName());
+                values.add(((CmsPropertyDefinition)j.next()).getName());
+                if((((CmsPropertyDefinition)j.next()).getName()).equals(selectedDef)){
                     retValue = new Integer(i+1);
                 }
                 i++;
@@ -219,10 +219,10 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
         template.setData("check","");
         typeOptions.append(template.getProcessedDataValue("selectoption",this));
         if((restype != null) && (!"".equals(restype.trim()))){
-            List propdefs = cms.readAllPropertydefinitions();
+            List propdefs = cms.readAllPropertyDefinitions();
             Iterator i = propdefs.iterator();
             while (i.hasNext()) {
-                String propdef = ((CmsPropertydefinition)i.next()).getName();
+                String propdef = ((CmsPropertyDefinition)i.next()).getName();
                 template.setData("name",propdef);
                 template.setData("value",propdef);
                 if(propdef.equals(selDef!=null?selDef:"")){

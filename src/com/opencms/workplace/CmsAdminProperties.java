@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2004/07/08 15:21:05 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/12/23 10:32:03 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.types.I_CmsResourceType;
 
 import com.opencms.template.A_CmsXmlContent;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2004/07/08 15:21:05 $
+ * @version $Revision: 1.38 $ $Date: 2004/12/23 10:32:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -120,7 +120,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
             }
             else {
                 try {
-                    cms.createPropertydefinition(name);
+                    cms.createPropertyDefinition(name);
                     templateSelector = "";
                 }
                 catch(CmsException e) {
@@ -140,7 +140,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
                 if("true".equals(parameters.get("sure"))) {
 
                     // the user is sure to delete the property definition
-                    cms.deletePropertydefinition(propDefName);
+                    cms.deletePropertyDefinition(propDefName);
                     templateSelector = "";
                 }
                 else {
@@ -208,7 +208,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
             I_CmsResourceType resType) throws CmsException {
         StringBuffer output = new StringBuffer();
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
-        List properties = cms.readAllPropertydefinitions();
+        List properties = cms.readAllPropertyDefinitions();
         templateFile.setData(C_TAG_RESTYPE, resType.getTypeName());
 
         templateFile.setData(C_TAG_RESTYPE + "_esc",
@@ -217,7 +217,7 @@ public class CmsAdminProperties extends CmsWorkplaceDefault {
         output.append(templateFile.getProcessedDataValue(C_TAG_RESTYPEENTRY, callingObject));
         Iterator i = properties.iterator();
         while (i.hasNext()) {
-            CmsPropertydefinition propdef = (CmsPropertydefinition)i.next();
+            CmsPropertyDefinition propdef = (CmsPropertyDefinition)i.next();
             templateFile.setData("PROPERTY_NAME", propdef.getName());
             templateFile.setData("PROPERTY_NAME_ESC", CmsEncoder.escapeWBlanks(propdef.getName(),
                 cms.getRequestContext().getEncoding()));

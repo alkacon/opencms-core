@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2004/12/20 11:35:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -186,7 +186,7 @@ public class CmsSessionInfoManager {
     /**
      * Gets the complete user information of a user from the session storage.
      *
-     * @param sessionId A currently valid session id.
+     * @param sessionId A currently valid session id
      * @return table with user information or null
      */
     public CmsSessionInfo getUserInfo(String sessionId) {
@@ -302,9 +302,9 @@ public class CmsSessionInfoManager {
      * Send a broadcast message to all currently logged in users.<p>
      * 
      * @param cms the context info for security checks. 
-     * @param message the message to send.
+     * @param message the message to send
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public void sendBroadcastMessage(CmsObject cms, String message) throws CmsException {
 
@@ -333,7 +333,7 @@ public class CmsSessionInfoManager {
      * @return a list of <code>{@link Map}</code>s representing 
      *          users that are currently logged in.
      * 
-     * @throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong
      */
     public List getLoggedInUsers(CmsObject cms) throws CmsException {
 

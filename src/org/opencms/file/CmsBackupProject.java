@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2004/12/16 13:57:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsBackupProject extends CmsProject implements Cloneable {
 
@@ -198,7 +198,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     /**
      * Gets the ownername.
      *
-     * @return the ownername.
+     * @return the ownername
      */
     public String getOwnerName() {
         return m_nameOwner;
@@ -217,7 +217,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     /**
      * Gets the published-by value.
      *
-     * @return the published-by value.
+     * @return the published-by value
      */
     public CmsUUID getPublishedBy() {
         return m_userPublished;
@@ -226,7 +226,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     /**
      * Gets the publishers name.
      *
-     * @return the publishers name.
+     * @return the publishers name
      */
     public String getPublishedByName() {
         return m_namePublisher;
@@ -234,7 +234,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     /**
      * Returns the publishing date of this project.
      *
-     * @return the publishing date of this project.
+     * @return the publishing date of this project
      */
     public long getPublishingDate() {
         return m_datePublished;
@@ -243,7 +243,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
     /**
      * Gets the versionId.
      *
-     * @return the versionId.
+     * @return the versionId
      */
     public int getVersionId() {
         return m_versionId;

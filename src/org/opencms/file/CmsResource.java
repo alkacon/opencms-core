@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/12/16 14:08:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -575,7 +575,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the resource type id for this resource.<p>
      *
-     * @return the resource type id of this resource.
+     * @return the resource type id of this resource
      */
     public int getTypeId() {
 

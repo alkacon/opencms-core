@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestProperyDefinition.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * "readAllPropertyDefintions" methods of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestProperyDefinition extends OpenCmsTestCase {
 
@@ -104,13 +104,13 @@ public class TestProperyDefinition extends OpenCmsTestCase {
     throws Throwable {
 
         // get all propertydefintions
-        List allPropertydefintions = cms.readAllPropertydefinitions();
+        List allPropertydefintions = cms.readAllPropertyDefinitions();
         // create a property defintion with a dummy id value (the real id is created by db)
-        CmsPropertydefinition prop = new CmsPropertydefinition(
+        CmsPropertyDefinition prop = new CmsPropertyDefinition(
             CmsUUID.getNullUUID(),
             propertyDefiniton1);
 
-        cms.createPropertydefinition(propertyDefiniton1);
+        cms.createPropertyDefinition(propertyDefiniton1);
 
         // check if the propertsdefintion was written
         tc.assertPropertydefinitionExist(cms, prop);
@@ -151,14 +151,14 @@ public class TestProperyDefinition extends OpenCmsTestCase {
      */
     public static void createReadDeletePropertyDefinition(CmsObject cms) throws Throwable {
 
-        CmsPropertydefinition propertyDefinition = null;
+        CmsPropertyDefinition propertyDefinition = null;
         String propertyDefinitionName = "locale-available";
                 
         // 1) create a property definition
 
         try {
             // create a new property definition
-            propertyDefinition = cms.createPropertydefinition(propertyDefinitionName);
+            propertyDefinition = cms.createPropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             fail("Error creating property definition " + propertyDefinitionName + ", " + e.toString());
         }
@@ -170,7 +170,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         try {
             // read the created property definition
             propertyDefinition = null;
-            propertyDefinition = cms.readPropertydefinition(propertyDefinitionName);
+            propertyDefinition = cms.readPropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             fail("Error reading property definition " + propertyDefinitionName + ", " + e.toString());
         }
@@ -182,14 +182,14 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         List allPropertyDefinitions = null;
         try {
             // read all property definitions
-            allPropertyDefinitions = cms.readAllPropertydefinitions();
+            allPropertyDefinitions = cms.readAllPropertyDefinitions();
         } catch (CmsException e) {
             fail("Error reading all property definitions, " + e.toString());
         }
 
         boolean found = false;
         for (int i = 0, n = allPropertyDefinitions.size(); i < n; i++) {
-            if (((CmsPropertydefinition)allPropertyDefinitions.get(i)).equals(propertyDefinition)) {
+            if (((CmsPropertyDefinition)allPropertyDefinitions.get(i)).equals(propertyDefinition)) {
                 found = true;
                 break;
             }
@@ -203,7 +203,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
 
         try {
             // delete the property definition again
-            cms.deletePropertydefinition(propertyDefinitionName);
+            cms.deletePropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             fail("Error deleting property definition " + propertyDefinitionName + ", " + e.toString());
         }
@@ -213,7 +213,7 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         try {
             // re-read the created property definition
             propertyDefinition = null;
-            propertyDefinition = cms.readPropertydefinition(propertyDefinitionName);
+            propertyDefinition = cms.readPropertyDefinition(propertyDefinitionName);
         } catch (CmsException e) {
             // intentionally left blank
         }
@@ -225,14 +225,14 @@ public class TestProperyDefinition extends OpenCmsTestCase {
         allPropertyDefinitions = null;
         try {
             // read all property definitions
-            allPropertyDefinitions = cms.readAllPropertydefinitions();
+            allPropertyDefinitions = cms.readAllPropertyDefinitions();
         } catch (CmsException e) {
             fail("Error reading all property definitions, " + e.toString());
         }
 
         found = false;
         for (int i = 0, n = allPropertyDefinitions.size(); i < n; i++) {
-            if (((CmsPropertydefinition)allPropertyDefinitions.get(i)).equals(propertyDefinition)) {
+            if (((CmsPropertyDefinition)allPropertyDefinitions.get(i)).equals(propertyDefinition)) {
                 found = true;
                 break;
             }

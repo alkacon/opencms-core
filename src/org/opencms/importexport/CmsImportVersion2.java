@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/11/17 11:34:45 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
@@ -638,22 +638,22 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // check if the template property exists. If not, create it.
         try {
-            m_cms.readPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
+            m_cms.readPropertyDefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
         } catch (CmsException e) {
             // the template propertydefintion does not exist. So create it.
-            m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
+            m_cms.createPropertyDefinition(I_CmsConstants.C_PROPERTY_TEMPLATE);
         }
         // copy all propertydefinitions of the old page to the new page
-        List definitions = m_cms.readAllPropertydefinitions();
+        List definitions = m_cms.readAllPropertyDefinitions();
 
         Iterator j = definitions.iterator();
         while (j.hasNext()) {
-            CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
+            CmsPropertyDefinition definition = (CmsPropertyDefinition)j.next();
             // check if this propertydef already exits
             try {
-                m_cms.readPropertydefinition(definition.getName());
+                m_cms.readPropertyDefinition(definition.getName());
             } catch (Exception e) {
-                m_cms.createPropertydefinition(definition.getName());
+                m_cms.createPropertyDefinition(definition.getName());
             }
         }
 

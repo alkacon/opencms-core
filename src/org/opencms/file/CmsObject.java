@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/22 16:36:45 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -244,7 +244,11 @@ public class CmsObject {
      * Changes the access control for a given resource and a given principal(user/group).<p>
      * 
      * @param resourceName name of the resource
-     * @param principalType the type of the principal (currently group or user)
+     * @param principalType the type of the principal (currently group or user):
+     *      <ul>
+     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_USER}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_GROUP}</code></li>
+     *      </ul>
      * @param principalName name of the principal
      * @param allowedPermissions bitset of allowed permissions
      * @param deniedPermissions bitset of denied permissions
@@ -291,9 +295,13 @@ public class CmsObject {
      * Changes the access control for a given resource and a given principal(user/group).<p>
      * 
      * @param resourceName name of the resource
-     * @param principalType the type of the principal (group or user)
+     * @param principalType the type of the principal (group or user):
+     *      <ul>
+     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_USER}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_GROUP}</code></li>
+     *      </ul>
      * @param principalName name of the principal
-     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i|o))*
      * 
      * @throws CmsException if something goes wrong
      */

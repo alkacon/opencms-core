@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2004/11/12 17:31:48 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,12 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  */
-public class CmsPropertydefinition implements Cloneable, Comparable {
+public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** The null property definition object. */
-    private static final CmsPropertydefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertydefinition(CmsUUID.getNullUUID(), "");
+    private static final CmsPropertyDefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(CmsUUID.getNullUUID(), "");
 
     /** The id of this property definition. */
     private CmsUUID m_id;
@@ -56,7 +56,7 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @param id the id of the property definition
      * @param name the name of the property definition
      */
-    public CmsPropertydefinition(CmsUUID id, String name) {
+    public CmsPropertyDefinition(CmsUUID id, String name) {
         m_id = id;
         m_name = name;
     }
@@ -67,17 +67,17 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @return a clone of this instance
      */   
     public Object clone() {
-        return new CmsPropertydefinition(m_id, m_name);
+        return new CmsPropertyDefinition(m_id, m_name);
     }
     
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object obj) {
-        if ((obj == null) || ! (obj instanceof CmsPropertydefinition)) {
+        if ((obj == null) || ! (obj instanceof CmsPropertyDefinition)) {
             return 0;
         }
-        CmsPropertydefinition def = (CmsPropertydefinition)obj;
+        CmsPropertyDefinition def = (CmsPropertyDefinition)obj;
         return (getName().compareTo(def.getName()));
     }    
     
@@ -85,8 +85,8 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
-        if (obj instanceof CmsPropertydefinition) {
-            return ((CmsPropertydefinition)obj).getId().equals(m_id);
+        if (obj instanceof CmsPropertyDefinition) {
+            return ((CmsPropertyDefinition)obj).getId().equals(m_id);
         }
         return false;    
     }
@@ -124,8 +124,8 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
      * 
      * @return the null property definition
      */
-    public static CmsPropertydefinition getNullPropertyDefinition() {
-        return CmsPropertydefinition.C_NULL_PROPERTY_DEFINITION;
+    public static CmsPropertyDefinition getNullPropertyDefinition() {
+        return CmsPropertyDefinition.C_NULL_PROPERTY_DEFINITION;
     }
 
     /**

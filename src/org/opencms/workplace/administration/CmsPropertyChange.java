@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyChange.java,v $
- * Date   : $Date: 2004/12/17 16:15:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 package org.opencms.workplace.administration;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.3
  */
@@ -185,7 +185,7 @@ public class CmsPropertyChange extends CmsDialog {
         List propertyDef = new ArrayList();
         try {
             // get all property definitions
-            propertyDef = cms.readAllPropertydefinitions();
+            propertyDef = cms.readAllPropertyDefinitions();
         } catch (CmsException e) {
             // should usually never happen
             if (OpenCms.getLog(CmsPropertyChange.class).isInfoEnabled()) {
@@ -199,7 +199,7 @@ public class CmsPropertyChange extends CmsDialog {
         
         for (int i=0; i<propertyCount; i++) {
             // loop property definitions and get definition name
-            CmsPropertydefinition currDef = (CmsPropertydefinition)propertyDef.get(i);
+            CmsPropertyDefinition currDef = (CmsPropertyDefinition)propertyDef.get(i);
             options.add(CmsEncoder.escapeXml(currDef.getName()));
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/12/15 12:29:46 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
-import org.opencms.file.CmsPropertydefinition;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -66,7 +66,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -255,10 +255,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      * @param name the name of the property definition to create
      * @return the created property definition
      * @throws Exception if something goes wrong
-     * @see CmsObject#createPropertydefinition(String)
+     * @see CmsObject#createPropertyDefinition(String)
      */
-    public CmsPropertydefinition createPropertydefinition(String name) throws Exception {
-        return m_cms.createPropertydefinition(name);
+    public CmsPropertyDefinition createPropertydefinition(String name) throws Exception {
+        return m_cms.createPropertyDefinition(name);
     }
 
     /**
@@ -279,10 +279,10 @@ class CmsShellCommands implements I_CmsShellCommands {
      *
      * @param name the name of the property definition to delete
      * @throws Exception if something goes wrong
-     * @see CmsObject#deletePropertydefinition(String)
+     * @see CmsObject#deletePropertyDefinition(String)
      */
     public void deletepropertydefinition(String name) throws Exception {
-        m_cms.deletePropertydefinition(name);
+        m_cms.deletePropertyDefinition(name);
     }
 
     /**

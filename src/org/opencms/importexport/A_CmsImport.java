@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/11/17 14:37:23 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -369,10 +369,10 @@ public abstract class A_CmsImport implements I_CmsImport {
     private void checkPropertyDefinition(String key) throws CmsException {
         try {
             // try to read the property definition
-            m_cms.readPropertydefinition(key);
+            m_cms.readPropertyDefinition(key);
         } catch (CmsException exc) {
             // create missing property definitions
-            m_cms.createPropertydefinition(key);
+            m_cms.createPropertyDefinition(key);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/administration/Attic/CmsPropertyDelete.java,v $
- * Date   : $Date: 2004/11/23 15:03:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.3
  */
@@ -112,7 +112,7 @@ public class CmsPropertyDelete extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            getCms().deletePropertydefinition(getParamPropertyName());
+            getCms().deletePropertyDefinition(getParamPropertyName());
             // close the dialog
             actionCloseDialog();
         } catch (CmsException e) {              
@@ -164,7 +164,7 @@ public class CmsPropertyDelete extends CmsDialog {
                         getCms().unlockResource(resource.getRootPath());
                     }
                     // delete the property definition at last
-                    getCms().deletePropertydefinition(getParamPropertyName());                    
+                    getCms().deletePropertyDefinition(getParamPropertyName());                    
                 } finally {
                     // restore the siteroot
                     getCms().getRequestContext().restoreSiteRoot();  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/12/20 15:18:45 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/12/23 10:32:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsRequestContext {
 
@@ -169,7 +169,7 @@ public class CmsRequestContext {
     /**
      * Returns the current project of the current user.
      *
-     * @return the current project of the current user.
+     * @return the current project of the current user
      */
     public CmsProject currentProject() {
 
