@@ -2,10 +2,10 @@
 @rem You need the "smalle" MikTeX package
 @rem In addition to that, install "koma-script" and "fancyhdr"
 
-pdflatex OpenCmsDoc.tex
-pdflatex OpenCmsDoc.tex
-pdflatex OpenCmsDoc.tex
+pdflatex OpenCmsDoc
+makeindex OpenCmsDoc
+pdflatex OpenCmsDoc
 
-del *.aux,*.idx,*.log,*.dvi,*.toc
+del *.aux,*.idx,*.log,*.dvi,*.toc,*.ilg,*.ind
 
 
