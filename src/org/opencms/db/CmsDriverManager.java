@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/20 12:43:20 $
- * Version: $Revision: 1.355 $
+ * Date   : $Date: 2004/04/28 22:16:53 $
+ * Version: $Revision: 1.356 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.355 $ $Date: 2004/04/20 12:43:20 $
+ * @version $Revision: 1.356 $ $Date: 2004/04/28 22:16:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -1754,28 +1754,28 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Creates a new sibling of the target resource.<p>
      * 
      * @param context the context
-     * @param linkName the name of the link
+     * @param siblingName the name of the sibling
      * @param targetName the name of the target
-     * @param linkProperties the properties to attach via the the link
-     * @param lockResource true, if the new created link should be initially locked
+     * @param siblingProperties the properties to attach to the new sibling
+     * @param lockResource true, if the new created sibling should be initially locked
      * @return the new resource
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createSibling(CmsRequestContext context, String linkName, String targetName, List linkProperties, boolean lockResource) throws CmsException {
+    public CmsResource createSibling(CmsRequestContext context, String siblingName, String targetName, List siblingProperties, boolean lockResource) throws CmsException {
         CmsResource targetResource = null;
         CmsResource linkResource = null;
         String parentFolderName = null;
         CmsFolder parentFolder = null;
         String resourceName = null;
 
-        parentFolderName = linkName.substring(0, linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
-        resourceName = linkName.substring(linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, linkName.length());
+        parentFolderName = siblingName.substring(0, siblingName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
+        resourceName = siblingName.substring(siblingName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, siblingName.length());
 
         // read the target resource
         targetResource = this.readFileHeader(context, targetName);
 
         if (targetResource.isFolder()) {
-            throw new CmsException("Setting links on folders is not supported");
+            throw new CmsException("Creating siblings of folders is not supported");
         }
 
         // read the parent folder
@@ -1788,27 +1788,27 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), 0, targetResource.getLinkCount() + 1);
 
         // check if the resource has to be labeled now
-        if (labelResource(context, targetResource, linkName, 1)) {
+        if (labelResource(context, targetResource, siblingName, 1)) {
             int flags = linkResource.getFlags();
             flags |= I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
             linkResource.setFlags(flags);
         }
 
         // setting the full resource name twice here looks crude but is essential!
-        linkResource.setFullResourceName(linkName);
+        linkResource.setFullResourceName(siblingName);
         linkResource = m_vfsDriver.createSibling(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getStructureId(), resourceName);
-        linkResource.setFullResourceName(linkName);
+        linkResource.setFullResourceName(siblingName);
 
         // mark the new sibling as modified in the current project
         m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), linkResource);
 
-        if (linkProperties == null) {
+        if (siblingProperties == null) {
             // "empty" properties are represented by an empty property map
-            linkProperties = Collections.EMPTY_LIST;
+            siblingProperties = Collections.EMPTY_LIST;
         }
         // write its properties
-        CmsProperty.setAutoCreatePropertyDefinitions(linkProperties, true);
-        m_vfsDriver.writePropertyObjects(context.currentProject(), linkResource, linkProperties);
+        CmsProperty.setAutoCreatePropertyDefinitions(siblingProperties, true);
+        m_vfsDriver.writePropertyObjects(context.currentProject(), linkResource, siblingProperties);
 
         // if the source
         clearResourceCache();
@@ -1818,7 +1818,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         if (lockResource) {
             // lock the resource
-            lockResource(context, linkName);
+            lockResource(context, siblingName);
         }
 
         return linkResource;
@@ -7575,56 +7575,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         int l = filename.length();
 
-        // if (l == 0 || filename.startsWith(".")) {
         if (l == 0) {
             throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
         }
 
         for (int i = 0; i < l; i++) {
             char c = filename.charAt(i);
+//            if ((c < 20) || (c == '/')  || (c == '\\') || (c == ':') || (c == '*') || (c == '?') 
+//            ||  (c == '\"') || (c == '<')  || (c == '>') || (c == '|')) {
+//                throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
+//            }                        
             if (((c < 'a') || (c > 'z')) && ((c < '0') || (c > '9')) && ((c < 'A') || (c > 'Z')) && (c != '-') && (c != '.') && (c != '_') && (c != '~') && (c != '$')) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename, CmsException.C_BAD_NAME);
             }
         }
-    }
-
-    /**
-     * Checks if characters in a String are allowed for names.<p>
-     *
-     * @param name String to check
-     * @param blank flag to allow blanks
-     * @throws CmsException C_BAD_NAME if the check fails
-     */
-    protected void validName(String name, boolean blank) throws CmsException {
-        if (name == null || name.length() == 0 || name.trim().length() == 0) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-        }
-        // throw exception if no blanks are allowed
-        if (!blank) {
-            int l = name.length();
-            for (int i = 0; i < l; i++) {
-                char c = name.charAt(i);
-                if (c == ' ') {
-                    throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_BAD_NAME);
-                }
-            }
-        }
-
-        /*
-        for (int i=0; i<l; i++) {
-        char c = name.charAt(i);
-        if (
-        ((c < 'a') || (c > 'z')) &&
-        ((c < '0') || (c > '9')) &&
-        ((c < 'A') || (c > 'Z')) &&
-        (c != '-') && (c != '.') &&
-        (c != '_') &&   (c != '~')
-        ) {
-        throw new CmsException("[" + this.getClass().getName() + "] " + name,
-        CmsException.C_BAD_NAME);
-        }
-        }
-        */
     }
 
     /**
