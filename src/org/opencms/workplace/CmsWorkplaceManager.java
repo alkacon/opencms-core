@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/07/18 16:34:53 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/07/24 06:02:37 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 5.3.1
  */
@@ -402,17 +402,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
         
-        // set the request character encoding
-        try {
-            req.setCharacterEncoding(m_defaultEncoding);
-        } catch (UnsupportedEncodingException e) {
-            // should not ever really happen
-            OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_defaultEncoding + "'", e);
-        }
         
         Locale locale = null;
         // try to read locale from session
-        if (req != null) {
+        if (req != null) {            
+            // set the request character encoding
+            try {
+                req.setCharacterEncoding(m_defaultEncoding);
+            } catch (UnsupportedEncodingException e) {
+                // should not ever really happen
+                OpenCms.getLog(this).error("Unsupported encoding set for workplace '" + m_defaultEncoding + "'", e);
+            }         
+            // read workplace settings
             HttpSession session = req.getSession(false);
             if (session != null) {
                 CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
@@ -430,11 +431,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 locale = settings.getLocale();
   
             }
-            List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
-            if ((locale != null) && (! acceptedLocales.contains(locale))) {
-                acceptedLocales.add(0, locale);
+            if (req != null) {
+                List acceptedLocales = (new CmsAcceptLanguageHeaderParser(req, getDefaultLocale())).getAcceptedLocales();
+                if ((locale != null) && (! acceptedLocales.contains(locale))) {
+                    acceptedLocales.add(0, locale);
+                }
+                locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, m_locales);
             }
-            locale = OpenCms.getLocaleManager().getFirstMatchingLocale(acceptedLocales, m_locales);
             
             // if no locale was found, use the default
             if (locale == null) {
