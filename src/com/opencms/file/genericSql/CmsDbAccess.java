@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/03/04 17:30:10 $
-* Version: $Revision: 1.275 $
+* Date   : $Date: 2003/03/05 08:52:42 $
+* Version: $Revision: 1.276 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.275 $ $Date: 2003/03/04 17:30:10 $ *
+ * @version $Revision: 1.276 $ $Date: 2003/03/05 08:52:42 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     
@@ -4154,83 +4154,85 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      *
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
-    public Vector getSubFolders(int projectId, CmsFolder parentFolder)
-        throws CmsException {
-        Vector folders=new Vector();
-        CmsFolder folder=null;
-        ResultSet res =null;
+    public Vector getSubFolders(int projectId, CmsFolder parentFolder) throws CmsException {
+        Vector folders = new Vector();
+        CmsFolder folder = null;
+        ResultSet res = null;
         PreparedStatement statement = null;
         Connection con = null;
         String usedStatement;
         String usedPool;
+        
         //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-        if (projectId == onlineProject){
-           usedPool = m_poolNameOnline;
-           usedStatement = "_ONLINE";
+        if (projectId == onlineProject) {
+            usedPool = m_poolNameOnline;
+            usedStatement = "_ONLINE";
         } else {
-           usedPool = m_poolName;
-           usedStatement = "";
+            usedPool = m_poolName;
+            usedStatement = "";
         }
+        
         try {
             //  get all subfolders
             con = DriverManager.getConnection(usedPool);
-            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_SUBFOLDER"+usedStatement));
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_GET_SUBFOLDER" + usedStatement));
             statement.setInt(1, parentFolder.getResourceId());
-            statement.setInt(2, projectId);
             res = statement.executeQuery();
+            
             // create new folder objects
-            while ( res.next() ) {
-                int resId=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
-                int parentId=res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
-                String resName=res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
-                int resType= res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
-                int resFlags=res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
-                int userId=res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
-                int groupId= res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
-                int projectID=res.getInt(m_cq.get("C_RESOURCES_PROJECT_ID"));
-                int fileId=res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
-                int accessFlags=res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
-                int state= res.getInt(m_cq.get("C_RESOURCES_STATE"));
-                int lockedBy= res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
-                long created=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
-                long modified=SqlHelper.getTimestamp(res,m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
-                int modifiedBy=res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
+            while (res.next()) {
+                int resId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                int parentId = res.getInt(m_cq.get("C_RESOURCES_PARENT_ID"));
+                String resName = res.getString(m_cq.get("C_RESOURCES_RESOURCE_NAME"));
+                int resType = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_TYPE"));
+                int resFlags = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_FLAGS"));
+                int userId = res.getInt(m_cq.get("C_RESOURCES_USER_ID"));
+                int groupId = res.getInt(m_cq.get("C_RESOURCES_GROUP_ID"));
+                int fileId = res.getInt(m_cq.get("C_RESOURCES_FILE_ID"));
+                int accessFlags = res.getInt(m_cq.get("C_RESOURCES_ACCESS_FLAGS"));
+                int state = res.getInt(m_cq.get("C_RESOURCES_STATE"));
+                int lockedBy = res.getInt(m_cq.get("C_RESOURCES_LOCKED_BY"));
+                long created = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_CREATED")).getTime();
+                long modified = SqlHelper.getTimestamp(res, m_cq.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+                int modifiedBy = res.getInt(m_cq.get("C_RESOURCES_LASTMODIFIED_BY"));
                 int lockedInProject = res.getInt("LOCKED_IN_PROJECT");
-                folder = new CmsFolder(resId,parentId,fileId,resName,resType,resFlags,userId,
-                                      groupId,projectID,accessFlags,state,lockedBy,created,
-                                      modified,modifiedBy, lockedInProject);
+                
+                folder = new CmsFolder(resId, parentId, fileId, resName, resType, resFlags, userId, groupId, lockedInProject, accessFlags, state, lockedBy, created, modified, modifiedBy, lockedInProject);
                 folders.addElement(folder);
             }
 
-        } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-        } catch( Exception exc ) {
-            throw new CmsException("getSubFolders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } catch (SQLException e) {
+            //e.printStackTrace(System.err);
+            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+        } catch (Exception exc) {
+            //exc.printStackTrace(System.err);
+            throw new CmsException("getSubFolders " + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             // close all db-resources
-            if(res != null) {
+            if (res != null) {
                 try {
                     res.close();
-                } catch(SQLException exc) {
+                } catch (SQLException exc) {
                     // nothing to do here
                 }
             }
-            if(statement != null) {
+            if (statement != null) {
                 try {
                     statement.close();
-                } catch(SQLException exc) {
+                } catch (SQLException exc) {
                     // nothing to do here
                 }
             }
-            if(con != null) {
+            if (con != null) {
                 try {
                     con.close();
-                } catch(SQLException exc) {
+                } catch (SQLException exc) {
                     // nothing to do here
                 }
             }
         }
+        
         return folders;
     }
 
