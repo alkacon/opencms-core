@@ -184,6 +184,7 @@ PACKAGE BODY OpenCmsProject IS
     vCurWriteFolders VARCHAR2(32767) := '';
     vCurWriteFiles VARCHAR2(32767) := '';
     vVersionId NUMBER := 1;
+    vResVersionId NUMBER := 1;
     --vPublishDate DATE := to_date(pPublishDate, 'dd.mm.yyyy hh24:mi');
   BEGIN
     ---------------------------------------
@@ -192,6 +193,12 @@ PACKAGE BODY OpenCmsProject IS
     ---------------------------------------
     IF pEnableHistory = 1 THEN
       select nvl(max(version_id),0) + 1 into vVersionId from cms_backup_projects;
+      select nvl(max(version_id),0) + 1 into vResVersionId from cms_backup_resources;
+      IF vResVersionId > vVersionId THEN
+      	vVersionId := vResVersionId;
+      END IF;
+      -- backup the project
+      backupProject(pProjectId, vVersionId, pPublishDate, pUserId);
     END IF;
     ---------------------------------
     -- for all folders of the project
@@ -499,8 +506,6 @@ PACKAGE BODY OpenCmsProject IS
       END LOOP;
       commit;
     END IF;
-    -- backup the project
-    backupProject(pProjectId, vVersionId, pPublishDate, pUserId);
     -- build the cursors which are used in java for the discAccess
     BEGIN
       IF length(vCurDelFolders) > 0 THEN
@@ -612,9 +617,11 @@ PACKAGE BODY OpenCmsProject IS
     insert into cms_backup_projectresources
       (version_id, project_id, resource_name)
     select pVersionId, project_id, resource_name from cms_projectresources where project_id = pProjectId;
+    commit;
   EXCEPTION
     WHEN OTHERS THEN
-      raise_application_error(-20004, 'error when backup project');
+      rollback;
+      raise_application_error(-20004, 'error when backup project',true);
   END;
 -----------------------------------------------------------------------------------------
 -- returns a cursor with the online-project
