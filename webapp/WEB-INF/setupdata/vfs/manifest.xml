@@ -13050,12 +13050,12 @@
 		<accesscontrol/>
 	</file>
 	<file>
-		<source>system/workplace/skins/modern/buttons/directedit.gif</source>
-		<destination>system/workplace/skins/modern/buttons/directedit.gif</destination>
+		<source>system/workplace/skins/modern/buttons/directedit_cl.gif</source>
+		<destination>system/workplace/skins/modern/buttons/directedit_cl.gif</destination>
 		<type>image</type>
 		<uuidresource>8fd8d27d-2bc6-11d8-a8e0-e32094fbf4f1</uuidresource>
 		<uuidcontent>8fd8d27e-2bc6-11d8-a8e0-e32094fbf4f1</uuidcontent>
-		<datelastmodified>1071139282000</datelastmodified>
+		<datelastmodified>1077632967000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1071139282000</datecreated>
 		<usercreated>Admin</usercreated>
@@ -13069,9 +13069,23 @@
 		<type>image</type>
 		<uuidresource>8fdfd760-2bc6-11d8-a8e0-e32094fbf4f1</uuidresource>
 		<uuidcontent>8fdfd761-2bc6-11d8-a8e0-e32094fbf4f1</uuidcontent>
-		<datelastmodified>1071139282000</datelastmodified>
+		<datelastmodified>1077632980000</datelastmodified>
 		<userlastmodified>Admin</userlastmodified>
 		<datecreated>1071139282000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file>
+	<file>
+		<source>system/workplace/skins/modern/buttons/directedit_op.gif</source>
+		<destination>system/workplace/skins/modern/buttons/directedit_op.gif</destination>
+		<type>image</type>
+		<uuidresource>eef0dfac-66d5-11d8-b490-cbfb51df5f23</uuidresource>
+		<uuidcontent>eef0dfad-66d5-11d8-b490-cbfb51df5f23</uuidcontent>
+		<datelastmodified>1077633009000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1077633003000</datecreated>
 		<usercreated>Admin</usercreated>
 		<flags>0</flags>
 		<properties/>

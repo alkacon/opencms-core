@@ -39,7 +39,8 @@ if (editElement != null) {
 <span class="directedit_button" onmouseover="activate('<%= editId %>');" onmouseout="deactivate('<%= editId %>');">
 <table border="0" cellpadding="1" cellspacing="0">
 <tr>
-	<%=wp.button("javascript:document.forms['form_" + editId + "'].submit();", null, "directedit", "editor.frontend.button.edit", 1)%></tr>
+	<td><a href="#" onclick="javascript:document.forms['form_<%= editId %>'].submit();" class="button"><span unselectable="on" class="norm" onmouseover="className='over'" onmouseout="className='norm'" onmousedown="className='push'" onmouseup="className='over'"><span id="bt_<%= editId %>" unselectable="on" class="combobutton" style="height: 20px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.gif');"><%= wp.key("editor.frontend.button.edit") %></span></span></a></td>
+</tr>
 </table>
 </span>
 </cms:template><%--
@@ -160,12 +161,15 @@ function activate(id) {
 	if (el.className == "directedit_norm") {
 		el.className = "directedit_over";
 	}
+	document.getElementById("bt_" + id).style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_op.gif)";
+
 }
 function deactivate(id) {
 	var el = document.getElementById(id);
 	if (el.className == "directedit_over") {
 		el.className = "directedit_norm";
 	}
+	document.getElementById("bt_" + id).style.backgroundImage = "url(<%= wp.getSkinUri() %>buttons/directedit_cl.gif)";
 }
 //-->
 </script>
