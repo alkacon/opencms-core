@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 13:36:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/07/30 13:38:54 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -81,8 +81,8 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        String currentResource = null;
+    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {       
+        String currentResource = request.getParameter("resource");
         String mode = request.getParameter("mode");
         if (mode != null) {
             settings.setExplorerMode(mode);
@@ -91,16 +91,14 @@ public class CmsExplorer extends CmsWorkplace {
                 settings.setExplorerMode("explorerview");
             }
         }
-
-        if ("vfslink".equals(settings.getExplorerMode())) {
-            currentResource = request.getParameter("file");
+        
+        boolean showLinks = "true".equals(request.getParameter("showlinks"));
+        
+        if (showLinks) {
             settings.setExplorerResource(currentResource);
         } else {
-            currentResource = request.getParameter("folder");
-
-            if ((currentResource != null) && (currentResource.startsWith("vfslink:"))) {
-                // this is a link check, remove the prefix
-                settings.setExplorerMode("vfslink");
+            if (currentResource != null && currentResource.startsWith("vfslink:")) {
+                showLinks = true;
                 settings.setExplorerResource(currentResource.substring(8));
             } else {
                 if ((currentResource != null) && (!"".equals(currentResource)) && folderExists(getCms(), currentResource)) {
@@ -115,11 +113,11 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
         
-        String selPage = request.getParameter("selPage");
-        if (selPage != null) {
+        String selectedPage = request.getParameter("page");
+        if (selectedPage != null) {
             int page = 1;
             try {
-                page = Integer.parseInt(selPage);
+                page = Integer.parseInt(selectedPage);
             } catch (NumberFormatException e) {
                 // default is 1
             }
