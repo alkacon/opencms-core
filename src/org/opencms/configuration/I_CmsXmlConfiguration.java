@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,24 +45,27 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The alias attribute. */
     String A_ALIAS = "alias";
-    
+
     /** The "class" attribute. */
     String A_CLASS = "class";
 
     /** The "count" attribute. */
     String A_COUNT = "count";
-    
+
     /** The "destination" attribute. */
     String A_DESTINATION = "destination";
-    
+
     /** The "enabled" attibute. */
     String A_ENABLED = "enabled";
 
     /** The "from" attribute. */
     String A_FROM = "from";
-    
+
     /** The "icon" attribute. */
     String A_ICON = "icon";
+
+    /** The "id" attribute. */
+    String A_ID = "id";
 
     /** The "key" attribute. */
     String A_KEY = "key";
@@ -72,50 +75,49 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "order" attribute. */
     String A_ORDER = "order";
-    
+
     /** The "password" attribute. */
     String A_PASSWORD = "password";
-    
+
     /** The "protocol" attribute. */
     String A_PROTOCOL = "protocol";
-    
+
     /** The suffix attribute. */
     String A_SUFFIX = "suffix";
-    
+
     /** The "to" attribute. */
-    String A_TO = "to";    
-    
+    String A_TO = "to";
+
     /** The "type" attribute. */
     String A_TYPE = "type";
-    
+
     /** The "uri" attribute. */
     String A_URI = "uri";
-    
+
     /** The "user" attribute. */
     String A_USER = "user";
-    
+
     /** The "value" attribute. */
-    String A_VALUE = "value";       
-    
+    String A_VALUE = "value";
+
     /** Individual export point node. */
     String N_EXPORTPOINT = "exportpoint";
-    
+
     /** Export points master node. */
     String N_EXPORTPOINTS = "exportpoints";
-    
+
     /** The "param" node name for generic parameters. */
-    String N_PARAM = "param";   
-    
+    String N_PARAM = "param";
+
     /** An individual property node. */
     String N_PROPERTY = "property";
-        
+
     /** An individual resource node. */
     String N_RESOURCE = "resource";
-    
+
     /** An individual site node. */
     String N_SITE = "site";
 
-    
     /**
      * Digests an XML node and creates an instance of this configurable class.<p>
      * 
@@ -130,7 +132,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
      * @return the XML element for this configurable class
      */
     Element generateXml(Element parent);
-    
+
     /**
      * Returns the name of the DTD file for this XML configuration,
      * e.g. <code>opencms-configuration.dtd</code>.<p>
@@ -140,7 +142,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
      * @see #getDtdUrlPrefix()
      */
     String getDtdFilename();
-    
+
     /**
      * Returns the internal system location of the DTD file for this XML configuration,
      * e.g. <code>org/opencms/configuration/</code>.<p>
@@ -155,7 +157,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
      * @see #getDtdFilename()
      */
     String getDtdSystemLocation();
-    
+
     /**
      * Returns the external system id prefix of the DTD file for this XML configuration,
      * e.g. <code>http://www.opencms.org/dtd/6.0/</code>.<p>
@@ -168,7 +170,7 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
      * @see #getDtdFilename()
      */
     String getDtdUrlPrefix();
-    
+
     /**
      * Returns the name of the XML input file for this configuration,
      * e.g. <code>opencms.xml</code>.<p>

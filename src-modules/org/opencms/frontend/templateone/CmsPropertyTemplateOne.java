@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/03/15 16:30:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/17 10:31:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Armen Markarian (a.markarian@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
     
@@ -367,13 +367,13 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
-            if (! res.isFolder() && res.getTypeId() != CmsResourceTypeBinary.C_RESOURCE_TYPE_ID 
-                    && res.getTypeId() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID && res.getTypeId() != CmsResourceTypeImage.C_RESOURCE_TYPE_ID) {
+            if (! res.isFolder() && res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId() 
+                    && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId() && res.getTypeId() != CmsResourceTypeImage.getStaticTypeId()) {
                 // file is no plain text, binary or image type, check "template" property
                 if (C_TEMPLATE_ONE.equals(jsp.getCmsObject().readPropertyObject(jsp.getCmsObject().getSitePath(res), I_CmsConstants.C_PROPERTY_TEMPLATE, true).getValue(""))) {
                     // display special property dialog for files with "template one" as template
                     return C_MODULE_PATH + "dialogs/property.jsp";
-                } else if (res.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+                } else if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
                     // show xmlpage property dialog for xmlpages not using "template one" as template
                     return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }

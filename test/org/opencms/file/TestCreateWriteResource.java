@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -114,7 +114,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        String resourcename = "/folder1/test2/";   
        long timestamp = System.currentTimeMillis()-1; 
        
-       cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+       cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
        
        // check the created folder
        CmsFolder folder = cms.readFolder(resourcename);
@@ -162,7 +162,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        
        try {
            // resource exists and is not deleted, creation must thrw exception
-           cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+           cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
        } catch (CmsVfsException e) {
            if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                fail("Existing resource '" + resourcename + "' was not detected!");
@@ -174,7 +174,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        
        // delete resource and try again
        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-       cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+       cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
        
        // ensure created resource is a folder
        assertIsFolder(cms, resourcename);     
@@ -220,10 +220,10 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        String contentStr = "Hello this is my other content";
        byte[] content = contentStr.getBytes();      
        
-       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+       cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
        
        // ensure created resource type
-       assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);  
+       assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());  
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "new"
@@ -266,7 +266,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        
        try {
            // resource exists and is not deleted, creation must thrw exception
-           cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+           cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
        } catch (CmsVfsException e) {
            if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
                fail("Existing resource '" + resourcename + "' was not detected!");
@@ -278,7 +278,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        
        // delete resource and try again
        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+       cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
               
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
@@ -327,7 +327,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             resourcename,
-            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            CmsResourceTypeFolder.getStaticTypeId(),
             true,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -383,7 +383,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             resourcename,
-            CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+            CmsResourceTypeFolder.getStaticTypeId(),
             true,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -440,7 +440,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             resourcename,
-            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -457,7 +457,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.importResource(resourcename, resource, content, null);
         
         // ensure created resource type
-        assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);  
+        assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());  
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
@@ -501,7 +501,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             CmsUUID.getNullUUID(),
             CmsUUID.getNullUUID(),
             resourcename,
-            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -518,7 +518,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.importResource(resourcename, resource, content, null);
         
         // ensure created resource type
-        assertResourceType(cms, resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID); 
+        assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId()); 
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
@@ -583,7 +583,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getStructureId(),
             file.getResourceId(),
             resourcename2,
-            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -604,8 +604,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
         // resource type
-        assertResourceType(cms, resourcename2, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        assertResourceType(cms, siblingname, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
+        assertResourceType(cms, siblingname, CmsResourceTypePlain.getStaticTypeId());
         // state
         assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);
         assertState(cms, siblingname, I_CmsConstants.C_STATE_CHANGED);
@@ -635,7 +635,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             file.getStructureId(),
             file.getResourceId(),
             resourcename1,
-            CmsResourceTypePlain.C_RESOURCE_TYPE_ID,
+            CmsResourceTypePlain.getStaticTypeId(),
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
@@ -657,9 +657,9 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertProject(cms, resourcename1, cms.getRequestContext().currentProject());
         assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
         // resource type
-        assertResourceType(cms, resourcename1, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        assertResourceType(cms, resourcename2, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        assertResourceType(cms, siblingname, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, resourcename1, CmsResourceTypePlain.getStaticTypeId());
+        assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
+        assertResourceType(cms, siblingname, CmsResourceTypePlain.getStaticTypeId());
         // state
         assertState(cms, resourcename1, I_CmsConstants.C_STATE_NEW);
         assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);

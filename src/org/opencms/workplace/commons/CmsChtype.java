@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/03/09 16:51:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.5.0
  */
@@ -207,7 +207,7 @@ public class CmsChtype extends CmsDialog {
      */
     public void actionChtype() throws JspException {
         try {
-            int newType = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+            int newType = CmsResourceTypePlain.getStaticTypeId();
             try {
                 // get new resource type id from request
                 newType = Integer.parseInt(getParamNewResourceType());

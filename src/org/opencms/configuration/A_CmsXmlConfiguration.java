@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
             OpenCms.getLog(this).debug("initConfiguration() called on " + this);
         }            
     }       
-
+    
     /**
      * Sets the file name of this XML configuration.<p>
      * 

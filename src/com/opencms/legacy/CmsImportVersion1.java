@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/02/18 15:18:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -339,7 +339,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             if (getVersion() == 0) {
                 // ok, a (very) old system exported this, check if the file is ok
                 if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, resType)) {
-                    resType = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;
+                    resType = CmsResourceTypeCompatiblePlain.getStaticTypeName();
                     m_report.print(m_report.key("report.must_set_to") + resType + " ", I_CmsReport.C_FORMAT_WARNING);
                 }
             }

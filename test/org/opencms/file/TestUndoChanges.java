@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -109,7 +109,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         String source = "/types/new.html";
         
         // create a new, plain resource
-        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
         
         try {

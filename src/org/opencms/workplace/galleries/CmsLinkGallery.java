@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/03/02 14:59:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -197,7 +197,7 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     public int getGalleryItemsTypeId() {
 
-        return CmsResourceTypePointer.C_RESOURCE_TYPE_ID;
+        return CmsResourceTypePointer.getStaticTypeId();
     }
 
     /**
@@ -218,7 +218,7 @@ public class CmsLinkGallery extends A_CmsGallery {
         StringBuffer wizardUrl = new StringBuffer(8);
         wizardUrl.append(getJsp().link(
             C_PATH_DIALOGS
-                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.C_RESOURCE_TYPE_NAME)
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.getStaticTypeName())
                     .getNewResourceUri()));
         wizardUrl.append("?action=newform&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);

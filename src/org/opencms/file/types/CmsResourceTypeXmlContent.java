@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file.types;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -46,51 +45,35 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Resource type descriptor for the type "xmlcontent".<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.5
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceType {
-    
-    /** The type id of this resource type. */
-    public static final int C_RESOURCE_TYPE_ID = 11;
 
-    /** The name of this resource type. */
-    public static final String C_RESOURCE_TYPE_NAME = "xmlcontent";
-    
     /** Configuration key for the (optional) schema. */
     public static final String C_CONFIGURATION_SCHEMA = "schema";
 
-    /** The type id of this resource. */
-    private int m_resourceType;
-
-    /** The name of this resource. */
-    private String m_resourceTypeName;
-
     /** The (optional) schema of this resource. */
     private String m_schema;
-    
+
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-        
+
         super.addConfigurationParameter(paramName, paramValue);
-        if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID.equalsIgnoreCase(paramName)) {
-            m_resourceType = Integer.valueOf(paramValue).intValue();
-        } else if (I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME.equalsIgnoreCase(paramName)) {
-            m_resourceTypeName = paramValue.trim();
-        } else if (C_CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
+        if (C_CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
             m_schema = paramValue.trim();
         }
     }
@@ -124,9 +107,9 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
             // get the bytes from the created content
             content = newContent.marshal();
         }
-        
+
         // add the predefined property values from XMl configuration to the resource
-        List newProperties;       
+        List newProperties;
         if (properties == null) {
             newProperties = new ArrayList();
         } else {
@@ -158,9 +141,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
      */
     public Map getConfiguration() {
 
-        Map result = new HashMap();
-        result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_ID, new Integer(m_resourceType));
-        result.put(I_CmsResourceType.C_CONFIGURATION_RESOURCE_TYPE_NAME, m_resourceTypeName);
+        Map result = new TreeMap();
         if (m_schema != null) {
             result.put(C_CONFIGURATION_SCHEMA, m_schema);
         }
@@ -180,33 +161,6 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
-     */
-    public int getTypeId() {
-
-        return m_resourceType;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
-     */
-    public String getTypeName() {
-
-        return m_resourceTypeName;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration()
-     */
-    public void initConfiguration() throws CmsConfigurationException {
-
-        // configuration must be complete for this resource type
-        if ((m_resourceTypeName == null) || (m_resourceType <= 0)) {
-            throw new CmsConfigurationException("Not all required configuration parameters available for resource type");
-        }
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
     public boolean isDirectEditable() {
@@ -221,13 +175,18 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
         // check if the user has write access and if resource is locked
         // done here so that all the XML operations are not performed if permissions not granted
-        securityManager.checkPermissions(cms.getRequestContext(), resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+        securityManager.checkPermissions(
+            cms.getRequestContext(),
+            resource,
+            CmsPermissionSet.ACCESS_WRITE,
+            true,
+            CmsResourceFilter.ALL);
         // read the xml content, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
-        resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);        
+        resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);
         // now write the file
         return super.writeFile(cms, securityManager, resource);
     }
-    
+
 }

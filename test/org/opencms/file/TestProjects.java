@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -197,8 +197,8 @@ public class TestProjects extends OpenCmsTestCase {
         cms.lockResource(resource);
         cms.touch("/folder1/", System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
         cms.deleteResource("/folder2/", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);        
-        cms.createResource("/folder3/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, Collections.EMPTY_LIST);
-        cms.createResource("/folder3/test.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "".getBytes(), Collections.EMPTY_LIST);
+        cms.createResource("/folder3/", CmsResourceTypeFolder.getStaticTypeId(), null, Collections.EMPTY_LIST);
+        cms.createResource("/folder3/test.txt", CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), Collections.EMPTY_LIST);
         cms.unlockResource(resource);
         
         // now delete the project - all changes in the project must be undone

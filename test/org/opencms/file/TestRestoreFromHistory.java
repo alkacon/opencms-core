@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
     
@@ -104,7 +104,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         String resourcename ="/test-overflow1.txt";
         String contentStr = "1";
         
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr.getBytes(), null);        
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);        
         this.storeResources(cms, resourcename);
         
         // publish the project
@@ -177,7 +177,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         props2.add(rProp2);
         
         // create the resource with content version 1
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr1.getBytes(), null);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), contentStr1.getBytes(), null);
         this.storeResources(cms, resourcename);
         
         // set the properties
@@ -267,7 +267,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         String contentStr = "Hello this is the content";    
         
         // create the resource with content
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, contentStr.getBytes(), null);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
         
         // check the content
         assertContent(cms, resourcename, contentStr.getBytes());
@@ -295,7 +295,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         cms.publishProject();
         
         // create a new empty resource
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), null, null);
         
         // check that there is one backup file available, again
         allFiles = cms.readAllBackupFileHeaders(resourcename);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 10:32:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.5.0
  */
@@ -183,7 +183,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));        
         properties.add(new CmsProperty(CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));        
-        cms.createResource(filename, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, content.getBytes(UTF8), properties);
+        cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
         
         CmsFile file = cms.readFile(filename);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
@@ -217,7 +217,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
         String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
-        cms.createResource(filename, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, content.getBytes(UTF8), properties);
+        cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
         
         CmsFile file = cms.readFile(filename);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);

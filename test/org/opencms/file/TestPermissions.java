@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -166,7 +166,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline")); 
         
         // create a new folder
-        cms.createResource(folder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);       
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());       
         
         // apply permissions to folder
         cms.lockResource(folder);
@@ -182,7 +182,7 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.unlockResource(folder); 
         
         resource = "/newfolder/newpage.html";
-        cms.createResource(resource, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "This is a test".getBytes(), Collections.EMPTY_LIST);               
+        cms.createResource(resource, CmsResourceTypePlain.getStaticTypeId(), "This is a test".getBytes(), Collections.EMPTY_LIST);               
         cms.unlockResource(resource); 
         
         cms.loginUser("test1", "test1");
@@ -214,7 +214,7 @@ public class TestPermissions extends OpenCmsTestCase {
         echo("Testing default permissions");
 
         String resourcename = "testDefaultPermissions.txt";
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
 
         cms.addUser("testAdmin", "secret", "Administrators", "", null);
         cms.addUser("testProjectmanager", "secret", "Projectmanagers", "", null);
@@ -239,7 +239,7 @@ public class TestPermissions extends OpenCmsTestCase {
         String resourcename = "userDelete.txt";
         String username = "deleteUser";
         // create a resource
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
         // create a user
         cms.addUser(username, "deleteMe", "Users", "", null);
         // add a permission for this user
@@ -275,7 +275,7 @@ public class TestPermissions extends OpenCmsTestCase {
         echo("Testing permission overwrite");
         
         String foldername = "testPermissionOverwrite";
-        cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
         
         assertEquals("+r+w+v+c", cms.getPermissions(foldername, "testUser").getPermissionString());
         
@@ -301,10 +301,10 @@ public class TestPermissions extends OpenCmsTestCase {
         String resourcename = foldername + "/test.txt";
         String subresourcename = subfoldername + "/subtest.txt";
         
-        cms.createResource(foldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource(subfoldername, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        cms.createResource(subresourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(subfoldername, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(subresourcename, CmsResourceTypePlain.getStaticTypeId());
         
         assertEquals("+r+w+v+c", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+w+v+c", cms.getPermissions(subfoldername, "testUser").getPermissionString());
@@ -386,17 +386,17 @@ public class TestPermissions extends OpenCmsTestCase {
         // read only "image" resources
         List resultList;
         // resources in folder only method
-        resultList = cms.getResourcesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.C_RESOURCE_TYPE_ID));        
+        resultList = cms.getResourcesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));        
         if (resultList.size() != 1) {
             fail("There is only 1 image resource in the folder, not " + resultList.size());
         }
         // files in folder only method
-        resultList = cms.getFilesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.C_RESOURCE_TYPE_ID));        
+        resultList = cms.getFilesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));        
         if (resultList.size() != 1) {
             fail("There is only 1 image resource in the folder, not " + resultList.size());
         }            
         // subtree method
-        resultList = cms.readResources(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.C_RESOURCE_TYPE_ID));        
+        resultList = cms.readResources(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));        
         if (resultList.size() != 1) {
             fail("There is only 1 image resource in the folder, not " + resultList.size());
         }           

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,12 @@
 
 package org.opencms.importexport;
 
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -331,7 +331,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 content = getFileBytes(source);
             }
             // get all required information to create a CmsResource
-            int resType = OpenCms.getResourceManager().getResourceType(type).getTypeId();
+            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(type);
             int size = 0;
             if (content != null) {
                 size = content.length;
@@ -360,8 +360,9 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             // convert to xml page if wanted
             if (m_convertToXmlPage 
-                && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
-                
+                && (resType.getTypeName().equals(A_CmsImport.C_RESOURCE_TYPE_LEGACY_PAGE_NAME) 
+                    || resType.getTypeName().equals(C_RESOURCE_TYPE_NEWPAGE_NAME))) {
+
                 if (content != null) {
 
                     //get the encoding
@@ -379,7 +380,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     
                     content = xmlPage.marshal();
                 }
-                resType = CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID;
+                resType = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeId());
             }
             
             // create a new CmsResource                         
@@ -387,8 +388,8 @@ public class CmsImportVersion3 extends A_CmsImport {
                 newUuidstructure, 
                 newUuidresource, 
                 destination,
-                resType,
-                CmsFolder.isFolderType(resType),
+                resType.getTypeId(),
+                resType.isFolder(),
                 new Integer(flags).intValue(), 
                 m_cms.getRequestContext().currentProject().getId(), 
                 I_CmsConstants.C_STATE_NEW, 
@@ -404,11 +405,6 @@ public class CmsImportVersion3 extends A_CmsImport {
             // import this resource in the VFS   
             res = m_cms.importResource(m_importPath + destination, resource, content, properties);
 
-            if (res != null) {
-                if (A_CmsImport.C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
-                    m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
-                }
-            }
             m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
         } catch (Exception exc) {
             // an error while importing the file

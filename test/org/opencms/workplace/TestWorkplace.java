@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/TestWorkplace.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.4
  */
@@ -103,22 +103,22 @@ public class TestWorkplace extends OpenCmsTestCase {
         gallery = A_CmsGallery.createInstance("imagegallery", null);
         assertEquals(gallery.getClass().getName(), CmsImageGallery.class.getName());
         assertEquals("imagegallery", gallery.getGalleryTypeName());
-        assertEquals(15, gallery.getGalleryTypeId());        
+        assertEquals(8, gallery.getGalleryTypeId());        
         
         gallery = A_CmsGallery.createInstance("downloadgallery", null);
         assertEquals(gallery.getClass().getName(), CmsDownloadGallery.class.getName());
         assertEquals("downloadgallery", gallery.getGalleryTypeName());
-        assertEquals(18, gallery.getGalleryTypeId());     
+        assertEquals(9, gallery.getGalleryTypeId());     
         
         gallery = A_CmsGallery.createInstance("linkgallery", null);
         assertEquals(gallery.getClass().getName(), CmsLinkGallery.class.getName());
         assertEquals("linkgallery", gallery.getGalleryTypeName());
-        assertEquals(16, gallery.getGalleryTypeId());     
+        assertEquals(10, gallery.getGalleryTypeId());     
         
         gallery = A_CmsGallery.createInstance("htmlgallery", null);
         assertEquals(gallery.getClass().getName(), CmsHtmlGallery.class.getName());
         assertEquals("htmlgallery", gallery.getGalleryTypeName());
-        assertEquals(17, gallery.getGalleryTypeId());     
+        assertEquals(11, gallery.getGalleryTypeId());     
         
         boolean error = true;
         try {
@@ -127,7 +127,7 @@ public class TestWorkplace extends OpenCmsTestCase {
             error = false;
         }
         if (error) {
-            fail("Unknow gallery instance class could be created");
+            fail("Unknown gallery instance class could be created");
         }
 
         error = true;

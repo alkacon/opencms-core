@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -127,7 +127,7 @@ public class TestLock extends OpenCmsTestCase {
         String source = "/folder1/newfile.html";
 
         // create a new resource as default test user
-        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         // the source file must now have an exclusive lock
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);        
         // now delete the created resource
@@ -138,7 +138,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));    
                 
         // now create the resource again
-        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID); 
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId()); 
         
         // the newly created resource must now be locked to user "test2"
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
@@ -648,7 +648,7 @@ public class TestLock extends OpenCmsTestCase {
 
         needLock = false;
         try {
-            cms.chtype(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+            cms.chtype(source, CmsResourceTypePlain.getStaticTypeId());
         }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;
@@ -659,7 +659,7 @@ public class TestLock extends OpenCmsTestCase {
 
         needLock = false;
         try {
-            cms.replaceResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, "Kaputt".getBytes(), null);
+            cms.replaceResource(source, CmsResourceTypePlain.getStaticTypeId(), "Kaputt".getBytes(), null);
         }  catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;

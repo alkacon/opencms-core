@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -135,9 +135,9 @@ public class TestSynchronize extends OpenCmsTestCase {
                 CmsResource resource = (CmsResource)tree.get(i);
 
                 int type = resource.getTypeId();
-                if (((type == CmsResourceTypePlain.C_RESOURCE_TYPE_ID)) 
-                || (type == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)
-                || (type == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+                if (((type == CmsResourceTypePlain.getStaticTypeId())) 
+                || (type == CmsResourceTypeJsp.getStaticTypeId())
+                || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // modify date last modified on resource
                     touchResourceInRfs(cms, resource, syncSettings);
                 }
@@ -156,9 +156,9 @@ public class TestSynchronize extends OpenCmsTestCase {
                 String vfsname = cms.getSitePath(vfsResource);
                 
                 System.out.println("( " + i + " / " + (n-1) + " ) Checking " + vfsname);
-                if (((type == CmsResourceTypePlain.C_RESOURCE_TYPE_ID)) 
-                || (type == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID) 
-                || (type == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
+                if (((type == CmsResourceTypePlain.getStaticTypeId())) 
+                || (type == CmsResourceTypeJsp.getStaticTypeId()) 
+                || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
                     assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);                    
                     // assert the modification date

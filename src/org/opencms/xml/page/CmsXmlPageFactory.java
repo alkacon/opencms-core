@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2005/02/17 12:45:12 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/17 10:31:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.5.0
  */
 public final class CmsXmlPageFactory {
@@ -241,7 +241,7 @@ public final class CmsXmlPageFactory {
 
         String rootPath = resource.getRootPath();
         
-        if (resource.getTypeId() != CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+        if (resource.getTypeId() != CmsResourceTypeXmlPage.getStaticTypeId()) {
             // sanity check: resource must be of type XML page
             throw new CmsXmlException("Resource '" + cms.getSitePath(resource) + "' is not of required type XML page");
         }
@@ -286,7 +286,7 @@ public final class CmsXmlPageFactory {
         // always use "ignore expiration" filter, date validity must be checked before calling this if required
         CmsFile file = cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         
-        if (file.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
+        if (file.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
             // file is of type XML page
             doc = CmsXmlPageFactory.unmarshal(cms, file);
         } else  if ((OpenCms.getResourceManager().getLoader(file) instanceof CmsXmlContentLoader)) {

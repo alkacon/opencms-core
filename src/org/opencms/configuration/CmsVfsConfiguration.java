@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -179,8 +179,13 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         // add rules for resource types
         digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, "addResourceType");   
+
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD, 2);
+        // please note: the resource types use a special version of the init method with 2 parameters 
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
+        
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.C_ADD_RESOURCE_TYPE_METHOD);   
         
         // extension mapping rules
         digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
@@ -201,12 +206,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
             if (resType.isAdditionalModuleResourceType() == module) {
-                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());
+                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());                
+                // add type id and type name
+                resourceType.addAttribute(A_NAME, resType.getTypeName());
+                resourceType.addAttribute(A_ID, String.valueOf(resType.getTypeId()));
+                // add resource mappings
                 List mappings = (resType).getMapping();
                 for (int j = 0; j < mappings.size(); j++) {
                     Element mapping = resourceType.addElement(N_MAPPING);
                     mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
                 }
+                // add optional parameters
                 Map prop = resType.getConfiguration();
                 if (prop != null) {
                     List sortedRuntimeProperties = new ArrayList(prop.keySet());

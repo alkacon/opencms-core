@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/03/16 16:44:24 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/03/17 10:31:10 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -4865,7 +4865,7 @@ public final class CmsSecurityManager {
 
         // if the resource type is jsp
         // write is only allowed for administrators
-        if (!isAdmin && (resource.getTypeId() == CmsResourceTypeJsp.C_RESOURCE_TYPE_ID)) {
+        if (!isAdmin && (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())) {
             denied |= CmsPermissionSet.PERMISSION_WRITE;
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/03/15 18:05:55 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -876,7 +876,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         try {            
             // check if the target does exist in the OpenCms VFS
             CmsResource targetResource = controller.getCmsObject().readResource(target);
-            isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == targetResource.getTypeId()));
+            isPageTarget = ((CmsResourceTypePage.getStaticTypeId() == targetResource.getTypeId()));
         } catch (CmsException e) {
             controller.setThrowable(e, target);
             throw new CmsException("File not found: " + target, e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,23 +79,20 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** The algorithm for the message digest. */
     public static final String C_IMPORT_DIGEST = "MD5";
     
-    /** The id of the legacy resource type "page". */
-    public static final int C_RESOURCE_TYPE_PAGE_ID = 1;
-    
     /** The name of the legacy resource type "page". */
-    public static final String C_RESOURCE_TYPE_PAGE_NAME = "page";
+    public static final String C_RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
     
     /** The id of the legacy resource type "link". */
-    public static final int C_RESOURCE_TYPE_LINK_ID = 2;
+    protected static final int C_RESOURCE_TYPE_LINK_ID = 2;
     
     /** The name of the legacy resource type "link". */
-    public static final String C_RESOURCE_TYPE_LINK_NAME = "link";
+    protected static final String C_RESOURCE_TYPE_LINK_NAME = "link";
     
     /** The id of the legacy resource type "newpage". */
-    public static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
+    protected static final int C_RESOURCE_TYPE_NEWPAGE_ID = 9;
     
     /** The name of the legacy resource type "newpage". */
-    public static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
+    protected static final String C_RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
     
     /** Debug flag to show debug output. */
     protected static final int DEBUG = 0;
@@ -111,12 +108,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** Groups to create during import are stored here. */
     protected Stack m_groupsToCreate;
-
-    /**
-     * In this vector we store the imported pages (as Strings from getAbsolutePath()),
-     * after the import we check them all to update the link tables for the linkmanagement.
-     */
-    protected List m_importedPages;
 
     /** Indicates if module data is being imported. */
     protected boolean m_importingChannelData;
@@ -149,14 +140,8 @@ public abstract class A_CmsImport implements I_CmsImport {
      * each import version that is kept in memory and reused.<p>
      */
     protected void initialize() {
+
         m_groupsToCreate = new Stack();
-        m_importedPages = new ArrayList();
-        
-        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
-    }
-        }            
     }
     
     /**
@@ -171,7 +156,6 @@ public abstract class A_CmsImport implements I_CmsImport {
         m_report = null;
         m_linkStorage = null;
         m_linkPropertyStorage = null;
-        m_importedPages = null;
         m_groupsToCreate = null;
         m_cms = null;
     }
@@ -306,7 +290,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             }
                         }
                         
-                        m_cms.createResource(key, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
+                        m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                         
                         if (OpenCms.getLog(this).isInfoEnabled()) {

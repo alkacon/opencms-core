@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestResourceOperations.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestResourceOperations extends OpenCmsTestCase {
   
@@ -196,7 +196,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // resource name must not contain blanks
         exc = null;
         try {
-            cms.createResource("/Resource Name", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+            cms.createResource("/Resource Name", CmsResourceTypePlain.getStaticTypeId(), null, null);
         } catch (CmsException e) {
             exc = e;
         }
@@ -206,7 +206,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // resource name must not contain leading blanks
         exc = null;
         try {
-            cms.createResource("/ ResourceName", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+            cms.createResource("/ ResourceName", CmsResourceTypePlain.getStaticTypeId(), null, null);
         } catch (CmsException e) {
             exc = e;
         }
@@ -216,7 +216,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // resource name must not contain trailing blanks
         exc = null;
         try {
-            cms.createResource("/ResourceName ", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+            cms.createResource("/ResourceName ", CmsResourceTypePlain.getStaticTypeId(), null, null);
         } catch (CmsException e) {
             exc = e;
         }
@@ -226,7 +226,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // resource name must not contain other characters 
         exc = null;
         try {
-            cms.createResource("/Resource#Name", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+            cms.createResource("/Resource#Name", CmsResourceTypePlain.getStaticTypeId(), null, null);
         } catch (CmsException e) {
             exc = e;
         }
@@ -245,22 +245,22 @@ public class TestResourceOperations extends OpenCmsTestCase {
         echo("Testing resource creation");
         
         // create a folder in the root directory
-        cms.createResource("/folder1", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
         
         // create an empty file in the root directory
-        cms.createResource("/resource2", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource("/resource2", CmsResourceTypePlain.getStaticTypeId());
         
         // create an empty file in the created folder 
-        cms.createResource("/folder1/resource3", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);        
+        cms.createResource("/folder1/resource3", CmsResourceTypePlain.getStaticTypeId());        
         
         // ensure first created resource is a folder
         assertIsFolder(cms, "/folder1/");
         
         // ensure second created resource is a plain text file
-        assertResourceType(cms, "/resource2", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, "/resource2", CmsResourceTypePlain.getStaticTypeId());
         
         // ensure third created resource is a plain text file
-        assertResourceType(cms, "/folder1/resource3", CmsResourceTypePlain.C_RESOURCE_TYPE_ID); 
+        assertResourceType(cms, "/folder1/resource3", CmsResourceTypePlain.getStaticTypeId()); 
 
         
     }  
@@ -278,10 +278,10 @@ public class TestResourceOperations extends OpenCmsTestCase {
         CmsException exc;
         
         // create a folder without trailing / in the resource name
-        cms.createResource("/cafolder1", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);        
+        cms.createResource("/cafolder1", CmsResourceTypeFolder.getStaticTypeId());        
 
         // create a folder with trailing / in the resource name
-        cms.createResource("/cafolder2/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/cafolder2/", CmsResourceTypeFolder.getStaticTypeId());
                 
         // access a folder without trailing / in the resource name 
         // and ensure that its root path is a valid folder path (i.e. with trailing /) 
@@ -305,7 +305,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         // try to create another resource with the same name - must fail
         exc = null;
         try { 
-            cms.createResource("/cafolder1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);        
+            cms.createResource("/cafolder1", CmsResourceTypePlain.getStaticTypeId());        
         } catch (CmsException e) {
             exc = e;
         }        
@@ -325,7 +325,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         String content = "this is a test content";
         
         // create a file in the root directory
-        cms.createResource("/file1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content.getBytes(), null);
+        cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
         
         // read and check the content
         this.assertContent(cms, "/file1" , content.getBytes());        
@@ -347,7 +347,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/");
 
         // create a file in the root directory
-        cms.createResource("/file2", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content.getBytes(), null);
+        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
         
         // the reosurce must unlocked, otherwise it will not be published
         cms.unlockResource("/file2");
@@ -376,7 +376,7 @@ public class TestResourceOperations extends OpenCmsTestCase {
         echo("Testing sibling creation");
         
         // create an empty file in the root directory
-        cms.createResource("/resource4", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource("/resource4", CmsResourceTypePlain.getStaticTypeId());
         
         // ensure that sibling count is zero
         assertSiblingCount(cms, "/resource4", 1);
@@ -385,10 +385,10 @@ public class TestResourceOperations extends OpenCmsTestCase {
         cms.createSibling("/resource4", "/sibling1", null);
 
         // ensure first created resource is a plain text file
-        assertResourceType(cms, "/resource4", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, "/resource4", CmsResourceTypePlain.getStaticTypeId());
         
         // ensure sibling is also a plain text file
-        assertResourceType(cms, "/sibling1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertResourceType(cms, "/sibling1", CmsResourceTypePlain.getStaticTypeId());
         
         // check the sibling count
         assertSiblingCount(cms, "/resource4", 2);

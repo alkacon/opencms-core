@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -57,7 +58,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -65,19 +66,55 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public static final String C_CONFIGURATION_JSP_ENCODING = "default.encoding";
 
     /** The type id of this resource type. */
-    public static final int C_RESOURCE_TYPE_ID = 8;
+    private static final int C_RESOURCE_TYPE_ID = 8;
 
     /** The name of this resource type. */
-    public static final String C_RESOURCE_TYPE_NAME = "jsp";
+    private static final String C_RESOURCE_TYPE_NAME = "jsp";
+
+    /** Indicates that the static configuration of the resource type has been frozen. */
+    private static boolean m_staticFrozen;
+
+    /** The static type id of this resource type. */
+    private static int m_staticTypeId;
 
     /** The default encoding to use when creating new JSP pages. */
     private String m_defaultEncoding;
 
     /**
+     * Default constructor, used to initialize member variables.<p>
+     */
+    public CmsResourceTypeJsp() {
+
+        super();
+        m_typeId = C_RESOURCE_TYPE_ID;
+        m_typeName = C_RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * Returns the static type id of this (default) resource type.<p>
+     * 
+     * @return the static type id of this (default) resource type
+     */
+    public static int getStaticTypeId() {
+
+        return m_staticTypeId;
+    }
+
+    /**
+     * Returns the static type name of this (default) resource type.<p>
+     * 
+     * @return the static type name of this (default) resource type
+     */
+    public static String getStaticTypeName() {
+
+        return C_RESOURCE_TYPE_NAME;
+    }
+
+    /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
-        
+
         super.addConfigurationParameter(paramName, paramValue);
         if (C_CONFIGURATION_JSP_ENCODING.equalsIgnoreCase(paramName)) {
             m_defaultEncoding = CmsEncoder.lookupEncoding(paramValue.trim(), OpenCms.getSystemInfo()
@@ -93,10 +130,9 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties
-    ) throws CmsException {
-        
-        List newProperties;       
+        List properties) throws CmsException {
+
+        List newProperties;
         if (properties == null) {
             newProperties = new ArrayList();
         } else {
@@ -105,7 +141,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_EXPORT, null, "false"));
         newProperties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, null, m_defaultEncoding));
         newProperties.addAll(createPropertyObjects(cms));
-        
+
         return super.createResource(cms, securityManager, resourcename, content, newProperties);
     }
 
@@ -142,19 +178,38 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
      */
-    public int getTypeId() {
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
 
-        return C_RESOURCE_TYPE_ID;
-    }
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
+            // configuration already frozen
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " with static name='"
+                + getStaticTypeName()
+                + "' static id='"
+                + getStaticTypeId()
+                + "' can't be reconfigured");
+        }
 
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
-     */
-    public String getTypeName() {
+        if (!C_RESOURCE_TYPE_NAME.equals(name)) {
+            // default resource type MUST have default name
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " must be configured with resource type name '"
+                + C_RESOURCE_TYPE_NAME
+                + "' (not '"
+                + name
+                + "')");
+        }
 
-        return C_RESOURCE_TYPE_NAME;
+        // freeze the configuration
+        m_staticFrozen = true;
+
+        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        // set static members with values from the configuration        
+        m_staticTypeId = m_typeId;
     }
 
     /**

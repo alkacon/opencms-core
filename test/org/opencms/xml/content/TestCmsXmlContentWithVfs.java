@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/03/09 11:59:13 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/03/17 10:32:36 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsUser;
-import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -760,7 +760,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // create a file in the VFS with this content (required for mappings to work)
         cms.createResource(
             resourcename, 
-            CmsResourceTypeXmlContent.C_RESOURCE_TYPE_ID, 
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(), 
             content.getBytes(iso), 
             Collections.EMPTY_LIST);
 

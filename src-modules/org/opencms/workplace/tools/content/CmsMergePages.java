@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/17 10:31:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  */
 public class CmsMergePages extends CmsReport {
@@ -397,7 +397,7 @@ public class CmsMergePages extends CmsReport {
     private void collectFolder(String sourceMergeFolder, String targetMergefolder, int currentFolder) throws CmsException {
         m_report.println(m_report.key("report.mergepages.scanfolder") + " " + sourceMergeFolder , I_CmsReport.C_FORMAT_HEADLINE);
         //get the list of all resources in the source merge folder
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);        
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeXmlPage.getStaticTypeId());        
         List folderResources = m_cms.readResources(sourceMergeFolder, filter, true);
         Iterator i = folderResources.iterator();
         int size = folderResources.size();

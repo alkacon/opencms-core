@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -170,8 +170,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importingChannelData = false;
         
         m_folderStorage = new ArrayList();
-        m_pageStorage = new ArrayList();
-        m_importedPages = new ArrayList();   
+        m_pageStorage = new ArrayList(); 
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         
@@ -179,7 +178,6 @@ public class CmsImportVersion2 extends A_CmsImport {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_folderStorage", m_folderStorage);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_pageStorage", m_pageStorage);
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_importedPages", m_importedPages);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_linkStorage", m_linkStorage);
                 OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_linkPropertyStorage", m_linkPropertyStorage);
             }            
@@ -289,10 +287,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                 resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
                 if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
-                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
+                } else if (C_RESOURCE_TYPE_LEGACY_PAGE_NAME.equals(resourceTypeName)) {
                     // resource with a "legacy" resource type are imported using the "plain" resource
                     // type because you cannot import a resource without having the resource type object
-                    resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+                    resourceTypeId = CmsResourceTypePlain.getStaticTypeId();
                 } else if (C_RESOURCE_TYPE_LINK_NAME.equals(resourceTypeName)) {
                     // set resource type of legacy "link" which is converted later
                     resourceTypeId = C_RESOURCE_TYPE_LINK_ID;
@@ -312,7 +310,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                 // if the type is "script" set it to plain
                 if ("script".equals(resourceTypeName)) {
-                    resourceTypeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+                    resourceTypeName = CmsResourceTypePlain.getStaticTypeName();
                 }
 
                 if (OpenCms.getLog(this).isDebugEnabled()) {
@@ -553,13 +551,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
             }   
             
-            if (res != null) {
-                if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
-                    m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
-                }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                 
-                
-            }
+            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                
             
         } catch (Exception exc) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -814,7 +806,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     pagefile.setContents(xmlPage.marshal());
                     
                     // set the type to xml page
-                    pagefile.setType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+                    pagefile.setType(CmsResourceTypeXmlPage.getStaticTypeId());
                 }
             }
 
@@ -866,7 +858,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             // lock the resource, so that it can be manipulated
             m_cms.lockResource(resourcename);
             // set the type to plain
-            pagefile.setType(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+            pagefile.setType(CmsResourceTypePlain.getStaticTypeId());
             // write all changes                     
             m_cms.writeFile(pagefile);
             // done, unlock the resource                   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/17 10:31:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.3
  */
@@ -687,7 +687,7 @@ public class CmsElementRename extends CmsReport {
         boolean isRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
         // filterdefinition to read only the required resources 
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION
-            .addRequireType(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
+            .addRequireType(CmsResourceTypeXmlPage.getStaticTypeId());
         // trying to read the resources
         List xmlPages = null;
 

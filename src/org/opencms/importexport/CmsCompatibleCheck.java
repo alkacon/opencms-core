@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/02/17 12:43:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsCompatibleCheck {
 
@@ -142,7 +142,7 @@ public class CmsCompatibleCheck {
         }
         if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
             // this is a body file
-            if (!CmsResourceTypePlain.C_RESOURCE_TYPE_NAME.equals(type)) {
+            if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain files allowed in content/bodys
                 return false;
             }
@@ -167,7 +167,7 @@ public class CmsCompatibleCheck {
 
         } else if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES) || (name.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) && name.indexOf("/" + I_CmsWpConstants.C_VFS_DIR_TEMPLATES) > -1)) {
             // this is a template file
-            if (!CmsResourceTypePlain.C_RESOURCE_TYPE_NAME.equals(type)) {
+            if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain templates are allowed
                 return false;
             }

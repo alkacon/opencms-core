@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
 
 /** 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -105,7 +105,7 @@ public class TestExportFile extends OpenCmsTestCase {
         String content = "this is a test content";
         
         // create a file in the root directory
-        cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content.getBytes(), null);
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content.getBytes(), null);
         cms.unlockResource(resourcename);
         
         // read and check the content

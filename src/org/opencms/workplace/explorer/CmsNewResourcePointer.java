@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -116,7 +116,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
                 linkTarget = "";
             }
             // create the pointer                   
-            getCms().createResource(fullResourceName, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, linkTarget.getBytes(), null);
+            getCms().createResource(fullResourceName, CmsResourceTypePointer.getStaticTypeId(), linkTarget.getBytes(), null);
             setParamResource(fullResourceName);   
             setResourceCreated(true);
         } catch (CmsException e) {

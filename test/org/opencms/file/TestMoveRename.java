@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -220,7 +220,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         String destination = "/folder1/new_move.html";
 
         // create a new, plain resource
-        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
         
         storeResources(cms, source);        
@@ -272,7 +272,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         String destination = newFolder + "/folder1";
         String newFolder2 = "/sites/default/testfolder";
 
-        cms.createResource(newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource(newFolder, CmsResourceTypeFolder.getStaticTypeId());
         
         cms.lockResource(source);
         cms.moveResource(source, destination);                
@@ -282,7 +282,7 @@ public class TestMoveRename extends OpenCmsTestCase {
             cms.readResource(newFolder2, CmsResourceFilter.ALL);
         } catch (CmsVfsResourceNotFoundException e) {
             echo("ERROR: folder not found, try to create it.");
-            cms.createResource(newFolder2, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource(newFolder2, CmsResourceTypeFolder.getStaticTypeId());
         }
         
         assertState(cms, newFolder2, I_CmsConstants.C_STATE_NEW);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDefaultResourceCollectors.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,16 +100,16 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
     public static void initResources(CmsObject cms) throws CmsException {
     
         // create a file in the root directory
-        cms.createResource("/file1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        cms.createResource("/file1", CmsResourceTypePlain.getStaticTypeId(), null, null);
         
         // create a folder in the root directory
-        cms.createResource("/folder1", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
         
         // create a file in the folder directory
-        cms.createResource("/folder1/file1", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);
+        cms.createResource("/folder1/file1", CmsResourceTypePlain.getStaticTypeId(), null, null);
 
         // create a file in the folder directory
-        cms.createResource("/folder1/file2", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, null, null);  
+        cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);  
     }
     
     /**

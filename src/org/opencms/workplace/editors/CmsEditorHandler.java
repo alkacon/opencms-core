@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editors.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.1
  */
@@ -82,7 +82,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         String resourceType = "";
         if (editAsText) {
             // the resource should be treated as text, set the plain resource id
-            resTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+            resTypeId = CmsResourceTypePlain.getStaticTypeId();
         } else {
             try {
                 // get the resource type id of the edited resource

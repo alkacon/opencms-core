@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,64 +65,64 @@ import org.dom4j.Element;
  * @since 5.3.6
  */
 public class CmsModuleXmlHandler {
-    
+
     /** The "name" attribute. */
-    protected static final  String A_NAME = "name";
-       
+    protected static final String A_NAME = "name";
+
     /** The "version" attribute. */
     protected static final String A_VERSION = "version";
-        
+
     /** The node name for the authoremail node. */
     protected static final String N_AUTHOREMAIL = "authoremail";
 
     /** The node name for the authorname node. */
     protected static final String N_AUTHORNAME = "authorname";
-        
+
     /** The node name for the class node. */
     protected static final String N_CLASS = "class";
-    
+
     /** The node name for the datecreated node. */
     protected static final String N_DATECREATED = "datecreated";
-    
+
     /** The node name for the date installed node. */
     protected static final String N_DATEINSTALLED = "dateinstalled";
-    
+
     /** The node name for the dependencies node. */
-    protected static final String N_DEPENDENCIES = "dependencies";    
+    protected static final String N_DEPENDENCIES = "dependencies";
 
     /** The node name for the dependency node. */
-    protected static final String N_DEPENDENCY = "dependency"; 
-    
+    protected static final String N_DEPENDENCY = "dependency";
+
     /** The node name for the description node. */
     protected static final String N_DESCRIPTION = "description";
-    
+
     /** The node name for a module. */
     protected static final String N_MODULE = "module";
-    
+
     /** The node name for the name node. */
     protected static final String N_NAME = "name";
-    
+
     /** The node name for the nicename node. */
     protected static final String N_NICENAME = "nicename";
-    
+
     /** The "param" node name for generic parameters. */
-    protected static final String N_PARAM = "param";   
-    
+    protected static final String N_PARAM = "param";
+
     /** The node name for the parameters node. */
-    protected static final String N_PARAMETERS = "parameters";        
-    
+    protected static final String N_PARAMETERS = "parameters";
+
     /** The node name for the resources node. */
-    protected static final String N_RESOURCES = "resources"; 
-    
+    protected static final String N_RESOURCES = "resources";
+
     /** The node name for the user installed node. */
     protected static final String N_USERINSTALLED = "userinstalled";
-    
+
     /** The node name for the version node. */
     protected static final String N_VERSION = "version";
-    
+
     /** The list of dependencies for a module. */
     private List m_dependencies;
-    
+
     /** The explorer type settings. */
     private List m_explorerTypeSettings;
 
@@ -131,28 +131,28 @@ public class CmsModuleXmlHandler {
 
     /** The generated module. */
     private CmsModule m_module;
-    
+
     /** Indicates if the module was an old (5.0.x) style module. */
     private boolean m_oldModule;
-    
+
     /** The module parameters. */
     private Map m_parameters;
-    
+
     /** The list of resources for a module. */
     private List m_resources;
-    
+
     /** The list of additional resource types. */
     private List m_resourceTypes;
-    
+
     /**
      * Public constructor, will be called by digester during import.<p> 
      */
     public CmsModuleXmlHandler() {
-        
+
         m_exportPoints = new ArrayList();
         m_dependencies = new ArrayList();
         m_resources = new ArrayList();
-        m_parameters = new HashMap();          
+        m_parameters = new HashMap();
         m_resourceTypes = new ArrayList();
         m_explorerTypeSettings = new ArrayList();
     }
@@ -162,25 +162,25 @@ public class CmsModuleXmlHandler {
      * 
      * @param digester the digester to add the rules to
      */
-    public static void addXmlDigesterRules(Digester digester) {        
-        
+    public static void addXmlDigesterRules(Digester digester) {
+
         // add class generation rule
         digester.addObjectCreate("*/" + N_MODULE, CmsModuleXmlHandler.class);
         digester.addSetNext("*/" + N_MODULE, "setModule");
-        
+
         // add rules for base module information
         digester.addCallMethod("*/" + N_MODULE, "createdModule", 10);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NAME, 0);
         digester.addCallParam("*/" + N_MODULE + "/" + N_NICENAME, 1);
         digester.addCallParam("*/" + N_MODULE + "/" + N_CLASS, 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DESCRIPTION, 3);
-        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 4);     
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 5);   
-        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 6);        
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 7);        
-        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 8);        
-        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 9);             
-        
+        digester.addCallParam("*/" + N_MODULE + "/" + N_VERSION, 4);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHORNAME, 5);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_AUTHOREMAIL, 6);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATECREATED, 7);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_USERINSTALLED, 8);
+        digester.addCallParam("*/" + N_MODULE + "/" + N_DATEINSTALLED, 9);
+
         // add rules for module dependencies
         digester.addCallMethod("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, "addDependency", 2);
         digester.addCallParam("*/" + N_MODULE + "/" + N_DEPENDENCIES + "/" + N_DEPENDENCY, 0, I_CmsXmlConfiguration.A_NAME);
@@ -207,14 +207,14 @@ public class CmsModuleXmlHandler {
 
         // add resource type rules from VFS
         CmsVfsConfiguration.addResourceTypeXmlRules(digester);
-        
+
         // add explorer type rules from workplace
         CmsWorkplaceConfiguration.addExplorerTypeXmlRules(digester);
-                
+
         // finally add all rules for backward compatibility with OpenCms 5.0
         addXmlDigesterRulesForVersion5Modules(digester);
     }
-    
+
     /**
      * Generates a detached XML element for a module.<p>
      * 
@@ -222,13 +222,13 @@ public class CmsModuleXmlHandler {
      * @return the detached XML element for the module
      */
     public static Element generateXml(CmsModule module) {
-        
+
         Document doc = DocumentHelper.createDocument();
-        
+
         Element moduleElement = doc.addElement(N_MODULE);
-        
+
         moduleElement.addElement(N_NAME).setText(module.getName());
-        if (! module.getName().equals(module.getNiceName())) {
+        if (!module.getName().equals(module.getNiceName())) {
             moduleElement.addElement(N_NICENAME).addCDATA(module.getNiceName());
         } else {
             moduleElement.addElement(N_NICENAME);
@@ -258,8 +258,8 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_DATECREATED).setText(CmsDateUtil.getHeaderDate(module.getDateCreated()));
         } else {
             moduleElement.addElement(N_DATECREATED);
-        }     
-        
+        }
+
         if (CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
             moduleElement.addElement(N_USERINSTALLED).setText(module.getUserInstalled());
         } else {
@@ -271,7 +271,7 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_DATEINSTALLED);
         }
         Element dependenciesElement = moduleElement.addElement(N_DEPENDENCIES);
-        for (int i=0; i< module.getDependencies().size(); i++) {
+        for (int i = 0; i < module.getDependencies().size(); i++) {
             CmsModuleDependency dependency = (CmsModuleDependency)module.getDependencies().get(i);
             dependenciesElement
                 .addElement(N_DEPENDENCY)
@@ -279,7 +279,7 @@ public class CmsModuleXmlHandler {
                 .addAttribute(A_VERSION, dependency.getVersion().toString());
         }            
         Element exportpointsElement = moduleElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINTS);
-        for (int i=0; i< module.getExportPoints().size(); i++) {
+        for (int i = 0; i < module.getExportPoints().size(); i++) {
             CmsExportPoint point = (CmsExportPoint)module.getExportPoints().get(i);
             exportpointsElement
                 .addElement(I_CmsXmlConfiguration.N_EXPORTPOINT)
@@ -287,7 +287,7 @@ public class CmsModuleXmlHandler {
                 .addAttribute(I_CmsXmlConfiguration.A_DESTINATION, point.getConfiguredDestination());
         }                  
         Element resourcesElement = moduleElement.addElement(N_RESOURCES);
-        for (int i=0; i< module.getResources().size(); i++) {
+        for (int i = 0; i < module.getResources().size(); i++) {
             String resource = (String)module.getResources().get(i);
             resourcesElement
                 .addElement(I_CmsXmlConfiguration.N_RESOURCE)
@@ -296,8 +296,8 @@ public class CmsModuleXmlHandler {
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
         Map parameters = module.getParameters();
         if (parameters != null) {
-            List parameterList = new ArrayList(parameters.keySet());                        
-            Collections.sort(parameterList);        
+            List parameterList = new ArrayList(parameters.keySet());
+            Collections.sort(parameterList);
             Iterator it = parameterList.iterator();
             while (it.hasNext()) {
                 String name = (String)it.next();
@@ -307,25 +307,25 @@ public class CmsModuleXmlHandler {
                 paramNode.addText(value);
             }
         }
-           
+
         // add resource types       
         List resourceTypes = module.getResourceTypes();
         if (resourceTypes.size() > 0) {
-            Element resourcetypesElement = moduleElement.addElement(CmsVfsConfiguration.N_RESOURCETYPES);            
+            Element resourcetypesElement = moduleElement.addElement(CmsVfsConfiguration.N_RESOURCETYPES);
             CmsVfsConfiguration.generateResourceTypeXml(resourcetypesElement, resourceTypes, true);
         }
-        
+
         List explorerTypes = module.getExplorerTypes();
         if (explorerTypes.size() > 0) {
             Element explorerTypesElement = moduleElement.addElement(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes);           
+            CmsWorkplaceConfiguration.generateExplorerTypesXml(explorerTypesElement, explorerTypes);
         }
-        
+
         // return the modules node
         moduleElement.detach();
         return moduleElement;
     }
-    
+
     /**
      * Generates a (hopefully) valid Java class name from an invalid class name.<p>
      * 
@@ -366,37 +366,37 @@ public class CmsModuleXmlHandler {
         }
         return result.toString();
     }
-    
+
     /**
      * Adds the digester rules for OpenCms version 5 modules.<p>
      * 
      * @param digester the digester to add the rules to
      */
     private static void addXmlDigesterRulesForVersion5Modules(Digester digester) {
-        
+
         // mark method
         digester.addCallMethod("*/" + N_MODULE + "/author", "setOldModule");
-        
+
         // base module information
-        digester.addCallParam("*/" + N_MODULE + "/author", 5);   
-        digester.addCallParam("*/" + N_MODULE + "/email", 6);    
-        digester.addCallParam("*/" + N_MODULE + "/creationdate", 7);   
-        
+        digester.addCallParam("*/" + N_MODULE + "/author", 5);
+        digester.addCallParam("*/" + N_MODULE + "/email", 6);
+        digester.addCallParam("*/" + N_MODULE + "/creationdate", 7);
+
         // dependencies
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/name", 0);
         digester.addCallParam("*/" + N_MODULE + "/dependencies/dependency/minversion", 1);
-                
+
         // export points
-        digester.addCallMethod("*/" + N_MODULE + "/exportpoint", "addExportPoint", 2);        
-        digester.addCallParam("*/" + N_MODULE + "/exportpoint/source", 0);        
-        digester.addCallParam("*/" + N_MODULE + "/exportpoint/destination", 1);  
-        
+        digester.addCallMethod("*/" + N_MODULE + "/exportpoint", "addExportPoint", 2);
+        digester.addCallParam("*/" + N_MODULE + "/exportpoint/source", 0);
+        digester.addCallParam("*/" + N_MODULE + "/exportpoint/destination", 1);
+
         // parameters        
-        digester.addCallMethod("*/" + N_MODULE + "/parameters/para" , "addParameter", 2);        
-        digester.addCallParam("*/" + N_MODULE + "/parameters/para/name", 0);        
-        digester.addCallParam("*/" + N_MODULE + "/parameters/para/value", 1);           
+        digester.addCallMethod("*/" + N_MODULE + "/parameters/para", "addParameter", 2);
+        digester.addCallParam("*/" + N_MODULE + "/parameters/para/name", 0);
+        digester.addCallParam("*/" + N_MODULE + "/parameters/para/value", 1);
     }
-    
+
     /**
      * Adds a module dependency to the current module.<p>
      * 
@@ -404,17 +404,17 @@ public class CmsModuleXmlHandler {
      * @param version the module version of the dependency
      */
     public void addDependency(String name, String version) {
-        
+
         CmsModuleVersion moduleVersion = new CmsModuleVersion(version);
-        
+
         CmsModuleDependency dependency = new CmsModuleDependency(name, moduleVersion);
         m_dependencies.add(dependency);
-    
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Added module dependency to name: " + name + " version: " + version);
-        }        
+        }
     }
-    
+
     /** 
      * Adds an explorer type setting object to the list of type settings.<p>
      * 
@@ -423,9 +423,10 @@ public class CmsModuleXmlHandler {
      * @param settings the explorer type settings
      */
     public void addExplorerTypeSetting(CmsExplorerTypeSettings settings) {
+
         m_explorerTypeSettings.add(settings);
     }
-    
+
     /**
      * Adds an export point to the module configuration.<p>
      * 
@@ -433,13 +434,15 @@ public class CmsModuleXmlHandler {
      * @param destination the export point destination
      */
     public void addExportPoint(String uri, String destination) {
+
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Adding export point  : " + point.getUri() + " --> " + point.getDestinationPath());
-        }            
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                ". Adding export point  : " + point.getUri() + " --> " + point.getDestinationPath());
+        }
     }
-    
+
     /**
      * Adds a module parameter to the module configuration.<p>
      * 
@@ -447,34 +450,39 @@ public class CmsModuleXmlHandler {
      * @param value the parameter value
      */
     public void addParameter(String key, String value) {
+
         m_parameters.put(key, value);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Added module parameter key: " + key + " value: " + value);
-        }        
+        }
     }
-    
+
     /**
      * Adds a resource to the list module resources.<p>
      * 
      * @param resource a resources uri in the OpenCms VFS
      */
     public void addResource(String resource) {
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Added module resource: " + resource);
-        }           
+        }
         m_resources.add(resource);
     }
-    
+
     /**
      * Adds a new resource type to the internal list of loaded resource types.<p>
      *
      * @param resourceType the resource type to add
+     * 
+     * @see I_CmsResourceType#C_ADD_RESOURCE_TYPE_METHOD
      */
     public void addResourceType(I_CmsResourceType resourceType) {
+
         resourceType.setAdditionalModuleResourceType(true);
         m_resourceTypes.add(resourceType);
     }
-    
+
     /**
      * Created a new module from the provided parameters.<p>
      * 
@@ -495,26 +503,26 @@ public class CmsModuleXmlHandler {
         String actionClass,
         String description,
         String version,
-        String authorName, 
+        String authorName,
         String authorEmail,
         String dateCreated,
         String userInstalled,
         String dateInstalled) {
-        
+
         String moduleName;
-        
-        if (! CmsStringUtil.isValidJavaClassName(name)) {
+
+        if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
             OpenCms.getLog(this).error("Invalid module name imported: '" + name + "'");
             moduleName = makeValidJavaClassName(name);
-            OpenCms.getLog(this).error("Corrected module name is: '" + moduleName + "'");                        
+            OpenCms.getLog(this).error("Corrected module name is: '" + moduleName + "'");
         } else {
             moduleName = name;
         }
-        
+
         // parse the module version
         CmsModuleVersion moduleVersion = new CmsModuleVersion(version);
-        
+
         // parse date created
         long moduleDateCreated = CmsModule.C_DEFAULT_DATE;
         if (dateCreated != null) {
@@ -524,7 +532,7 @@ public class CmsModuleXmlHandler {
                 // noop
             }
         }
-        
+
         // parse date installed
         long moduleDateInstalled = CmsModule.C_DEFAULT_DATE;
         if (dateInstalled != null) {
@@ -534,60 +542,59 @@ public class CmsModuleXmlHandler {
                 // noop
             }
         }
-        
+
         if (m_oldModule) {
             // make sure module path is added to resources for "old" (5.0.x) modules
             String modulePath = I_CmsWpConstants.C_VFS_PATH_MODULES + name + "/";
             m_resources.add(modulePath);
         }
-        
+
         // now create the module
-        CmsModule module = 
-            new CmsModule(
-                moduleName, 
-                niceName, 
-                actionClass, 
-                description, 
-                moduleVersion, 
-                authorName, 
-                authorEmail, 
-                moduleDateCreated,
-                userInstalled,
-                moduleDateInstalled, 
-                m_dependencies,
-                m_exportPoints, 
-                m_resources,
-                m_parameters);       
-        
+        CmsModule module = new CmsModule(
+            moduleName,
+            niceName,
+            actionClass,
+            description,
+            moduleVersion,
+            authorName,
+            authorEmail,
+            moduleDateCreated,
+            userInstalled,
+            moduleDateInstalled,
+            m_dependencies,
+            m_exportPoints,
+            m_resources,
+            m_parameters);
+
         // add the module to the list of configured modules
         m_module = module;
-        
+
         // set the additional resource types;
         m_module.setResourceTypes(m_resourceTypes);
-        
+
         // set the additional explorertypes
-        m_module.setExplorerTypes(m_explorerTypeSettings);       
-    }    
-    
+        m_module.setExplorerTypes(m_explorerTypeSettings);
+    }
+
     /**
      * Returns the generated module.<p>
      * 
      * @return the generated module
      */
     public CmsModule getModule() {
-        
+
         return m_module;
     }
-    
+
     /** 
      * Sets the current imported module to an old (5.0.x) style module. 
      */
     public void setOldModule() {
-        
+
         m_oldModule = true;
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Imported module is an old (5.0.x) style module.");
-        }          
+        }
     }
-    
+
 }

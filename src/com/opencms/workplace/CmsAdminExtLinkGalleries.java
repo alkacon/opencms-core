@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2005/03/17 10:31:09 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.37 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.38 $ $Date: 2005/03/17 10:31:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -256,7 +256,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                                 //checkurl = CmsLinkCheck.checkUrl(link);
                             }
                             if(checkurl){
-                                cms.createResource(foldername+filename, CmsResourceTypePointer.C_RESOURCE_TYPE_ID, link.getBytes(), properties);
+                                cms.createResource(foldername+filename, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                             }
                         } catch (CmsException e){
                             error = e.getShortException();

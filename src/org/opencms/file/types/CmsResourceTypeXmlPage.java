@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -60,17 +61,53 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
 
     /** The type id of this resource type. */
-    public static final int C_RESOURCE_TYPE_ID = 10;
+    private static final int C_RESOURCE_TYPE_ID = 10;
 
     /** The name of this resource type. */
-    public static final String C_RESOURCE_TYPE_NAME = "xmlpage";
+    private static final String C_RESOURCE_TYPE_NAME = "xmlpage";
 
+    /** Indicates that the static configuration of the resource type has been frozen. */
+    private static boolean m_staticFrozen;
+
+    /** The static type id of this resource type. */
+    private static int m_staticTypeId;
+    
+    /**
+     * Default constructor, used to initialize member variables.<p>
+     */
+    public CmsResourceTypeXmlPage() {
+        
+        super();
+        m_typeId = C_RESOURCE_TYPE_ID;
+        m_typeName = C_RESOURCE_TYPE_NAME;
+    }  
+    
+    /**
+     * Returns the static type id of this (default) resource type.<p>
+     * 
+     * @return the static type id of this (default) resource type
+     */
+    public static int getStaticTypeId() {
+        
+        return m_staticTypeId;
+    }
+    
+    /**
+     * Returns the static type name of this (default) resource type.<p>
+     * 
+     * @return the static type name of this (default) resource type
+     */
+    public static String getStaticTypeName() {
+        
+        return C_RESOURCE_TYPE_NAME;
+    }
+    
     /**
      * @see org.opencms.validation.I_CmsHtmlLinkValidatable#findLinks(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
@@ -149,21 +186,40 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
 
         return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
     }
-
+    
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
      */
-    public int getTypeId() {
-
-        return C_RESOURCE_TYPE_ID;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#getTypeName()
-     */
-    public String getTypeName() {
-
-        return C_RESOURCE_TYPE_NAME;
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+        
+        if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
+            // configuration already frozen
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " with static name='"
+                + getStaticTypeName()
+                + "' static id='"
+                + getStaticTypeId()
+                + "' can't be reconfigured");
+        }
+        
+        if (!C_RESOURCE_TYPE_NAME.equals(name)) {
+            // default resource type MUST have default name
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " must be configured with resource type name '"
+                + C_RESOURCE_TYPE_NAME
+                + "' (not '"
+                + name
+                + "')");
+        }
+        
+        // freeze the configuration
+        m_staticFrozen = true;
+        
+        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        // set static members with values from the configuration        
+        m_staticTypeId = m_typeId;
     }
 
     /**

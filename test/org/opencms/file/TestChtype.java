@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChtype.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chtype" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestChtype extends OpenCmsTestCase {
   
@@ -121,7 +121,7 @@ public class TestChtype extends OpenCmsTestCase {
     public void testChtypNewFile() throws Throwable {
         CmsObject cms = getCmsObject();     
         echo("Testing chtype on a new file");
-        chtypNewFile(this, cms, "/chtype.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID, CmsResourceTypeBinary.C_RESOURCE_TYPE_ID);   
+        chtypNewFile(this, cms, "/chtype.txt", CmsResourceTypePlain.getStaticTypeId(), CmsResourceTypeBinary.getStaticTypeId());   
     }  
     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/03/02 14:59:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.5.2
  */
@@ -144,7 +144,7 @@ public class CmsImageGallery extends A_CmsGallery {
      */
     public int getGalleryItemsTypeId() {
 
-        return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
+        return CmsResourceTypeImage.getStaticTypeId();
     }
 
     /**

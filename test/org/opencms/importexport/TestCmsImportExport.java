@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -249,7 +249,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         
         // test "/importtest/linktest.html" (sibling of "/importtest/index.html")
         file = cms.readFile("/importtest/linktest.html");        
-        assertEquals(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, file.getTypeId());        
+        assertEquals(CmsResourceTypeXmlPage.getStaticTypeId(), file.getTypeId());        
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
         table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());
@@ -404,7 +404,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         
         // test "/importtest/linktest.html" (sibling of "/importtest/index.html")
         file = cms.readFile("/importtest/linktest.html");        
-        assertEquals(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID, file.getTypeId());        
+        assertEquals(CmsResourceTypeXmlPage.getStaticTypeId(), file.getTypeId());        
         page = CmsXmlPageFactory.unmarshal(cms, file);
         
         table = page.getLinkTable("body", OpenCms.getLocaleManager().getDefaultLocale());

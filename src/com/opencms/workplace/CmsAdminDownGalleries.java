@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2005/03/17 10:31:09 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.58 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.59 $ $Date: 2005/03/17 10:31:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -296,7 +296,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                             // get the selected resource and check if it is an image
                             int type = OpenCms.getResourceManager().getResourceType(newtype).getTypeId(); 
-                            if(newtype.equals(CmsResourceTypeImage.C_RESOURCE_TYPE_NAME)) {
+                            if(newtype.equals(CmsResourceTypeImage.getStaticTypeName())) {
 
                                 // the file type is an image
                                 templateSelector = "image";

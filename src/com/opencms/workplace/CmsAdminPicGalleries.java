@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2005/03/17 10:31:10 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.61 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.62 $ $Date: 2005/03/17 10:31:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -314,7 +314,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                 filename = newname;
                             }
                             try {
-                                CmsFile file = (CmsFile)cms.createResource(foldername + filename, CmsResourceTypeImage.C_RESOURCE_TYPE_ID, filecontent, null);
+                                CmsFile file = (CmsFile)cms.createResource(foldername + filename, CmsResourceTypeImage.getStaticTypeId(), filecontent, null);
                                 if(title != null) {
                                     String filepath = cms.getSitePath(file);
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);

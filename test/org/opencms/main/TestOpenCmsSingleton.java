@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2005/02/17 12:46:01 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
   
@@ -222,7 +222,7 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
         String systemEncoding = OpenCms.getSystemInfo().getDefaultEncoding();
         String workplaceEncoding = OpenCms.getWorkplaceManager().getDefaultEncoding();
         
-        CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(CmsResourceTypeJsp.C_RESOURCE_TYPE_ID);
+        CmsResourceTypeJsp jsp = (CmsResourceTypeJsp)OpenCms.getResourceManager().getResourceType(CmsResourceTypeJsp.getStaticTypeId());
         String jspEncoding = jsp.getDefaultEncoding();
         
         assertEquals("ISO-8859-1", systemEncoding);

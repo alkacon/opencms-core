@@ -21,15 +21,13 @@
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 			</resourceloaders>
 			<resourcetypes>
-				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" />
-				<type class="org.opencms.file.types.CmsResourceTypeFolder" />
-				<type class="org.opencms.file.types.CmsResourceTypePlain" >
+				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
+				<type class="org.opencms.file.types.CmsResourceTypePlain" name="plain" id="1">
 					<mapping suffix=".txt" />
 					<mapping suffix=".html" />
 					<mapping suffix=".htm" />
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypePointer" />
-				<type class="org.opencms.file.types.CmsResourceTypeBinary">
+				<type class="org.opencms.file.types.CmsResourceTypeBinary" name="binary" id="2">
 					<mapping suffix=".pdf" />
 					<mapping suffix=".zip" />
 					<mapping suffix=".class" />
@@ -37,7 +35,7 @@
 					<mapping suffix=".doc" />
 					<mapping suffix=".xls" />
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeImage">
+				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
 					<mapping suffix=".jpeg" />
 					<mapping suffix=".jpg" />
 					<mapping suffix=".gif" />
@@ -45,35 +43,26 @@
 					<mapping suffix=".tif" />
 					<mapping suffix=".tiff" />
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeJsp">
+				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
 					<mapping suffix=".jsp" />
 				    <param name="default.encoding">UTF-8</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" />
-				<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
-					<param name="resource.type.id">11</param>
-					<param name="resource.type.name">xmlcontent</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+				<type class="org.opencms.file.types.CmsResourceTypePointer" name="pointer" id="5"/>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlPage" name="xmlpage" id="6"/>
+				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
-					<param name="resource.type.id">15</param>
-					<param name="resource.type.name">imagegallery</param>
 				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
-					<param name="resource.type.id">16</param>
-					<param name="resource.type.name">linkgallery</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
-					<param name="resource.type.id">17</param>
-					<param name="resource.type.name">htmlgallery</param>
-				</type>
-				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended">
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
-					<param name="resource.type.id">18</param>
-					<param name="resource.type.name">downloadgallery</param>
-				</type>							
+				</type>	
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
+				</type>
+				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
+					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
+				</type>					
+				<type class="com.opencms.legacy.CmsResourceTypeXMLTemplate" name="XMLTemplate" id="99"/>				
 			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.CmsDefaultResourceCollector" order="100" />

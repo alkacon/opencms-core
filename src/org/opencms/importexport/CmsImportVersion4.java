@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/03/15 18:05:54 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,10 +30,8 @@
  */
 package org.opencms.importexport;
 
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -210,7 +208,7 @@ public class CmsImportVersion4 extends A_CmsImport {
      * 
      * @param source the path to the source-file
      * @param destination the path to the destination-file in the cms
-     * @param resType the resource-type of the file
+     * @param type the resource type name of the file
      * @param uuidresource  the resource uuid of the resource
      * @param datelastmodified the last modification date of the resource
      * @param userlastmodified the user who made the last modifications to the resource
@@ -224,23 +222,24 @@ public class CmsImportVersion4 extends A_CmsImport {
      * @return imported resource
      */
     private CmsResource importResource(
-        String source, 
-        String destination,         
-        int resType, 
-        String uuidresource, 
-        long datelastmodified, 
-        String userlastmodified, 
-        long datecreated, 
-        String usercreated, 
-        long datereleased, 
-        long dateexpired, 
-        String flags, 
+        String source,
+        String destination,
+        I_CmsResourceType type,
+        String uuidresource,
+        long datelastmodified,
+        String userlastmodified,
+        long datecreated,
+        String usercreated,
+        long datereleased,
+        long dateexpired,
+        String flags,
         List properties) {
 
         byte[] content = null;
-        CmsResource res = null;
+        CmsResource result = null;
 
         try {
+
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
@@ -269,55 +268,41 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // datecreated = System.currentTimeMillis();
             }
 
-            boolean isFolder = CmsFolder.isFolderType(resType);
-            
             // get UUIDs for the resource and content        
             CmsUUID newUuidresource = null;
-            if ((uuidresource != null) && (! isFolder)) {
+            if ((uuidresource != null) && (!type.isFolder())) {
                 // create a UUID from the provided string
                 newUuidresource = new CmsUUID(uuidresource);
             } else {
                 // folders get always a new resource record UUID
                 newUuidresource = new CmsUUID();
             }
-            
+
             // create a new CmsResource                         
             CmsResource resource = new CmsResource(
                 new CmsUUID(), // structure ID is always a new UUID
-                newUuidresource, 
+                newUuidresource,
                 destination,
-                resType,
-                isFolder,
-                new Integer(flags).intValue(), 
-                m_cms.getRequestContext().currentProject().getId(), 
-                I_CmsConstants.C_STATE_NEW, 
+                type.getTypeId(),
+                type.isFolder(),
+                new Integer(flags).intValue(),
+                m_cms.getRequestContext().currentProject().getId(),
+                I_CmsConstants.C_STATE_NEW,
                 datecreated,
-                newUsercreated, 
-                datelastmodified, 
-                newUserlastmodified, 
-                datereleased, 
+                newUsercreated,
+                datelastmodified,
+                newUserlastmodified,
+                datereleased,
                 dateexpired,
-                1, 
-                size
-            );
-             
-            if (C_RESOURCE_TYPE_LINK_ID == resType) {
-                // store links for later conversion
-                m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
-                m_linkStorage.put(destination, new String(content));
-                m_linkPropertyStorage.put(destination, properties);                
-                res = resource;
-            } else {             
-                // import this resource in the VFS   
-                res = m_cms.importResource(destination, resource, content, properties);
-            }
+                1,
+                size);
 
-            if (res != null) {
-                if (C_RESOURCE_TYPE_PAGE_ID == resType) {
-                    m_importedPages.add(destination);
-                }
-                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);                               
-            }          
+            // import this resource in the VFS
+            result = m_cms.importResource(destination, resource, content, properties);
+
+            if (result != null) {
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            }
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);
@@ -328,7 +313,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // 
             }
         }
-        return res;
+        return result;
     }
   
     /**
@@ -343,9 +328,8 @@ public class CmsImportVersion4 extends A_CmsImport {
     private void readResourcesFromManifest(Vector excludeList, String propertyKey, String propertyValue)
     throws CmsException {
 
-        String source = null, destination = null, type = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
+        String source = null, destination = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
-        int resType = I_CmsConstants.C_UNKNOWN_ID;
 
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
@@ -395,24 +379,10 @@ public class CmsImportVersion4 extends A_CmsImport {
                     I_CmsConstants.C_EXPORT_TAG_DESTINATION);
 
                 // <type>
-                boolean folder;
-                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
-                    folder = false;
-                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_PAGE_ID;
-                    folder = false;
-                } else if (C_RESOURCE_TYPE_LINK_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_LINK_ID;
-                    folder = false;
-                } else {
-                     I_CmsResourceType rt = OpenCms.getResourceManager().getResourceType(type);
-                     resType = rt.getTypeId();
-                     folder = rt.isFolder();
-                }
+                String typeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(typeName);
 
-                if (! folder) {
+                if (! type.isFolder()) {
                     // <uuidresource>
                     uuidresource = CmsImport.getChildElementTextValue(
                         currentElement,
@@ -474,7 +444,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                 // apply name translation and import path         
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);                
-                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
+                if (type.isFolder()) {
                     // ensure folders end with a "/"
                     if (! CmsResource.isFolder(translatedName)) {
                         translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
@@ -502,7 +472,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                     CmsResource res = importResource(
                         source,
                         translatedName,
-                        resType,
+                        type,
                         uuidresource,
                         datelastmodified,
                         userlastmodified,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.3
  */
@@ -572,13 +572,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
         fileName = fileName.toLowerCase();
         contentType = contentType.toLowerCase();
         if (fileName.endsWith(".jsp")) {
-            return CmsResourceTypeJsp.C_RESOURCE_TYPE_ID;
+            return CmsResourceTypeJsp.getStaticTypeId();
         } else if (contentType.indexOf("image") != -1) {
-            return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
+            return CmsResourceTypeImage.getStaticTypeId();
         } else if (contentType.indexOf("text") != -1) {
-            return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+            return CmsResourceTypePlain.getStaticTypeId();
         } else {
-            return CmsResourceTypeBinary.C_RESOURCE_TYPE_ID;
+            return CmsResourceTypeBinary.getStaticTypeId();
         }
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/02/28 09:50:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -512,7 +512,7 @@ public class TestPublishing extends OpenCmsTestCase {
         String newFile = newFolder + "new_file";
         String newSibling = newFolder + "new_sibling";
         
-        cms.createResource(newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource(newFolder, CmsResourceTypeFolder.getStaticTypeId());
         cms.unlockResource(newFolder);
         storeResources(cms, newFolder);
         
@@ -641,7 +641,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // change back to the test project, create a new resource
         String res3 = path + "/testPublishProjectLastmodified.txt";
         cms.getRequestContext().setCurrentProject(project);
-        cms.createResource(res3, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(res3, CmsResourceTypePlain.getStaticTypeId());
         
         // change to offline project, copy resource as sibling
         // this will also change the project in which the source was lastmodified (now "Offline")
@@ -693,7 +693,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(tempProject);      
         
         // now create a new resource
-        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
         cms.unlockResource(source);
         storeResources(cms, source);
         

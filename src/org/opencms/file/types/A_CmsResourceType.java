@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/03/15 18:10:23 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/17 10:31:08 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.TreeMap;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {    
@@ -78,6 +78,96 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     
     /** Property parameters that are given in the xml configuration. */
     private SortedMap m_propertyValues;
+        
+    /** The configured id of this resource type. */
+    protected int m_typeId;
+    
+    /** The configured name of this resource type. */
+    protected String m_typeName;
+    
+    /** Indicates that the configuration of the resource type has been frozen. */
+    protected boolean m_frozen;
+    
+    /**
+     * Default constructor, used to initialize some member variables.<p>
+     */
+    public A_CmsResourceType() {
+        
+        m_typeId = -1;
+        m_mappings = new ArrayList();
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
+     */
+    public int getTypeId() {
+
+        return m_typeId;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
+     */
+    public String getTypeName() {
+
+        return m_typeName;
+    }
+    
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public final void initConfiguration() {
+
+        // final since subclassed should NOT implement this, but rather the version with parameters (see below)
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
+        }
+    }   
+    
+    /**
+     * Special version of the configuration initialization used to also set resource type and id.<p>
+     * 
+     * <i>Please note;</i> Many resource types defined in the core have in fact
+     * a fixed resource type and a fixed id. Configurable name and id is used only
+     * for certain types.<p>
+     * 
+     * @param name the resource type name
+     * @param id the resource type id
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug("initConfiguration(String, String) called on " + this + " with name='" + name + "' id='" + id + "'");
+
+        }
+        
+        if (m_frozen) {
+            // configuration already frozen
+            throw new CmsConfigurationException("Resource type "
+                + this.getClass().getName()
+                + " with name='"
+                + getTypeName()
+                + "' id='"
+                + getTypeId()
+                + "' can't be reconfigured");
+        }
+        // freeze the configuration
+        m_frozen = true;
+        
+        // set type name and id (please note that some resource types have a fixed type / id)
+        if (name != null) {
+            m_typeName = name;
+        }
+        if (id != null) {
+            m_typeId = Integer.valueOf(id).intValue();
+        }
+        
+        // check type id and type name
+        if ((getTypeId() < 0) || (getTypeName() == null)) {
+            throw new CmsConfigurationException("Invalid resource type configuration type='" + this.getClass().getName() + "' name='" + m_typeName + "' id='" + m_typeId + "'");            
+        }
+    }
     
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -300,16 +390,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public List getMapping() {
         return m_mappings;
     }
-    
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeId()
-     */
-    public abstract int getTypeId();
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#getTypeName()
-     */
-    public abstract String getTypeName();
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], List)
@@ -335,22 +415,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             content,
             properties,
             true);
-    }
-
-    /**
-     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
-     */
-    public void initConfiguration() throws CmsConfigurationException {
-
-        // simple default configuration does not need to be initialized
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("initConfiguration() called on " + this);
-            // supress compiler warning, this is never true
-            if (this == null) {
-                throw new CmsConfigurationException();
-            }
-        }
-    }    
+    }   
     
     /**
      * @see org.opencms.file.types.I_CmsResourceType#initialize(org.opencms.file.CmsObject)
@@ -495,11 +560,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public String toString() {
 
         StringBuffer output = new StringBuffer();
-        output.append("[ResourceType]:");
+        output.append("[ResourceType] class=");
+        output.append(getClass().getName());
+        output.append(" name=");
         output.append(getTypeName());
-        output.append(", Id=");
+        output.append(" id=");
         output.append(getTypeId());
-        output.append(", LoaderId=");
+        output.append(" loaderId=");
         output.append(getLoaderId());
         return output.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/03/09 12:15:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/03/17 10:32:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -218,9 +218,9 @@ public class TestPublishIssues extends OpenCmsTestCase {
         String resourceB = folderB + "test.txt";
         
         // create the resource and the sibling
-        cms.createResource(folderA, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource(folderB, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource(resourceA, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource(folderA, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(folderB, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(resourceA, CmsResourceTypePlain.getStaticTypeId());
         cms.createSibling(resourceA, resourceB, Collections.EMPTY_LIST);
         CmsFile cmsFile = cms.readFile(resourceA);
         cmsFile.setContents("Hello, this is a test!".getBytes());
@@ -363,10 +363,10 @@ public class TestPublishIssues extends OpenCmsTestCase {
         assertState(cms, "/folder1/subfolder11/", I_CmsConstants.C_STATE_UNCHANGED);
         assertState(cms, "/folder1/subfolder11/index.html", I_CmsConstants.C_STATE_UNCHANGED);
         
-        cms.createResource("/folder_a/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource("/folder_a/file_a.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-        cms.createResource("/folder_a/folder_b/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-        cms.createResource("/folder_a/folder_b/file_b.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder_a/", CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource("/folder_a/file_a.txt", CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource("/folder_a/folder_b/", CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource("/folder_a/folder_b/file_b.txt", CmsResourceTypePlain.getStaticTypeId());
         
         cms.unlockResource("/folder_a/");
         cms.publishResource("/folder_a/");
@@ -441,7 +441,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(project);
       
         // create folder
-        cms.createResource("/test", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/test", CmsResourceTypeFolder.getStaticTypeId());
         
         // create siblings
         cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/subtest", I_CmsConstants.C_COPY_AS_SIBLING);

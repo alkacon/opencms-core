@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/03/10 15:06:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.5.2
  */
@@ -427,7 +427,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     result.append("</td>\n");
                     // display the link URL for link gallery
 
-                    if (res.getTypeId() == CmsResourceTypePointer.C_RESOURCE_TYPE_ID) {
+                    if (res.getTypeId() == CmsResourceTypePointer.getStaticTypeId()) {
                         result.append("\t<td class=\"");
                         result.append(tdClass);
                         result.append("\">");

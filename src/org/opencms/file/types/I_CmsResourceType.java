@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/03/17 10:31:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,6 +70,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
     /** The name of the addMapping() method. */
     String C_ADD_MAPPING_METHOD = "addMappingType";
+    
+    /** Name of the addResourceType() method to add a resource type from the configuration. */
+    String C_ADD_RESOURCE_TYPE_METHOD = "addResourceType";
     
     /** Configuration key prefix for properties that are attached when creating a new resource. */
     String C_CONFIGURATION_PROPERTY_CREATE = "property.create.";
