@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/02/16 19:08:07 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.16 $ $Date: 2000/02/16 19:08:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -341,7 +341,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                         title="";
                     }
                     template.setXmlData(C_TITLE_VALUE,title);   
-                    template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
+                    String typename=type.getResourceName();
+                    typename=lang.getDataValue("fileicon."+typename);
+                    template.setXmlData(C_TYPE_VALUE,typename);   
                     // get the folder date
                     long time=folder.getDateLastModified();
                     template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
@@ -407,7 +409,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                     template.setXmlData(C_TITLE_VALUE,title);   
                     // set the file type 
                     type=cms.getResourceType(file.getType());
-                    template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
+                    String typename=type.getResourceName();
+                    typename=lang.getDataValue("fileicon."+typename);
+                    template.setXmlData(C_TYPE_VALUE,typename);   
                     // get the file date
                     long time=file.getDateLastModified();
                     template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 19:08:07 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:28 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/16 19:08:07 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -75,9 +75,9 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
         
         // read all request parameters
-        String newFile=(String)parameters.get("newfile");
-        String newFolder=(String)parameters.get("newfolder");
-        String flags=(String)parameters.get("flags");
+        String newFile=(String)parameters.get(C_PARA_NEWFILE);
+        String newFolder=(String)parameters.get(C_PARA_NEWFOLDER);
+        String flags=(String)parameters.get(C_PARA_FLAGS);
         
         CmsFile file=(CmsFile)cms.readFileHeader(filename);
   
