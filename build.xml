@@ -458,6 +458,7 @@ ${opencms.inputlib.pdfbox}
 	  	<ant antfile="${opencms.input}/modules/build.xml" target="war" inheritAll="false" >
 	  		<property name="modules.common.selection" value="${modules.common.selection}" />
 	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="app.name" value="${app.name}" />
 	  	</ant>    	
     	
     	<!-- build distro -->
