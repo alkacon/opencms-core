@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2005/02/18 14:23:15 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001  The OpenCms Group
+* Copyright (C) 2001-2005  The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.16 $ $Date: 2005/02/18 14:23:15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

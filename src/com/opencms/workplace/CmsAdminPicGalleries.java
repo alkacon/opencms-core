@@ -1,12 +1,12 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/08/19 11:26:34 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2005/02/18 14:23:16 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* Copyright (C) 2001  The OpenCms Group
+* Copyright (C) 2001 - 2005 The OpenCms Group
 *
 * This library is free software; you can redistribute it and/or
 * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.59 $ $Date: 2004/08/19 11:26:34 $
+ * @version $Revision: 1.60 $ $Date: 2005/02/18 14:23:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

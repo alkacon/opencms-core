@@ -9,7 +9,7 @@ boolean isMouseOver = cms.getRequestContext().getUri().endsWith("over.js");
 %>//********************************************************
 // Do not remove this notice.
 //
-// Copyright 2000-2004 by Mike Hall.
+// Copyright 2000-2005 by Mike Hall.
 // See http://www.brainjar.com for terms of use.
 //********************************************************
 // Modified by Andreas Zahner (a.zahner@alkacon.com)

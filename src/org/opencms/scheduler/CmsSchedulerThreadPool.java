@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/02/18 14:23:18 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
  * This library is based to some extend on code from the 
  * OpenSymphony Quartz project. Original copyright notice:
  * 
- * Copyright James House (c) 2001-2004
+ * Copyright James House (c) 2001-2005
  * 
  * All rights reserved.
  * 
@@ -70,7 +70,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsSchedulerThreadPool implements ThreadPool {
