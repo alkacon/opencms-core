@@ -158,6 +158,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	        CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
 	        //get the parameter
 	        Hashtable parameters = (Hashtable)userObject;
+
 	        // get the action
 	        String media_action = (String) parameters.get("media_action");
 	        media_action=(media_action!=null?media_action.trim():"");
@@ -291,7 +292,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	            media_position="";
 	        }
 	        //open window on reload
-	        if(media_action.equals("prevPicture")){
+	        if(media_action.equals("prevPicture") && (selectedmediaCD!=null)){
 	            //set the url
 	            templateFile.setData("preview",templateFile.getProcessedDataValue("media_preview",this));
 	        }else{
@@ -299,7 +300,7 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
 	            templateFile.setData("preview","");
 	        }
 	        //special template for edit
-	        if(media_action.equals("editPicture")){
+	        if(media_action.equals("editPicture") && (selectedmediaCD!=null)){
 	            //set media_position back to default
 	            media_position=""+selectedmediaCD.getPosition();
 	            //put the media_position in session
