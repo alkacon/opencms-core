@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/09/24 13:48:42 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2002/09/03 11:57:01 $
+ * @version $Revision: 1.29 $ $Date: 2002/09/24 13:48:42 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -643,13 +643,14 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
         CmsFile file = cms.readFile(source);
         String bodyPath = checkBodyPath(cms, file);
+        cms.doMoveFile(source, destination);
         if(bodyPath != null) {
             String hbodyPath = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
             cms.doMoveFile(bodyPath, hbodyPath);
-            changeContent(cms, source, hbodyPath);
+            changeContent(cms, destination, hbodyPath);
         }
-        cms.doMoveFile(source, destination);
+        
         // linkmanagement: delete the links of the old page and create them for the new one
         int oldId = file.getResourceId();
         int newId = cms.readFileHeader(destination).getResourceId();
@@ -672,13 +673,14 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String bodyPath = readBodyPath(cms, file);
         int help = C_CONTENTBODYPATH.lastIndexOf("/");
         String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + oldname;
+        cms.doRenameFile(oldname,newname);
         if(hbodyPath.equals(bodyPath)) {
             cms.doRenameFile(bodyPath, newname);
             help=bodyPath.lastIndexOf("/") + 1;
             hbodyPath = bodyPath.substring(0,help) + newname;
-            changeContent(cms, oldname, hbodyPath);
+            changeContent(cms, file.getParent()+newname, hbodyPath);
         }
-        cms.doRenameFile(oldname,newname);
+        
         // linkmanagement: delete the links of the old page and create them for the new one
         int oldId = file.getFileId();
         int newId = cms.readFileHeader(file.getParent()+newname).getFileId();
