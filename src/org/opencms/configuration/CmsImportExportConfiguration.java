@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/06/06 08:59:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,52 +52,52 @@ import org.dom4j.Element;
  */
 public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
-    /** The name of the DTD for this configuration */
+    /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
     
-    /** The name of the default XML file for this configuration */
+    /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";       
 
-    /** Node that indicates page conversion */
+    /** Node that indicates page conversion. */
     protected static final String N_CONVERT = "convert";
     
-    /** Node that contains a list of properties ignored during import */
+    /** Node that contains a list of properties ignored during import. */
     protected static final String N_IGNOREDPROPERTIES = "ignoredproperties";
     
-    /** The import immutable resource node */
+    /** The import immutable resources node. */
     protected static final String N_IMMUTABLES = "immutables";
 
-    /** The node name of the import subconfiguration */
+    /** The node name of the import subconfiguration. */
     protected static final String N_IMPORT = "import";      
     
-    /** The main configuration node name */
+    /** The main configuration node name. */
     protected static final String N_IMPORTEXPORT = "importexport";
 
-    /** The node name of an individual import/export handler */
+    /** The node name of an individual import/export handler. */
     protected static final String N_IMPORTEXPORTHANDLER = "importexporthandler";
     
-    /** Master node for import/export handlers */
+    /** Master node for import/export handlers. */
     protected static final String N_IMPORTEXPORTHANDLERS = "importexporthandlers";
     
-    /** The node name of an individual import version class */
+    /** The node name of an individual import version class. */
     protected static final String N_IMPORTVERSION = "importversion";   
 
-    /** Master node for import version class names */
+    /** Master node for import version class names. */
     protected static final String N_IMPORTVERSIONS = "importversions";    
     
-    /** Node the contains optional URL of old web application */
+    /** Node the contains an optional URL of old web application. */
     protected static final String N_OLDWEBAPPURL = "oldwebappurl";
     
-    /** The import overwrite node name */    
+    /** The import overwrite node name. */    
     protected static final String N_OVERWRITE = "overwrite";
     
-    /** An individual principal translation node */
+    /** An individual principal translation node. */
     protected static final String N_PRINCIPALTRANSLATION = "principaltranslation";
 
-    /** The principal translation node */
+    /** The principal translation node. */
     protected static final String N_PRINCIPALTRANSLATIONS = "principaltranslations";
     
-    /** The configured import/export manager */
+    /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,49 +41,49 @@ import org.opencms.workplace.I_CmsWpConstants;
  * user preferences.<p>
  *  
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsDefaultUserSettings extends CmsUserSettings {
    
-    /** Parameter for buttonstlye text & image */
+    /** Parameter for buttonstyle text & image. */
     private static int C_BUTTONSTYLE_TEXTIMAGE = 1;
     
-    /** value for preserving siblings in copy dialog settings */
+    /** Value for preserving siblings in copy dialog settings. */
     private static String C_COPYMODE_PRESERVE = "preservesiblings";
 
-    /** value for creating a resource in copy dialog settings */
+    /** Value for creating a resource in copy dialog settings. */
     private static String C_COPYMODE_RESOURCE = "createresource";
 
-    /** value for creating a sibling in copy dialog settings */
+    /** Value for creating a sibling in copy dialog settings. */
     private static String C_COPYMODE_SIBLING = "createsibling";
     
-    /** value for deleteing siblings in delete dialog settings */
+    /** Value for deleting siblings in delete dialog settings. */
     private static String C_DELETEMODE_DELETE = "deletesiblings";
     
-    /** value for preserving siblings in delete dialog settings */
+    /** Value for preserving siblings in delete dialog settings. */
     private static String C_DELETEMODE_PRESERVE = "preservesiblings";
 
-    /** value for publishing only resources in publish dialog settings */
+    /** Value for publishing only resources in publish dialog settings. */
     private static String C_PUBLISHMODE_ONLYRESOURCE = "onlyresource"; 
     
-    /** value for publishing siblings in publish dialog settings */
+    /** Value for publishing siblings in publish dialog settings. */
     private static String C_PUBLISHMODE_SIBLINGS = "allsiblings"; 
     
-    /** value for "true" */
+    /** Value for "true". */
     private static String C_TRUEVALUE = "true";
    
-    /**  array of the possible "button styles */
+    /**  Array of the possible "button styles". */
     public  static final String[] m_buttonStyles = {
             "image",
             "textimage",
             "text",
     };
 
-    /** array list for fast lookup */
+    /** Srray list for fast lookup of "button styles". */
     public static final java.util.List m_buttonStyle =
         java.util.Arrays.asList(m_buttonStyles);
         
-    /**  array of the "task startupfilter" nicenames */
+    /** Array of the "task startupfilter" nicenames. */
     public  static final String[] m_startupFilterNames = {
             "mynewtasks",
             "mytasksformyroles",
@@ -99,11 +99,11 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "completedtaskscreatedbyme"
     };
    
-    /** array list for fast lookup */
+    /** Array list for fast lookup of "task startupfilter" nicenames. */
     public static final java.util.List m_startupFilterName =
         java.util.Arrays.asList(m_startupFilterNames); 
           
-   /**  array of the "task startupfilter" values */
+   /**  Array of the "task startupfilter" values. */
     public  static final String[] m_startupFilterValues = {
             "a1",
             "b1",
@@ -119,7 +119,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
             "d3"
     };
     
-    /** array list for fast lookup */
+    /** Array list for fast lookup of "task startupfilter" values. */
     public static final java.util.List m_startupFilterValue =
         java.util.Arrays.asList(m_startupFilterValues);  
     

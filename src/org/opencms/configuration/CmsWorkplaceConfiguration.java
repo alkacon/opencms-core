@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,243 +55,243 @@ import org.dom4j.Element;
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
-    /** The "isxml" attribute */
+    /** The "isxml" attribute. */
     protected static final String A_ISXML = "isxml";
     
-    /** The "permissions" attribute */
+    /** The "permissions" attribute. */
     protected static final String A_PERMISSIONS = "permissions";
    
-    /** The "principal" attribute */
+    /** The "principal" attribute. */
     protected static final String A_PRINCIPAL = "principal";
     
-    /** The "rules" attribute */
+    /** The "rules" attribute. */
     protected static final String A_RULES = "rules";
     
-    /** The "shownavigation" attribute */
+    /** The "shownavigation" attribute. */
     protected static final String A_SHOWNAVIGATION = "shownavigation";
     
-    /** The "target" attribute */
+    /** The "target" attribute. */
     protected static final String A_TARGET = "target";
 
     
-    /** The "value" attribute */
+    /** The "value" attribute. */
     protected static final String A_VALUE = "value";    
     
-    /** The name of the DTD for this configuration */
+    /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
     
-    /** The name of the default XML file for this configuration */
+    /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";          
     
-    /** The name of the access control node */
+    /** The name of the access control node. */
     protected static final String N_ACCESSCONTROL = "accesscontrol";
     
-    /** The name of the access entry node */
+    /** The name of the access entry node. */
     protected static final String N_ACCESSENTRY = "accessentry";
     
-    /** The name of the autolock node */
+    /** The name of the autolock node. */
     protected static final String N_AUTOLOCK = "autolock";
     
-    /** The node name of the buttonstyle node */
+    /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
     
-    /** The name of the context menu node */
+    /** The name of the context menu node. */
     protected static final String N_CONTEXTMENU = "contextmenu";
 
-    /** The node name of the datecreated column node */
+    /** The node name of the datecreated column node. */
     protected static final String N_DATECREATED = "show-datecreated";
     
-    /** The node name of the date expired node */
+    /** The node name of the date expired column node. */
     protected static final String N_DATEEXPIRED = "show-dateexpired";      
     
-    /** The node name of the datelastmodified column node */
+    /** The node name of the datelastmodified column node. */
     protected static final String N_DATELASTMODIFIED = "show-datelastmodified";
     
-    /** The node name of the date released node */
+    /** The node name of the date released  column node. */
     protected static final String N_DATERELEASED = "show-datereleased";    
     
-    /** The name of the node for the default locale */
+    /** The name of the node for the default locale. */
     protected static final String N_DEFAULTLOCALE = "defaultlocale";
     
-    /** The name of the default properties node */
+    /** The name of the default properties node. */
     protected static final String N_DEFAULTPROPERTIES = "defaultproperties";
     
-    /** The name of the default properties on structure node */
+    /** The name of the default properties on structure node. */
     protected static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
     
-    /** Indivividual workplace handler node name */
+    /** Individual workplace handler node name. */
     protected static final String N_DIALOGHANDLER = "dialoghandler";      
     
-    /** The main workplace handler node name */
+    /** The main workplace handler node name. */
     protected static final String N_DIALOGHANDLERS = "dialoghandlers";
     
-    /** The node name of the dialogs defaultsettings node */
+    /** The node name of the dialogs defaultsettings node. */
     public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
     
-    /** The node name of the dialogs preferences node */
+    /** The node name of the dialogs preferences node. */
     protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
     
-    /** The node name of the directeditstyle node */
+    /** The node name of the directedit style node. */
     public static final String N_DIRECTEDITSTYLE = "directeditstyle";
     
-    /** The node name of the directpublish node */
+    /** The node name of the directpublish node. */
     public static final String N_DIRECTPUBLISH = "directpublish";
     
-    /** The name of the edit options node */
+    /** The name of the edit options node. */
     protected static final String N_EDITOPTIONS = "editoptions";
     
-    /** The node name of the editor node */
+    /** The node name of the editor node. */
     public static final String N_EDITOR = "editor";    
     
-    /** The name of the editor action node */
+    /** The name of the editor action node. */
     protected static final String N_EDITORACTION = "editoraction";
     
-    /** The node name of the editor generaloptions node */
+    /** The node name of the editors general options node. */
     public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
     
-    /** The name of the editor handler node */
+    /** The name of the editor handler node. */
     protected static final String N_EDITORHANDLER = "editorhandler";
         
-    /** The node name of the editor preferences node */
+    /** The node name of the editors preferences node. */
     protected static final String N_EDITORPREFERENCES = "editors-preferences";
     
-    /** The node name of the editor preferrededitors node */
+    /** The node name of the editors preferred editors node. */
     public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
     
-    /** The name of the "enable advanced property tabs" node */
+    /** The name of the "enable advanced property tabs" node. */
     protected static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
     
-    /** The name of the "user management enabled" node */
+    /** The name of the "user management enabled" node. */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
     
-    /** The node name of the fileentries node */
+    /** The node name of the file entries node. */
     public static final String N_ENTRIES = "entries";
     
-    /** The name of the entry node */
+    /** The name of the entry node. */
     protected static final String N_ENTRY = "entry";
 
-    /** The node name of the explorer displayoptions node */
+    /** The node name of the explorer displayoptions node. */
     public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
     
-    /** The node name of the explorer generaloptions node */
+    /** The node name of the explorer generaloptions node. */
     public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
    
-    /** The node name of the explorer preferences node */
+    /** The node name of the explorer preferences node. */
     protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
     
-    /** The name of the explorer type node */
+    /** The name of the explorer type node. */
     protected static final String N_EXPLORERTYPE = "explorertype";
     
-    /** The name of the explorer types node */
+    /** The name of the explorer types node. */
     protected static final String N_EXPLORERTYPES = "explorertypes";
 
-    /** The node name of the filecopy node */
+    /** The node name of the file copy node. */
     public static final String N_FILECOPY = "filecopy";
     
-    /** The node name of the filedeletion node */
+    /** The node name of the file deletion node. */
     public static final String N_FILEDELETION = "filedeletion";
     
-    /** The node name of the foldercopy node */
+    /** The node name of the folder copy node. */
     public static final String N_FOLDERCOPY = "foldercopy";
     
-    /** The node name of the informrolemembers node */
+    /** The node name of the inform role members node. */
     public static final String N_INFORMROLEMEMBERS = "informrolemembers";    
     
-    /** The name of the "labeled folders" node */
+    /** The name of the "labeled folders" node. */
     protected static final String N_LABELEDFOLDERS = "labeledfolders";    
     
-    /** The node name of the locale node */
+    /** The node name of the locale node. */
     public static final String N_LOCALE = "locale";
     
-    /** The node name of the lockedby column node */
+    /** The node name of the lockedby column node. */
     protected static final String N_LOCKEDBY = "show-lockedby";
     
-    /** The name of the "max file upload size" node */
+    /** The name of the "max file upload size" node. */
     protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
     
-    /** The node name of the message-accepted node */
+    /** The node name of the message-accepted node. */
     public static final String N_MESSAGEACCEPTED = "message-accepted";    
     
-    /** The node name of the message-completed node */
+    /** The node name of the message-completed node. */
     public static final String N_MESSAGECOMPLETED = "message-completed";    
     
-    /** The node name of the message-forwarded node */
+    /** The node name of the message-forwarded node. */
     public static final String N_MESSAGEFORWARDED = "message-forwarded";
     
-    /** The name of the new resource node */
+    /** The name of the new resource node. */
     protected static final String N_NEWRESOURCE = "newresource";
     
-    /** The node name of the permissions column node */
+    /** The node name of the permissions column node. */
     protected static final String N_PERMISSIONS = "show-permissions";
     
-    /** The node name of the project node */
+    /** The node name of the project node. */
     public static final String N_PROJECT = "project";
 
-    /** The node name of the reporttype node */
+    /** The node name of the report type node. */
     public static final String N_REPORTTYPE = "reporttype";
     
-    /** The name of the separator node */
+    /** The name of the separator node. */
     protected static final String N_SEPARATOR = "separator";
     
-    /** The node name of the filecopy node */
+    /** The node name of the file copy node. */
     public static final String N_SHOWLOCK = "showlock";
     
-    /** The node name of the showprojects node */
+    /** The node name of the showprojects node. */
     public static final String N_SHOWPROJECTS = "showprojects";    
     
-    /** The node name of the size column node */
+    /** The node name of the size column node. */
     protected static final String N_SIZE = "show-size";
    
-    /** The node name of the startupfilter node */
+    /** The node name of the startupfilter node. */
     public static final String N_STARTUPFILTER = "startupfilter";    
     
-    /** The node name of the state column node */
+    /** The node name of the state column node. */
     protected static final String N_STATE = "show-state";
 
-    /** The node name of the title column node */
+    /** The node name of the title column node. */
     protected static final String N_TITLE = "show-title";
 
-    /** The node name of the type column node */
+    /** The node name of the type column node. */
     protected static final String N_TYPE = "show-type";
     
-    /** The node name of the uploadapplet node */
+    /** The node name of the uploadapplet node. */
     public static final String N_UPLOADAPPLET = "uploadapplet";
     
-    /** The node name of the default preferences node */
+    /** The node name of the default preferences node. */
     protected static final String N_USER = "default-preferences";
 
-    /** The node name of the usercreated node */
+    /** The node name of the user created node. */
     protected static final String N_USERCREATED = "show-usercreated";
     
-    /** The node name of the userlastmodified node */
+    /** The node name of the user lastmodified node. */
     protected static final String N_USERLASTMODIFIED = "show-userlastmodified";
 
-    /** The node name of the workflow defaultsettings node */
+    /** The node name of the workflow default settings node. */
     public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
     
-    /** The node name of the workflow generaloptions node */
+    /** The node name of the workflow general options node. */
     public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
     
-    /** The node name of the workflow preferences node */
+    /** The node name of the workflow preferences node. */
     protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
     
-    /** The node name of the master workplace node */       
+    /** The node name of the master workplace node. */       
     protected static final String N_WORKPLACE = "workplace";
     
-    /** The node name of the workplace general options node */
+    /** The node name of the workplace general options node. */
     public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
 
-    /** The node name of the workplace preferences node */
+    /** The node name of the workplace preferences node. */
     protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
 
-    /** The node name of the workplace startupsettings node */
+    /** The node name of the workplace startup settings node. */
     public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
     
-    /** The node name of the view node */
+    /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
     
 
-    /** The configured workplace manager */
+    /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
     
    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/18 15:03:17 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.commons.collections.ExtendedProperties;
  */
 public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
         
-    /** The name of the XML file used for this configuration */
+    /** The name of the XML file used for this configuration. */
     private String m_xmlFileName; 
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/06/13 23:31:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,64 +52,64 @@ import org.dom4j.Element;
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
-    /** The name of the DTD for this configuration */
+    /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
     
-    /** The name of the default XML file for this configuration */
+    /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";    
     
-    /** The node name for the internationalization node */
+    /** The node name for the internationalization node. */
     protected static final String N_I18N = "internationalization";
     
-    /** The node name for individual locales */
+    /** The node name for individual locales. */
     protected static final String N_LOCALE = "locale";
     
-    /** The node name for the locale handler */
+    /** The node name for the locale handler. */
     protected static final String N_LOCALEHANDLER = "localehandler";
     
-    /** The node name for the configured locales */
+    /** The node name for the configured locales. */
     protected static final String N_LOCALESCONFIGURED = "localesconfigured";
     
-    /** The node name for the default locale(s)*/
+    /** The node name for the default locale(s). */
     protected static final String N_LOCALESDEFAULT = "localesdefault";    
     
-    /** The node name for the mail configuration */
+    /** The node name for the mail configuration. */
     protected static final String N_MAIL = "mail";
     
-    /** The node name for the "mail from" node */
+    /** The node name for the "mail from" node. */
     protected static final String N_MAILFROM = "mailfrom";
 
-    /** The node name for the "mail host" node */
+    /** The node name for the "mail host" node. */
     protected static final String N_MAILHOST = "mailhost";
     
-    /** The node name for the resource init classes */
+    /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINIT = "resourceinit";
     
-    /** The node name for the resource init classes */
+    /** The node name for the resource init classes. */
     protected static final String N_RESOURCEINITHANDLER = "resourceinithandler";
     
-    /** The main system configuration node name */
+    /** The main system configuration node name. */
     protected static final String N_SYSTEM = "system";
         
-    /** The node name for the version history */
+    /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
     
-    /** The configured locale manager for multi language support */
+    /** The configured locale manager for multi language support. */
     private CmsLocaleManager m_localeManager;
     
-    /** The mail settings */
+    /** The mail settings. */
     private CmsMailSettings m_mailSettings;
     
-    /** A list of instanciated resource init handler classes */
+    /** A list of instanciated resource init handler classes. */
     private List m_resourceInitHandlers;
     
-    /** The temporary file project id */
+    /** The temporary file project id. */
     private int m_tempFileProjectId;
     
-    /** Indicates if the version history is enabled */
+    /** Indicates if the version history is enabled. */
     private boolean m_versionHistoryEnabled;
     
-    /** The maximum number of entries in the version history (per resource) */
+    /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
     
     /**

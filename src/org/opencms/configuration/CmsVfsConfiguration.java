@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2004/06/01 15:27:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,58 +56,58 @@ import org.dom4j.Element;
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
-    /** The name of the DTD for this configuration */
+    /** The name of the DTD for this configuration. */
     private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
     
-    /** The name of the default XML file for this configuration */
+    /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";   
     
-    /** File translationd node name */
+    /** File translations node name. */
     protected static final String N_FILETRANSLATIONS = "filetranslations";
 
-    /** Folder translations node name */
+    /** Folder translations node name. */
     protected static final String N_FOLDERTRANSLATIONS = "foldertranslations";
     
-    /** The node name of an individual resource loader */
+    /** The node name of an individual resource loader. */
     protected static final String N_LOADER = "loader";
     
-    /** The resource loaders node name */
+    /** The resource loaders node name. */
     protected static final String N_RESOURCELOADERS = "resourceloaders";
 
-    /** The resource loaders node name */
+    /** The resource types node name. */
     protected static final String N_RESOURCETYPES = "resourcetypes";    
     
-    /** Individual translation node name */
+    /** Individual translation node name. */
     protected static final String N_TRANSLATION = "translation";
     
-    /** The translations master node name */
+    /** The translations master node name. */
     protected static final String N_TRANSLATIONS = "translations";
 
-    /** The node name of an individual resource type */
+    /** The node name of an individual resource type. */
     protected static final String N_TYPE = "type";       
     
-    /** The node name for the version history */
+    /** The node name for the version history. */
     protected static final String N_VERSIONHISTORY = "versionhistory";
     
-    /** The main vfs configuration node name */
+    /** The main vfs configuration node name. */
     protected static final String N_VFS = "vfs";
     
-    /** Controls if file translation is enabled */
+    /** Controls if file translation is enabled. */
     private boolean m_fileTranslationEnabled;
     
-    /** The list of file translation */
+    /** The list of file translations. */
     private List m_fileTranslations;
     
-    /** Controls if folder translation is enabled */
+    /** Controls if folder translation is enabled. */
     private boolean m_folderTranslationEnabled;
     
-    /** The list of folder translations */
+    /** The list of folder translations. */
     private List m_folderTranslations;
     
-    /** The configured loader manager */
+    /** The configured loader manager. */
     private CmsLoaderManager m_loaderManager;
     
-    /** The configured resource types */
+    /** The configured resource types. */
     private List m_resourceTypes; 
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2004/06/13 23:31:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.main.CmsException;
  */
 public class CmsConfigurationException extends CmsException {
     
-    /** Administrator privileges required */
+    /** Administrator privileges are required. */
     public static final int C_CONFIGURATION_ERROR = 300;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2004/05/25 11:23:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,46 +133,46 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
     }
     
-    /** The location of the opencms configuration DTD if the default prefix is the system ID */
+    /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
     public static final String C_DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
     
-    /** The default prefix for the opencms configuration DTD */
+    /** The default prefix for the OpenCms configuration DTD. */
     public static final String C_DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
     
-    /** The name of the default XML file for this configuration */
+    /** The name of the default XML file for this configuration. */
     private static final String C_DEFAULT_XML_FILE_NAME = "opencms.xml";    
     
-    /** The name of the DTD file for this configuration */
+    /** The name of the DTD file for this configuration. */
     private static final String C_DTD_FILE_NAME = "opencms-configuration.dtd";
     
-    /** The number of days to keep old backups for */
+    /** The number of days to keep old backups for. */
     private static final long C_MAX_BACKUP_DAYS = 15; 
     
-    /** Formatting for the backup file time prefix */
+    /** Date format for the backup file time prefix. */
     private static final SimpleDateFormat m_backupDateFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
     
-    /** The config node */
+    /** The config node. */
     protected static final String N_CONFIG = "config";
     
-    /** The configurations node */
+    /** The configurations node. */
     protected static final String N_CONFIGURATION = "configuration";
     
-    /** The "opencms" root node of the XML configuration */
+    /** The "opencms" root node of the XML configuration. */
     protected static final String N_ROOT = "opencms";
     
-    /** The folder where to store the backup files of the configuration */
+    /** The folder where to store the backup files of the configuration. */
     private File m_backupFolder;
     
-    /** The base folder where the configuration files are located */
+    /** The base folder where the configuration files are located. */
     private File m_baseFolder;
     
-    /** The initialized configuration classes */
+    /** The initialized configuration classes. */
     private List m_configurations;
 
-    /** The digester for reading the XML configuration */
+    /** The digester for reading the XML configuration. */
     private Digester m_digester;
     
-    /** A map of DTD prefix values for lookup */
+    /** A map of DTD prefix values for lookup. */
     protected Map m_dtdPrefixes;
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Attic/CmsMailSettings.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,19 +51,19 @@ public class CmsMailSettings {
      */
     public class CmsMailHost implements Comparable {
         
-        /** The name of the mail host */
+        /** The name of the mail host. */
         private String m_hostname;
         
-        /** The order of this mail host */
+        /** The order of this mail host. */
         private Integer m_order;
         
-        /** The password to use for authentication */
+        /** The password to use for authentication. */
         private String m_password;        
         
-        /** The protocol to use */
+        /** The protocol to use. */
         private String m_protocol;
         
-        /** The user name to use for authentication */
+        /** The user name to use for authentication. */
         private String m_username;
         
         /**
@@ -103,6 +103,15 @@ public class CmsMailSettings {
         }
         
         /**
+         * Returns the order of this mail host.<p>
+         * 
+         * @return the order of this mail host
+         */
+        public Integer getOrder() {
+            return m_order;
+        }
+        
+        /**
          * Returns the password used for authentication.<p>
          * 
          * @return the password used for authentication
@@ -127,15 +136,6 @@ public class CmsMailSettings {
          */
         public String getUsername() {
             return m_username;
-        }
-        
-        /**
-         * Returns the order of this mail host.<p>
-         * 
-         * @return the order of this mail host
-         */
-        public Integer getOrder() {
-            return m_order;
         }
         
         /**
@@ -174,19 +174,19 @@ public class CmsMailSettings {
         
     }
 
-    /** The default protocol for sending mail ("smtp") */
+    /** The default protocol for sending mail ("smtp"). */
     public static final String C_MAIL_DEFAULT_PROTOCOL = "smtp";
 
-    /** The default mail from sender */
+    /** The default mail from address. */
     public static final String C_MAIL_DEFAULT_SENDER = "opencms@unconfigured.com";    
     
-    /** The default mail "from" sender address */
+    /** The default mail "from" sender address. */
     private String m_mailFromDefault;
     
-    /** The list of internal mail hosts */
+    /** The list of internal mail hosts. */
     private List m_mailHosts;
     
-    /** The default order if no order is given for a host */
+    /** The default order if no order is given for a host. */
     private int m_orderDefault;
     
     /**

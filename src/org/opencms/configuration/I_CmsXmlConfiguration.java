@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2004/03/18 15:03:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,70 +43,70 @@ import org.dom4j.Element;
  */
 public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandler {
     
-    /** The "class" attribute */
+    /** The "class" attribute. */
     String A_CLASS = "class";
 
-    /** The "count" attribute */
+    /** The "count" attribute. */
     String A_COUNT = "count";
     
-    /** The "destination" attribute */
+    /** The "destination" attribute. */
     String A_DESTINATION = "destination";
     
-    /** The "enabled" attibute */
+    /** The "enabled" attibute. */
     String A_ENABLED = "enabled";
 
-    /** The "from" attribute */
+    /** The "from" attribute. */
     String A_FROM = "from";
     
-    /** The "icon" attribute */
+    /** The "icon" attribute. */
     String A_ICON = "icon";
 
-    /** The "key" attribute */
+    /** The "key" attribute. */
     String A_KEY = "key";
 
-    /** The "name" attribute */
+    /** The "name" attribute. */
     String A_NAME = "name";
 
-    /** The "order" attribute */
+    /** The "order" attribute. */
     String A_ORDER = "order";
     
-    /** The "password" attribute */
+    /** The "password" attribute. */
     String A_PASSWORD = "password";
     
-    /** The "protocol" attribute */
+    /** The "protocol" attribute. */
     String A_PROTOCOL = "protocol";
     
-    /** The "to" attribute */
+    /** The "to" attribute. */
     String A_TO = "to";    
     
-    /** The "type" attribute */
+    /** The "type" attribute. */
     String A_TYPE = "type";
     
-    /** The "uri" attribute */
+    /** The "uri" attribute. */
     String A_URI = "uri";
     
-    /** The "user" attribute */
+    /** The "user" attribute. */
     String A_USER = "user";
     
-    /** Individual export point node */
+    /** Individual export point node. */
     String N_EXPORTPOINT = "exportpoint";
     
-    /** Export points master node */
+    /** Export points master node. */
     String N_EXPORTPOINTS = "exportpoints";
     
-    /** The "param" node name for generic parameters */
+    /** The "param" node name for generic parameters. */
     String N_PARAM = "param";   
     
-    /** An individual property node */
+    /** An individual property node. */
     String N_PROPERTY = "property";
         
-    /** An individual resource node */
+    /** An individual resource node. */
     String N_RESOURCE = "resource";
     
-    /** Individual view node */
+    /** Individual view node. */
     String N_VIEW = "view";
     
-    /** Workplace views master node */
+    /** Workplace views master node. */
     String N_VIEWS = "views";
     
     /**

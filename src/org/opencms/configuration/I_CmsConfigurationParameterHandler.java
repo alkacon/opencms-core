@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/14 12:02:26 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.collections.ExtendedProperties;
  */
 public interface I_CmsConfigurationParameterHandler {
     
-    /** The name of the addConfigurationParameter() mathod */
+    /** The name of the addConfigurationParameter() method. */
     String C_ADD_PARAMETER_METHOD = "addConfigurationParameter";
     
     /**
