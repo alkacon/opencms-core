@@ -1,7 +1,7 @@
 /*
  * File : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsGalleryBrowser.java,v $ 
- * Date : $Date: 2004/02/13 13:41:44 $ 
- * Version: $Revision: 1.2 $
+ * Date : $Date: 2004/02/22 13:52:26 $ 
+ * Version: $Revision: 1.3 $
  * 
  * This library is part of OpenCms - the Open Source Content Mananagement
  * System
@@ -31,11 +31,13 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -50,7 +52,7 @@ import java.util.Vector;
  * browser class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/22 13:52:26 $
  */
 public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
 
@@ -73,7 +75,7 @@ public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
      * @throws CmsException if something goes wrong
      */
     public Integer getGalleryNames(CmsObject cms, String galleryPath, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String ident = "";
         int ret = -1;
         // which folder is the gallery?

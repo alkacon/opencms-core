@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminVfsLinkManagement.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/22 13:52:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.threads.*;
+import org.opencms.threads.CmsLinkVfsManagementThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -43,7 +44,7 @@ import java.util.Hashtable;
  * Workplace class for the Check Project / Check Filesystem Links backoffice item.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
     
@@ -55,7 +56,7 @@ public final class CmsAdminVfsLinkManagement extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         
         CmsXmlWpTemplateFile templateDocument = (CmsXmlWpTemplateFile) this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String action = (String) parameters.get("action");
         CmsLinkVfsManagementThread vfsLinkManagementThread = null;
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();

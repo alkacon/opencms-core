@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/02/21 13:10:01 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -35,7 +36,7 @@ import org.opencms.threads.CmsDatabaseExportThread;
 import org.opencms.threads.CmsDatabaseImportThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -50,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -71,7 +72,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
     throws CmsException{
         // get the filename
         String filename = null;
-        Enumeration files = cms.getRequestContext().getRequest().getFileNames();
+        Enumeration files = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFileNames();
         while(files.hasMoreElements()) {
             filename = (String)files.nextElement();
         }
@@ -83,7 +84,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         // get the filecontent
         byte[] filecontent = new byte[0];
         if(filename != null) {
-            filecontent = cms.getRequestContext().getRequest().getFile(filename);
+            filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
         }
         if(filecontent != null) {
             session.putValue(C_PARA_FILECONTENT, filecontent);
@@ -140,7 +141,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 
         // get the parameters

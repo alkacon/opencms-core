@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,11 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -43,7 +45,7 @@ import java.util.Hashtable;
  * editing news.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.24 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.25 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -64,7 +66,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         // get the session
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         // load the template file
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
@@ -99,7 +101,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault {
             session.removeValue("filter");
             //redirect to the needed headfile
             try{
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                     +"empty.html");
             } catch (IOException exc){
                 throw new CmsException("Could not redirect to empty.html", exc);

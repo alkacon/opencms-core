@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsBackofficeHead.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -65,7 +66,7 @@ public class CmsBackofficeHead extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsSession session = (CmsSession)cms.getRequestContext().getSession(true);
+        CmsSession session = (CmsSession)CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector selector = (Vector)session.getValue("backofficeselectortransfer");
         if(selector == null || selector.size() < 2){
             //set the proccessTag = ""
@@ -97,7 +98,7 @@ public class CmsBackofficeHead extends CmsWorkplaceDefault {
   public Integer getSelectedPage(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values,
                            Hashtable parameters) throws CmsException {
     // get the session
-    CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+    CmsSession session = (CmsSession) CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
     // get all aviable template selectors
     Vector selector=(Vector)session.getValue("backofficeselectortransfer");
 

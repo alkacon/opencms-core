@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,9 +43,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.19 $ $Date: 2004/02/21 17:11:42 $  
+ * @version $Revision: 1.20 $ $Date: 2004/02/22 13:52:27 $  
  */
 public interface I_CmsResponse {
+
+    public static final String C_CMS_RESPONSE = "__I_CmsResponse";
     
     /**
      * Returns the original response that was used to create the CmsResponse.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/02/21 13:10:01 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -35,8 +37,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleExportThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
 		String step = (String) parameters.get(C_ACTION);
         String moduleName = (String) parameters.get(C_MODULENAME);

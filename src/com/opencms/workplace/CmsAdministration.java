@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,16 +29,17 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.*;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -54,7 +55,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.50 $ $Date: 2004/02/13 13:45:33 $
+ * @version $Name:  $ $Revision: 1.51 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault {
@@ -82,10 +83,10 @@ public class CmsAdministration extends CmsWorkplaceDefault {
         // change the iconPicPath if the point is from a module
         if(sender.startsWith(C_VFS_PATH_SYSTEM + "modules")) {
             if (picName.startsWith("/")) {
-                iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("/administration/"));
+                iconPicPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + sender.substring(0, sender.indexOf("/administration/"));
             }
             else {
-                iconPicPath = cms.getRequestContext().getRequest().getServletUrl() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
+                iconPicPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + sender.substring(0, sender.indexOf("administration/")) + "pics/";
             }
         }
 
@@ -179,7 +180,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                         + className + " was found but could not be invoked. " + exc2, CmsException.C_UNKNOWN_EXCEPTION);
             }
         }
-        templateDocument.setData("linkTo", cms.getRequestContext().getRequest().getServletUrl() + C_VFS_PATH_WORKPLACE 
+        templateDocument.setData("linkTo", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + C_VFS_PATH_WORKPLACE 
                 + "action/administration_content_top.html?sender=" + sender);
         StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(languageKey));
 
@@ -216,7 +217,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
      */
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {       
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
         String navPos = (String)session.getValue(C_SESSION_ADMIN_POS);
@@ -332,7 +333,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
 
             // no Folders, just a real page
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(sentBy
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(sentBy
                         + "index.html?initial=true");
             }
             catch(Exception e) {

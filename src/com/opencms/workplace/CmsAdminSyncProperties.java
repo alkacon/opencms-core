@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,16 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -79,7 +80,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
         CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsSession session = reqCont.getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(reqCont, true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
         String projectName = new String();
@@ -177,7 +178,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                     // to the original currentProject
                     int curProjectId = Integer.parseInt((String)session.getValue(C_CURPROJECT));
                     if (curProjectId != reqCont.currentProject().getId()){
-                        reqCont.setCurrentProject(curProjectId);
+                        reqCont.setCurrentProject(cms.readProject(curProjectId));
                     }
                     // remove the values from the session
                     session.removeValue(C_CURPROJECT);
@@ -195,7 +196,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                 // reset to the original currentProject
                 int curProjectId = Integer.parseInt((String)session.getValue(C_CURPROJECT));
                 if (curProjectId != reqCont.currentProject().getId()){
-                    reqCont.setCurrentProject(curProjectId);
+                    reqCont.setCurrentProject(cms.readProject(curProjectId));
                 }
                 // remove the values from the session
                 session.removeValue(C_CURPROJECT);
@@ -272,7 +273,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
             // and set the currentProject
             if(projectId != null && !("".equals(projectId))) {
                 if(!(Integer.parseInt(projectId) == reqCont.currentProject().getId())) {
-                    reqCont.setCurrentProject(Integer.parseInt(projectId));
+                    reqCont.setCurrentProject(cms.readProject(Integer.parseInt(projectId)));
                 }
             }
         }
@@ -324,7 +325,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
         CmsProject curProject = cms.getRequestContext().currentProject();
         String defaultProject = curProject.getId()+"";
         
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String enteredProject = (String)session.getValue(C_SYNCPROJECT);        
         if(enteredProject != null && !"".equals(enteredProject)) {
             // if an error has occurred before, take the previous entry of the user
@@ -341,7 +342,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
                 
                 if(defaultProject.equals(loopProjectId)) {
                     retValue = n;
-                    cms.getRequestContext().setCurrentProject(Integer.parseInt(loopProjectId));
+                    cms.getRequestContext().setCurrentProject(cms.readProject(Integer.parseInt(loopProjectId)));
                 }
                 
                 names.addElement(loopProjectName);
@@ -371,7 +372,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault {
     public Integer getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String enteredResources = (String)session.getValue(C_SYNCRESOURCES);
         Vector resources = parseResources(enteredResources);
         // fill the names and values

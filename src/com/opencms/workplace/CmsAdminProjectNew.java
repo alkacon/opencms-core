@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.92 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.93 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,18 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
+import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.92 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.93 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -151,7 +152,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // flag for extended features in the editor, e.g. list of external links
@@ -172,7 +173,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             session.removeValue(C_NEWTYPE);
             session.removeValue("lasturl");
             session.removeValue("newProjectCallingFrom");
-            reqCont.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
         }
         String newName, newGroup, newDescription, newManagerGroup;
         int projectType = 0;
@@ -203,7 +204,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         String errorTemplateAddOn = "";
         if (fileToGo != null){
             // this is from the explorer view
-            if((!cms.getRequestContext().isProjectManager()) && (!cms.isAdmin())){
+            if((!cms.isManagerOfProject()) && (!cms.isAdmin())){
                 // user has no rights to create a project
                 return startProcessing(cms, xmlTemplateDocument, elementName,parameters, "norigths");
             }
@@ -343,7 +344,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 CmsProject project = cms.createProject(newName, newDescription, newGroup,
                         newManagerGroup, projectType);
                 // change the current project
-                reqCont.setCurrentProject(project.getId());
+                reqCont.setCurrentProject(project);
                 // copy the resources to the current project
                 try {
                     for(int i = 0;i < folders.size();i++) {
@@ -362,7 +363,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                     Vector projectResources = cms.readAllProjectResources(project.getId());
                     if((projectResources == null) || (projectResources.size() == 0)){
                         cms.deleteProject(project.getId());
-                        reqCont.setCurrentProject(C_PROJECT_ONLINE_ID);
+                        reqCont.setCurrentProject(cms.readProject(C_PROJECT_ONLINE_ID));
                     }
                     if(OpenCms.getLog(this).isWarnEnabled() ) {
                         OpenCms.getLog(this).warn(e.getMessage(), e);
@@ -418,7 +419,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         Vector groups = cms.getGroups();
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupUsers();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String enteredGroup = (String)session.getValue(C_NEWGROUP);
         if(enteredGroup != null && !enteredGroup.equals("")) {
 
@@ -464,7 +465,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         Vector groups = cms.getGroups();
         int retValue = -1;
         String defaultGroup = OpenCms.getDefaultUsers().getGroupProjectmanagers();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String enteredGroup = (String)session.getValue(C_NEWMANAGERGROUP);
         if(enteredGroup != null && !enteredGroup.equals("")) {
 
@@ -490,7 +491,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
 
     public Integer getSelectedResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String[] newProjectResources = (String[])session.getValue(C_NEWRESOURCES);
         if(newProjectResources != null) {
             for(int i = 0;i < newProjectResources.length;i++) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,17 +29,18 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.68 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.69 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -203,7 +204,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the formname
         String formname = (String)parameters.get(C_PARA_FORMNAME);
@@ -287,7 +288,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
 
         StringBuffer output = new StringBuffer();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);
         String filelist = null;
         String currentFolder;
@@ -298,7 +299,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         boolean enableOnlineFiles = false;
 
         // if a foldername was included, overwrite the value in the session for later use.
-        currentFolder = cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDERTREE);       
+        currentFolder = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_FOLDERTREE);       
         
         if (currentFolder.trim().equalsIgnoreCase("/")) {
             currentFolder = (String)session.getValue(C_PARA_FOLDERTREE);
@@ -314,7 +315,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
         // get the current folder to be displayed as maximum folder in the tree.
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -527,7 +528,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 }
 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()) + "?" + C_PARA_FILELIST
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()) + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
                         + "=" + cms.readAbsolutePath(res));

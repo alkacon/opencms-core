@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -35,7 +36,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsStaticExportThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -47,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -76,7 +77,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
         }
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 
         // get the parameters

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -37,9 +40,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -55,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.66 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.67 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -71,7 +72,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
      * @return name of the browser specific section in <code>templateFile</code>
      */
     protected String getBrowserSpecificSection(CmsObject cms, CmsXmlTemplateFile templateFile, Hashtable parameters) {
-        HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        HttpServletRequest orgReq = (HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
         String browser = orgReq.getHeader("user-agent");
         String result = null;
         // if the following parameter is given and MSIE is used,
@@ -118,7 +119,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String saveerror = "";
         // Get all editor parameters
         String file = (String)parameters.get(C_PARA_RESOURCE);
@@ -229,7 +230,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // Check if we should leave th editor instead of start processing
         if(exitRequested && ((saveerror == null) || ("".equals(saveerror)))) {
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(CmsWorkplaceAction.getWorkplaceUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
             } catch(IOException e) {
                 throwException("Could not send redirect to workplace main screen.", e);
             }

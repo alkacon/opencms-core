@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -51,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.58 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.59 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -75,7 +76,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 
@@ -277,7 +278,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
 
     public Object pictureList(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
             Object userObj) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
@@ -301,7 +302,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
             parameters.put(C_PARA_FOLDER, folder);
         }
 
-        String picsUrl = cms.getRequestContext().getRequest().getServletUrl() + folder;
+        String picsUrl = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + folder;
 
         // Generate the picture list for all pictures on the selected page
         for(int i = from;i < to;i++) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -35,8 +37,7 @@ import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsProjectDeleteThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -76,7 +77,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
                 templateFile, elementName, parameters, templateSelector);
 
         CmsProject project = null;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String action = (String)parameters.get("action");
         String projectId = (String)parameters.get("projectid");
         if(projectId == null || "".equals(projectId)){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsSynchronizeThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRequestContext;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.34 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.35 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -93,7 +94,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
         //CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String action = new String();
@@ -175,7 +176,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                     }
                     if (count == 1){
                         // only one syncproject was found, so set this project
-                        reqCont.setCurrentProject(projectId);
+                        reqCont.setCurrentProject(cms.readProject(projectId));
                     } else if (count == 0){
                         // there is no syncproject, so create a new one and set this as the current project
                         // the necessary resources will be copied later to this project
@@ -184,7 +185,7 @@ public class CmsSyncFolder extends CmsWorkplaceDefault {
                             "Project for synchronisation", 
                             OpenCms.getDefaultUsers().getGroupUsers(), 
                             OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-                            C_PROJECT_TYPE_NORMAL).getId()
+                            C_PROJECT_TYPE_NORMAL)
                         );
                     } else {
                         // there are too many projects with the name of the syncproject, so return an error

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/02/22 13:52:26 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,17 +28,18 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
@@ -52,7 +53,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -91,7 +92,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
         // Check if a "logout=true" parameter is present, if so trash the session
         boolean logout = (null != (String)parameters.get("logout"));
         
-        I_CmsSession session = cms.getRequestContext().getSession(false);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), false);
         // Check if there already is a session
         if (session != null) {
             // Old session found, must be invalidated
@@ -159,7 +160,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
 
             // get a session for this user so that he is authentificated at the
             // end of this request
-            session = cms.getRequestContext().getSession(true);
+            session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
             if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Login of user '" + username + "'");
             }
@@ -187,7 +188,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
 
             langFile = new CmsXmlLanguageFile(cms, cms.getRequestContext().getLocale().getLanguage());
             if (DEBUG > 1) System.err.println("CmsLoginNew: encoding: " + langFile.getEncoding());           
-            cms.getRequestContext().setEncoding(langFile.getEncoding(), true);        
+            cms.getRequestContext().setEncoding(langFile.getEncoding());        
             
             // trigger call of "login()" JavaScript in Template on page load
             xmlTemplateDocument.setData("onload", "onload='login();'");
@@ -259,7 +260,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
         }
         
         // set the current project id
-        cms.getRequestContext().setCurrentProject(currentProject);
+        cms.getRequestContext().setCurrentProject(cms.readProject(currentProject));
     }
 
     /**

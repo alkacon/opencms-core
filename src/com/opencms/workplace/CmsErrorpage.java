@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,12 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -47,7 +47,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.28 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsErrorpage extends A_CmsWpElement {
@@ -81,7 +81,7 @@ public class CmsErrorpage extends A_CmsWpElement {
         String errorSuggestion = n.getAttribute(C_ERROR_SUGGESTION);
         String errorLink = n.getAttribute(C_ERROR_LINK);
         if ("explorer_files.html".equals(errorLink)) {
-            errorLink = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+            errorLink = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }
         String details = "no details";
         if(n.hasChildNodes()) {
@@ -107,8 +107,8 @@ public class CmsErrorpage extends A_CmsWpElement {
         errorSuggestion = lang.getLanguageValue(errorSuggestion);
         reason = lang.getLanguageValue("message.reason");
         button = lang.getLanguageValue("button.ok");
-        errordef.setData("stylesheetpath", cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
-        errordef.setData("jspath", cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
+        errordef.setData("stylesheetpath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
+        errordef.setData("jspath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
         errordef.setData(C_ERROR_MSG_BUTTON, button);
         errordef.setData(C_ERROR_TITLE, errorTitle);
         errordef.setData(C_ERROR_MESSAGE, errorMessage);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,15 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.70 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.71 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {
@@ -68,7 +69,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 
@@ -189,17 +190,17 @@ public class CmsCopy extends CmsWorkplaceDefault {
                 // now return to filelist
                 try {
                     if(lasturl == null || "".equals(lasturl)) {
-                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                        CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                     }
                     else {
-                        cms.getRequestContext().getResponse().sendRedirect(lasturl);
+                        CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lasturl);
                     }
                 }
                 catch(Exception e) {
                     throw new CmsException("Redirect fails :"
                             + getConfigFile(cms).getWorkplaceActionPath()
-                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
                 return null;
             }
@@ -247,7 +248,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
         Integer selected = new Integer(0);
 
         // Let's see if we have a session
-        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get current and root folder
         CmsFolder rootFolder = cms.rootFolder();
@@ -259,7 +260,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
 
         // now search for the current folder
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         for(int i = 0;i < values.size();i++) {
             if(((String)values.elementAt(i)).equals(currentFilelist)) {
                 selected = new Integer(i);
@@ -347,7 +348,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
             throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String name = (String)session.getValue(C_PARA_NAME);
         return name;
     }

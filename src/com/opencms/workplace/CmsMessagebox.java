@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,11 @@
 
 package com.opencms.workplace;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
 
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -46,7 +46,7 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.17 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.18 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsMessagebox extends A_CmsWpElement {
@@ -84,10 +84,10 @@ public class CmsMessagebox extends A_CmsWpElement {
         String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
         String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
         if ("explorer_files.html".equals(messageLink1)) {
-            messageLink1 = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+            messageLink1 = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }
         if ("explorer_files.html".equals(messageLink2)) {
-            messageLink2 = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+            messageLink2 = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }     
         if(n.hasChildNodes()) {
             helpfilename = n.getFirstChild();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerShowResource.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,11 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -57,9 +58,9 @@ public class  CmsExplorerShowResource extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         String url = (String)parameters.get("url");
-        url = OpenCms.getLinkManager().substituteLink(cms, url.substring(cms.getRequestContext().getRequest().getServletUrl().length()));
+        url = OpenCms.getLinkManager().substituteLink(cms, url.substring(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl().length()));
         try {
-            cms.getRequestContext().getResponse().sendRedirect(url);
+            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(url);
         } catch(IOException exc) {
             throw new CmsException(exc.getMessage(), exc);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,20 +28,20 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
+import org.opencms.cron.I_CmsCronJob;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.report.CmsHtmlReport;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
-
-import org.opencms.cron.I_CmsCronJob;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
-import org.opencms.report.CmsHtmlReport;
-import org.opencms.workplace.*;
 
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
@@ -74,7 +74,7 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRegistry reg = cms.getRegistry();
         CmsRequestContext reqCont = cms.getRequestContext();
-        I_CmsSession session = reqCont.getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(reqCont, true);
 
         String weeks = new String();
         String enableHistory = new String();

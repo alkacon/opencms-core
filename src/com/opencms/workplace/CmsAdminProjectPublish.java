@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
@@ -37,8 +39,7 @@ import org.opencms.threads.CmsLinkHrefManagementThread;
 import org.opencms.threads.CmsPublishThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -47,7 +48,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.45 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.46 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -79,7 +80,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         String action = (String)parameters.get("action");
 
@@ -182,7 +183,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault {
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
             if (projectType == C_PROJECT_TYPE_TEMPORARY) {
-                cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
             }
             // first part of the publish: check for broken links
             A_CmsReportThread doCheck = new CmsLinkHrefManagementThread(cms);

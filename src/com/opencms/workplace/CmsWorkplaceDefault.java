@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,18 +29,19 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
 import org.opencms.workplace.CmsTree;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.CmsXmlTemplate;
@@ -59,7 +60,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.71 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.72 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -220,7 +221,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @return <code>lasturl</code> parameter.
      */
     protected String getLastUrl(CmsObject cms, Hashtable parameters) {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String lasturl = (String)parameters.get("lasturl");
 
         // Lasturl parameter will be taken either from the parameter hashtable
@@ -313,8 +314,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
-        return new Boolean(reqCont.isAdmin());
+        return new Boolean(cms.isAdmin());
     }
 
     /**
@@ -340,7 +340,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      */
     public Boolean isTheAdminUser(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         CmsRequestContext reqCont = cms.getRequestContext();
-        if(reqCont.isAdmin()){
+        if(cms.isAdmin()){
             return new Boolean(reqCont.currentUser().getName().equals(OpenCms.getDefaultUsers().getUserAdmin()));
         }else{
             return new Boolean(false);
@@ -453,8 +453,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if there were errors while accessing project data.
      */
     public Boolean isProjectManager(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
-        return new Boolean((reqCont.isAdmin() || reqCont.isProjectManager()));
+        return new Boolean((cms.isAdmin() || cms.isManagerOfProject()));
     }
 
     /**
@@ -500,7 +499,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      */
     public Object scriptsUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         if(m_scriptsUri == null) {
-            m_scriptsUri = cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS;
+            m_scriptsUri = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS;
         }
         if (tagcontent == null) return m_scriptsUri;
         return m_scriptsUri + tagcontent;
@@ -524,7 +523,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wrong
      */
     public Object initTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {    
-        String skinUri = cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";
+        String skinUri = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getWebAppUrl() + "/skins/modern/";
         return CmsTree.initTree(cms, cms.getRequestContext().getEncoding(), skinUri);
     }
     
@@ -556,9 +555,9 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
             // Don't bother about the internal caching here! Workplace users should be forced
             // to reload the workplace pages at every request.
             //HTTP 1.1
-            cms.getRequestContext().getResponse().setHeader("Cache-Control", "no-cache");
+            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).setHeader("Cache-Control", "no-cache");
             //HTTP 1.0
-            cms.getRequestContext().getResponse().setHeader("Pragma", "no-cache");
+            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).setHeader("Pragma", "no-cache");
             ((CmsXmlWpTemplateFile)xmlTemplateDocument).setData("lasturl", lasturl);
             return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
         } else {
@@ -574,7 +573,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @param cms the CmsObject to check the port with.
      */
     protected boolean checkPort(CmsObject cms) {
-        int portnumber = cms.getRequestContext().getRequest().getServerPort();
+        int portnumber = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServerPort();
         int limitedPort = cms.getLimitedWorkplacePort();
         return ( (limitedPort == -1) ||
                  ( limitedPort == portnumber) );
@@ -606,7 +605,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wring
      */
     public Object explorerFileUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        return CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+        return CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
     }    
     
     /**
@@ -621,6 +620,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wring
      */
     public Object explorerFileFullUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        return CmsWorkplaceAction.getExplorerFileFullUri(cms, cms.getRequestContext().getRequest().getOriginalRequest());
+        return CmsWorkplaceAction.getExplorerFileFullUri(cms, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
     }        
 }

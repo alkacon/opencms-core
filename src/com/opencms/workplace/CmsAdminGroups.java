@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,15 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.35 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.36 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -79,7 +80,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         boolean groupYetChanged = true;
@@ -89,7 +90,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
         String perspective = (String)parameters.get("perspective");
         if(perspective != null && perspective.equals("group")) {
             session.removeValue("ERROR");
-            if(reqCont.getRequest().getParameter("CHANGE") != null) {
+            if(CmsXmlTemplateLoader.getRequest(reqCont).getParameter("CHANGE") != null) {
 
                 // change data of selected user
                 perspective = "changegroup";
@@ -508,7 +509,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
 
     public Integer getNotSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang,
             Vector names, Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector notSelectedUsers = (Vector)session.getValue("notSelectedUsers");
         if(notSelectedUsers != null) {
             for(int z = 0;z < notSelectedUsers.size();z++) {
@@ -537,7 +538,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
 
     public Integer getSelectedUsers(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector selectedUsers = (Vector)session.getValue("selectedUsers");
         if(selectedUsers != null) {
             for(int z = 0;z < selectedUsers.size();z++) {
@@ -571,7 +572,7 @@ public class CmsAdminGroups extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
 
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String actualGroup = (String)session.getValue("GROUPNAME");
         String temp = (String)parameters.get("GROUPNAME");
         if(temp != null) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -71,7 +72,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         }
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         StringBuffer jsOutput = new StringBuffer();
 
         // function vars_resources
@@ -94,7 +95,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         jsOutput.append(" this.actProject; \n this.onlineProject;\n this.lockedBy=\"" + lang.getLanguageValue("title.locked"));
         jsOutput.append("\";\n this.titleString=\"" + lang.getLanguageValue("label.wptitle") + "\" \n this.actDirectory;");
         jsOutput.append("\n this.userName = \"" + cms.getRequestContext().currentUser().getName() + "\";\n");
-        jsOutput.append("\n this.serverName = \"" + ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServerName() + "\";\n");
+        jsOutput.append("\n this.serverName = \"" + ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getServerName() + "\";\n");
         jsOutput.append(" this.langback=\"" + lang.getLanguageValue("button.back") + "\";\n");
         jsOutput.append(" this.langsearch=\"" + lang.getLanguageValue("button.search") + "\";\n");
         jsOutput.append(" this.langup=\"" + lang.getLanguageValue("button.parent") + "\";\n");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,13 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
-import org.opencms.threads.*;
+import org.opencms.threads.CmsLinkHrefManagementThread;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -41,7 +43,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsAdminLinkmanagement extends CmsWorkplaceDefault {
 
@@ -50,7 +52,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault {
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
         CmsXmlWpTemplateFile templateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String action = (String)parameters.get("action");
         A_CmsReportThread doCheck = null;
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();

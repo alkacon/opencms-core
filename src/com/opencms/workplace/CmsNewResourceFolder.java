@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,6 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
-import org.opencms.workplace.CmsWorkplaceAction;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -41,6 +35,13 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeImage;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.59 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault {
@@ -79,7 +80,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsRegistry registry = cms.getRegistry();
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
 
@@ -95,7 +96,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
         //get the current filelist
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if (currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -190,7 +191,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                                 //}
                                 // prepare to call the dialog for creating the index.html page
                                 // session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
-                                CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), cms.getRequestContext().getRequest().getOriginalRequest());
+                                CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                                 xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
                             }
                             template = "update2";
@@ -257,7 +258,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
                             // prepare to call the new Page dialog
                             xmlTemplateDocument.setData("indexlocation", cms.readAbsolutePath(folder));
                             // session.putValue(C_PARA_FILELIST, cms.readAbsolutePath(folder));
-                            CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), cms.getRequestContext().getRequest().getOriginalRequest());
+                            CmsWorkplaceAction.setCurrentFolder(cms.readAbsolutePath(folder), CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                             template = "update2";
                         } else {
                             template = "update";
@@ -309,7 +310,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
      */
 
     private Hashtable getNavData(CmsObject cms) throws CmsException {
-        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String[] filenames;
         String[] nicenames;
@@ -324,7 +325,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
         // get the current folder
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if (currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }
@@ -421,7 +422,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault {
 
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
 
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String preselect = (String) session.getValue(C_SESSIONHEADER + C_PARA_NAVPOS);
         int retValue = -1;
         // get the nav information

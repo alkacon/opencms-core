@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/02/22 13:52:26 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,15 +30,16 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsFileListUsers {
      
@@ -247,7 +248,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         String folder = (String)parameters.get("folder");
 
         if(folder != null) {
-            String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
+            String servletUrl = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
             return "window.top.body.admin_content.location.href='" + servletUrl + C_VFS_PATH_WORKPLACE + "action/explorer_files.html?mode=listonly&folder=" + folder + "'";
         } else {
             return "";
@@ -281,7 +282,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
         getConfigFile(cms);
         filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,          
-            cms.getRequestContext().getRequest().getServletUrl() + getGalleryIconPath(cms) );
+            CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + getGalleryIconPath(cms) );
         filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
         filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.readAbsolutePath(res),
                 C_PROPERTY_TITLE));

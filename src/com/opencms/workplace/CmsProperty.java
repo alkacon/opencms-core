@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,15 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsException;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Collections;
 import java.util.Enumeration;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.51 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.52 $ $Date: 2004/02/22 13:52:26 $
  */
 public class CmsProperty extends CmsWorkplaceDefault {
 
@@ -70,7 +71,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
      */
     public Integer getAllPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             CmsResource file = cms.readFileHeader(filename);
@@ -102,7 +103,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
      * @throws Throws CmsException if something goes wrong.
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // the template to be displayed
         String template = null;
@@ -298,7 +299,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
      */
     public Integer getProperty(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             Map properties = cms.readProperties(filename);
@@ -333,7 +334,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
      */
     public Integer getPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             CmsResource file = cms.readFileHeader(filename);
@@ -372,7 +373,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
      */
     public String getPropertyValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         String propertyValue = null;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the filename
         String filename = (String)session.getValue(C_PARA_RESOURCE);

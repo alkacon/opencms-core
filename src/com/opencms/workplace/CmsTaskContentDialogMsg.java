@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogMsg.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,13 +29,14 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -44,7 +45,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.27 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -71,7 +72,7 @@ public class CmsTaskContentDialogMsg extends CmsWorkplaceDefault {
         }
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, 
                 templateFile, elementName, parameters, templateSelector);
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         
         // the recipient of the message
         String userName = "";

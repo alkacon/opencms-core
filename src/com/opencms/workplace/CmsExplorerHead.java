@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 
@@ -42,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.36 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault {
@@ -144,8 +145,8 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
         String template = null;
 
         // get session and servlet root
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-        String servlets = cms.getRequestContext().getRequest().getServletUrl();
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
+        String servlets = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // if the viewfile value is included in the request, exchange the explorer
@@ -171,13 +172,13 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
                     xmlTemplateDocument.setData(C_FILELIST, url);
                     xmlTemplateDocument.setData(C_STARTUP, xmlTemplateDocument.getProcessedDataValue(C_STARTUP_FOLDER, this));
                     // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-                    currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+                    currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                     if(currentFilelist == null) {
                         currentFilelist = cms.readAbsolutePath(cms.rootFolder());
                     }
                     session.putValue(C_PARA_PREVIOUSLIST, currentFilelist);
                     // session.putValue(C_PARA_FILELIST, url);
-                    CmsWorkplaceAction.setCurrentFolder(url, cms.getRequestContext().getRequest().getOriginalRequest());
+                    CmsWorkplaceAction.setCurrentFolder(url, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                     session.putValue(C_PARA_FOLDER, url);
                 }
                 else {
@@ -202,15 +203,15 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
             //check if a filelist  parameter was included in the request.
             //if a filelist was included, overwrite the value in the session for later use.
-            filelist = cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
+            filelist = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_FILELIST);
             if(filelist != null) {
                 // session.putValue(C_PARA_FILELIST, filelist);
-                CmsWorkplaceAction.setCurrentFolder(filelist, cms.getRequestContext().getRequest().getOriginalRequest());
+                CmsWorkplaceAction.setCurrentFolder(filelist, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
             }
 
             // get the current filelist to calculate its patent
             // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-            currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+            currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
             
             // if no filelist parameter was given, use the current folder
             if(currentFilelist == null) {
@@ -296,11 +297,11 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the current filelist to display it in the address input field.
         // String currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        String currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
 
         // if no filelist parameter was given, use the current folder
         if(currentFilelist == null) {

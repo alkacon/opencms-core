@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2004/02/13 13:41:43 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,10 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsBackupProject;
+import org.opencms.file.CmsBackupResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
@@ -36,10 +40,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsBackupProject;
-import org.opencms.file.CmsBackupResource;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2004/02/13 13:41:43 $
+ * @version $Revision: 1.43 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault {
@@ -69,7 +70,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
 
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // the template to be displayed
         String template = null;
@@ -162,7 +163,7 @@ public class CmsHistory extends CmsWorkplaceDefault {
 
     public Integer getFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String filename = (String)session.getValue(C_PARA_RESOURCE);
         if (filename != null) {
             List allFiles = cms.readAllBackupFileHeaders(filename);

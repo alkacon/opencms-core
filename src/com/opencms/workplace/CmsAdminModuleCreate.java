@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,15 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
-
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResourceTypeFolder;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.text.SimpleDateFormat;
@@ -105,7 +106,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         //CmsRequestContext reqCont = cms.getRequestContext();
         CmsRegistry reg = cms.getRegistry();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
         if((step == null) || "".equals(step)) {
@@ -275,7 +276,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     }
                     
                     try {
-                        cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath() + "module/index.html");
+                        CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceAdministrationPath() + "module/index.html");
                     }catch(Exception e) {
                         throw new CmsException("Redirect fails :system/workplace/administration/module/index.html", CmsException.C_UNKNOWN_EXCEPTION, e);
                     }

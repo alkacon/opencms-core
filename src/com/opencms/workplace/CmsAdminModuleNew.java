@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/02/21 13:10:01 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,16 +28,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.threads.CmsModuleImportThread;
 import org.opencms.threads.CmsModuleReplaceThread;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.io.File;
@@ -95,7 +95,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
         // get the registry
         CmsRegistry reg = cms.getRegistry();
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String errorNavigation = (String)parameters.get(C_FROMERRORPAGE);
         if(errorNavigation != null) {
             templateSelector = importModule(cms, reg, xmlTemplateDocument, session, null);
@@ -146,7 +146,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         } else if ("localupload".equals(step)) {
             // get the filename
             String filename = null;
-            Enumeration files = cms.getRequestContext().getRequest().getFileNames();
+            Enumeration files = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFileNames();
             while (files.hasMoreElements()) {
                 filename = (String) files.nextElement();
             }
@@ -158,7 +158,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             // get the filecontent
             byte[] filecontent = new byte[0];
             if (filename != null) {
-                filecontent = cms.getRequestContext().getRequest().getFile(filename);
+                filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
             }
             if (filecontent != null) {
                 session.putValue(C_PARA_FILECONTENT, filecontent);

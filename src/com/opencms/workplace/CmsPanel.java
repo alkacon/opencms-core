@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPanel.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -47,7 +48,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.14 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsPanel extends A_CmsWpElement {
@@ -105,7 +106,7 @@ public class CmsPanel extends A_CmsWpElement {
 
         // This URL will be extendeb by "?panel=panelname" or "&panel=panelname"
         CmsRequestContext reqCont = cms.getRequestContext();
-        String url = reqCont.getRequest().getServletUrl() + reqCont.getUri();
+        String url = CmsXmlTemplateLoader.getRequest(reqCont).getServletUrl() + reqCont.getUri();
         if(url.indexOf("?") >= 0) {
             url = url + "&panel=";
         }

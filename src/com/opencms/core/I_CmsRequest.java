@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2004/02/22 13:52:27 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,10 +43,12 @@ import javax.servlet.http.HttpServletRequest;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.13 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.14 $ $Date: 2004/02/22 13:52:27 $
  */
 public interface I_CmsRequest {
 
+    public static final String C_CMS_REQUEST = "__I_CmsRequest";
+    
     /**
      * Returns the content of an uploaded file.
      * Returns null if no file with this name has been uploaded with this request.

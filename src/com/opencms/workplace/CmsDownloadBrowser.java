@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,16 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.39 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.40 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -72,7 +73,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 
@@ -194,7 +195,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         String downloadPath = servletPath + cms.readAbsolutePath(res);
         filelistTemplate.setData("fullpath", downloadPath);
         filelistTemplate.setData("name_value", res.getName());
@@ -233,7 +234,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
      */
 
     public List getFiles(CmsObject cms) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector files = new Vector();
 
         // get the list of filtered files from session
@@ -380,7 +381,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
     public Boolean showNextButton(CmsObject cms, CmsXmlLanguageFile lang,
             Hashtable parameters) {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // Get the current page number
         String pageText = (String)parameters.get(C_PARA_PAGE);

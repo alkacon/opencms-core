@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteWarning.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -83,7 +84,7 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
         
         //      CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);        
         //      CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)session.getValue(C_SESSION_MODULE_DELETE_STEP);
         if(step != null) {
             if(C_STEP_0.equals(step)) {

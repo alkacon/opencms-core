@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -36,9 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.37 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -137,7 +138,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         String paraDelivery = "";
         String userIdxString = "";
         String groupIdxString = "";
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 
@@ -234,7 +235,7 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             Hashtable parameters) throws CmsException {
 
         // get session for current taskid
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // read current task for priority-level
         CmsTask task = cms.readTask(((Integer)session.getValue("taskid")).intValue());

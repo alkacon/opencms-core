@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectHistory.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -44,7 +45,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.12 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.13 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -73,7 +74,7 @@ public class CmsAdminProjectHistory extends CmsWorkplaceDefault {
                 elementName, parameters, templateSelector);
         xmlTemplateDocument.setData("proId", ""+ cms.getRequestContext().currentProject().getId());
         // delete the oldProjectId
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         session.removeValue("oldProjectId");
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,

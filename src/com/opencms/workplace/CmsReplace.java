@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2004/02/21 17:11:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/22 13:52:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,13 +28,14 @@
 
 package com.opencms.workplace;
 
-import com.opencms.core.I_CmsSession;
 import org.opencms.file.CmsObject;
-
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.core.I_CmsSession;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -44,7 +45,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault {
 
@@ -101,13 +102,13 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             //cms.unlockResource( m_OldResourceName ); 
 
             // leave the session clean
-            this.clearSessionValues(cms.getRequestContext().getSession(true));
+            this.clearSessionValues(CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true));
 
             try {
                 // send the user back to the file listing finally
-                cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
             } catch (Exception ex) {
-                throw new CmsException("Redirect failed: " + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
+                throw new CmsException("Redirect failed: " + getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, ex);
             }
         }
 
@@ -116,7 +117,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
     }
 
     private void readInput(CmsObject cms, Hashtable theParameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // reset all member values first
         m_OldResourceName = null;
@@ -167,7 +168,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
         //////////////////////////////////////////////////////////////////////
 
         // get both the name and content of the new resource and save it in the session
-        Enumeration allUploadedFilenames = cms.getRequestContext().getRequest().getFileNames();
+        Enumeration allUploadedFilenames = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFileNames();
         while (allUploadedFilenames.hasMoreElements()) {
             m_UploadResourceName = (String)allUploadedFilenames.nextElement();
         }
@@ -175,7 +176,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
         if (m_UploadResourceName != null) {
             session.putValue("NEW_RESOURCE", m_UploadResourceName);
 
-            m_UploadResourceContent = cms.getRequestContext().getRequest().getFile(m_UploadResourceName);
+            m_UploadResourceContent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(m_UploadResourceName);
             session.putValue(I_CmsWpConstants.C_PARA_FILECONTENT, m_UploadResourceContent);
         } else {
             m_UploadResourceName = (String)session.getValue("NEW_RESOURCE");
@@ -246,7 +247,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
      * @throws Throws CmsException if something goes wrong.
      */
     public int getResources(CmsObject cms, CmsXmlLanguageFile language, Vector resourceTypeIconNames, Vector resourceTypeFieldValues, Vector resourceTypeFieldNames, Hashtable parameters) throws CmsException {
-        cms.getRequestContext().getSession(true);
+        CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Vector resourceTypeNames = new Vector();
         Vector resourceTypeValues = new Vector();
         int checkedRadioIndex = 0;

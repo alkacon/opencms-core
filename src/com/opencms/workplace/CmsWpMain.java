@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,18 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsUser;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -52,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.64 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.65 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -85,7 +86,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 			OpenCms.getLog(this).debug("[CmsXmlTemplate] selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
 		}
 
-		I_CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 		CmsRequestContext reqCont = cms.getRequestContext();
 //		String newGroup = (String) parameters.get("group");
 		String newProject = (String) parameters.get("project");
@@ -102,13 +103,13 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		// Check if the user requested a project change
 		if (newProject != null && !("".equals(newProject))) {
 			if (!(Integer.parseInt(newProject) == reqCont.currentProject().getId())) {
-				reqCont.setCurrentProject(Integer.parseInt(newProject));
+				reqCont.setCurrentProject(cms.readProject(Integer.parseInt(newProject)));
 			}
 		}
 
 		// Check if the user requested a new view
 		if (newView != null && !("".equals(newView))) {
-			session = cms.getRequestContext().getSession(true);
+			session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 			session.putValue(C_PARA_VIEW, newView);
 		}
 
@@ -136,9 +137,9 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// send message, if this is the foot
 		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "foot")) {
-			String message = (String) cms.getRequestContext().getSession(true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+			String message = (String) CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).getValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
 			if (message != null) {
-				cms.getRequestContext().getSession(true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+				CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true).removeValue(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
 				xmlTemplateDocument.setData("message", "alert(unescape('BROADCASTMESSAGE: " + CmsEncoder.escape(message, cms.getRequestContext().getEncoding()) + "'));");
 			}
 		}
@@ -322,7 +323,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// Let's see if we have a session
 		CmsRequestContext reqCont = cms.getRequestContext();
-		I_CmsSession session = cms.getRequestContext().getSession(true);
+		I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
 		// try to get an existing view
 		String currentView = null;

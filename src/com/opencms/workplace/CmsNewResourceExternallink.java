@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2004/02/21 17:11:42 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,17 +28,18 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceTypePointer;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePointer;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
 
 import java.util.Hashtable;
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2004/02/21 17:11:42 $
+ * @version $Revision: 1.9 $ $Date: 2004/02/22 13:52:26 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -87,7 +88,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         String targetName = null;
         String foldername = null;
         // String type = null;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
@@ -110,14 +111,14 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
             session.putValue("lasturl", lastUrl);
         }
         // get the linkname and the linkurl
-        filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
+        filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_RESOURCE);
         if(filename != null) {
             session.putValue(C_PARA_RESOURCE, filename);
         }  else {
             // try to get the value from the session, e.g. after an error
             filename = (String)session.getValue(C_PARA_RESOURCE)!=null?(String)session.getValue(C_PARA_RESOURCE):"";
         }
-        targetName = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
+        targetName = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_LINK);
         if(targetName != null) {
             session.putValue(C_PARA_LINK, targetName);
         } else {
@@ -167,7 +168,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         String notChange = (String)parameters.get("newlink");
         
         CmsResource linkResource = null;
-        String step = cms.getRequestContext().getRequest().getParameter("step");
+        String step = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter("step");
 
         // set the values e.g. after an error
         xmlTemplateDocument.setData("LINKNAME", filename);
@@ -199,7 +200,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                     // step 2 - create the link without link check
                     // get folder- and filename
                     // foldername = (String)session.getValue(C_PARA_FILELIST);
-                    foldername = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+                    foldername = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
 
                     if(foldername == null) {
                         foldername = cms.readAbsolutePath(cms.rootFolder());
@@ -271,14 +272,14 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                 if(checkurl && ("".equals(error.trim()))){
                     try {
                         if(lastUrl != null) {
-                            cms.getRequestContext().getResponse().sendRedirect(lastUrl);
+                            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendRedirect(lastUrl);
                         } else {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
-                                    + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()));
+                            CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
+                                    + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()));
                         }
                     } catch(Exception e) {
                         throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-                            + CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
+                            + CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()), CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }
@@ -291,7 +292,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         }
         // set lasturl
         if(lastUrl == null) {
-            lastUrl = CmsWorkplaceAction.getExplorerFileUri(cms.getRequestContext().getRequest().getOriginalRequest());
+            lastUrl = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }
         xmlTemplateDocument.setData("lasturl", lastUrl);
         // set the templateselector if there was an error
@@ -343,7 +344,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      * @throws CmsException if something goes wrong
      */
     public Object getCurrentPathUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
-        HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession();
+        HttpSession session = ((HttpServletRequest)CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()).getSession();
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute("__CmsWorkplace.WORKPLACE_SETTINGS");
         String path = settings.getExplorerResource();
         if (path == null) {
@@ -366,7 +367,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      */
 
     public String setValue(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get a previous value from the session
         String filename = (String)session.getValue(C_PARA_RESOURCE);
@@ -389,7 +390,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
     public Integer getNavPos(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String preselect = (String)session.getValue(C_PARA_NAVPOS);
         // get the nav information
         Hashtable storage = getNavData(cms);
@@ -427,7 +428,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
      * @throws Throws CmsException if something goes wrong.
      */
     private Hashtable getNavData(CmsObject cms) throws CmsException {
-        // I_CmsSession session = cms.getRequestContext().getSession(true);
+        // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         String[] filenames;
         String[] nicenames;
@@ -442,7 +443,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
 
         // get the current folder
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
-        currentFilelist = CmsWorkplaceAction.getCurrentFolder(cms.getRequestContext().getRequest().getOriginalRequest());
+        currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
             currentFilelist = cms.readAbsolutePath(cms.rootFolder());
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2004/02/13 13:41:44 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,13 @@
 
 package com.opencms.workplace;
 
+import org.opencms.file.CmsGroup;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.32 $ $Date: 2004/02/22 13:52:26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -70,7 +71,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
             OpenCms.getLog(this).debug("Template file is: " + templateFile);
             OpenCms.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String taskid = (String)session.getValue(C_PARA_STARTTASKID);
         if(session.getValue(C_PARA_STARTTASKID) != null) {
             session.removeValue(C_PARA_STARTTASKID);
@@ -78,7 +79,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
             CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
             String actionPath = conf.getWorkplaceActionPath();
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect(actionPath + "tasks_content_detail.html?taskid=" + taskid);
+                CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).sendCmsRedirect(actionPath + "tasks_content_detail.html?taskid=" + taskid);
             }
             catch(Exception e) {
                 if(OpenCms.getLog(this).isWarnEnabled()) {
@@ -149,7 +150,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
     public Vector taskList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
         String orderBy = "";
         String groupBy = "";
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
         int project = cms.getRequestContext().currentProject().getId();
         String filter = (String)session.getValue(C_SESSION_TASK_FILTER);

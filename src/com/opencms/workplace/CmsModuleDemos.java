@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModuleDemos.java,v $
-* Date   : $Date: 2004/02/13 13:45:33 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/02/22 13:52:26 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.workplace;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.*;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
+import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.I_CmsWpConstants;
+
+import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Enumeration;
@@ -69,7 +70,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault {
         String currentname;
         Enumeration modules = reg.getModuleNames();
         String completeList = "";
-        String servPath = cms.getRequestContext().getRequest().getServletUrl();
+        String servPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         while(modules.hasMoreElements()) {
             String name = (String)modules.nextElement();
             String nicename = reg.getModuleNiceName(name);
