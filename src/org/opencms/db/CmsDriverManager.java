@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/28 12:56:26 $
- * Version: $Revision: 1.181 $
+ * Date   : $Date: 2003/08/29 07:37:09 $
+ * Version: $Revision: 1.182 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,15 +81,15 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.181 $ $Date: 2003/08/28 12:56:26 $
+ * @version $Revision: 1.182 $ $Date: 2003/08/29 07:37:09 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
 
-    protected static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
+    public static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
 
     // Constants used for cache property lookup
-    protected static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
+    public static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
 
     // Dummy task used in createDirectPublishProject
     protected static final CmsTask noTask = new CmsTask();
