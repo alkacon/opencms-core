@@ -207,7 +207,7 @@ function selectAll(theList) {
 
 <title>OpenCms</title>
 <link rel=stylesheet type="text/css" href="../../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
 
 </HEAD>
 <BODY bgcolor="#ffffff"  bgproperties=fixed marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><PROCESS>alldeps</PROCESS><![CDATA[">
