@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 17:12:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/06/06 17:20:19 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -31,6 +31,7 @@ package com.opencms.file.genericSql;
 import javax.servlet.http.*;
 import java.util.*;
 import java.sql.*;
+import java.security.*;
 import java.io.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
@@ -47,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.13 $ $Date: 2000/06/06 17:12:46 $ * 
+ * @version $Revision: 1.14 $ $Date: 2000/06/06 17:20:19 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -316,7 +317,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
-     } 
+     }
     
      /**
 	 * Returns a group object.<P/>
@@ -356,6 +357,83 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return group;
      } 
     
+	/**
+	 * Adds a user to the database.
+	 * 
+	 * @param name username
+	 * @param password user-password
+	 * @param description user-description
+	 * @param firstname user-firstname
+	 * @param lastname user-lastname
+	 * @param email user-email
+	 * @param lastlogin user-lastlogin
+	 * @param lastused user-lastused
+	 * @param flags user-flags
+	 * @param additionalInfos user-additional-infos
+	 * @param defaultGroup user-defaultGroup
+	 * @param address user-defauladdress
+	 * @param section user-section
+	 * @param type user-type
+	 * 
+	 * @return the created user.
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public CmsUser addUser(String name, String password, String description, 
+						  String firstname, String lastname, String email, 
+						  long lastlogin, long lastused, int flags, Hashtable additionalInfos, 
+						  CmsGroup defaultGroup, String address, String section, int type) 
+		throws CmsException {
+		int id = nextId(C_TABLE_USERS);
+        byte[] value=null;
+		PreparedStatement statement = null;
+
+		try	{			
+            // serialize the hashtable
+            ByteArrayOutputStream bout= new ByteArrayOutputStream();            
+            ObjectOutputStream oout=new ObjectOutputStream(bout);
+            oout.writeObject(additionalInfos);
+            oout.close();
+            value=bout.toByteArray();
+			
+            // write data to database     
+            statement = m_pool.getPreparedStatement(C_USERS_ADD_KEY);
+			
+            statement.setInt(1,id);
+			statement.setString(2,name);
+			// crypt the password with MD5
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			statement.setString(3,new String(digest.digest(password.getBytes())));
+			statement.setString(4,description);
+			statement.setString(5,firstname);
+			statement.setString(6,lastname);
+			statement.setString(7,email);
+			statement.setTimestamp(8, new Timestamp(lastlogin));
+			statement.setTimestamp(9, new Timestamp(lastused));
+			statement.setInt(10,flags);
+			statement.setBytes(11,value);
+			statement.setInt(12,defaultGroup.getId());
+			statement.setString(13,address);
+			statement.setString(14,section);
+			statement.setInt(15,type);
+			statement.executeUpdate();
+			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
+         }
+        catch (SQLException e){
+			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}
+        catch (NoSuchAlgorithmException e){
+			m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_UNKNOWN_EXCEPTION, e);			
+		}
+        catch (IOException e){
+            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:"+CmsException. C_SERIALIZATION, e);			
+		}
+		m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
+		
+		// TODO: read user here!
+		return null;
+	}
          
     // methods working with systemproperties
     
@@ -507,19 +585,26 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
           return readProperty(name);
     }
 
-    
 	/**
 	 * Private method to init all statements in the pool.
 	 */
 	private void initStatements() 
 		throws CmsException {
-        // init statement for groups
+        // init statements for groups
+		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_READGROUP2_KEY,C_GROUPS_READGROUP2);
         m_pool.initPreparedStatement(C_GROUPS_CREATEGROUP_KEY,C_GROUPS_CREATEGROUP);
-        
-		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
 		
+		// init statements for users
+		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);
+		m_pool.initPreparedStatement(C_USERS_ADD_KEY,C_USERS_ADD);
+		
+		// init statements for projects        
+		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
+				
+
+		// init statements for systemproperties
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_MAXID_KEY, C_SYSTEMPROPERTIES_MAXID);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,C_SYSTEMPROPERTIES_READ);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,C_SYSTEMPROPERTIES_WRITE);
@@ -546,6 +631,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
         m_maxIds[C_TABLE_GROUPS] = initMaxId(C_GROUPS_MAXID_KEY);
 		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
+		m_maxIds[C_TABLE_USERS] = initMaxId(C_USERS_MAXID_KEY);
 		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);
 	}
 	
@@ -570,7 +656,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         	}else {
 				// no values in Database
 				id = 1;
-			}    	
+			}
+			res.close();
 			m_pool.putPreparedStatement(key, statement);
         
         } catch (SQLException e){
@@ -591,5 +678,4 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		// increment the id-value and return it.
 		return( ++m_maxIds[key] );
 	}
-
 }

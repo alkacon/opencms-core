@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/06 16:55:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/06/06 17:20:19 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/06/06 16:55:17 $
+ * @version $Revision: 1.10 $ $Date: 2000/06/06 17:20:19 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1264,14 +1264,26 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * @exception CmsException Throws CmsException if operation was not succesfull.
 	 */
-	public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, 
-							 String name, String password, 
-					  String group, String description, 
-					  Hashtable additionalInfos, int flags)
-        throws CmsException {
-        return null;     
-    }
-    
+	public CmsUser addUser(CmsUser currentUser, CmsProject currentProject, String name, 
+						   String password, String group, String description, 
+						   Hashtable additionalInfos, int flags)
+		throws CmsException {
+		// Check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			// check the password minimumsize
+			if( (name.length() > 0) && (password.length() >= C_PASSWORD_MINIMUMSIZE) ) {
+				// TODO: check for the correct type
+				// TODO: read the group first
+				return( m_dbAccess.addUser(name, password, description, "", "", "", 0, 0, C_FLAG_ENABLED, additionalInfos, new CmsGroup(-1, -1, "", "", 0), "", "", 0));
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+					CmsException.C_SHORT_PASSWORD);
+			}
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + name, 
+				CmsException.C_NO_ACCESS);
+		}
+	}
     
      /** 
 	 * Adds a web user to the Cms. <br>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 17:12:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/06 17:20:19 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $ $Date: 2000/06/06 17:12:46 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/06 17:20:19 $
  */
 public interface I_CmsQuerys {
     
@@ -81,10 +81,48 @@ public interface I_CmsQuerys {
 	public static final String C_SYSTEMPROPERTIES_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ?";
     
 	
-	// Constants for Projects
+    // Constants for Projects table
+	public static final String C_PROJECTS_PROJECT_ID = "PROJECT_ID";
+	public static final String C_PROJECTS_USER_ID = "USER_ID";
+	public static final String C_PROJECTS_GROUP_ID = "GROUP_ID";
+	public static final String C_PROJECTS_MANAGERGROUP_ID = "MANAGERGROUP_ID";
+	public static final String C_PROJECTS_TASK_ID = "TASK_ID";
+	public static final String C_PROJECTS_PROJECT_NAME = "PROJECT_NAME";
+	public static final String C_PROJECTS_PROJECT_DESCRIPTION = "PROJECT_DESCRIPTION";
+	public static final String C_PROJECTS_PROJECT_FLAGS = "PROJECT_FLAGS";
+	public static final String C_PROJECTS_PROJECT_CREATEDATE = "PROJECT_CREATEDATE";
+	public static final String C_PROJECTS_PROJECT_PUBLISHDATE = "PROJECT_PUBLISHDATE";
+	public static final String C_PROJECTS_PROJECT_PUBLISHED_BY = "PROJECT_PUBLISHED_BY";
+	public static final String C_PROJECTS_PROJECT_TYPE = "PROJECT_TYPE";
 	
+	// Constants for Projects	
     public static final Integer C_PROJECTS_MAXID_KEY = new Integer(400);
-	public static final String C_PROJECTS_MAXID = "SELECT MAX(PROJECT_ID) FROM " + C_DATABASE_PREFIX + "PROJECTS";	
+	public static final String C_PROJECTS_MAXID = "SELECT MAX(PROJECT_ID) FROM " + C_DATABASE_PREFIX + "PROJECTS";
 	
+	public static final Integer C_PROJECTS_CREATE_KEY = new Integer(401);
+	public static final String C_PROJECTS_CREATE = "INSERT INTO " + C_DATABASE_PREFIX + "PROJECTS VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    // Constants for Users table
+	public static final String C_USERS_USER_ID = "USER_ID";
+	public static final String C_USERS_USER_NAME = "USER_NAME";
+	public static final String C_USERS_USER_PASSWORD = "USER_PASSWORD";
+	public static final String C_USERS_USER_DESCRIPTION = "USER_DESCRIPTION";
+	public static final String C_USERS_USER_FIRSTNAME = "USER_FIRSTNAME";
+	public static final String C_USERS_USER_LASTNAME = "USER_EMAIL";
+	public static final String C_USERS_USER_LASTLOGIN = "USER_LASTLOGIN";
+	public static final String C_USERS_USER_LASTUSED = "USER_LASTUSED";
+	public static final String C_USERS_USER_FLAGS = "USER_FLAGS";
+	public static final String C_USERS_USER_INFO = "USER_INFO";
+	public static final String C_USERS_USER_DEFAULT_GROUP_ID = "USER_DEFAULT_GROUP_ID";
+	public static final String C_USERS_USER_ADDRESS = "USER_ADDRESS";
+	public static final String C_USERS_USER_SECTION = "USER_SECTION";
+	public static final String C_USERS_USER_TYPE = "USER_TYPE";
+	
+	// Constants for Users	
+    public static final Integer C_USERS_MAXID_KEY = new Integer(250);
+	public static final String C_USERS_MAXID = "SELECT MAX(USER_ID) FROM " + C_DATABASE_PREFIX + "USERS";
+
+    public static final Integer C_USERS_ADD_KEY = new Integer(251);
+	public static final String C_USERS_ADD = "INSERT INTO " + C_DATABASE_PREFIX + "USERS VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 }
 
