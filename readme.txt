@@ -1,2 +1,2 @@
-For installation instructions see install.txt or
-http://www.opencms.com/servlets/mht/service/install.html
+For installation instructions see install.html or
+http://www.opencms.com/servlets/opencms/service/installation43.html
