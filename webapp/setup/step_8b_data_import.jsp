@@ -1,19 +1,11 @@
-<% /* Initialize the Bean */ %>
+<%@ page import="java.util.*,org.opencms.setup.*,org.opencms.i18n.*,org.opencms.util.*" %>
 <jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" />
-
-<% /* Initialize Thread */ %>
 <jsp:useBean id="Thread" class="org.opencms.setup.CmsSetupThread" scope="session"/>
-<%
+<%	
 	Thread.setBasePath(config.getServletContext().getRealPath("/"));
 	Thread.setAdditionalShellCommand(Bean); 
-%>
 
-<% /* Import packages */ %>
-<%@ page import="java.util.*,org.opencms.setup.*" %>
-
-<%
 	Vector messages = new Vector();
-	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 
 	if(setupOk)	{
@@ -47,26 +39,46 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
-	<title>OpenCms Setup Wizard</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-	<script type="text/javascript">
-		var output = new Array();
-		<%
-			if(setupOk)	{
-				for(int i = 0; i < (size-offset) ;i++)	{
-					out.println("output[" + i + "] = \"" + CmsSetupUtils.escape(messages.elementAt(i+offset).toString(),"UTF-8") + "\";");
-				}
-			}
-			else	{
-				out.println("output[0] = 'ERROR';");
-			}
-		%>
-		function send()	{
-			top.window.display.start(output);
+<title>OpenCms Setup Wizard</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<script language="JavaScript">
+<!--
+	
+function initThread() {
+<% 
+	if(setupOk)	{ 
+		out.print("send();");
+		if(!Thread.finished()) {
+			out.println("setTimeout('location.reload()',5000);");
+		} else {
+			out.println("setTimeout('top.display.finish()',5000);");
 		}
+	}
+%>	
+}
 
-	</script>
+var output = new Array();
+<%
+	if(setupOk)	{
+		for(int i = 0; i < (size-offset) ;i++)	{
+			String str = messages.elementAt(i+offset).toString();
+			//Thread.printToStdOut(str);			
+			
+			str = CmsEncoder.escapeWBlanks(str, "UTF-8");			
+			out.println("output[" + i + "] = \"" + str + "\";");
+		}
+	} else {
+		out.println("output[0] = 'ERROR';");
+	}
+%>
+
+function send()	{
+	top.window.display.start(output);
+}
+
+//-->
+</script>
 
 </head>
-<body onload="<% if(setupOk)	{ out.print("send();");if(!Thread.finished())	{out.print("setTimeout('location.reload()',5000);");} else	{out.print("setTimeout('top.display.finish()',5000);");}} %>"></body>
+<body onload="initThread()"></body>
 </html>

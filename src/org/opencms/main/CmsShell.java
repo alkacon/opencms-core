@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/02/23 15:02:18 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * in more then one of the command objects, the method is only executed on the first matching object.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @see org.opencms.main.CmsShellCommands
  * @see org.opencms.file.CmsRequestContext
  * @see org.opencms.file.CmsObject
@@ -542,7 +542,7 @@ public class CmsShell {
     /**
      * Exits this shell.<p>
      */
-    protected void exit() {
+    public void exit() {
         if (m_additionaShellCommands != null) {
             m_additionaShellCommands.shellExit();
         } else {

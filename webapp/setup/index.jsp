@@ -1,4 +1,7 @@
-<jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+<%@ page session="true" %><%--
+
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetup" scope="session" /><%--
+
 --%><%
 
 boolean isInitialized = false;
@@ -9,27 +12,15 @@ boolean showButtons = false;
 String nextPage = "step_1_content_encoding.jsp";
 
 try {
-
 	/* Initialize the Bean */
-
-	/* set the base path to the opencms home folder */
-	Bean.setBasePath(config.getServletContext().getRealPath("/"));
-
-	/* Initialize the properties */
-	Bean.initProperties("opencms.properties");
-
-	/* Initialize the name of the database */
-	String appName = request.getContextPath().replaceAll("\\W","");
-	if (appName != null && appName.length() > 0) {
-		Bean.setAppName(appName);
-	}
+	Bean.init(pageContext, request, "opencms.properties");
 
 	/* check wizards accessability */
 	wizardEnabled = Bean.getWizardEnabled();
-
+	
 	if (!wizardEnabled) {
 		request.getSession().invalidate();
-	}
+	}	
 
 	isInitialized = true;
 } catch (Exception e) {

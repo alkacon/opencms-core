@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetup.java,v $
- * Date   : $Date: 2004/02/23 10:45:54 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/02/23 15:02:17 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,9 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.PageContext;
+
 import org.apache.commons.collections.ExtendedProperties;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -72,10 +75,10 @@ import org.dom4j.io.SAXReader;
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  */
 public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsShellCommands {
-    
+
     /** Contains the error messages to be displayed in the setup wizard.<p> */
     private static Vector errors;
 
@@ -94,7 +97,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
 
     /** The absolute path to the home directory of the OpenCms webapp.<p> */
     private String m_basePath;
-    
+
     /** A CmsObject to execute shell commands.<p> */
     private CmsObject m_cms;
 
@@ -104,18 +107,15 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     /** List of keys of all available database server setups (e.g. "mysql", "generic" or "oracle").<p> */
     private List m_databaseKeys;
     
-    /** List of clear text names of all available database server setups (e.g. "MySQL", "Generic (ANSI) SQL").<p> */
-    private List m_databaseNames;
-    
     /** Map of database setup properties of all available database server setups keyed by their database keys.<p> */
     private Map m_databaseProperties;
-
+    
     /** Password used for the JDBC connection when the OpenCms database is created.<p> */
     private String m_dbCreatePwd;
-
+    
     /** Contains the properties of "opencms.properties".<p> */
     private ExtendedProperties m_extProperties;
-
+    
     /** Contains HTML fragments for the output in the JSP pages of the setup wizard.<p> */
     private Properties m_htmlProps;
     
@@ -135,19 +135,43 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
      * Default constructor.<p>
      */
     public CmsSetup() {
-        m_databaseKeys = null;
-        m_databaseNames = null;
-        m_databaseProperties = null;
-        errors = new Vector();
+        // noop
     }
 
     /** 
      * Adds a new error message to the vector 
-     *
-     * @param error the error message 
+     * 
+     * @param pageContext the JSP's page context
+     * @param request the current HTTP request 
+     * @param props path to the properties file
      */
-    public static void setErrors(String error) {
-        errors.add(error);
+    public synchronized void init(PageContext pageContext, HttpServletRequest request, String props) {
+        try {            
+            m_availableModules = null;
+            m_databaseKey = null;
+            m_databaseKeys = null;
+            m_databaseProperties = null;
+            m_extProperties = null;
+            m_htmlProps = null;
+            m_installModules = null;
+            m_moduleDependencies = null;
+            m_sortedDatabaseKeys = null;
+            
+            setBasePath(pageContext.getServletConfig().getServletContext().getRealPath("/"));
+            m_extProperties = CmsSetupUtils.loadProperties(getConfigFolder() + props);
+            errors = new Vector();
+            
+            String appName = request.getContextPath().replaceAll("\\W","");
+            if (appName != null && appName.length() > 0) {
+                setAppName(appName);
+            }            
+
+            readDatabaseConfig();
+            initHtmlParts();                   
+        } catch (Exception e) {
+            e.printStackTrace();
+            errors.add(e.toString());
+        }
     }
     
     /**
@@ -173,7 +197,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return true;
     }
 
-    /**
+    /** 
      * Returns the webapp name
      * 
      * @return the webapp name
@@ -211,14 +235,14 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         try {
             m_availableModules = (Map) new HashMap();
             m_moduleDependencies = (Map) new HashMap();
-            
+
             // open the folder "/WEB-INF/packages/modules/"
             packagesFolder = new File(m_basePath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
 
             if (packagesFolder.exists()) {
                 // list all child resources in the packages folder
                 childResources = packagesFolder.listFiles();
-
+        
                 if (childResources != null) {
                     for (int i = 0; i < childResources.length; i++) {
                         childResource = childResources[i];
@@ -253,11 +277,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                                     // build a new list if "b" has no dependend modules yet
                                     moduleDependencies = (List) new ArrayList();
                                     m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
-                                }
-                                
+    }
+
                                 // add "a" as a module depending on "b"
                                 moduleDependencies.add(moduleName);
-                            }
+        }
                             
                             // create a map holding the collected module information
                             module = (Map) new HashMap();
@@ -269,7 +293,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                             
                             // put the module information into a map keyed by the module packages names
                             m_availableModules.put(moduleName, module);
-                        }
+    }
                     }
                 }
             }
@@ -292,7 +316,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
 
     /** 
      * Returns the path to the opencms config folder 
-     *
+     * 
      * @return the path to the config folder 
      */
     public String getConfigFolder() {
@@ -315,82 +339,117 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         
         return m_databaseKey;
     }
-    
-    /**
-     * Returns the URI of a database config page (in step 3) for a specified database key.<p>
-     * 
-     * 
-     * @param key the database key (e.g. "mysql", "generic" or "oracle")
-     * @return the URI of a database config page
-     */
-    public String getDatabaseConfigPage(String key) {
-        return "database" + I_CmsConstants.C_FOLDER_SEPARATOR + key + I_CmsConstants.C_FOLDER_SEPARATOR + "step_4_database_setup.jsp";
-    }
-    
-    /**
-     * Returns the clear text name for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
-     * 
-     * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
-     * @return the clear text name for a database server setup
-     */
-    public String getDatabaseName(String databaseKey) {
-        return (String) ((Map) getDatabaseProperties().get(databaseKey)).get(databaseKey + ".name");
-    }
 
     /** 
-     * Returns a list with the clear text names (e.g. "MySQL", "Generic (ANSI) SQL") of all 
-     * available database server setups in "/setup/database/".<p>
-     * 
-     * Second, this method stores the properties of all available database configurations in a
+     * Stores the properties of all available database configurations in a
      * map keyed by their database key names (e.g. "mysql", "generic" or "oracle").<p>
-     *
-     * @return a list with the clear text names (e.g. "MySQL", "Generic (ANSI) SQL") of all available database server setups
-     * @see #getDatabaseProperties()
      */
-    public List getDatabaseNames() {
-        List databaseKeys = null;
+    protected synchronized void readDatabaseConfig() {
         String databaseKey = null;
-        String databaseName = null;
         FileInputStream input = null;
         String configPath = null;
         Properties databaseProperties = null;
+        File databaseSetupFolder = null;
+        File[] childResources = null;
+        File childResource = null;
+        File setupFile = null;
+        boolean hasMissingSetupFiles = false;
 
-        if (m_databaseNames != null) {
-            return m_databaseNames;
-        }
-
-        m_databaseNames = (List) new ArrayList();
+        m_databaseKeys = (List) new ArrayList();
         m_databaseProperties = (Map) new HashMap();
-        databaseKeys = getDatabases();
 
-        for (int i = 0; i < databaseKeys.size(); i++) {
-            databaseKey = (String) databaseKeys.get(i);
-            configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
+        try {
+            databaseSetupFolder = new File(m_basePath + File.separator + "setup" + File.separator + "database");
 
-            try {
-                input = new FileInputStream(new File(configPath));
-                databaseProperties = new Properties();
-                databaseProperties.load(input);
+            if (databaseSetupFolder.exists()) {
+                childResources = databaseSetupFolder.listFiles();
 
-                databaseName = databaseProperties.getProperty(databaseKey + ".name");
-                m_databaseNames.add(databaseName);
-                m_databaseProperties.put(databaseKey, databaseProperties);
-            } catch (Exception e) {
-                System.err.println(e.toString());
-                e.printStackTrace(System.err);
-                continue;
-            } finally {
-                try {
-                    if (input != null) {
-                        input.close();
+                if (childResources != null) {
+                    for (int i = 0; i < childResources.length; i++) {
+                        childResource = childResources[i];
+                        hasMissingSetupFiles = false;
+
+                        if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
+                            for (int j = 0; j < requiredDbSetupFiles.length; j++) {
+                                setupFile = new File(childResource.getPath() + File.separator + requiredDbSetupFiles[j]);
+
+                                if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
+                                    hasMissingSetupFiles = true;
+                                    System.err.println("[" + getClass().getName() + "] missing or unreadable database setup file: " + setupFile.getPath());
+                                    break;
+                                }
+
+                                if (!hasMissingSetupFiles) {
+                                    m_databaseKeys.add(childResource.getName().trim());
+                                }
+                            }
+                        }
                     }
-                } catch (Exception e) {
-                    // noop
                 }
+
+                for (int i = 0; i < m_databaseKeys.size(); i++) {
+                    databaseKey = (String) m_databaseKeys.get(i);
+                    configPath = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + "database.properties";
+
+                    try {
+                        input = new FileInputStream(new File(configPath));
+                        databaseProperties = new Properties();
+                        databaseProperties.load(input);
+                        m_databaseProperties.put(databaseKey, databaseProperties);
+                    } catch (Exception e) {
+                        System.err.println(e.toString());
+                        e.printStackTrace(System.err);
+                        continue;
+                    }
+                }
+            }           
+        } catch (Exception e) {
+            System.err.println(e.toString());
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                if (input != null) {
+                    input.close();
+                }
+            } catch (Exception e) {
+                // noop
             }
         }
-
-        return m_databaseNames;
+    }
+    
+    /** 
+     * Returns a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available
+     * database server setups found in "/setup/database/" sorted by their ranking property.<p>
+     *
+     * @return a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
+     */
+    public List getSortedDatabases() {
+        if (m_sortedDatabaseKeys == null) {
+            List databases = m_databaseKeys;
+            List sortedDatabases = new ArrayList(databases.size());
+            SortedMap mappedDatabases = new TreeMap();
+            for (int i=0; i<databases.size(); i++) {
+                String key = (String)databases.get(i);
+                Integer ranking = new Integer(0);
+                try {
+                    ranking = Integer.valueOf(getDbProperty(key + ".ranking"));
+                } catch (Exception e) {
+                    // ignore
+                }
+                mappedDatabases.put(ranking, key);
+            }
+           
+            while (mappedDatabases.size() > 0) {
+                // get database with highest ranking 
+                Integer key = (Integer)mappedDatabases.lastKey();           
+                String database = (String)mappedDatabases.get(key);
+                sortedDatabases.add(database);
+                mappedDatabases.remove(key);
+            }
+            m_sortedDatabaseKeys = new ArrayList(databases.size());
+            m_sortedDatabaseKeys = sortedDatabases;
+        }     
+        return m_sortedDatabaseKeys;
     }
     
     /** 
@@ -404,11 +463,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             return m_databaseProperties;
         }
         
-        getDatabaseNames();
+        readDatabaseConfig();
         return m_databaseProperties;
     }
-
-    /** 
+    
+    /**
      * Returns a list with they keys (e.g. "mysql", "generic" or "oracle") of all available
      * database server setups found in "/setup/database/".<p>
      * 
@@ -463,16 +522,16 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return m_databaseKeys;
     }
 
-    /**
+    /** 
      * Returns the database name.<p>
-     * 
+     *
      * @return the database name
      */
     public String getDb() {
         return getDbProperty(m_databaseKey + ".dbname");
     }
 
-    /**
+    /** 
      * Returns the database create statement.<p>
      * 
      * @return the database create statement
@@ -483,16 +542,16 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return str;
     }
 
-    /**
+    /** 
      * Returns the password used for database creation.<p>
-     * 
+     *
      * @return the password used for database creation
      */
     public String getDbCreatePwd() {
         return (m_dbCreatePwd != null) ? m_dbCreatePwd : "";
     }
 
-    /**
+    /** 
      * Returns the database user that is used to connect to the database.<p>
      * 
      * @return the database user
@@ -511,7 +570,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return getDbProperty(m_databaseKey + ".driver");
     }
 
-    /**
+    /** 
      * Returns the value for a given key from the database properties.
      * 
      * @param key the property key
@@ -549,7 +608,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
 
     /** 
      * Returns the password of the database from the properties 
-     * 
+     *
      * @return the password for the OpenCms database user 
      */
     public String getDbWorkPwd() {
@@ -558,14 +617,14 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
 
     /** 
      * Returns the user of the database from the properties 
-     *
+     * 
      * @return the database user used by the opencms core  
      */
     public String getDbWorkUser() {
         return getExtProperty("db.pool." + getPool() + ".user");
     }
 
-    /**
+    /** 
      * Returns the defaultContentEncoding.
      * @return String
      */
@@ -590,8 +649,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public String getEthernetAddress() {
         return getExtProperty("server.ethernet.address");
     }
-
-    /**
+    
+    /** 
      * Returns the value for a given key from the extended properties.
      * 
      * @param key the property key
@@ -603,7 +662,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return ((value = m_extProperties.get(key)) != null) ? value.toString() : "";
     }
     
-    /**
+    /** 
      * Returns a help image icon tag to display a help text in the setup wizard.<p>
      * 
      * @param id the id of the desired help div
@@ -617,10 +676,10 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         } else {
             value = CmsStringSubstitution.substitute(value, "$replace$", id);
             return CmsStringSubstitution.substitute(value, "$path$", pathPrefix);
-        }
+    }
     }
     
-    /**
+    /** 
      * Returns the specified HTML part of the HTML property file to create the output.<p>
      * 
      * @param part the name of the desired part
@@ -630,7 +689,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return getHtmlPart(part, "");
     }
     
-    /**
+    /** 
      * Returns the specified HTML part of the HTML property file to create the output.<p>
      * 
      * @param part the name of the desired part
@@ -643,9 +702,9 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             return "";
         } else {
             return CmsStringSubstitution.substitute(value, "$replace$", replaceString);
-        }
     }
-    
+    }
+
     /**
      * Returns the "manifest.xml" of an available module as a dom4j document.<p>
      * 
@@ -669,8 +728,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                 if (!resource.getName().toLowerCase().endsWith(".zip")) {
                     // skip non-ZIP files
                     return null;
-                }
-                
+    }
+
                 // create a Reader either from a ZIP file's manifest.xml entry...
                 zipFile = new ZipFile(resource);
                 zipFileEntry = zipFile.getEntry("manifest.xml");
@@ -680,8 +739,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                 // ...or from a subresource inside a folder
                 manifestFile = new File(resource, "manifest.xml");
                 reader = new BufferedReader(new FileReader(manifestFile));                
-            }
-            
+    }
+
             // transform the manifest.xml file into a dom4j Document
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);            
@@ -712,7 +771,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return m_moduleDependencies;
     }
 
-    /** 
+    /**
      * Gets the default pool
      * 
      * @return name of the default pool 
@@ -723,15 +782,15 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         return pool;
     }
 
-    /** 
+    /**
      * Returns the extended properties 
-     *
+     * 
      * @return the extended properties  
      */
     public ExtendedProperties getProperties() {
         return m_extProperties;
     }
-    
+
     /**
      * Returns the replacer.<p>
      * 
@@ -740,49 +799,14 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public Map getReplacer() {
         return m_replacer;
     }
-    
-    /** 
+
+    /**
      * Return the OpenCms server name
      * 
      * @return the OpenCms server name
      */
     public String getServerName() {
         return getExtProperty("server.name");
-    }
-    
-    /** 
-     * Returns a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available
-     * database server setups found in "/setup/database/" sorted by their ranking property.<p>
-     *
-     * @return a sorted list with they keys (e.g. "mysql", "generic" or "oracle") of all available database server setups
-     */
-    public List getSortedDatabases() {
-        if (m_sortedDatabaseKeys == null) {
-            List databases = getDatabases();
-            List sortedDatabases = new ArrayList(databases.size());
-            SortedMap mappedDatabases = new TreeMap();
-            for (int i=0; i<databases.size(); i++) {
-                String key = (String)databases.get(i);
-                Integer ranking = new Integer(0);
-                try {
-                    ranking = Integer.valueOf(getDbProperty(key + ".ranking"));
-                } catch (Exception e) {
-                    // ignore
-                }
-                mappedDatabases.put(ranking, key);
-            }
-           
-            while (mappedDatabases.size() > 0) {
-                // get database with highest ranking 
-                Integer key = (Integer)mappedDatabases.lastKey();           
-                String database = (String)mappedDatabases.get(key);
-                sortedDatabases.add(database);
-                mappedDatabases.remove(key);
-            }
-            m_sortedDatabaseKeys = new ArrayList(databases.size());
-            m_sortedDatabaseKeys = sortedDatabases;
-        }     
-        return m_sortedDatabaseKeys;
     }
 
     /**
@@ -793,10 +817,10 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public boolean getWizardEnabled() {
         return "true".equals(getExtProperty("wizard.enabled"));
     }
-    
-    /** 
+
+    /**
      * Return the OpenCms workplace site
-     * 
+     *
      * @return the OpenCms workplace site
      */
     public String getWorkplaceSite() {
@@ -806,7 +830,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     /**
      * Imports a module (zipfile) from the default module directory, 
      * creating a temporary project for this.<p>
-     *
+     * 
      * @param importFile the name of the import module located in the default module directory
      * @throws Exception if something goes wrong
      * @see CmsRegistry#importModule(String, Vector, org.opencms.report.I_CmsReport)
@@ -865,11 +889,11 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
                 module = (Map) m_availableModules.get(m_installModules.get(i));
                 filename = (String) module.get("filename");
                 importModuleFromDefault(filename);
-            }
         }
+    }
     }    
-
-    /** 
+    
+    /**
      * This method reads the properties from the htmlmsg.property file
      * and sets the HTML part properties with the matching values.<p>
      */
@@ -883,27 +907,6 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         }
     }
 
-    /** 
-     * This method reads the properties from the opencms.property file
-     * and sets the CmsSetup properties with the matching values.
-     * This method should be called when the first page of the OpenCms
-     * Setup Wizard is called, so the input fields of the wizard are pre-defined
-     * 
-     * @param props path to the properties file
-     */
-    public void initProperties(String props) {
-        getDatabaseNames();
-        initHtmlParts();
-        
-        String path = getConfigFolder() + props;
-        try {
-            m_extProperties = CmsSetupUtils.loadProperties(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-            errors.add(e.toString());
-        }
-    }
-    
     /**
      * @see org.opencms.main.I_CmsShellCommands#initShellCmsObject(org.opencms.file.CmsObject, org.opencms.main.CmsShell)
      */
@@ -947,9 +950,9 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         setExtProperty("app.name", value);
     }
 
-    /** 
+    /**
      * Sets the path to the OpenCms home directory 
-     *
+     * 
      * @param basePath path to OpenCms home directory
      */
     public void setBasePath(String basePath) {
@@ -959,10 +962,10 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
             // environments since getServletContext().getRealPath("/") does not end with a "/" in 
             // all servlet runtimes
             m_basePath += File.separator;
-        }
     }
-
-    /** 
+    }
+    
+    /**
      * Sets the database drivers to the given value 
      * 
      * @param databaseKey the key of the selected database server (e.g. "mysql", "generic" or "oracle")
@@ -983,7 +986,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         setExtProperty("db.workflow.driver", workflowDriver);
         setExtProperty("db.backup.driver", backupDriver);
     }
-
+    
     /**
      * Sets the database name.<p>
      * 
@@ -992,7 +995,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public void setDb(String db) {
         setDbProperty(m_databaseKey + ".dbname", db);
     }
-
+    
     /**
      * Sets the database create statement.<p>
      * 
@@ -1001,7 +1004,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
     public void setDbCreateConStr(String dbCreateConStr) {
         setDbProperty(m_databaseKey + ".constr", dbCreateConStr);
     }
-
+    
     /**
      * Sets the password used for the initial OpenCms database creation.<p>
      * 
@@ -1030,8 +1033,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
      */
     public void setDbDriver(String driver) {
         setDbProperty(m_databaseKey + ".driver", driver);
-    }
-
+                                }
+                                
     /** 
      * This method sets the value for a given key in the database properties.
      * @param key The key of the property
@@ -1042,15 +1045,15 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         String databaseKey = key.substring(0, key.indexOf("."));
         Map databaseProperties = (Map) getDatabaseProperties().get(databaseKey);
         databaseProperties.put(key, value);
-    }
-
+                            }
+                            
     /** 
      * Sets the connection string to the database to the given value 
      *
      * @param dbWorkConStr the connection string used by the OpenCms core 
      */
     public void setDbWorkConStr(String dbWorkConStr) {
-
+                            
         String driver = getDbProperty(m_databaseKey + ".driver");
 
         // TODO: set the driver in own methods
@@ -1060,16 +1063,16 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         // set the database test query
         setExtProperty("db.pool." + getPool() + ".testQuery", getDbTestQuery());
     }
-
-    /** 
+    
+    /**
      * Sets the password of the database to the given value 
-     *
+     * 
      * @param dbWorkPwd the password for the OpenCms database user  
      */
     public void setDbWorkPwd(String dbWorkPwd) {
         setExtProperty("db.pool." + getPool() + ".password", dbWorkPwd);
-    }
-
+                }
+                
     /** 
      * Sets the user of the database to the given value 
      *
@@ -1077,8 +1080,8 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
      */
     public void setDbWorkUser(String dbWorkUser) {
         setExtProperty("db.pool." + getPool() + ".user", dbWorkUser);
-    }
-
+            }
+            
     /** 
      * Set the mac ethernet address, required for UUID generation.<p>
      * 
@@ -1086,7 +1089,7 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
      */
     public void setEthernetAddress(String ethernetAddress) {
         setExtProperty("server.ethernet.address", ethernetAddress);
-    }
+                }
 
     /** 
      * This method sets the value for a given key in the extended properties.
@@ -1125,18 +1128,18 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         m_replacer = map;
     }
     
-    /** 
+    /**
      * Set the OpenCms server name
      * 
      * @param name the OpenCms server name
      */
     public void setServerName(String name) {
         setExtProperty("server.name", name);
-    }
-
-    /** 
+            }
+    
+    /**
      * Set the OpenCms workplace site
-     * 
+     *
      * @param newSite the OpenCms workplace site
      */
     public void setWorkplaceSite(String newSite) {
@@ -1174,4 +1177,25 @@ public class CmsSetup extends Object implements Serializable, Cloneable, I_CmsSh
         System.out.println();
     }
     
-}
+    /**
+     * Returns the URI of a database config page (in step 3) for a specified database key.<p>
+     * 
+     * 
+     * @param key the database key (e.g. "mysql", "generic" or "oracle")
+     * @return the URI of a database config page
+     */
+    public String getDatabaseConfigPage(String key) {
+        return "database" + I_CmsConstants.C_FOLDER_SEPARATOR + key + I_CmsConstants.C_FOLDER_SEPARATOR + "step_4_database_setup.jsp";
+    }   
+    
+    /**
+     * Returns the clear text name for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
+     * 
+     * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
+     * @return the clear text name for a database server setup
+     */
+    public String getDatabaseName(String databaseKey) {
+        return (String) ((Map) getDatabaseProperties().get(databaseKey)).get(databaseKey + ".name");
+    }    
+
+}    

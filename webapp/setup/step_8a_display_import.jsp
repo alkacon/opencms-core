@@ -38,6 +38,7 @@ OpenCms Setup Wizard
 			if (enabled) {
 				document.forms[0].ctn.disabled = true;
 				document.forms[0].bck.disabled = true;
+				document.forms[0].cancel.disabled = true;
 				temp = "";
 				for(var i=out.length-1;i>=0;i--)    {
 					temp += unescape(out[i])+"\n";
@@ -52,6 +53,7 @@ OpenCms Setup Wizard
 			replaceInfo("Finished. Please check the output to see if the workplace has been imported without errors.", "ok");
 			document.forms[0].ctn.disabled = false;
 			document.forms[0].bck.disabled = false;
+			document.forms[0].cancel.disabled = false;
 			finished = true;
 		}
 
@@ -115,7 +117,7 @@ OpenCms Setup Wizard - Import workplace
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
 <input name="bck" id="bck" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="lastpage();">
 <input name="ctn" id="ctn" type="button" value="Continue &#062;&#062;" class="dialogbutton" onclick="nextpage();">
-<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
+<input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="top.document.location.href='index.jsp';" style="margin-left: 50px;">
 </form>
 <%= Bean.getHtmlPart("C_BUTTONS_END") %>
 <script type="text/javascript">

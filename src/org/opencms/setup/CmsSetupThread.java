@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupThread.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/23 15:02:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsSetupThread extends Thread {
 
@@ -61,7 +61,7 @@ public class CmsSetupThread extends Thread {
     /** Gets the System.out stream so it can be restored */
     private PrintStream m_tempOut;
     
-    private I_CmsShellCommands m_shellCommands;    
+    private I_CmsShellCommands m_shellCommands;      
 
     /** 
      * Constructor.<p>
@@ -99,7 +99,7 @@ public class CmsSetupThread extends Thread {
         // save the original out and err stream 
         m_tempOut = System.out;
         m_tempErr = System.err;
-        try {
+        try {            
             // redirect the streams 
             System.setOut(new PrintStream(m_pipedOut));
             System.setErr(new PrintStream(m_pipedOut));
@@ -140,6 +140,15 @@ public class CmsSetupThread extends Thread {
         if (! basePath.endsWith(File.separator)) {
             this.m_basePath += File.separator;
         }
+    }
+    
+    /**
+     * Write somthing to System.out during setup.<p>
+     * 
+     * @param str the string to write
+     */
+    public void printToStdOut(String str) {
+        m_tempOut.println(str);
     }
 
     /** 

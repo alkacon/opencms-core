@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/23 15:02:18 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.3
  */
 public interface I_CmsShellCommands {
@@ -66,5 +66,6 @@ public interface I_CmsShellCommands {
      * one shell command object initialized, only the exit method of one of thouse will be called.<p>
      */
     void shellExit();
+
 }
 
