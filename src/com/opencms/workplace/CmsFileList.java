@@ -1,25 +1,28 @@
 package com.opencms.workplace;
 
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.util.*;
-import com.opencms.template.*;
+import org.w3c.dom.*;
+import org.xml.sax.*;
 
+import com.opencms.core.*;
+import com.opencms.template.*;
+import com.opencms.file.*;
+
+import java.lang.reflect.*;
+import java.util.*;
 import javax.servlet.http.*;
 
-import java.util.*;
-
 /**
- * Template class for displaying the file list tree of the OpenCms workplace.<P>
- * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * 
+ * Class for building a file list. <BR>
+ * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/02 09:55:23 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/02 11:28:25 $
+ * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
-                                                                I_CmsConstants{    
-    /** The head of the file list */
+public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
+                                                           I_CmsConstants{    
+   
+      /** The head of the file list */
     private final static String C_LIST_HEAD="LIST_HEAD";
  
     /** The entry of the file list */
@@ -122,28 +125,71 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
     private final static String C_STYLE_CHANGED="dateigeaendert";
     
     /**
-   * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
-   * Gets the content of the file list template and processe the data input.
-   * @param cms The CmsObject.
-   * @param templateFile The file list template file
-   * @param elementName not used
-   * @param parameters Parameters of the request and the template.
-   * @param templateSelector Selector of the template tag to be displayed.
-   * @return Bytearre containgine the processed data of the template.
-   * @exception Throws CmsException if something goes wrong.
-   */
-   public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-         
-     CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
+     * Handling of the special workplace <CODE>&lt;FILELIST&gt;</CODE> tags.
+     * <P>
+     * Reads the code of a file list from the file list definition file
+     * and returns the processed code with the actual elements.
+     * <P>
+     * 
+     * @param cms A_CmsObject Object for accessing resources.
+     * @param n XML element containing the <code>&lt;FILELIST&gt;</code> tag.
+     * @param callingObject reference to the calling object.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @param lang CmsXmlLanguageFile conataining the currently valid language file.
+     * @return Processed button.
+     * @exception CmsException
+     */    
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc,
+                                            Object callingObject, Hashtable parameters, 
+                                            CmsXmlLanguageFile lang) throws CmsException {
+       
+        String method= n.getAttribute(C_FILELIST_METHOD);
+        String template=n.getAttribute(C_FILELIST_TEMPLATE);
+        
+        CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms,template);
+            
+        Vector filelist=new Vector();
+        
+        Method groupsMethod=null;
+         try {
+            groupsMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class});
+            filelist = ((Vector)groupsMethod.invoke(callingObject, new Object[] {cms}));
+        } catch(NoSuchMethodException exc) {
+            // The requested method was not found.
+            throwException("Could not find method " + method + " in calling class " + callingObject.getClass().getName() + " for generating select box content.", CmsException.C_NOT_FOUND);
+        } catch(InvocationTargetException targetEx) {
+            // the method could be invoked, but throwed a exception
+            // itself. Get this exception and throw it again.              
+            Throwable e = targetEx.getTargetException();
+            if(!(e instanceof CmsException)) {
+                // Only print an error if this is NO CmsException
+                e.printStackTrace();
+                throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " throwed an exception. " + e, CmsException.C_UNKNOWN_EXCEPTION);
+            } else {
+                // This is a CmsException
+                // Error printing should be done previously.
+                throw (CmsException)e;
+            }
+        } catch(Exception exc2) {
+            throwException("User method " + method + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
+        }
+       return getFilelist(cms,filelist,filelistTemplate,lang,parameters,callingObject);
+    }          
     
-     // process the selected template
-     return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
-   }
-    
-    
-     public Object getFilelist(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+     /**
+      * Gets a list of file and folders of a given vector of folders and files.
+      * @param cms The CmsObject.
+      * @param list Vector of folders and files.
+      * @param doc The Template containing the list definitions.
+      * @param lang The language defintion template.
+      * @param parameters  Hashtable containing all user parameters.
+      * @param callingObject The object calling this class.
+      * @return HTML-Code of the file list. 
+      */
+     private Object getFilelist(A_CmsObject cms, Vector list,
+                                A_CmsXmlContent doc, CmsXmlLanguageFile lang,
+                                Hashtable parameters,Object callingObject) 
             throws CmsException {
-            Hashtable parameters = (Hashtable)userObj;
             Hashtable preferences=new Hashtable();
             StringBuffer output=new StringBuffer();  
             String foldername;
@@ -151,33 +197,17 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
             
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
-            CmsXmlLanguageFile lang=template.getLanguageFile();
-            
-            // vectors to store all files and folders in the current folder.
-            Vector files;
-            Vector folders;
+                      
             Enumeration enum;
             
             // file and folder object required to create the file list.
             CmsFile file;
             CmsFolder folder;
+            CmsResource res;
             
             HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
             preferences=(Hashtable)session.getValue(C_ADDITIONAL_INFO_PREFERENCES);            
-            
-            //check if a folder parameter was included in the request.
-            // if a foldername was included, overwrite the value in the session for later use.
-            foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDER);
-            if (foldername != null) {
-                session.putValue(C_PARA_FOLDER,foldername);
-            }
-
-            // get the current folder 
-            currentFolder=(String)session.getValue(C_PARA_FOLDER);
-            if (currentFolder == null) {
-                 currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-            }
-          
+                    
             // hack do this for testing the explorer
             if (preferences == null ) {
                 preferences=getDefaultPreferences();
@@ -191,116 +221,109 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
             template=checkDisplayedColumns(filelist,template,"");
             
             // add the list header to the output.
-            output.append(template.getProcessedXmlDataValue(C_LIST_HEAD,this));
+            output.append(template.getProcessedXmlDataValue(C_LIST_HEAD,callingObject));
             
-            // get all files and folders of the current folder
-            folders=cms.getSubFolders(currentFolder);
-            files=cms.getFilesInFolder(currentFolder);
-            
-            // go through all folders
-            enum=folders.elements();
+            // go through all folders and files
+            enum=list.elements();
             while (enum.hasMoreElements()) {
-                folder=(CmsFolder)enum.nextElement(); 
-                // Set output style class according to the project and state of the file.
-                template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));        
-                // set the lock icon if nescessary
-                template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),this));  
-                // set the folder name
-                template.setXmlData(C_NAME_VALUE,folder.getName());     
-                // set the link
-                template.setXmlData(C_LINK_VALUE,"explorer_files.html?folder="+folder.getAbsolutePath());    
-                // set the folder title
-                String title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
-                if (title==null) {
-                    title="";
-                }
-                template.setXmlData(C_TITLE_VALUE,title);   
-                // set the folder type 
-                A_CmsResourceType type=cms.getResourceType(folder.getType());
-                template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
-                // get the folder date
-                long time=folder.getDateLastModified();
-                template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
-                // get the folder size
-                template.setXmlData(C_SIZE_VALUE,"");   
-                // get the folder state
-                template.setXmlData(C_STATE_VALUE,getState(cms,folder,lang));  
-                // get the owner of the folder
-                A_CmsUser owner = cms.readOwner(folder);
-                template.setXmlData(C_OWNER_VALUE,owner.getName());
-                // get the group of the folder
-                A_CmsGroup group = cms.readGroup(folder);
-                template.setXmlData(C_GROUP_VALUE,group.getName());
-                // get the access flags
-                int access=folder.getAccessFlags();
-                template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
-                // get the locked by
-                int lockedby = folder.isLockedBy();
-                if (lockedby == C_UNKNOWN_ID) {
-                    template.setXmlData(C_LOCKED_VALUE,"");
-                } else {
-                    template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(folder.getAbsolutePath()).getName());
-                }
-                    
-                // as a last step, check which colums must be displayed and add the file
-                // to the output.
-                template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
-                output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,this));                
-            }
-            
-            
-            // go through all files 
-            enum=files.elements();
-            while (enum.hasMoreElements()) {
-                file=(CmsFile)enum.nextElement(); 
-                // Set output style class according to the project and state of the file.
-                template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
-                // set the lock icon if nescessary
-                template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));  
                 
-                // set the filename
-                template.setXmlData(C_NAME_VALUE,file.getName());     
-                // set the link
-                template.setXmlData(C_LINK_VALUE,file.getName());    
-                // set the file title
-                String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
-                if (title==null) {
-                    title="";
-                }
-                template.setXmlData(C_TITLE_VALUE,title);   
-                // set the file type 
-                A_CmsResourceType type=cms.getResourceType(file.getType());
-                template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
-                // get the file date
-                long time=file.getDateLastModified();
-                template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
-                // get the file size
-                template.setXmlData(C_SIZE_VALUE,new Integer(file.getLength()).toString());   
-                // get the file state
-                template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));  
-                // get the owner of the file
-                A_CmsUser owner = cms.readOwner(file);
-                template.setXmlData(C_OWNER_VALUE,owner.getName());
-                // get the group of the file
-                A_CmsGroup group = cms.readGroup(file);
-                template.setXmlData(C_GROUP_VALUE,group.getName());
-                // get the access flags
-                int access=file.getAccessFlags();
-                template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
-                // get the locked by
-                int lockedby = file.isLockedBy();
-                if (lockedby == C_UNKNOWN_ID) {
-                    template.setXmlData(C_LOCKED_VALUE,"");
-                } else {
-                    template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(file.getAbsolutePath()).getName());
-                }
+                res=(CmsResource)enum.nextElement();
+                if (res.isFolder()) {
+                    folder=(CmsFolder)res; 
+                    // Set output style class according to the project and state of the file.
+                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,folder));        
+                    // set the lock icon if nescessary
+                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,folder,template,lang),this));  
+                    // set the folder name
+                    template.setXmlData(C_NAME_VALUE,folder.getName());     
+                    // set the link
+                    template.setXmlData(C_LINK_VALUE,"explorer_files.html?folder="+folder.getAbsolutePath());    
+                    // set the folder title
+                    String title=cms.readMetainformation(folder.getAbsolutePath(),C_METAINFO_TITLE);
+                    if (title==null) {
+                        title="";
+                    }
+                    template.setXmlData(C_TITLE_VALUE,title);   
+                    // set the folder type 
+                    A_CmsResourceType type=cms.getResourceType(folder.getType());
+                    template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
+                    // get the folder date
+                    long time=folder.getDateLastModified();
+                    template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
+                    // get the folder size
+                    template.setXmlData(C_SIZE_VALUE,"");   
+                    // get the folder state
+                    template.setXmlData(C_STATE_VALUE,getState(cms,folder,lang));  
+                    // get the owner of the folder
+                    A_CmsUser owner = cms.readOwner(folder);
+                    template.setXmlData(C_OWNER_VALUE,owner.getName());
+                    // get the group of the folder
+                    A_CmsGroup group = cms.readGroup(folder);
+                    template.setXmlData(C_GROUP_VALUE,group.getName());
+                    // get the access flags
+                    int access=folder.getAccessFlags();
+                    template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
+                    // get the locked by
+                    int lockedby = folder.isLockedBy();
+                    if (lockedby == C_UNKNOWN_ID) {
+                        template.setXmlData(C_LOCKED_VALUE,"");
+                    } else {
+                        template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(folder.getAbsolutePath()).getName());
+                    }
+                    // as a last step, check which colums must be displayed and add the file
+                    // to the output.
+                    template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
+                    output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
+                } else {        
+                    file=(CmsFile)res; 
+                    // Set output style class according to the project and state of the file.
+                    template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
+                    // set the lock icon if nescessary
+                    template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));                      
+                    // set the filename
+                    template.setXmlData(C_NAME_VALUE,file.getName());     
+                    // set the link
+                    template.setXmlData(C_LINK_VALUE,file.getName());    
+                    // set the file title
+                    String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
+                    if (title==null) {
+                        title="";
+                    }
+                    template.setXmlData(C_TITLE_VALUE,title);   
+                    // set the file type 
+                    A_CmsResourceType type=cms.getResourceType(file.getType());
+                    template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
+                    // get the file date
+                    long time=file.getDateLastModified();
+                    template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
+                    // get the file size
+                    template.setXmlData(C_SIZE_VALUE,new Integer(file.getLength()).toString());   
+                    // get the file state
+                    template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));  
+                    // get the owner of the file
+                    A_CmsUser owner = cms.readOwner(file);
+                    template.setXmlData(C_OWNER_VALUE,owner.getName());
+                    // get the group of the file
+                    A_CmsGroup group = cms.readGroup(file);
+                    template.setXmlData(C_GROUP_VALUE,group.getName());
+                    // get the access flags
+                    int access=file.getAccessFlags();
+                    template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
+                    // get the locked by
+                    int lockedby = file.isLockedBy();
+                    if (lockedby == C_UNKNOWN_ID) {
+                        template.setXmlData(C_LOCKED_VALUE,"");
+                    } else {
+                        template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(file.getAbsolutePath()).getName());
+                    }
                     
-                // as a last step, check which colums must be displayed and add the file
-                // to the output.
-                template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
-                output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,this));                
+                    // as a last step, check which colums must be displayed and add the file
+                    // to the output.
+                    template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
+                    output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
+                }
             }
-            return output.toString();
+         return output.toString();
      }            
     
      
@@ -535,5 +558,4 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
         pref.put(C_USERPREF_FILELIST,new Integer(filelist));
         return pref;
     }
-     
 }

@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/02/02 10:30:29 $
+ * @version $Revision: 1.20 $ $Date: 2000/02/02 11:28:25 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -94,6 +94,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("BUTTONSEPARATOR", "com.opencms.workplace.CmsButtonSeparator");
         registerTag("ERRORBOX", "com.opencms.workplace.CmsErrorbox");
         registerTag("ERRORPAGE", "com.opencms.workplace.CmsErrorpage");
+        registerTag("FILELIST", "com.opencms.workplace.CmsFileList");
         registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
         registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("PASSWORD", "com.opencms.workplace.CmsInputPassword");

@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+	<LIST_HEAD>
+	<![CDATA[<tr bgcolor="#c0c0c0">
+			]]><PROCESS>COLUMN_PIC</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_NAME</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_TITLE</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_TYPE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_CHANGED</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_SIZE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_STATE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_OWNER</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_GROUP</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_ACCESS</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_LOCKED</PROCESS><![CDATA[
+		</tr>]]>
+	</LIST_HEAD>
+	
+	<LIST_ENTRY>
+	<![CDATA[<tr valign=top>
+			]]><PROCESS>COLUMN_PIC_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_LOCK_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_NAME_VALUE</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_TITLE_VALUE</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_TYPE_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_CHANGED_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_SIZE_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_STATE_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_OWNER_VALUE</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_GROUP_VALUE</PROCESS><![CDATA[
+			]]><PROCESS>COLUMN_ACCESS_VALUE</PROCESS><![CDATA[		
+			]]><PROCESS>COLUMN_LOCKED_VALUE</PROCESS><![CDATA[
+		</tr>]]>
+	</LIST_ENTRY>
+	
+	<COLUMN_PIC><![CDATA[<td valign=bottom width=32 colspan=2 nowrap>&nbsp;</td>]]></COLUMN_PIC>
+	<COLUMN_NAME><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.name" /><![CDATA[</p></td>]]></COLUMN_NAME>
+	<COLUMN_TITLE><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.title" /><![CDATA[</p></td>]]></COLUMN_TITLE>
+	<COLUMN_TYPE><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.type" /><![CDATA[</p></td>]]></COLUMN_TYPE>
+	<COLUMN_CHANGED><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.changed" /><![CDATA[</p></td>]]></COLUMN_CHANGED>
+	<COLUMN_SIZE><![CDATA[<td valign=bottom width=50 nowrap><p class=einzug>]]><LABEL value="title.size" /><![CDATA[</p></td>]]></COLUMN_SIZE>
+	<COLUMN_STATE><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.state" /><![CDATA[</p></td>]]></COLUMN_STATE>
+	<COLUMN_OWNER><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.owner" /><![CDATA[</p></td>]]></COLUMN_OWNER>
+	<COLUMN_GROUP><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.group" /><![CDATA[</p></td>]]></COLUMN_GROUP>
+	<COLUMN_ACCESS><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.access" /><![CDATA[</p></td>]]></COLUMN_ACCESS>
+	<COLUMN_LOCKED><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.locked" /><![CDATA[</p></td>]]></COLUMN_LOCKED>
+	
+	<COLUMN_PIC_VALUE><![CDATA[<td><img src="]]><METHOD name="picsUrl">ic_file_plain.gif</METHOD><![CDATA[" border=0 width=16 height=16></a></td>]]></COLUMN_PIC_VALUE>
+	<COLUMN_LOCK_VALUE><PROCESS>LOCK_VALUE</PROCESS></COLUMN_LOCK_VALUE>
+	<COLUMN_LOCK_VALUE_NOLOCK><![CDATA[<td></td>]]></COLUMN_LOCK_VALUE_NOLOCK>
+	<COLUMN_LOCK_VALUE_OWN><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lockuser.gif</METHOD><![CDATA[" alt="]]><PROCESS>LOCKEDBY</PROCESS><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_OWN>
+	<COLUMN_LOCK_VALUE_USER><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" alt="]]><PROCESS>LOCKEDBY</PROCESS><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_USER>
+	<COLUMN_NAME_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug"><a href="]]><PROCESS>LINK_VALUE</PROCESS><![CDATA[" class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA[">]]><PROCESS>NAME_VALUE</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_VALUE>
+	<COLUMN_TITLE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TITLE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TITLE_VALUE>
+	<COLUMN_TYPE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TYPE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TYPE_VALUE>
+	<COLUMN_CHANGED_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>CHANGED_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_CHANGED_VALUE>
+	<COLUMN_SIZE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>SIZE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_SIZE_VALUE>
+	<COLUMN_STATE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>STATE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_STATE_VALUE>
+	<COLUMN_OWNER_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>OWNER_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_OWNER_VALUE>
+	<COLUMN_GROUP_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>GROUP_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_GROUP_VALUE>
+	<COLUMN_ACCESS_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>ACCESS_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_ACCESS_VALUE>
+	<COLUMN_LOCKED_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>LOCKED_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_LOCKED_VALUE>
+</WORKPLACE>

@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/02/02 10:39:13 $
+ * @version $Revision: 1.18 $ $Date: 2000/02/02 11:28:25 $
  */
 public interface I_CmsWpConstants {
 
@@ -154,8 +154,8 @@ public interface I_CmsWpConstants {
     
     /** Action for the icon */
     public static final String C_ICON_ACTION = "action";
-    
-    /** Label of the icon */
+
+   /** Label of the icon */
     public static final String C_ICON_LABEL = "label";
     
     /** href text of the icon */
@@ -163,9 +163,9 @@ public interface I_CmsWpConstants {
 
     /** href target of the icon */
     public static final String C_ICON_TARGET = "target";
-
-	// Parameters for labels
     
+    // Parameters for labels
+
     /** Name of the value */
     public static final String C_LABEL_VALUE = "value";
     
@@ -236,6 +236,15 @@ public interface I_CmsWpConstants {
    
     /** Button label of the error box */
     public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
+    
+    // Parameters for file list
+    
+    /** method value of the file list */
+    public static final String C_FILELIST_METHOD ="method";
+    
+    /** template value for the file list */
+    public static final String C_FILELIST_TEMPLATE="template";
+    
     
     // Constants for language file control
             
