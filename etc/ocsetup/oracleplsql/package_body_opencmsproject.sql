@@ -331,7 +331,7 @@ PACKAGE BODY OpenCmsProject IS
       EXIT WHEN curFolders%NOTFOUND;
       -- is the resource marked as deleted?
       IF recFolders.state = opencmsConstants.C_STATE_DELETED THEN
-        -- add to list with deleted folders
+        -- add to list with deleted folders      
         vDeletedFolders := vDeletedFolders||'/'||to_char(recFolders.resource_id);
       -- is the resource marked as new?
       ELSIF recFolders.state = opencmsConstants.C_STATE_NEW THEN
@@ -352,11 +352,11 @@ PACKAGE BODY OpenCmsProject IS
 		  recNewFolder.state := opencmsConstants.C_STATE_UNCHANGED;
 		  opencmsResource.writeFolder(pProjectId, recNewFolder, 'FALSE');
         EXCEPTION
-		  WHEN OTHERS THEN	  
+		  WHEN OTHERS THEN
 		  	IF sqlcode = userErrors.C_FILE_EXISTS THEN
 		  	  curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
 			  FETCH curNewFolder INTO recNewFolder;
-			  CLOSE curNewFolder;		  	  
+			  CLOSE curNewFolder;
 		  	  -- the folder already exists in the online-project
               -- update the folder in the online-project
               update cms_resources set
@@ -378,8 +378,8 @@ PACKAGE BODY OpenCmsProject IS
               commit;
 		  	  curNewFolder := opencmsResource.readFolder(pUserId, pOnlineProjectId, recFolders.resource_name);
 			  FETCH curNewFolder INTO recNewFolder;
-			  CLOSE curNewFolder;              
-		    ELSE	    
+			  CLOSE curNewFolder;
+		    ELSE
 			  RAISE;
 		    END IF;
         END;
@@ -512,8 +512,8 @@ PACKAGE BODY OpenCmsProject IS
           recNewFile.state := opencmsConstants.C_STATE_UNCHANGED;
           opencmsResource.writeFile(pOnlineProjectId, recNewFile, 'FALSE');
         EXCEPTION
-          WHEN OTHERS THEN        
-            IF sqlcode = userErrors.C_FILE_EXISTS THEN            
+          WHEN OTHERS THEN
+            IF sqlcode = userErrors.C_FILE_EXISTS THEN
               -- the folder already exist in the online-project
               curNewFile := opencmsResource.readFile(pUserId, pOnlineProjectId, recFiles.resource_name);
               FETCH curNewFile INTO recNewFile;
@@ -536,9 +536,9 @@ PACKAGE BODY OpenCmsProject IS
                      file_id = recFiles.file_id
                      where resource_id = recNewFile.resource_id;
               commit;
-            ELSE         
+            ELSE
               RAISE;
-            END IF;  
+            END IF;
         END;
         -- copy the properties
         opencmsProperty.writeProperties(opencmsProperty.readAllProperties(pUserId, pProjectId, recFiles.resource_name),
@@ -605,12 +605,20 @@ PACKAGE BODY OpenCmsProject IS
       -- get the string for the cursor of
       vCurDelFolders := replace(substr(vDeletedFolders,2),'/',',');
       vDeletedFolders := vDeletedFolders||'/';
-      LOOP
+      LOOP     
         vResourceId := substr(vDeletedFolders, instr(vDeletedFolders, '/', 1, 1)+1,
                        (instr(vDeletedFolders, '/', 1, 2) - (instr(vDeletedFolders, '/', 1, 1)+1)));
         vDeletedFolders := substr(vDeletedFolders, (instr(vDeletedFolders, '/', 1, 2)));
-        delete from cms_properties where resource_id = vResourceId;
-        delete from cms_resources where resource_id = vResourceId;
+        BEGIN
+          select resource_id into vResourceId from cms_resources 
+          			where resource_name = (select resource_name from cms_resources where resource_id = vResourceId)
+          			and project_id = pOnlineProjectId; 
+          delete from cms_properties where resource_id = vResourceId;
+          delete from cms_resources where resource_id = vResourceId;
+        EXCEPTION
+          WHEN NO_DATA_FOUND THEN
+            null;
+        END;  
         IF length(vDeletedFolders) <= 1 THEN
           EXIT;
         END IF;
