@@ -10,6 +10,11 @@ Legend:
 
 OpenCms 4.3.34 Bela Tegeuse - ?? July 2001
 * overwrought the ímport. Now the reource type classes import the resources.
+* Fixed bug when deleting projects: Now the subfolders are deleted before deleting folders
+* Fixed bug when publishing a resource: The project-id of all resources has to be set
+  to the publish project by a new method. So deleted resources can be published, too.
+* Fixed bug in mysql-tables: the unique key in the backup-table for resources contains
+  resource_name and version_id
 - Added the class CmsWorkplaceDefaultNoCache again for module compatibility.
 - Switched picgalery to new filelist.
 - Switched downgalery to new filelist.
