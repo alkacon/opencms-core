@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/07/07 17:24:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/07 18:07:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -94,6 +94,12 @@ public class CmsWorkplaceAction {
         return C_JSP_WORKPLACE_URI;        
     }    
     
+    /**
+     * Returns the folder currently selected in the explorer.<p>
+     * 
+     * @param cms the current cms context
+     * @return the folder currently selected in the explorer
+     */
     public static String getCurrentFolder(CmsObject cms) {
         HttpSession session = extractSession(cms);
         if (session == null) return null;
@@ -106,11 +112,21 @@ public class CmsWorkplaceAction {
         return sessionFolder;
     }
     
+    /**
+     * Sets the folder currently selected in the explorer
+     * 
+     * @param cms the current cms context
+     * @param currentFolder the folder to set
+     */
     public static void setCurrentFolder(CmsObject cms, String currentFolder) {
         HttpSession session = extractSession(cms);
         if (session == null) return;
         session.setAttribute(I_CmsWpConstants.C_PARA_FILELIST, currentFolder);       
-    }
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
+        if (settings != null) {
+            settings.setExplorerFolder(currentFolder);
+        }       
+    }   
     
     /**
      * Returns the uri of the file explorer.<p>
