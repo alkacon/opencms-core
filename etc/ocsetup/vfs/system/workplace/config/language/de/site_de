@@ -8,7 +8,7 @@
 				<sitename>Site name</sitename>
 				<domainname>Domain name</domainname>
 				<domain>Domain</domain>
-				<language>Language</language>
+				<languagelabel>Language</languagelabel>
 				<categories>Categories</categories>
 				
 			</label>
@@ -16,6 +16,7 @@
 				<title>
 			
 					<newsite>New site</newsite>
+					<editsite>Edit site</editsite>
 	
 				</title>
 				
