@@ -131,6 +131,9 @@
         </copy>
         <copy file="etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/web-inf"/>
         <copy file="${build.inputlib.oracle}" todir="${tomcat.home}/webapps/${app.name}/web-inf/oclib"/>
+        <copy todir="${tomcat.home}/webapps/${app.name}/pics">
+            <fileset dir="${build.webinf}/ocsetup/vfs/pics"/>
+        </copy>
     </target>
 
     <target name="setup" depends="tomcat.dist">
