@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <registry>
 	<system>
-
-		<!-- system (new) -->
-		<tempfileproject></tempfileproject>
-
 		
 		<!-- workplace -->		
 		<synchronizemodifications />
@@ -13,12 +9,7 @@
 			<mailto>nobody@nowhere.com</mailto>
 			<mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
 		</checklink>
-
-
-		<!-- delete -->
-		<UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
-		<searchbylucene>off</searchbylucene>
-
+		
 
 		<!-- scheduler (new) -->
 		<crontab>
