@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsIdGenerator.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2001/10/25 10:31:39 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -54,6 +54,26 @@ public class CmsIdGenerator {
 
     private static final int C_GROW_VALUE = 10;
 
+    /**
+     * The name of the default pool
+     */
+    private static String c_defaultPool = "";
+
+    /**
+     *
+     */
+    public static void setDefaultPool(String poolName){
+        c_defaultPool = poolName;
+    }
+    /**
+     * Creates a new id for the given table.
+     * @param pooName - the name of the pool.
+     * @param tableName - the name of the table to create the id.
+     * @return the next id for this resource.
+     */
+    public static synchronized int nextId(String tableName) throws CmsException{
+        return nextId(c_defaultPool, tableName);
+    }
     /**
      * Creates a new id for the given table.
      * @param pooName - the name of the pool.
