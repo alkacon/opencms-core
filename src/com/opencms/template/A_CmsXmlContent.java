@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/26 17:45:45 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/27 10:10:43 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1388,7 +1388,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             }
         return nextnode;
     }        
-
     
     /**
      * Reloads a previously cached parsed content.
@@ -1396,12 +1395,16 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param filename Absolute pathname of the file to look for.
      * @return DOM parsed document or null if the cached content was not found.
      */    
-    private Document loadCachedDocument(String filename) {
-        Document cachedDoc = (Document)m_filecache.get(filename);
+    private Document loadCachedDocument(String filename) { 
+        Document cachedDoc = null;
+        Document lookup = (Document)m_filecache.get(filename);
+        if(lookup != null) {
+            cachedDoc = lookup.cloneNode(true).getOwnerDocument();
+        }
         if(C_DEBUG && cachedDoc != null && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Re-used previously parsed XML file " + getFilename() + ".");
         }        
-        return cachedDoc;
+        return cachedDoc;        
     }
            
     /**
