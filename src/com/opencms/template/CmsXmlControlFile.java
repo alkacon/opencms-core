@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2000/02/18 13:14:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/19 10:14:52 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,12 +39,10 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/18 13:14:54 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/19 10:14:52 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
-    private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
-    
     /**
      * Default constructor.
      */
@@ -245,10 +243,6 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
      */
     public String getParameter(String elementName, String parameterName) throws CmsException {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
-    }
-    
-    public byte[] createNewContentFile() {
-        return C_DEFAULTBODY.getBytes();
     }
     
     /**
