@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/19 13:35:16 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/09/23 07:21:55 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.60 $ $Date: 2003/09/19 13:35:16 $
+ * @version $Revision: 1.61 $ $Date: 2003/09/23 07:21:55 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -221,10 +221,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-
-   
+            m_sqlManager.closeAll(conn, stmt1, null);
+            m_sqlManager.closeAll(conn, stmt2, null);
+            m_sqlManager.closeAll(conn, stmt3, null);
+            m_sqlManager.closeAll(conn, stmt4, null);
+        }  
     }
 
     /**
@@ -342,7 +343,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
-
         return exists;
     }
 
@@ -933,9 +933,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             // now get the new version id for this resource
             versionId = internalReadNextVersionId(resource);
 
-            if (resource.isFile()) {
+        if (resource.isFile()) {
 
-                if (!this.internalValidateBackupResource(resource, tagId)) {
+            if (!this.internalValidateBackupResource(resource, tagId)) {
 
                     // write the file content
                     content = ((CmsFile)resource).getContents();
@@ -996,6 +996,23 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+        // TODO: use this in later versions
+        //return this.readBackupFileHeader(tagId, resource.getResourceId());
     }
+
+    /**
+     * For later use
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(com.opencms.file.CmsResource, com.opencms.file.CmsBackupResource)
+     */
+    public void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException {
+        // get the offline file
+        CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
+        // write the file content
+        if (!this.internalValidateBackupResource(resource, backupResource.getTagId())) {
+            internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
+        }
+
+    }
+
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/17 12:05:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/09/23 07:21:55 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.26 $ $Date: 2003/09/17 12:05:48 $
+ * @version $Revision: 1.27 $ $Date: 2003/09/23 07:21:55 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -251,8 +251,21 @@ public interface I_CmsBackupDriver {
      * @param tagId the version ID of the backup
      * @param publishDate long timestamp when the resource was published
      * @param maxVersions maximum number of backup versions
+     * @return the CmsBackupResource written into the database
      * @throws CmsException if something goes wrong
      */
     void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException;
 
+
+    
+    /**
+     * Writes a resource content to the backup.<p>
+     * This method is for later use and should not be used now
+     * 
+     * @param projectId the project to read from
+     * @param resource the resource (file header) to read the content from
+     * @param backupResource the backup resource to write the backup content to
+     * @throws CmsException if something goes wrong
+     */
+    void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException;
 }
