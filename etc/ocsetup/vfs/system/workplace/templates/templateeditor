@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<workplace>
+<template>
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">	
+	// which button is clicked
+	function doTemplSubmit(para)
+	{
+		switch (para)
+		{
+		case 1:
+			document.EDITOR.bodychanged.value = "1";
+			document.EDITOR.submit();
+			break;
+		case 2:
+			alert("NYI!");
+			break;
+		case 3:
+			doSubmit();
+			document.EDITOR.submit();
+			break;
+		case 4:
+			// new template selected
+			doSubmit();
+			document.EDITOR.submit();
+			break;
+		}
+	}
+	
+	<!-- Sets the Document Source-Code for later including into the editor -->
+	var text="]]><METHOD name="setText"/><![CDATA[";
+
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+	
+	<!-- URL for help file -->
+	var help="]]><METHOD name="helpUrl"/><![CDATA[";
+
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_]]><PROCESS>editor</PROCESS><![CDATA[.js"></SCRIPT>
+
+<script LANGUAGE="javascript" FOR="EDITHTML.EDIT_HTML" EVENT="DisplayChanged">
+<!--
+return DisplayChanged()
+//-->
+</script>
+
+</head>
+
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
+
+<form 
+	name=EDITOR 
+	id=EDITOR
+	METHOD=POST>
+	<INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
+	<INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
+<table cellspacing=0 cellpadding=0 border=0 width="100%" height=32px>
+	<tr>
+		<td class=menubold><p class=einzug>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+		<td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="20" length="255" method="setTitle"/><![CDATA[
+		<td class=menubold><p class=tab>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[
+			<INPUT TYPE=HIDDEN name="bodychanged">		
+		</td>
+		<td class=menu><p class=tab>]]><BUTTON href="#" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
+		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
+		<td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+		<td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
+		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="" alt="preview"/><![CDATA[</td>		
+	</tr>
+</table>
+
+<hr>
+  ]]><ELEMENT name="editor"/><![CDATA[
+</form>
+</body>
+</html>
+]]>
+</template>
+
+<TEMPLATE name="parseerror">
+<![CDATA[
+]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" /><![CDATA[
+]]>
+</TEMPLATE>
+</workplace>
