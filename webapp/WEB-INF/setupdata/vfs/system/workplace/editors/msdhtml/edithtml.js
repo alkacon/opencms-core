@@ -42,7 +42,7 @@ function hasSelectedText() {
 	    selectedRange = range;
 	}
 	
-	if ((selectedRange == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText == null)) {
+	if ((selectedRange == null) || (selectedRange.htmlText == null) || (selectedRange.htmlText == "") || (selectedRange.htmlText.search(/<P>&nbsp;<\/P>/) != -1)) {
 		// no text selected, check if an image is selected		
 		try {
 			range = range.item(0);
