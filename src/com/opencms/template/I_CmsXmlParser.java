@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlParser.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/04/04 10:02:14 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,10 +38,16 @@ import org.w3c.dom.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.5 $ $Date: 2000/04/04 10:02:14 $
  */
 public interface I_CmsXmlParser {
+
+    /** Encoding used for XML documents */
+    public final static String C_XML_ENCODING = "ISO-8859-1";
     
+    /** Line width used for XML documents */
+    public final static int C_XML_LINE_WIDTH = 80;
+        
     /**
      * Parses the given text.
      * @param in Reader with the input text.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlXercesParser.java,v $
- * Date   : $Date: 2000/04/03 15:56:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/04 10:02:08 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.core.*;
  * 
  * @author Alexander Kandzior
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/04/03 15:56:49 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/04 10:02:08 $
  */
 public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
     
@@ -84,7 +84,7 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @return Empty document.
      */
     public Document createEmptyDocument(String docNod) throws Exception {
-        String docXml = new String("<?xml version=\"1.0\" encoding=\"UTF8\"?>");
+        String docXml = new String("<?xml version=\"1.0\" encoding=\"" + C_XML_ENCODING + "\"?>");
 		docXml = docXml+"<"+docNod+">"+"</"+docNod+">";
 		StringReader reader = new StringReader(docXml);
 
@@ -109,7 +109,8 @@ public class CmsXmlXercesParser implements I_CmsXmlParser, I_CmsLogChannels {
      * @param out Writer to print to.
      */
     public void getXmlText(Document doc, Writer out) {
-        OutputFormat outf = new OutputFormat(doc, null, true);
+        OutputFormat outf = new OutputFormat(doc, C_XML_ENCODING, true);
+        outf.setLineWidth(C_XML_LINE_WIDTH);            
         outf.setPreserveSpace(false);
         
         XMLSerializer serializer = new XMLSerializer(out, outf);
