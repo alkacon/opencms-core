@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/15 08:58:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/11/15 12:57:25 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -78,6 +78,7 @@ function vars_index() {
     this.lockIcons = new Array();
     this.lockStatus = new Array();
     this.iconPath = new Array();
+    this.check_name;
     this.check_title;
     this.check_date;
     this.check_size;
@@ -86,6 +87,7 @@ function vars_index() {
     this.check_group;
     this.check_owner;
     this.check_status;
+    this.check_lockedBy;
     this.userName;
     this.shown = false;
     this.lastid=0;
@@ -725,6 +727,7 @@ function showCols(cols){
     var i;
     var check = new Array(8)
 
+/*
     check[0]='vi.check_title';
     check[1]='vi.check_type';
     check[2]='vi.check_size';
@@ -733,8 +736,22 @@ function showCols(cols){
     check[5]='vi.check_owner';
     check[6]='vi.check_group';
     check[7]='vi.check_perm';
+    check[8]='vi.check_perm';
+*/
 
-    for(i=0;i<8;i++){
+    
+    check[0]='vi.check_title';
+    check[1]='vi.check_type';
+    check[2]='vi.check_date';
+    check[3]='vi.check_size';
+    check[4]='vi.check_status';
+    check[5]='vi.check_owner';
+    check[6]='vi.check_group';
+    check[7]='vi.check_perm';
+    check[8]='vi.check_lockedBy';
+    check[9]='vi.check_name';
+
+    for(i=0;i<=9;i++){
         if((cols & Math.pow(2,i))>0)eval(check[i]+"=true;");
            else eval(check[i]+"=false;");
     }
@@ -803,7 +820,7 @@ function printList(wo){
 
     wo.writeln("<td class=topic width=20>&nbsp;</td>");
     wo.writeln("<td class=topic width=20>&nbsp;</td>");
-    wo.writeln("<td class=topic width=120>"+vr.descr[0]+"</td>");
+    if(vi.check_name)wo.writeln("<td class=topic width=120>"+vr.descr[0]+"</td>");
 
     if(vi.check_title)wo.writeln("<td class=topic width=80>"+vr.descr[1]+"</td>");
     if(vi.check_type)wo.writeln("<td class=topic width=100>"+vr.descr[2]+"</td>");
@@ -813,6 +830,7 @@ function printList(wo){
     if(vi.check_owner)wo.writeln("<td class=topic width=85>"+vr.descr[6]+"</td>");
     if(vi.check_group)wo.writeln("<td class=topic width=85>"+vr.descr[7]+"</td>");
     if(vi.check_perm)wo.writeln("<td class=topic width=45>"+vr.descr[8]+"</td>");
+    if(vi.check_lockedBy)wo.writeln("<td class=topic width=45>"+vr.descr[9]+"</td>");
     wo.writeln("</tr>");
 
     for(var i=0; i<vi.liste.length; i++){
@@ -843,7 +861,7 @@ function printList(wo){
 
         wo.write("<td align=center><img name='lock_"+i+"' "+lockedBystring+" border=0 width=16 height=16></a></td>");
 
-        wo.writeln("<td class="+ssclass+"><a href='#' class="+ssclass+">"+vi.liste[i].name+"</a></td>");
+        if(vi.check_name)wo.writeln("<td class="+ssclass+"><a href='#' class="+ssclass+">"+vi.liste[i].name+"</a></td>");
         if(vi.check_title)wo.writeln("<td class="+ssclass+">"+vi.liste[i].title+"&nbsp;</td>");
         if(vi.check_type)wo.writeln("<td class="+ssclass+">"+vi.resource[vi.liste[i].type].text+"</td>");
         if(vi.check_date)wo.writeln("<td class="+ssclass+">"+vi.liste[i].date+"</td>");
@@ -851,10 +869,8 @@ function printList(wo){
         if(vi.check_status)wo.writeln("<td class="+ssclass+">"+vr.stati[vi.liste[i].status]+"</td>");
         if(vi.check_owner)wo.writeln("<td class="+ssclass+">"+vi.liste[i].owner+"</td>");
         if(vi.check_group)wo.writeln("<td class="+ssclass+">"+vi.liste[i].group+"</td>");
-
-        if(vi.check_perm){
-            wo.write("<td class="+ssclass+">"+permShow(vi.liste[i].permission,wo)+"</td>");
-        }
+        if(vi.check_perm)wo.write("<td class="+ssclass+">"+permShow(vi.liste[i].permission,wo)+"</td>");
+        if(vi.check_lockedBy)wo.writeln("<td class="+ssclass+">"+vi.liste[i].lockedBy+"</td>");
         wo.writeln("</td></tr>");
     }
     wo.writeln("</tr></table>");

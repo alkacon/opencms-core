@@ -1,7 +1,7 @@
 
 function vars_resources() {
     this.stati = new Array("unchanged","changed","new","deleted");
-    this.descr = new Array("Name","Title","Type","Changed&nbsp;on","Size","State","Owner","Group","Permission");
+    this.descr = new Array("Name","Title","Type","Changed&nbsp;on","Size","State","Owner","Group","Permission","Locked&nbsp;by");
     this.actProject;
     this.onlineProject;
     this.lockedBy="locked by:";
@@ -13,7 +13,7 @@ function vars_resources() {
     this.userName = "tom";
 
     // view configuration (which columns are shown)
-    this.viewcfg = 255;                 
+    this.viewcfg = 1023;
 }
 
 
