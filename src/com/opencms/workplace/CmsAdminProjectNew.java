@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
- * Date   : $Date: 2000/04/19 09:04:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/26 15:45:50 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.19 $ $Date: 2000/04/19 09:04:31 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/26 15:45:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -98,6 +98,18 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         }
 		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
 		A_CmsRequestContext reqCont = cms.getRequestContext();  
+		  
+		// clear session values on first load 
+        String initial=(String)parameters.get(C_PARA_INITIAL); 
+		
+        if (initial!= null) {
+            // remove all session values
+            session.removeValue(C_NEWNAME);
+            session.removeValue(C_NEWGROUP); 
+			session.removeValue(C_NEWDESCRIPTION);
+            session.removeValue(C_NEWMANAGERGROUP); 
+			session.removeValue(C_NEWFOLDER); 
+        }
 		
 		String newName, newGroup, newDescription, newManagerGroup, newFolder;
 		String action = new String();
@@ -109,7 +121,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 		newManagerGroup = (String) parameters.get(C_PROJECTNEW_MANAGERGROUP);
 		newFolder = (String) parameters.get(C_PROJECTNEW_FOLDER);
 		
-		// if there are values in the session (like after an error), use them
+		// if there are still values in the session (like after an error), use them
 		if (newName == null) {
 			newName = (String) session.getValue(C_NEWNAME);
 		}
