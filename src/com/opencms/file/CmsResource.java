@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2000/06/13 16:02:24 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/06/14 14:08:31 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/06/13 16:02:24 $
+ * @version $Revision: 1.30 $ $Date: 2000/06/14 14:08:31 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -395,9 +395,9 @@ import com.opencms.core.*;
         StringBuffer output=new StringBuffer();
         output.append("[Resource]:");
         output.append(m_resourceName);
-        output.append(" Database ID: ");
+        output.append(" ID: ");
         output.append(m_resourceId);
-        output.append(" Database ParentID: ");
+        output.append(" ParentID: ");
         output.append(m_parentId);
         output.append(" , Project=");
         output.append(m_projectId);
@@ -409,6 +409,8 @@ import com.opencms.core.*;
         output.append(getFlagString());
         output.append(" : Resource-type=");
         output.append(getType());
+        output.append(" : Locked=");
+        output.append(isLockedBy());
         output.append(" : length=");
         output.append(getLength());
         return output.toString();

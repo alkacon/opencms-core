@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/14 12:44:13 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/06/14 14:08:31 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2000/06/14 12:44:13 $
+ * @version $Revision: 1.51 $ $Date: 2000/06/14 14:08:31 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -136,8 +136,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								 int projectId) 
         throws CmsException {
 		
+          
 		CmsProject testProject = readProject(currentUser, currentProject, projectId);
 		
+        if (projectId==C_PROJECT_ONLINE_ID) {
+            return true;
+        }
+        
 		// is the project unlocked?
 		if( testProject.getFlags() != C_PROJECT_STATE_UNLOCKED ) {
 			return(false);
@@ -904,8 +909,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									  String resource, Hashtable propertyinfos)
         throws CmsException {
         // read the resource
+   
 		CmsResource res = readFileHeader(currentUser,currentProject, resource);
-
+  
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
@@ -915,11 +921,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
 		// set the file-state to changed
 		if(res.isFile()){
-
-			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+     
+			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
 		} else {
- 
-			m_dbAccess.writeFolder(currentProject, m_dbAccess.readFolder(currentProject.getId(), resource), true);			
+    
+			m_dbAccess.writeFolder(currentProject, m_dbAccess.readFolder(currentProject.getId(), resource), false);			
 		}
     }
 
@@ -2683,7 +2689,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 String parent = onlineRes.getParent();
                 Stack resources=new Stack();
 	
-                // go through all partens and store them on a stack
+                // go through all parens and store them on a stack
 				while(parent != null) {
             		// read the online-resource
                    	onlineRes = readFileHeader(currentUser,online, parent);
@@ -2697,15 +2703,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                     parent=onlineRes.getAbsolutePath();                    
 					// copy it to the offlineproject
                     try {
-					    m_dbAccess.copyResourceToProject(currentProject, online, onlineRes.getResourceId(),
-                                                         onlineRes.getParentId(),onlineRes.getFileId(),onlineRes.getAbsolutePath(),
-                                                         currentUser.getId());
-                                                        
+					    m_dbAccess.copyResourceToProject(currentProject, online, onlineRes);                                                                                                                   
 					    // read the offline-resource
 					    offlineRes = readFileHeader(currentUser,currentProject, parent);
-					    // copy the metainfos			
+                 	    // copy the metainfos			
 					    writeProperties(currentUser,currentProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,currentProject,onlineRes.getAbsolutePath()));
-                   	} catch (CmsException exc) {
+                     	} catch (CmsException exc) {
          	    	// if the subfolder exists already - all is ok
 			        }
 				}
@@ -2732,32 +2735,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											  CmsProject offlineProject,
 											  String resource)
         throws CmsException {
-		// read the online-resource
-		CmsResource onlineRes = readFileHeader(currentUser,onlineProject, resource);
-		// copy it to the offlineproject
-		m_dbAccess.copyResourceToProject(offlineProject, onlineProject, onlineRes.getResourceId(),
-                                         onlineRes.getParentId(),onlineRes.getFileId(),onlineRes.getAbsolutePath(),
-                                         currentUser.getId());
-                       
-		// read the offline-resource
-		CmsResource offlineRes = readFileHeader(currentUser,offlineProject, resource);
-		// copy the metainfos			
-		writeProperties(currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
+        try {
+		    // read the online-resource
+		    CmsResource onlineRes = readFileHeader(currentUser,onlineProject, resource);
+		    // copy it to the offlineproject
+		    m_dbAccess.copyResourceToProject(offlineProject, onlineProject,onlineRes);
+                                                              
+    		// read the offline-resource
+	    	CmsResource offlineRes = readFileHeader(currentUser,offlineProject, resource);
+
+		    // copy the metainfos			
+		    writeProperties(currentUser,offlineProject,offlineRes.getAbsolutePath(), readAllProperties(currentUser,onlineProject,onlineRes.getAbsolutePath()));
                   
 		
-		// now walk recursive through all files and folders, and copy them too
-		if(onlineRes.isFolder()) {
-			Vector files = getFilesInFolder(currentUser,onlineProject, resource);
-			Vector folders = getSubFolders(currentUser,onlineProject, resource);
-			for(int i = 0; i < files.size(); i++) {
-				helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
-											((CmsResource)files.elementAt(i)).getAbsolutePath());
-			}
-			for(int i = 0; i < folders.size(); i++) {
-				helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
+		    // now walk recursive through all files and folders, and copy them too
+		    if(onlineRes.isFolder()) {
+			    Vector files = getFilesInFolder(currentUser,onlineProject, resource);
+			    Vector folders = getSubFolders(currentUser,onlineProject, resource);
+			    for(int i = 0; i < folders.size(); i++) {                    
+				    helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
 											((CmsResource)folders.elementAt(i)).getAbsolutePath());
-			}
-		}
+			    }
+                for(int i = 0; i < files.size(); i++) {
+				    helperCopyResourceToProject(currentUser,onlineProject, offlineProject, 
+											((CmsResource)files.elementAt(i)).getAbsolutePath());
+			    }
+			    
+		    }
+        } catch (CmsException exc) {
+           exc.printStackTrace();
+        }
 	}
     
 	/**
@@ -4456,38 +4463,40 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                CmsResource resource) throws CmsException {
-       // check, if this is the onlineproject
-        System.err.println("+1+");
+       
+
+        // check, if this is the onlineproject
+
 		if(onlineProject(currentUser, currentProject).equals(currentProject)){
 			// the online-project is not writeable!
 			return(false);
 		}
-		       System.err.println("+2+");
+
   		// check the access to the project
 		if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
 			// no access to the project!
 			return(false);
 		}
-       System.err.println("+3+");
+
         // check if the resource belongs to the current project
         if(resource.getProjectId() != currentProject.getId()) {
             return false;
         }
-               System.err.println("+4+");
+
       	// check, if the resource is locked by the current user
-		if(resource.isLockedBy() != currentUser.getId()) {
+		/*if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
 			return(false);					
-		}
-		System.err.println("+5+");
-		// check the rights vor the current resource
+		}*/
+
+        // check the rights vor the current resource
         if( ! ( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
 				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
 				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) ) {
 			// no write access to this resource!
 			return false;
 		}
-		       System.err.println("+6+");	
+
         // read the parent folder
 		if(resource.getParent() != null) {
 			resource = m_dbAccess.readFolder(currentProject.getId(), resource.getParent());
@@ -4495,7 +4504,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// no parent folder!
 			return true;
 		}
-		       System.err.println("+7+");
+	
 	
 		// check the rights and if the resource is not locked
 		do {
@@ -4518,7 +4527,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				return(false);
 			}
 		} while(resource.getParent() != null);
-		       System.err.println("+8+");
+
 		// all checks are done positive
 		return(true);
     }

@@ -79,7 +79,7 @@ create table CMS_RESOURCES              (RESOURCE_ID int not null,
                                          DATE_LASTMODIFIED datetime not null,
                                          SIZE int not null,
                                          RESOURCE_LASTMODIFIED_BY int not null,
-                                         primary key(RESOURCE_ID));
+                                         primary key(RESOURCE_ID),unique(RESOURCE_NAME,PROJECT_ID));
 
 create table CMS_FILES                  (FILE_ID int not null,
                                          FILE_CONTENT mediumblob not null,

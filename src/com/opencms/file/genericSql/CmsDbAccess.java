@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/14 12:44:13 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2000/06/14 14:08:31 $
+ * Version: $Revision: 1.65 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.64 $ $Date: 2000/06/14 12:44:13 $ * 
+ * @version $Revision: 1.65 $ $Date: 2000/06/14 14:08:31 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2401,22 +2401,23 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      *
      * @param project The project to be published.
 	 * @param onlineProject The online project of the OpenCms.
-	 * @param resourceId The Id of the resource.
-	 * @param parentId The parentId of the resource.
-	 * @param fileId The fileId of the resource.
-	 * @param resourcename The name of the resource.
-	 * @param resourceLastModifiedBy The Id of the user who changed the resourse.
- 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * @param resource The resource to be copied to the offline project.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
      */
      public void copyResourceToProject(CmsProject project,
                                        CmsProject onlineProject,
-                                       int resourceId, int parentId,
-                                       int fileId, String resourcename,
-                                       int resourceLastModifiedBy) 
+                                       CmsResource resource)
+                              
          throws CmsException {
-         CmsResource resource=readResource(onlineProject,resourcename);
+        // get the parent resource in the offline project
+         int id=C_UNKNOWN_ID;
+         try {
+            CmsResource parent=readResource(project,resource.getParent());
+            id=parent.getResourceId();
+         } catch (CmsException e) {
+         }
          resource.setState(C_STATE_UNCHANGED);
-         resource.setParentId(parentId);
+         resource.setParentId(id);
          createResource(project,onlineProject,resource);
      }
 	
