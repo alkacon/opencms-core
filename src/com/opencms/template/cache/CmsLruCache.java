@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/07/12 11:55:37 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -356,11 +356,7 @@ public class CmsLruCache {
                     removeItem(item);
                 }
             }catch(NullPointerException e){
-                System.err.println("###====== NullPointerException");
-                System.err.println("Element_key:"+item.key);
-                System.err.println("Element_value:"+((A_CmsElement)item.value));
-                System.err.println("-- CacheDirectives:"+((A_CmsElement)item.value).getCacheDirectives());
-                e.printStackTrace();
+                // cachedirectives are null, so we delete this Element anyway.
                 Vector actItem = new Vector();
                 actItem.add(0, item.key);
                 actItem.add(1, item.value);
