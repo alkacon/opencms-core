@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2004/02/06 20:52:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/02/09 14:49:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -138,10 +138,6 @@ public class CmsTree extends CmsWorkplace {
             String curTypeLocalName = messages.key("fileicon."+curTypeName);
             try {
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curTypeName);
-                if (curTypeName.startsWith("new")) {
-                    // type "newpage" should be displayed as "page"
-                    curTypeName = curTypeName.substring(3);
-                }
                 retValue.append("\taddResourceType(");
                 retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
             } catch (CmsException e) {
@@ -218,8 +214,14 @@ public class CmsTree extends CmsWorkplace {
         List values = new ArrayList();    
         int selectedIndex = 0;  
         String preSelection = getSettings().getTreeSite(getTreeType());
-        if (preSelection == null) {           
-            preSelection = CmsSiteManager.getCurrentSite(getCms()).getSiteRoot();
+        if (preSelection == null) {  
+            if ("".equals(getCms().getRequestContext().getSiteRoot())) {
+                // we are in the root site, getCurrentSite(CmsObject) includes NOT the root site
+                preSelection = "";
+            } else {
+                // get the site root of the current site
+                preSelection = CmsSiteManager.getCurrentSite(getCms()).getSiteRoot();
+            }
             // set the tree site to avoid discrepancies between selector and tree
             getSettings().setTreeSite(getTreeType(), preSelection);
         }  
