@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2004/12/17 10:17:17 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/12/22 10:36:19 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.JspException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.5.0
  */
 public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog {
@@ -456,7 +456,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(");");
             return button(href.toString(), null, "new", "button.addnew", 0);    
         } else {
-            return buttonBarSpacer(20);
+            return "<td style=\"width: 22px;\">&nbsp;</td>";
         }
     }
     
@@ -479,7 +479,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(");");
             return button(href.toString(), null, "deletecontent", "button.delete", 0);    
         } else {
-            return buttonBarSpacer(20);
+            return "<td style=\"width: 22px;\">&nbsp;</td>";
         }
     }
     
