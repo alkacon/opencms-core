@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/08/25 10:28:43 $
- * Version: $Revision: 1.494 $
+ * Date   : $Date: 2003/08/28 09:11:09 $
+ * Version: $Revision: 1.495 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.1.8 Salusa Secundus - August xx, 2003
+OpenCms 5.1.8 Salusa Secundus - August 28, 2003
+- Several performance improvements by optimized DB indexing and advanced caching
 ! Improved handling of file modification user and time information, this is now
   updated only if the file content is really changed, not when a folder is renamed etc.
 ! OpenCms is now loaded when the servlet context is loaded, not when the servlet is 
