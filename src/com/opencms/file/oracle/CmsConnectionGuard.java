@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracle/Attic/CmsConnectionGuard.java,v $
- * Date   : $Date: 2000/07/06 15:55:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/07/07 07:43:15 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package com.opencms.file.Oracle;
+package com.opencms.file.oracle;
 
 import com.opencms.file.utils.*;
 import com.opencms.core.*;
@@ -42,7 +42,7 @@ import java.sql.*;
  * 
  * @author Alexander Lucas
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/07/06 15:55:04 $
+ * @version $Revision: 1.2 $ $Date: 2000/07/07 07:43:15 $
  */
 public class CmsConnectionGuard extends Thread implements I_CmsLogChannels {
 	/** The keep-alive statement */
