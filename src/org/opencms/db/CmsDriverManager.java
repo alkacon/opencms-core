@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/01 13:34:31 $
- * Version: $Revision: 1.346 $
+ * Date   : $Date: 2004/04/02 16:59:28 $
+ * Version: $Revision: 1.347 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.346 $ $Date: 2004/04/01 13:34:31 $
+ * @version $Revision: 1.347 $ $Date: 2004/04/02 16:59:28 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6529,13 +6529,27 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Returns a list of all template resources which must be processed during a static export.<p>
      * 
      * @param context the current request context
-     * @param parameterResources flag for reading resources with parameters (true) or without (false)
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param a timestamp for reading the data from the db
      * @return List of template resources
      * @throws CmsException if something goes wrong
      */
-    public List readStaticExportResources(CmsRequestContext context, boolean parameterResources) throws CmsException {
+    public List readStaticExportResources(CmsRequestContext context, int parameterResources, long timestamp) throws CmsException {
      
-        return m_projectDriver.readStaticExportResources(context.currentProject(), parameterResources);
+        return m_projectDriver.readStaticExportResources(context.currentProject(), parameterResources, timestamp);
+    }
+    
+    
+    /**
+     * Returns the parameters of a resource in the table of all published template resources.<p>
+     *
+     * @param context the current request context
+     * @param rfsName the rfs name of the resource
+     * @return the paramter string of the requested resource
+     * @throws CmsException if something goes wrong
+     */
+    public String readStaticExportPublishedResourceParamters(CmsRequestContext context, String rfsName) throws CmsException {
+        return  m_projectDriver.readStaticExportPublishedResourceParamters(context.currentProject(), rfsName);
     }
     
 
@@ -7901,11 +7915,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @param resourceName The name of the resource to be added to the static export
      * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
      * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
      * @throws CmsException if something goes wrong
      */
-    public void writeStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter) throws CmsException {
+    public void writeStaticExportPublishedResource(CmsRequestContext context, String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
 
-        m_projectDriver.writeStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter);
+        m_projectDriver.writeStaticExportPublishedResource(context.currentProject(), resourceName, linkType, linkParameter, timestamp);
     }
  
     
