@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/08/16 08:20:33 $
-* Version: $Revision: 1.214 $
+* Date   : $Date: 2001/09/21 06:25:53 $
+* Version: $Revision: 1.215 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.214 $ $Date: 2001/08/16 08:20:33 $ *
+ * @version $Revision: 1.215 $ $Date: 2001/09/21 06:25:53 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -2770,7 +2770,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                                     C_TASK_PRIORITY_NORMAL);
 
         CmsProject setup = createProject(admin, administrators, administrators, task, "_setupProject",
-                                           "the project for setup", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
+                                           "Initial site import", C_FLAG_ENABLED, C_PROJECT_TYPE_TEMPORARY);
 
         // create the root-folder for the offline project
         rootFolder = createFolder(admin, setup, C_UNKNOWN_ID, C_UNKNOWN_ID, C_ROOT, 0);
@@ -3106,6 +3106,72 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
          return(projects);
      }
 
+    /**
+     * Returns all projects from the history.
+     *
+     *
+     * @return a Vector of projects.
+     */
+     public Vector getAllBackupProjects() throws CmsException {
+         Vector projects = new Vector();
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         Connection con = null;
+
+         try {
+             // create the statement
+             con = DriverManager.getConnection(m_poolNameBackup);
+             statement = con.prepareStatement(m_cq.get("C_PROJECTS_READALL_BACKUP"));
+             res = statement.executeQuery();
+             while(res.next()) {
+                 Vector resources = readBackupProjectResources(res.getInt("VERSION_ID"));
+                 projects.addElement( new CmsBackupProject(res.getInt("VERSION_ID"),
+                                                    res.getInt("PROJECT_ID"),
+                                                    res.getString("PROJECT_NAME"),
+                                                    SqlHelper.getTimestamp(res,"PROJECT_PUBLISHDATE"),
+                                                    res.getInt("PROJECT_PUBLISHED_BY"),
+                                                    res.getString("PROJECT_PUBLISHED_BY_NAME"),
+                                                    res.getString("PROJECT_DESCRIPTION"),
+                                                    res.getInt("TASK_ID"),
+                                                    res.getInt("USER_ID"),
+                                                    res.getString("USER_NAME"),
+                                                    res.getInt("GROUP_ID"),
+                                                    res.getString("GROUP_NAME"),
+                                                    res.getInt("MANAGERGROUP_ID"),
+                                                    res.getString("MANAGERGROUP_NAME"),
+                                                    SqlHelper.getTimestamp(res,"PROJECT_CREATEDATE"),
+                                                    res.getInt("PROJECT_TYPE"),
+                                                    resources));
+             }
+         } catch( SQLException exc ) {
+             throw new CmsException("[" + this.getClass().getName() + ".getAllBackupProjects()] " + exc.getMessage(),
+                 CmsException.C_SQL_ERROR, exc);
+         } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+         }
+         return(projects);
+     }
      /**
      * Returns all child groups of a groups<P/>
      *
@@ -4531,6 +4597,8 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         if (enableHistory){
             // get the version id for the backup
             versionId = getBackupVersionId();
+            // store the projectdata to the backuptables for history
+            backupProject(currentProject, versionId, publishDate, user);
         }
 
         // read all folders in offlineProject
@@ -4976,8 +5044,6 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
             removeFolderForPublish(projectId, currentFolder.getAbsolutePath());
         } // end of for
         //clearFilesTable();
-        // store the projectdata to the backuptables for history
-        backupProject(currentProject, versionId, publishDate, user);
         return changedResources;
     }
 
@@ -4991,13 +5057,24 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
         Connection con = null;
         ResultSet res = null;
         int versionId = 1;
+        int resVersionId = 1;
         try{
             // get the max version id
-            con = DriverManager.getConnection(m_poolName);
+            con = DriverManager.getConnection(m_poolNameBackup);
             statement = con.prepareStatement(m_cq.get("C_RESOURCES_BACKUP_MAXVER"));
             res = statement.executeQuery();
             if (res.next()){
                 versionId = res.getInt(1)+1;
+            }
+            res.close();
+            statement.close();
+            statement = con.prepareStatement(m_cq.get("C_RESOURCES_BACKUP_MAXVER_RESOURCE"));
+            res = statement.executeQuery();
+            if (res.next()){
+                resVersionId = res.getInt(1)+1;
+            }
+            if (resVersionId > versionId){
+                versionId = resVersionId;
             }
             return versionId;
         } catch (SQLException exc){
