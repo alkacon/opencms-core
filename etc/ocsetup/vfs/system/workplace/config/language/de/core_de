@@ -500,11 +500,12 @@
 			<ebtitle>Neue Sektion anlegen</ebtitle>
 			<ebfolderlogo>Verzeichnislogo</ebfolderlogo>
 			<eblogo>Hauptlogo</eblogo>
-			<ebsecpic>Sektionsbild für die Navigation</ebsecpic>
+			<ebsecpic>Sektionslogo</ebsecpic>
 			<eblink>Link in stat. Navigation</eblink>
-			<ebtemplatecolor>Templatefarbe</ebtemplatecolor>
-			<ebmouseover>Mouseover</ebmouseover>
-			<ebnavborder>Navigation Rand</ebnavborder>
+			<ebcolor>Farben im Template</ebcolor>
+			<ebtemplatecolor>Template</ebtemplatecolor>
+			<ebmouseover>Mouseover Navigation</ebmouseover>
+			<ebnavborder>Rand Navigation</ebnavborder>
 			<ebborder>Rahmen</ebborder>
 			<editedat>Zuletzt bearbeitet am</editedat>
 			<editedby>Bearbeitet von</editedby>

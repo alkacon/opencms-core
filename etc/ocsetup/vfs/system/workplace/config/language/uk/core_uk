@@ -497,11 +497,12 @@
 			<ebtitle>Create a new Section</ebtitle>
 			<ebfolderlogo>Folderlogo</ebfolderlogo>
 			<eblogo>Mainlogo</eblogo>
-			<ebsecpic>Sectionspicture for Navigation</ebsecpic>
+			<ebsecpic>Sectionslogo</ebsecpic>
 			<eblink>Link in stat. Navigation</eblink>
-			<ebtemplatecolor>Templatecolor</ebtemplatecolor>
-			<ebmouseover>Mouseover</ebmouseover>
-			<ebnavborder>Navigation Border</ebnavborder>
+			<ebcolor>Colours in Template</ebcolor>
+			<ebtemplatecolor>Template</ebtemplatecolor>
+			<ebmouseover>Mouseover Navigation</ebmouseover>
+			<ebnavborder>Border Navigation</ebnavborder>
 			<ebborder>Border</ebborder>
 			<editedat>Last edited at</editedat>
 			<editedby>Edited by</editedby>
