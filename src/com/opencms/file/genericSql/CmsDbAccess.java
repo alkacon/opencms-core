@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2001/10/16 09:09:33 $
-* Version: $Revision: 1.221 $
+* Date   : $Date: 2001/10/18 07:08:05 $
+* Version: $Revision: 1.222 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.221 $ $Date: 2001/10/16 09:09:33 $ *
+ * @version $Revision: 1.222 $ $Date: 2001/10/18 07:08:05 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -4580,6 +4580,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 changedResources.addElement(currentFolder.getResourceName());
                 // C_STATE_NEW
             } else if (currentFolder.getState() == C_STATE_NEW){
+                changedResources.addElement(currentFolder.getResourceName());
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFolder.getAbsolutePath());
                 if (exportKey != null){
@@ -4898,6 +4899,7 @@ public void exportStaticResources(String exportTo, CmsFile file) throws CmsExcep
                 updateResourcestate(currentFile);
             // C_STATE_NEW
             } else if (currentFile.getState() == C_STATE_NEW) {
+                changedResources.addElement(currentFile.getResourceName());
                 // export to filesystem if necessary
                 String exportKey = checkExport(currentFile.getAbsolutePath());
                 if (exportKey != null){
