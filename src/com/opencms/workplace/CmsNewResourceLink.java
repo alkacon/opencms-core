@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/10/09 16:44:19 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import java.util.Vector;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -56,7 +57,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.53 $ $Date: 2003/10/09 16:44:19 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -87,6 +88,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
         String targetName = null;
         String foldername = null;
         // String type = null;
+        boolean restoreSiteRoot = false;
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // get the document to display
@@ -225,50 +227,67 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                         linkResource = editFile;
                     } else {
                         
-                        // check if the link target is a file or a folder
-                        boolean isFolder = false;
                         try {
-                            CmsResource targetRes = cms.readFileHeader(targetName);
-                            isFolder = targetRes.isFolder(); 
-                        } catch (CmsException e) { }
-                      
-                        if (isFolder) {
-                            
-                            // link URL is a folder, so copy the folder with all sub resources as links
-                            if (targetName.endsWith("/")) {
-                                targetName = targetName.substring(0, targetName.length()-1);
+                            if (CmsSiteManager.getSiteRoot(targetName) != null) { 
+                                String siteRootFolder = cms.getRequestContext().getSiteRoot();
+                                if (siteRootFolder.endsWith("/")) {
+                                    siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length()-1);
+                                }  
+                                foldername = siteRootFolder + foldername;
+                                cms.getRequestContext().saveSiteRoot();
+                                cms.getRequestContext().setSiteRoot("/");
+                                restoreSiteRoot = true;
                             }
-
-                            // copy the folder
-                            cms.copyResource(targetName, foldername + filename, false, true, C_COPY_AS_LINK);
                             
-                            // set the variables that navigation properties can be updated
-                            linkResource = cms.readFileHeader(foldername + filename);
-                            checkurl = true;
-                        } else {
-                                            
-                            // link URL is a file, so create the new file
-                            Hashtable prop = new Hashtable();
-                            prop.put(C_PROPERTY_TITLE, title);
-                            if (step.equals("1")) {
-                                if (!targetName.startsWith("/")) {
-                                    checkurl = CmsLinkCheck.checkUrl(targetName);
-                                }
-                            }
-                            if (checkurl ) {
-                                Map targetProperties = null;
+                            // check if the link target is a file or a folder
+                            boolean isFolder = false;
+                            try {
+                                CmsResource targetRes = cms.readFileHeader(targetName);
+                                isFolder = targetRes.isFolder(); 
+                            } catch (CmsException e) { }
+                 
+                            if (isFolder) {
                                 
-                                if (keepTargetProperties) {
-                                    try {
-                                        targetProperties = cms.readProperties(targetName);
-                                    } catch (Exception e) { }
+                                // link URL is a folder, so copy the folder with all sub resources as links
+                                if (targetName.endsWith("/")) {
+                                    targetName = targetName.substring(0, targetName.length()-1);
                                 }
                                 
-                                // TODO VFS links: creates an external HTTP link following the new linking paradigm
-                                linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
+                                // copy the folder
+                                cms.copyResource(targetName, foldername + filename, false, true, C_COPY_AS_LINK);
+                                
+                                // set the variables that navigation properties can be updated
+                                linkResource = cms.readFileHeader(foldername + filename);
+                                checkurl = true;
+                            } else {
+                                                
+                                // link URL is a file, so create the new file
+                                Hashtable prop = new Hashtable();
+                                prop.put(C_PROPERTY_TITLE, title);
+                                if (step.equals("1")) {
+                                    if (!targetName.startsWith("/")) {
+                                        checkurl = CmsLinkCheck.checkUrl(targetName);
+                                    }
+                                }
+                                if (checkurl ) {
+                                    Map targetProperties = null;
+                                    
+                                    if (keepTargetProperties) {
+                                        try {
+                                            targetProperties = cms.readProperties(targetName);
+                                        } catch (Exception e) { }
+                                    }
+                                    
+                                    // TODO VFS links: creates an external HTTP link following the new linking paradigm
+                                    linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
+                                }
+                            
                             }
-                        
+                        } finally {
+                        if (restoreSiteRoot) {
+                            cms.getRequestContext().restoreSiteRoot();
                         }
+                }
                     }
                     // now check if navigation informations have to be added to the new page.
                     if(addToNav && checkurl) {

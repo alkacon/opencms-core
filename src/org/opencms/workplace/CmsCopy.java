@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/10/01 09:35:04 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/10/09 16:44:19 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.opencms.site.CmsSiteManager;
+
 /**
  * Provides methods for the copy resources dialog.<p> 
  * 
@@ -49,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -230,10 +232,21 @@ public class CmsCopy extends CmsDialog {
             && !(res.isFolder())) {
                 // file copy but file already exists, now check target file type
                 int targetType = -1;
+                boolean restoreSiteRoot = false;
                 try {
+                    if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) { 
+                        getCms().getRequestContext().saveSiteRoot();
+                        getCms().getRequestContext().setSiteRoot("/");
+                        restoreSiteRoot = true;
+                    }
                     CmsResource targetRes = getCms().readFileHeader(getParamTarget());
                     targetType = targetRes.getType();
-                } catch (CmsException exc) { }
+                } catch (CmsException exc) { 
+                } finally {
+                    if (restoreSiteRoot) {
+                        getCms().getRequestContext().restoreSiteRoot();
+                    }
+                }
                 if (res.getType() == targetType) {               
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message." + getParamDialogtype()));
@@ -279,32 +292,52 @@ public class CmsCopy extends CmsDialog {
         // calculate the target name
         String target = getParamTarget();
         if (target == null) target = "";
-
-        if (! target.startsWith("/")) {
-            // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParentFolder(getParamResource()) + target; 
-        }
+        
+        boolean restoreSiteRoot = false;
         try {
-            CmsResource res = getCms().readFileHeader(target);
-            if (res.isFolder()) {
-                // target folder already exists, so we add the current folder name
-                if (! target.endsWith("/")) target += "/";
-                target = target + CmsResource.getName(getParamResource());
+            // check if a site root was added to the target name
+            String sitePrefix = "";
+            if (CmsSiteManager.getSiteRoot(target) != null) { 
+                String siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                if (siteRootFolder.endsWith("/")) {
+                    siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length()-1);
+                }  
+                sitePrefix = siteRootFolder;
+                getCms().getRequestContext().saveSiteRoot();
+                getCms().getRequestContext().setSiteRoot("/");
+                restoreSiteRoot = true;
             }
-        } catch (CmsException e) {
-            // target folder does not already exist, so target name is o.k.
+            
+            if (! target.startsWith("/")) {
+                // target is not an absolute path, add the current parent folder
+                target = CmsResource.getParentFolder(getParamResource()) + target; 
+            }
+            try {
+                CmsResource res = getCms().readFileHeader(target);
+                if (res.isFolder()) {
+                    // target folder already exists, so we add the current folder name
+                    if (! target.endsWith("/")) target += "/";
+                    target = target + CmsResource.getName(getParamResource());
+                }
+            } catch (CmsException exc) {
+                // target folder does not already exist, so target name is o.k.
+            }
+            
+            // set the target parameter value
+            setParamTarget(target);        
+             
+            // delete existing target resource if confirmed by the user
+            if (DIALOG_CONFIRMED.equals(getParamAction())) {
+                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
+            }            
+            
+            // copy the resource       
+            getCms().copyResource(sitePrefix + getParamResource(), target, "true".equals(getParamKeeprights()), true, copyMode);
+        } finally {
+            if (restoreSiteRoot) {
+                getCms().getRequestContext().restoreSiteRoot();
+            }
         }
-        
-        // set the target parameter value
-        setParamTarget(target);        
-              
-        // delete existing target resource if confirmed by the user
-        if (DIALOG_CONFIRMED.equals(getParamAction())) {
-            getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
-        }            
-        
-        // copy the resource       
-        getCms().copyResource(getParamResource(), target, "true".equals(getParamKeeprights()), true, copyMode);
         return true;
     }
 }

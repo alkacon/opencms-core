@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/10/06 13:57:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/10/09 16:44:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,6 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFolder;
@@ -47,6 +45,10 @@ import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.util.CmsUUID;
+
 /**
  * Generates the tree view for the OpenCms Workplace.<p> 
  * 
@@ -57,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -77,6 +79,12 @@ public class CmsTree extends CmsWorkplace {
     
     /** The type of the tree (e.g. "copy", "project" etc.) */
     private String m_treeType;
+    
+    /** type name for showing the tree when creating links */
+    private static final String C_TYPE_VFSLINK = "vfslink"; 
+    
+    /** type name for showing the tree when copying resources */
+    private static final String C_TYPE_COPY = "copy"; 
 
     /**
      * Public constructor.<p>
@@ -169,6 +177,39 @@ public class CmsTree extends CmsWorkplace {
     }
     
     /**
+     * Returns the HTML for the site selector box for the explorer tree window.<p>
+     * 
+     * @param htmlAttributes optional attributes for the &lt;select&gt; tag
+     * @return HTML code for the site selector box
+     */
+    public String getSiteSelector(String htmlAttributes) {
+        List options = new ArrayList();
+        List values = new ArrayList();    
+        int selectedIndex = 0;  
+        String preSelection = getSettings().getTreeSite(getTreeType());
+        if (preSelection == null) {           
+            preSelection = CmsSiteManager.getCurrentSite(getCms()).getSiteRoot();
+        }  
+
+        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+
+        Iterator i = sites.iterator();
+        int pos = 0;
+        while (i.hasNext()) {
+            CmsSite site = (CmsSite)i.next();
+            values.add(site.getSiteRoot());
+            options.add(site.getTitle());
+            if (site.getSiteRoot().equals(preSelection)) { 
+                // this is the user's current site
+                selectedIndex = pos;
+            }
+            pos++;
+        }
+        
+        return buildSelect(htmlAttributes, options, values, selectedIndex);
+    } 
+    
+    /**
      * Returns the name of the start folder (or "last known" folder) to be loaded.<p>
      *
      * @return the name of the start folder (or "last known" folder) to be loaded
@@ -196,13 +237,20 @@ public class CmsTree extends CmsWorkplace {
         String startFolder = getStartFolder();
         
         // change the site root for channel tree window
-        boolean showChannelTree = false;
+        boolean restoreSiteRoot = false;
         if ("channelselector".equals(getTreeType())) {
-            showChannelTree = true;
+            restoreSiteRoot = true;
             getCms().getRequestContext().saveSiteRoot();
             getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+        } else if (getSettings().getTreeSite(getTreeType()) != null) {
+            restoreSiteRoot = true;
+            getCms().getRequestContext().saveSiteRoot();
+            if (newTree()) {
+                targetFolder = "/";
+            }
+            getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
         }
-
+      
         StringBuffer result = new StringBuffer(2048);
         try {
             // read the selected folder
@@ -286,7 +334,13 @@ public class CmsTree extends CmsWorkplace {
                 // this is a popup window tree
                 result.append("parent.setTreeType(\"");
                 result.append(getTreeType());
-                result.append("\");\n");            
+                result.append("\");\n");
+                if (getSettings().getTreeSite(getTreeType()) != null) {
+                    // store the current site if present
+                    result.append("parent.setTreeSite(\"");
+                    result.append(getSettings().getTreeSite(getTreeType()));
+                    result.append("\");\n");
+                }         
             }
             if (newTree()) {
                 // new tree 
@@ -308,7 +362,7 @@ public class CmsTree extends CmsWorkplace {
             
             result.append("}\n");
         } finally {
-            if (showChannelTree) {
+            if (restoreSiteRoot) {
                 getCms().getRequestContext().restoreSiteRoot();
             }
         }
@@ -351,6 +405,7 @@ public class CmsTree extends CmsWorkplace {
         boolean rootloaded = "true".equals(request.getParameter("rootloaded"));
         String resource = request.getParameter("resource");
         setTreeType(request.getParameter("type"));
+        String treeSite = request.getParameter("treesite");
         String currentResource;
         if (getTreeType() == null) {
             currentResource = getSettings().getExplorerResource();
@@ -383,6 +438,9 @@ public class CmsTree extends CmsWorkplace {
         
         if (getTreeType() != null) {
             getSettings().setTreeResource(getTreeType(), resource);
+            if (treeSite != null) {
+                getSettings().setTreeSite(getTreeType(), treeSite);
+            }
         }
         
         setTargetFolder(resource);
@@ -458,5 +516,21 @@ public class CmsTree extends CmsWorkplace {
      */
     private void setTreeType(String type) {
         m_treeType = type;
+    }
+    
+    /**
+     * Indicates if the site selector should be shown depending on the tree type.<p>
+     * 
+     * @return true if site selector should be shown, otherwise false
+     */
+    public boolean showSiteSelector() {
+        boolean show = (C_TYPE_VFSLINK.equals(getTreeType()) || C_TYPE_COPY.equals(getTreeType()));
+        if (show) {
+            int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
+            if (siteCount < 2) {
+                return false;
+            }
+        }
+        return show;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/10/02 10:11:26 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/10/09 16:44:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,13 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.main.OpenCms;
-
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsUser;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.opencms.main.OpenCms;
 
 
 /**
@@ -44,7 +44,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -66,6 +66,7 @@ public class CmsWorkplaceSettings {
     private String m_permissionDetailView;
     private String m_currentSite;
     private Map m_treeType;
+    private Map m_treeSite;
         
     /**
      * Constructor, only package visible.<p>
@@ -73,6 +74,7 @@ public class CmsWorkplaceSettings {
     CmsWorkplaceSettings() { 
         m_explorerPage = 1;
         m_treeType = new HashMap();
+        m_treeSite = new HashMap();
         m_currentSite = OpenCms.getSiteManager().getDefaultSite().getSiteRoot(); 
     }
     
@@ -391,6 +393,28 @@ public class CmsWorkplaceSettings {
         if (result == null) {
             result = "/";
         }
+        return result;
+    } 
+    
+    /**
+     * Sets the tree resource uri for the specified tree type.<p>
+     * 
+     * @param type the type of the tree
+     * @param value the resource uri to set for the type
+     */
+    public synchronized void setTreeSite(String type, String value) {
+        if (value == null) return;
+        m_treeSite.put(type, value);
+    }
+
+    /**
+     * Returns the tree resource uri for the specified tree type
+     * 
+     * @param type the type of the tree
+     * @return the tree resource uri for the specified tree type
+     */
+    public synchronized String getTreeSite(String type) {
+        String result = (String)m_treeSite.get(type);
         return result;
     } 
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/10/09 16:44:19 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.opencms.site.CmsSiteManager;
+
 /**
  * Provides methods for the move resources dialog.<p> 
  * 
@@ -49,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -181,6 +183,21 @@ public class CmsMove extends CmsDialog {
         String target = getParamTarget();
         if (target == null) target = "";
         
+        boolean restoreSiteRoot = false;
+        try {
+            // check if a site root was added to the target name
+            String sitePrefix = "";
+            if (CmsSiteManager.getSiteRoot(target) != null) { 
+                String siteRootFolder = getCms().getRequestContext().getSiteRoot();
+                if (siteRootFolder.endsWith("/")) {
+                    siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length()-1);
+                }  
+                sitePrefix = siteRootFolder;
+                getCms().getRequestContext().saveSiteRoot();
+                getCms().getRequestContext().setSiteRoot("/");
+                restoreSiteRoot = true;
+            }
+        
         if (target.equals(getParamResource())) {
             throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
         }
@@ -222,7 +239,12 @@ public class CmsMove extends CmsDialog {
         } 
                 
         // move the resource
-        getCms().moveResource(getParamResource(), target);
+        getCms().moveResource(sitePrefix + getParamResource(), target);
+        } finally {
+            if (restoreSiteRoot) {
+                getCms().getRequestContext().restoreSiteRoot();
+            }
+        }
         return true;
     }
 }
