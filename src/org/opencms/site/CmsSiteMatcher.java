@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2003/10/09 09:40:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.site;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public final class CmsSiteMatcher implements Cloneable {   
@@ -75,7 +75,9 @@ public final class CmsSiteMatcher implements Cloneable {
         // remove whitespace
         serverString = serverString.trim();
         // cut trailing "/" 
-        if (serverString.endsWith("/")) serverString = serverString.substring(0, serverString.length()-1);
+        if (serverString.endsWith("/")) {
+            serverString = serverString.substring(0, serverString.length()-1);
+        }
         int pos, serverPort;
         String serverProtocol, serverName;
         // check for protocol
@@ -127,11 +129,16 @@ public final class CmsSiteMatcher implements Cloneable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
-        if ((o == null) || !(o instanceof CmsSiteMatcher)) return false;
+        if ((o == null) || !(o instanceof CmsSiteMatcher)) {
+            return false;
+        }
         // if one of the object is the default matcher the result is true
-        if ((this == C_DEFAULT_MATCHER) || (o == C_DEFAULT_MATCHER)) return true;
-        if (o == this) return true;        
-
+        if ((this == C_DEFAULT_MATCHER) || (o == C_DEFAULT_MATCHER)) {
+            return true;
+        }
+        if (o == this) {
+            return true;
+        }
         CmsSiteMatcher matcher = (CmsSiteMatcher)o;            
         if (getServerPort() != matcher.getServerPort()) {
             return false;

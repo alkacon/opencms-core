@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2003/10/16 10:44:25 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.main.OpenCms;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -226,7 +226,9 @@ public class CmsWorkplaceSettings {
      * @param value the current resource to be displayed in the explorer
      */
     public synchronized void setExplorerResource(String value) {
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! value.startsWith(m_currentSite)) && (! "galleryview".equals(getExplorerMode()))) {
             // restrict access to /system/ 
             m_explorerResource = "/";   
@@ -376,7 +378,9 @@ public class CmsWorkplaceSettings {
      * @param value the resource uri to set for the type
      */
     public synchronized void setTreeResource(String type, String value) {
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (! value.startsWith(m_currentSite))) {
             // restrict access to /system/ 
             value = "/";   
@@ -405,7 +409,9 @@ public class CmsWorkplaceSettings {
      * @param value the resource uri to set for the type
      */
     public synchronized void setTreeSite(String type, String value) {
-        if (value == null) return;
+        if (value == null) {
+            return;
+        }
         m_treeSite.put(type, value);
     }
 

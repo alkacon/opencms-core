@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2003/11/05 10:33:21 $
+ * @version $Revision: 1.14 $ $Date: 2003/11/08 10:32:43 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -222,10 +222,14 @@ public class CmsDefaultUsers {
      * @param translations array of name translations
      */
     private void setNameTranslations(String[] translations) {
-        if ((translations == null) || (translations.length == 0)) return;
+        if ((translations == null) || (translations.length == 0)) {
+            return;
+        }
         for (int i=0; i<translations.length; i++) {
             String match = translations[i];
-            if (match == null) continue;
+            if (match == null) {
+                continue;
+            }
             boolean valid = true;
             match = match.trim();
             int pos = match.indexOf(':');
@@ -270,7 +274,9 @@ public class CmsDefaultUsers {
      * @return the translated name for the given group name
      */
     public String translateGroup(String name) {
-        if (m_groupTranslations == null) return name;
+        if (m_groupTranslations == null) {
+            return name;
+        }
         String match = (String)m_groupTranslations.get(name);
         if (match != null) {
             return match;
@@ -288,7 +294,9 @@ public class CmsDefaultUsers {
      * @return the translated name for the given user name
      */
     public String translateUser(String name) {
-        if (m_userTranslations == null) return name;
+        if (m_userTranslations == null) {
+            return name;
+        }
         String match = (String)m_userTranslations.get(name);
         if (match != null) {
             return match;

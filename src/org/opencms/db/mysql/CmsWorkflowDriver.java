@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/09/15 15:37:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/09/15 15:37:46 $
+ * @version $Revision: 1.9 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver {   
@@ -63,8 +63,9 @@ public class CmsWorkflowDriver extends org.opencms.db.generic.CmsWorkflowDriver 
      */
     public CmsTask readTask(int id) throws CmsException {
         CmsTask task = super.readTask(id);
-        if (task != null)
+        if (task != null) {
             task.setName(CmsSqlManager.unescape(task.getName()));
+        }
         return task;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.25 $ $Date: 2003/11/03 09:05:52 $ 
+ * @version $Revision: 1.26 $ $Date: 2003/11/08 10:32:44 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -3368,7 +3368,9 @@ class CmsShellCommands {
                 totalTime += tt;
                 minTime = (minTime==0 | minTime > tt) ? tt : minTime;
                 maxTime = (maxTime==0 | maxTime < tt) ? tt : maxTime;
-                if ((i % 100) == 0) System.out.print(".");
+                if ((i % 100) == 0) {
+                    System.out.print(".");
+                }
             }
             System.out.println("\rreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / MAX_TESTS) + " ms");
             

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import source.org.apache.java.util.Configurations;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.14 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.15 $ $Date: 2003/11/08 10:32:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,8 +108,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE");
             stmt.setInt(1, id);
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            if (!res.next()) 
+            if (!res.next()) {
                 throw new CmsException("createSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
+            }
 
             // write serialized system property 
             Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");
@@ -305,8 +306,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE_BYNAME");
             stmt.setString(1, name);
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            if (!res.next()) 
+            if (!res.next()) {
                 throw new CmsException("writeSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
+            }
 
             // write serialized system property 
             Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -133,8 +133,9 @@ public final class CmsStringSubstitution {
         try {
             return perlUtil.substitute(translationRule, content);
         } catch (MalformedPerl5PatternException e) {
-            if (DEBUG > 0)
+            if (DEBUG > 0) {
                 System.err.println("[CmsStringSubstitution]: " + e.toString());
+            }
         }
         return content;
     }
@@ -166,10 +167,12 @@ public final class CmsStringSubstitution {
      * @return the escaped string
      */
     public static String escapePattern(String source) {
-        if (DEBUG > 0)
+        if (DEBUG > 0) {
             System.err.println("[CmsStringSubstitution]: escaping String: " + source);
-        if (source == null)
+        }
+        if (source == null) {
             return null;
+        }
         StringBuffer result = new StringBuffer(source.length() * 2);
         for (int i = 0; i < source.length(); ++i) {
             char ch = source.charAt(i);
@@ -223,8 +226,9 @@ public final class CmsStringSubstitution {
                     result.append(ch);
             }
         }
-        if (DEBUG > 0)
+        if (DEBUG > 0) {
             System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
+        }
         return new String(result);
     }
 }

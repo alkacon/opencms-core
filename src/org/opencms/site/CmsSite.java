@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/10/01 11:30:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {   
@@ -121,7 +121,9 @@ public final class CmsSite implements Cloneable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
-        if ((o == null) || !(o instanceof CmsSite)) return false;        
+        if ((o == null) || !(o instanceof CmsSite)) {
+            return false;
+        }
         return getSiteMatcher().equals(((CmsSite)o).getSiteMatcher());        
     }
 

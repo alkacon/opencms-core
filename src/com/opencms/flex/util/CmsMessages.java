@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2003/10/01 14:05:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.0 beta 2
  */
@@ -213,8 +213,11 @@ public final class CmsMessages extends Object {
      * @throws MissingResourceException in case the key is not found of the bundle is not initialized
      */
     public String getString(String keyName) throws MissingResourceException {              
-        if (m_bundle != null) return m_bundle.getString(keyName);
-        else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+        if (m_bundle != null) {
+            return m_bundle.getString(keyName);
+        } else {
+            throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+        }
     }       
             
     /**
@@ -257,7 +260,9 @@ public final class CmsMessages extends Object {
      */
     public String key(String keyName, boolean allowNull) {   
         try {            
-            if (m_bundle != null) return m_bundle.getString(keyName);
+            if (m_bundle != null) {
+                return m_bundle.getString(keyName);
+            }
         } catch (MissingResourceException e) {
             // not found, return warning
             if (allowNull) {

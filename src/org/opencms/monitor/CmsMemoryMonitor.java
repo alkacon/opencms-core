@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/07 17:29:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/11/07 17:29:00 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/08 10:32:44 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  */
@@ -226,17 +226,13 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * Logs the current memory statistics of the monitored objects.<p>
      */
     private void logStatistics() {
-
-        if (!OpenCms.getLog(this).isDebugEnabled())
+        if (!OpenCms.getLog(this).isDebugEnabled()) {
             return;
-
+        }
         OpenCms.getLog(this).debug(", " + "Memory max: ," + Runtime.getRuntime().maxMemory() / 1048576 + " ," + "total: ," + Runtime.getRuntime().totalMemory() / 1048576 + " ," + "free: ," + Runtime.getRuntime().freeMemory() / 1048576 + " ," + "used: ," + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
-
         for (Iterator keys = m_monitoredObjects.keySet().iterator(); keys.hasNext();) {
-
             String key = (String)keys.next();
             Object obj = m_monitoredObjects.get(key);
-
             OpenCms.getLog(this).debug(",,,,,,, " + "Monitored: ," + key + ", " + "Type: ," + obj.getClass().getName() + ", " + Integer.toHexString(obj.hashCode()) + ", " + "Limit: ," + getLimit(obj) + ", " + "Mapped: ," + getItems(obj) + ", " + "Costs: ," + getCosts(obj) + ", " + "Keys: ," + getKeySize(obj) + ", " + "Values: ," + getValueSize(obj));
         }
     }
@@ -249,13 +245,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @return max cost limit or "-"
      */
     private String getLimit(Object obj) {
-
-        if (obj instanceof CmsLruCache)
+        if (obj instanceof CmsLruCache) {
             return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
-
-        if (obj instanceof LRUMap)
+        }
+        if (obj instanceof LRUMap) { 
             return Integer.toString(((LRUMap)obj).getMaximumSize());
-
+        }
         return "-";
     }
 
@@ -267,13 +262,12 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @return the number of items or "-"
      */
     private String getItems(Object obj) {
-
-        if (obj instanceof CmsLruCache)
+        if (obj instanceof CmsLruCache) {
             return Integer.toString(((CmsLruCache)obj).size());
-
-        if (obj instanceof Map)
+        }
+        if (obj instanceof Map) {
             return Integer.toString(((Map)obj).size());
-
+        }
         return "-";
     }
 
@@ -285,12 +279,9 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @return the total size of key strings
      */
     private String getKeySize(Object obj) {
-
         Map map = null;
         int keySize = 0;
-
         try {
-
             map = (Map)obj;
             if (map != null) {
                 for (Iterator i = map.keySet().iterator(); i.hasNext();) {
@@ -298,15 +289,14 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
                     keySize += s.length();
                 }
             }
-
         } catch (Exception exc) {
             keySize = -1;
         }
-
-        if (keySize >= 0)
+        if (keySize >= 0) {
             return Integer.toString(keySize) + ", String size";
-        else
+        } else {
             return "-, String size";
+        }
     }
 
     /**
@@ -319,50 +309,43 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     private String getValueSize(Object obj) {
 
         Map map = null;
-        int valueSize[] = { 0, 0, 0, 0, 0, 0 };
+        int valueSize[] = {0, 0, 0, 0, 0, 0};
         int unresolved = 0;
 
         try {
-
             map = (Map)obj;
             if (map != null) {
                 for (Iterator i = map.values().iterator(); i.hasNext();) {
                     Object value = i.next();
-                    if (value instanceof I_CmsLruCacheObject)
+                    if (value instanceof I_CmsLruCacheObject) {
                         value = ((I_CmsLruCacheObject)value).getValue();
-
+                    }
                     if (value instanceof byte[]) {
                         valueSize[0] += ((byte[])value).length;
                         continue;
                     }
-
                     if (value instanceof String) {
                         valueSize[1] += ((String)value).length();
                         continue;
                     }
-
                     if (value instanceof List) {
                         valueSize[2] += ((List)value).size();
                         continue;
                     }
-
                     if (value instanceof Map) {
                         valueSize[3] += ((Map)value).size();
                         continue;
                     }
-
                     if (value instanceof CmsFile) {
                         CmsFile f = (CmsFile)value;
                         int l = f.getContents().length;
                         valueSize[4] += (l > 0) ? l : 1;
                         continue;
                     }
-
                     if (value instanceof CmsFolder || value instanceof CmsResource) {
                         valueSize[5] += 1;
                         continue;
                     }
-
                     unresolved++;
                 }
             }
@@ -370,10 +353,11 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             // noop
         }
 
-        if (map != null)
+        if (map != null) {
             return Integer.toString(valueSize[0]) + ", byte[] size, " + Integer.toString(valueSize[1]) + ", String size, " + Integer.toString(valueSize[2]) + ", List items, " + Integer.toString(valueSize[3]) + ", Map items, " + Integer.toString(valueSize[4]) + ", CmsFiles, " + Integer.toString(valueSize[5]) + ", CmsResources/Folders, " + Integer.toString(unresolved) + ", unresolved";
-        else
+        } else {
             return "-, byte[] size, " + "-, String size, " + "-, List items, " + "-, Map items, " + "-, CmsFiles, " + "-, CmsResources/Folders, " + "-, unresolved";
+        }
     }
 
     /**
@@ -384,10 +368,9 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
      * @return the cache costs or "-"
      */
     private String getCosts(Object obj) {
-
-        if (obj instanceof CmsLruCache)
+        if (obj instanceof CmsLruCache) {
             return Integer.toString(((CmsLruCache)obj).getObjectCosts());
-
+        }
         return "-";
     }
 

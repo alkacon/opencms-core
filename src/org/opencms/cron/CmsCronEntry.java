@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronEntry.java,v $
- * Date   : $Date: 2003/10/29 16:41:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.2 $ $Date: 2003/10/29 16:41:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1.12
  */
 public class CmsCronEntry extends Object {
@@ -178,25 +178,35 @@ public class CmsCronEntry extends Object {
      * @return true, if the module has to be launched or false, if not.
      */
     boolean check(Calendar lastTime, Calendar now) {
-        if (m_minute != C_ASTERIX) // check the minute
-            if (!isBetween(lastTime.get(Calendar.MINUTE), m_minute, now.get(Calendar.MINUTE)))
+        // check the minute
+        if ((m_minute != C_ASTERIX)             
+            && (!isBetween(lastTime.get(Calendar.MINUTE), m_minute, now.get(Calendar.MINUTE)))) {            
                 return false;
+        }
 
-        if (m_hour != C_ASTERIX) // check the hour
-            if (m_hour != now.get(Calendar.HOUR_OF_DAY))
+        // check the hour
+        if ((m_hour != C_ASTERIX) 
+            && (m_hour != now.get(Calendar.HOUR_OF_DAY))) {
                 return false;
+        }
 
-        if (m_dayOfMonth != C_ASTERIX) // check the dayOfMonth
-            if (m_dayOfMonth != now.get(Calendar.DAY_OF_MONTH))
+        // check the dayOfMonth
+        if ((m_dayOfMonth != C_ASTERIX) 
+            && (m_dayOfMonth != now.get(Calendar.DAY_OF_MONTH))) {
                 return false;
+        }
 
-        if (m_month != C_ASTERIX) // check the month
-            if (m_month != now.get(Calendar.MONTH))
+        // check the month
+        if ((m_month != C_ASTERIX) 
+           && (m_month != now.get(Calendar.MONTH))) {
                 return false;
+        }
 
-        if (m_dayOfWeek != C_ASTERIX) // check the dayOfWeek
-            if (m_dayOfWeek != now.get(Calendar.DAY_OF_WEEK))
+        // check the dayOfWeek
+        if ((m_dayOfWeek != C_ASTERIX) 
+            && (m_dayOfWeek != now.get(Calendar.DAY_OF_WEEK))) {
                 return false;
+        }
 
         // all checks are ok - signal to launch the module
         return true;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * </pre><p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0 beta 2
  */
 public class CmsResourceTranslator {
@@ -123,7 +123,9 @@ public class CmsResourceTranslator {
         }        
         // Initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
-        if (DEBUG > 0) System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");        
+        if (DEBUG > 0) {
+            System.out.println("["+this.getClass().getName()+"] Resource translation: Iinitialized " + translations.length + " rules.");
+        }
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(". Resource translation : " + translations.length + " rules initialized");
         }          
@@ -138,9 +140,13 @@ public class CmsResourceTranslator {
      * @return The translated name of the resource
      */
     public String translateResource(String resourceName) {  
-        if (resourceName == null) return null;      
+        if (resourceName == null) {
+            return null;
+        }
         // Check all translations in the list
-        if (DEBUG > 1) System.out.println("["+this.getClass().getName()+"] Resource Translation: Checking: " + resourceName);
+        if (DEBUG > 1) {
+            System.out.println("["+this.getClass().getName()+"] Resource Translation: Checking: " + resourceName);
+        }
         StringBuffer result;
         for (int i=0; i<m_translations.length; i++) {
             result = new StringBuffer();

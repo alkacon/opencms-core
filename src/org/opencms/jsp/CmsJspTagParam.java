@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -155,26 +155,29 @@ public class CmsJspTagParam extends BodyTagSupport {
      */
     public int doEndTag() throws JspException {
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
-        if (t == null)
+        if (t == null) {
             throw new JspTagException("Parameter Tag <param> without parent found!");
-
+        }
         // take no action for null or empty names
-        if (m_name == null || m_name.equals(""))
+        if (m_name == null || m_name.equals("")) {
             return EVAL_PAGE;
+        }
 
         // send the parameter to the appropriate ancestor
         I_CmsJspTagParamParent parent = (I_CmsJspTagParamParent)t;
         String value = this.m_value;
         if (value == null) {
-            if (bodyContent == null || bodyContent.getString() == null)
+            if (bodyContent == null || bodyContent.getString() == null) {
                 value = "";
-            else
+            } else {
                 value = bodyContent.getString().trim();
+            }
         }
         if (m_encode) {
             parent.addParameter(Encoder.encode(m_name, OpenCms.getDefaultEncoding()), Encoder.encode(value, OpenCms.getDefaultEncoding()));
-        } else
+        } else {
             parent.addParameter(m_name, value);
+        }
 
         return EVAL_PAGE;
     }

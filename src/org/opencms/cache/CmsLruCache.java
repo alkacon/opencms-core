@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/11/06 10:55:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -179,8 +179,9 @@ public class CmsLruCache extends java.lang.Object {
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts() > this.m_maxObjectCosts)) {
-            if (OpenCms.getLog(this).isInfoEnabled()) 
+            if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Attempt to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
+            }
             return false;
         }
         
@@ -242,7 +243,9 @@ public class CmsLruCache extends java.lang.Object {
      * @return true if an object was found and touched
      */
     public synchronized boolean touch(I_CmsLruCacheObject theCacheObject) {
-        if (!isCached(theCacheObject)) return false;
+        if (!isCached(theCacheObject)) {
+            return false;
+        }
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>m_maxObjectCosts)) {
@@ -423,7 +426,9 @@ public class CmsLruCache extends java.lang.Object {
     private void gc() {       
         I_CmsLruCacheObject currentObject = this.m_listTail;
         while (currentObject != null) {
-            if (this.m_objectCosts < this.m_avgCacheCosts) break;
+            if (this.m_objectCosts < this.m_avgCacheCosts) {
+                break;
+            }
             currentObject = currentObject.getNextLruObject();
             this.removeTail();
         }

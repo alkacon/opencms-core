@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/11/06 10:55:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -270,17 +270,17 @@ public class CmsAdminHistoryClear extends CmsReport {
         // set the timeStamp one day to the future to delete versions
         if (useVersions) {
             timeStamp = System.currentTimeMillis() + 86400000;
-        }
-        
-        if (DEBUG) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
-        
-        
+        }        
+        if (DEBUG) {
+            System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
+        }                
         // add the correct values to the parameter map
         parameterMap.put("timeStamp", String.valueOf(timeStamp));
         parameterMap.put("versions", String.valueOf(versions));
              
-        if (DEBUG) System.err.println("Done");             
-             
+        if (DEBUG) {
+            System.err.println("Done");
+        }           
         return parameterMap;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/03 09:57:17 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.43 $ $Date: 2003/11/03 09:57:17 $
+ * @version $Revision: 1.44 $ $Date: 2003/11/08 10:32:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -622,8 +622,9 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
 
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0)
+                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0) {
                     writeAccessControlEntry(onlineProject, ace);
+                }
             }
 
         } catch (SQLException e) {
@@ -655,14 +656,17 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             // create new CmsAccessControlEntry and add to list
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0)
+                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0) {
                     continue;
+                }
 
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0))
+                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0)) {
                     continue;
+                }
 
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0))
+                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0)) {
                     ace.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+                }
 
                 aceList.add(ace);
             }
@@ -1066,18 +1070,21 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         Connection conn = null;
         int i = 0;
         // "" =  return (nearly) all users
-        if (lastname == null)
+        if (lastname == null) {
             lastname = "";
+        }
 
         try {
             conn = m_sqlManager.getConnection();
 
-            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE)
+            if (wasLoggedIn == I_CmsConstants.C_AT_LEAST_ONCE) {
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
-            else if (wasLoggedIn == I_CmsConstants.C_NEVER)
+            } else if (wasLoggedIn == I_CmsConstants.C_NEVER) {
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
-            else // C_WHATEVER or whatever else
+            } else { 
+                // C_WHATEVER or whatever else
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
+            }
 
             stmt.setString(1, lastname + "%");
             stmt.setInt(2, userType);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/I_CmsLruCacheObject.java,v $
- * Date   : $Date: 2003/11/05 17:41:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ package org.opencms.cache;
  *
  * @see com.opencms.flex.util.CmsFlexLruCache
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsLruCacheObject {
     
@@ -88,5 +88,10 @@ public interface I_CmsLruCacheObject {
      */
     int getLruCacheCosts();
     
+    /**
+     * Returns the Object value.<p> 
+     * 
+     * @return the Object value
+     */
     Object getValue();
 }

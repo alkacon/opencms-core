@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.ServletRequest;
  * to avoid method calling overhead (a cache is about speed, isn't it :).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexCacheKey {
     
@@ -131,7 +131,9 @@ public class CmsFlexCacheKey {
         m_user = cms.getRequestContext().currentUser().getName();        
         // Get the params
         m_params = request.getParameterMap();
-        if (m_params.size() == 0) m_params = null;
+        if (m_params.size() == 0) {
+            m_params = null;
+        }
         // No-params are null for a request key
         m_noparams = null;
         // Save the request time 
@@ -176,7 +178,9 @@ public class CmsFlexCacheKey {
         if (cacheDirectives != null) { 
             parseFlexKey(cacheDirectives);
         }
-        if (DEBUG) System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
+        if (DEBUG) {
+            System.err.println("CmsFlexCacheKey for response generated:\n" + this.toString());
+        }
     }
     
     /**
@@ -233,21 +237,31 @@ public class CmsFlexCacheKey {
         
         StringBuffer str = new StringBuffer(100);
         if (m_always < 0) {
-            if (DEBUG) System.err.println("keymatch: cache=never");
+            if (DEBUG) {
+                System.err.println("keymatch: cache=never");
+            }
             return null;
         } 
                
-        if (DEBUG) System.err.println("keymatch: Checking no-params");
+        if (DEBUG) {
+            System.err.println("keymatch: Checking no-params");
+        }
         if ((m_noparams != null) && (key.m_params != null)) {
-            if ((m_noparams.size() == 0) && (key.m_params.size() > 0)) return null;
+            if ((m_noparams.size() == 0) && (key.m_params.size() > 0)) {
+                return null;
+            }
             Iterator i = key.m_params.keySet().iterator();
             while (i.hasNext()) {
-                if (m_noparams.contains(i.next())) return null;
+                if (m_noparams.contains(i.next())) {
+                    return null;
+                }
             }
         }
 
         if (m_always > 0) {
-            if (DEBUG) System.err.println("keymatch: cache=always");
+            if (DEBUG) {
+                System.err.println("keymatch: cache=always");
+            }
             str.append("always");
             return str.toString();
         }
@@ -284,7 +298,9 @@ public class CmsFlexCacheKey {
                             // TODO: handle multiple occurences of the same parameter value
                             String[] values = (String[])key.m_params.get(o);
                             str.append(values[0]);
-                            if (i.hasNext()) str.append(",");
+                            if (i.hasNext()) {
+                                str.append(",");
+                            }
                         }
                     }
                 } else {
@@ -297,7 +313,9 @@ public class CmsFlexCacheKey {
                         // TODO: handle multiple occurences of the same parameter value
                         String[] values = (String[])key.m_params.get(o);
                         str.append(values[0]);
-                        if (i.hasNext()) str.append(",");
+                        if (i.hasNext()) {
+                            str.append(",");
+                        }
                     }                    
                 }
             }
@@ -306,7 +324,9 @@ public class CmsFlexCacheKey {
         
         if (m_schemes != null) {
             String s = (String)key.m_schemes.iterator().next();
-            if ((m_schemes.size() > 0) && (! m_schemes.contains(s.toLowerCase()))) return null;
+            if ((m_schemes.size() > 0) && (! m_schemes.contains(s.toLowerCase()))) {
+                return null;
+            }
             str.append("schemes=(");
             str.append(s);
             str.append(");");
@@ -314,7 +334,9 @@ public class CmsFlexCacheKey {
         
         if (m_ports != null) {
             Integer i = (Integer)key.m_ports.iterator().next();
-            if ((m_ports.size() > 0) && (! m_ports.contains(i))) return null;
+            if ((m_ports.size() > 0) && (! m_ports.contains(i))) {
+                return null;
+            }
             str.append("ports=(");
             str.append(i);
             str.append(");");
@@ -354,7 +376,9 @@ public class CmsFlexCacheKey {
                 while (i.hasNext()) {
                     Object o = i.next();
                     str.append(o);
-                    if (i.hasNext()) str.append(",");
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
                 }                      
                 str.append(");");
             }
@@ -412,9 +436,13 @@ public class CmsFlexCacheKey {
                             str.append(param[0]);
                         }
                     } catch (Exception e) {                        
-                        if (DEBUG) System.err.println("Exception! o=" + o + "  Exception is " + e);
+                        if (DEBUG) {
+                            System.err.println("Exception! o=" + o + "  Exception is " + e);
+                        }
                     }
-                    if (i.hasNext()) str.append(",");
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
                 }            
                 str.append(");");
             }
@@ -438,7 +466,9 @@ public class CmsFlexCacheKey {
                 Iterator i = m_schemes.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
-                    if (i.hasNext()) str.append(",");
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
                 }          
                 str.append(");");
             }
@@ -452,7 +482,9 @@ public class CmsFlexCacheKey {
                 Iterator i = m_ports.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
-                    if (i.hasNext()) str.append(",");
+                    if (i.hasNext()) {
+                        str.append(",");
+                    }
                 } 
                 str.append(");");            
             }
@@ -480,12 +512,16 @@ public class CmsFlexCacheKey {
                 int idx = t.indexOf("=");
                 if (idx >= 0) {
                     k = t.substring(0, idx).trim();
-                    if (t.length() > idx) v = t.substring(idx+1).trim();
+                    if (t.length() > idx) {
+                        v = t.substring(idx+1).trim();
+                    }
                 } else {
                     k = t.trim();
                 }
                 m_always = 0;
-                if (DEBUG) System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
+                if (DEBUG) {
+                    System.err.println("Parsing token:" + t + " key=" + k + " value=" + v);
+                }
                 switch (m_cacheCmds.indexOf(k)) {
                     case 0: // always
                     case 12:                    
@@ -538,7 +574,9 @@ public class CmsFlexCacheKey {
             }
         } catch (Exception e) {
             // Any Exception here indicates a parsing error
-            if (DEBUG) System.err.println("----- Error in key parsing: " + e.toString());
+            if (DEBUG) {
+                System.err.println("----- Error in key parsing: " + e.toString());
+            }
             m_parseError = true;
         }
         if (m_parseError) {
@@ -555,11 +593,19 @@ public class CmsFlexCacheKey {
      * @return a Map that contains of the parsed values, only the keyset of the Map is needed later
      */    
     private java.util.Map parseValueMap(String value) {
-        if (value.charAt(0) == '(') value = value.substring(1);
+        if (value.charAt(0) == '(') {
+            value = value.substring(1);
+        }
         int len = value.length() - 1;
-        if (value.charAt(len) == ')') value = value.substring(0, len);
-        if (value.charAt(len-1) == ',') value = value.substring(0, len-1);
-        if (DEBUG) System.err.println("Parsing map: " + value);
+        if (value.charAt(len) == ')') {
+            value = value.substring(0, len);
+        }
+        if (value.charAt(len-1) == ',') {
+            value = value.substring(0, len-1);
+        }
+        if (DEBUG) {
+            System.err.println("Parsing map: " + value);
+        }
         java.util.StringTokenizer toker = new java.util.StringTokenizer(value, ",");
         java.util.Map result = new java.util.HashMap();
         while (toker.hasMoreTokens()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.71 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.72 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -995,8 +995,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             if (!this.internalValidateBackupResource(resource, tagId)) {
 
                     // write the file content
-                    if (resource instanceof CmsFile)
+                    if (resource instanceof CmsFile) {
                         content = ((CmsFile)resource).getContents();
+                    }
                     internalWriteBackupFileContent(backupPkId, resource/* .getFileId() */, content, tagId, versionId);
 
                     // write the resource
@@ -1067,8 +1068,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
         // write the file content
         byte[] content = null;
-        if (resource instanceof CmsFile)
+        if (resource instanceof CmsFile) {
             content = ((CmsFile)resource).getContents();
+        }
             
         if (!this.internalValidateBackupResource(resource, backupResource.getTagId())) {
             // internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/07 17:29:00 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -351,7 +351,9 @@ public class OpenCmsCore {
      * @param handler the handler to add
      */
     protected void addRequestHandler(I_CmsRequestHandler handler) {
-        if (handler == null) return;
+        if (handler == null) {
+            return;
+        }
         if (m_requestHandlers.get(handler.getHandlerName()) != null) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("Duplicate OpenCms request handler, ignoring '" + handler.getHandlerName() + "'");
@@ -577,7 +579,9 @@ public class OpenCmsCore {
                     // can be ignored
                 }
             } else {
-                if (status < 1) status = HttpServletResponse.SC_NOT_FOUND;
+                if (status < 1) {                    
+                    status = HttpServletResponse.SC_NOT_FOUND;
+                }
                 try {
                     res.sendError(status, t.toString());
                 } catch (IOException e) {
@@ -1226,8 +1230,9 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Operating sytem      : " + osinfo);
             }
         } catch (Exception e) {
-            if (getLog(this).isErrorEnabled())
+            if (getLog(this).isErrorEnabled()) {
                 getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "2", e);
+            }
             // any exception here is fatal and will cause a stop in processing
             throw e;
         }
@@ -1260,11 +1265,13 @@ public class OpenCmsCore {
                 // now initialise the OpenCms scheduler to launch cronjobs
                 m_table = new CmsCronTable(m_driverManager.readCronTable());
                 m_scheduler = new CmsCronScheduler(this, m_table);
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled())
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : enabled");
+                }
             } else {
-                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled())
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : disabled");
+                }
             }
         } catch (Exception e) {
             if (getLog(this).isErrorEnabled()) {
@@ -1368,8 +1375,9 @@ public class OpenCmsCore {
             }
         }
         // make sure we always have at least an empty array      
-        if (m_directoryTranslator == null)
+        if (m_directoryTranslator == null) {
             m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
+        }
 
         // try to initialize filename translations
         try {
@@ -1388,8 +1396,9 @@ public class OpenCmsCore {
             }
         }
         // make sure we always have at last an emtpy array      
-        if (m_fileTranslator == null)
+        if (m_fileTranslator == null) {
             m_fileTranslator = new CmsResourceTranslator(new String[0], false);
+        }
 
         m_defaultFilenames = null;
         // try to initialize default directory file names (e.g. index.html)
@@ -1414,8 +1423,9 @@ public class OpenCmsCore {
             
         // read the immutable import resources
         String[] immuResources = conf.getStringArray("import.immutable.resources");
-        if (immuResources == null)
+        if (immuResources == null) {
             immuResources = new String[0];
+        }
         List immutableResourcesOri = java.util.Arrays.asList(immuResources);
         ArrayList immutableResources = new ArrayList();
         for (int i = 0; i < immutableResourcesOri.size(); i++) {
@@ -1506,8 +1516,9 @@ public class OpenCmsCore {
 
         // unwanted resource properties which are deleted during import
         String[] propNames = conf.getStringArray("compatibility.support.import.remove.propertytags");
-        if (propNames == null)
+        if (propNames == null) {
             propNames = new String[0];
+        }
         List propertyNamesOri = java.util.Arrays.asList(propNames);
         ArrayList propertyNames = new ArrayList();
         for (int i = 0; i < propertyNamesOri.size(); i++) {
@@ -1600,7 +1611,9 @@ public class OpenCmsCore {
 
         // replace the "magic" names                 
         String contextName = "/" + CmsBase.getWebAppName(); 
-        if ("/ROOT".equals(contextName)) contextName = "";
+        if ("/ROOT".equals(contextName)) {
+            contextName = "";
+        }
         String servletName = conf.getString("servlet.mapping"); 
         rfsPrefix = CmsStringSubstitution.substitute(rfsPrefix, "${CONTEXT_NAME}", contextName);
         rfsPrefix = CmsStringSubstitution.substitute(rfsPrefix, "${SERVLET_NAME}", servletName);
@@ -1727,7 +1740,9 @@ public class OpenCmsCore {
 
         // initalize the session storage
         m_sessionStorage = new CmsCoreSession();
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) getLog(CmsLog.CHANNEL_INIT).info(". Session storage      : initialized");
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info(". Session storage      : initialized");
+        }
                          
         // initialize "requesthandler" registry classes
         try {
@@ -1915,8 +1930,9 @@ public class OpenCmsCore {
      * @param res the current response 
      */
     protected void initStartupClasses(HttpServletRequest req, HttpServletResponse res) {
-        if (m_startupClassesInitialized)
+        if (m_startupClassesInitialized) {
             return;
+        }
 
         synchronized (this) {
             // Set the initialized flag to true
@@ -2118,8 +2134,9 @@ public class OpenCmsCore {
         if ((value != null) && (value.startsWith("/ROOT"))) {
             value = value.substring("/ROOT".length());
         }
-        if (value == null)
+        if (value == null) {
             value = "";
+        }
         m_openCmsContext = value;
     }
 
@@ -2253,7 +2270,9 @@ public class OpenCmsCore {
      */
     private void throwInitException(CmsInitException cause) throws CmsInitException {
         String message = cause.getMessage();
-        if (message == null) message = cause.toString();
+        if (message == null) {
+            message = cause.toString();
+        }
         System.err.println("\n--------------------\nCritical error during OpenCms context init phase:\n" + message);
         System.err.println("Giving up, unable to start OpenCms.\n--------------------");        
         if (getLog(this).isFatalEnabled()) {
@@ -2310,7 +2329,9 @@ public class OpenCmsCore {
                 
                 // get current session data
                 Hashtable oldData = (Hashtable)session.getAttribute(I_CmsConstants.C_SESSION_DATA);
-                if (oldData == null) oldData = new Hashtable();
+                if (oldData == null) {
+                    oldData = new Hashtable();
+                }
                 sessionData.put(I_CmsConstants.C_SESSION_DATA, oldData);
 
                 // update the user-data

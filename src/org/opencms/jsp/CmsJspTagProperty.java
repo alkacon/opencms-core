@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import javax.servlet.jsp.JspException;
  * </DL>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -236,7 +236,9 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
             try {       
                 String prop = propertyTagAction(getName(), getFile(), m_defaultValue, m_escapeHtml, req);
                 // Make sure that no null String is returned
-                if (prop == null) prop = "";
+                if (prop == null) {
+                    prop = "";
+                }
                 pageContext.getOut().print(prop);
                 
             } catch (Exception ex) {
@@ -278,7 +280,9 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
         String value;
         
         // if action is not set use default
-        if (action == null) action = m_actionValues[0];
+        if (action == null) {
+            action = m_actionValues[0];
+        }
 
         switch (m_actionValue.indexOf(action)) {      
             case 0: // USE_URI
@@ -306,7 +310,9 @@ public class CmsJspTagProperty extends javax.servlet.jsp.tagext.TagSupport {
                 // Read properties of the file named in the attribute            
                 value = controller.getCmsObject().readProperty(CmsLinkManager.getAbsoluteUri(action, controller.getCurrentRequest().getElementUri()), property, false, defaultValue);
         }           
-        if (escape) value = Encoder.escapeHtml(value);    
+        if (escape) {
+            value = Encoder.escapeHtml(value);
+        }
         if (DEBUG > 0) {
             System.err.println("propertyTagAction(): result=" + value);
         }

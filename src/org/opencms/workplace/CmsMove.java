@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/11/07 16:30:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1
  */
@@ -181,7 +181,9 @@ public class CmsMove extends CmsDialog {
 
         // get the target name
         String target = getParamTarget();
-        if (target == null) target = "";
+        if (target == null) {
+            target = "";
+        }
         
         boolean restoreSiteRoot = false;
         try {
@@ -211,9 +213,13 @@ public class CmsMove extends CmsDialog {
             CmsResource res = getCms().readFileHeader(target);
             if (res.isFolder()) {
                 // target folder already exists, so we add the current folder name
-                if (! target.endsWith("/")) target += "/";
+                if (! target.endsWith("/")) {
+                    target += "/";
+                }
                 target = target + CmsResource.getName(getParamResource());
-                if (target.endsWith("/")) target = target.substring(0, target.length()-1);
+                if (target.endsWith("/")) {
+                    target = target.substring(0, target.length()-1);
+                }
             }
         } catch (CmsException e) {
             // target folder does not already exist, so target name is o.k.

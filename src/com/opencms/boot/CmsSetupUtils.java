@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  */
 public class CmsSetupUtils {
 
@@ -126,9 +126,9 @@ public class CmsSetupUtils {
             Object obj = properties.get(key);
             String value[] = {};
 
-            if (obj instanceof Vector)
+            if (obj instanceof Vector) {
                 value = (String[]) ((Vector)obj).toArray(value);
-            else {
+            } else {
                 String v[] = {(String)obj };
                 value = v;
             }
@@ -138,10 +138,11 @@ public class CmsSetupUtils {
                 value[j] = CmsStringSubstitution.substitute(value[j], "\\=", "=");
             }
 
-            if (value.length > 1)
+            if (value.length > 1) {
                 properties.put(key, new Vector(Arrays.asList(value)));
-            else
+            } else {
                 properties.put(key, value[0]);
+            }
         }
 
         return properties;
@@ -212,8 +213,9 @@ public class CmsSetupUtils {
             // nothing we can do
         } finally {
             try {
-                if (fOut != null)
+                if (fOut != null) {
                     fOut.close();
+                }
             } catch (IOException e) {
                 // nothing we can do
             }
@@ -251,8 +253,9 @@ public class CmsSetupUtils {
 
             while (true) {
                 String line = lnr.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 fw.write(line + '\n');
             }
 
@@ -304,8 +307,9 @@ public class CmsSetupUtils {
 
             while (true) {
                 String line = lnr.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 line = line.trim();
 
                 if ("".equals(line)) {
@@ -322,9 +326,9 @@ public class CmsSetupUtils {
                     if (line.indexOf('=') > -1 && index1 != index - 1) {
 
                         String key = line.substring(0, line.indexOf('=')).trim();
-                        if (alreadyWritten.contains(key))
+                        if (alreadyWritten.contains(key)) {
                             continue;
-
+                        }
                         // write key
                         fw.write((key + "="));
                         try {

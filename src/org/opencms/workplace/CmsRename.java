@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -172,7 +172,9 @@ public class CmsRename extends CmsDialog {
     private boolean performRenameOperation() throws CmsException {
    
         String target = getParamTarget();
-        if (target == null) target = "";     
+        if (target == null) {
+            target = "";
+        }
         
         // check if target name contains a "/"
         if (target.indexOf("/") != -1) {

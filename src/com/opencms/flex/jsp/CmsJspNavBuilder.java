@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -124,7 +124,9 @@ public class CmsJspNavBuilder {
             return null;
         }
         int level =  CmsResource.getPathLevel(resource);
-        if (resource.endsWith("/")) level--;
+        if (resource.endsWith("/")) {
+            level--;
+        }
         return new CmsJspNavElement(resource, properties, level);
     }    
  
@@ -231,10 +233,14 @@ public class CmsJspNavBuilder {
     public static ArrayList getNavigationForFolder(CmsObject cms, String folder, int level) {
         folder = CmsResource.getFolderPath(folder);
         // If level is one just use root folder
-        if (level == 0) return getNavigationForFolder(cms, "/");
+        if (level == 0) {
+            return getNavigationForFolder(cms, "/");
+        }
         String navfolder = CmsResource.getPathPart(folder, level);
         // If navfolder found use it to build navigation
-        if (navfolder != null) return getNavigationForFolder(cms, navfolder);
+        if (navfolder != null) {
+            return getNavigationForFolder(cms, navfolder);
+        }
         // Nothing found, return empty list
         return new ArrayList(0);
     }
@@ -270,10 +276,16 @@ public class CmsJspNavBuilder {
     public static ArrayList getNavigationTreeForFolder(CmsObject cms, String folder, int startlevel, int endlevel) {
         folder = CmsResource.getFolderPath(folder);
         // Make sure start and end level make sense
-        if (endlevel < startlevel) return new ArrayList(0);
+        if (endlevel < startlevel) {
+            return new ArrayList(0);
+        }
         int currentlevel = CmsResource.getPathLevel(folder);
-        if (currentlevel < endlevel) endlevel = currentlevel;
-        if (startlevel == endlevel) return getNavigationForFolder(cms, CmsResource.getPathPart(folder, startlevel), startlevel);
+        if (currentlevel < endlevel) {
+            endlevel = currentlevel;
+        }
+        if (startlevel == endlevel) {
+            return getNavigationForFolder(cms, CmsResource.getPathPart(folder, startlevel), startlevel);
+        }
      
         ArrayList result = new ArrayList(0);
         Iterator it = null;
@@ -303,9 +315,13 @@ public class CmsJspNavBuilder {
                 pos = 10000 * (++count);
                 CmsJspNavElement e = (CmsJspNavElement)it.next();
                 e.setNavPosition(pos);
-                if (e.getResourceName().startsWith(nextfolder)) parentcount = pos;
+                if (e.getResourceName().startsWith(nextfolder)) {
+                    parentcount = pos;
+                }
             }            
-            if (parentcount == 0) parentcount = pos;
+            if (parentcount == 0) {
+                parentcount = pos;
+            }
         }
         return result;
     }
@@ -473,7 +489,9 @@ public class CmsJspNavBuilder {
         } else if (subChannel.startsWith("/")) {
             subChannel = subChannel.substring(1);
         }
-        if (parentChannel == null) parentChannel = "";        
+        if (parentChannel == null) {
+            parentChannel = "";
+        }
         if (parentChannel.endsWith("/")) {
             channel = parentChannel + subChannel;
         } else {
@@ -502,8 +520,12 @@ public class CmsJspNavBuilder {
      * @return an unsorted list of CmsResources
      */    
     public static ArrayList getChannelSubFolders(CmsObject cms, String channel) {
-        if (! channel.startsWith("/")) channel = "/" + channel;
-        if (! channel.endsWith("/")) channel += "/";    
+        if (! channel.startsWith("/")) {
+            channel = "/" + channel;
+        }
+        if (! channel.endsWith("/")) {
+            channel += "/";
+        }
 
         // Now read all subchannels of this channel    
         List subChannels = (List) new ArrayList();
@@ -595,8 +617,12 @@ public class CmsJspNavBuilder {
          * @see java.lang.Comparable#compareTo(Object)
          */
         public int compareTo(Object obj) {
-            if (! (obj instanceof ResourceTitleContainer)) return 0;
-            if (m_title == null) return 1;
+            if (! (obj instanceof ResourceTitleContainer)) {
+               return 0;
+            }
+            if (m_title == null) {
+                return 1;
+            }
             return (m_title.toLowerCase().compareTo(((ResourceTitleContainer)obj).m_title.toLowerCase()));
         }
         

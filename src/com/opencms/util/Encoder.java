@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/11/03 09:05:52 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/11/08 10:32:44 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,9 @@ public final class Encoder {
      * @return the encoded source String
      */
     public static String encode(String source, String encoding) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         if (encoding != null) {
             try {
                 return URLEncoder.encode(source, encoding); 
@@ -120,7 +122,9 @@ public final class Encoder {
      * @return The decoded source String
      */
     public static String decode(String source, String encoding) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         if (encoding != null) {
             try {
                 return URLDecoder.decode(source, encoding); 
@@ -216,7 +220,9 @@ public final class Encoder {
      * @see #escapeHtml(String)
      */
     public static String escapeXml(String source) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         StringBuffer result = new StringBuffer(source.length()*2);
         int terminatorIndex;
         for (int i = 0; i < source.length(); ++i) {
@@ -230,13 +236,15 @@ public final class Encoder {
                     break;
                 case '&' :
                     // Don't escape already escaped international and special characters
-                    if ((terminatorIndex = source.indexOf(";", i)) > 0)
-                        if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+"))
+                    if ((terminatorIndex = source.indexOf(";", i)) > 0) {
+                        if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
                             result.append(ch);
-                        else 
+                        } else { 
                             result.append("&amp;");
-                    else
+                        }
+                    } else {
                         result.append("&amp;");
+                    }
                     break;
                 case '"' :
                     result.append("&quot;");
@@ -262,7 +270,9 @@ public final class Encoder {
      */
     public static String escapeHtml(String source) {
         int terminatorIndex;
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         StringBuffer result = new StringBuffer(source.length()*2);
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
@@ -299,7 +309,9 @@ public final class Encoder {
      * @see #escapeXml(String)
      */
     public static String escapeNonAscii(String source) {
-        if (source == null) return null;
+        if (source == null) {
+            return null;
+        }
         StringBuffer result = new StringBuffer(source.length()*2);
         for (int i = 0; i < source.length(); i++) {
             int ch = source.charAt(i);
@@ -349,8 +361,12 @@ public final class Encoder {
      * @return byte[] the byte array encoded in the new encoding
      */
     public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
-        if ((oldEncoding == null) || (newEncoding == null)) return input;
-        if (oldEncoding.trim().equalsIgnoreCase(newEncoding.trim())) return input;
+        if ((oldEncoding == null) || (newEncoding == null)) {
+            return input;
+        }
+        if (oldEncoding.trim().equalsIgnoreCase(newEncoding.trim())) {
+            return input;
+        }
         byte[] result = input;
         try {
             result = (new String(input, oldEncoding)).getBytes(newEncoding);
@@ -371,7 +387,9 @@ public final class Encoder {
      * @return String the converted String
      */
     public static String redecodeUriComponent(String input) {
-       if (input == null) return input;
+       if (input == null) {
+           return input;
+       }
        return new String(changeEncoding(input.getBytes(), C_UTF8_ENCODING, OpenCms.getDefaultEncoding())); 
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/10/07 14:53:12 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -221,8 +221,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean equals(Object obj) {
         // check if the object is a CmsUser object
-        if (!(obj instanceof CmsUser))
+        if (!(obj instanceof CmsUser)) {
             return false;
+        }
         // same ID than the current user?
         return (((CmsUser)obj).getId().equals(m_id));
     }

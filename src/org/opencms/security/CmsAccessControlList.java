@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * An access control list contains the permission sets of all principals for a distinct resource
  * that are calculated on the permissions given by various access control entries.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2003/09/12 10:01:53 $
+ * @version $Revision: 1.7 $ $Date: 2003/11/08 10:32:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -87,9 +87,9 @@ public class CmsAccessControlList {
     public void add(CmsAccessControlEntry entry) {
 
         CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
-        if (permissions == null)
+        if (permissions == null) {
             permissions = new CmsPermissionSet();
-
+        }
         permissions.addPermissions(entry.getPermissions());
         m_permissions.put(entry.getPrincipal(), permissions);
     }
@@ -102,9 +102,9 @@ public class CmsAccessControlList {
     public void setAllowedPermissions(CmsAccessControlEntry entry) {
 
         CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
-        if (permissions == null)
+        if (permissions == null) {
             permissions = new CmsPermissionSet();
-
+        }
         permissions.setPermissions(entry.getAllowedPermissions(), 0);
         m_permissions.put(entry.getPrincipal(), permissions);
     }
@@ -117,9 +117,9 @@ public class CmsAccessControlList {
     public void setDeniedPermissions(CmsAccessControlEntry entry) {
 
         CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(entry.getPrincipal());
-        if (permissions == null)
+        if (permissions == null) {
             permissions = new CmsPermissionSet();
-
+        }
         permissions.setPermissions(0, entry.getDeniedPermissions());
     }
 
@@ -131,7 +131,6 @@ public class CmsAccessControlList {
      * @return the current permissions of this single principal
      */
     public CmsPermissionSet getPermissions(I_CmsPrincipal principal) {
-
         return (CmsPermissionSet)m_permissions.get(principal.getId());
     }
 
@@ -147,15 +146,15 @@ public class CmsAccessControlList {
 
         CmsPermissionSet sum = new CmsPermissionSet();
         ListIterator pIterator = null;
-        if (groups != null)
+        if (groups != null) {
             pIterator = groups.listIterator();
-
+        }
         I_CmsPrincipal principal = (I_CmsPrincipal)user;
         do {
             CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(principal.getId());
-            if (permissions != null)
+            if (permissions != null) {
                 sum.addPermissions(permissions);
-
+            }
             if (pIterator != null && pIterator.hasNext()) {
                 principal = (I_CmsPrincipal)pIterator.next();
             } else {

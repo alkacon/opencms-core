@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 5.0 beta 2
  */
@@ -202,7 +202,9 @@ public class CmsJspActionElement {
      * @return the request wrapped by the element
      */
     public HttpServletRequest getRequest() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {
+            return null;
+        }
         return m_request;        
     }
     
@@ -212,7 +214,9 @@ public class CmsJspActionElement {
      * @return the reponse wrapped by this element
      */
     public HttpServletResponse getResponse() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {
+            return null;
+        }
         return m_response;        
     }    
     
@@ -222,7 +226,9 @@ public class CmsJspActionElement {
      * @return the JSP page context wrapped by this element
      */    
     public PageContext getPageContext() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {
+            return null;
+        }
         return m_context;           
     }
 
@@ -235,7 +241,9 @@ public class CmsJspActionElement {
      * @return the CmsObject from the wrapped request
      */
     public CmsObject getCmsObject() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {
+            return null;
+        }
         try { 
             return m_controller.getCmsObject();
         } catch (Throwable t) {
@@ -296,7 +304,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagInclude
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
-        if (m_notInitialized) return;
+        if (m_notInitialized) {
+            return;
+        }
         if (parameterMap != null) {
             try {
                 HashMap modParameterMap = new HashMap(parameterMap.size());
@@ -308,8 +318,9 @@ public class CmsJspActionElement {
                     if (value instanceof String[]) {
                         modParameterMap.put(key, value);
                     } else {
-                        if (value == null)
+                        if (value == null) {
                             value = "null";
+                        }
                         String[] newValue = new String[] {value.toString()};
                         modParameterMap.put(key, newValue);
                     }
@@ -369,7 +380,9 @@ public class CmsJspActionElement {
      * @return the target URI converted to an absolute one
      */
     public String toAbsolute(String target) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
+        if (m_notInitialized) {
+            return C_NOT_INITIALIZED;
+        }
         return CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
     }
             
@@ -386,7 +399,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagLink
      */
     public String link(String link) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
+        if (m_notInitialized) {
+            return C_NOT_INITIALIZED;
+        }
         try {        
             return CmsJspTagLink.linkTagAction(link, m_request);
         } catch (Throwable t) {
@@ -406,7 +421,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagUser
      */
     public String user(String property) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
+        if (m_notInitialized) {
+            return C_NOT_INITIALIZED;
+        }
         try {
             return CmsJspTagUser.userTagAction(property, m_request);
         } catch (Throwable t) {
@@ -482,9 +499,13 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
+        if (m_notInitialized) {
+            return C_NOT_INITIALIZED;
+        }
         try {
-            if (file == null) file = m_controller.getCmsObject().getRequestContext().getUri();
+            if (file == null) {
+                file = m_controller.getCmsObject().getRequestContext().getUri();
+            }
             return CmsJspTagProperty.propertyTagAction(name, file, defaultValue, escapeHtml, m_request);
         } catch (CmsSecurityException e) {
             if (defaultValue == null) {
@@ -522,10 +543,14 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagProperty
      */
     public Map properties(String file) {
-        if (m_notInitialized) return new HashMap();
+        if (m_notInitialized) {
+            return new HashMap();
+        }
         Map value = new HashMap();        
         try {
-            if (file == null) file = CmsJspTagProperty.USE_URI;   
+            if (file == null) {
+                file = CmsJspTagProperty.USE_URI;
+            }
             switch (CmsJspTagProperty.m_actionValue.indexOf(file)) {      
                 case 0: // USE_URI
                 case 1: // USE_PARENT
@@ -589,7 +614,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagLabel
      */
     public String label(String label) {
-        if (m_notInitialized) return C_NOT_INITIALIZED;
+        if (m_notInitialized) {
+            return C_NOT_INITIALIZED;
+        }
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, m_request);
         } catch (Throwable t) {
@@ -608,7 +635,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspTagUser
      */
     public boolean template(String element) {
-        if (m_notInitialized) return true;        
+        if (m_notInitialized) {
+            return true;
+        }
         try {
             return CmsJspTagTemplate.templateTagAction(element, m_request);
         } catch (Throwable t) {
@@ -623,7 +652,9 @@ public class CmsJspActionElement {
      * @return the current request context from the internal CmsObject
      */
     public CmsRequestContext getRequestContext() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {            
+            return null;
+        }
         try {
             return m_controller.getCmsObject().getRequestContext();
         } catch (Throwable t) {
@@ -640,7 +671,9 @@ public class CmsJspActionElement {
      * @see com.opencms.flex.jsp.CmsJspNavBuilder
      */
     public CmsJspNavBuilder getNavigation() {
-        if (m_notInitialized) return null;
+        if (m_notInitialized) {
+            return null;
+        }
         try {
             if (m_navigation == null) {
                 m_navigation = new CmsJspNavBuilder(m_controller.getCmsObject());
@@ -698,9 +731,15 @@ public class CmsJspActionElement {
             if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
                 language = defaultLanguage;
             }
-            if (language == null) language = "";
-            if (country == null) country = "";
-            if (variant == null) variant = "";
+            if (language == null) {
+                language = "";
+            }
+            if (country == null) {
+                country = "";
+            }
+            if (variant == null) {
+                variant = "";
+            }
             return new CmsMessages(bundleName, language, country, variant);
         } catch (Throwable t) {
             handleException(t);
@@ -773,7 +812,9 @@ public class CmsJspActionElement {
         if (! (m_handleExceptions || getRequestContext().currentProject().isOnlineProject())) {    
             if (DEBUG > 0) {        
                 System.err.println("Exception in " + this.getClass().getName() + ":");
-                if (DEBUG > 1) t.printStackTrace(System.err);
+                if (DEBUG > 1) {
+                    t.printStackTrace(System.err);
+                }
             }
             throw new RuntimeException("Exception in " + this.getClass().getName(), t);
         }

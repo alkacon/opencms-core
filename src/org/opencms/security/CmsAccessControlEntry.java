@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.5 $ $Date: 2003/09/15 10:51:15 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/08 10:32:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {
@@ -128,17 +128,21 @@ public class CmsAccessControlEntry {
             switch (suffix.charAt(0)) {
                 case 'I' :
                 case 'i' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+                    }
                     break;
                 case 'O' :
                 case 'o' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_flags |= I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
+                    }
                     break;
                 default :
                     permissionString.append(prefix);

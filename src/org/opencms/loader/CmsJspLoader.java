@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -221,7 +221,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public void export(CmsObject cms, CmsFile file) {
         try {    
             OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            if (DEBUG > 1) System.err.println("FlexJspLoader: Export requested for " + cms.readAbsolutePath(file));
+            if (DEBUG > 1) {
+                System.err.println("FlexJspLoader: Export requested for " + cms.readAbsolutePath(file));
+            }
             // get the contents of the exported page and  try to write the result to the export output stream
             responsestream.write(exportJsp(cms, file));
             responsestream.close();
@@ -385,7 +387,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         exportUrl.append("=");
         exportUrl.append(Encoder.encode(encoding));        
         
-        if (DEBUG > 2) System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
+        if (DEBUG > 2) {
+            System.err.println("CmsJspLoader.exportJsp(): JSP export URL is " + exportUrl);
+        }
 
         // perform the export with an URLConnection
         URL export;
@@ -415,7 +419,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             while (tok.hasMoreTokens()) {
                 String link = Encoder.decode(tok.nextToken());
                 cms.getRequestContext().addLink(link);
-                if (DEBUG > 3) System.err.println("CmsJspLoader.exportJsp(): Extracted link " + link);
+                if (DEBUG > 3) {
+                    System.err.println("CmsJspLoader.exportJsp(): Extracted link " + link);
+                }
             }
         }
         // now read the page content and write it to the byte array
@@ -459,7 +465,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         // build a string out of the found links
         while (i.hasNext()) {
             links.append(Encoder.encode((String)i.next()));
-            if (i.hasNext()) links.append(C_EXPORT_HEADER_SEP);
+            if (i.hasNext()) {
+                links.append(C_EXPORT_HEADER_SEP);
+            }
         }
         // set the export header and we are finished
         res.setHeader(C_EXPORT_HEADER, new String(links));
@@ -496,8 +504,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
         m_jspWebAppRepository = conf.getString("flex.jsp.repository", "/WEB-INF/jsp");
         m_jspRepository += m_jspWebAppRepository.replace('/', File.separatorChar);
-        if (!m_jspRepository.endsWith(File.separator)) m_jspRepository += File.separator;
-        if (DEBUG > 0) System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
+        if (!m_jspRepository.endsWith(File.separator)) {
+            m_jspRepository += File.separator;
+        }
+        if (DEBUG > 0) {
+            System.err.println("JspLoader: Setting jsp repository to " + m_jspRepository);
+        }
         // Get the cache from the runtime properties
         m_cache = (CmsFlexCache)OpenCms.getRuntimeProperty(C_LOADER_CACHENAME);
         // Get the export URL from the runtime properties
@@ -510,7 +522,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }
         // Get the "error pages are commited or not" flag from the runtime properties
         Boolean errorPagesAreNotCommited = (Boolean)OpenCms.getRuntimeProperty(C_LOADER_ERRORPAGECOMMIT);
-        if (errorPagesAreNotCommited != null) m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
+        if (errorPagesAreNotCommited != null) {
+            m_errorPagesAreNotCommited = errorPagesAreNotCommited.booleanValue();
+        }
     }
     
     /**
@@ -577,8 +591,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
         if (bypass) {
             // Bypass Flex cache for this page (this solves some compatibility issues in BEA Weblogic)        
-            if (DEBUG > 1)
+            if (DEBUG > 1) {
                 System.err.println("JspLoader.load() bypassing cache for file " + cms.readAbsolutePath(file));
+            }
             // Update the JSP first if neccessary            
             String target = updateJsp(cms, file, f_req, controller, new HashSet(11));
             // Dispatch to external JSP
@@ -665,7 +680,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         }       
 
         if (cms.getRequestContext().getRequest() instanceof CmsExportRequest) {
-            if (DEBUG > 1) System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + cms.readAbsolutePath(file));
+            if (DEBUG > 1) {
+                System.err.println("FlexJspLoader.loadTemplate(): Export requested for " + cms.readAbsolutePath(file));
+            }
             // export the JSP
             result = exportJsp(cms, file);
         } else {
@@ -695,10 +712,14 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 f_req.getRequestDispatcher(cms.readAbsolutePath(file)).include(f_req, f_res);
             } catch (java.net.SocketException e) {        
                 // Uncritical, might happen if client (browser) does not wait until end of page delivery
-                if (DEBUG > 1) System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
+                if (DEBUG > 1) {
+                    System.err.println("JspLoader.loadTemplate() ignoring SocketException " + e);
+                }
             } catch (Exception e) {            
                 System.err.println("Error in CmsJspLoader.loadTemplate() while loading: " + e.toString());
-                if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                if (DEBUG > 0) {
+                    System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                }
                 throw new CmsException("Error in CmsJspLoader.loadTemplate() while loading " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
             } 
     
@@ -716,10 +737,14 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     }
                 } catch (IllegalStateException e) {
                     // Uncritical, might happen if JSP error page was used
-                    if (DEBUG > 1) System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
+                    if (DEBUG > 1) {
+                        System.err.println("JspLoader.loadTemplate() ignoring IllegalStateException " + e);
+                    }
                 } catch (Exception e) {
                     System.err.println("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream: " + e.toString());
-                    if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                    if (DEBUG > 0) {
+                        System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                    }
                     throw new CmsException("Error in CmsJspLoader.loadTemplate() while writing buffer to final stream for " + cms.readAbsolutePath(file) + "\n" + e, CmsException.C_LOADER_ERROR, e);
                 }        
             }
@@ -792,15 +817,18 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         String jspTargetName = getJspName(cms.readAbsolutePath(file));
 
         // check for inclusion loops
-        if (updates.contains(jspTargetName)) return null;
+        if (updates.contains(jspTargetName)) {
+            return null;
+        }
         updates.add(jspTargetName);
 
         String jspPath = getJspPath(jspTargetName, controller.getCurrentRequest().isOnline());
         
         File d = new File(jspPath).getParentFile();   
         if ((d == null) || (d.exists() && ! (d.isDirectory() && d.canRead()))) {
-            if (OpenCms.getLog(this).isErrorEnabled()) 
+            if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Could not access directory for " + jspPath);
+            }
             throw new ServletException("JspLoader: Could not access directory for " + jspPath);
         }   
          
@@ -826,7 +854,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         String jspfilename = getJspUri(cms.readAbsolutePath(file), controller.getCurrentRequest().isOnline());               
         
         if (mustUpdate) {
-            if (DEBUG > 2) System.err.println("JspLoader writing new file: " + jspfilename);         
+            if (DEBUG > 2) {
+                System.err.println("JspLoader writing new file: " + jspfilename);
+            }
             byte[] contents = null;
             String jspEncoding = null;
             try {
@@ -834,7 +864,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 // Encoding project:
                 // Check the JSP "content-encoding" property
                 jspEncoding = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
-                if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
+                if (jspEncoding == null) {
+                    jspEncoding = C_DEFAULT_JSP_ENCODING;
+                }
                 jspEncoding = jspEncoding.trim().toUpperCase();
             } catch (CmsException e) {
                 throw new ServletException("JspLoader: Could not read contents for file '" + cms.readAbsolutePath(file) + "'", e);
@@ -858,21 +890,31 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     i2 = page.indexOf(C_DIRECTIVE_END, i1 + slen);
                     if (i2 > i1) {
                         String directive = page.substring(i1 + slen, i2);
-                        if (DEBUG > 2) System.err.println("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                        if (DEBUG > 2) {
+                            System.err.println("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                        }
 
                         int t1=0, t2=0, t3=0, t4=0, t5=0, t6=slen, t7=0;
-                        while (directive.charAt(t1) == ' ') t1++;
+                        while (directive.charAt(t1) == ' ') {
+                            t1++;
+                        }
                         String filename = null;                        
                         if (directive.startsWith("include", t1)) {            
-                            if (DEBUG > 2) System.err.println("JspLoader: Detected 'include' directive!");                            
+                            if (DEBUG > 2) {
+                                System.err.println("JspLoader: Detected 'include' directive!");
+                            }
                             t2 = directive.indexOf("file", t1 + 7);
                             t5 = 6;
                         } else if (directive.startsWith("page", t1)) {
-                            if (DEBUG > 2) System.err.println("JspLoader: Detected 'page' directive!");                            
+                            if (DEBUG > 2) {
+                                System.err.println("JspLoader: Detected 'page' directive!");
+                            }
                             t2 = directive.indexOf("errorPage", t1 + 4);
                             t5 = 11;
                         } else if (directive.startsWith("cms", t1)) {
-                            if (DEBUG > 2) System.err.println("JspLoader: Detected 'cms' directive!");                            
+                            if (DEBUG > 2) {
+                                System.err.println("JspLoader: Detected 'cms' directive!");
+                            }
                             t2 = directive.indexOf("file", t1 + 3);
                             t5 = 4; t6 = 0; t7 = elen; 
                         }
@@ -880,11 +922,19 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         if (t2 > 0) {
                             String sub = directive.substring(t2 + t5); 
                             char c1 = sub.charAt(t3);
-                            while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) c1 = sub.charAt(++t3);
+                            while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
+                                c1 = sub.charAt(++t3);
+                            }
                             t4 = t3;
-                            while (c1 != '"') c1 = sub.charAt(++t4);
-                            if (t4 > t3) filename=sub.substring(t3, t4);
-                            if (DEBUG > 2) System.err.println("JspLoader: File given in directive is: " + filename);                            
+                            while (c1 != '"') {
+                                c1 = sub.charAt(++t4);
+                            }
+                            if (t4 > t3) {
+                                filename=sub.substring(t3, t4);
+                            }
+                            if (DEBUG > 2) {
+                                System.err.println("JspLoader: File given in directive is: " + filename);
+                            }
                         }
                         
                         if (filename != null) {
@@ -893,7 +943,9 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                             String suf = ((t7 == 0)?directive.substring(t2+t3+t5+filename.length()):"");
                             // Now try to update the referenced file 
                             String absolute = CmsLinkManager.getAbsoluteUri(filename, controller.getCurrentRequest().getElementUri());
-                            if (DEBUG > 2) System.err.println("JspLoader: Absolute location=" + absolute);
+                            if (DEBUG > 2) {
+                                System.err.println("JspLoader: Absolute location=" + absolute);
+                            }
                             String jspname = null;
                             try {
                                 // Make sure the jsp referenced file is generated
@@ -902,13 +954,19 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                                 jspname = getJspUri(cms.readAbsolutePath(jsp), controller.getCurrentRequest().isOnline());
                             } catch (Exception e) {
                                 jspname = null;
-                                if (DEBUG > 2) System.err.println("JspLoader: Error while creating jsp file " + absolute + "\n" + e);
+                                if (DEBUG > 2) {
+                                    System.err.println("JspLoader: Error while creating jsp file " + absolute + "\n" + e);
+                                }
                             }
                             if (jspname != null) {
                                 // Only change something in case no error had occured
-                                if (DEBUG > 2) System.err.println("JspLoader: Name of jsp file is " + jspname);
+                                if (DEBUG > 2) {
+                                    System.err.println("JspLoader: Name of jsp file is " + jspname);
+                                }
                                 directive = pre + jspname + suf;
-                                if (DEBUG > 2) System.err.println("JspLoader: Changed directive to " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);                                                     
+                                if (DEBUG > 2) {
+                                    System.err.println("JspLoader: Changed directive to " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
+                                }
                             }
                         }
                         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.133 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.132 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.133 $ $Date: 2003/11/08 10:32:44 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1952,11 +1952,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, task.getId());
             res = stmt.executeQuery();
 
-            if (res.next())
+            if (res.next()) {
                 project = new CmsProject(res, m_sqlManager);
-            else
+            } else {
                 // project not found!
                 throw new CmsException("[" + this.getClass().getName() + "] " + task, CmsException.C_NOT_FOUND);
+            }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "readProject(CmsTask)", CmsException.C_SQL_ERROR, e, false);
         } finally {

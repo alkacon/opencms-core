@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/11/03 09:05:52 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2003/11/08 10:32:43 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -113,9 +113,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // check the access rights
         // TODO: normally, only resources with write access should be collected here
         // in order to prevent exceptions while touching
-        if (!cms.hasPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS))
+        if (!cms.hasPermissions(currentFolder, I_CmsConstants.C_WRITE_ACCESS)) {
             return;
-
+        }
         if (touchRecursive) {
             // collect all folders and files by traversing the tree on a breadth first search
             unvisited.add(currentFolder);
@@ -145,9 +145,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         Enumeration touchFolders = allFolders.elements();
         while (touchFolders.hasMoreElements()) {
             currentFolder = (CmsFolder)touchFolders.nextElement();           
-            if (DEBUG > 0)
+            if (DEBUG > 0) {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFolder));
-
+            }
             // touch the folder itself
             cms.doTouch(cms.readAbsolutePath(currentFolder), timestamp, user);
 
@@ -168,9 +168,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         while (touchFiles.hasMoreElements()) {
             currentFile = (CmsFile)touchFiles.nextElement();
 
-            if (DEBUG > 0)
+            if (DEBUG > 0) {
                 System.err.println("touching: " + cms.readAbsolutePath(currentFile));
-
+            }
             if (currentFile.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // touch the file itself
                 cms.touch(cms.readAbsolutePath(currentFile), timestamp, false);
@@ -264,8 +264,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
     public CmsResource createResource(CmsObject cms, String newFolderName, Map properties, byte[] contents, Object parameter) throws CmsException {
-        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
+        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
         CmsFolder res = cms.doCreateFolder(newFolderName, properties);
         cms.lockResource(newFolderName);
         //res.setLocked(cms.getRequestContext().currentUser().getId());
@@ -380,9 +381,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
      */
     public CmsResource importResource(CmsObject cms, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
         CmsResource importedResource = null;
-        if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
+        if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             destination += I_CmsConstants.C_FOLDER_SEPARATOR;
-
+        }
         boolean changed = true;
         //try to create the resource
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/11/05 10:33:21 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.opencms.site.CmsSiteManager;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -349,7 +349,9 @@ public abstract class CmsWorkplace {
      * @return the path to the workplace static resources
      */
     public String getResourceUri() {
-        if (m_resourceUri != null) return m_resourceUri;
+        if (m_resourceUri != null) {
+            return m_resourceUri;
+        }
         synchronized (this) {
             boolean useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
             if (useVfs) {
@@ -383,7 +385,9 @@ public abstract class CmsWorkplace {
     public String buildSelect(String parameters, List options, List values, int selected) {
         StringBuffer result = new StringBuffer(1024);
         result.append("<select ");
-        if (parameters != null) result.append(parameters);
+        if (parameters != null) {
+            result.append(parameters);
+        }
         result.append(">\n");
         int length = options.size();
         String value = null;
@@ -398,7 +402,9 @@ public abstract class CmsWorkplace {
             }
             if (value == null) {
                 result.append("<option");
-                if (i == selected) result.append(" selected");   
+                if (i == selected) {
+                    result.append(" selected");
+                }
                 result.append(">");  
                 result.append(options.get(i));
                 result.append("</option>\n");
@@ -406,7 +412,9 @@ public abstract class CmsWorkplace {
                 result.append("<option value=\"");
                 result.append(value);
                 result.append("\""); 
-                if (i == selected) result.append(" selected");
+                if (i == selected) {
+                    result.append(" selected");
+                }
                 result.append(">");                
                 result.append(options.get(i));
                 result.append("</option>\n");                
@@ -649,7 +657,9 @@ public abstract class CmsWorkplace {
         for (int i=0; i<length; i++) {
             Method method = methods[i];
             if (method.getName().startsWith("getParam") && (method.getParameterTypes().length == 0)) {
-                if (DEBUG) System.err.println("getMethod: " + method.getName());
+                if (DEBUG) {
+                    System.err.println("getMethod: " + method.getName());
+                }
                 list.add(method);
             }
         }        
@@ -672,7 +682,9 @@ public abstract class CmsWorkplace {
             if (method.getName().startsWith("setParam") 
             && (method.getParameterTypes().length == 1)
             && (method.getParameterTypes()[0].equals(java.lang.String.class))) {
-                if (DEBUG) System.err.println("setMethod: " + method.getName());
+                if (DEBUG) {
+                    System.err.println("setMethod: " + method.getName());
+                }
                 list.add(method);
             }
         }        
@@ -697,10 +709,16 @@ public abstract class CmsWorkplace {
             Method m = (Method)i.next();
             String name = m.getName().substring(8).toLowerCase();
             String value = request.getParameter(name);
-            if ("".equals(value)) value = null;
-            if (value != null) value = Encoder.decode(value);
+            if ("".equals(value)) {
+                value = null;
+            }
+            if (value != null) {
+                value = Encoder.decode(value);
+            }
             try {
-                if (DEBUG && (value != null)) System.err.println("setting " + m.getName() + " with value '" + value + "'");
+                if (DEBUG && (value != null)) {
+                    System.err.println("setting " + m.getName() + " with value '" + value + "'");
+                }
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
                 // ignore
@@ -795,7 +813,9 @@ public abstract class CmsWorkplace {
             result.append(param);
             result.append("=");
             result.append(Encoder.encode(value.toString()));
-            if (i.hasNext()) result.append("&");
+            if (i.hasNext()) {
+                result.append("&");
+            }
         }        
         return result.toString();
     }    
@@ -815,7 +835,9 @@ public abstract class CmsWorkplace {
      * @return the uri (including context path) to the explorer file list
      */    
     public String getExplorerFileListFullUri() {
-        if (m_file_explorer_filelist != null) return m_file_explorer_filelist;
+        if (m_file_explorer_filelist != null) {
+            return m_file_explorer_filelist;
+        }
         synchronized (this) {
             m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);            
         }
@@ -834,7 +856,9 @@ public abstract class CmsWorkplace {
      * the provided value
      */
     public String nullToEmpty(String value) {
-        if (value != null) return value;
+        if (value != null) {
+            return value;
+        }
         return "";
     }
     

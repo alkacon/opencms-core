@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -950,7 +950,9 @@ public class CmsChacc extends CmsDialog {
      */
     protected String getEntryType(int flags) {
         for (int i=0; i<getTypes().length; i++) {
-            if ((flags & getTypesInt()[i]) > 0) return getTypes()[i];
+            if ((flags & getTypesInt()[i]) > 0) {
+                return getTypes()[i];
+            }
         }
         return "Unknown";
     }
@@ -963,7 +965,9 @@ public class CmsChacc extends CmsDialog {
      */
     protected int getEntryTypeInt(int flags) {
         for (int i=0; i<getTypes().length; i++) {
-            if ((flags & getTypesInt()[i]) > 0) return i;
+            if ((flags & getTypesInt()[i]) > 0) {
+                return i;
+            }
         }
         return -1;
     }

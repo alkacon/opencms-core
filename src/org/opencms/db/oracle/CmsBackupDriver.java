@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/11/03 09:05:52 $
+ * @version $Revision: 1.23 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -213,8 +213,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt.setString(2, backupId.toString());
                 
                 res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-                if (!res.next())
+                if (!res.next()) {
                     throw new CmsException("internalWriteBackupFileContent backupId=" + backupId.toString() + " fileId=" + fileId.toString() + " content not found", CmsException.C_NOT_FOUND);
+                }
             
                 // write file content 
                 Blob content = res.getBlob("FILE_CONTENT");

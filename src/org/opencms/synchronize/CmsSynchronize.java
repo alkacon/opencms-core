@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.23 $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.24 $ $Date: 2003/11/08 10:32:44 $
  */
 public class CmsSynchronize {
 
@@ -550,8 +550,9 @@ public class CmsSynchronize {
                         try {
                             ((I_CmsSynchonizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
-                            if (OpenCms.getLog(this).isWarnEnabled())
+                            if (OpenCms.getLog(this).isWarnEnabled()) {
                                 OpenCms.getLog(this).warn(". CmsSyncModification class : exportTo FS " + res.getRootPath(), e);
+                            }
                             break;
                         }
                     }
@@ -615,8 +616,9 @@ public class CmsSynchronize {
                 try {
                     ((I_CmsSynchonizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
                 } catch (CmsSynchronizeException e) {
-                    if (OpenCms.getLog(this).isInfoEnabled())
+                    if (OpenCms.getLog(this).isInfoEnabled()) {
                         OpenCms.getLog(this).info(". CmsSyncModification class : updateFrom FS " + res.getRootPath() + ":" + e.toString());
+                    }
                     break;
                 }
             }
@@ -861,8 +863,9 @@ public class CmsSynchronize {
             try {
                 translation = ((I_CmsSynchonizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
-                if (OpenCms.getLog(this).isInfoEnabled())
+                if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(". CmsSyncModification class : external translation " + name + ":" + e.toString());
+                }
                 break;
             }
         }
@@ -931,8 +934,9 @@ public class CmsSynchronize {
             throw e;
         } finally {
             try {
-                if (fileStream != null)
+                if (fileStream != null) {
                     fileStream.close();
+                }
             } catch (IOException e) {
                 // ignore
             }
@@ -983,8 +987,9 @@ public class CmsSynchronize {
             throw e;
         } finally {
             try {
-                if (fOut != null)
+                if (fOut != null) {
                     fOut.close();
+                }
             } catch (IOException e) {
                 // ignore
             }

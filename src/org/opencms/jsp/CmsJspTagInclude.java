@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -239,11 +239,17 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 target = m_target + getSuffix();
             } else if (m_property != null) {            
                 // Option 2: target is set with "property" parameter
-                if (DEBUG) System.err.println("IncludeTag: property=" + m_property);
+                if (DEBUG) {
+                    System.err.println("IncludeTag: property=" + m_property);
+                }
                 try { 
                     String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
-                    if (DEBUG) System.err.println("IncludeTag: property=" + m_property + " is " + prop);                    
-                    if (prop != null) target = prop + getSuffix();
+                    if (DEBUG) {
+                        System.err.println("IncludeTag: property=" + m_property + " is " + prop);
+                    }
+                    if (prop != null) {
+                        target = prop + getSuffix();
+                    }
                 } catch (Exception e) { 
                     // target will be null
                 }
@@ -251,7 +257,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 // Option 3: target is set in "attribute" parameter
                 try { 
                     String attr = (String)req.getAttribute(m_attribute);
-                    if (attr != null) target = attr + getSuffix();
+                    if (attr != null) {
+                        target = attr + getSuffix();
+                    }
                 } catch (Exception e) { 
                     // target will be null
                 }
@@ -300,14 +308,18 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     public static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
         
-        if (DEBUG) System.err.println("includeTagAction/1: target=" + target);
+        if (DEBUG) {
+            System.err.println("includeTagAction/1: target=" + target);
+        }
         
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         if (target == null) {
             // set target to default
             target = controller.getCmsObject().getRequestContext().getUri();
-            if (DEBUG) System.err.println("includeTagAction/2: target=" + target);
+            if (DEBUG) {
+                System.err.println("includeTagAction/2: target=" + target);
+            }
         }
                 
         Map parameterMap = new HashMap();      
@@ -376,7 +388,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // for other cases setting of "target" is fine             
         }          
 
-        if (DEBUG) System.err.println("includeTagAction/3: target=" + target);
+        if (DEBUG) {
+            System.err.println("includeTagAction/3: target=" + target);
+        }
        
         // save old parameters from request
         Map oldParamterMap = req.getParameterMap();
@@ -392,15 +406,25 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);                
             
         } catch (javax.servlet.ServletException e) {
-            if (DEBUG) System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
-            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            if (DEBUG) {
+                System.err.println("JspTagInclude: ServletException in Jsp 'include' tag processing: " + e);
+            }
+            if (DEBUG) {
+                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            }
             throw new JspException(imprintExceptionMessage(e, target), e);    
         } catch (java.io.IOException e) {
-            if (DEBUG) System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
-            if (DEBUG) System.err.println(com.opencms.util.Utils.getStackTrace(e));                
+            if (DEBUG) {
+                System.err.println("JspTagInclude: IOException in Jsp 'include' tag processing: " + e);
+            }
+            if (DEBUG) {
+                System.err.println(com.opencms.util.Utils.getStackTrace(e));
+            }
             throw new JspException(imprintExceptionMessage(e, target), e);
         } finally {
-            if (oldParamterMap != null) controller.getCurrentRequest().setParameterMap(oldParamterMap);            
+            if (oldParamterMap != null) {
+                controller.getCurrentRequest().setParameterMap(oldParamterMap);
+            }
         }           
     }
     
@@ -447,12 +471,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     public void addParameter(String name, String value) {
         // No null values allowed in parameters
-        if ((name == null) || (value == null))
+        if ((name == null) || (value == null)) {
             return;
+        }
 
-        if (DEBUG)
+        if (DEBUG) {
             System.err.println("CmsJspIncludeTag.addParameter: param=" + name + " value=" + value);
-
+        }
+        
         // Check if internal map exists, create new one if not
         if (m_parameterMap == null) {
             m_parameterMap = new HashMap();
@@ -473,7 +499,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     private static void addParameter(Map parameters, String name, String value, boolean overwrite) {
         // No null values allowed in parameters
-        if ((parameters == null) || (name == null) || (value == null)) return;
+        if ((parameters == null) || (name == null) || (value == null)) {
+            return;
+        }
         
         // Check if the parameter name (key) exists
         if (parameters.containsKey(name) && (! overwrite)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  */
 public class CmsRequestContext {
 
@@ -161,7 +161,9 @@ public class CmsRequestContext {
      * @return the resource name including site root
      */
     public String addSiteRoot(String resourcename) {
-        if (resourcename == null) return null;
+        if (resourcename == null) {
+            return null;
+        }
         // TODO: hack - added logic to have a / between site root and resourcename if missing
         String siteRoot = getAdjustedSiteRoot(resourcename);
         resourcename =  siteRoot + ((siteRoot.endsWith("/") || resourcename.startsWith("/")) ? "" : "/") + resourcename;
@@ -256,7 +258,9 @@ public class CmsRequestContext {
      * @return Object the attribute value, or <code>null</code> if the attribute was not found
      */
     public synchronized Object getAttribute(String attributeName) {
-        if (m_attributeMap == null) return null;
+        if (m_attributeMap == null) {
+            return null;
+        }
         return m_attributeMap.get(attributeName);
     }
 
@@ -404,7 +408,9 @@ public class CmsRequestContext {
      * @return the path to the requested resource.
      */
     public String getUri() {
-        if (m_uri != null) return m_uri;
+        if (m_uri != null) {
+            return m_uri;
+        }
         if (m_req != null) {
             return m_req.getRequestedResource();
         } else {

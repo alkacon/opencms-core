@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.StringTokenizer;
 /**
  * A permission set contains both allowed and denied permissions as bitsets.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2003/09/12 10:01:53 $
+ * @version $Revision: 1.8 $ $Date: 2003/11/08 10:32:43 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPermissionSet {
@@ -144,31 +144,39 @@ public class CmsPermissionSet {
             switch (suffix.charAt(0)) {
                 case 'R' :
                 case 'r' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_READ;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_READ;
+                    }
                     break;
                 case 'W' :
                 case 'w' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_WRITE;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_WRITE;
+                    }
                     break;
                 case 'V' :
                 case 'v' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_VIEW;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_VIEW;
+                    }
                     break;
                 case 'C' :
                 case 'c' :
-                    if (prefix.charAt(0) == '+')
+                    if (prefix.charAt(0) == '+') {
                         m_allowed |= I_CmsConstants.C_PERMISSION_CONTROL;
-                    if (prefix.charAt(0) == '-')
+                    }
+                    if (prefix.charAt(0) == '-') {
                         m_denied |= I_CmsConstants.C_PERMISSION_CONTROL;
+                    }
                     break;
                 default :
                     // ignore
@@ -294,26 +302,26 @@ public class CmsPermissionSet {
 
         StringBuffer p = new StringBuffer("");
 
-        if ((m_denied & I_CmsConstants.C_PERMISSION_READ) > 0)
-            p.append("-r");
-        else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ) > 0)
+        if ((m_denied & I_CmsConstants.C_PERMISSION_READ) > 0) {
+            p.append("-r");            
+        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_READ) > 0) {
             p.append("+r");
-
-        if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE) > 0)
+        }
+        if ((m_denied & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
             p.append("-w");
-        else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE) > 0)
+        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_WRITE) > 0) {
             p.append("+w");
-
-        if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW) > 0)
+        }
+        if ((m_denied & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
             p.append("-v");
-        else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW) > 0)
+        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_VIEW) > 0) {
             p.append("+v");
-
-        if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL) > 0)
+        }
+        if ((m_denied & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("-c");
-        else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL) > 0)
+        } else if ((m_allowed & I_CmsConstants.C_PERMISSION_CONTROL) > 0) {
             p.append("+c");
-
+        }
         return p.toString();
     }
 

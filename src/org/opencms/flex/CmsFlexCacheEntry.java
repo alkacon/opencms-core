@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2003/11/06 10:55:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.ServletException;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
     
@@ -136,7 +136,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @param bytes the output to save in the cache
      */    
     public void add(byte[] bytes) {
-        if (m_completed) return;
+        if (m_completed) {
+            return;
+        }
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(bytes);
@@ -151,11 +153,15 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @param parameters a map of parameters specific to this include call
      */    
     public void add(String resource, Map parameters) {
-        if (m_completed) return;
+        if (m_completed) {
+            return;
+        }
         if (m_redirectTarget == null) {
             // Add only if not already redirected
             m_elements.add(resource);
-            if (parameters == null) parameters = java.util.Collections.EMPTY_MAP;
+            if (parameters == null) {
+                parameters = java.util.Collections.EMPTY_MAP;
+            }
             m_elements.add(parameters);
             m_byteSize += resource.getBytes().length;
         }
@@ -168,7 +174,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @param headers the map of headers to add to the entry 
      */
     public void addHeaders(java.util.Map headers) {
-        if (m_completed) return;
+        if (m_completed) {
+            return;
+        }
         m_headers = headers;
         
         Iterator allHeaders = m_headers.keySet().iterator();
@@ -189,7 +197,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @param target The redirect target (must be a valid URL).
      */    
     public void setRedirect(String target) {
-        if (m_completed) return;
+        if (m_completed) {
+            return;
+        }
         m_redirectTarget = target;
         m_byteSize = target.getBytes().length;
         // If we have a redirect we don't need any other output or headers
@@ -224,7 +234,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      */
     public void service(CmsFlexRequest req, CmsFlexResponse res) 
     throws CmsException, ServletException, IOException {
-        if (!m_completed) return;
+        if (!m_completed) {
+            return;
+        }
 
         if (m_redirectTarget != null) {
             res.setOnlyBuffering(false);
@@ -250,13 +262,17 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
                     // Do the include call
                     req.getRequestDispatcher((String)o).include(req, res);
                     // Reset parameters if neccessary
-                    if (oldMap != null) req.setParameterMap(oldMap);
+                    if (oldMap != null) {
+                        req.setParameterMap(oldMap);
+                    }
                 } else {
                     try {
                         res.writeToOutputStream((byte[])o, hasNoSubElements);
                     } catch (java.io.IOException e) {
                         String err = getClass().getName() + ": Could not write to response OutputStream. ";
-                        if (DEBUG > 0) System.err.println(err);
+                        if (DEBUG > 0) {
+                            System.err.println(err);
+                        }
                         throw new com.opencms.core.CmsException(err + "\n" + e, e);
                     }
                 }
@@ -287,12 +303,16 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      * @param timeout the timeout value to be set
      */
     public synchronized void setTimeout(long timeout) {
-        if (timeout < 0 || ! m_completed) return;
+        if (timeout < 0 || ! m_completed) {
+            return;
+        }
         
         long now = System.currentTimeMillis();
         long daytime = now % 86400000;
         m_timeout = now - (daytime % timeout) + timeout;
-        if (DEBUG > 2) System.err.println("FlexCacheEntry: New entry timeout=" + m_timeout + " now=" + now + " remaining=" + (m_timeout - now));
+        if (DEBUG > 2) {
+            System.err.println("FlexCacheEntry: New entry timeout=" + m_timeout + " now=" + now + " remaining=" + (m_timeout - now));
+        }
     } 
     
     /**
@@ -312,7 +332,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
         if (m_elements != null) {
             m_elements = java.util.Collections.unmodifiableList(m_elements);
         }
-        if (DEBUG > 1) System.err.println("CmsFlexCacheEntry: New entry completed:\n" + toString());
+        if (DEBUG > 1) {
+            System.err.println("CmsFlexCacheEntry: New entry completed:\n" + toString());
+        }
     }
     
     /** 
@@ -389,7 +411,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject {
      */
     public void addToLruCache() {
         // do nothing here...
-        if (DEBUG>0) System.out.println("Added cache entry with ID: " + m_id + " to the LRU cache");
+        if (DEBUG>0) {
+            System.out.println("Added cache entry with ID: " + m_id + " to the LRU cache");
+        }
     }
     
     /**

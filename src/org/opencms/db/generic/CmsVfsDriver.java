@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/07 12:36:11 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.153 $ $Date: 2003/11/07 12:36:11 $
+ * @version $Revision: 1.154 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -429,8 +429,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         String parentFolderName = "/";
         if (!folder.getName().equals(I_CmsConstants.C_ROOT)) {
             parentFolderName = folder.getName();
-            if (parentFolderName.endsWith("/"))
+            if (parentFolderName.endsWith("/")) {
                 parentFolderName = parentFolderName.substring(0, parentFolderName.length() - 1);
+            }
             parentFolderName = parentFolderName.substring(0, parentFolderName.lastIndexOf("/") + 1);
         }
 
@@ -1005,8 +1006,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, resourceId.toString());
             res = stmt.executeQuery();
 
-            if (res.next())
+            if (res.next()) {
                 count = res.getInt(1);
+            }
 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -2151,11 +2153,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int structureState = file.getState();
         int resourceState = file.getState();
         //if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
-        if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE)
+        if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
             resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-        else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE)
+        } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
             structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-        else if (changed != CmsDriverManager.C_NOTHING_CHANGED) {
+        } else if (changed != CmsDriverManager.C_NOTHING_CHANGED) {
             resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
             structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
         }
@@ -2214,11 +2216,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         int structureState = folder.getState();
         int resourceState = folder.getState();
         if (structureState != com.opencms.core.I_CmsConstants.C_STATE_NEW && (changed > CmsDriverManager.C_NOTHING_CHANGED)) {
-            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE)
+            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
                 resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-            else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE)
+            } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
                 structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
-            else {
+            } else {
                 resourceState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
                 structureState = com.opencms.core.I_CmsConstants.C_STATE_CHANGED;
             }

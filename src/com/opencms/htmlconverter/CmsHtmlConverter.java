@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2003/09/09 15:40:35 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/11/08 10:32:44 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -391,9 +391,10 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                 NodeList children = node.getChildNodes();
                 if (children != null) {
                     int len = children.getLength();
-                    for (int i = 0; i < len; i++)
-                    // recursively call printDocument with all child nodes 
-                    this.printDocument(children.item(i));
+                    for (int i = 0; i < len; i++) {
+                        // recursively call printDocument with all child nodes 
+                        this.printDocument(children.item(i));
+                    }
                 }
                 break;
             case Node.TEXT_NODE:

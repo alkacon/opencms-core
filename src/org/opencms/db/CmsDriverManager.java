@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/11/07 17:29:00 $
- * Version: $Revision: 1.291 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.292 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.291 $ $Date: 2003/11/07 17:29:00 $
+ * @version $Revision: 1.292 $ $Date: 2003/11/08 10:32:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -166,21 +166,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
          * @see java.lang.Object#equals(java.lang.Object)
          */
         public boolean equals(Object o) {
-            if (o == null)
+            if (o == null) {
                 return false;
-            if (!(o instanceof CacheId))
+            }
+            if (!(o instanceof CacheId)) {
                 return false;
+            }
             CacheId other = (CacheId)o;
             boolean result;
             if (m_uuid != null) {
                 result = m_uuid.equals(other.m_uuid);
-                if (result)
+                if (result) {
                     return true;
+                }
             }
             if (m_name != null) {
                 result = m_name.equals(other.m_name);
-                if (result)
+                if (result) {
                     return true;
+                }
             }
             return false;
         }
@@ -1650,8 +1654,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public CmsFolder createFolder(CmsRequestContext context, String newFolderName, Map propertyinfos) throws CmsException {
 
         // append I_CmsConstants.C_FOLDER_SEPARATOR if required
-        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
+        if (!newFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
             newFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
+        }
 
         // extract folder information
         String folderName = newFolderName.substring(0, newFolderName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newFolderName.length() - 2) + 1);
@@ -2313,8 +2318,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource onlineFolder;
 
         // TODO: "/" is currently used inconsistent !!! 
-        if (!foldername.endsWith("/"))
+        if (!foldername.endsWith("/")) {
             foldername = foldername.concat("/");
+        }
 
         // read the folder, that should be deleted
         CmsFolder cmsFolder = readFolder(context, foldername);
@@ -2961,8 +2967,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsUUID resourceId = null;
 
         // return the cached acl if already available
-        if (acList != null)
+        if (acList != null) {
             return acList;
+        }
 
         // otherwise, get the acl of the parent or a new one
         if (!(resourceId = res.getParentStructureId()).isNullUUID()) {
@@ -2978,10 +2985,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsAccessControlEntry acEntry = (CmsAccessControlEntry)acEntries.next();
 
             // if the overwrite flag is set, reset the allowed permissions to the permissions of this entry
-            if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0)
+            if ((acEntry.getFlags() & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {                
                 acList.setAllowedPermissions(acEntry);
-            else
+            } else {
                 acList.add(acEntry);
+            }
         }
 
         m_accessControlListCache.put(getCacheKey(inheritedOnly + "_", context.currentProject(), resource.getStructureId().toString()), acList);
@@ -4303,8 +4311,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         if (resource.isFolder()) {
             // append I_CmsConstants.C_FOLDER_SEPARATOR if required
-            if (!newResourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
+            if (!newResourceName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 newResourceName += I_CmsConstants.C_FOLDER_SEPARATOR;
+            }
             // extract folder information
             folderName = newResourceName.substring(0, newResourceName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR, newResourceName.length() - 2) + 1);
             resourceName = newResourceName.substring(folderName.length(), newResourceName.length() - 1);
@@ -4416,63 +4425,75 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // initalize the caches
         LRUMap hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".user", 50)); 
         m_userCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_userCache", hashMap);
+        }
 
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".group", 50));
         m_groupCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_groupCache", hashMap);
+        }
 
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".usergroups", 50));
         m_userGroupsCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_userGroupsCache", hashMap);
+        }
 
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".project", 50));
         m_projectCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_projectCache", hashMap);
+        }
 
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".resource", 2500));
         m_resourceCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".subres", 100));    
         m_resourceListCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceListCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".property", 5000));    
         m_propertyCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyCache", hashMap);
+        }
 
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertydef", 100));
         m_propertyDefCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
         m_propertyDefVectorCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_propertyDefVectorCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
         m_accessCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
         m_accessControlListCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled())
+        if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_accessControlListCache", hashMap);
+        }
         
         hashMap = new LRUMap(config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".access", 1000));    
         m_permissionCache = Collections.synchronizedMap(hashMap);
-        if (OpenCms.getMemoryMonitor().enabled()) 
+        if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
+        }
 
         m_cachelimit = config.getInteger(I_CmsConstants.C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
@@ -4487,8 +4508,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             throw ex;
         } catch (Exception ex) {
             // init of registry failed - throw exception
-            if (OpenCms.getLog(this).isErrorEnabled())
+            if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "4", ex);
+            }
             throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
         }
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -6469,10 +6491,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // first get the correct status mode
         int state=-1;
-        if (filter.equals("new")) state=I_CmsConstants.C_STATE_NEW;
-        else if (filter.equals("changed")) state=I_CmsConstants.C_STATE_CHANGED;
-        else if (filter.equals("deleted")) state=I_CmsConstants.C_STATE_DELETED;
-        else if (filter.equals("all")) state=I_CmsConstants.C_STATE_UNCHANGED;
+        if (filter.equals("new")) {
+            state=I_CmsConstants.C_STATE_NEW;
+        } else if (filter.equals("changed")) {
+            state=I_CmsConstants.C_STATE_CHANGED;
+        } else if (filter.equals("deleted")) {
+            state=I_CmsConstants.C_STATE_DELETED;
+        } else if (filter.equals("all")) {
+            state=I_CmsConstants.C_STATE_UNCHANGED;
+        }
         
         // depending on the selected filter, we must use different methods to get the required 
         // resources
@@ -6640,8 +6667,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                             // a security exception (probably no read permission) we return the current result                      
                             cont = false;
                         }
-                        if (cont)
+                        if (cont) {
                             resource = CmsResource.getParentFolder(resource);
+                        }
                     } while (cont);
                 }
             } else {

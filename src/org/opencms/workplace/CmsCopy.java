@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/11/07 13:17:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -296,7 +296,9 @@ public class CmsCopy extends CmsDialog {
 
         // calculate the target name
         String target = getParamTarget();
-        if (target == null) target = "";
+        if (target == null) {
+            target = "";
+        }
         
         boolean restoreSiteRoot = false;
         try {
@@ -321,7 +323,9 @@ public class CmsCopy extends CmsDialog {
                 CmsResource res = getCms().readFileHeader(target);
                 if (res.isFolder()) {
                     // target folder already exists, so we add the current folder name
-                    if (! target.endsWith("/")) target += "/";
+                    if (! target.endsWith("/")) {
+                        target += "/";
+                    }
                     target = target + CmsResource.getName(getParamResource());
                 }
             } catch (CmsException exc) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 
 /**
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/11/03 09:05:53 $
+ * @version $Revision: 1.10 $ $Date: 2003/11/08 10:32:44 $
  */
 public class CmsSetupDb extends Object {
 
@@ -178,9 +178,9 @@ public class CmsSetupDb extends Object {
             String line = null;
             while (true) {
                 line = reader.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
-
+                }
                 StringTokenizer st = new StringTokenizer(line);
 
                 while (st.hasMoreTokens()) {
@@ -321,8 +321,9 @@ public class CmsSetupDb extends Object {
 
             while (true) {
                 line = reader.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 line = line.trim();
                 if  (!(line.startsWith("--") || line.startsWith("/"))) {
                     stat += line + " \n";

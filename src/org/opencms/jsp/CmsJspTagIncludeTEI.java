@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  * the <code>&lt;cms:include /&gt;</code> tag.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
@@ -82,9 +82,15 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
         boolean hasAttribute = isSpecified(data, C_ATTR_ATTRIBUTE);
         // boolean hasElement = isSpecified(data, C_ATTR_ELEMENT);
         
-        if (hasFile && (hasSuffix || hasProperty || hasAttribute)) return false;
-        if (hasProperty && hasAttribute) return false;
-        if (hasSuffix && !(hasProperty || hasAttribute)) return false;
+        if (hasFile && (hasSuffix || hasProperty || hasAttribute)) {
+            return false;
+        }
+        if (hasProperty && hasAttribute) {
+            return false;
+        }
+        if (hasSuffix && !(hasProperty || hasAttribute)) {
+            return false;            
+        }
         
         return true;
     }        

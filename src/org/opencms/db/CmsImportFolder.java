@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2003/10/02 16:46:00 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsImportFolder {
 
@@ -167,13 +167,14 @@ public class CmsImportFolder {
         int pos = filename.lastIndexOf('.');
         if (pos >= 0) {
             String suffix = filename.substring(pos + 1);
-            if ((suffix != null) && !("".equals(suffix)))
+            if ((suffix != null) && !("".equals(suffix))) {
                 suffix = suffix.toLowerCase();
-                // read the known file extensions from the database
-                Hashtable extensions = m_cms.readFileExtensions();
-                if (extensions != null) {
-                    result = (String)extensions.get(suffix);
-                }                
+            }
+            // read the known file extensions from the database
+            Hashtable extensions = m_cms.readFileExtensions();
+            if (extensions != null) {
+                result = (String)extensions.get(suffix);
+            }                
         }      
         if (result == null) {
             result = "plain";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -136,7 +136,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                 List l = Arrays.asList(paras);
                 String context = (String)req.getAttribute(ATTRIBUTE_PROCESSED);
                 boolean firstCall = (context == null);
-                if (firstCall) req.setAttribute(ATTRIBUTE_PROCESSED, "true");
+                if (firstCall) {
+                    req.setAttribute(ATTRIBUTE_PROCESSED, "true");
+                }
                 nocachepara = l.contains("nocache");            
                 dorecompile = l.contains("recompile");
                 boolean p_on = l.contains("online");
@@ -149,15 +151,23 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                     if (! (p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ALL))));
                     } else {
-                        if (p_on) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
-                        if (p_off) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
+                        if (p_on) {
+                            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ALL))));
+                        }
+                        if (p_off) {
+                            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ALL))));
+                        }
                     }                    
                 } else if (l.contains("clearvariations") && firstCall) {
                     if (! (p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ENTRIES))));
                     } else {
-                        if (p_on) OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
-                        if (p_off)  OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));              
+                        if (p_on) {
+                            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_ONLINE_ENTRIES))));
+                        }
+                        if (p_off) {
+                            OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR, Collections.singletonMap("action", new Integer(CmsFlexCache.C_CLEAR_OFFLINE_ENTRIES))));
+                        }
                     }
                 }
             }
@@ -165,7 +175,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_isWorkplaceResource = m_resource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
         m_canCache = (((m_isOnline || m_isWorkplaceResource || m_controller.getCmsCache().cacheOffline()) && ! nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
-        if (DEBUG) System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_resource);
+        if (DEBUG) {
+            System.err.println("[FlexRequest] Constructing new Flex request for resource: " + m_resource);
+        }
     }
         
     /** 
@@ -184,7 +196,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_doRecompile = m_controller.getCurrentRequest().isDoRecompile();
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();        
         m_parameters = req.getParameterMap();
-        if (DEBUG) System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_resource);
+        if (DEBUG) {
+            System.err.println("[FlexRequest] Re-using Flex request for resource: " + m_resource);
+        }
     }
     
     /** 
@@ -238,7 +252,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
      */      
     public String getRequestURI() {
-        if (m_requestUri != null) return m_requestUri;
+        if (m_requestUri != null) {
+            return m_requestUri;
+        }
         StringBuffer buf = new StringBuffer(128);
         buf.append(OpenCms.getOpenCmsContext());
         buf.append(getElementUri());
@@ -254,7 +270,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
      */   
     public StringBuffer getRequestURL() {
-        if (m_requestUrl != null) return m_requestUrl;
+        if (m_requestUrl != null) {
+            return m_requestUrl;
+        }
         StringBuffer buf = new StringBuffer(128);
         buf.append(getScheme());
         buf.append("://");
@@ -279,10 +297,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      */
     public String getParameter(String name) {
         String[] values = (String[]) m_parameters.get(name);
-        if (values != null)
+        if (values != null) {
             return (values[0]);
-        else
+        } else {
             return (null);
+        }
     }
 
     /**
@@ -324,10 +343,11 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public String[] getParameterValues(String name) {
 
         String[] values = (String[]) m_parameters.get(name);
-        if (values != null)
+        if (values != null) {
             return (values);
-        else
+        } else {
             return (null);
+        }
     }
     
     /**
@@ -344,8 +364,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * @return the merged map of parameters
      */
     public Map addParameterMap(Map map) {
-        if (map == null)
+        if (map == null) {
             return m_parameters;
+        }
         if ((m_parameters == null) || (m_parameters.size() == 0)) {
             m_parameters = Collections.unmodifiableMap(map);
         } else {

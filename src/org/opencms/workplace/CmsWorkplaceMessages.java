@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -95,14 +95,18 @@ public class CmsWorkplaceMessages {
         m_messages = new CmsMessages(C_BUNDLE_NAME, m_locale);   
         // initialize the static encodings map if required
         if (m_allEncodings == null) {        
-            if (DEBUG > 0) System.err.println("CmsWorkplaceMessages(): initializing the static encodings");
+            if (DEBUG > 0) {
+                System.err.println("CmsWorkplaceMessages(): initializing the static encodings");
+            }
             synchronized (this) {     
                 m_allEncodings = new HashMap(); 
             }            
         }  
         // initialize the static hash if not already done
         if (m_allModuleMessages == null) {        
-            if (DEBUG > 0) System.err.println("CmsWorkplaceMessages(): initializing module messages hash");
+            if (DEBUG > 0) {
+                System.err.println("CmsWorkplaceMessages(): initializing module messages hash");
+            }
             synchronized (this) {     
                 m_allModuleMessages = new HashMap(); 
             }            
@@ -110,7 +114,9 @@ public class CmsWorkplaceMessages {
         // initialize the static module messages
         Object obj = m_allModuleMessages.get(m_locale);
         if (obj == null) {
-            if (DEBUG > 0) System.err.println("CmsWorkplaceMessages(): collecting static module messages");
+            if (DEBUG > 0) {
+                System.err.println("CmsWorkplaceMessages(): collecting static module messages");
+            }
             synchronized (this) {    
                 m_moduleMessages = collectModuleMessages(m_cms, m_locale);
                 m_allModuleMessages.put(m_locale, m_moduleMessages);
@@ -157,10 +163,13 @@ public class CmsWorkplaceMessages {
     public String getEncoding() {
         // try to read from static map
         String result = (String)m_allEncodings.get(m_locale);
-        if (result != null) return result;
-
+        if (result != null) {
+            return result;
+        }
         // encoding not stored so far, let's try to figure it out
-        if (DEBUG > 0) System.err.println("CmsWorkplaceMessages.getEncoding(): looking up encoding for locale " + m_locale);
+        if (DEBUG > 0) {
+            System.err.println("CmsWorkplaceMessages.getEncoding(): looking up encoding for locale " + m_locale);
+        }
         try {
             result = m_messages.getString(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING);
         } catch (MissingResourceException e) {
@@ -214,7 +223,9 @@ public class CmsWorkplaceMessages {
      * @return the resource string for the given key 
      */
     public String key(String keyName) {       
-        if (DEBUG > 2) System.err.println("CmsWorkplaceMessages.key(): looking for " + keyName);
+        if (DEBUG > 2) {
+            System.err.println("CmsWorkplaceMessages.key(): looking for " + keyName);
+        }
         try {
             return m_messages.getString(keyName);
         } catch (MissingResourceException e) {
@@ -222,7 +233,9 @@ public class CmsWorkplaceMessages {
         }
 
         // key was not found in default workplace bundles
-        if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found in workplace messages");
+        if (DEBUG > 1) {
+            System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found in workplace messages");
+        }
         Iterator i = m_moduleMessages.iterator();
         while (i.hasNext()) {
             try {
@@ -232,15 +245,18 @@ public class CmsWorkplaceMessages {
                 // ignore and continue looking in the other bundles
             }
         }
-        if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' also not found in module messages (this is not good)");
-        
+        if (DEBUG > 1) {
+            System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' also not found in module messages (this is not good)");
+        }
         if (keyName.startsWith("help.")) {
             // online help might not have been installed or missing help key, return default page
             return "index.html";
         }
         
         // key was not found
-        if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found at all (this is bad)");
+        if (DEBUG > 1) {
+            System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found at all (this is bad)");
+        }
         if (OpenCms.getLog(this).isWarnEnabled()) {
             OpenCms.getLog(this).warn("Missing value for locale key: " + keyName);
         }        

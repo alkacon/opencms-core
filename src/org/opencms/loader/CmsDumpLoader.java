@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -186,7 +186,9 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             try {                
                 content = cms.readFile(filename).getContents();
             }  catch (CmsException e) {
-                if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                if (DEBUG > 0) {
+                    System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                }
                 throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);    
             }
         }

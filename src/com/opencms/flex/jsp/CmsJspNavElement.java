@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -163,11 +163,19 @@ public class CmsJspNavElement implements Comparable {
      * @see java.lang.Comparable#compareTo(Object)
      */
     public int compareTo(Object o) {
-        if (o == null) return 0;
-        if (! (o instanceof CmsJspNavElement)) return 0;
+        if (o == null) {
+            return 0;
+        }
+        if (! (o instanceof CmsJspNavElement)) {
+            return 0;
+        }
         float f = ((CmsJspNavElement)o).getNavPosition() - m_position;
-        if (f > 0) return -1;
-        if (f < 0) return 1;
+        if (f > 0) {
+            return -1;
+        }
+        if (f < 0) {
+            return 1;
+        }
         return 0;
     }
         
@@ -175,8 +183,12 @@ public class CmsJspNavElement implements Comparable {
      * @see java.lang.Object#equals(Object)
      */
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (! (o instanceof CmsJspNavElement)) return false;
+        if (o == null) {
+            return false;
+        }
+        if (! (o instanceof CmsJspNavElement)) {
+            return false;
+        }
         return m_resource.equals(((CmsJspNavElement)o).getResourceName());
     }    
     
@@ -276,7 +288,9 @@ public class CmsJspNavElement implements Comparable {
         if (m_text == null) {
             // use "lazy initialiting"
             m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
-            if (m_text == null) m_text = "??? " + I_CmsConstants.C_PROPERTY_NAVTEXT + " ???";    
+            if (m_text == null) {
+                m_text = "??? " + I_CmsConstants.C_PROPERTY_NAVTEXT + " ???";
+            }
         }
         return m_text;
     }

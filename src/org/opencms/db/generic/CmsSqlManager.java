@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.27 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.28 $ $Date: 2003/11/08 10:32:44 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -363,10 +363,11 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 }
             }
 
-            if (message != null)
+            if (message != null) {
                 message = "[" + message + "] ";
-            else
+            } else {
                 message = "";
+            }
 
             // where did we crash?
             message += "where: " + stackTraceElement + ", ";

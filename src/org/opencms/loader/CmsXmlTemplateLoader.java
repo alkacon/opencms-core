@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/11/03 09:05:53 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -571,14 +571,16 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     public void init(Configurations conf) {
         // Check, if the element cache should be enabled
         boolean enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled())
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
+        }
         if (enableElementCache) {
             try {
                 m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
-                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled())
+                if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Element cache        : non-critical error " + e.toString());
+                }
             }
             m_variantDeps = new Hashtable();
             m_elementCache.getElementLocator().setExternDependencies(m_variantDeps);
@@ -718,11 +720,15 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 // default encoding. It will be converted to the requested encoding 
                 // on the most top-level JSP element
                 result = Encoder.changeEncoding(result, enc, dnc);
-                if (DEBUG > 1) System.err.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);                             
+                if (DEBUG > 1) {
+                    System.err.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);
+                }
                 res.getOutputStream().write(result);
             }        
         }  catch (Throwable t) {
-            if (DEBUG > 0) t.printStackTrace(System.err);
+            if (DEBUG > 0) {
+                t.printStackTrace(System.err);
+            }
             throw new ServletException("Error in CmsXmlTemplateLoader while processing " + cms.readAbsolutePath(file), t);       
         } finally {
             // restore the context settings

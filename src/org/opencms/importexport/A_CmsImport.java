@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -186,19 +186,21 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         boolean resourceNotImmutable = true;
         if (immutableResources.contains(translatedName)) {
-            if (DEBUG > 1)
+            if (DEBUG > 1) {
                 System.err.println("Import: Translated resource name is immutable");
-
+            }
             // this resource must not be modified by an import if it already exists
             try {
                 m_cms.readFileHeader("//" + translatedName);
                 resourceNotImmutable = false;
-                if (DEBUG > 0)
+                if (DEBUG > 0) {
                     System.err.println("Import: Immutable flag set for resource");
+                }
             } catch (CmsException e) {
                 // resourceNotImmutable will be true
-                if (DEBUG > 0)
+                if (DEBUG > 0) {
                     System.err.println("Import: Immutable test caused exception " + e);
+                }
             }
         }
         return resourceNotImmutable;
@@ -255,8 +257,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.println();
                     m_report.print(m_report.key("report.convert_link_notfound") + " " + link, I_CmsReport.C_FORMAT_WARNING);
                     
-                    if (OpenCms.getLog(this).isDebugEnabled())
+                    if (OpenCms.getLog(this).isDebugEnabled()) {
                         OpenCms.getLog(this).debug("Link conversion failed: " + key + " -> " + link, ex);
+                    }
                 }
 
             } else {

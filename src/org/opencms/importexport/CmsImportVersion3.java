@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -281,12 +281,14 @@ public class CmsImportVersion3 extends A_CmsImport {
         }
         // get list of unwanted properties
         List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
-        if (deleteProperties == null)
+        if (deleteProperties == null) {
             deleteProperties = new ArrayList();
+        }
         // get list of immutable resources
         List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
-        if (immutableResources == null)
+        if (immutableResources == null) {
             immutableResources = new ArrayList();
+        }
         try {
             // get all file-nodes
             fileNodes = m_docXml.getElementsByTagName(I_CmsConstants.C_EXPORT_TAG_FILE);
@@ -449,8 +451,9 @@ public class CmsImportVersion3 extends A_CmsImport {
             // get all required information to create a CmsResource
             int resType = m_cms.getResourceTypeId(type);
             int size = 0;
-            if (content != null)
+            if (content != null) {
                 size = content.length;
+            }
             // get the required UUIDs         
             CmsUUID curUser = m_cms.getRequestContext().currentUser().getId();
             CmsUUID newUserlastmodified = new CmsUUID(userlastmodified);

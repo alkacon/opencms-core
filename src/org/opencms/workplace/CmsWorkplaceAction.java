@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSession;
  * functionality from the old XML based workplace to the new JSP workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 5.1
  */
@@ -82,9 +82,13 @@ public final class CmsWorkplaceAction {
      */
     public static void updatePreferences(CmsObject cms) {
         HttpSession session = extractSession(cms);
-        if (session == null) return;
+        if (session == null) {
+            return;
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) return;
+        if (settings == null) {
+            return;
+        }
         settings = CmsWorkplace.initWorkplaceSettings(cms, settings);    
     }
     
@@ -96,9 +100,13 @@ public final class CmsWorkplaceAction {
      */    
     public static String getWorkplaceUri(CmsObject cms) {              
         HttpSession session = extractSession(cms);
-        if (session == null) return C_XML_WORKPLACE_URI;
+        if (session == null) {
+            return C_XML_WORKPLACE_URI;
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) return C_XML_WORKPLACE_URI;
+        if (settings == null) {
+            return C_XML_WORKPLACE_URI;
+        }
         return C_JSP_WORKPLACE_URI;        
     }    
     
@@ -110,7 +118,9 @@ public final class CmsWorkplaceAction {
      */
     public static String getCurrentFolder(CmsObject cms) {
         HttpSession session = extractSession(cms);
-        if (session == null) return null;
+        if (session == null) {
+            return null;
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             return settings.getExplorerResource();
@@ -127,7 +137,9 @@ public final class CmsWorkplaceAction {
      */
     public static void setCurrentFolder(CmsObject cms, String currentFolder) {
         HttpSession session = extractSession(cms);
-        if (session == null) return;
+        if (session == null) {
+            return;
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             settings.setExplorerResource(currentFolder);
@@ -143,9 +155,13 @@ public final class CmsWorkplaceAction {
      */    
     public static String getExplorerFileUri(CmsObject cms) {              
         HttpSession session = extractSession(cms);
-        if (session == null) return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        if (session == null) {
+            return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        if (settings == null) {
+            return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+        }
         return C_JSP_WORKPLACE_FILELIST;        
     }  
     
@@ -158,9 +174,13 @@ public final class CmsWorkplaceAction {
     public static String getExplorerFileFullUri(CmsObject cms) {              
         HttpSession session = extractSession(cms);
         String link = C_PATH_XML_WORKPLACE + C_FILE_WORKPLACE_FILELIST;
-        if (session == null) return OpenCms.getLinkManager().substituteLink(cms, link);
+        if (session == null) {
+            return OpenCms.getLinkManager().substituteLink(cms, link);
+        }
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) return OpenCms.getLinkManager().substituteLink(cms, link);
+        if (settings == null) {
+            return OpenCms.getLinkManager().substituteLink(cms, link);
+        }
         return OpenCms.getLinkManager().substituteLink(cms, C_PATH_JSP_WORKPLACE + C_FILE_WORKPLACE_FILELIST);        
     }    
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/11/03 09:05:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -304,8 +304,9 @@ public class CmsImportVersion2 extends A_CmsImport {
         }
 
         m_webAppNames = (List)OpenCms.getRuntimeProperty("compatibility.support.webAppNames");
-        if (m_webAppNames == null)
+        if (m_webAppNames == null) {
             m_webAppNames = new ArrayList();
+        }
 
         // get the old webapp url from the OpenCms properties
         m_webappUrl = (String)OpenCms.getRuntimeProperty("compatibility.support.import.old.webappurl");
@@ -320,15 +321,18 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         // get list of unwanted properties
         List deleteProperties = (List)OpenCms.getRuntimeProperty("compatibility.support.import.remove.propertytags");
-        if (deleteProperties == null)
+        if (deleteProperties == null) {
             deleteProperties = new ArrayList();
+        }
 
         // get list of immutable resources
         List immutableResources = (List)OpenCms.getRuntimeProperty("import.immutable.resources");
-        if (immutableResources == null)
+        if (immutableResources == null) {
             immutableResources = new ArrayList();
-        if (DEBUG > 0)
+        }
+        if (DEBUG > 0) {
             System.err.println("Import: Immutable resources size is " + immutableResources.size());
+        }
 
         try {
             // get all file-nodes
@@ -366,8 +370,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
-                if (DEBUG > 3)
+                if (DEBUG > 3) {
                     System.err.println("Import: Translated resource name is " + translatedName);
+                }
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
 
@@ -544,7 +549,9 @@ public class CmsImportVersion2 extends A_CmsImport {
              // get all required information to create a CmsResource
              int resType=m_cms.getResourceTypeId(type);
              int size=0;
-             if (content!=null) size=content.length;  
+             if (content!=null) {
+                 size=content.length;
+             }
              // get the required UUIDs         
              CmsUUID curUser=m_cms.getRequestContext().currentUser().getId();            
              CmsUUID newUuidstructure= new CmsUUID();

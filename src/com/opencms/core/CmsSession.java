@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsSession.java,v $
-* Date   : $Date: 2003/10/28 13:28:41 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/11/08 10:32:44 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich
  *
- * @version $Revision: 1.31 $ $Date: 2003/10/28 13:28:41 $
+ * @version $Revision: 1.32 $ $Date: 2003/11/08 10:32:44 $
  */
 public class CmsSession implements I_CmsSession {
 
@@ -68,7 +68,7 @@ public class CmsSession implements I_CmsSession {
         m_sessionData = (Hashtable)m_session.getAttribute(I_CmsConstants.C_SESSION_DATA);
 
         // if there is no session-data, create a new one.
-        if(m_sessionData == null) {
+        if (m_sessionData == null) {
             m_sessionData = new Hashtable();
             m_session.setAttribute(I_CmsConstants.C_SESSION_DATA, m_sessionData);
         }
@@ -92,7 +92,7 @@ public class CmsSession implements I_CmsSession {
     public String[] getValueNames() {
         String[] name = new String[m_sessionData.size()];
         Enumeration enu = m_sessionData.keys();
-        for(int i = 0;i < m_sessionData.size();i++) {
+        for (int i = 0; i < m_sessionData.size(); i++) {
             name[i] = (String)enu.nextElement();
         }
         return name;
@@ -111,7 +111,7 @@ public class CmsSession implements I_CmsSession {
             // indicate, that the session should be stored after the request.
             m_session.setAttribute(I_CmsConstants.C_SESSION_IS_DIRTY, new Boolean(true));
         } catch (Exception exc) {
-            if(OpenCms.getLog(this).isErrorEnabled()) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error marking session as dirty", exc);
             }
         }
@@ -134,7 +134,7 @@ public class CmsSession implements I_CmsSession {
      * 
      * @return session id
      */
-    public String getId(){
+    public String getId() {
         return m_session.getId();
     }
     
@@ -143,9 +143,11 @@ public class CmsSession implements I_CmsSession {
      * Invalidates the session.
      */
     public void invalidate() {
-        if (m_session != null) m_session.invalidate();
+        if (m_session != null) {
+            m_session.invalidate();
+        }
         // if there is session-data, invalidate it as well
-        if(m_sessionData != null) {
+        if (m_sessionData != null) {
             m_sessionData = new Hashtable();
         }    
     }        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2003/10/15 09:59:18 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/11/08 10:32:44 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  */
 public class CmsException extends Exception {
 
@@ -331,8 +331,9 @@ public class CmsException extends Exception {
      * @return the root cause Exception
      */
     public Exception getException() {
-        if (m_useRootCause)
+        if (m_useRootCause) {
             return null;
+        }
         try {
             return (Exception)getRootCause();
         } catch (ClassCastException e) {
@@ -414,8 +415,9 @@ public class CmsException extends Exception {
                     while ((s != null) && (!"".equals(s)) && ((s.endsWith("\r") || s.endsWith("\n") || s.endsWith(">")))) {
                         s = s.substring(0, s.length() - 1);
                     }
-                    if ((s != null) && (!"".equals(s)))
+                    if ((s != null) && (!"".equals(s))) {
                         pw.println(s);
+                    }
                 }
             }
         }

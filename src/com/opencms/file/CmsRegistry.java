@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/11/05 17:19:04 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2003/11/08 10:32:43 $
+ * Version: $Revision: 1.109 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.108 $
+ * @version $Revision: 1.109 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -404,9 +404,9 @@ public class CmsRegistry extends A_CmsXmlContent {
     public Vector deleteCheckDependencies(String modulename, boolean replaceMode) {
 
         Vector result = new Vector();
-        if (replaceMode)
+        if (replaceMode) {
             return result;
-
+        }
         Enumeration names = getModuleNames();
         Vector modules;
         Vector minVersions;
@@ -447,9 +447,9 @@ public class CmsRegistry extends A_CmsXmlContent {
         Vector resourcesForProject
     ) throws CmsException {
         // module type SIMPLE - just do nothing here, as SIMPLE modules do not require file conflict checks
-        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE))
+        if (this.getModuleType(modulename).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
             return;
-
+        }
         // the files and checksums for this module
         Vector moduleFiles = new Vector();
         Vector moduleChecksums = new Vector();
@@ -560,9 +560,9 @@ public class CmsRegistry extends A_CmsXmlContent {
         boolean replaceMode, 
         I_CmsReport report
     ) throws CmsException {
-        if (DEBUG > 2)
+        if (DEBUG > 2) {
             System.err.println("[" + this.getClass().getName() + ".deleteModule()] Starting to delete module " + module);
-
+        }
         // check if the module exists
         if (!moduleExists(module)) {
             throw new CmsException("Module '" + module + "' does not exist", CmsException.C_REGISTRY_ERROR);
@@ -625,8 +625,9 @@ public class CmsRegistry extends A_CmsXmlContent {
                 String currentResource = null;
                 try {
                     currentResource = (String)resources.elementAt(i);
-                    if (DEBUG > 1)
+                    if (DEBUG > 1) {
                         System.err.println("[" + this.getClass().getName() + ".deleteModule()] Deleting resource " + currentResource);
+                    }
                     // lock the resource
                     m_cms.lockResource(currentResource, true);
                     // delete the resource
@@ -636,8 +637,9 @@ public class CmsRegistry extends A_CmsXmlContent {
                     report.println(currentResource);
                 } catch (CmsException exc) {
                     // ignore the exception and delete the next resource
-                    if (DEBUG > 0)
+                    if (DEBUG > 0) {
                         System.err.println("[" + this.getClass().getName() + ".deleteModule()] Exception " + exc + " deleting resource " + currentResource);
+                    }
                     report.println(exc);
                 }
             }
@@ -694,8 +696,9 @@ public class CmsRegistry extends A_CmsXmlContent {
             throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
         }
 
-        if (DEBUG > 2)
+        if (DEBUG > 2) {
             System.err.println("[" + this.getClass().getName() + ".deleteModule()] Finished for module " + module);
+        }
     }
 
     /**
@@ -1290,8 +1293,9 @@ public class CmsRegistry extends A_CmsXmlContent {
             }
                     if (methodValue.equals(requiredMethod)) {
                         String name = ((Element)classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                        if ((name != null) && (!"".equals(name)))
+                        if ((name != null) && (!"".equals(name))) {
                             classes.addElement(name);
+                        }
                     }
         } catch (Exception exc) {
                     // ignore the exception and try the next view-pair.
@@ -1577,15 +1581,17 @@ public class CmsRegistry extends A_CmsXmlContent {
                         String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
                         result.add(className);
                     } catch (Exception exc) {
-                        if (OpenCms.getLog(this).isWarnEnabled())
+                        if (OpenCms.getLog(this).isWarnEnabled()) {
                             OpenCms.getLog(this).warn("Error getting registry node " + node, exc);
+                        }
                     }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
-            if (OpenCms.getLog(this).isInfoEnabled())
+            if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("Error getting registry node " + node, e);
+            }
         }
         return result;
     }
@@ -1604,11 +1610,13 @@ public class CmsRegistry extends A_CmsXmlContent {
             String classname = (String)i.next();
             try {
                 result.add(Class.forName(classname).newInstance());
-                if (OpenCms.getLog(this).isInfoEnabled())
+                if (OpenCms.getLog(this).isInfoEnabled()) {
                     OpenCms.getLog(this).info(". CmsSyncModification init : " + classname + " instanciated");
+                }
             } catch (Exception e1) {
-                if (OpenCms.getLog(this).isWarnEnabled())
+                if (OpenCms.getLog(this).isWarnEnabled()) {
                     OpenCms.getLog(this).warn(". CmsSyncModification init : non-critical error" + e1.toString());
+                }
             }
         }
         return result;
@@ -1698,11 +1706,11 @@ public class CmsRegistry extends A_CmsXmlContent {
         HashMap values = null;
         try {            
             NodeList list;
-            if (key != null && !"".equals(key))
+            if (key != null && !"".equals(key)) {
                 list = node.getElementsByTagName(key).item(0).getChildNodes();
-            else
+            } else { 
                 list = node.getChildNodes();
-            
+            }
             values = new HashMap();   
             for (int i = 0; i < list.getLength(); i++) {
                 
@@ -1711,12 +1719,13 @@ public class CmsRegistry extends A_CmsXmlContent {
                 Object entry = values.get(n.getNodeName());
                 
                 Object value = null;
-                if (c == null)
+                if (c == null) {
                     value = null;
-                else {
+                } else {
                     value = c.getNodeValue();
-                    if (value == null)
+                    if (value == null) {
                         value = getSubNodeValues((Element)n, "");
+                    }
                 }
                     
                 if (entry == null) {
@@ -1847,9 +1856,9 @@ public class CmsRegistry extends A_CmsXmlContent {
                 break;
             }
         }
-        if (moduleType == null)
+        if (moduleType == null) {
             moduleType = C_MODULE_TYPE_TRADITIONAL;
-
+        }
         // fill return value map 
         HashMap map = new HashMap();
         map.put("name", moduleName);
@@ -2062,9 +2071,9 @@ public class CmsRegistry extends A_CmsXmlContent {
             A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, OpenCms.getDefaultEncoding());
             // reinit the modules-hashtable
             init(false);
-            if (OpenCms.getLog(this).isInfoEnabled())
+            if (OpenCms.getLog(this).isInfoEnabled()) {
                 OpenCms.getLog(this).info("[CmsRegistry] Saved the registry");
-
+            }
         } catch (Exception exc) {
             throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
         }
@@ -2473,8 +2482,9 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @throws CmsException in case something goes wrong
      */
     public void setModuleVersion(String modulename, String version) throws CmsException {
-        if (version == null)
+        if (version == null) {
             version = "0";
+        }
         try {
             Float.parseFloat(version);
         } catch (NumberFormatException nf) {
