@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsQueries.java,v $
-* Date   : $Date: 2002/09/16 12:52:41 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:53 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,10 @@
 
 package com.opencms.file.oraclesql;
 
-import com.opencms.core.*;
-import java.util.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+
+import java.util.Properties;
 
 public class CmsQueries extends com.opencms.file.genericSql.CmsQueries
 {

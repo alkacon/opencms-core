@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.zip.ZipInputStream;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.15 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -133,7 +133,8 @@ public class CmsImportFolder implements I_CmsConstants {
             m_zipStreamIn = new ZipInputStream(new ByteArrayInputStream(
                                                         content) );
 
-            CmsFolder impFold = m_cms.readFolder(importPath);
+            // CHECK: CmsFolder impFold = m_cms.readFolder(importPath);
+            m_cms.readFolder(importPath);
 
             /*
             if( !impFold.isLocked() && !importPath.equals("/") ) {
@@ -266,7 +267,6 @@ public class CmsImportFolder implements I_CmsConstants {
         int entries = 0;
         int totalBytes = 0;
         int offset = 0;
-        CmsFile file = null;
         byte[] buffer = null;
         while (true) {
             // handle the single entries ...
@@ -363,8 +363,7 @@ public class CmsImportFolder implements I_CmsConstants {
                     // handle empty files ...
                     if(size == 0) { buffer = " ".getBytes(); }
                 }
-                file = null; // reset file
-                
+
                 filename = actImportPath + path[path.length-1];
                 Hashtable oldProperties = null;
                 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJob.java,v $
-* Date   : $Date: 2001/11/16 09:36:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,10 @@
 
 package com.opencms.core;
 
-import com.opencms.file.*;
-import com.opencms.util.*;
-import com.opencms.boot.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.file.CmsObject;
+import com.opencms.util.Utils;
 
 /**
  * This thread launches one job in its own thread.

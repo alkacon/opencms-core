@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/12/13 17:38:12 $
-* Version: $Revision: 1.347 $
+* Date   : $Date: 2003/01/20 17:57:50 $
+* Version: $Revision: 1.348 $
 
 *
 * This library is part of OpenCms -
@@ -30,10 +30,10 @@
 package com.opencms.file.genericSql;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.*;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
@@ -58,6 +58,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.w3c.dom.Document;
+
 import source.org.apache.java.util.Configurations;
 
 
@@ -71,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.347 $ $Date: 2002/12/13 17:38:12 $
+ * @version $Revision: 1.348 $ $Date: 2003/01/20 17:57:50 $
 
  *
  */
@@ -1589,7 +1590,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         throws CmsException {
 
         // the name of the new file.
-        String filename;
+        // CHECK: String filename;
         // the name of the folder.
         String foldername;
 
@@ -7004,23 +7005,17 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         Utils.validateNewPassword(cms, newPassword, oldPassword);
 
         // read the user
-        CmsUser user;
         try {
-            user = m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_SYSTEMUSER);
+            m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_SYSTEMUSER);
         } catch(CmsException exc) {
             // this is no system-user - maybe a webuser?
             try{
-                user = m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_WEBUSER);
+                m_dbAccess.readUser(username, oldPassword, C_USER_TYPE_WEBUSER);
             } catch(CmsException e) {
                 throw exc;
             }
         }
-        //if( !anonymousUser(currentUser, currentProject).equals( currentUser )) {
-            m_dbAccess.setPassword(username, newPassword);
-        //} else {
-        //    throw new CmsException("[" + this.getClass().getName() + "] " + username,
-        //        CmsException.C_NO_ACCESS);
-        //}
+        m_dbAccess.setPassword(username, newPassword);
     }
 
     /**
@@ -7072,20 +7067,13 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         Utils.validateNewPassword(cms, newPassword, password);
 
         // read the user
-        CmsUser user;
         try {
-            user = readUser(currentUser, currentProject, username, password);
+            readUser(currentUser, currentProject, username, password);
         } catch(CmsException exc) {
             // this is no system-user - maybe a webuser?
-            user = readWebUser(currentUser, currentProject, username, password);
+            readWebUser(currentUser, currentProject, username, password);
         }
-        //if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) &&
-        //    ( isAdmin(user, currentProject) || user.equals(currentUser)) ) {
-            m_dbAccess.setRecoveryPassword(username, newPassword);
-        //} else {
-        //    throw new CmsException("[" + this.getClass().getName() + "] " + username,
-        //        CmsException.C_NO_ACCESS);
-        //}
+        m_dbAccess.setRecoveryPassword(username, newPassword);
     }
     /**
      * Set a Parameter for a task.
@@ -8040,7 +8028,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @return boolean If the group does not belong to Users, Administrators or Projectmanagers return true
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException{
-        boolean result = true;
+        // CHECK: boolean result = true;
         try{
             int user = m_dbAccess.readGroup(C_GROUP_USERS).getId();
             int admin = m_dbAccess.readGroup(C_GROUP_ADMIN).getId();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2002/12/15 14:21:18 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.47 $ $Date: 2002/12/15 14:21:18 $
+ * @version $Revision: 1.48 $ $Date: 2003/01/20 17:57:47 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -170,7 +170,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
             // ednfal: try to read the destination folder
             try {
-                CmsFolder toFolder = cms.readFolder(newFolder);
+                cms.readFolder(newFolder);
             }
             catch(CmsException ex) {
                 // something went wrong, so remove all session parameters

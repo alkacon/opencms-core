@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagUser.java,v $
-* Date   : $Date: 2002/10/30 10:25:40 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:52 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import com.opencms.flex.cache.CmsFlexRequest;
  * This Tag provides access to the data of the currently logged in user.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
     
@@ -77,7 +77,6 @@ public class CmsJspTagUser extends javax.servlet.jsp.tagext.TagSupport {
 	public int doStartTag() throws javax.servlet.jsp.JspException {
 
 		javax.servlet.ServletRequest req = pageContext.getRequest();
-		javax.servlet.ServletResponse res = pageContext.getResponse();
         
         // This will always be true if the page is called through OpenCms 
         if (req instanceof com.opencms.flex.cache.CmsFlexRequest) {

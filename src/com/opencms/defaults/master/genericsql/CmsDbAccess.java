@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/01/20 17:57:52 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -603,7 +603,6 @@ public class CmsDbAccess {
             }
         } else {
             // set state to deleted and update the line
-            String statement_key = "update_offline";
             dataset.m_state = I_CmsConstants.C_STATE_DELETED;
             dataset.m_lockedBy = I_CmsConstants.C_UNKNOWN_ID;
             PreparedStatement stmnt = null;
@@ -644,7 +643,6 @@ public class CmsDbAccess {
             throw new CmsException("Not writeable", CmsException.C_NO_ACCESS);
         }
         // set state to deleted and update the line
-        String statement_key = "update_offline";
         dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
         dataset.m_lockedBy = cms.getRequestContext().currentUser().getId();
         dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();

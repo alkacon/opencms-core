@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2002/12/04 14:50:25 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 17:57:52 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -313,7 +313,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
     // byte streams are replaced with character streams to support correct encodings handling
     public void convertHTML (Reader input, Writer output) {
         /* local variables */
-        int streamInput;
+        // CHECK: int streamInput;
         StringBuffer htmlString = new StringBuffer();
         Node node;
         String outString = "";
@@ -689,8 +689,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return index of new object in ArrayList replaceTags
      */
     private int scanTagElementAttrs(Node node, CmsHtmlConverterObjectReplaceTags testObject) {
-        boolean added = false;
-        ArrayList replaceTags = m_configuration.getReplaceTags();
+        // CHECK: boolean added = false;
+        // CHECK: ArrayList replaceTags = m_configuration.getReplaceTags();
         NamedNodeMap attrs = node.getAttributes();
         String prefix = testObject.getPrefix();
         String suffix = testObject.getSuffix();
@@ -720,7 +720,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             replaceEndTag = m_configuration.scanBrackets(replaceEndTag);
         }
         /* add temporary object to ArrayList replaceTags */
-        added = m_configuration.addObjectReplaceTag(prefix,name,attrib,attrValue
+        m_configuration.addObjectReplaceTag(prefix,name,attrib,attrValue
                 ,replaceStartTag,replaceEndTag,suffix,false,"","",parameter,replaceParamAttr);
         return m_configuration.getReplaceTags().size()-1;
     }
@@ -768,8 +768,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @return index of new object in ArrayList replaceBlocks
      */
     private int scanBlockElementAttrs(Node node, CmsHtmlConverterObjectReplaceBlocks testObject) {
-        boolean added = false;
-        ArrayList replaceBlocks = m_configuration.getReplaceBlocks();
+        // CHECK: boolean added = false;
+        // CHECK: ArrayList replaceBlocks = m_configuration.getReplaceBlocks();
         NamedNodeMap attrs = node.getAttributes();
         String prefix = testObject.getPrefix();
         String suffix = testObject.getSuffix();
@@ -792,7 +792,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
             replaceString = m_configuration.scanBrackets(replaceString);
         }
         /* add temporary object to ArrayList replaceBlocks */
-        added = m_configuration.addObjectReplaceBlock(prefix,name,attrib
+        m_configuration.addObjectReplaceBlock(prefix,name,attrib
                 ,attrValue,replaceString,suffix,false,"",parameter);
         return m_configuration.getReplaceBlocks().size()-1;
     }

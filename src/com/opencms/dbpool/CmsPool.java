@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,8 @@
 
 package com.opencms.dbpool;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
-import com.opencms.core.I_CmsLogChannels;
 
 import java.sql.Connection;
 import java.sql.Driver;

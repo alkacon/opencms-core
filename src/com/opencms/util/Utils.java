@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import com.opencms.core.OpenCms;
 import com.opencms.defaults.I_CmsLifeCycle;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsRegistry;
@@ -100,8 +99,8 @@ public class Utils {
         String titleB = fileB.getName();
         long lastModifiedA = fileA.getDateLastModified();
         long lastModifiedB = fileB.getDateLastModified();
-        CmsProject projectA = cms.readProject(fileA);
-        CmsProject projectB = cms.readProject(fileB);
+        // CHECK: CmsProject projectA = cms.readProject(fileA);
+        // CHECK: CmsProject projectB = cms.readProject(fileB);
         switch(sorting) {
         case C_SORT_NAME_UP:
             cmp = (titleA.compareTo(titleB) > 0);
@@ -399,7 +398,6 @@ public class Utils {
         Enumeration enu = unsortedFiles.elements();
         CmsFile[] field = new CmsFile[unsortedFiles.size()];
         CmsFile file;
-        String docloader;
         int max = 0;
         try {
 

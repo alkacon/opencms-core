@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/12/06 23:16:50 $
-* Version: $Revision: 1.63 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.64 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.63 $ $Date: 2002/12/06 23:16:50 $
+ * @version $Revision: 1.64 $ $Date: 2003/01/20 17:57:49 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -336,7 +336,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         }
         int slashIndex = filename.lastIndexOf("/") + 1;
         String folder = filename.substring(0, slashIndex);
-        String file = filename.substring(slashIndex);
+        // CHECK: String file = filename.substring(slashIndex);
         cms.createResource(folder, filename, documentType, null, "".getBytes());
         cms.lockResource(filename);
         m_cms = cms;

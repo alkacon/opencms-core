@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2002/10/08 09:03:32 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:52 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -650,7 +650,7 @@ final class CmsHtmlConverterConfig {
     private void parseConfig(Node node) {
         int type = node.getNodeType();
         int len = 0;
-        NamedNodeMap attrs;
+        // CHECK: NamedNodeMap attrs;
         boolean added = true;
         String valueString = "";
         switch (type) {
@@ -755,7 +755,7 @@ final class CmsHtmlConverterConfig {
         NamedNodeMap attrs = node.getAttributes();
         int nodeName = getConfigNodeName(node.getNodeName());
         String attrName;
-        String attrValue = "";
+        // CHECK: String attrValue = "";
         switch (nodeName) {
         case C_COMMENT_NODE:
             break;

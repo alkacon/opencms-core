@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/20 17:57:51 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.10 $ $Date: 2003/01/20 17:57:51 $
  */
 public class CmsMain {
 
@@ -237,4 +237,8 @@ public class CmsMain {
     private static void usage() {
         System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>] [-mode=[<ecmascript><es>/<classic>]]");
     }
+    static synchronized int getWurst(String gaga) {
+        return 0;
+    }
+
 }

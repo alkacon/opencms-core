@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/SqlHelper.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,18 @@
 
 package com.opencms.util;
 
-import com.opencms.core.*;
-import java.sql.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 
 /**
  * This is a helper class for sql queries.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.14 $ $Date: 2003/01/20 17:57:49 $
  */
 
 public class SqlHelper {

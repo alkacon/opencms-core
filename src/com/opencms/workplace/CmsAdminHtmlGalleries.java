@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.5 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 17:57:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -97,7 +97,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
         String lasturl = getLastUrl(cms, parameters);    
         
         // Check if this is the inital call to the page
-        String initial = getInitial(session, parameters);   
+        getInitial(session, parameters);   
                         
         // Get the folder for the gallery
         String foldername = getGalleryPath(cms, session, parameters);
@@ -120,10 +120,10 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
         // Now read further parameters    
         String action = (String)parameters.get("action");
-        String newname = (String)parameters.get(C_PARA_NAME);
+        // CHECKME: String newname = (String)parameters.get(C_PARA_NAME);
         String title = (String)parameters.get("TITLE"); // both for gallery and upload file
-        String step = (String)parameters.get("step");
-        String imagedescription = (String)parameters.get("DESCRIPTION");
+        // CHECKME: String step = (String)parameters.get("step");
+        // CHECKME: String imagedescription = (String)parameters.get("DESCRIPTION");
 
         if("new".equals(action)) {
             String galleryname = (String)parameters.get("NAME");

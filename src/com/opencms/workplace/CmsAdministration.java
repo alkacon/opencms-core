@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.22 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Name:  $ $Revision: 1.23 $ $Date: 2003/01/20 17:57:48 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -93,7 +93,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         // call the method for activation decision
         boolean activate = true;
         if(iconActiveMethod != null && !"".equals(iconActiveMethod)) {
-            CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
+            // CHECKME: CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
             String className = iconActiveMethod.substring(0, iconActiveMethod.lastIndexOf("."));
             iconActiveMethod = iconActiveMethod.substring(iconActiveMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
@@ -139,7 +139,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         // call the method for the visibility decision
         boolean visible = true;
         if(iconVisibleMethod != null && !"".equals(iconVisibleMethod)) {
-            CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
+            // CHECKME: CmsTemplateClassManager callingObject = new CmsTemplateClassManager();
             String className = iconVisibleMethod.substring(0, iconVisibleMethod.lastIndexOf("."));
             iconVisibleMethod = iconVisibleMethod.substring(iconVisibleMethod.lastIndexOf(".") + 1);
             Method groupsMethod = null;
@@ -432,16 +432,16 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             groupAccess = cms.readGroup(resource).equals(nextGroup);
 
         }
-        if(groupAccess && (resource.getAccessFlags() & C_ACCESS_GROUP_VISIBLE) == C_ACCESS_GROUP_VISIBLE) {
+        if(groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) == C_ACCESS_GROUP_VISIBLE) {
             return true;
         }
         // is the resource owned by this user?
         if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
-            if( (resource.getAccessFlags() & C_ACCESS_OWNER_VISIBLE) == C_ACCESS_OWNER_VISIBLE ) {
+            if( (accessflags & C_ACCESS_OWNER_VISIBLE) == C_ACCESS_OWNER_VISIBLE ) {
                 return true ;
             }
         }
-        if ((resource.getAccessFlags() & C_ACCESS_PUBLIC_VISIBLE) == C_ACCESS_PUBLIC_VISIBLE){
+        if ((accessflags & C_ACCESS_PUBLIC_VISIBLE) == C_ACCESS_PUBLIC_VISIBLE){
             return true;
         }
         return access;
@@ -470,16 +470,16 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             groupAccess = cms.readGroup(resource).equals(nextGroup);
 
         }
-        if(groupAccess && (resource.getAccessFlags() & C_ACCESS_GROUP_READ) == C_ACCESS_GROUP_READ) {
+        if(groupAccess && (accessflags & C_ACCESS_GROUP_READ) == C_ACCESS_GROUP_READ) {
             return true;
         }
         // is the resource owned by this user?
         if(resource.getOwnerId() == cms.getRequestContext().currentUser().getId()) {
-            if( (resource.getAccessFlags() & C_ACCESS_OWNER_READ) == C_ACCESS_OWNER_READ ) {
+            if( (accessflags & C_ACCESS_OWNER_READ) == C_ACCESS_OWNER_READ ) {
                 return true ;
             }
         }
-        if ((resource.getAccessFlags() & C_ACCESS_PUBLIC_READ) == C_ACCESS_PUBLIC_READ){
+        if ((accessflags & C_ACCESS_PUBLIC_READ) == C_ACCESS_PUBLIC_READ){
             return true;
         }
         return access;

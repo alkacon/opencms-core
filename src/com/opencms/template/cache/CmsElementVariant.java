@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -192,7 +192,7 @@ public class CmsElementVariant {
         StringBuffer result = new StringBuffer("[CmsElementVariant] (" + len + ") :");
         for(int i=0; i<len; i++) {
             Object o = m_content.elementAt(i);
-            String s = o.toString();
+            // CHECK: String s = o.toString();
             if(o instanceof byte[] || o instanceof String) {
                 result.append("TXT");
             } else {

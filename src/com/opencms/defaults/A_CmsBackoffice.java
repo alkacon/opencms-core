@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,15 +28,32 @@
 
 package com.opencms.defaults;
 
-import com.opencms.template.*;
-import com.opencms.workplace.*;
-import com.opencms.defaults.*;
-import com.opencms.file.*;
-import com.opencms.core.*;
-import com.opencms.core.exceptions.*;
-import com.opencms.util.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsSession;
+import com.opencms.core.exceptions.CmsPlausibilizationException;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsUser;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.template.I_CmsXmlTemplate;
+import com.opencms.util.Encoder;
+import com.opencms.util.Utils;
+import com.opencms.workplace.CmsWorkplaceDefault;
+import com.opencms.workplace.CmsXmlLanguageFile;
+import com.opencms.workplace.CmsXmlWpTemplateFile;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 
 /**
@@ -200,7 +217,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //return var
     byte[] returnProcess = null;
 
-        String error="";
+    // CHECKME: String error="";
 
         // the CD to be used
          A_CmsContentDefinition cd=null;
@@ -216,7 +233,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     String idlock = (String) parameters.get("idlock");
     String iddelete = (String) parameters.get("iddelete");
     String idedit = (String) parameters.get("idedit");
-    String idview = (String) parameters.get("idview");
+    // CHECKME: String idview = (String) parameters.get("idview");
     String action = (String) parameters.get("action");
     String parentId = (String) parameters.get("parentId");
     String ok = (String) parameters.get("ok");
@@ -386,7 +403,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         }
 
     //get marker for accessing the new dialog
-    String idnewsave = (String) session.getValue("idnew");
+    // CHECKME: String idnewsave = (String) session.getValue("idnew");
 
         // --- This is the part when getContentNew is called ---
     //access to new dialog
@@ -1163,7 +1180,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
     public Integer getHistory(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
-        I_CmsSession session = cms.getRequestContext().getSession(true);
+        cms.getRequestContext().getSession(true);
         String id = (String) parameters.get("id");
         if(id != null && !"".equals(id)) {
             Vector cdHistory = new Vector();
@@ -1327,11 +1344,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //return var
     byte[] processResult = null;
     //get the class of the content definition
-    Class cdClass = getContentDefinitionClass();
+    // CHECKME: Class cdClass = getContentDefinitionClass();
 
     //init vars
-    String singleSelection = "";
-    String allSelections = "";
+    // CHECKME: String singleSelection = "";
+    // CHECKME: String allSelections = "";
 
     //create new or fetch existing session
     CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
@@ -1368,8 +1385,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     session.putValue("filter",selectBoxValue);  // store filter in session for getContentList!
 
     String filterParam = (String) parameters.get("filterparameter");
-    String action = (String) parameters.get("action");
-    String setaction = (String) parameters.get("setaction");
+    // CHECKME: String action = (String) parameters.get("action");
+    // CHECKME: String setaction = (String) parameters.get("setaction");
     // create the key for the filterparameter in the session ... should be unique to avoid problems...
     String sessionFilterParam = uri+selectBoxValue+"filterparameter";
     //store filterparameter in the session, new enty for every filter of every url ...
@@ -1391,7 +1408,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     template.setData("filterparameterlabel", lang.getLanguageValue(moduleName + ".label.filterparameter"));
 
     //no filter selected so far, store a default filter in the session
-    CmsFilterMethod filterMethod = null;
+    // CHECKME: CmsFilterMethod filterMethod = null;
     if (selectBoxValue == null) {
       CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
       session.putValue("selectbox", defaultFilter.getFilterName());
@@ -1444,7 +1461,6 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       template.setData("createbutton", cb);
     } else {
         boolean buttonActiv = true;
-        Boolean isProjectDependend = new Boolean(true);
         if(isExtendedList() && (cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())){
             buttonActiv = false;
         }
@@ -1499,7 +1515,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //get the class of the content definition
     Class cdClass = getContentDefinitionClass();
 
-    String action = (String) parameters.get("action");
+    // CHECKME: String action = (String) parameters.get("action");
 
     //read value of the selected filter
     String filterMethodName = (String) session.getValue("filter");
@@ -1763,7 +1779,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //get the class of the content definition
         Class cdClass = getContentDefinitionClass();
 
-        String action = (String) parameters.get("action");
+        // CHECKME: String action = (String) parameters.get("action");
 
         //read value of the selected filter
         String filterMethodName = (String) session.getValue("filter");
@@ -1841,7 +1857,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             }
 
             // now apply the filter with the cms object, the filter method and additional user parameters
-            long stoptime = System.currentTimeMillis();
+            // CHECKME: long stoptime = System.currentTimeMillis();
             tableContent = (Vector) cdClass.getMethod("applyFilter", new Class[] {CmsObject.class, CmsFilterMethod.class, String.class}).invoke(null, new Object[] {cms, filterMethod, filterParam});
         } catch (InvocationTargetException ite) {
             //error occured while applying the filter
@@ -2084,7 +2100,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     }
 
     // session will be created or fetched
-    I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+    cms.getRequestContext().getSession(true);
     //get the class of the content definition
     Class cdClass = getContentDefinitionClass();
 
@@ -2118,7 +2134,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       } catch (Exception e) {
         ls = -1;
         //access content definition object specified by id through reflection
-        String title = "no title";
+        // CHECKME: String title = "no title";
         Object o = null;
         o = getContentDefinition(cms, cdClass, id);
         try {
@@ -2130,7 +2146,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         }
       }
       //access content definition object specified by id through reflection
-      String title = "no title";
+      // CHECKME: String title = "no title";
       Object o = null;
       if (idInteger != null) {
         o = getContentDefinition(cms, cdClass, idInteger);
@@ -2195,7 +2211,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         ls = C_NOT_LOCKED;
 
       //access content definition object specified by id through reflection
-      String title = "no title";
+      // CHECKME: String title = "no title";
       Object o = null;
       o = getContentDefinition(cms, cdClass, id);
       try {
@@ -2759,7 +2775,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
         //init project flag vars
         int state = 0;
-        int lockstate = -1;
+        // CHECKME: int lockstate = -1;
         int projectId = 1;
         int actProjectId = cms.getRequestContext().currentProject().getId();
         String style = new String();
@@ -2781,7 +2797,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         } else {
             // get the lockstate of an entry: if its unlocked and changed enable direct publish
             try {
-                lockstate = ((A_CmsContentDefinition)entryObject).getLockstate();
+                ((A_CmsContentDefinition)entryObject).getLockstate();
             } catch (Exception e) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
@@ -2830,7 +2846,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         int projectId = 1;
         int lockedInProject = -1;
         int actProjectId = cms.getRequestContext().currentProject().getId();
-        String style = new String();
+        // CHECKME: String style = new String();
 
         // get the projectid of the entry
         try{

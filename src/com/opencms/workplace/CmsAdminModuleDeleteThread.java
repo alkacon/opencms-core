@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDeleteThread.java,v $
- * Date   : $Date: 2002/12/17 12:16:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/01/20 17:57:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsProject;
 import com.opencms.file.I_CmsRegistry;
@@ -46,7 +46,7 @@ import java.util.Vector;
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author: Hanjo Riege
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleDeleteThread extends Thread {

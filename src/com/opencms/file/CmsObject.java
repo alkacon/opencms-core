@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/12/12 19:03:14 $
-* Version: $Revision: 1.252 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.253 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.252 $ $Date: 2002/12/12 19:03:14 $
+ * @version $Revision: 1.253 $ $Date: 2003/01/20 17:57:46 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2477,7 +2477,7 @@ public void publishProject(int id, I_CmsReport report) throws CmsException {
         // first we remember the new resources for the link management
         Vector newRes  = readProjectView(id, "new");
         updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
-        Vector projectResources = readProjectView(id, "all");
+        // CHECK: Vector projectResources = readProjectView(id, "all");
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id, report);
         // update the online links table for the new resources (now they are there)
         updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
@@ -2610,8 +2610,8 @@ public int publishResource(String resourcename, boolean justPrepare, I_CmsReport
     }
     if(res.getState() == C_STATE_NEW){
         try{
-            CmsFolder parent = m_rb.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID),
-                                               res.getRootName()+res.getParent());
+            m_rb.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID),
+                            res.getRootName()+res.getParent());
         } catch (CmsException ex){
             throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
         }
@@ -3798,7 +3798,8 @@ public void setTimeout(int taskId, long timeout) throws CmsException {
  */
 public void syncFolder(String resourceName) throws CmsException {
     // synchronize the resources
-    CmsSynchronize sync = new CmsSynchronize(this, resourceName);
+    // CHECK: CmsSynchronize sync = new CmsSynchronize(this, resourceName);
+    new CmsSynchronize(this, resourceName);
 }
 /**
  * Unlocks all resources of a project.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
-* Date   : $Date: 2002/12/18 15:03:38 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 17:57:52 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * This Tag is used to include another OpenCms managed resource in a JSP.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -175,7 +175,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     
     /**
      * Sets the include body attribute to indicate the body is to be evaluated.
-     * @param value This must be "eval", otherweise the TEI will generate an error.
+     * @param value This must be "eval" or "params", otherweise the TEI will generate an error.
      */
     public void setBody(String value) {
         m_body = value;

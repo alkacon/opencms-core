@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/12/13 17:38:13 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,24 @@
 
 package com.opencms.file;
 
-import java.util.*;
-import javax.servlet.http.*;
-
-import com.opencms.core.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsExportRequest;
+import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.I_CmsSession;
 import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.template.cache.*;
+import com.opencms.template.cache.CmsElementCache;
+
+import java.util.HashMap;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * This class provides access to the CmsRequestContext.
@@ -47,7 +59,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.60 $ $Date: 2002/12/13 17:38:13 $
+ * @version $Revision: 1.61 $ $Date: 2003/01/20 17:57:46 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {

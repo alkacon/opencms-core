@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsMultipartInputStreamHandler.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -91,7 +91,6 @@ class CmsMultipartInputStreamHandler {
     public String readLine() throws IOException {
         StringBuffer sbuf = new StringBuffer();
         int result;
-        String line;
 
         // loop only if the buffer was filled
         do {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.41 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.42 $ $Date: 2003/01/20 17:57:48 $
  */
 
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -121,7 +121,6 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         if(lock == null && !"on".equals(showLockDialog)) {
             lock = "true";
         }
-        boolean hlock = true;
         if(lock != null) {
             if(lock.equals("true")) {
                 session.removeValue(C_PARA_FILE);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.template.cache;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
@@ -130,7 +131,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
                     A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
                     return e.toString().getBytes();
@@ -193,7 +194,7 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             try {
                 cms.getRequestContext().getResponse().getOutputStream().write(result.getBytes(cms.getRequestContext().getEncoding()));
             } catch(Exception e) {
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2002/10/18 16:54:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/01/20 17:57:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -106,7 +106,8 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
 
                 if (tmpFolder != null) {
                     try {
-                        CmsFolder testfolder = cms.readFolder(tmpFolder);
+                        // check if tmpfolder exists
+                        cms.readFolder(tmpFolder);
                         foldername = tmpFolder;
                     } catch (CmsException e) {
                         foldername = galleryPath;
@@ -272,7 +273,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      */
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
-        CmsXmlWpConfigFile config = this.getConfigFile(cms);
+        getConfigFile(cms);
         filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,          
             cms.getRequestContext().getRequest().getServletUrl() + getGalleryIconPath(cms) );
         filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());

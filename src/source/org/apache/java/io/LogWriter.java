@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/source/org/apache/java/io/Attic/LogWriter.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/20 17:56:43 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.6 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.7 $ $Date: 2003/01/20 17:56:43 $
  */
 
 public class LogWriter 
@@ -174,7 +174,7 @@ public class LogWriter
      * <p>
      * Default is hardcoded to 5000 ms.
      */
-    private long queue_maxage;
+    public long queue_maxage;
 
     /**   
      * Maximum size of a log queue.
@@ -187,7 +187,7 @@ public class LogWriter
      *
      * Default is 1000.
      */
-    private long queue_maxsize;
+    protected long queue_maxsize;
 
     /**
      * This string identifies this log writer and its used to
@@ -199,7 +199,7 @@ public class LogWriter
      * Tells if the log message should be started by a time stamp.
      * Default is false.
      */
-    private boolean timestamp;
+    public boolean timestamp;
 
     /**
      * Tells if the log message should contain the current memory state.
@@ -210,34 +210,35 @@ public class LogWriter
     /**
      * The timestamp formatter.
      */
-    private SimpleDateFormat formatter;
+    public SimpleDateFormat formatter;
 
     /**
      * Format of the channels.
      */
-    private String m_channelStart;
-    private String m_channelEnd;
+    public String m_channelStart;
+    public String m_channelEnd;
     
     /**
      * Seperator token.
      */
-    private String m_channelSeperator;
+    public String m_channelSeperator;
     
     /**
      * The writer encapsulated.
      */
-    private PrintWriter writer;
+    public PrintWriter writer;
 
     /**
      * Background logger thread.
      */
-    private Agent logDaemon;
+    public Agent logDaemon;
     
     /**
      * Tells if the log message should contain a channel.
      * Default is false.
      */
-    private boolean logChannel;
+    public  boolean logChannel;
+    
     /**
      * Log message queue.
      *

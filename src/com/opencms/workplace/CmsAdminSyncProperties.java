@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSyncProperties.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
@@ -258,7 +258,7 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
                         String path = (String)resources.get(C_SYNCHRONISATION_RESOURCETAG+i);
                         // try to read this resource from the project
                         try{
-                            CmsResource resource = cms.readFileHeader(path, Integer.parseInt(projectId));
+                            cms.readFileHeader(path, Integer.parseInt(projectId));
                             allResources = allResources + path + ";";
                         } catch (CmsException exc){
                         }
@@ -380,7 +380,6 @@ public class CmsAdminSyncProperties extends CmsWorkplaceDefault implements I_Cms
         String enteredResources = (String)session.getValue(C_SYNCRESOURCES);
         Vector resources = parseResources(enteredResources);
         // fill the names and values
-        int n = 0;
         for(int z = 0;z < resources.size();z++) {
             String resourceName = (String)resources.elementAt(z);
             names.addElement(resourceName);

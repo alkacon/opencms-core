@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.file;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 
 import java.io.Serializable;
 import java.util.Enumeration;
@@ -956,7 +956,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, resource, allSubFiles, allSubFolders);
-        String parent = ((CmsResource)cms.readFileHeader(resource)).getParent();
+        // CHECK: String parent = ((CmsResource)cms.readFileHeader(resource)).getParent();
         if(!cms.accessWrite(resource)){
             throw new CmsException("[" + this.getClass().getName() + "]"+resource, CmsException.C_NO_ACCESS);
         }

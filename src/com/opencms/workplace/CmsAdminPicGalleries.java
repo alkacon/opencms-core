@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.29 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.30 $ $Date: 2003/01/20 17:57:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -99,7 +99,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
         String lasturl = getLastUrl(cms, parameters);    
         
         // Check if this is the inital call to the page
-        String initial = getInitial(session, parameters)                  ;
+        getInitial(session, parameters)                  ;
                 
         // Get the folder for the gallery
         String foldername = getGalleryPath(cms, session, parameters);        

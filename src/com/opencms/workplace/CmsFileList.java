@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2002/12/15 14:21:19 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -62,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.54 $ $Date: 2002/12/15 14:21:19 $
+ * @version $Revision: 1.55 $ $Date: 2003/01/20 17:57:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -379,8 +378,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             CmsXmlLanguageFile lang, Hashtable parameters, I_CmsFileListUsers callingObject,
             CmsXmlWpConfigFile config) throws CmsException {
         StringBuffer output = new StringBuffer();
-        String foldername;
-        String currentFolder;
         String title = null;
         int contextNumber = 0;
         String[] tagList =  {
@@ -405,7 +402,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
         // file and folder object required to create the file list.
         // CmsFile file;
         CmsResource file;
-        CmsFolder folder;
         CmsResource res;
 
         // show the table head with all required columns.
@@ -655,7 +651,6 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         String icon = null;
         String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
-        CmsResource iconFile;
 
         // check if this icon is in the cache already
         icon = (String)m_iconCache.get(type.getResourceTypeName());
@@ -665,7 +660,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
             try {
 
                 // read the icon file
-                iconFile = cms.readFileHeader(filename);
+                cms.readFileHeader(filename);
 
                 // add the icon to the cache
                 icon = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;

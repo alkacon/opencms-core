@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.file;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -64,7 +65,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -291,8 +292,8 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
      */
     public Vector getResourcesForProject() throws CmsException {
         NodeList fileNodes;
-        Element currentElement, currentProperty;
-        String destination, path;
+        Element currentElement;
+        String destination;
         Vector resources = new Vector();
         try {
             // get all file-nodes
@@ -301,7 +302,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             for (int i = 0; i < fileNodes.getLength(); i++) {
                 currentElement = (Element) fileNodes.item(i);
                 destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-                path = m_importPath + destination;
 
                 // get the resources for a project
                 try {
@@ -363,8 +363,8 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         boolean success = true;
         String fullname = null;
         try {
-            String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-            String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+            // CHECK: String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
+            // CHECK: String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
             m_cms.setContextToCos();
             // try to read an existing channel
             CmsResource res = null;
@@ -890,22 +890,22 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             Constructor co = cdClass.getConstructor(classes);
             cd = (CmsMasterContent)co.newInstance(objects);
         } catch (InvocationTargetException ite) {
-            if (com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Invocation target exception!");
             }
         } catch (NoSuchMethodException nsm) {
-            if (com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Requested method was not found!");
             }
         } catch (InstantiationException ie) {
-            if (com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: the reflected class is abstract!");
             }
         } catch (Exception e) {
-            if (com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, "[CmsImportModuledata] "+classname + " contentDefinitionConstructor: Other exception! "+e);
             }
-            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_INFO, e.getMessage() );
             }
         }

@@ -24,9 +24,9 @@ package com.opencms.defaults.master;
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.template.CmsCacheDirectives;
@@ -68,7 +68,6 @@ public class CmsShowMedia extends CmsXmlTemplate {
         CmsMasterContent cd = null;
         CmsMasterMedia media = null;
         String mType = null;
-        String filename = null;
         String sId = (String) parameters.get("id");
         String sPos = (String) parameters.get("pos");
         String refCD = (String) parameters.get("cd");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkCheckViewer.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
 /**
  * Template class for displaying OpenCms workplace administration synchronisation properties.
  *
- * @version $Revision: 1.4 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.5 $ $Date: 2003/01/20 17:57:46 $
  * @author: Edna Falkenhan
  */
 public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -61,7 +61,6 @@ public class CmsAdminLinkCheckViewer extends CmsWorkplaceDefault implements I_Cm
 
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         long length = 0;
-        long toSkip;
 
         if("ok".equalsIgnoreCase((String)parameters.get("step"))){
             templateSelector = "done";

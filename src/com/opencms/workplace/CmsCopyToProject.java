@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 17:57:46 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -76,8 +76,8 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
             session.removeValue("copy");
             session.removeValue("lasturl");
         }
-        // get the lasturl parameter
-        String lasturl = getLastUrl(cms, parameters);
+        // save the lasturl parameter in the session
+        getLastUrl(cms, parameters);
         String copy = (String)parameters.get("copy");
         if(copy != null) {
             session.putValue("copy", copy);
@@ -120,7 +120,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
         }
         // set the required datablocks
         if(action == null) {
-            CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+            // CHECKME: CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             xmlTemplateDocument.setData("FILENAME", file.getAbsolutePath());
         }
         // process the selected template

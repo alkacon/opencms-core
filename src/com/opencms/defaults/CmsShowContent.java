@@ -24,12 +24,22 @@
 
 package com.opencms.defaults;
 
-import com.opencms.core.*;
-import com.opencms.defaults.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
-import java.util.*;
-import java.lang.reflect.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.CmsXmlTemplateFile;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * Generic class for showing information encapsulated by contentdefinition objects.
@@ -400,7 +410,6 @@ public class CmsShowContent extends CmsXmlTemplate {
             throws NoSuchMethodException{
         // the list of methods to return
         ArrayList getMethods = new ArrayList();
-        Method method = null;
         Class[] argTypes = new Class[0];
         for (int i=0; i < names.length; i++) {
             getMethods.add(cdClass.getMethod(names[i], argTypes));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/01/20 17:57:53 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Hashtable;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.37 $ $Date: 2002/12/06 23:16:54 $
+ * @version $Revision: 1.38 $ $Date: 2003/01/20 17:57:53 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -334,12 +334,11 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @exception CmsException
      */
     protected void writeBytesToResponse(CmsObject cms, byte[] result) throws CmsException {
-        int length;
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
             if((!cms.getRequestContext().isStreaming()) && result != null && !resp.isRedirected()) {
-                /* Only write any output to the response output stream, if
-                the current request is neither redirected nor streamed. */
+                // Only write any output to the response output stream if
+                // the current request is neither redirected nor streamed.
                 OutputStream out = resp.getOutputStream();
 
                 resp.setContentLength(result.length);
@@ -349,9 +348,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             }
         }
         catch(IOException ioe) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
-                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ioe);
+            if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_DEBUG) ) {
+                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "IO error while writing to response stream for " + cms.getRequestContext().getFileUri());
+                A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + ioe);
             }
         }
         catch(Exception e) {

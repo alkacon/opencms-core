@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.37 $ $Date: 2003/01/20 17:57:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -157,10 +157,6 @@ public class CmsEditor extends CmsWorkplaceDefault {
                 || C_EDIT_ACTION_SAVEEXIT.equals(action)));
         boolean exitRequested = ((action != null) && (C_EDIT_ACTION_EXIT.equals(action)
                 || C_EDIT_ACTION_SAVEEXIT.equals(action)));
-
-
-        // For further processing we possibly need the encoder
-        Encoder enc = new Encoder();
 
         // CmsFile object of the file to be edited
         CmsFile editFile = null;

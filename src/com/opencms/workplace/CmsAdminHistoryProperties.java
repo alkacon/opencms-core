@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,11 +28,11 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsCronJob;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
@@ -73,7 +73,7 @@ public class CmsAdminHistoryProperties extends CmsWorkplaceDefault implements I_
         I_CmsRegistry reg = cms.getRegistry();
         CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsSession session = reqCont.getSession(true);
-        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        // CHECKME CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
         String weeks = new String();
         String enableHistory = new String();

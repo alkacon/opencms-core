@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/12/14 01:06:48 $
-* Version: $Revision: 1.264 $
+* Date   : $Date: 2003/01/20 17:57:51 $
+* Version: $Revision: 1.265 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.264 $ $Date: 2002/12/14 01:06:48 $ *
+ * @version $Revision: 1.265 $ $Date: 2003/01/20 17:57:51 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -237,8 +237,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
         String rbName = null;
         String digest = null;
-        String exportpoint = null;
-        String exportpath = null;
+        // CHECK: String exportpoint = null;
+        // CHECK: String exportpath = null;
         boolean fillDefaults = true;
 
 
@@ -891,7 +891,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // If so, delete it.
         // If the file exists already and is not marked as deleted then throw exception
         try {
-            CmsFile exFile = readFileHeader(project.getId(),filename);
+            readFileHeader(project.getId(),filename);
             throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the file is marked as deleted remove it!
@@ -1388,7 +1388,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         // If so, delete it.
         // If the file exists already and is not marked as deleted then throw exception
         try {
-            CmsResource exResource = readResource(project,newResource.getResourceName());
+            readResource(project,newResource.getResourceName());
             throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             // if the resource is marked as deleted remove it!
@@ -1482,7 +1482,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         PreparedStatement statement = null;
         Connection con = null;
         try {
-            String projectResource = readProjectResource(projectId, resourceName);
+            readProjectResource(projectId, resourceName);
             throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_FILE_EXISTS);
         } catch (CmsException e) {
             if (e.getType() == CmsException.C_FILE_EXISTS) {
@@ -4563,7 +4563,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      */
     public Vector getUsersOfGroup(String name, int type)
         throws CmsException {
-        CmsGroup group;
+        // CHECK: CmsGroup group;
         Vector users = new Vector();
 
         PreparedStatement statement = null;
@@ -5527,7 +5527,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                                Hashtable properties, int versionId, long publishDate) throws CmsException {
         Connection con = null;
         PreparedStatement statement = null;
-        ResultSet res = null;
+        // CHECK: ResultSet res = null;
         String ownerName = null;
         String groupName = new String();
         String lastModifiedName = null;
@@ -7870,8 +7870,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         ResultSet res =null;
         PreparedStatement statement = null;
         Connection con = null;
-        String usedPool;
-        String usedStatement;
+        // CHECK: String usedPool;
+        // CHECK: String usedStatement;
         try {
             con = DriverManager.getConnection(m_poolNameBackup);
             statement=con.prepareStatement(m_cq.get("C_RESOURCES_READ_BACKUP"));
@@ -9084,7 +9084,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Vector logs = new Vector();
         PreparedStatement statement = null;
         String comment = null;
-        String externalusername = null;
+        // CHECK: String externalusername = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
         int task = C_UNKNOWN_ID;
@@ -9099,7 +9099,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
             res = statement.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                externalusername = res.getString(m_cq.get("C_LOG_EXUSERNAME"));
+                // CHECK: externalusername = res.getString(m_cq.get("C_LOG_EXUSERNAME"));
                 id = res.getInt(m_cq.get("C_LOG_ID"));
                 starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
                 task = res.getInt(m_cq.get("C_LOG_TASK"));
@@ -9614,7 +9614,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                 ByteArrayInputStream bin= new ByteArrayInputStream(value);
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 data = (Hashtable) oin.readObject();
-                                int a = 1;
                                 try {
                       for(;;) {
                     Object key = oin.readObject();
@@ -9829,7 +9828,7 @@ public CmsTask readTask(int id) throws CmsException {
             res = statement.executeQuery();
             if(res.next()) {
                 String comment = res.getString(m_cq.get("C_LOG_COMMENT"));
-                String externalusername;
+                // CHECK: String externalusername;
                 id = res.getInt(m_cq.get("C_LOG_ID"));
                 java.sql.Timestamp starttime = SqlHelper.getTimestamp(res,m_cq.get("C_LOG_STARTTIME"));
                 int task = res.getInt(m_cq.get("C_LOG_TASK"));
@@ -9885,7 +9884,7 @@ public CmsTask readTask(int id) throws CmsException {
         Vector logs = new Vector();
         PreparedStatement statement = null;
         String comment = null;
-        String externalusername = null;
+        // CHECK: String externalusername = null;
         java.sql.Timestamp starttime = null;
         int id = C_UNKNOWN_ID;
         int task = C_UNKNOWN_ID;
@@ -9899,7 +9898,7 @@ public CmsTask readTask(int id) throws CmsException {
             res = statement.executeQuery();
             while(res.next()) {
                 comment = res.getString(m_cq.get("C_TASKLOG_COMMENT"));
-                externalusername = res.getString(m_cq.get("C_TASKLOG_EXUSERNAME"));
+                // CHECK: externalusername = res.getString(m_cq.get("C_TASKLOG_EXUSERNAME"));
                 id = res.getInt(m_cq.get("C_TASKLOG_ID"));
                 starttime = SqlHelper.getTimestamp(res,m_cq.get("C_TASKLOG_STARTTIME"));
                 task = res.getInt(m_cq.get("C_TASKLOG_TASK"));
@@ -11357,11 +11356,11 @@ public CmsTask readTask(int id) throws CmsException {
         throws CmsException {
         String usedPool;
         String usedStatement;
-        int modifiedBy = userId;
+        // CHECK: int modifiedBy = userId;
         if (project.getId() == onlineProject.getId()){
             usedPool = m_poolNameOnline;
             usedStatement = "_ONLINE";
-            modifiedBy = file.getResourceLastModifiedBy();
+            // CHECK: modifiedBy = file.getResourceLastModifiedBy();
         } else {
             usedPool = m_poolName;
             usedStatement = "";
@@ -11834,7 +11833,7 @@ public CmsTask readTask(int id) throws CmsException {
             // write the property into the db
             PreparedStatement statement = null;
             Connection con = null;
-            boolean newprop=true;
+            // CHECK: boolean newprop=true;
             try {
                 con = DriverManager.getConnection(usedPool);
                 if( readProperty(propdef.getName(), projectId, resource, resourceType) != null) {
@@ -11845,7 +11844,7 @@ public CmsTask readTask(int id) throws CmsException {
                     statement.setInt(2, resource.getResourceId());
                     statement.setInt(3, propdef.getId());
                     statement.executeUpdate();
-                    newprop=false;
+                    // CHECK: newprop=false;
                 } else {
                     // property dosen't exist - use create.
                     // create statement
@@ -11855,7 +11854,7 @@ public CmsTask readTask(int id) throws CmsException {
                     statement.setInt(3, resource.getResourceId());
                     statement.setString(4, checkNull(value));
                     statement.executeUpdate();
-                    newprop=true;
+                    // CHECK: newprop=true;
                 }
             } catch(SQLException exc) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(),

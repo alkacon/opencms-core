@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/12/17 12:16:08 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,21 +27,37 @@
 */
 package com.opencms.file;
 
-import com.opencms.core.*;
-import com.opencms.launcher.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.CmsExportRequest;
+import com.opencms.core.CmsExportResponse;
+import com.opencms.core.CmsStaticExportProperties;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.core.OpenCms;
+import com.opencms.launcher.I_CmsLauncher;
+import com.opencms.report.CmsShellReport;
+import com.opencms.report.I_CmsReport;
 import com.opencms.util.Utils;
-import com.opencms.report.*;
-import java.util.*;
-import java.io.*;
-import java.net.*;
-import org.apache.oro.text.perl.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * This class holds the functionaility to export resources from the cms
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.37 $ $Date: 2002/12/17 12:16:08 $
+ * @version $Revision: 1.38 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -660,7 +676,7 @@ public class CmsStaticExport implements I_CmsConstants{
                     // folders like '"http:'
                     boolean linkIsExtern = true;
                     try{
-                        URL test = new URL(externLink);
+                        new URL(externLink);
                     }catch(MalformedURLException e){
                         linkIsExtern = false;
                     }
@@ -930,7 +946,7 @@ public class CmsStaticExport implements I_CmsConstants{
         String retValue = link;
         int count;
         StringBuffer result = null;
-        boolean doTheParameter = false;
+        // CHECK: boolean doTheParameter = false;
         if(dynRules != null){
             for(int i=0; i<dynRules.size(); i++){
                 result = new StringBuffer();

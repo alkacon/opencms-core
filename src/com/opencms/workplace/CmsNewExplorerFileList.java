@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/12/20 10:45:28 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2002/12/20 10:45:28 $
+ * @version $Revision: 1.53 $ $Date: 2003/01/20 17:57:48 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -684,7 +684,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                             }
                         } else if ("content".equals(currentFilter)){
                             // this search is only available if lucene is enabled
-                            String content = searchForm.getValue01();
+                            searchForm.getValue01();
                         }
                     }
                 }

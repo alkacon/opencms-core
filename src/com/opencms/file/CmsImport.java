@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/12/16 13:15:26 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/01/20 17:57:45 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.OpenCms;
 import com.opencms.linkmanagement.CmsPageLinks;
-import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 
@@ -55,7 +54,7 @@ import org.w3c.dom.NodeList;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.62 $ $Date: 2002/12/16 13:15:26 $
+ * @version $Revision: 1.63 $ $Date: 2003/01/20 17:57:45 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -228,8 +227,8 @@ private void createDigest() throws CmsException {
  */
 public Vector getConflictingFilenames() throws CmsException {
     NodeList fileNodes;
-    Element currentElement, currentProperty;
-    String source, destination, path;
+    Element currentElement;
+    String source, destination;
     Vector conflictNames = new Vector();
     try {
         // get all file-nodes
@@ -240,7 +239,6 @@ public Vector getConflictingFilenames() throws CmsException {
             currentElement = (Element) fileNodes.item(i);
             source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
             destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-            path = m_importPath + destination;
             if (source != null) {
                 // only consider files
                 boolean exists = true;
@@ -351,8 +349,8 @@ public Vector getConflictingFilenames() throws CmsException {
  */
 public Vector getResourcesForProject() throws CmsException {
     NodeList fileNodes;
-    Element currentElement, currentProperty;
-    String source, destination, path;
+    Element currentElement;
+    String destination;
     Vector resources = new Vector();
     try {
         // get all file-nodes
@@ -360,9 +358,9 @@ public Vector getResourcesForProject() throws CmsException {
         // walk through all files in manifest
         for (int i = 0; i < fileNodes.getLength(); i++) {
             currentElement = (Element) fileNodes.item(i);
-            source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+            // CHECK: source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
             destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
-            path = m_importPath + destination;
+            // CHECK: path = m_importPath + destination;
 
             // get the resources for a project
             try {
@@ -704,7 +702,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
     private void importUsers() throws CmsException{
         NodeList userNodes;
         NodeList groupNodes;
-        Element currentElement, currentGroup, currentInfo;
+        Element currentElement, currentGroup;
         Vector userGroups;
         Hashtable userInfo = new Hashtable();
         sun.misc.BASE64Decoder dec;
@@ -812,22 +810,19 @@ private boolean inExcludeList(Vector excludeList, String path) {
                             String email, String address, String section, String defaultGroup,
                             String type, Hashtable userInfo, Vector userGroups)
         throws CmsException{
-        CmsUser newUser = null;
-        int defGroupId = C_UNKNOWN_ID;
         try{
             try{
                 m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
                 m_report.print(name);
                 m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);                
-                newUser = m_cms.addImportUser(name, password, recoveryPassword, description, firstname,
+                m_cms.addImportUser(name, password, recoveryPassword, description, firstname,
                                     lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address,
                                     section, Integer.parseInt(type));
                 // add user to all groups vector
-                for (int i=0; i < userGroups.size(); i++){
-                    try{
-                        m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
-                    } catch (CmsException exc){
-                    }
+                for (int i = 0; i < userGroups.size(); i++) {
+                    try {
+                        m_cms.addUserToGroup(name, (String) userGroups.elementAt(i));
+                    } catch (CmsException exc) {}
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException exc){
@@ -843,7 +838,6 @@ private boolean inExcludeList(Vector excludeList, String path) {
      * database for the linkmanagement.
      */
     private void updatePageLinks(){
-        LinkChecker checker = new LinkChecker();
         int importPagesSize = m_importedPages.size();
         for(int i=0; i<importPagesSize; i++){
             m_report.print(" ( " + (i+1) + " / " + importPagesSize + " ) ");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.19 $ $Date: 2003/01/20 17:57:47 $
  */
 
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -192,7 +192,6 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 
         // get request parameters
         String newFile = (String)parameters.get(C_PARA_NEWFILE);
-        String title = (String)parameters.get(C_PARA_TITLE);
 
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
         String navtitle = (String)parameters.get(C_PARA_NAVTEXT);

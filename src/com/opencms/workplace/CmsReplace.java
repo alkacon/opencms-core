@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2002/12/06 23:16:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/01/20 17:57:48 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 
@@ -242,8 +242,7 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public int getResources(CmsObject cms, CmsXmlLanguageFile language, Vector resourceTypeIconNames, Vector resourceTypeFieldValues, Vector resourceTypeFieldNames, Hashtable parameters) throws CmsException {
-		I_CmsSession session = cms.getRequestContext().getSession(true);
-		String uploadResourceSuffix = m_UploadResourceName.substring(m_UploadResourceName.lastIndexOf('.') + 1).toLowerCase();
+		cms.getRequestContext().getSession(true);
 		Vector resourceTypeNames = new Vector();
 		Vector resourceTypeValues = new Vector();
 		int checkedRadioIndex = 0;

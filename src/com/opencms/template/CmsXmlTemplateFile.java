@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.template;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsFile;
@@ -56,7 +56,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.57 $ $Date: 2003/01/20 17:57:49 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -1040,7 +1040,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
         // now the parsed content for the templatemechanism
         String datablockName = this.getTemplateDatablockName(templateSelector);
-        String parsedContent = null;
+        // CHECK: String parsedContent = null;
         if(!html){
             // we have to prepare the content for the tidy
             copyOfContent = "<HTML><HEAD></HEAD><body>" + copyOfContent.substring(9, copyOfContent.lastIndexOf("]]>")) + "</body></HTML>";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.5 $ $Date: 2003/01/20 17:57:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -137,7 +137,7 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
 
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
-        String snaplock = listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK, callingObject, parameters);
+        listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK, callingObject, parameters);
         for(int i = 0;i < list.size();i++) {
 
             // get the actual project

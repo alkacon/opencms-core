@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.72 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.73 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,9 +44,6 @@ import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
 import source.org.apache.java.util.ExtendedProperties;
-
-import FESI.Data.ESUndefined;
-import FESI.Data.ESValue;
 import FESI.Exceptions.EcmaScriptException;
 import FESI.Interpreter.Evaluator;
 import FESI.jslib.JSException;
@@ -62,14 +59,14 @@ import FESI.jslib.JSUtil;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.72 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.73 $ $Date: 2003/01/20 17:57:49 $
  */
 public class CmsShell implements I_CmsConstants {
 
     /**
      * The resource broker to get access to the cms.
      */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /**
      * The open-cms.
@@ -262,7 +259,7 @@ public class CmsShell implements I_CmsConstants {
 
         if(s!=null){
             try {
-                Object result= jSGO.eval("echoNoLF("+s+")");
+                jSGO.eval("echoNoLF("+s+")");
             }catch (JSException je) {
                 System.out.println(je.getMessage());
             }
@@ -296,8 +293,6 @@ public class CmsShell implements I_CmsConstants {
 
       // print the ecmascript welcome-text
       printEcmaHelpText();
-
-      Class[] args = {String.class};
 
       // new command: echoNoLF (no linefeed)
       jSGO.setMember("echoNoLF", new JSFunctionAdapter(){
@@ -391,8 +386,7 @@ public class CmsShell implements I_CmsConstants {
       });
 
       String eol = System.getProperty("line.separator", "\n");
-      ESValue theValue = ESUndefined.theUndefined;
-
+      
       Evaluator evaluator = new Evaluator();
 
       // load fesi extension to access java from javascript
@@ -425,7 +419,7 @@ public class CmsShell implements I_CmsConstants {
               else input += in;
 
           if(continueReading)try {
-                  theValue = evaluator.evaluate(input);
+                evaluator.evaluate(input);
               } catch (EcmaScriptException e) {
                   if (e.isIncomplete()) {
                       lineMode=false;         // if the entered line is not complete

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2002/12/06 22:05:43 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/01/20 17:57:53 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.launcher;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.35 $ $Date: 2002/12/06 22:05:43 $
+ * @version $Revision: 1.36 $ $Date: 2003/01/20 17:57:53 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -161,7 +161,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
                 boolean httpsReq = "https".equalsIgnoreCase(scheme);
                 if(cmsUri.isHttpsResource() != httpsReq){
                     if(httpsReq){
-                        //throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
+                        // throw new CmsException(" "+file.getAbsolutePath()+" needs a http request", CmsException.C_HTTPS_PAGE_ERROR);
                         // since the netscape 4.7 dont shows http pics on https sides we cant throw this error.
                     }else if(CmsObject.getStaticExportProperties().isStaticExportEnabled()
                                 || "false_ssl".equals(CmsObject.getStaticExportProperties().getStaticExportEnabledValue())){
@@ -192,8 +192,6 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
         }
         if(result != null) {
-
-            // cms.getRequestContext().getResponse().setLastModified(file.getDateLastModified());
             writeBytesToResponse(cms, result);
         }
     }

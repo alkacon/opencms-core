@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeLink.java,v $
-* Date   : $Date: 2002/10/23 15:12:46 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ public class CmsResourceTypeLink extends CmsResourceTypePlain {
                 if (!linkPropertyDefs.contains((String)currentProperty)) {
                     // add the property definition if the property is not yet defined for links
                     if (DEBUG>0) System.out.println( "adding property definition " + currentProperty + " for resource type " + CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
-                    CmsPropertydefinition newPropertyDef = cms.createPropertydefinition( currentProperty, CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
+                    cms.createPropertydefinition( currentProperty, CmsResourceTypeLink.C_TYPE_RESOURCE_NAME );
                 }
                 
                 // write the target property on the link

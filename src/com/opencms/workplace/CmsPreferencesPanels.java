@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2002/12/06 23:16:48 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2002/12/06 23:16:48 $
+ * @version $Revision: 1.39 $ $Date: 2003/01/20 17:57:47 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -167,7 +167,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         String template = "";
         String panel;
         String oldPanel;
-        int explorerSettingsValue;
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
@@ -1106,7 +1105,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // check for languages and diasable if only one locale is found 
         Vector langValues = new Vector();
         try {
-            Integer currentLang = getLanguageFiles(cms, null, new Vector(), langValues, parameters);
+            getLanguageFiles(cms, null, new Vector(), langValues, parameters);
             if (langValues.size() == 1) {
                 // only one locale installed - deactivate the language selection
                 xmlTemplateDocument.setData("LANG_SELECT", "<input type=\"hidden\" name=\"LANGUAGE\" value=\"" + langValues.elementAt(0) + "\">");

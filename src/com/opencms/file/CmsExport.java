@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/12/17 19:44:28 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2003/01/20 17:57:45 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.41 $ $Date: 2002/12/17 19:44:28 $
+ * @version $Revision: 1.42 $ $Date: 2003/01/20 17:57:45 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -841,7 +841,6 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         String name, password, recoveryPassword, description, firstname;
         String lastname, email, flags, defaultGroup, address, section, type;
         String datfileName = new String();
-        String infostr = new String();
         Hashtable info = new Hashtable();
         Vector userGroups = new Vector();
         sun.misc.BASE64Encoder enc;

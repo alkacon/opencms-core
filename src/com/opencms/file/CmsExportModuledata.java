@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,22 +27,38 @@
 */
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
-import java.util.zip.*;
-import java.lang.reflect.*;
-import org.w3c.dom.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Utils;
 
-import com.opencms.util.*;
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.defaults.master.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 /**
  * This class holds the functionaility to export channels and modulemasters from the cms
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.7 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.8 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -436,7 +452,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
         System.out.print("Exporting channel: "+resource.getAbsolutePath());
-        String source, type, user, group, access, launcherStartClass;
+        String source, type, user, group, access;
 
         // get all needed informations from the resource
         source = getSourceFilename(resource.getAbsolutePath());
@@ -444,7 +460,6 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         user = m_cms.readOwner(resource).getName();
         group = m_cms.readGroup(resource).getName();
         access = resource.getAccessFlags() + "";
-        launcherStartClass = resource.getLauncherClassname();
 
         // write these informations to the xml-manifest
         Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
@@ -616,7 +631,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
         // create new mastercontent for getting channels and media
         CmsMasterContent content = getContentDefinition(classname, new Class[]{CmsObject.class, CmsMasterDataSet.class}, new Object[]{m_cms, dataset});
         // the channels of the master
-        Vector channels = content.getChannels();
+        // CHECK: Vector channels = content.getChannels();
 
         // write these informations to the xml-manifest
         Element master = m_docXml.createElement(C_EXPORT_TAG_MASTER);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
@@ -53,7 +53,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.26 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.27 $ $Date: 2003/01/20 17:57:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -261,10 +261,8 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
         CmsUser owner = null;
-        String ownerName = "";
         try {
             owner = cms.readOwner(task);
-            ownerName = owner.getName();
         }
         catch(Exception exc) {
             
@@ -272,10 +270,8 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault implements I_CmsCo
         // ignore the exception
         }
         CmsUser editor = null;
-        String editorName = "";
         try {
             editor = cms.readAgent(task);
-            editorName = editor.getName();
         }
         catch(Exception exc) {
             

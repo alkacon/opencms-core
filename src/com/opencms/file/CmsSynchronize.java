@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.file;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -46,7 +46,7 @@ import java.util.Vector;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.14 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 

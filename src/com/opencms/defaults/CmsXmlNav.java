@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/12/12 18:58:44 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.44 $ $Date: 2002/12/12 18:58:44 $
+ * @version $Revision: 1.45 $ $Date: 2003/01/20 17:57:49 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -82,11 +82,10 @@ public class CmsXmlNav extends A_CmsNavBase {
 
         // get uri, currentfolder,servletpath and template file
         String requestedUri = cms.getRequestContext().getUri();
-        String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-        String servletPath = cms.getRequestContext().getRequest().getServletUrl();
+        // String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+        // String servletPath = cms.getRequestContext().getRequest().getServletUrl();
         CmsXmlTemplateFile template=(CmsXmlTemplateFile)doc;
         StringBuffer result = new StringBuffer();
-        LinkSubstitution ls = new LinkSubstitution();
         int size = resources.size();
 
         String navLink[] = new String[size];
@@ -153,7 +152,6 @@ public class CmsXmlNav extends A_CmsNavBase {
         throws CmsException {
 
         StringBuffer result = new StringBuffer();
-        LinkSubstitution ls = new LinkSubstitution();
         // arrays of navigation position, text and link
         int size = resources.size();
         String navLink[] = new String[size];
@@ -259,7 +257,6 @@ public class CmsXmlNav extends A_CmsNavBase {
         throws CmsException {
 
         StringBuffer result = new StringBuffer();
-        LinkSubstitution ls = new LinkSubstitution();
         // define some array for link,text and position of
         // the elements of navigation
         int size = resources.size();
@@ -1035,7 +1032,6 @@ public class CmsXmlNav extends A_CmsNavBase {
     protected StringBuffer buildMap(CmsObject cms, A_CmsXmlContent doc, Object userObject, String currentFolder, String datablock, int currentResursionLevel, int maxRecursionLevel) throws CmsException {
         StringBuffer result = new StringBuffer();
         CmsXmlTemplateFile template = (CmsXmlTemplateFile)doc;
-        LinkSubstitution ls = new LinkSubstitution();
         boolean isFolder = false;
         
         // register the current folder for changes in the beloved element cache
@@ -1410,8 +1406,8 @@ public class CmsXmlNav extends A_CmsNavBase {
 	public Object getNavPop(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) throws CmsException {
 		String currentFolder = "";
 		StringBuffer sRet = new StringBuffer();
-		String currentFolder2 = cms.getRequestContext().currentFolder().getAbsolutePath();
-		int iLevel = extractLevel(cms, currentFolder2);
+		// String currentFolder2 = cms.getRequestContext().currentFolder().getAbsolutePath();
+		// int iLevel = extractLevel(cms, currentFolder2);
 		int deep = 3;
 		int level = -1;
 
@@ -1459,14 +1455,11 @@ public class CmsXmlNav extends A_CmsNavBase {
 		Vector resources2 = null;
 		Vector allFile2 = null;
 		Enumeration e2 = null;
-		CmsResource ocmsresourc2 = null;
 		Object oBuffer2 = null;
-		Vector resources2ret = new Vector();
 
 		Vector resources3 = null;
 		Vector allFile3 = null;
 		Enumeration e3 = null;
-		CmsResource ocmsresourc1 = null;
 		Object oBuffer1 = null;
 		Object oBuffer3 = null;
 
@@ -1488,7 +1481,6 @@ public class CmsXmlNav extends A_CmsNavBase {
 			String navLink[] = new String[size];
 			String navText[] = new String[size];
 			float navPos[] = new float[size];
-			int isize = 0;
 
 			int max = extractNav(cms, resources, navLink, navText, navPos);
 
@@ -1534,7 +1526,6 @@ public class CmsXmlNav extends A_CmsNavBase {
 			String[] navLink = new String[size2];
 			String[] navText = new String[size2];
 			float[] navPos = new float[size2];
-			int isize = 0;
 			int iCounter3 = 0;
 
 			int max2 = extractNav(cms, resources4, navLink, navText, navPos);

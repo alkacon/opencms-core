@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCheckMem.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.file.CmsObject;
 import com.opencms.template.CmsXmlTemplateFile;
 
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.10 $ $Date: 2003/01/20 17:57:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

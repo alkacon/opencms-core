@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCoreSession.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.9 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.10 $ $Date: 2003/01/20 17:57:49 $
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -267,7 +267,6 @@ public class CmsCoreSession implements I_CmsConstants {
      * @param message the message to send to all users.
      */
     public void sendBroadcastMessage(String message) {
-        Vector output = new Vector();
         String key;
         Hashtable value;
 

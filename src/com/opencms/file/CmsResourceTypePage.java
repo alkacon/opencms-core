@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/12/06 23:16:45 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,10 @@
 
 package com.opencms.file;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.template.CmsXmlControlFile;
 import com.opencms.template.I_CmsXmlParser;
@@ -46,7 +46,7 @@ import java.util.Vector;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.40 $ $Date: 2002/12/06 23:16:45 $
+ * @version $Revision: 1.41 $ $Date: 2003/01/20 17:57:46 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -645,12 +645,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
-        CmsUser pageLocker = null;
-        CmsUser bodyLocker = null;
+        // CHECK: CmsUser pageLocker = null;
+        // CHECK: CmsUser bodyLocker = null;
         // Check any locks on th page file
-        pageLocker = getLockedBy(cms, resource);
-        CmsUser currentUser = cms.getRequestContext().currentUser();
-        boolean pageLockedAndSelf = pageLocker != null && currentUser.equals(pageLocker);
+        // CHECK: pageLocker = getLockedBy(cms, resource);
+        // CHECK: CmsUser currentUser = cms.getRequestContext().currentUser();
+        // CHECK: boolean pageLockedAndSelf = pageLocker != null && currentUser.equals(pageLocker);
         CmsResource bodyFile = null;
         String bodyPath = null;
         // Try to fetch the body file.
@@ -668,7 +668,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // Everything with the page file is ok. We have write access. XML is valid.
             // Body file could be determined and fetched.
             // Now check further body file details (is it locked already, WHO has locked it, etc.)
-            bodyLocker = getLockedBy(cms, bodyPath);
+            // CHECK: bodyLocker = getLockedBy(cms, bodyPath);
             // Lock the body, if neccessary
             //if((bodyLocker == null && (pageLocker == null || pageLockedAndSelf || force))
             //        || (bodyLocker != null && !currentUser.equals(bodyLocker)
@@ -816,12 +816,12 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
-        CmsUser pageLocker = null;
-        CmsUser bodyLocker = null;
+        // CHECK: CmsUser pageLocker = null;
+        // CHECK: CmsUser bodyLocker = null;
 
         // Check any locks on th page file
-        pageLocker = getLockedBy(cms, resource);
-        CmsUser currentUser = cms.getRequestContext().currentUser();
+        // CHECK: pageLocker = getLockedBy(cms, resource);
+        // CHECK: CmsUser currentUser = cms.getRequestContext().currentUser();
 
         CmsResource bodyFile = null;
         String bodyPath = null;
@@ -840,7 +840,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // Everything with the page file is ok. We have write access. XML is valid.
             // Body file could be determined and fetched.
             // Now check further body file details (is it locked already, WHO has locked it, etc.)
-            bodyLocker = getLockedBy(cms, bodyPath);
+            // CHECK: bodyLocker = getLockedBy(cms, bodyPath);
             // Unlock the body, if neccessary
             //if((pageLocker == null || pageLocker.equals(currentUser)) && (bodyLocker != null)) {
                 cms.doUnlockResource(bodyPath);

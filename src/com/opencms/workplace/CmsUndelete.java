@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.5 $ $Date: 2003/01/20 17:57:47 $
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -64,9 +64,6 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
             Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-
-        // the template to be displayed
-        String template = null;
 
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);

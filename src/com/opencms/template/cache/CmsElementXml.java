@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.template.cache;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
@@ -131,7 +132,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             try {
                 templateClass = getTemplateClass(cms, m_className);
             } catch(Throwable e) {
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Could not load my template class \"" + m_className + "\". ");
                     A_OpenCms.log(C_OPENCMS_CRITICAL, e.toString());
                     return e.toString().getBytes();
@@ -162,7 +163,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                         try{
                             theTemplate = mergedElDefs.get("body").getTemplateName();
                         }catch(Exception exc){
-                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                                 A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " could not find the body element to get the default templatefile for " + this.toString() );
                             }
                         }
@@ -174,20 +175,20 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
                         if(ce.getType() == CmsException.C_ACCESS_DENIED) {
                             // This was an access denied exception.
                             // This is not very critical at the moment.
-                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                                 A_OpenCms.log(C_OPENCMS_DEBUG, toString() + " Access denied in getContent for template class " + m_className);
                             }
                         } else {
                             // Any other CmsException.
                             // This could be more critical.
-                            if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                                 A_OpenCms.log(C_OPENCMS_INFO, toString() + " Error in getContent for template class " + m_className);
                             }
                         }
                         throw ce;
                     } else {
                         // No CmsException. This is really, really bad!
-                        if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, toString() + " Non OpenCms error occured in getContent for template class " + m_className);
                         }
                         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
@@ -203,7 +204,7 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
             try {
                 cms.getRequestContext().getResponse().getOutputStream().write(result);
             } catch(Exception e) {
-                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, this.toString() + " Error while streaming!");
                 }
             }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/12/15 18:11:41 $
-* Version: $Revision: 1.101 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.101 $ $Date: 2002/12/15 18:11:41 $
+ * @version $Revision: 1.102 $ $Date: 2003/01/20 17:57:49 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
 
@@ -321,7 +321,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         // try to initialize the flex cache
         try {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] initializing flex cache...");
-            com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
+            // com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
+            // the flexCache has static members that must be initialized with "this" object
+            new com.opencms.flex.cache.CmsFlexCache(this);
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, "[OpenCms] " + e.toString());
         }        

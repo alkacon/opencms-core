@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:47 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.I_CmsRegistry;
 import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
@@ -49,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 17:57:47 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -75,9 +74,9 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         String template = null;
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
+        // CHECKME: CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        I_CmsRegistry registry = cms.getRegistry();
+        // CHECKME: I_CmsRegistry registry = cms.getRegistry();
         String navtext = "";
 
         // clear the session on first call

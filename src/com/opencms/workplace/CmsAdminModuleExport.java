@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/12/12 19:06:38 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,15 +29,14 @@
 package com.opencms.workplace;
 
 import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.core.OpenCms;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
-import com.opencms.file.CmsRequestContext;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.util.Utils;
 
@@ -83,7 +82,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 		}
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        CmsRequestContext reqCont = cms.getRequestContext();
+        // CHECKME CmsRequestContext reqCont = cms.getRequestContext();
         I_CmsRegistry reg = cms.getRegistry();
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
@@ -131,7 +130,6 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				// specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
 				// to the module (in the module administration)
 				String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-				int additionalResourceCount = 0;
 				StringTokenizer additionalResourceTokens = null;
 
 				if (additionalResources != null && !additionalResources.equals("")) {

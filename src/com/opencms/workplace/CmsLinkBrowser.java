@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 
 package com.opencms.workplace;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsLogChannels;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
@@ -43,15 +43,13 @@ import com.opencms.util.Utils;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Template class for displaying OpenCms picture browser.
  * <P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.6 $ $Date: 2003/01/20 17:57:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -284,7 +282,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
-        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        // CHECKME: CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         StringBuffer result = new StringBuffer();
         String pageText = (String)parameters.get(C_PARA_PAGE);
 
@@ -305,8 +303,6 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
             parameters.put(C_PARA_FOLDER, folder);
         }
 
-        HttpServletRequest req = (HttpServletRequest)(cms.getRequestContext().getRequest().getOriginalRequest());
-        String hostName = ""; // no need for host information in editor any more
         String linkUrl = cms.getRequestContext().getRequest().getServletUrl() + folder;
 
         // Generate the link list for all links on the selected page
@@ -328,7 +324,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
             }
 
             // Set all datablocks for the current picture list entry
-            xmlTemplateDocument.setData("linksource", hostName + linkUrl + file.getName());
+            xmlTemplateDocument.setData("linksource", linkUrl + file.getName());
             xmlTemplateDocument.setData("filename", file.getAbsolutePath());
             xmlTemplateDocument.setData("title", title);
             xmlTemplateDocument.setData("linktext", filename);

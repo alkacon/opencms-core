@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2002/12/06 23:16:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/01/20 17:57:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import com.opencms.core.A_OpenCms;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -159,8 +159,6 @@ public class CmsFlexLruCache extends java.lang.Object {
      * @return true if the object was added to the cache, false if the object was denied because its cache costs were higher than the allowed max. cache costs per object
      */
     public synchronized boolean add( I_CmsFlexLruCacheObject theCacheObject ) {
-        boolean retVal = false;
-        
         if (theCacheObject==null) {
             // null can't be added or touched in the cache 
             return false;

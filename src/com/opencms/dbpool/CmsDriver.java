@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsDriver.java,v $
-* Date   : $Date: 2002/04/09 14:39:59 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -240,7 +240,6 @@ public class CmsDriver implements java.sql.Driver {
         while(pools.hasMoreElements() ){
             CmsPool pool = (CmsPool) pools.nextElement();
             pool.destroy();
-            Object a;
         }
     }
 }

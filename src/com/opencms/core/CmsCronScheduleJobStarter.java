@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronScheduleJobStarter.java,v $
-* Date   : $Date: 2001/11/16 09:36:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,10 @@
 
 package com.opencms.core;
 
-import java.util.*;
-import com.opencms.boot.*;
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
+
+import java.util.Calendar;
 
 /**
  * This class starts all needed jobs for the current time.

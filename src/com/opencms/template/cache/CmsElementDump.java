@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2002/10/15 13:17:27 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,15 @@
 
 package com.opencms.template.cache;
 
-import java.util.*;
-import com.opencms.core.*;
-import com.opencms.file.*;
-import com.opencms.template.*;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.A_OpenCms;
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsObject;
+import com.opencms.template.A_CmsCacheDirectives;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.I_CmsTemplate;
+
+import java.util.Hashtable;
 
 /**
  * An instance of CmsElementDump represents an requestable dump element in the OpenCms

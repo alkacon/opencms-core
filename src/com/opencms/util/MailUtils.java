@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/MailUtils.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/01/20 17:57:49 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ public class MailUtils {
     public static boolean checkEmail(String address) {
         boolean result = true;
         try {
-            javax.mail.internet.InternetAddress IPAdd = new javax.mail.internet.InternetAddress(address);
+            new javax.mail.internet.InternetAddress(address);
         } catch(javax.mail.internet.AddressException e) {
             result = false;
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.util.Encoder;
 
@@ -48,7 +47,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -240,7 +239,6 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
      * @throws CmsException if there were errors while accessing project data
      */
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
         return new Boolean(CmsObject.getStaticExportProperties().isStaticExportEnabled() && isProMan);
     }
@@ -261,7 +259,6 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
      * @throws CmsException if there were errors while accessing project data
      */
     public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
-        CmsRequestContext reqCont = cms.getRequestContext();
         boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
         return new Boolean(CmsObject.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/01/20 17:57:48 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.Node;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.55 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.56 $ $Date: 2003/01/20 17:57:48 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -142,8 +142,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        byte[] content = new byte[0];
-        CmsFile contentFile = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         //get the current filelist
@@ -186,13 +184,8 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 try {
 
                     // create the content for the page file
-                    content = createPagefile(C_CLASSNAME, templatefile, C_VFS_PATH_BODIES
+                    createPagefile(C_CLASSNAME, templatefile, C_VFS_PATH_BODIES
                             + currentFilelist.substring(1, currentFilelist.length()) + newFile);
-
-                    // check if the nescessary folders for the content files are existing.
-
-                    // if not, create the missing folders.
-                    //checkFolders(cms, currentFilelist);
 
                     // create the page file
                     Hashtable prop = new Hashtable();

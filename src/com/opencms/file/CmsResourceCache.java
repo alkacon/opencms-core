@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceCache.java,v $
-* Date   : $Date: 2001/12/20 10:47:06 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This class is used to cache resources read from the File DB.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2001/12/20 10:47:06 $
+ * @version $Revision: 1.4 $ $Date: 2003/01/20 17:57:46 $
  */
 
 public class CmsResourceCache implements I_CmsConstants {
@@ -149,7 +149,6 @@ public class CmsResourceCache implements I_CmsConstants {
     private void removeLRU(Hashtable theCache) {
         long minTimestamp=-1;
         Object keyLRUObject = null;
-        int indexKeyLRU = C_UNKNOWN_ID;
         // get the keys of all cache objets
         Enumeration keys = theCache.keys();
         while (keys.hasMoreElements()) {

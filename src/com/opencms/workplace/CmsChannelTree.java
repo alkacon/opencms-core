@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.8 $ $Date: 2003/01/20 17:57:46 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -284,7 +284,6 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         String icon = null;
         String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
-        CmsResource iconFile;
 
         // check if this icon is in the cache already
         icon = (String)m_iconCache.get(type.getResourceTypeName());
@@ -294,7 +293,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
             try {
 
                 // read the icon file
-                iconFile = cms.readFileHeader(filename);
+                cms.readFileHeader(filename);
 
                 // add the icon to the cache
                 icon = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
@@ -323,7 +322,6 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
         String foldername = null;
         String filelist = null;
         String currentFolder;
-        String oldFolder;
         String currentFilelist;
         String rootFolder;
         String files = null;

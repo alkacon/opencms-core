@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/12/16 13:22:55 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/01/20 17:57:46 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.56 $ $Date: 2002/12/16 13:22:55 $
+ * @version $Revision: 1.57 $ $Date: 2003/01/20 17:57:46 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -668,7 +668,8 @@ public Vector deleteCheckDependencies(String modulename) throws CmsException {
             throw new CmsException("No access to perform the action 'exportModule'", CmsException.C_REGISTRY_ERROR);
         }
         // export the module using the standard export
-        CmsExport exp = new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
+        // CHECK: CmsExport exp = new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
+        new CmsExport(fileName, resources, m_cms, false, false, getModuleElement(moduleName), false, 0, report);
     }
     
     /**
@@ -1390,7 +1391,7 @@ public int getModulePublishables(Vector classes, String requiredMethod) {
                 }
                 if(methodValue.equals(requiredMethod)){
                     String name = ((Element) classList.item(x)).getElementsByTagName("name").item(0).getFirstChild().getNodeValue();
-                    classes.addElement(name);
+                    if ((name != null) && (! "".equals(name))) classes.addElement(name);
                 }
             } catch(Exception exc) {
                 // ignore the exception and try the next view-pair.
@@ -2227,7 +2228,6 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
  * @param String[] the reprositories of a module.
  */
 public void setModuleRepositories(String modulename, String[] repositories) throws CmsException {
-    String[] retValue = null;
     if (!hasAccess()) {
         throw new CmsException("No access to perform the action 'setModuleRepositories'", CmsException.C_REGISTRY_ERROR);
     }
