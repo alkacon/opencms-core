@@ -3,7 +3,7 @@ History of changes for the OpenCms project.
 Changes are chronologically ordered from top (most recent) to bottom (least recent).
 For more information about the OpenCms project, see the OpenCms website at http://www.opencms.com.
 
-Ledgend: 
+Legend: 
 ! New Feature
 * Bug fixed
 - General comment
