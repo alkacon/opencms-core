@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/12 12:33:33 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/13 16:11:48 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -590,7 +590,7 @@ import com.opencms.core.*;
 	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
-	 * <li>the user is owner of the resource</li>
+	 * <li>the user is owner of the resource or is admin</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 

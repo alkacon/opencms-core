@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/01/13 12:27:38 $
+ * @version $Revision: 1.21 $ $Date: 2000/01/13 16:11:48 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2062,6 +2062,259 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 	
+	/**
+	 * Copies a file in the Cms. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is cranted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the sourceresource</li>
+	 * <li>the user can create the destinationresource</li>
+	 * <li>the destinationresource dosn't exists</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path to the destination-folder.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void copyFile(A_CmsUser currentUser, A_CmsProject currentProject,
+                         String source, String destination)
+		throws CmsException {
+		
+		// read the source-file, to check readaccess
+		A_CmsResource file = readFileHeader(currentUser, currentProject, source);
+		
+		// TODO: write the metainfos!
+		
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  destination);
+		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - copy the file and the metainfos
+			m_fileRb.copyFile(currentProject, onlineProject(currentUser, currentProject), 
+							  source, destination + file.getName());
+			// TODO: copy the metainfos
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+    /**
+	 * Changes the flags for this resource.<br>
+	 * 
+	 * Only the flags of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change the flags, if he is admin of the resource <br>.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path to the resource.
+	 * @param flags The new accessflags for the resource.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void chmod(A_CmsUser currentUser, A_CmsProject currentProject,
+					  String filename, int flags)
+		throws CmsException {
+		
+		// read the resource to check the access
+		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, resource) ) {
+				
+			// write-acces  was granted - write the file.
+			m_fileRb.chmod(currentProject, onlineProject(currentUser, currentProject), 
+						   filename, flags );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * Changes the owner for this resource.<br>
+	 * 
+	 * Only the owner of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is cranted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user is owner of the resource or the user is admin</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path to the resource.
+	 * @param newOwner The name of the new owner for this resource.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void chown(A_CmsUser currentUser, A_CmsProject currentProject,
+					  String filename, String newOwner)
+		throws CmsException {
+		// read the new owner
+		
+		A_CmsUser owner = readUser(currentUser, currentProject, newOwner);
+		
+		// read the resource to check the access
+		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		
+		// has the user write-access? and is he owner or admin?
+		if( accessWrite(currentUser, currentProject, resource) &&
+			( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+				
+			// write-acces  was granted - write the file.
+			m_fileRb.chown(currentProject, onlineProject(currentUser, currentProject), 
+						   filename, owner );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+     /**
+	 * Changes the group for this resource<br>
+	 * 
+	 * Only the group of a resource in an offline project can be changed. The state
+	 * of the resource is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * The user may change this, if he is admin of the resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user is owner of the resource or is admin</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The complete path to the resource.
+	 * @param newGroup The name of the new group for this resource.
+	 * 
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void chgrp(A_CmsUser currentUser, A_CmsProject currentProject,
+                      String filename, String newGroup)
+		throws CmsException{
+		// read the new group
+		
+		A_CmsGroup group = readGroup(currentUser, currentProject, newGroup);
+		
+		// read the resource to check the access
+		A_CmsResource resource = m_fileRb.readFileHeader(currentProject, filename);
+		
+		// has the user write-access? and is he owner or admin?
+		if( accessWrite(currentUser, currentProject, resource) &&
+			( (resource.getOwnerId() == currentUser.getId()) || 
+			  isAdmin(currentUser, currentProject))) {
+				
+			// write-acces  was granted - write the file.
+			m_fileRb.chgrp(currentProject, onlineProject(currentUser, currentProject), 
+						   filename, group );
+		} else {
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	 /**
+	 * Returns a Vector with all files of a folder.<br>
+	 * 
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getFilesInFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+								   String foldername)
+		throws CmsException {
+
+		// get the folder to read from, to check access
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  foldername);
+
+		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// acces to all subfolders was granted - return the sub-folders.
+			// TODO: check the viewability for the resources!
+			return(m_fileRb.getFilesInFolder(currentProject, foldername) );
+		} else {
+			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
+		}
+	}
+	
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e. 
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 * 
+	 * The reading excludes the filecontent.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public Vector readAllFileHeaders(A_CmsUser currentUser, A_CmsProject currentProject, 
+									  String filename)
+         throws CmsException {
+		 A_CmsResource cmsFile = m_fileRb.readFileHeader(currentProject, filename);
+		 if( accessRead(currentUser, currentProject, cmsFile) ) {
+				
+			// acces to all subfolders was granted - return the file-history.
+			return(m_fileRb.readAllFileHeaders(filename));
+		} else {
+			throw new CmsException(filename, CmsException.C_NO_ACCESS);
+		}
+     }
+	 
 	/**
 	 * Checks, if the user may read this resource.
 	 * 

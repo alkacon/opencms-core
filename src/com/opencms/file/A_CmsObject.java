@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/01/13 12:27:37 $ 
+ * @version $Revision: 1.26 $ $Date: 2000/01/13 16:11:48 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -654,6 +654,22 @@ public abstract class A_CmsObject {
 	abstract public Vector getFilesInFolder(String foldername)
 		throws CmsException;
 
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e. 
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 * 
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 abstract public Vector readAllFileHeaders(String filename)
+		 throws CmsException;
+	 
 	/**
 	 * Tests if the user may write the resource.
 	 * 

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/13 12:27:38 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/13 16:11:48 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1168,6 +1168,113 @@ public class CmsShell implements I_CmsConstants {
 	public void deleteFile(String filename) {
 		try {
 			m_cms.deleteFile(filename);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Copies the file.
+	 * 
+	 * @param source The complete path of the sourcefile.
+	 * @param destination The complete path of the destinationfolder.
+	 * 
+	 * @exception CmsException will be thrown, if the file couldn't be copied. 
+	 * The CmsException will also be thrown, if the user has not the rights 
+	 * for this resource.
+	 */	
+	public void copyFile(String source, String destination) {
+		try {
+			m_cms.copyFile(source, destination);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Changes the flags for this resource<BR/>
+	 * 
+	 * The user may change the flags, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param flags The new flags for the resource.
+	 */
+	public void chmod(String filename, String flags) {
+		try {
+			m_cms.chmod(filename, Integer.parseInt(flags));
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Changes the owner for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param newOwner The name of the new owner for this resource.
+	 */
+	public void chown(String filename, String newOwner) {
+		try {
+			m_cms.chown(filename, newOwner);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Changes the group for this resource<BR/>
+	 * 
+	 * The user may change this, if he is admin of the resource.
+	 * 
+	 * @param filename The complete path to the resource.
+	 * @param newGroup The new of the new group for this resource.
+	 */
+	public void chgrp(String filename, String newGroup) {
+		try {
+			m_cms.chgrp(filename, newGroup);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns a Vector with all subfiles.<BR/>
+	 * 
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource.
+	 */
+	public void getFilesInFolder(String foldername) {
+		try {
+			Vector files = m_cms.getFilesInFolder(foldername);
+			for( int i = 0; i < files.size(); i++ ) {
+				System.out.println( (CmsFile)files.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e. 
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 * 
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The name of the file to be read.
+	 */
+	public void readAllFileHeaders(String filename) {
+		try {
+			Vector files = m_cms.readAllFileHeaders(filename);
+			for( int i = 0; i < files.size(); i++ ) {
+				System.out.println( (A_CmsResource)files.elementAt(i) );
+			}
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}

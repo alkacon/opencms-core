@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/01/13 12:27:37 $ 
+ * @version $Revision: 1.22 $ $Date: 2000/01/13 16:11:48 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -497,17 +497,16 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * Copies the file.
 	 * 
 	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
+	 * @param destination The complete path of the destinationfolder.
 	 * 
 	 * @exception CmsException will be thrown, if the file couldn't be copied. 
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
 	 */	
 	public void copyFile(String source, String destination)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.copyFile(m_context.currentUser(), m_context.currentProject(), 
+					  source, destination);
 	}
 	
 	/**
@@ -777,9 +776,30 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getFilesInFolder(String foldername)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(),
+									  foldername) );
 	}
 
+     /**
+	 * Reads all file headers of a file in the OpenCms.<BR>
+	 * This method returns a vector with the histroy of all file headers, i.e. 
+	 * the file headers of a file, independent of the project they were attached to.<br>
+	 * 
+	 * The reading excludes the filecontent.
+	 * 
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return Vector of file headers read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	 public Vector readAllFileHeaders(String filename)
+		 throws CmsException {
+		 return( c_rb.readAllFileHeaders(m_context.currentUser(), 
+										 m_context.currentProject(),
+										 filename) );
+	 }
+	 
 	/**
 	 * Tests if the user may write the resource.
 	 * 
@@ -815,7 +835,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void chmod(String filename, int flags)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.chmod(m_context.currentUser(), m_context.currentProject(), 
+				   filename, flags );
 	}
 	
 	/**
@@ -831,7 +852,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void chown(String filename, String newOwner)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.chown(m_context.currentUser(), m_context.currentProject(), 
+				   filename, newOwner );
 	}
 
 	/**
@@ -847,7 +869,8 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public void chgrp(String filename, String newGroup)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.chgrp(m_context.currentUser(), m_context.currentProject(), 
+				   filename, newGroup );
 	}
 
 	/**
