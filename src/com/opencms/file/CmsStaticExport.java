@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2003/07/16 16:25:27 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/07/18 12:44:46 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.47 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.48 $ $Date: 2003/07/18 12:44:46 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -616,7 +616,7 @@ public class CmsStaticExport implements I_CmsConstants{
             
             int launcherId = file.getLauncherType();
             String startTemplateClass = file.getLauncherClassname();
-            I_CmsLauncher launcher = cmsForStaticExport.getLauncherManager().getLauncher(launcherId);
+            I_CmsLauncher launcher = A_OpenCms.getLoaderManager().getLauncher(launcherId);
             if(launcher == null){
                 throw new CmsException("Could not launch file " + link + ". Launcher for requested launcher ID "
                             + launcherId + " could not be found.");

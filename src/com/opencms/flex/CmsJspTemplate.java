@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2003/07/14 20:12:40 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/18 12:44:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
  
 package com.opencms.flex;
 
+import org.opencms.loader.CmsJspLoader;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
@@ -47,7 +49,7 @@ import java.util.Hashtable;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.0 beta 1
  */
 public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
@@ -81,7 +83,7 @@ public class CmsJspTemplate extends com.opencms.template.CmsDumpTemplate {
         try {
             CmsFile file = cms.readFile(jspFile);
             int type = file.getLauncherType();
-            org.opencms.loader.CmsJspLoader loader = (org.opencms.loader.CmsJspLoader)cms.getLauncherManager().getLauncher(type);
+            org.opencms.loader.CmsJspLoader loader = (CmsJspLoader)A_OpenCms.getLoaderManager().getLauncher(type);
             s = loader.loadTemplate(cms, file);
         } catch (java.lang.ClassCastException e) {
             throw new CmsException("[CmsJspTemplate] " + jspFile + " is not a JSP");

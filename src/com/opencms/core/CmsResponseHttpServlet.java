@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2003/03/19 08:43:10 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/07/18 12:44:46 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.29 $ $Date: 2003/03/19 08:43:10 $
+ * @version $Revision: 1.30 $ $Date: 2003/07/18 12:44:46 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -53,9 +53,6 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
 
     /** The original wrapped request. */
     private HttpServletRequest m_req;
-
-    /** The clusterurl. */
-    private String m_clusterurl = null;
 
     /** The type of this CmsResponset. */
     private int m_type = I_CmsConstants.C_RESPONSE_HTTP;
@@ -80,12 +77,10 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      *
      * @param req The original HttpServletRequest used to create this CmsRequest.
      * @param res The original HttpServletResponse used to create this CmsResponse.
-     * @param clusterurl The clusterurl.
      */
-    CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res, String clusterurl) {
+    CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res) {
         m_res = res;
         m_req = req;
-        m_clusterurl = clusterurl;
         // write OpenCms server identification in the response header
         m_res.setHeader("Server", "OpenCms/" + A_OpenCms.getVersionNumber());
     }
@@ -183,13 +178,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
      */
     public void sendCmsRedirect(String location) throws IOException {
         if (DEBUG) System.err.println("CmsResponse.sendCmsRedirect(" + location + ")");          
-        String hostName;
-        if((m_clusterurl == null) || (m_clusterurl.length() < 1)) {                      
-            hostName = m_req.getScheme() + "://" + m_req.getServerName() + ":" + m_req.getServerPort();
-        }
-        else {
-            hostName = m_req.getScheme() + "://" + m_clusterurl;
-        }
+        String hostName = m_req.getScheme() + "://" + m_req.getServerName() + ":" + m_req.getServerPort();
         m_redir = true;
         String servlet = m_req.getServletPath();
         String contextPath = "";

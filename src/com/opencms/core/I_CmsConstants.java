@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/18 08:22:42 $
-* Version: $Revision: 1.246 $
+* Date   : $Date: 2003/07/18 12:44:46 $
+* Version: $Revision: 1.247 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.246 $ $Date: 2003/07/18 08:22:42 $
+ * @version $Revision: 1.247 $ $Date: 2003/07/18 12:44:46 $
  */
 public interface I_CmsConstants {
 
@@ -975,7 +975,7 @@ public interface I_CmsConstants {
     /**
      * The version of the opencms export (appears in the export manifest-file).
      */
-    String C_EXPORT_VERSION = "3";
+    String C_EXPORT_VERSION = "2";
 
     /**
      * A tag in the export manifest-file.
@@ -1182,7 +1182,6 @@ public interface I_CmsConstants {
      */
     String C_EXPORT_TAG_UUIDRESOURCE = "uuidresource";
     
-
     /**
      * Tag to identify a generic id
      */
@@ -1216,16 +1215,6 @@ public interface I_CmsConstants {
     /**
      * A string in the configuration-file.
      */
-    String C_CONFIGURATIONS_POOL = "pool";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_CONFIGURATIONS_ACCESS = "access";
-
-    /**
-     * A string in the configuration-file.
-     */
     String C_CONFIGURATION_DB = "db";
 
     /**
@@ -1241,18 +1230,8 @@ public interface I_CmsConstants {
     /**
      * A string in the configuration-file.
      */
-    String C_CONFIGURATION_CLASS = "class";
-
-    /**
-     * A string in the configuration-file.
-     */
     String C_CONFIGURATION_REGISTRY = "registry";
-
-    /**
-     * A string in the configuration-file.
-     */
-    String C_CLUSTERURL = "clusterurl";
-
+    
     /**
      * wasLoggedIn
      */

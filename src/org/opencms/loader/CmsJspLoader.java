@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/07/15 08:43:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/18 12:44:46 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -147,7 +147,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
      * To initilize the fields in this class, the <code>setOpenCms()</code>
      * method will be called by the launcher.
      * 
-     * @see com.opencms.launcher.CmsLauncherManager
+     * @see org.opencms.loader.CmsLoaderManager
      * @see #setOpenCms(A_OpenCms openCms)
      */
     public CmsJspLoader() {
@@ -514,7 +514,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
     throws ServletException, IOException {       
 
-        long timer1 = 0;
+        long timer1;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
             System.err.println("========== JspLoader loading: " + cms.readAbsolutePath(file));

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.28 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
+ * Date   : $Date: 2003/07/18 12:44:46 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,11 +29,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.launcher;
+package org.opencms.loader;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.launcher.I_CmsLauncher;
 
 import java.util.Iterator;
 import java.util.List;
@@ -45,20 +46,20 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.1 $
  * @since 5.1
  */
-public class CmsLauncherManager {
+public class CmsLoaderManager {
 
     private I_CmsLauncher[] m_loaders;
 
     /**
      * Collects all available resource loaders from the registry at startup.<p>
      * 
-     * @param cms
+     * @param openCms the initialized OpenCms object
      * @throws CmsException if something goes wrong
      */
-    public CmsLauncherManager(A_OpenCms openCms) throws CmsException {
+    public CmsLoaderManager(A_OpenCms openCms) throws CmsException {
         List loaders = A_OpenCms.getRegistry().getResourceLoaders();
 
         if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
@@ -81,8 +82,8 @@ public class CmsLauncherManager {
                 // loader class not found, ignore class
                 if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
                     String errorMessage = "Error while initializing loader \"" + loaderName + "\". Ignoring.";
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsLauncherManager] " + errorMessage);
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsLauncherManager] " + e);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsLoaderManager] " + errorMessage);
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[CmsLoaderManager] " + e);
                 }
             }
         }
@@ -91,6 +92,7 @@ public class CmsLauncherManager {
     /**
      * Returns the loader class instance for the given loader id.<p>
      * 
+     * @param launcherId the id of the launcher to return
      * @return the loader class instance for the given loader id
      */
     public I_CmsLauncher getLauncher(int launcherId) {

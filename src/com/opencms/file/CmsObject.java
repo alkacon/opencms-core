@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/18 09:30:51 $
-* Version: $Revision: 1.332 $
+* Date   : $Date: 2003/07/18 12:44:46 $
+* Version: $Revision: 1.333 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.*;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.launcher.CmsLauncherManager;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
@@ -71,19 +70,12 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.332 $
+ * @version $Revision: 1.333 $
  */
 public class CmsObject extends Object {
 
     /** Internal debug flag, set to 9 for maximum verbosity */
     private static final int DEBUG = 0;
-
-    /**
-     * Returns the properties for the static export.
-     */
-    public static CmsStaticExportProperties getStaticExportProperties() {
-        return OpenCms.getStaticExportProperties();
-    }
 
     /**
      * The request context.
@@ -94,12 +86,6 @@ public class CmsObject extends Object {
      * The driver manager to access the cms.
      */
     private CmsDriverManager m_driverManager;
-
-    /**
-     * The launcher manager used with this object,
-     * Is needed to clear the template caches.
-     */
-    private CmsLauncherManager m_launcherManager;
 
     /**
      * The class for linkmanagement.
@@ -120,9 +106,53 @@ public class CmsObject extends Object {
      * The default constructor.
      */
     public CmsObject() {
-        super();
     }
 
+    /**
+     * Initializes the CmsObject without a request-context (current-user,
+     * current-group, current-project).
+     *
+     * @param driverManager the driver manager to access the database.
+     * @throws CmsException if operation was not successful.
+     */
+    public void init(CmsDriverManager driverManager) throws CmsException {
+        m_driverManager = driverManager;
+    }
+
+    /**
+     * Initializes the CmsObject for each request.
+     *
+     * @param driverManager the driver manager to access the database.
+     * @param req the CmsRequest.
+     * @param resp the CmsResponse.
+     * @param user the current user for this request.
+     * @param currentGroup the current group for this request.
+     * @param currentProjectId the current projectId for this request.
+     * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
+     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
+     * @param directoryTranslator Translator for directories (file with full path)
+     * @param fileTranslator Translator for new file names (without path)
+     * @throws CmsException if operation was not successful.
+     */
+    public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
+        m_sessionStorage = sessionStorage;
+        m_driverManager = driverManager;
+        m_context = new CmsRequestContext();
+        m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, currentSite, streaming, elementCache, directoryTranslator, fileTranslator);
+        try {
+            m_linkChecker = new LinkChecker();
+        } catch (java.lang.NoClassDefFoundError error) {
+            // ignore this error - no substitution is needed here
+        }
+    }
+    
+    /**
+     * Returns the properties for the static export.
+     */
+    public static CmsStaticExportProperties getStaticExportProperties() {
+        return OpenCms.getStaticExportProperties();
+    }
+    
     /**
      * Accept a task from the Cms.
      *
@@ -1794,7 +1824,6 @@ public class CmsObject extends Object {
 
         CmsObject cmsForStaticExport = new CmsObject();
         cmsForStaticExport.init(m_driverManager, dReq, dRes, I_CmsConstants.C_USER_GUEST, I_CmsConstants.C_GROUP_GUEST, I_CmsConstants.C_PROJECT_ONLINE_ID, getRequestContext().getSiteRoot(), false, new CmsElementCache(), null, m_context.getDirectoryTranslator(), m_context.getFileTranslator());
-        cmsForStaticExport.setLauncherManager(getLauncherManager());
         return cmsForStaticExport;
     }
 
@@ -1933,13 +1962,6 @@ public class CmsObject extends Object {
      */
     public Vector getGroupsOfUser(String username) throws CmsException {
         return (m_driverManager.getGroupsOfUser(m_context, username));
-    }
-    /**
-     * Get the launcher manager used with this instance of CmsObject.
-     * @return com.opencms.launcher.CmsLauncherManager
-     */
-    public com.opencms.launcher.CmsLauncherManager getLauncherManager() {
-        return m_launcherManager;
     }
 
     /**
@@ -2475,44 +2497,6 @@ public class CmsObject extends Object {
         m_driverManager.importResources(this, m_context, importFile, importPath, report);
 
         clearcache();
-    }
-
-    /**
-     * Initializes the CmsObject without a request-context (current-user,
-     * current-group, current-project).
-     *
-     * @param driverManager the driver manager to access the database.
-     * @throws CmsException if operation was not successful.
-     */
-    public void init(CmsDriverManager driverManager) throws CmsException {
-        m_driverManager = driverManager;
-    }
-
-    /**
-     * Initializes the CmsObject for each request.
-     *
-     * @param driverManager the driver manager to access the database.
-     * @param req the CmsRequest.
-     * @param resp the CmsResponse.
-     * @param user the current user for this request.
-     * @param currentGroup the current group for this request.
-     * @param currentProjectId the current projectId for this request.
-     * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
-     * @param elementCache Starting point for the element cache or <code>null</code> if the element cache should be disabled.
-     * @param directoryTranslator Translator for directories (file with full path)
-     * @param fileTranslator Translator for new file names (without path)
-     * @throws CmsException if operation was not successful.
-     */
-    public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, String currentSite, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator directoryTranslator, CmsResourceTranslator fileTranslator) throws CmsException {
-        m_sessionStorage = sessionStorage;
-        m_driverManager = driverManager;
-        m_context = new CmsRequestContext();
-        m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, currentSite, streaming, elementCache, directoryTranslator, fileTranslator);
-        try {
-            m_linkChecker = new LinkChecker();
-        } catch (java.lang.NoClassDefFoundError error) {
-            // ignore this error - no substitution is needed here
-        }
     }
 
     /**
@@ -4084,13 +4068,6 @@ public class CmsObject extends Object {
      */
     public void setContextToVfs() {
         getRequestContext().setSiteRoot(I_CmsConstants.C_VFS_DEFAULT);
-    }
-    /**
-     * Set the launcher manager used with this instance of CmsObject.
-     * @param newM_launcherManager com.opencms.launcher.CmsLauncherManager
-     */
-    public void setLauncherManager(com.opencms.launcher.CmsLauncherManager launcherManager) {
-        m_launcherManager = launcherManager;
     }
 
     /**
