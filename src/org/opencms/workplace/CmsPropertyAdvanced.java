@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/07 09:22:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/08 14:46:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1
  */
@@ -934,7 +934,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 newValue = newProperty.getResourceValue();
 
                 // write the resource value if the existing resource value is not null and we want to delete the resource value
-                writeResourceValue = (oldValue != null && newProperty.deleteStructureValue());
+                writeResourceValue = (oldValue != null && newProperty.deleteResourceValue());
                 // or if we want to write a value which is neither the delete value or an empty value
                 writeResourceValue |= !newValue.equals(oldValue) && !"".equalsIgnoreCase(newValue) && !CmsProperty.C_DELETE_VALUE.equalsIgnoreCase(newValue);
                 // set the resource value explicitly to null to leave it as is in the database
