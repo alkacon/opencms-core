@@ -10,7 +10,7 @@
 	<%@ include file="gallery.js" %>
 </head>
 <body class="buttons-head" unselectable="on">
-<form class="nomargin" name="form" action="gallery_buttonbar.jsp" onSubmit="return editProperty('<%=wp.getParamResourcePath()%>');">
+<form class="nomargin" name="form" action="gallery_buttonbar.jsp" onSubmit="return editProperty('<%=wp.getParamResourcePath()%>');" method="post">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.DIALOG_EDITPROPERTY %>">
 <input type="hidden" name="<%= wp.PARAM_GALLERYPATH %>" value="<%= wp.getParamGalleryPath() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCEPATH %>" value="<%= wp.getParamResourcePath() %>">

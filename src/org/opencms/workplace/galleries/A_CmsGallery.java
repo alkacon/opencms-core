@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/10 15:06:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.5.2
  */
@@ -423,7 +423,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                     result.append("\t<td class=\"");
                     result.append(tdClass);
                     result.append("\">");
-                    result.append(title);
+                    result.append(CmsEncoder.escapeXml(title));
                     result.append("</td>\n");
                     // display the link URL for link gallery
 
@@ -1194,14 +1194,14 @@ public abstract class A_CmsGallery extends CmsDialog {
      */
     protected String getPropertyValue(CmsResource resource, String propertydefinition) {
 
-        String title = "";
+        String value = "";
         if (resource != null) {
             String resPath = getCms().getSitePath(resource);
             String resName = CmsResource.getName(resPath);
             try {
-                CmsProperty titleProperty = getCms().readPropertyObject(resPath, propertydefinition, false);
+                CmsProperty property = getCms().readPropertyObject(resPath, propertydefinition, false);
                 // get property value
-                title = titleProperty.getValue("[" + resName + "]");
+                value = property.getValue("[" + resName + "]");
             } catch (CmsException e) {
                 // error reading property object
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1209,7 +1209,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 }
             }
         }
-        return title;
+        return value;
     }
 
     /**
