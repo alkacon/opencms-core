@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/01/07 15:27:00 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.flex.jsp;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.jsp.CmsJspTagEditable;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.jsp.CmsJspTagInfo;
 import org.opencms.jsp.CmsJspTagLabel;
@@ -87,7 +88,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 5.0 beta 2
  */
@@ -160,6 +161,35 @@ public class CmsJspActionElement {
         m_response = res;
         m_notInitialized = false;
     }    
+
+    /**
+     * Includes edit area scriptlets, same as 
+     * using the <code>&lt;cms:editable /&gt;</code> tag.<p>
+     * 
+     * @param isEditable include scriptlets only if true
+     * @throws JspException if something goes wrong
+     */
+    public void editable(boolean isEditable) throws JspException {
+        
+        if (isEditable) {
+            CmsJspTagEditable.editableTagAction(m_context, null, m_request, m_response);
+        }
+    }
+    
+    /**
+     * Includes edit area scriptlets, same as
+     * using the <code>&lt;cms:editable file="..." /&gt;</code>tag.<p>
+     * 
+     * @param isEditable include scriptlets only if true
+     * @param filename file with scriptlets
+     * @throws JspException if something goes wrong
+     */
+    public void editable(boolean isEditable, String filename) throws JspException {
+    
+        if (isEditable) {
+            CmsJspTagEditable.editableTagAction(m_context, filename, m_request, m_response);
+        }
+    }
     
     /**
      * Returns <code>true</code> if Exceptions are handled by the class instace, or
@@ -280,6 +310,37 @@ public class CmsJspActionElement {
     }
 
     /**
+     * Include a named sub-element without paramters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag.
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if element is editable
+     * @throws JspException in case there were problems including the target
+     *
+     * @see org.opencms.jsp.CmsJspTagInclude
+     */    
+    public void include(String target, String element, boolean editable) throws JspException {
+        this.include(target, element, editable, null);
+    }
+    
+    /**
+     * Include a named sub-element with paramters from the OpenCms VFS, same as
+     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
+     * with parameters in the tag body.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param parameterMap a map of the request parameters
+     * @throws JspException in case there were problems including the target
+     * 
+     * @see org.opencms.jsp.CmsJspTagInclude
+     */
+    public void include(String target, String element, Map parameterMap) throws JspException {
+        this.include(target, element, false, parameterMap);
+    }
+    
+    /**
      * Include a named sub-element with paramters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
      * with parameters in the tag body.<p>
@@ -298,12 +359,13 @@ public class CmsJspActionElement {
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if element is editable
      * @param parameterMap a map of the request parameters
      * @throws JspException in case there were problems including the target
      * 
      * @see org.opencms.jsp.CmsJspTagInclude
      */
-    public void include(String target, String element, Map parameterMap) throws JspException {
+    public void include(String target, String element, boolean editable, Map parameterMap) throws JspException {
         if (m_notInitialized) {
             return;
         }
@@ -330,7 +392,7 @@ public class CmsJspActionElement {
                 // parameter map is immutable, just use it "as is"
             }
         }
-        CmsJspTagInclude.includeTagAction(m_context, target, element, parameterMap, m_request, m_response);
+        CmsJspTagInclude.includeTagAction(m_context, target, element, editable, parameterMap, m_request, m_response);
     }
     
     /**
@@ -351,7 +413,27 @@ public class CmsJspActionElement {
             // ignore
         }
     }  
-        
+
+    /**
+     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * otherwise the same as using {@link #include(String, String, Map null)}.<p>
+     * 
+     * This is a convenience method that allows to include elements on a page without checking 
+     * if they exist or not. If the target element does not exist, nothing is printed to 
+     * the JSP output.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if element is editable
+     */
+    public void includeSilent(String target, String element, boolean editable) {
+        try {
+            include(target, element, editable, null);
+        } catch (Throwable t) {
+            // ignore
+        }
+    } 
+    
     /**
      * Includes a named sub-element supressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
@@ -371,6 +453,27 @@ public class CmsJspActionElement {
             // ignore
         }
     }    
+
+    /**
+     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * otherwise the same as using {@link #include(String, String, Map)}.<p>
+     * 
+     * This is a convenience method that allows to include elements on a page without checking 
+     * if they exist or not. If the target element does not exist, nothing is printed to 
+     * the JSP output.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param element the element (template selector) to display from the target
+     * @param editable flag to indicate if element is editable
+     * @param parameterMap a map of the request parameters
+     */
+    public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
+        try {
+            include(target, element, editable, parameterMap);
+        } catch (Throwable t) {
+            // ignore
+        }
+    } 
     
     /**
      * Converts a relative URI in the OpenCms VFS to an absolute one based on 

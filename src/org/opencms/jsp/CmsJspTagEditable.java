@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2004/01/06 16:40:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/01/07 15:27:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2004/01/06 16:40:45 $
+ * @version $Revision: 1.3 $ $Date: 2004/01/07 15:27:00 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsJspTagEditable extends BodyTagSupport {
@@ -150,7 +150,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
             
-            editableTagAction(pageContext, m_file != null ? m_file : I_CmsEditorActionHandler.C_EDITAREA_DEFAULTS, req, res);
+            editableTagAction(pageContext, m_file, req, res);
 
             release();
         }
@@ -181,12 +181,16 @@ public class CmsJspTagEditable extends BodyTagSupport {
         try {
             CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME); 
             
-            if (controller.getCmsObject().getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
-                context.setAttribute(I_CmsEditorActionHandler.C_EDIT_AREA, filename);
+            if (filename == null) {
+                filename = I_CmsEditorActionHandler.C_EDITAREA_DEFAULTS;
             }
             
-            CmsJspTagInclude.includeTagAction(context, filename, I_CmsEditorActionHandler.C_EDITAREA_INCLUDES, null, req, res);
-        
+            if (controller.getCmsObject().getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                context.setAttribute(I_CmsEditorActionHandler.C_EDIT_AREA, filename);
+            
+                CmsJspTagInclude.includeTagAction(context, filename, I_CmsEditorActionHandler.C_EDITAREA_INCLUDES, null, req, res);
+            }
+            
         } catch (Exception exc) {
             // never thrown
             if (res != null) {
