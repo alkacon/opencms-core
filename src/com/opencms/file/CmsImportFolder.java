@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
- * Date   : $Date: 2001/03/28 15:06:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/03/29 08:23:36 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2001/03/28 15:06:40 $
+ * @version $Revision: 1.5 $ $Date: 2001/03/29 08:23:36 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -98,11 +98,11 @@ public class CmsImportFolder implements I_CmsConstants {
 			m_cms.lockResource(m_importPath);
 
 			// import the resources
-            if( m_zipStreamIn == null) {
+            //if( m_zipStreamIn == null) {
 			    importResources(m_importResource, m_importPath);
-            } else {
+            //} else {
                 importZipResource(m_zipStreamIn, m_importPath, false);
-            }
+            //}
 
 			// all is done, unlock the resources
 			m_cms.unlockResource(m_importPath);
@@ -121,8 +121,13 @@ public class CmsImportFolder implements I_CmsConstants {
 	public CmsImportFolder(byte[] content, String importPath, CmsObject cms,
                             boolean noSubFolder) throws CmsException {
 
-            m_importPath = importPath;
-			m_cms = cms;
+        m_importPath = importPath;
+        m_cms = cms;
+
+        // check if user is allowed to write to the folder ...
+        if( m_cms.accessWrite(importPath) == false) {
+            throw new CmsException(CmsException.C_NO_ACCESS);
+        }
 
         try {
 			// open the import resource
