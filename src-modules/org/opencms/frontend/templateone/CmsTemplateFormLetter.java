@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/03/02 14:59:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/04 17:12:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the page "letter to the editor" form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTemplateFormLetter extends CmsTemplateForm {
     
@@ -300,7 +300,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
      * @return true if the emails were successfully sent, otherwise false;
      */
     public boolean sendMail() {
-
+        
         // create the new mail message
         CmsHtmlMail theMail = new CmsHtmlMail();
         theMail.setSubject(key("letter.mail.subject.prefix") + getPageTitle());

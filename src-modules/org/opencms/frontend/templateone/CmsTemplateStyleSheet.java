@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/04 17:12:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the dynamic CSS style sheet of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
     
@@ -162,6 +162,11 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         // call initialization of super class
         super.init(context, req, res);
+        // set site root
+        String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
+        if (CmsStringUtil.isNotEmpty(siteRoot)) {
+            getRequestContext().setSiteRoot(siteRoot);
+        }
         // set resource path
         m_resPath = req.getParameter(CmsTemplateNavigation.C_PARAM_RESPATH);
     

@@ -18,7 +18,7 @@ if (cms.template("popuphead")) {
 <html lang="<%= locale %>">
 <head>
 	<title><%= title %></title>
-	<link href="<%= styleSheetUri %>?respath=<%=resourcePath %>&uri=<%= uri %>&__locale=<%= locale %>" rel="stylesheet" type="text/css">
+	<link href="<%= styleSheetUri %>?respath=<%=resourcePath %>&uri=<%= uri %>&site=<%= cms.getRequestContext().getSiteRoot() %>&__locale=<%= locale %>" rel="stylesheet" type="text/css">
 	<script type="text/javascript">
 	<!--
     function showFile(filename) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateImprint.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/03/04 17:12:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the imprint popup information of the pages of template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTemplateImprint extends CmsTemplateBean {
     
@@ -222,6 +222,11 @@ public class CmsTemplateImprint extends CmsTemplateBean {
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         // call initialization of super class
         super.init(context, req, res);
+        // set site root
+        String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
+        if (CmsStringUtil.isNotEmpty(siteRoot)) {
+            getRequestContext().setSiteRoot(siteRoot);
+        }
         // set uri to file that opened the imprint window
         String oldUri = getRequestContext().getUri();
         String uri = req.getParameter(CmsTemplateBean.C_PARAM_URI);

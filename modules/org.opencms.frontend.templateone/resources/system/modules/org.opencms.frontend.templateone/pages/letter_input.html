@@ -29,6 +29,7 @@ cms.includePopup("popuphead", cms.key("letter.title"), cms.getPageUri(true));
 		<input type="hidden" name="<%= CmsTemplateForm.C_PARAM_ACTION %>" value="submit">
 		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
 		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
+		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_SITE %>" value="<%= cms.getRequestContext().getSiteRoot() %>">
 
 		<p style="padding: 2px;">
 		<%= cms.key("letter.form.concern.title") %>*<br />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/03/02 14:59:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/03/04 17:12:56 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -112,6 +112,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Request parameter name for the uri.<p> */
     public static final String C_PARAM_URI = "uri";
+    
+    /** Request parameter name for the site.<p> */
+    public static final String C_PARAM_SITE = "site";
 
     /** Name of the property key to set the configuration path for the template.<p> */
     public static final String C_PROPERTY_CONFIGPATH = "style_main_configpath";

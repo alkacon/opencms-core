@@ -989,7 +989,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[element;locale;params=(uri)]]></value>
+					<value><![CDATA[element;locale;params=(uri,site)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -1106,10 +1106,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>cache</name>
-					<value><![CDATA[params=(uri,resourcepath,__element)]]></value>
-				</property>
-				<property>
 					<name>Title</name>
 					<value><![CDATA[Letter email parts]]></value>
 				</property>
@@ -1133,7 +1129,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(title,resourcepath,stylesheeturi,uri);locale;element]]></value>
+					<value><![CDATA[params=(title,resourcepath,stylesheeturi,uri,site);locale;element]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1244,10 +1240,6 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[params=(uri,resourcepath,__element)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1444,7 +1436,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(uri)]]></value>
+					<value><![CDATA[params=(respath,site,uri,__locale)]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1462,7 +1454,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(uri)]]></value>
+					<value><![CDATA[params=(respath,site,uri,__locale)]]></value>
 				</property>
 				<property>
 					<name>export</name>
