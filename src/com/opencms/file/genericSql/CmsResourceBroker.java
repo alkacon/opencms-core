@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/23 13:18:54 $
- * Version: $Revision: 1.254 $
+ * Date   : $Date: 2001/07/24 12:14:00 $
+ * Version: $Revision: 1.255 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.254 $ $Date: 2001/07/23 13:18:54 $
+ * @version $Revision: 1.255 $ $Date: 2001/07/24 12:14:00 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1424,13 +1424,10 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
         validFilename(destination.replace('/', 'a'));
 
         foldername = destination.substring(0, destination.substring(0,destination.length()-1).lastIndexOf("/")+1);
-
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, foldername);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-
             // write-acces  was granted - copy the folder and the properties
             CmsFolder folder=readFolder(currentUser,currentProject,source);
-
             m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
 
             // copy the properties
@@ -2222,6 +2219,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
     public void deleteProject(CmsUser currentUser, CmsProject currentProject,
                               int id)
         throws CmsException {
+        Vector deletedFolders = new Vector();
         // read the project that should be deleted.
         CmsProject deleteProject = readProject(currentUser, currentProject, id);
 
@@ -2260,8 +2258,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 if(currentFolder.getState() == C_STATE_NEW){
                     // delete the properties
 		            m_dbAccess.deleteAllProperties(id, currentFolder.getResourceId());
-		            // delete the folder
-		            m_dbAccess.deleteFolder(deleteProject, currentFolder, true);
+		            // add the folder to the vector of folders that has to be deleted
+                    deletedFolders.addElement(currentFolder);
                 } else if (currentFolder.getState() == C_STATE_CHANGED){
                     if(!currentFolder.isLocked()){
                         // lock the resource
@@ -2279,6 +2277,11 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                     // then undo all changes in the folder
                     undoChanges(currentUser, deleteProject, currentFolder.getAbsolutePath());
                 }
+            }
+            // now delete the folders in the vector
+            for (int i = deletedFolders.size() - 1; i > -1; i--){
+			    CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
+                m_dbAccess.deleteFolder(deleteProject, delFolder, true);
             }
             // unlock all resources in the project
             m_dbAccess.unlockProject(deleteProject);
@@ -3896,7 +3899,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 
         CmsResource  cmsResource=null;
 
-        // read the resource, that shold be locked
+        // read the resource, that should be locked
         if (resourcename.endsWith("/")) {
               cmsResource = (CmsFolder)readFolder(currentUser,currentProject,resourcename);
              } else {
@@ -3911,10 +3914,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // the resource is not in the current project and can't be locked - so ignore.
             return;
         }
-
         // check, if the user may lock the resource
         if( accessLock(currentUser, currentProject, cmsResource) ) {
-
             if(cmsResource.isLocked()) {
                 // if the force switch is not set, throw an exception
                 if (force==false) {
@@ -3922,11 +3923,11 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 }
             }
 
-            // lock the resouece
+            // lock the resource
             cmsResource.setLocked(currentUser.getId());
             cmsResource.setLockedInProject(currentProject.getId());
             //update resource
-            m_dbAccess.updateLockstate(cmsResource);
+            m_dbAccess.updateLockstate(cmsResource, currentProject.getId());
 
             // update the cache
             if (resourcename.endsWith("/")) {
@@ -3935,7 +3936,6 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);
             }
             m_subresCache.clear();
-
 
             // if this resource is a folder -> lock all subresources, too
             if(cmsResource.isFolder()) {
@@ -6422,14 +6422,12 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 cmsResource.setLocked(C_UNKNOWN_ID);
 
                 //update resource
-                m_dbAccess.updateLockstate(cmsResource);
+                m_dbAccess.updateLockstate(cmsResource, cmsResource.getLockedInProject());
 
                 if (resourcename.endsWith("/")) {
-                    //m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
                     // update the cache
                     m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);
                 } else {
-                    //m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
                     // update the cache
                     m_resourceCache.put(C_FILE+currentProject.getId()+resourcename,(CmsFile)cmsResource);
                 }
