@@ -172,6 +172,9 @@ function addFolder(theList, item1, item2, item3) {
 		var item = item1+"  Version:"+item2+" - "+item3;
 		newOption = new Option(item, item, false, false); 
 		theList.options[theList.length] = newOption;
+		document.MODEXP.ABHV.value="";
+		document.MODEXP.MIN.value="";
+		document.MODEXP.MAX.value="*";
 	}
 }
 
