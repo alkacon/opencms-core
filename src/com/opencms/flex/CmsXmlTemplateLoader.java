@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2002/10/30 10:27:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2002/11/07 05:17:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 
 import com.opencms.flex.cache.*;
+import com.opencms.launcher.CmsXmlLauncher;
 
 import java.io.IOException;
 
@@ -43,15 +44,21 @@ import javax.servlet.http.HttpServletRequest;
 
 
 /**
- * Implementation of the {@link I_CmsResourceLoader} interface for 
- * XMLTemplates, used to include XMLTemplates as sub-elements on a JSP page.
+ * Implementation of the {@link I_CmsResourceLoader} and 
+ * the {@link com.opencms.launcher.I_CmsLauncher} interface for 
+ * XMLTemplates.<p>
+ * 
+ * This implementation can deliver XMLTemplates directly since it extends
+ * the {@link com.opencms.launcher.CmsXmlLauncher}. It is also usable to include 
+ * XMLTemplates as sub-elements on a JSP page since it implements the
+ * {@link I_CmsResourceLoader} interface. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since FLEX alpha 1
  */
-public class CmsXmlTemplateLoader extends com.opencms.launcher.CmsXmlLauncher implements I_CmsResourceLoader {
+public class CmsXmlTemplateLoader extends CmsXmlLauncher implements I_CmsResourceLoader {
     
     /** The CmsFlexCache used to store generated cache entries in */
     private static CmsFlexCache m_cache;
