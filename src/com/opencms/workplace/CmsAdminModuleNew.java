@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2004/07/08 15:21:12 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // get the registry
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String errorNavigation = (String)parameters.get(C_FROMERRORPAGE);
         if(errorNavigation != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/07/08 13:52:47 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2004/07/09 16:04:06 $
+ * Version: $Revision: 1.133 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.132 $
+ * @version $Revision: 1.133 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -607,19 +607,25 @@ public final class OpenCmsCore {
         return m_passwordValidatingClass;
     }
 
+    /** The (deprecated) XML registry. */
+    private CmsRegistry m_registry;
+    
     /**
-     * Returns the registry to read values from it.<p>
-     * 
-     * You don't have the permissions to write values. 
-     * This is useful for modules to read module-parameters.<p>
+     * Returns the registry to read or write values from it.<p>
      *
      * @return the registry
      */
     protected CmsRegistry getRegistry() {
-        if (m_driverManager == null) {
-            return null;
+        
+        CmsContextInfo info = new CmsContextInfo(getDefaultUsers().getUserAdmin());
+        try {
+            return m_registry.clone(initCmsObject(info, null));
+        } catch (CmsException e) {
+            // should never happen
+            getLog(this).error("Could not generate Admin cms to clone registry", e);
         }
-        return m_driverManager.getRegistry(null);
+        
+        return null;
     }
 
     /**
@@ -1153,6 +1159,25 @@ public final class OpenCmsCore {
             // any exception here is fatal and will cause a stop in processing
             throw new CmsException("Database init failed", CmsException.C_RB_INIT_ERROR, e);
         }
+        
+        // initialize the (deprecated) XML registry
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: starting");
+        }
+        try {
+            m_registry = new CmsRegistry(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(configuration.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
+        } catch (CmsException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            // init of registry failed - throw exception
+            if (getLog(this).isErrorEnabled()) {
+                getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "4", ex);
+            }
+            throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
+        }
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: finished");
+        }        
 
         // initialize the Thread store
         m_threadStore = new CmsThreadStore();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2004/07/08 15:21:05 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -107,7 +107,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
         }
         CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         //CmsRequestContext reqCont = cms.getRequestContext();
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");

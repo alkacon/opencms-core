@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2004/04/07 07:39:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/09 16:04:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.dom4j.Element;
  * Import/export handler implementation for Cms modules.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/04/07 07:39:12 $
+ * @version $Revision: 1.7 $ $Date: 2004/07/09 16:04:06 $
  * @since 5.3
  */
 public class CmsModuleImportExportHandler extends Object implements I_CmsImportExportHandler {
@@ -104,7 +104,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
             report.println(" " + getModuleName(), I_CmsReport.C_FORMAT_HEADLINE);
         }
         
-        CmsRegistry registry = cms.getRegistry();
+        CmsRegistry registry = OpenCms.getRegistry();
         registry.exportModule(getModuleName(), getAdditionalResources(), getFileName(), report);
         
         report.println(report.key("report.export_module_end"), I_CmsReport.C_FORMAT_HEADLINE);
@@ -141,7 +141,7 @@ public class CmsModuleImportExportHandler extends Object implements I_CmsImportE
                 cms.getRequestContext().restoreSiteRoot();
             }
 
-            registry = cms.getRegistry();
+            registry = OpenCms.getRegistry();
 
             importFile = importFile.replace('\\', '/');
             moduleZipName = importFile.substring(importFile.lastIndexOf('/') + 1);

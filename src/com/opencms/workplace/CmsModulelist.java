@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsDateUtil;
 
 import org.opencms.file.CmsObject;
@@ -50,7 +51,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -82,7 +83,7 @@ public class CmsModulelist extends A_CmsWpElement {
         String listMethod = n.getAttribute(C_MODULELIST_METHOD);
         
         //Get the registry
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         
         // Get list definition and language values
         CmsXmlWpTemplateFile listdef = getModulelistDefinitions(cms);

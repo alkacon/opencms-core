@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -422,7 +422,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
     ) throws CmsException {        
         // get all exportable modules
         Hashtable modules = new Hashtable();
-        cms.getRegistry().getModuleExportables(modules);
+        OpenCms.getRegistry().getModuleExportables(modules);
         Enumeration keys = modules.keys();
         // fill the names and values
         while (keys.hasMoreElements()) {
@@ -453,7 +453,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         if (template.hasData("selectoption")) {
             // get all exportable modules
             Hashtable modules = new Hashtable();
-            cms.getRegistry().getModuleExportables(modules);
+            OpenCms.getRegistry().getModuleExportables(modules);
             Enumeration keys = modules.keys();
             // fill the names and values
             while (keys.hasMoreElements()) {

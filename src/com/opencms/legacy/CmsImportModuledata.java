@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/07/09 16:01:03 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $ $Date: 2004/07/08 15:21:13 $
+ * @version $Revision: 1.9 $ $Date: 2004/07/09 16:01:03 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -149,7 +149,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
     public void importModuleMasters() throws CmsException {
         // get all available modules in this system
         Hashtable moduleExportables = new Hashtable();
-        m_cms.getRegistry().getModuleExportables(moduleExportables);
+        OpenCms.getRegistry().getModuleExportables(moduleExportables);
         // now get the subIds of each module
         Hashtable availableModules = new Hashtable();
         Enumeration modElements = moduleExportables.elements();

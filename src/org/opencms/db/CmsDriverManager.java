@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/07/08 15:23:53 $
- * Version: $Revision: 1.398 $
+ * Date   : $Date: 2004/07/09 16:02:03 $
+ * Version: $Revision: 1.399 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.398 $ $Date: 2004/07/08 15:23:53 $
+ * @version $Revision: 1.399 $ $Date: 2004/07/09 16:02:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -278,9 +278,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     /** Cache for properties. */
     private Map m_propertyCache;
 
-    /** The Registry. */
-    private CmsRegistry m_registry;
-    
     /** Cache for resources. */
     private Map m_resourceCache;
     
@@ -4675,16 +4672,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         return publishList;
     }
-
-    /**
-     * Returns the current OpenCms registry.<p>
-     *
-     * @param cms the current OpenCms context object
-     * @return the current OpenCms registry
-     */
-    public CmsRegistry getRegistry(CmsObject cms) {
-        return m_registry.clone(cms);
-    }
     
     /**
      * Returns a list with all sub resources of a given folder that have benn modified in a given time range.<p>
@@ -5021,25 +5008,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         m_permissionCache = Collections.synchronizedMap(hashMap);
         if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
-        }
-
-        // initialize the registry
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: starting");
-        }
-        try {
-            m_registry = new CmsRegistry(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(config.getString(I_CmsConstants.C_CONFIGURATION_REGISTRY)));
-        } catch (CmsException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            // init of registry failed - throw exception
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(OpenCmsCore.C_MSG_CRITICAL_ERROR + "4", ex);
-            }
-            throw new CmsException("Init of registry failed", CmsException.C_REGISTRY_ERROR, ex);
-        }
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Initializing registry: finished");
         }
 
         getProjectDriver().fillDefaults();
@@ -5642,7 +5610,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 if (!publishList.isDirectPublish() && context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
                     // now publish the module masters
                     Vector publishModules = new Vector();
-                    cms.getRegistry().getModulePublishables(publishModules, null);
+                    OpenCms.getRegistry().getModulePublishables(publishModules, null);
 
                     long publishDate = System.currentTimeMillis();
 

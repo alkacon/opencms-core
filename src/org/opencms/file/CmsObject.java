@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/07/07 18:01:09 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/07/09 16:02:03 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  */
 public class CmsObject {
 
@@ -1834,17 +1834,7 @@ public class CmsObject {
     
     //-----------------------------------------------------------------------------------
     // Miscellaneous methods:
-    private int warning3;    
-      
-    
-    /**
-     * Returns the current OpenCms registry.<p>
-     *
-     * @return the current OpenCms registry
-     */
-    public CmsRegistry getRegistry() {
-        return m_driverManager.getRegistry(this);
-    }
+    private int warning3;     
 
     /**
      * Imports an import-resource (folder or zipfile).<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSearchForm.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsPropertydefinition;
 import org.opencms.file.CmsRegistry;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * editing news.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.12 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.13 $ $Date: 2004/07/09 16:01:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -77,7 +78,7 @@ public class CmsSearchForm extends CmsWorkplaceDefault {
         String error = "";
         String reload = "";
         // flag for extended features in the editor, e.g. list of external links
-        CmsRegistry registry = cms.getRegistry();
+        CmsRegistry registry = OpenCms.getRegistry();
         // TODO: check REGISTRY "searchbylucene"  
         // boolean luceneEnabled = "on".equals(registry.getSystemValue("searchbylucene"));
         boolean luceneEnabled = false;

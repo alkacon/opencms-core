@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModule.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2004/07/09 16:01:30 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault {
      */
     public Vector moduleList(CmsObject cms, CmsXmlLanguageFile lang)
         throws CmsException {
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         Enumeration e = reg.getModuleNames();
         Vector retVec = new Vector();
         while (e.hasMoreElements()){

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/07/08 15:21:09 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.97 $ $Date: 2004/07/08 15:21:09 $
+ * @version $Revision: 1.98 $ $Date: 2004/07/09 16:01:31 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -161,7 +161,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // flag for extended features in the editor, e.g. list of external links
         int warning = 0;
-        CmsRegistry registry = cms.getRegistry();
+        CmsRegistry registry = OpenCms.getRegistry();
         // TODO: check REGISTRY "extendedNavigation"  
         boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
         // boolean extendedNavigation = false;

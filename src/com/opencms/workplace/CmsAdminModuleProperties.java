@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleProperties.java,v $
-* Date   : $Date: 2004/07/08 15:21:09 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -150,7 +150,7 @@ public class CmsAdminModuleProperties extends CmsWorkplaceDefault {
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         String view = (String)parameters.get(C_VIEW);
         String module = (String)parameters.get(C_MODULENAME);
         if((view != null) && (C_DESCRIPTION.equals(view))) {

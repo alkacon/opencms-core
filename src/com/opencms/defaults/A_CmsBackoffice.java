@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2004/07/08 15:21:14 $
-* Version: $Revision: 1.87 $
+* Date   : $Date: 2004/07/09 16:00:56 $
+* Version: $Revision: 1.88 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -2094,7 +2094,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
         // Is there an unlock extension installed? 
         // TODO: check REGISTRY "unlockextension"  
         int warning = 0;
-        Hashtable h = cms.getRegistry().getSystemValues("unlockextension");
+        Hashtable h = OpenCms.getRegistry().getSystemValues("unlockextension");
         if (h != null) {
             // Unlock extension found, try generate in instance and use this instead of the default
             if ("true".equals(h.get("enabled"))) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2004/07/08 15:21:13 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2004/07/09 16:01:31 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
         
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         CmsRequestContext reqCont = cms.getRequestContext();
-        CmsRegistry reg = cms.getRegistry();
+        CmsRegistry reg = OpenCms.getRegistry();
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
         String step = (String)parameters.get(C_STEP);
         String moduleName = (String)parameters.get(C_MODULE);
