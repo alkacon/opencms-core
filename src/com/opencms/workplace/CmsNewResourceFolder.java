@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/08/15 09:24:21 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2001/09/10 09:56:00 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2001/08/15 09:24:21 $
+ * @version $Revision: 1.29 $ $Date: 2001/09/10 09:56:00 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -143,7 +143,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                     if (cms.rootFolder().getAbsolutePath().equals(currentFilelist)){
                         //display it
                         xmlTemplateDocument.setData("displaySektLogo", xmlTemplateDocument.getProcessedDataValue("SektLogo", this));
-                        xmlTemplateDocument.setData("displayFolderLogo", "");
+                        xmlTemplateDocument.setData("displayFolderLogo", xmlTemplateDocument.getProcessedDataValue("folderLogo", this));
                     }else{
                         xmlTemplateDocument.setData("displayFolderLogo", xmlTemplateDocument.getProcessedDataValue("folderLogo", this));
                         xmlTemplateDocument.setData("displaySektLogo", "");
