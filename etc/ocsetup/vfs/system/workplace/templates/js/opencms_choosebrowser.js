@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_choosebrowser.js,v $
- * Date   : $Date: 2000/04/06 10:20:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/04/19 14:50:25 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,6 +33,7 @@
 //---------------------------------
 ns = (document.layers)? true:false;
 ie = (document.all)? true:false;
+ 
 if(ie)
 {
 	if (navigator.userAgent.indexOf('MSIE 5')>0)
@@ -111,7 +112,6 @@ function hidelyr(welche)
 		//shown = false;
 }
 
-
 //------------------------------------------------------------------------------------
 // content exchange between 2 layers (used in explorer_files_neu_ordner.html)
 // m.schreiber 21.02.2000
@@ -132,6 +132,35 @@ function saveLayerData(from,to,srcLayer,destLayer) {
 		data2 = document[srcLayer].document.forms[from].NEUTITEL.value;
 		document[destLayer].document.forms[to].NEUNAME.value = data1;
 		document[destLayer].document.forms[to].NEUTITEL.value = data2;
+	}
+}
+
+
+//------------------------------------------------------------------------------------
+// content exchange between 2 layers (used in explorer_files_neu_page.html)
+// m.stanke 19.04.2000
+//------------------------------------------------------------------------------------
+var data1=null;
+var data2=null;
+var data3=null;
+
+function saveLayerData2(from,to,srcLayer,destLayer) {
+	
+	if (ie) {
+		data1 = document.forms[from].NEUNAME.value;
+		data2 = document.forms[from].NEUTITEL.value;
+		data3 = document.forms[from].TEMPLATE.selectedIndex;
+		document.forms[to].NEUNAME.value = data1;
+		document.forms[to].NEUTITEL.value = data2;
+		document.forms[to].TEMPLATE.selectedIndex = data3;
+	}
+	else if (ns) {
+		data1 = document[srcLayer].document.forms[from].NEUNAME.value;
+		data2 = document[srcLayer].document.forms[from].NEUTITEL.value;
+		data3 = document[srcLayer].document.forms[from].TEMPLATE.selectedIndex;
+		document[destLayer].document.forms[to].NEUNAME.value = data1;
+		document[destLayer].document.forms[to].NEUTITEL.value = data2;
+		document[destLayer].document.forms[to].TEMPLATE.selectedIndex = data3;
 	}
 }
 

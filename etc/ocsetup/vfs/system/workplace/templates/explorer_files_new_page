@@ -31,7 +31,6 @@ function show_help()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <title>OpenCms</title>
 
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_choosebrowser.js"></SCRIPT>
 
 </HEAD>
@@ -67,7 +66,7 @@ function show_help()
 									<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 								</tr>
      							<tr>
-									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+									<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK onclick="saveLayerData2('NEU','LINK','NEWWITHOUTLINK','NEWLINK');this.checked=false;switchlyr('NEWLINK','NEWWITHOUTLINK');"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 								</tr>
 								<tr>
 									<td colspan=2 class="leerzeile"><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=70px></td>
@@ -77,7 +76,7 @@ function show_help()
 										<table cellspacing=0 cellpadding=5 width=100%>
 											<tr>
 												<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+simpleEscape(escape(NEU.TEMPLATE.value));"></td>
+												<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&template='+document.NEU.TEMPLATE.value;"></td>
 												<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 											</tr>
 										</table>
@@ -124,7 +123,7 @@ function show_help()
 											<td class=dialogtxt>]]><SELECT class="localstyle" name="TEMPLATE" width="370" div="true" method="getTemplates" /><![CDATA[</td>
 										</tr>
 										<tr>
-											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
+											<td class=dialogtxt colspan=2><INPUT type="checkbox" id=SETLINK name=SETLINK checked onclick="saveLayerData2('LINK','NEU','NEWLINK','NEWWITHOUTLINK');switchlyr('NEWWITHOUTLINK','NEWLINK');this.checked=true;"> ]]><LABEL value="input.addtonav" /><![CDATA[</td>
 										</tr>
 										<tr>
 											<td colspan=2 class=leerzeile><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=1 height=10px</td>
@@ -142,7 +141,7 @@ function show_help()
 												<table cellspacing=0 cellpadding=5 width=100%>
 													<tr>
 														<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+simpleEscape(escape(document.LINK.TEMPLATE.value))+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;"></td>
+														<td class=formular align=center width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.endwizard" /><![CDATA[" id=WEITER name=WEITER onClick="location='explorer_files_new_page.html?step=1&newfile='+document.LINK.NEUNAME.value+'&title='+document.LINK.NEUTITEL.value+'&template='+document.LINK.TEMPLATE.value+'&navtitle='+document.LINK.LINKNAME.value+'&navpos='+document.LINK.LINKPOS.value;"></td>
 														<td class=formular align=center width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 													</tr>
 												</table>
