@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/02 13:40:26 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/04 07:25:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,12 @@
 */
 package org.opencms.workplace;
 
+import com.opencms.core.CmsException;
+import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
+
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,7 +44,7 @@ import javax.servlet.http.HttpServletRequest;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -238,6 +243,32 @@ public class CmsDialog extends CmsWorkplace {
         } else {
             return "</div>\n";
         }
+    }
+    
+    /**
+     * Gets a formatted file state string.<p>
+     * 
+     * @param file the CmsResource
+     * @return formatted state string
+     */
+    public String getState(CmsResource file) {  
+        if(file.inProject(getCms().getRequestContext().currentProject())) {
+            int state = file.getState();
+            return key("explorer.state" + state);
+        } else {
+            return key("explorer.statenip");
+        }
+    }
+    
+    /**
+     * Gets a formatted file state string.<p>
+     * 
+     * @return formatted state string
+     * @throws CmsException if something goes wrong
+     */
+    public String getState() throws CmsException {  
+        CmsResource file = getCms().readFileHeader(getSettings().getFileUri());
+        return getState(file);
     }
 
 }
