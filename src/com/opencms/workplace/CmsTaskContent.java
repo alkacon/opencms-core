@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskContent.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/04/18 15:16:50 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.8 $ $Date: 2000/04/18 15:16:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
@@ -78,6 +78,22 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
             A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
+		
+		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(false);
+		String taskid=(String)session.getValue(C_PARA_TASKID);
+		
+		if (session.getValue(C_PARA_TASKID)!=null) {
+			session.removeValue(C_PARA_TASKID);
+			CmsXmlWpConfigFile conf=new CmsXmlWpConfigFile(cms);
+			String actionPath=conf.getWorkplaceActionPath();
+			try {
+				cms.getRequestContext().getResponse().sendCmsRedirect(actionPath+"tasks_content_detail.html?taskid="+taskid);
+			} catch (Exception e) {				
+				if(A_OpenCms.isLogging()) {
+					A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName()+ " " + e.getMessage());
+				}
+			}
+		}
 		
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		

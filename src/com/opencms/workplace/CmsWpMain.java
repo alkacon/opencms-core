@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/18 15:16:58 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.15 $ $Date: 2000/04/18 15:16:58 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -109,7 +109,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(true);
             session.putValue(C_PARA_VIEW, newView);
         }
-        
+		
         // Now load the template file and start the processing
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
