@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/02/20 13:35:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/20 14:22:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsIndexResource;
 import org.opencms.search.CmsIndexingThreadManager;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.I_CmsIndexer;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsUUID;
 
@@ -55,11 +56,11 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.1 $ $Date: 2004/02/20 13:35:45 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/20 14:22:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
-public class CmsCosIndexer extends CmsMasterContent {
+public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     
     /** cms object */
     private CmsObject m_cms;
@@ -84,17 +85,15 @@ public class CmsCosIndexer extends CmsMasterContent {
     
     /**
      * Creates a new cos indexer.<p>
-     * 
-     * @param cms the cms object
-     * @param cdClassName name of the content definition class
-     * @param writer wariter to write the index
-     * @param index the index
-     * @param report the report
-     * @param threadManager the tread manager
-     * @throws CmsIndexException if something goes wrong
      */
-    public CmsCosIndexer (CmsObject cms, String cdClassName, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
-    
+    public CmsCosIndexer () {
+        //noop
+    }
+
+    /**
+     * @see org.opencms.search.I_CmsIndexer#init(org.opencms.file.CmsObject, java.lang.String, org.apache.lucene.index.IndexWriter, org.opencms.search.CmsSearchIndex, org.opencms.report.I_CmsReport, org.opencms.search.CmsIndexingThreadManager)
+     */
+    public void init(CmsObject cms, String cdClassName, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
         try {
             m_cms = cms;
             m_writer = writer;
@@ -107,7 +106,7 @@ public class CmsCosIndexer extends CmsMasterContent {
 
         } catch (Exception exc) {
             throw new CmsIndexException("Indexing contents of class" + cdClassName + " failed.", exc);
-        }
+        }        
     }
     
     /**

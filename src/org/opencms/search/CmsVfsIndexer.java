@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/02/20 13:35:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/02/20 14:22:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,49 +44,50 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of vfs data.<p>
  * 
- * @version $Revision: 1.3 $ $Date: 2004/02/20 13:35:45 $
+ * @version $Revision: 1.4 $ $Date: 2004/02/20 14:22:17 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
-public class CmsVfsIndexer {
+public class CmsVfsIndexer implements I_CmsIndexer {
 
     /** The cms object */
     private CmsObject m_cms;
-    
-    /** The index writer */
+        
+    /** the writer */
     private IndexWriter m_writer;
     
-    /** The current index */
+    /** the index */
     private CmsSearchIndex m_index;
     
-    /** The report */
+    /** the report */
     private I_CmsReport m_report;
     
-    /** The thread manager */ 
+    /** the thread manager */
     private CmsIndexingThreadManager m_threadManager;
     
     /**
      * Creates a new vfs indexer.<p>
+     */
+    public CmsVfsIndexer () {
+        //noop
+    }
+
+    /**
+     * Initializes the indexer.<p>
      * 
      * @param cms the cms object
-     * @param writer wariter to write the index
+     * @param className not used here
+     * @param writer writer to write the index
      * @param index the index
      * @param report the report
      * @param threadManager the tread manager
-     * @throws CmsIndexException if something goes wrong
      */
-    public CmsVfsIndexer (CmsObject cms, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
-    
-        try {
-            m_cms = cms;
-            m_writer = writer;
-            m_index = index;
-            m_report = report;
-            m_threadManager = threadManager;
-            
-        } catch (Exception exc) {
-            throw new CmsIndexException("Indexing contents of index " + index.getName() + " failed.", exc);
-        }
+    public void init(CmsObject cms, String className, IndexWriter writer, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) {
+        m_cms = cms;
+        m_writer = writer;
+        m_index = index;
+        m_report = report;
+        m_threadManager = threadManager;        
     }
     
     /**

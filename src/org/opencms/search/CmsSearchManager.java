@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/20 13:35:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/20 14:22:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,6 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.legacy.*;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,6 +69,8 @@ import org.apache.lucene.index.IndexWriter;
  * &lt;search&gt;
  *     &lt;directory&gt;index&lt;/directory&gt;
  *     &lt;timeout&gt;60000&lt;/timeout&gt;
+ *     &lt;cosindexer&gt;...&lt;/cosindexer&gt;
+ *     &lt;vfsindexer&gt;...&lt;/vfsindexer&gt;
  *     &lt;documenttype&gt;
  *         (see below)
  *     &lt;/documenttype&gt;
@@ -134,7 +134,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/02/20 13:35:45 $
+ * @version $Revision: 1.7 $ $Date: 2004/02/20 14:22:17 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -170,6 +170,12 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     /** The cache for storing search results */
     private static Map m_resultCache = null;
 
+    /** The vfs indexer */
+    private I_CmsIndexer m_vfsIndexer;
+    
+    /** The cos indexer */
+    private I_CmsIndexer m_cosIndexer;
+    
     /*
      * The merge factor 
      * @see lucene documentation 
@@ -234,6 +240,25 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             
             if ((m_path = (String)m_config.get("directory")) == null) {
                 throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Directory for storing index data not defined");
+            }
+            
+            String vfsIndexer;
+            if ((vfsIndexer = (String)m_config.get("vfsindexer")) == null) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Vfs indexer not defined");
+            }
+            try {
+                m_vfsIndexer = (I_CmsIndexer)Class.forName(vfsIndexer).newInstance();
+            } catch (Exception exc) {
+                throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Cant instanciate vfs indexer", exc);
+            }
+            
+            String cosIndexer;
+            if ((cosIndexer = (String)m_config.get("cosindexer")) != null) {
+                try {
+                    m_cosIndexer = (I_CmsIndexer)Class.forName(cosIndexer).newInstance();
+                } catch (Exception exc) {
+                    throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Cant instanciate cos indexer", exc);
+                }
             }
             
             if ((m_timeout = (String)m_config.get("timeout")) == null) {
@@ -632,7 +657,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             List folders = index.getFolders();
             for (Iterator i = folders.iterator(); i.hasNext();) {
                 String vfsPath = (String)i.next();
-                new CmsVfsIndexer(m_cms, writer, index, report, threadManager).updateIndex(vfsPath);
+                m_vfsIndexer.init(m_cms, null, writer, index, report, threadManager);
+                m_vfsIndexer.updateIndex(vfsPath);
             }
             
             List channels = index.getChannels();
@@ -640,7 +666,8 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                 String cosChannel = (String)i.next();
                 String documenttype = (String)(index.getDocumenttypes(cosChannel).toArray())[0];
                 String resourcetype = (String)((List)m_resourcetypes.get(documenttype)).get(0);
-                new CmsCosIndexer(m_cms, resourcetype, writer, index, report, threadManager).updateIndex(cosChannel);
+                m_cosIndexer.init(m_cms, resourcetype, writer, index, report, threadManager);
+                m_cosIndexer.updateIndex(cosChannel);
             }
             
             threadManager.reportStatistics();

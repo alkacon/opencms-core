@@ -82,6 +82,8 @@
             <directory>index</directory>
             <mergefactor>100000</mergefactor>
             <timeout>60000</timeout>
+            <cosindexer>com.opencms.legacy.CmsCosIndexer</cosindexer>
+            <vfsindexer>org.opencms.search.CmsVfsIndexer</vfsindexer>
             <documenttype>
                 <name>xmlpage</name>
 				<class>org.opencms.search.documents.CmsXmlPageDocument</class>
