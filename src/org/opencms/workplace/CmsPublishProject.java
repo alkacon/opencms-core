@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/22 14:03:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/01/23 08:40:13 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1.12
  */
@@ -430,7 +430,7 @@ public class CmsPublishProject extends CmsReport {
                 getCms().getRequestContext().setCurrentProject(projectId);
             } catch (Exception e) {
                 // ignore this exception
-            }           
+            }  
             thread = new CmsPublishThread(getCms());
         }
         // set the new thread id and flag that no thread is following

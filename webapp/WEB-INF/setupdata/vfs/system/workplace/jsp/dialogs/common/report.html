@@ -87,7 +87,11 @@ function init() {
 }
 
 function reload(actionParam) {
-	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>";
+	var resName = "<%= wp.getParamResource() %>";
+	if (resName != "") {
+		resName = "&resource=" + encodeURIComponent(resName);
+	}
+	location.href="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=" + actionParam + "&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>" + resName;
 }
 
 
@@ -340,7 +344,7 @@ function updateReport() {
     		pageBody = 
     			pageStartSimple + 
     			"<span class='head'>" + lastHeadline + "</span><br>\n" +
-    			"<%= wp.key("report.error") %> " + lastError + "\n" +
+    			"<%= wp.key("report.error") %>" + lastError + "\n" +
     			"<%= wp.key("report.error.details") %>" + 
     			pageEndSimple;
     	} else {
@@ -503,7 +507,7 @@ function initButtons() {
 <td><span style="height:20px; width:20px; display:block"></span></td>
 <td width="100%" id="buttonrowcontinue" class="hide"><%= wp.dialogButtonRowContinue("id=\"contok\" onclick=\"update.continueReport();\"", "id=\"contcancel\"", "id=\"contdetails\"") %></td>
 <td width="100%" id="buttonrowok" class="hide"><%= wp.dialogButtonRowOkCancelDetails("id=\"okclose\"", "id=\"okcancel\"", "id=\"details\"") %></td>
-<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
+<td><iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_ACTION %>=<%= wp.REPORT_UPDATE %>&<%= wp.PARAM_THREAD %>=<%= wp.getParamThread() %>&<%= wp.PARAM_REPORT_TYPE %>=<%= wp.getParamReportType() %>&<%= wp.PARAM_THREAD_HASNEXT %>=<%= wp.getParamThreadHasNext() %>&resource=<%= wp.getParamResource() %>" name="update" style="width:20px; height:20px; margin: 0px;" marginwidth="0" marginheight="0" frameborder="0" framespacing="0" scrolling="no"></iframe></td>
 </tr></table>
 
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><tr>
