@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/10/31 13:11:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/12/21 11:12:36 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,6 @@ import com.opencms.core.*;
  * @author a.schouten
  */
 public class CmsDbPool extends com.opencms.file.genericSql.CmsDbPool {
-	
 	/**
 	 * Init the pool with a specified number of connections.
 	 * 
@@ -74,6 +73,14 @@ public class CmsDbPool extends com.opencms.file.genericSql.CmsDbPool {
 		}
 */
 		}
+/**
+ * Returns a vector with all connections.
+ * 
+ * @return a vector with all connections
+ */
+public Vector getAllConnections() {
+	return m_connections;
+}
 	/**
 	 * Init the CallableStatement on all connections.
 	 * 
