@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/12 15:09:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/19 09:28:47 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -81,7 +81,7 @@ public class CmsModuleDemos extends CmsWorkplaceDefault implements I_CmsConstant
 			templateDocument.setData("namelink", servPath + "/moduledemos/" + name + "/index.html");
 			completeList += templateDocument.getProcessedDataValue("list_entry");
 			templateDocument.setData("doc_name", currentname);
-			templateDocument.setData("doc_link", servPath + "/system/modules/" + name + "/doc/doc.html");	
+			templateDocument.setData("doc_link", servPath + "/system/modules/" + name + "/doc/index.html");	
 			completeList += templateDocument.getProcessedDataValue("doc_entry");
 			}
 			templateDocument.setData("list", completeList);
