@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/01/09 08:30:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/09 11:11:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -175,7 +175,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /**
      * @see org.opencms.workplace.editor.CmsEditor#getEditorResourceUri()
      */
-    public final String getEditorResourceUri() {
+    public String getEditorResourceUri() {
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";   
     }
 
