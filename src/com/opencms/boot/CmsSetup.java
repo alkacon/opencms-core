@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/01/31 13:10:37 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/03/24 18:34:49 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ package com.opencms.boot;
 import source.org.apache.java.util.*;
 import java.io.*;
 import java.util.*;
+import com.opencms.flex.util.CmsUUID;
 
 /**
  * Bean with get / set methods for all properties stored in the
@@ -102,6 +103,20 @@ public class CmsSetup {
 			errors.add(e.toString());
 		}
 	}
+    
+    /**
+     * This method checks the validity of the given properties
+     * and adds unset properties if possible
+     * @return boolean true if all properties are set correctly
+     */
+    public boolean checkProperties() {
+        // currently, we check only the ethernet address
+        // in order to generate a random address, if not available
+        if ("".equals(getEthernetAddress())) {
+            setEthernetAddress(CmsUUID.getDummyEthernetAddress());
+        }
+        return true;
+    }
 
 	/** 
 	 * This method sets the value for a given key in the extended properties.
@@ -117,7 +132,8 @@ public class CmsSetup {
 	 * @return the string value for a given key
 	 */
 	public String getExtProperty(String key) {
-		Object value = null;            
+		Object value = null;
+System.err.println(key);            
 		return ((value = m_ExtProperties.get(key)) != null) ? value.toString() : "";
 	}
 
@@ -258,7 +274,7 @@ public class CmsSetup {
 	public String getDbWorkPwd() {
 		return this.getExtProperty("pool." + getResourceBroker() + ".password");
 	}
-
+ 
 	/** Returns the extended properties */
 	public ExtendedProperties getProperties() {
 		return m_ExtProperties;
@@ -742,6 +758,17 @@ public class CmsSetup {
 		return this.getExtProperty("elementcache.variants");
 	}
 
+    /** Set the fictional mac ethernet address */
+    public void setEthernetAddress( String ethernetAddress ){
+System.err.println("MAC: " + ethernetAddress);
+        setExtProperty("server.ethernet.address", ethernetAddress);
+    }
+    
+    /** Get the fictional mac ethernet address */
+    public String getEthernetAddress() {
+        return getExtProperty("server.ethernet.address");
+    }
+
 	public String getDbCreateConStr() {
 		return this.getDbProperty(this.getResourceBroker() + ".constr");
 	}
@@ -766,6 +793,26 @@ public class CmsSetup {
 		m_dbCreatePwd = dbCreatePwd;
 	}
 
+    /** Set the default tablespace when creating a new oracle user */
+     public void setDbDefaultTablespace( String dbDefaultTablespace) { 
+         this.setDbProperty(this.getResourceBroker() + ".defaultTablespace", dbDefaultTablespace);         
+     }
+    
+     /** Get the default tablespace when creating a new oracle user */
+     public String getDbDefaultTablespace() {
+         return this.getDbProperty(this.getResourceBroker() + ".defaultTablespace");
+     }
+    
+     /** Set the temporary tablespace when creating a new oracle user */
+     public void setDbTemporaryTablespace( String dbTemporaryTablespace) { 
+         this.setDbProperty(this.getResourceBroker() + ".temporaryTablespace", dbTemporaryTablespace);
+     }
+        
+     /** Get the temporary tablespace when creating a new oracle user */
+     public String getDbTemporaryTablespace() {
+         return this.getDbProperty(this.getResourceBroker() + ".temporaryTablespace");
+     }
+          
 	public boolean getWizardEnabled() {
 		String dummy = this.getExtProperty("wizard.enabled");
 		return "true".equals(dummy);

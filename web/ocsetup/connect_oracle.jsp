@@ -26,7 +26,12 @@
 		if(createDb == null)	{
 			createDb = "";
 		}
-			
+
+		String createTables = request.getParameter("createTables");
+		if(createTables == null)	{
+			createTables = "";
+		}
+					
 		submited = ((request.getParameter("submit") != null) && (conStr != null));
 		
 		if(submited)	{
@@ -41,6 +46,8 @@
 			
 			String dbWorkUser =		request.getParameter("dbWorkUser");			
 			String dbWorkPwd =		request.getParameter("dbWorkPwd");
+			String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
+			String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
 
 			Bean.setDbCreateUser(dbCreateUser);
 			Bean.setDbCreatePwd(dbCreatePwd);
@@ -52,9 +59,12 @@
 			Hashtable replacer = new Hashtable();			
 			replacer.put("$$user$$",dbWorkUser);			
 			replacer.put("$$password$$",dbWorkPwd);
+			replacer.put("$$defaultTablespace$$", dbDefaultTablespace);
+			replacer.put("$$temporaryTablespace$$", dbTemporaryTablespace);
 			
 			Bean.setReplacer(replacer);
 						
+			session.setAttribute("createTables",createTables);
 			session.setAttribute("createDb",createDb);
 		
 		}
@@ -84,7 +94,17 @@
 			alert("Please insert password");
 			document.forms[0].dbWorkPwd.focus();
 			return false;
-		}		
+		}
+		else if (document.forms[0].createDb.value != "" && document.forms[0].dbDefaultTablespace.value == "") {
+			alert("Please insert name of default tablespace");
+			document.forms[0].dbWorkPwd.focus();
+			return false;
+		}
+		else if (document.forms[0].createDb.value != "" && document.forms[0].dbTemporaryTablespace.value == "") {
+			alert("Please insert name of temporary tablespace");
+			document.forms[0].dbWorkPwd.focus();
+			return false;
+		}
 		else	{
 			return true;
 		}
@@ -178,12 +198,19 @@
 									<tr>
 										<td>OpenCms Connection</td><td><input type="text" name="dbWorkUser" size="8" style="width:120px;" value='<%= user %>'></td><td><input type="text" name="dbWorkPwd" size="8" style="width:120px;" value='<%= Bean.getDbWorkPwd() %>'></td>
 									</tr>
+									<tr>
+									    <td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked onChange="toggleTablespaceInput()"> Create new OpenCms user</td>
+									</tr>
+									<tr><td colspan="3"><hr></td></tr>
+									<tr>
+										<td>Default/Temporary Tablespace</td><td><input type="text" name="dbDefaultTablespace" size="8" style="width:120px;" value='<%= Bean.getDbDefaultTablespace() %>'></td><td><input type="text" name="dbTemporaryTablespace" size="8" style="width:120px;" value='<%= Bean.getDbTemporaryTablespace() %>'></td>
+									</tr>
 									<tr><td colspan="3"><hr></td></tr>
 									<tr>
 										<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
-									<tr><td colspan="3" align="center"><input type="checkbox" name="createDb" value="true" checked> Create database and tables<br>
+									<tr><td colspan="3" align="center"><input type="checkbox" name="createTables" value="true" checked> Create database and tables<br>
 									<b><font color="FF0000">Warning:</font></b> Existing database will be dropped !<br></td></tr>
 									
 								</table>

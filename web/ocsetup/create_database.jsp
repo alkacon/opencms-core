@@ -21,35 +21,52 @@
 	CmsSetupDb db = null;	
 		
 	boolean createDb = false;
+	boolean createTables = false;
 	boolean dbExists = false;
 	boolean dropDb = false;
 	
 	if(setupOk)	{	
-		String temp = session.getAttribute("createDb").toString();
-		if( temp != null)	{
-			createDb = temp.equals("true");
-			if(createDb)	{
-				db = new CmsSetupDb(Bean.getBasePath());	
-				temp = request.getParameter("dropDb");
-				dropDb = temp != null && "Yes".equals(temp);
+
+		String temp;
+		Object a;
+		
+		if ((a = session.getAttribute("createDb")) != null) {
+			createDb = "true".equals(a.toString());
+		}
+
+		if (((a = session.getAttribute("createTables")) != null) && (a.toString().length() > 0)) {
+			createTables = "true".equals(a.toString());		
+	    } else {
+			// if not explicitly set, we will certainly create the
+			// tables when creating a new database 
+	    	createTables = createDb;
+	    }
+
+		if(createDb || createTables)	{
+			db = new CmsSetupDb(Bean.getBasePath());	
+			temp = request.getParameter("dropDb");
+			dropDb = temp != null && "Yes".equals(temp);
 				
-				/* check if database exists */
-				if(!dropDb)	{
-					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());				
-					dbExists = db.noErrors();
-					if(dbExists)	{
-						db.closeConnection();
-					}
-					else	{
-						db.clearErrors();
-					}
-				}
-				if(!dbExists)	{
-					db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+			/* check if database exists */
+			if(!dropDb)	{
+				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());				
+System.err.println("Creating work connection");
+				dbExists = db.noErrors();
+				if(dbExists)	{
+					db.closeConnection();
 				}
 				else	{
-					nextPage = "create_database.jsp";
+					db.clearErrors();
 				}
+			}
+			if(!dbExists || dropDb)	{
+				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+System.err.println("Creating system connection");
+			}
+			else {
+				if (createDb) {
+			  		nextPage = "create_database.jsp";
+			  	}
 			}
 		}				
 	}
@@ -87,11 +104,12 @@
 						<tr>
 							<td align="center" valign="top" height="50">
 							<%
-								if(!createDb)	{
-									out.println("<p>You have not created the OpenCms database.</p><p><b>Warning: &nbsp;&nbsp;</b>You cannot import the workplace succesfully without the database and tables!</p>");
+								if(!createDb && !dbExists)	{
+									out.println("<p>You have not created the OpenCms database.</p><p><b>Warning: &nbsp;&nbsp;</b>You cannot import the workplace succesfully without the database and tables!</p>");						
 								}
 								else {	
-									if(dbExists && !dropDb)	{
+									if(dbExists && createDb && !dropDb)	{
+										db.closeConnection();
 										out.println("<p><strong><font color=\"#ff0000\">Warning:</font> An existing database has been detected. Drop it ?</strong></p>");
 										out.println("<p><nobr><input type=\"submit\" name=\"dropDb\" class=\"button\" value=\"Yes\" style=\"width:150px;\" width=\"150\">&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"No\" onClick=\"history.go(-3)\" style=\"width:150px;\" class=\"button\" width=\"150\"></nobr></p>");
 									}
@@ -121,48 +139,55 @@
 							</td></tr>
 							<td align="center" valign="top" height="50">
 							<%
-									
-										//Create Database
-										out.print("<p>Creating database ...");
-										db.createDatabase(Bean.getResourceBroker(), Bean.getReplacer());
-										if(db.noErrors())	{										
-											out.println(" <b>Ok</b></p>");
-										}
-										else	{
-											out.println(" <b>Failed</b></p>");
-											Vector errors = db.getErrors();
-											out.print("<textarea rows='7' cols='50' style='width:600px;height:80px;' readonly wrap='off'>");
-											for(int i = 0; i < errors.size(); i++)	{
-												out.println(errors.elementAt(i));
-												out.println("-------------------------------------------");													
+										if (createDb) {
+											//Create Database
+											out.print("<p>Creating database ...");
+											db.createDatabase(Bean.getResourceBroker(), Bean.getReplacer());
+											if(db.noErrors())	{										
+												out.println(" <b>Ok</b></p>");
 											}
-											out.print("</textarea><br>");
-											db.clearErrors();
+											else	{
+												out.println(" <b>Failed</b></p>");
+												Vector errors = db.getErrors();
+												out.print("<textarea rows='7' cols='50' style='width:600px;height:80px;' readonly wrap='off'>");
+												for(int i = 0; i < errors.size(); i++)	{
+													out.println(errors.elementAt(i));
+													out.println("-------------------------------------------");													
+												}
+												out.print("</textarea><br>");
+												db.clearErrors();
+											}
 										}									
-									
+										
+										db.closeConnection();		
 							%>
 								</td></tr>
 								<td align="center" valign="top" height="50">
-							<%
-										db.closeConnection();
-										db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());									
-										//Create Tables
-										out.print("<p>Creating tables ...");
-										db.createTables(Bean.getResourceBroker());
-										if(db.noErrors())	{										
-											out.println(" <b>Ok</b></p>");
-										}
-										else	{
-											out.println(" <b>Failed</b></p>");
-											Vector errors = db.getErrors();
-											out.print("<textarea rows='7' cols='50' style='width:600px;height:80px;' readonly wrap='off'>");
-											for(int i = 0; i < errors.size(); i++)	{
-												out.println(errors.elementAt(i));
-												out.println("-------------------------------------------");													
-											}
-											out.print("</textarea><br>");
+							<%			
+										if (createTables) {
+											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());									
+											//Drop Tables (itentionally quiet)
+											db.dropTables(Bean.getResourceBroker());
 											db.clearErrors();
-											db.closeConnection();
+											
+											//Create Tables
+											out.print("<p>Creating tables ...");
+											db.createTables(Bean.getResourceBroker());
+											if(db.noErrors())	{										
+												out.println(" <b>Ok</b></p>");
+											}
+											else	{
+												out.println(" <b>Failed</b></p>");
+												Vector errors = db.getErrors();
+												out.print("<textarea rows='7' cols='50' style='width:600px;height:80px;' readonly wrap='off'>");
+												for(int i = 0; i < errors.size(); i++)	{
+													out.println(errors.elementAt(i));
+													out.println("-------------------------------------------");													
+												}
+												out.print("</textarea><br>");
+												db.clearErrors();
+												db.closeConnection();
+											}
 										}																		
 									}
 								}
@@ -177,10 +202,10 @@
 					<table border="0">
 						<tr>
 							<td width="200" align="right">
-								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-3)" <% if(dbExists)out.println("disabled"); %>>
+								<input type="button" class="button" style="width:150px;" width="150" value="&#060;&#060; Back" onclick="history.go(-3)">
 							</td>
 							<td width="200" align="left">
-								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;" <% if(dbExists)out.println("disabled"); %>>
+								<input type="submit" name="submit" class="button" style="width:150px;" width="150" value="Continue &#062;&#062;">
 							</td>
 							<td width="200" align="center">
 								<input type="button" class="button" style="width:150px;" width="150" value="Cancel" onclick="location.href='cancel.jsp'">
