@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2002/10/11 16:14:29 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/11/07 18:41:22 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,13 +37,14 @@ import com.opencms.report.*;
 import org.w3c.dom.*;
 
 import com.opencms.util.*;
+import com.opencms.workplace.I_CmsWpConstants;
 
 /**
  * This class holds the functionaility to export resources from the cms
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2002/10/11 16:14:29 $
+ * @version $Revision: 1.34 $ $Date: 2002/11/07 18:41:22 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -456,9 +457,17 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             CmsResource folder = (CmsResource) subFolders.elementAt(i);
             if(folder.getState() != C_STATE_DELETED){
                 // check if this is a system-folder and if it should be included.
-                if(!((folder.getAbsolutePath().startsWith("/system/") ||
-                      folder.getAbsolutePath().startsWith("/pics/system/") ||
-                      folder.getAbsolutePath().startsWith("/moduledemos/")) && m_excludeSystem)) {                        
+                String export = folder.getAbsolutePath();
+                if( // new VFS, always export "/system/bodies/" OR
+                    I_CmsWpConstants.C_NEW_VFS_STRUCTURE && export.startsWith("/system/bodies/") ||                    
+                    // option "exclude system folder" selected AND
+                    !(m_excludeSystem && 
+                        // export folder is a system folder 
+                        (export.startsWith("/system/") ||            
+                        // if new VFS, ignore old system folders (are below "/system" in new VFS)
+                        ((! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) && export.startsWith("/pics/system/")) ||
+                        ((! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) && export.startsWith("/moduledemos/")))                                           
+                    )) {
                     // export this folder
                     if (folder.getDateLastModified() >= m_contentAge) {
                         // only export folder data to manifest.xml if it has changed
