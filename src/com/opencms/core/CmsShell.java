@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/21 09:06:47 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/09/22 08:25:13 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.32 $ $Date: 2000/09/21 09:06:47 $
+ * @version $Revision: 1.33 $ $Date: 2000/09/22 08:25:13 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -646,6 +646,26 @@ public class CmsShell implements I_CmsConstants {
 			printException(exc);
 		}		
 	}
+/**
+ * Insert the method's description here.
+ * Creation date: (21-09-2000 16:54:13)
+ * @param categoryId int
+ */
+public void getCategory(String categoryId)
+{
+	try
+	{
+		CmsCategory category= m_cms.getCategory(Integer.parseInt(categoryId));
+		System.out.println("Name: "+ category.getName());
+		System.out.println("Description: "+ category.getDescription());
+		System.out.println("Short name: "+ category.getShortName());
+		System.out.println("Priority: "+ category.getPriority());
+	}
+	catch (Exception exc)
+	{
+		printException(exc);
+	}
+}
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 

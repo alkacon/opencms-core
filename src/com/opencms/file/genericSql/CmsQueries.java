@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/21 10:59:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/09/22 08:25:16 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $ $Date: 2000/09/21 10:59:55 $
+ * @version $Revision: 1.8 $ $Date: 2000/09/22 08:25:16 $
  */
 public class CmsQueries
 {
@@ -289,7 +289,9 @@ public class CmsQueries
 	public String C_SITES_GETSITEFROMHOST	= "SELECT " + C_DATABASE_PREFIX + "SITES.SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_URLS WHERE URL = ? AND " + C_DATABASE_PREFIX + "SITE_URLS.SITE_ID = " + C_DATABASE_PREFIX + "SITES.SITE_ID"; 
 	public Integer C_SITES_GETALLSITES_KEY = new Integer(451);
 	public String C_SITES_GETALLSITES = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITES";
-
+	public Integer C_CATEGORY_GETCATEGORYFROMID_KEY = new Integer(457);
+	public String C_CATEGORY_GETCATEGORYFROMID = "SELECT NAME, DESCRIPTION, SHORTNAME, PRIORITY FROM " + C_DATABASE_PREFIX + "CATEGORY WHERE CATEGORY_ID = ?";
+	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
 	public String C_SITES_MAXID = "SELECT MAX(SITE_ID) FROM " + C_DATABASE_PREFIX + "SITES";		
