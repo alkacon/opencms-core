@@ -3,8 +3,8 @@ package com.opencms.file.mySql;
 /*
  *
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2000/09/13 13:46:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/09/15 11:16:35 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -128,9 +128,7 @@ public class CmsDbPool implements I_CmsDbPool {
 	 * @return a prepared statement matching the key
 	 */
 	public PreparedStatement getIdStatement(Integer key){
-		System.err.println("afu: " + m_prepStatements.getClass().getName());
 		Object preparedStatement = m_prepStatements.get(key);
-		System.err.println("afu: " + preparedStatement.getClass().getName());
 		return (PreparedStatement) preparedStatement; 
 	}
 	/**
