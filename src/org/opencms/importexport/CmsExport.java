@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/08/11 10:42:59 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/08/18 11:45:27 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,6 +68,8 @@ import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.codec.binary.Base64;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -84,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.46 $ $Date: 2004/08/11 10:42:59 $
+ * @version $Revision: 1.47 $ $Date: 2004/08/18 11:45:27 $
  */
 public class CmsExport implements Serializable {
 
@@ -927,8 +929,7 @@ public class CmsExport implements Serializable {
         Element e = parent.addElement(I_CmsConstants.C_EXPORT_TAG_USERDATA);
         e.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(user.getName());
         // encode the password, using a base 64 decoder
-        sun.misc.BASE64Encoder enc = new sun.misc.BASE64Encoder();
-        String passwd = new String(enc.encodeBuffer(user.getPassword().getBytes()));
+        String passwd = new String(Base64.encodeBase64(user.getPassword().getBytes()));
         e.addElement(I_CmsConstants.C_EXPORT_TAG_PASSWORD).addCDATA(passwd);
         e.addElement(I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD).addCDATA(user.getRecoveryPassword());
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION).addCDATA(user.getDescription());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/08/17 07:09:06 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/08/18 11:45:27 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,18 +45,13 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.zip.ZipFile;
 
@@ -149,125 +144,6 @@ public class CmsImportVersion4 extends A_CmsImport {
             cleanUp();
         }
     }
-
-    /**
-     * Imports the groups and writes them to the cms.<p>
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    private void importGroups() throws CmsException {
-        List groupNodes;
-        Element currentElement;
-        String name, description, flags, parentgroup;
-        try {
-            // getAll group nodes
-            groupNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
-            // walk through all groups in manifest
-            for (int i = 0; i < groupNodes.size(); i++) {
-                currentElement = (Element)groupNodes.get(i);
-                name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-                name = OpenCms.getImportExportManager().translateGroup(name);  
-                description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
-                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
-                parentgroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
-                if ((parentgroup!=null) && (parentgroup.length()>0)) {
-                    parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
-                }
-                // import this group
-             
-                importGroup(null, name, description, flags, parentgroup);
-            }
-
-            // now try to import the groups in the stack
-            while (!m_groupsToCreate.empty()) {
-                Stack tempStack = m_groupsToCreate;
-                m_groupsToCreate = new Stack();
-                while (tempStack.size() > 0) {
-                    Hashtable groupdata = (Hashtable)tempStack.pop();
-                    name = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_NAME);
-                    description = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
-                    flags = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_FLAGS);
-                    parentgroup = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
-                    // try to import the group
-                    importGroup(null, name, description, flags, parentgroup);
-                }
-            }
-        } catch (Exception exc) {
-            m_report.println(exc);
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-        }
-    }
-
-    /**
-    * Imports the users and writes them to the cms.<p>
-    * 
-    * @throws CmsException if something goes wrong
-    */
-    private void importUsers() throws CmsException {
-      List userNodes;
-      List groupNodes;
-      Element currentElement, currentGroup;
-      Vector userGroups;
-      Hashtable userInfo = new Hashtable();
-      sun.misc.BASE64Decoder dec;
-      String  name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, pwd, infoNode;
-      // try to get the import resource
-      //getImportResource();
-      try {
-          // getAll user nodes
-          userNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_USERDATA);
-          // walk threw all groups in manifest
-          for (int i = 0; i < userNodes.size(); i++) {
-              currentElement = (Element)userNodes.get(i);
-              name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
-              name = OpenCms.getImportExportManager().translateUser(name);              
-              // decode passwords using base 64 decoder
-              dec = new sun.misc.BASE64Decoder();
-              pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
-              password = new String(dec.decodeBuffer(pwd.trim()));
-              dec = new sun.misc.BASE64Decoder();
-              pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD);
-              recoveryPassword = new String(dec.decodeBuffer(pwd.trim()));
-
-              description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
-              flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
-              firstname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FIRSTNAME);
-              lastname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_LASTNAME);
-              email = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_EMAIL);
-              address = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ADDRESS);
-              section = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SECTION);
-              defaultGroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
-              type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-              // get the userinfo and put it into the hashtable
-              infoNode = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERINFO);
-              try {
-                  // read the userinfo from the dat-file
-                  byte[] value = getFileBytes(infoNode);
-                  // deserialize the object
-                  ByteArrayInputStream bin = new ByteArrayInputStream(value);
-                  ObjectInputStream oin = new ObjectInputStream(bin);
-                  userInfo = (Hashtable)oin.readObject();
-              } catch (IOException ioex) {
-                  m_report.println(ioex);
-              }
-
-              // get the groups of the user and put them into the vector
-              groupNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_GROUPNAME);
-              userGroups = new Vector();
-              for (int j = 0; j < groupNodes.size(); j++) {
-                  currentGroup = (Element)groupNodes.get(j);
-                  String userInGroup=CmsImport.getChildElementTextValue(currentGroup, I_CmsConstants.C_EXPORT_TAG_NAME);
-                  userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);  
-                  userGroups.addElement(userInGroup);
-              }
-              // import this user
-              importUser(null, name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, userInfo, userGroups);
-          }
-      } catch (Exception exc) {
-          m_report.println(exc);
-          throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
-      }
-  }
   
     /**
      * Reads all file nodes plus their meta-information (properties, ACL) 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/08/17 07:09:06 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/08/18 11:45:27 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,15 +44,19 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.util.CmsUUID;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.apache.commons.codec.binary.Base64;
 
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -472,19 +476,17 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Creates an imported group in the cms.<p>
+     * Imports a single group.<p>
      * 
-     * @param id the uuid of this group
      * @param name the name of the group
      * @param description group description
      * @param flags group flags
      * @param parentgroupName name of the parent group
+     * 
      * @throws CmsException if something goes wrong
      */
-    protected void importGroup(String id, String name, String description, String flags, String parentgroupName) throws CmsException {
-        if (id == null) {
-            id = new CmsUUID().toString();
-        }
+    protected void importGroup(String name, String description, String flags, String parentgroupName) throws CmsException {
+
         if (description == null) {
             description = "";
         }
@@ -512,7 +514,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(m_report.key("report.importing_group"), I_CmsReport.C_FORMAT_NOTE);
                     m_report.print(name);
                     m_report.print(m_report.key("report.dots"));
-                    m_cms.createGroup(id, name, description, Integer.parseInt(flags), parentgroupName);
+                    m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 } catch (CmsException exc) {
                     m_report.println(m_report.key("report.not_created"), I_CmsReport.C_FORMAT_OK);
@@ -526,9 +528,8 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Creates an imported user in the cms.<p>
+     * Imports a single user.<p>
      * 
-     * @param id user id or null
      * @param name user name
      * @param description user description
      * @param flags user flags
@@ -543,15 +544,13 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param type user type
      * @param userInfo user info
      * @param userGroups user groups
+     * 
      * @throws CmsException in case something goes wrong
      */
-    protected void importUser(String id, String name, String description, String flags, String password, String recoveryPassword, String firstname, String lastname, String email, String address, String section, String defaultGroup, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
+    protected void importUser(String name, String description, String flags, String password, String recoveryPassword, String firstname, String lastname, String email, String address, String section, String defaultGroup, String type, Hashtable userInfo, Vector userGroups) throws CmsException {
 
-        // create a new user id if not available
-        if (id == null) {
-            id = new CmsUUID().toString();
-        }
-
+        // create a new user id
+        String id = new CmsUUID().toString();
         try {
             try {
                 m_report.print(m_report.key("report.importing_user"), I_CmsReport.C_FORMAT_NOTE);
@@ -575,5 +574,119 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
     }
         
+    /**
+     * Imports the OpenCms groups.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void importGroups() throws CmsException {
+        List groupNodes;
+        Element currentElement;
+        String name, description, flags, parentgroup;
+        try {
+            // getAll group nodes
+            groupNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
+            // walk through all groups in manifest
+            for (int i = 0; i < groupNodes.size(); i++) {
+                currentElement = (Element)groupNodes.get(i);
+                name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
+                name = OpenCms.getImportExportManager().translateGroup(name);  
+                description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                parentgroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
+                if ((parentgroup!=null) && (parentgroup.length()>0)) {
+                    parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
+                }
+                // import this group
+             
+                importGroup(name, description, flags, parentgroup);
+            }
 
+            // now try to import the groups in the stack
+            while (!m_groupsToCreate.empty()) {
+                Stack tempStack = m_groupsToCreate;
+                m_groupsToCreate = new Stack();
+                while (tempStack.size() > 0) {
+                    Hashtable groupdata = (Hashtable)tempStack.pop();
+                    name = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_NAME);
+                    description = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                    flags = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                    parentgroup = (String)groupdata.get(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP);
+                    // try to import the group
+                    importGroup(name, description, flags, parentgroup);
+                }
+            }
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
+    
+    /**
+     * Imports the OpenCms users.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected void importUsers() throws CmsException {
+        List userNodes;
+        List groupNodes;
+        Element currentElement, currentGroup;
+        Vector userGroups;
+        Hashtable userInfo = new Hashtable();
+        String  name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, pwd, infoNode;
+        // try to get the import resource
+        //getImportResource();
+        try {
+            // getAll user nodes
+            userNodes = m_docXml.selectNodes("//" + I_CmsConstants.C_EXPORT_TAG_USERDATA);
+            // walk threw all groups in manifest
+            for (int i = 0; i < userNodes.size(); i++) {
+                currentElement = (Element)userNodes.get(i);
+                name = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_NAME);
+                name = OpenCms.getImportExportManager().translateUser(name);              
+                // decode passwords using base 64 decoder
+                pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_PASSWORD);
+                password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
+                pwd = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_RECOVERYPASSWORD);
+                recoveryPassword = new String(Base64.decodeBase64(pwd.trim().getBytes()));
+
+                description = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESCRIPTION);
+                flags = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FLAGS);
+                firstname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_FIRSTNAME);
+                lastname = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_LASTNAME);
+                email = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_EMAIL);
+                address = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_ADDRESS);
+                section = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SECTION);
+                defaultGroup = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DEFAULTGROUP);
+                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                // get the userinfo and put it into the hashtable
+                infoNode = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_USERINFO);
+                try {
+                    // read the userinfo from the dat-file
+                    byte[] value = getFileBytes(infoNode);
+                    // deserialize the object
+                    ByteArrayInputStream bin = new ByteArrayInputStream(value);
+                    ObjectInputStream oin = new ObjectInputStream(bin);
+                    userInfo = (Hashtable)oin.readObject();
+                } catch (IOException ioex) {
+                    m_report.println(ioex);
+                }
+
+                // get the groups of the user and put them into the vector
+                groupNodes = currentElement.selectNodes("*/" + I_CmsConstants.C_EXPORT_TAG_GROUPNAME);
+                userGroups = new Vector();
+                for (int j = 0; j < groupNodes.size(); j++) {
+                    currentGroup = (Element)groupNodes.get(j);
+                    String userInGroup=CmsImport.getChildElementTextValue(currentGroup, I_CmsConstants.C_EXPORT_TAG_NAME);
+                    userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);  
+                    userGroups.addElement(userInGroup);
+                }
+                // import this user
+                importUser(name, description, flags, password, recoveryPassword, firstname, lastname, email, address, section, defaultGroup, type, userInfo, userGroups);
+            }
+        } catch (Exception exc) {
+            m_report.println(exc);
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
 }
