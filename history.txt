@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.43 Bela Tegeuse - ?? August 2001
+OpenCms 4.3.43 Bela Tegeuse - 03 August 2001
 - Added missing system-images.
 - Switched off some debug log-channels.
 
