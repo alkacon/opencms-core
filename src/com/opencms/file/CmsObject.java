@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.395 $
+* Date   : $Date: 2003/09/05 16:07:31 $
+* Version: $Revision: 1.396 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,21 +28,25 @@
 
 package com.opencms.file;
  
-import org.opencms.db.*;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.synchronize.CmsSynchronize;
-import org.opencms.workflow.*;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsCoreSession;
+import com.opencms.core.CmsCronEntry;
+import com.opencms.core.CmsCronTable;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
 import com.opencms.core.CmsExportResponse;
@@ -81,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.395 $
+ * @version $Revision: 1.396 $
  */
 public class CmsObject {
 
@@ -3880,7 +3884,7 @@ public class CmsObject {
     public CmsFolder rootFolder() throws CmsException {
         return (readFolder(I_CmsConstants.C_ROOT));
     }
-
+    
     /**
      * Returns a list of all currently logged in users.
      * This method is only allowed for administrators.
