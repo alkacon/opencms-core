@@ -44,7 +44,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/04 09:40:03 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/04 09:51:05 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -809,7 +809,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
 	 */
 	protected Element getProcessedData(String tag, Object callingObject, Object userObj) 
             throws CmsException {
-        Element dBlock = getData(tag);
+        Element dBlock = (Element)getData(tag).cloneNode(true);
         processNode(dBlock, m_mainProcessTags, null, callingObject, userObj);
         return dBlock;
 	}
