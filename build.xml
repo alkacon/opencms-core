@@ -21,6 +21,7 @@
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
     <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql_2_uncomp.jar"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>
+    <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>
     <property name="build.web"                  value="${build.home}/${app.name}"/>
     <property name="build.webinf"               value="${build.web}/WEB-INF"/>
     <property name="build.metainf"              value="${build.web}/META-INF"/>
@@ -59,7 +60,8 @@
                         ${build.inputlib.xerces}:
                         ${build.inputlib.oracle}:
                         ${build.inputlib.mysql}:
-                        ${build.inputlib.fop}"
+                        ${build.inputlib.fop}:
+                        ${build.inputlib.fesi}"
             debug="on"
             optimize="off"
             deprecation="off"
@@ -106,6 +108,7 @@
        <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.fesi}" todir="${build.oclib}"/>
 
        <copy todir="${build.webinf}">
             <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF"/>
