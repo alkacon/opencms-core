@@ -8,9 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.1.49 Arakis - xx January 2001
+OpenCms 4.1.49 Arakis - 09 January 2001
 
-* solved some problems with the download and picturegalerie and the new explorer.
+* Solved some problems with the download and picturegalerie and the new explorer.
+* Bugfixing login-screen.
+* Bugfixing javascript-code for the workplace.
 
 OpenCms 4.1.48 Arakis - 04 January 2001
 
