@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/03/13 11:24:23 $
-* Version: $Revision: 1.310 $
+* Date   : $Date: 2002/03/21 08:46:20 $
+* Version: $Revision: 1.311 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.310 $ $Date: 2002/03/13 11:24:23 $
+ * @version $Revision: 1.311 $ $Date: 2002/03/21 08:46:20 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7014,7 +7014,8 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
                 ((c < '0') || (c > '9')) &&
                 ((c < 'A') || (c > 'Z')) &&
                 (c != '-') && (c != '.') &&
-                (c != '_') && (c != '~')
+                (c != '_') && (c != '~') &&
+                (c != '$')
                 ) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                     CmsException.C_BAD_NAME);
