@@ -123,6 +123,27 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
 
 }
 
+function openwinfull(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
+{
+	if(w==0) w=screen.availWidth-20;
+	if(h==0) h=screen.availHeight-100;
+
+	workplace = window.open(url,name, 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+	if(workplace != null)
+	   {
+	      if (workplace.opener == null)
+	      {
+	         workplace.opener = self;
+	      }
+   		}
+	else
+	{
+		workplace.moveTo(0,0);
+	}
+	workplace.focus();
+	
+}
+
 //------------------------------------------------------------------------------------
 // open new window
 // m.schleich 26.01.2000
