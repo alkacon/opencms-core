@@ -203,7 +203,7 @@ function show_help()
 </table>
 <!-- End please wait text -->
 <table cellspacing=0 cellpadding=0 border=0>
-	<tr>
+	<tr><br><br>
 		<td><IMG width=]]><PROCESS>time</PROCESS><![CDATA[ height=20 border=0 hspace=0 src="]]><METHOD name="picsUrl">pixel_blue.gif</METHOD><![CDATA["></td>
 	</tr>
 </table>
