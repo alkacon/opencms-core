@@ -51,12 +51,22 @@ The default encoding of OpenCms is \texttt{ISO-8859-1},
 but you can also set another encoding supported by your Java VM, e.g. \texttt{UTF-8}. 
 In case you do not care about the encoding, the default is most likely what you need.
 
+\textbf{Setting the file encoding on Windows systems:} To avoid problems regarding the encoding, 
+run Tomcat in standalone mode and edit the properties of the shortcut 
+"Start Tomcat" in the start menu of Windows. Add the parameter \texttt{-Dfile.encoding=ISO-8859-1} to the command line behind the call of the java executable. 
+
+Here's an example of how the start command of Tomcat should look like after the modification: 
+\begin{verbatim}
+c:\j2sdk1.4.1\bin\java.exe -jar -Dfile.encoding=ISO-8859-1 
+-Duser.dir="C:\tomcat4" "C:\tomcat4\bin\bootstrap.jar" start
+\end{verbatim}
+
 \section{Install MySQL}
 Install MySQL from
 \rqhttp{http://www.mysql.com/downloads/index.html}{http://www.mysql.com/downloads/index.html}
 (see the MySQL documentation on
 \rqhttp{http://www.mysql.com/documentation/index.html}{http://www.mysql.com/documentation/index.html}).
-This release was tested with MySQL 3.23.x.
+This release was tested with MySQL 3.23.x and 4.0.x.
 
 Note: On Windows-based systems MySQL has to be installed on the
 \texttt{C:} drive and should be registered as service using
