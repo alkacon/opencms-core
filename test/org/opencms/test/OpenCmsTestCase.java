@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/11/25 13:04:33 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/11/26 12:42:50 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>${test.data.path}/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.3.5
  */
@@ -129,6 +129,9 @@ public class OpenCmsTestCase extends TestCase {
 
     /** The list of paths to the additional test data files. */
     private static List m_testDataPath;
+    
+    /** The additional connection name */
+    private static String m_additionalConnectionName = "additional";
 
     /** Class to bundle the connection information. */
     protected class ConnectionData {
@@ -235,6 +238,16 @@ public class OpenCmsTestCase extends TestCase {
     public static String getDbProduct() {
         
         return m_dbProduct;
+    }
+    
+    /**
+     * Sets the additional connection name.<p>
+     * 
+     * @param additionalConnectionName the additional connection name
+     */
+    public static void setConnectionName(String additionalConnectionName) {
+        
+        m_additionalConnectionName = additionalConnectionName;
     }
     
     /**
@@ -2562,7 +2575,7 @@ public class OpenCmsTestCase extends TestCase {
             m_defaultConnection.m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
             m_defaultConnection.m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
 
-            key = "additional";
+            key = m_additionalConnectionName;
             if (m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName") != null) {
                 m_additionalConnection = new ConnectionData();
                 m_additionalConnection.m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName");
