@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/06/12 16:32:26 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,10 +50,10 @@ import org.opencms.workplace.CmsWorkplaceAction;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2003/06/12 16:32:26 $
+ * @version $Revision: 1.50 $ $Date: 2003/06/25 13:52:24 $
  */
 
-public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
+public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
     /** Datablock value for checked */
     private static final String C_CHECKED = "CHECKED";
@@ -132,9 +132,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
 
     /** Datablock value for checkbox internal flag */
     private static final String C_LOCKDIALOG = "checklockdialog";
-
-    /** Constant for filter */
-    private static final String C_TASK_FILTER = "task.filter.";
 
     /** Constant for filter */
     private static final String C_SPACER = "------------------------------------------------";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/24 15:42:15 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2003/06/25 13:50:20 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.79 $ $Date: 2003/06/24 15:42:15 $
+ * @version $Revision: 1.80 $ $Date: 2003/06/25 13:50:20 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -2096,19 +2096,7 @@ class CmsShellCommands implements I_CmsConstants {
             CmsShell.printException(exc);
         }
     }
-
-    /**
-     * Reads a the online-project from the Cms.
-     */
-    public void onlineProject() {
-        try {
-            System.out.println(m_cms.onlineProject().toString());
-        }
-        catch(Exception exc) {
-            CmsShell.printException(exc);
-        }
-    }
-
+    
     /**
      * Prints help text when Shell is startet.
      */

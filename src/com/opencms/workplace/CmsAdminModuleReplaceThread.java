@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/02/28 13:03:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/25 13:52:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@ package com.opencms.workplace;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.report.A_CmsReportThread;
-import com.opencms.report.CmsHtmlReport;
-import com.opencms.report.I_CmsReport;
 
 import java.util.Vector;
 
@@ -41,7 +39,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -52,7 +50,6 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
     private Vector m_projectFiles;
     private I_CmsRegistry m_registry;
     private CmsObject m_cms;
-    private I_CmsReport m_report;
     private A_CmsReportThread m_deleteThread;
     private A_CmsReportThread m_importThread;
     private int m_phase;
@@ -78,8 +75,6 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
         m_registry = reg;
         m_conflictFiles = conflictFiles;
         m_projectFiles = projectFiles;
-        String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
-        m_report = new CmsHtmlReport(locale);
         m_deleteThread = new CmsAdminModuleDeleteThread(m_cms, m_registry, m_moduleName, m_conflictFiles, m_projectFiles, true);
         m_importThread = new CmsAdminModuleImportThread(m_cms, m_registry, m_moduleName, m_zipName, m_conflictFiles, m_projectFiles);
         if (DEBUG) System.err.println("CmsAdminModuleReplaceThread() constructed"); 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/24 15:43:24 $
-* Version: $Revision: 1.290 $
+* Date   : $Date: 2003/06/25 13:52:12 $
+* Version: $Revision: 1.291 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.290 $
+ * @version $Revision: 1.291 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -109,11 +109,6 @@ public class CmsObject implements I_CmsConstants {
      * The class for linkmanagement.
      */
     private LinkChecker m_linkChecker = null;
-
-    /**
-     * The class for processing links.
-     */
-    private LinkSubstitution m_linkSubstitution = null;
 
     /**
      * the modus the cmsObject runs in (used i.e. for static export)
@@ -2173,7 +2168,6 @@ public void init(CmsDriverManager driverManager, I_CmsRequest req, I_CmsResponse
     m_context.init(m_driverManager, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, directoryTranslator, fileTranslator);
     try {
         m_linkChecker = new LinkChecker();
-        m_linkSubstitution = new LinkSubstitution();
     } catch(java.lang.NoClassDefFoundError error) {
         // ignore this error - no substitution is needed here
     }
@@ -2361,18 +2355,6 @@ protected void doMoveFile(String source, String destination) throws CmsException
     m_driverManager.moveFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
 
-/**
- * Returns the online project.
- * <p>
- * This is the default project. All anonymous
- * (or guest) user will see the resources of this project.
- *
- * @return the online project object.
- * @throws CmsException if operation was not successful.
- */
-public CmsProject onlineProject() throws CmsException {
-    return (m_driverManager.onlineProject(m_context.currentUser(), m_context.currentProject()));
-}
 /**
  * Publishes a project.
  *

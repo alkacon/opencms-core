@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2003/04/09 14:04:04 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2003/06/25 13:51:59 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.w3c.dom.NodeList;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.69 $ $Date: 2003/04/09 14:04:04 $
+ * @version $Revision: 1.70 $ $Date: 2003/06/25 13:51:59 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConstants {
 
@@ -1048,8 +1048,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent implements I_CmsWpConsta
         }
         // now we have something for the tidy
         try{
-            LinkSubstitution sub = new LinkSubstitution();
-            copyOfContent = sub.substituteEditorContent(cms, copyOfContent, filePath, relativeRoot);
+            copyOfContent = LinkSubstitution.substituteEditorContent(cms, copyOfContent, filePath, relativeRoot);
         }catch(CmsException e){
             throw new CmsException("["+this.getClass().getName()+"] cant parse the content:", e);
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/05/16 14:49:01 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/06/25 13:50:29 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,12 +45,6 @@ import java.util.Vector;
 
 
 public class CmsChannelBackoffice extends A_CmsBackoffice{
-
-    /** Default value of permission*/
-    protected final static int C_DEFAULT_PERMISSIONS=383;
-    
-    // possible accessflags
-    protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256"};
     
     /**
      * The COS channel.

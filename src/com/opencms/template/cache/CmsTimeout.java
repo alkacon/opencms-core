@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsTimeout.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/06/25 13:51:59 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,9 +41,6 @@ package com.opencms.template.cache;
 
 public class CmsTimeout {
 
-    // indicates the mode this CmsTimeout is running in
-    private int modus;
-
     // USED FOR MODUS 0
     // this is time a element is valid (in millisec)
     private long m_timeinterval;
@@ -54,7 +51,6 @@ public class CmsTimeout {
 
     // Constructor for modus 0
     public CmsTimeout(int minutes) {
-        modus = 0;
         m_timeinterval = minutes * 60 * 1000;
     }
 

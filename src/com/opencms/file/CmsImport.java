@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/16 13:37:22 $
-* Version: $Revision: 1.97 $
+* Date   : $Date: 2003/06/25 13:52:12 $
+* Version: $Revision: 1.98 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.97 $ $Date: 2003/06/16 13:37:22 $
+ * @version $Revision: 1.98 $ $Date: 2003/06/25 13:52:12 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -1290,8 +1290,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                         templateString = editString;
                         // substitute the links in the <template> tag String
                         try {
-                            LinkSubstitution sub = new LinkSubstitution();
-                            templateString = sub.substituteContentBody(templateString, m_webappUrl, fileName);
+                            templateString = LinkSubstitution.substituteContentBody(templateString, m_webappUrl, fileName);
                         } catch (CmsException e) {
                             throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
                         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:23 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/06/25 13:50:29 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,101 +49,9 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2003/01/20 23:59:23 $
+ * @version $Revision: 1.16 $ $Date: 2003/06/25 13:50:29 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
-
-    /** Name of the select box */
-    public static final String C_SELECTBOX_NAME = "name";
-
-    /** Size of the select box */
-    public static final String C_SELECTBOX_SIZE = "size";
-
-    /** Div flag of the select box */
-    public static final String C_SELECTBOX_DIV = "div";
-
-    /** Stylesheet class string of the select box */
-    public static final String C_SELECTBOX_CLASS = "class";
-
-    /** Stylesheet class name of the select box */
-    public static final String C_SELECTBOX_CLASSNAME = "classname";
-
-    /** Stylesheet class name of the select box */
-    public static final String C_SELECTBOX_WIDTHNAME = "widthname";
-
-    /** Width of the select box */
-    public static final String C_SELECTBOX_WIDTH = "width";
-
-    /** Onchange of the select box */
-    public static final String C_SELECTBOX_ONCHANGE = "onchange";
-
-    /** Method of the select box */
-    public static final String C_SELECTBOX_METHOD = "method";
-
-    /** option name of the select box */
-    public static final String C_SELECTBOX_OPTIONNAME = "name";
-
-    /** option value of the select box */
-    public static final String C_SELECTBOX_OPTIONVALUE = "value";
-
-    // Parameters for radiobuttons
-
-    /** Name of the radio buttons */
-    public static final String C_RADIO_RADIONAME = "radioname";
-
-    /** Name of the radio button value */
-    public static final String C_RADIO_NAME = "name";
-
-    /** Name of the radio button link */
-    public static final String C_RADIO_LINK = "link";
-
-    /** Stylesheet class string of the radio button */
-    public static final String C_RADIO_CLASS = "class";
-
-    /** Stylesheet class name of the radio button */
-    public static final String C_RADIO_CLASSNAME = "classname";
-
-    /** Datablock conatining the "checked" option*/
-    public static final String C_RADIO_SELECTEDOPTION = "optionalselected";
-
-    /** Datablock conatining the optional entry for the "checked" option */
-    public static final String C_RADIO_SELECTEDENTRY = "selectedentry";
-
-    /** Method of the radio buttons */
-    public static final String C_RADIO_METHOD = "method";
-
-    /** Name of the radio ordering information */
-    public static final String C_RADIO_ORDER = "order";
-
-    /** Name of the select start tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_START = "selectbox.start";
-
-    /** Name of the select div start tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_START_DIV = "selectbox.startdiv";
-
-    /** Name of the select end tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_END = "selectbox.end";
-
-    /** Name of the selectbox "class" option tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_CLASS = "selectbox.class";
-
-    /** Name of the selectbox "width" option tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_WIDTH = "selectbox.width";
-
-    /** Name of the (select) option tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_OPTION = "selectbox.option";
-
-    /** Name of the (select) selected option tag in the input definiton template */
-    public static final String C_TAG_SELECTBOX_SELOPTION = "selectbox.seloption";
-
-    /** Name of the radio "class" option tag in the input definiton template */
-    public static final String C_TAG_RADIO_CLASS = "radiobuttons.class";
-
-    /** Name of the radion column entry tag in the input definiton template */
-    public static final String C_TAG_RADIO_COLENTRY = "radiobuttons.colentry";
-
-    /** Name of the radion row entry tag in the input definiton template */
-    public static final String C_TAG_RADIO_ROWENTRY = "radiobuttons.rowentry";
 
     /**
      * Default constructor.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/24 15:42:59 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/06/25 13:50:29 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,16 +54,11 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.27 $
- * $Date: 2003/06/24 15:42:59 $
+ * $Revision: 1.28 $
+ * $Date: 2003/06/25 13:50:29 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
-
-    /**
-     * The name of the "tablekey" for the channel id
-     */
-    private static final String C_TABLE_CHANNELID = I_CmsConstants.C_TABLE_CHANNELID;
 
     // definition of the error codes used by this content defintion
     private static String C_CHANNELNAME_ERRFIELD="channelname";

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
-* Date   : $Date: 2003/06/13 10:56:35 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2003/06/25 13:50:13 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,22 +39,18 @@ import java.io.*;
  * (de)activated by the log settings in the proerty file.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2003/06/13 10:56:35 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/25 13:50:13 $
  */
 public class CmsLog implements I_Logger {
 
     /** The internal m_logger */
     private LogWriter m_logger = null;
 
-    /** Shows if this log is m_active or not */
-    private boolean m_active = false;
-
     /** The main constructor */
     public CmsLog(String identifier, Configurations confs) {
         m_logger = null;
         try {
             m_logger = new LogWriter(identifier, confs);
-            m_active = m_logger.m_active;
         }
         catch(IOException e) {
             e.printStackTrace();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/06/12 16:32:26 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/06/25 13:52:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,9 +28,12 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsUser;
@@ -44,14 +47,12 @@ import com.opencms.util.LinkSubstitution;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 /**
  * Template class for displaying the login screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -227,7 +228,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         // set current project to the default online project or to 
         // project specified in the users preferences
-        int currentProject = cms.onlineProject().getId();
+        int currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         
         if ((startProjectId != null) && (! "".equals(startProjectId))) {
             // try to set project to id from parameters
@@ -249,11 +250,11 @@ public class CmsLoginNew extends CmsXmlTemplate {
         try {
             if (! cms.accessProject(currentProject)) {
                 // user has no access to the project
-                currentProject = cms.onlineProject().getId();
+                currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
             }
         } catch(Exception e) {
             // project will default to online project
-            currentProject = cms.onlineProject().getId();
+            currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         }
         
         // set the current project id

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTaskLog.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/06/25 13:52:12 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.flex.util.CmsUUID;
  * Describes a tasklog in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.11 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/25 13:52:12 $
  */
 public class CmsTaskLog implements I_CmsConstants {
 
@@ -51,11 +51,6 @@ public class CmsTaskLog implements I_CmsConstants {
      * The Description of the tasklog.
      */
     private String  m_Comment=null; 
-    
-    /**
-     * The Id of the corresponding task.
-     */
-    private int     m_Task = C_UNKNOWN_ID;
     
     /**
      * The Id Of the corresponding user.
@@ -75,7 +70,6 @@ public class CmsTaskLog implements I_CmsConstants {
                       java.sql.Timestamp starttime, int type){
         m_Id = id;
         m_Comment = comment;
-        m_Task = task;
         m_UserId = userId; 
         m_StartTime = starttime;
         m_Type = type;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSyncFolder.java,v $
-* Date   : $Date: 2003/06/12 16:32:26 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,21 +48,11 @@ import java.util.Vector;
  * <P>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.18 $ $Date: 2003/06/12 16:32:26 $
+ * @version $Revision: 1.19 $ $Date: 2003/06/25 13:52:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsSyncFolder extends CmsWorkplaceDefault implements I_CmsConstants {
-
-    /**
-     * The name of the synchronizationproject-property.
-     */
-    public static final String C_SYNCHRONISATION_PROJECT = "syncproject";
-
-    /**
-     * The name of the synchronizationresource-property.
-     */
-    static final String C_SYNCHRONISATION_RESOURCE = "syncresource";
 
     /**
      * The name of the tag for sync button.

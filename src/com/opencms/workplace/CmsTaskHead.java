@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2003/01/20 23:59:18 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,17 +46,12 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2003/01/20 23:59:18 $
+ * @version $Revision: 1.21 $ $Date: 2003/06/25 13:52:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsTaskHead extends CmsWorkplaceDefault implements I_CmsConstants {
-    
-    
-    /** Constant for filter */
-    private static final String C_TASK_FILTER = "task.filter.";
-    
-    
+       
     /** Constant for filter */
     private static final String C_SPACER = "------------------------------------------------";
     

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/06/16 16:19:39 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.68 $ $Date: 2003/06/16 16:19:39 $
+ * @version $Revision: 1.69 $ $Date: 2003/06/25 13:52:24 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -268,7 +268,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         content.append(");\n");
         // the onlineProject
         content.append("top.setOnlineProject(");
-        content.append(cms.onlineProject().getId());
+        content.append(I_CmsConstants.C_PROJECT_ONLINE_ID);
         content.append(");\n");
         // set the checksum for the tree
         content.append("top.setChecksum(");
@@ -457,7 +457,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             int startAt = 1;
             CmsUUID parentId = CmsUUID.getNullUUID();
             boolean grey = false;
-            int onlineProjectId = cms.onlineProject().getId();
+            int onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
             
             if(cms.getRequestContext().currentProject().isOnlineProject()) {
                 // all easy: we are in the onlineProject

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPublishProjectThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/06/25 13:52:24 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,11 @@ public class CmsAdminPublishProjectThread extends A_CmsReportThread {
 
     private int m_projectId;
     private CmsObject m_cms;
-    private I_CmsSession m_session;
     private I_CmsReport m_report;
 
     public CmsAdminPublishProjectThread(CmsObject cms, int projectId, I_CmsSession session) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
-        m_session = session;
         m_projectId = projectId;
         String locale = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
         m_report = new CmsHtmlReport(locale);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsByteArrayDataSource.java,v $
-* Date   : $Date: 2003/02/08 15:32:14 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/06/25 13:51:03 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,24 +43,24 @@ import javax.activation.DataSource;
  * 
  * @author $Author: a.kandzior $
  * 
- * @version $Revision: 1.3 $ $Date: 2003/02/08 15:32:14 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/25 13:51:03 $
  * 
  * @see com.opencms.defaults.CmsMail
  * @see <a href="http://java.sun.com/products/javamail/index.html">http://java.sun.com/products/javamail/index.html</a>
  */
 public class CmsByteArrayDataSource implements DataSource {
-    private byte[] data; // data
-    private String type; // content-type
+    private byte[] m_data; // data
+    private String m_type; // content-type
     
     /* Create a DataSource from a byte array */
     public CmsByteArrayDataSource(byte[] data, String type) {
-        this.data = data;
-        this.type = type;
+        m_data = data;
+        m_type = type;
     }
     
     /* Create a DataSource from an input stream */
     public CmsByteArrayDataSource(InputStream is, String type) {
-        this.type = type;
+        m_type = type;
         try {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             int ch;
@@ -70,7 +70,7 @@ public class CmsByteArrayDataSource implements DataSource {
                 // doing buffered reads, rather than one byte reads
                 os.write(ch);
             }
-            data = os.toByteArray();
+            m_data = os.toByteArray();
         }
         catch(IOException ioex) {
             
@@ -84,15 +84,15 @@ public class CmsByteArrayDataSource implements DataSource {
             // Assumption that the string contains only ASCII            
             // characters!  Otherwise just pass a charset into this            
             // constructor and use it in getBytes()
-            this.data = data.getBytes(encoding);
+            m_data = data.getBytes(encoding);
         }
         catch(UnsupportedEncodingException uex) {
-            this.data = data.getBytes();
+            m_data = data.getBytes();
         }
-        this.type = type;
+        m_type = type;
     }
     public String getContentType() {
-        return type;
+        return m_type;
     }
     
     /**
@@ -100,10 +100,10 @@ public class CmsByteArrayDataSource implements DataSource {
      * Note - a new stream must be returned each time.
      */
     public InputStream getInputStream() throws IOException {
-        if(data == null) {
+        if(m_data == null) {
             throw new IOException("no data");
         }
-        return new ByteArrayInputStream(data);
+        return new ByteArrayInputStream(m_data);
     }
     public String getName() {
         return "dummy";

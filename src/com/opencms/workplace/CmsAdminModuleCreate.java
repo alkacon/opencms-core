@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2003/02/18 14:32:07 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,22 +52,22 @@ import java.util.Vector;
  * @author Hanjo Riege
  */
 public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsConstants {
-    private final String C_PACKETNAME = "packetname";
-    private final String C_STEP = "step";
-    private final String C_VERSION = "version";
-    private final String C_MODULENAME = "modulename";
-    private final String C_DESCRIPTION = "description";
-    private final String C_VIEW = "view";
-    private final String C_ADMINPOINT = "adminpoint";
-    private final String C_MAINTENANCE = "maintenance";
-    private final String C_PUBLISHCLASS = "publishclass";    
-    private final String C_AUTHOR = "author";
-    private final String C_EMAIL = "email";
-    private final String C_DATE = "date";
-    private final String C_SESSION_DATA = "module_create_data";
-    private final String C_MODULE_TYPE = "moduletype";
-    private final String C_EXPORTCLASSES = "exportclasses";
-    private final String C_EXPORTLIB = "exportlib";
+    private final static String C_PACKETNAME = "packetname";
+    private final static String C_STEP = "step";
+    private final static String C_VERSION = "version";
+    private final static String C_MODULENAME = "modulename";
+    private final static String C_DESCRIPTION = "description";
+    private final static String C_VIEW = "view";
+    private final static String C_ADMINPOINT = "adminpoint";
+    private final static String C_MAINTENANCE = "maintenance";
+    private final static String C_PUBLISHCLASS = "publishclass";    
+    private final static String C_AUTHOR = "author";
+    private final static String C_EMAIL = "email";
+    private final static String C_DATE = "date";
+    private final static String C_MODULE_SESSION_DATA = "module_create_data";
+    private final static String C_MODULE_TYPE = "moduletype";
+    private final static String C_EXPORTCLASSES = "exportclasses";
+    private final static String C_EXPORTLIB = "exportlib";
         
     /**
      *  Checks if the name is correct.
@@ -165,7 +165,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     sessionData.put(C_EMAIL, getStringValue(email));
                     sessionData.put(C_DATE, getStringValue(createDate));
                     sessionData.put(C_MODULE_TYPE, getStringValue(moduleType));
-                    session.putValue(C_SESSION_DATA, sessionData);
+                    session.putValue(C_MODULE_SESSION_DATA, sessionData);
                     if(moduleExists) {
                         templateSelector = "errorexists";
                     }else {
@@ -284,8 +284,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }else {
                 if("fromerrorpage".equals(step)) {
-                    Hashtable sessionData = (Hashtable)session.getValue(C_SESSION_DATA);
-                    session.removeValue(C_SESSION_DATA);
+                    Hashtable sessionData = (Hashtable)session.getValue(C_MODULE_SESSION_DATA);
+                    session.removeValue(C_MODULE_SESSION_DATA);
                     templateDocument.setData(C_PACKETNAME, "");
                     templateDocument.setData(C_VERSION, (String)sessionData.get(C_VERSION));
                     templateDocument.setData(C_MODULENAME, (String)sessionData.get(C_MODULENAME));

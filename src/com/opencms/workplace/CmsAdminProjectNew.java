@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2003/02/15 11:14:53 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.73 $ $Date: 2003/02/15 11:14:53 $
+ * @version $Revision: 1.74 $ $Date: 2003/06/25 13:52:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -175,7 +175,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue(C_NEWTYPE);
             session.removeValue("lasturl");
             session.removeValue("newProjectCallingFrom");
-            reqCont.setCurrentProject(cms.onlineProject().getId());
+            reqCont.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
         String newName, newGroup, newDescription, newManagerGroup;
         int projectType = 0;
@@ -225,7 +225,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             xmlTemplateDocument.setData("doThis","");
         }
 
-        xmlTemplateDocument.setData("onlineId", "" + cms.onlineProject().getId());
+        xmlTemplateDocument.setData("onlineId", "" + I_CmsConstants.C_PROJECT_ONLINE_ID);
 
         newGroup = (String)parameters.get(C_PROJECTNEW_GROUP);
         newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);

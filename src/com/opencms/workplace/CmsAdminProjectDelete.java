@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.18 $ $Date: 2003/06/25 13:52:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -96,7 +96,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault implements I_CmsC
                 }
                 // change to the online-project, if needed.
                 if(project.equals(cms.getRequestContext().currentProject())) {
-                    cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+                    cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 }
                 A_CmsReportThread doDelete = new CmsAdminProjectDeleteThread(cms, Integer.parseInt(projectId), session);
                 doDelete.start();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.28 $ $Date: 2003/02/21 15:18:23 $
+ * @version $Revision: 1.29 $ $Date: 2003/06/25 13:52:24 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -179,7 +179,7 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
                 session.removeValue(C_SESSION_THREAD_ERROR);
             }
             if (projectType == C_PROJECT_TYPE_TEMPORARY) {
-                cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
+                cms.getRequestContext().setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
             }
             // first part of the publish: check for broken links
             A_CmsReportThread doCheck = new CmsAdminLinkmanagementThread(cms, projectId);

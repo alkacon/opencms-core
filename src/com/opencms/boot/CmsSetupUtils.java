@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/06/13 10:04:21 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/06/25 13:50:13 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,20 +52,13 @@ public class CmsSetupUtils {
 
     private String m_configFolder;
 
-    private String m_ocsetupFolder;
-
-    private String m_basePath;
-
     private Vector m_errors;
 
 
     /** Constructor */
     public CmsSetupUtils(String basePath) {
       m_errors = new Vector();
-      m_basePath = basePath;
-      m_ocsetupFolder = basePath + "WEB-INF/ocsetup/";
       m_configFolder = basePath + "WEB-INF/config/";
-
     }
 
     /**

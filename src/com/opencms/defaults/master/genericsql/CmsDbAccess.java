@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/06/16 13:35:44 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/06/25 13:50:29 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -841,12 +841,8 @@ public class CmsDbAccess {
         int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
         int offlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
-        try {
-            offlineProjectId = cms.getRequestContext().currentProject().getId();
-            onlineProjectId = cms.onlineProject().getId();
-        } catch(CmsException exc) {
-            // ignore the exception
-        }
+        offlineProjectId = cms.getRequestContext().currentProject().getId();
+        onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
 
         if(!isOnlineProject(cms)) {
             // this is an offline project -> compute if we have to return the

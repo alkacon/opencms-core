@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/06/25 13:52:24 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -122,7 +122,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault implements I_CmsCo
                 Vector wrongChecksum = new Vector();
                 Vector filesInUse = new Vector();
                 Vector resourcesForProject = new Vector();
-                reqCont.setCurrentProject(cms.onlineProject().getId());
+                reqCont.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
                 reg.deleteGetConflictingFileNames(moduleName, filesWithProperty, missingFiles, wrongChecksum, filesInUse, resourcesForProject);
                 session.putValue(C_SESSION_MODULENAME, moduleName);
                 session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);

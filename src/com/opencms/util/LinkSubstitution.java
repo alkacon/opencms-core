@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2003/04/01 15:20:17 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/06/25 13:51:03 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,7 +57,13 @@ public class LinkSubstitution {
      * Reference to the CmsElementCache object containing locators for all
      * URIs and elements in cache.
      */
-    private static Perl5Util c_perlUtil = null;
+    private static Perl5Util c_perlUtil = new Perl5Util();
+    
+    /**
+     * Hide constructor since this class contains only static methods.<p>
+     */
+    private LinkSubstitution() {
+    }
     
     /**
      * String to configure the CmsHtmlConverter
@@ -97,18 +103,13 @@ public class LinkSubstitution {
             "       <tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;&lt;![CDATA[$parameter$]]&gt;&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
             "   </replacetags>"+
             "</converterconfig>";
-     
-
-    public LinkSubstitution() {
-        c_perlUtil = new Perl5Util();
-    }
     
     /**
      * Parses the content of the body tag of a html page. It is the same as
      * substituteEditorContent except that it expects only the part of the
      * html page between the body tags.
      */
-    public String substituteEditorContentBody(CmsObject cms, String body) throws CmsException{
+    public static String substituteEditorContentBody(CmsObject cms, String body) throws CmsException{
 
         // we have to prepare the content for the tidy
         body = "<html><head></head><body>" + body + "</body></html>";
@@ -136,11 +137,11 @@ public class LinkSubstitution {
      * @param fileName the path and name of current file
      * @return String the converted content
      */
-    public String substituteEditorContent(CmsObject cms, String content)throws CmsException{
+    public static String substituteEditorContent(CmsObject cms, String content)throws CmsException{
         return substituteEditorContent(cms, content, null, null);
     }
 
-    public String substituteContentBody(String body, String webappUrl, String fileName) throws CmsException {
+    public static String substituteContentBody(String body, String webappUrl, String fileName) throws CmsException {
         
         // prepare the content for the JTidy
         body = "<html><head></head><body>" + body + "</body></html>";
@@ -162,7 +163,7 @@ public class LinkSubstitution {
         } catch (Exception e) {
             e.printStackTrace(System.err);
             throw new CmsException(
-                "[" + this.getClass().getName() + "] can't convert the editor content:" + e.toString());
+                "[LinkSubstitution] can't convert the editor content:" + e.toString());
         }
         // remove the preparetags
         int startIndex = body.indexOf("<body");
@@ -178,7 +179,7 @@ public class LinkSubstitution {
      * parses the html content from the editor. It replaces the links in <a href=""
      * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
      */
-    public String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot)throws CmsException{
+    public static String substituteEditorContent(CmsObject cms, String content, String path, String relativeRoot)throws CmsException{
         CmsHtmlConverter converter = new CmsHtmlConverter();
         String retValue = null;
         if(path == null || "".equals(path)){
@@ -200,7 +201,7 @@ public class LinkSubstitution {
             converter.setOriginalUrl(urltool);
             retValue = converter.convertHTML(content);
         }catch ( Exception e ){
-            throw new CmsException("["+this.getClass().getName()+"] can't convert the editor content:"+e.toString());
+            throw new CmsException("[LinkSubstitution] can't convert the editor content:"+e.toString());
         }
         return retValue;
     }

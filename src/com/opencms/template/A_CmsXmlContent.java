@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/06/25 13:51:59 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.73 $ $Date: 2003/05/15 12:39:35 $
+ * @version $Revision: 1.74 $ $Date: 2003/06/25 13:51:59 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels {
 
@@ -153,7 +153,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
     static private Hashtable m_filecache = new Hashtable();
 
     /** XML parser */
-    private static I_CmsXmlParser parser = new CmsXmlXercesParser();
+    private static I_CmsXmlParser m_parser = new CmsXmlXercesParser();
 
     private String m_newEncoding = null;
 
@@ -339,7 +339,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         m_cms = cms;
         m_filename = filename;
         try {
-            m_content = parser.createEmptyDocument(getXmlDocumentTagName());
+            m_content = m_parser.createEmptyDocument(getXmlDocumentTagName());
         }
         catch (Exception e) {
             throwException("Cannot create empty XML document for file " + m_filename + ". ", CmsException.C_XML_PARSING_ERROR);
@@ -661,7 +661,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @return currently used parser.
      */
     public static I_CmsXmlParser getXmlParser() {
-        return parser;
+        return m_parser;
     }
 
     /**
@@ -681,7 +681,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @param out Writer to print to.
      */
     public void getXmlText(Writer out) {
-        parser.getXmlText(m_content, out);
+        m_parser.getXmlText(m_content, out);
     }
 
     /**
@@ -693,18 +693,18 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      */
     public void getXmlText(Writer out, Node n) {
         Document tempDoc = (Document) m_content.cloneNode(false);
-        tempDoc.appendChild(parser.importNode(tempDoc, n));
-        parser.getXmlText(tempDoc, out);
+        tempDoc.appendChild(m_parser.importNode(tempDoc, n));
+        m_parser.getXmlText(tempDoc, out);
     }
 
     public void getXmlText(OutputStream out) {
-        parser.getXmlText(m_content, out, m_newEncoding);
+        m_parser.getXmlText(m_content, out, m_newEncoding);
     }
 
     public void getXmlText(OutputStream out, Node n) {
         Document tempDoc = (Document) m_content.cloneNode(false);
-        tempDoc.appendChild(parser.importNode(tempDoc, n));
-        parser.getXmlText(tempDoc, out, m_newEncoding);
+        tempDoc.appendChild(m_parser.importNode(tempDoc, n));
+        m_parser.getXmlText(tempDoc, out, m_newEncoding);
     }
 
     /**
@@ -1216,7 +1216,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
             workTag = tag;
         }
         // Import the node for later inserting
-        Element importedNode = (Element) parser.importNode(m_content, data);
+        Element importedNode = (Element) m_parser.importNode(m_content, data);
 
         // Check, if this is a simple datablock without hierarchy.
         if (workTag.indexOf(".") == -1) {
@@ -1355,7 +1355,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         // First parse the String for XML Tags and
         // get a DOM representation of the document
         try {
-            parsedDoc = parser.parse(content);
+            parsedDoc = m_parser.parse(content);
         }
         catch (Exception e) {
             // Error while parsing the document.
@@ -1593,7 +1593,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                                 for (int j = 0; j < numNewChilds; j++) {
 
                                     //insert = parser.importNode(m_content, newnodes.item(j));
-                                    insert = parser.importNode(child.getOwnerDocument(), newnodes.item(j));
+                                    insert = m_parser.importNode(child.getOwnerDocument(), newnodes.item(j));
                                     if (j == 0 && !newnodesAreAlreadyProcessed) {
                                         nextchild = insert;
                                     }
@@ -1868,7 +1868,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
                 int len = newNodes.getLength();
                 for (int i = 0; i < len; i++) {
                     Node newElement2 = (Node) newNodes.item(i).cloneNode(true);
-                    originalBlock.appendChild(parser.importNode(originalBlock.getOwnerDocument(), newElement2));
+                    originalBlock.appendChild(m_parser.importNode(originalBlock.getOwnerDocument(), newElement2));
                 }
             }
         }
@@ -1892,11 +1892,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         tempXmlString.append("]]>");
         tempXmlString.append("</" + tag + ">\n");
         tempXmlString.append("</" + getXmlDocumentTagName() + ">\n");
-        I_CmsXmlParser parser = getXmlParser();
         StringReader parserReader = new StringReader(tempXmlString.toString());
         Document tempDoc = null;
         try {
-            tempDoc = parser.parse(parserReader);
+            tempDoc = m_parser.parse(parserReader);
         }
         catch (Exception e) {
             throwException("PARSING ERROR! " + e.toString(), CmsException.C_XML_PARSING_ERROR);
@@ -2065,7 +2064,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
      * @return String encoding of XML document
      */
     public String getEncoding() {
-        return parser.getOriginalEncoding(m_content);
+        return m_parser.getOriginalEncoding(m_content);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsSynchronize.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/06/25 13:52:12 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * into the cms and back.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.16 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.17 $ $Date: 2003/06/25 13:52:12 $
  */
 public class CmsSynchronize implements I_CmsConstants{
 
@@ -148,7 +148,7 @@ public class CmsSynchronize implements I_CmsConstants{
         CmsFolder syncFolder = null;
         File startFolder = null;
         File sfsFile = null;
-        int onlineProject = m_cms.onlineProject().getId();
+        int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         startResource = m_cms.readFileHeader(resourceName);
         if (startResource == null || startResource.getProjectId() == onlineProject){
             throw new CmsException("["+this.getClass().getName()+"] "+resourceName, CmsException.C_NOT_FOUND);
