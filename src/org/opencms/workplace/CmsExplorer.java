@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/07/30 13:38:54 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/30 15:10:07 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.1
  */
@@ -87,7 +87,8 @@ public class CmsExplorer extends CmsWorkplace {
         if (mode != null) {
             settings.setExplorerMode(mode);
         } else {
-            if (! "projectview".equals(settings.getExplorerMode())) {
+            // null argument, use explorer view if no other view currently specified
+            if (! ("projectview".equals(settings.getExplorerMode()) || "galleryview".equals(settings.getExplorerMode()))) {
                 settings.setExplorerMode("explorerview");
             }
         }
@@ -187,7 +188,7 @@ public class CmsExplorer extends CmsWorkplace {
     public String getFileListFunction() { 
         boolean isInsideCurrentProject = false;       
         // if mode is "listonly", only the list will be shown
-        boolean listonly = "listonly".equals(getSettings().getExplorerMode()); 
+        boolean galleryView = "galleryview".equals(getSettings().getExplorerMode()); 
         // if mode is "projectview", all changed files in that project will be shown
         boolean projectView = "projectview".equals(getSettings().getExplorerMode());
         // if mode is "vfslinks", the vfs links to a target file will be shown
@@ -234,30 +235,24 @@ public class CmsExplorer extends CmsWorkplace {
         StringBuffer content = new StringBuffer(2048);
         content.append("function initialize() {\n");
 
-        if (listonly) {
-            content.append("top.openfolderMethod='openthisfolderflat';\n");
-        } else {
-            content.append("top.openfolderMethod='openthisfolder';\n");
-        }
-        
-//        if (projectView || vfslinkView) {
-//            content.append("top.projectView=true;\n");
+//        if (galleryView) {
+//            content.append("top.openfolderMethod='openthisfolderflat';\n");
 //        } else {
-//            content.append("top.projectView=false;\n");
+//            content.append("top.openfolderMethod='openthisfolder';\n");
 //        }
-
+        
         content.append("top.mode=\"");        
         content.append(getSettings().getExplorerMode());
         content.append("\";\n");
 
-        // the flaturl
-        if (getSettings().getExplorerFlaturl() != null) {
-            content.append("top.flaturl='");
-            content.append(getSettings().getExplorerFlaturl());
-            content.append("';\n");
-        } else if (!listonly) {
-            content.append("top.flaturl='';\n");
-        }
+//        // the flaturl
+//        if (getSettings().getExplorerFlaturl() != null) {
+//            content.append("top.flaturl='");
+//            content.append(getSettings().getExplorerFlaturl());
+//            content.append("';\n");
+//        } else if (!galleryView) {
+//            content.append("top.flaturl='';\n");
+//        }
 
         // the help_url
         content.append("top.head.helpUrl='explorer/index.html';\n");
@@ -274,8 +269,8 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(check);
         content.append(");\n");
         // set the writeAccess for the current Folder
-        boolean writeAccess = true;
-        if (! vfslinkView) {        
+        boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
+        if (writeAccess && (! vfslinkView)) {        
             try {
                 CmsFolder test = getCms().readFolder(currentFolder);
                 //writeAccess = test.getProjectId() == getSettings().getProject();
@@ -322,7 +317,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = C_ENTRYS_PER_PAGE;
         
-        if (!(listonly || projectView || vfslinkView)) {
+        if (!(galleryView || projectView || vfslinkView)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to splitt
@@ -477,13 +472,15 @@ public class CmsExplorer extends CmsWorkplace {
             // position 15: type of lock
             content.append(lock.getType());
             content.append(",");                
-            // position 16: name of project where resource belongs to            
+            // position 16: name of project where the resource is locked in         
             int lockedInProject = lock.isNullLock() ? getCms().getRequestContext().currentProject().getId() : lock.getProjectId();
             String lockedInProjectName = "";
-            try {
-                lockedInProjectName = getCms().readProject(lockedInProject).getName();
-            } catch (CmsException exc) {
-                // ignore the exception - this is an old project so ignore it
+            if (! lock.isNullLock()) {
+                try {
+                    lockedInProjectName = getCms().readProject(lockedInProject).getName();
+                } catch (CmsException exc) {
+                    // ignore the exception - this is an old project so ignore it
+                }
             }
             content.append("\"");
             content.append(lockedInProjectName);
@@ -502,7 +499,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         // now the tree, only if changed
-        if (newTreePlease && (!(listonly || vfslinkView))) {
+        if (newTreePlease && (!(galleryView || projectView || vfslinkView))) {
             content.append("\ntop.rT();\n");
             List tree = null;
             try {
@@ -544,18 +541,6 @@ public class CmsExplorer extends CmsWorkplace {
                 Hashtable idMixer = new Hashtable();
                 CmsFolder rootFolder = (CmsFolder)tree.get(0);
                 String folderToIgnore = null;
-                /*
-                if (! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
-                    //startAt = 2;
-                    grey = false;
-//                    CmsFolder folder = (CmsFolder)tree.get(1);
-//                    CmsUUID id = rootFolder.getId();
-//                    idMixer.put(folder, id);
-                } else {
-                    grey = true;
-                }
-                */
-                
                 if (getCms().isInsideCurrentProject(rootFolder)) {
                     grey = false;
                 } else {
@@ -622,17 +607,11 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
         
-//        if (listonly || projectView) {
-//            // only show the filelist
-//            content.append("top.dUL(document);\n");
-//        } else {
-//            // update all frames
         content.append("top.dU(document,");
         content.append(numberOfPages);
         content.append(",");
         content.append(selectedPage);
         content.append("); \n");
-//        }
         
         content.append("}\n");
         return content.toString();
