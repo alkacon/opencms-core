@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/09 08:10:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2001/07/10 15:44:47 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -524,10 +524,6 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	*/
 	public void deleteResource(CmsObject cms, String folder) throws CmsException{
 
-       // do not delete all subresources because only empty folders or folders
-       // with deleted subresources can be deleted
-       // we have to delete the folder and all resources in the folder
-       /*
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
         getAllResources(cms, folder, allSubFiles, allSubFolders);
@@ -545,7 +541,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 cms.doDeleteFolder(curFolder.getAbsolutePath());
             }
         }
-        */
+
         // finaly the folder
         cms.doDeleteFolder(folder);
         // delete the corresponding folder in /content/bodys/
