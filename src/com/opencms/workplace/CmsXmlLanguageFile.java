@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/10/02 11:45:22 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.26 $ $Date: 2001/10/02 11:45:22 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -262,7 +262,6 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
     private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
         Vector langFiles = new Vector();
 
-        //langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
         langFiles = cms.getFilesInFolder(m_languagePath + language + "/");
 
         // get all modules-language Files
@@ -280,8 +279,14 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         for(int i = 0;i < langFiles.size();i++) {
             file = (CmsFile)langFiles.elementAt(i);
             if(file.getState() != C_STATE_DELETED) {
-                init(cms, file.getAbsolutePath());
-                readIncludeFile(file.getAbsolutePath());
+                try {
+                    init(cms, file.getAbsolutePath());
+                    readIncludeFile(file.getAbsolutePath());
+                } catch(Exception exc) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                        A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error merging language file: " + file.getAbsolutePath());
+                    }
+                }
             }
         }
     }
