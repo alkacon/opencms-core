@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/05/09 10:02:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/05/18 12:23:08 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,6 +37,8 @@ import java.util.*;
 import java.io.*;
 import javax.servlet.http.*;
 
+import org.apache.xml.serialize.*;
+
 /**
  * News administration template class
  * <p>
@@ -44,7 +46,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/05/09 10:02:57 $
+ * @version $Revision: 1.12 $ $Date: 2000/05/18 12:23:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -66,6 +68,9 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 
     /** Definition of the Datablock NEW_DISABLED */   
     private final static String C_NEW_DISABLED="NEW_DISABLED"; 
+	
+	/** Definition of the protocol to be used in the URL string */   
+	private final static String C_URL_PROTOCOL="http://"; 
     
     /**
      * Indicates if the results of this class are cacheable.
@@ -117,8 +122,15 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         String newShorttext = (String)parameters.get(C_NEWS_PARAM_SHORTTEXT);
         String newText = (String)parameters.get(C_NEWS_PARAM_TEXT);
         String newExternalLink = (String)parameters.get(C_NEWS_PARAM_EXTLINK);
+		
+		//no URL is specified 
+		if (newExternalLink != null && !"".equals(newExternalLink)) {
+			if (newExternalLink.equals(C_URL_PROTOCOL)) {
+				newExternalLink = "";
+			}
+		}
         String newState = (String)parameters.get(C_NEWS_PARAM_STATE);
-
+		
         // load the template file of the news admin screen
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
@@ -312,7 +324,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
     public String getExternalLink(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
         String result = (String)parameters.get(C_NEWS_PARAM_EXTLINK);
         if(result == null || "".equals(result)) {
-            result = "http://";
+            result = "";
         }
         return result;
     }
@@ -605,7 +617,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
             // only set date if given
             newsFile.setNewsDate(date);
         }
-        
+		
         // Divide the text into separate lines.
         BufferedReader br = new BufferedReader(new StringReader(text));
         String lineStr = null;
@@ -633,7 +645,7 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         newsFile.setNewsHeadline(headline);
         newsFile.setNewsShortText(shorttext);
         newsFile.setNewsText(paragraphs);
-        newsFile.setNewsExternalLink(extlink);               
+		newsFile.setNewsExternalLink(extlink);               
         newsFile.setNewsActive(C_NEWS_STATE_ACTIVE.equals(state));
         newsFile.write();
     }            

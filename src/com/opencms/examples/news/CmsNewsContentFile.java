@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsContentFile.java,v $
- * Date   : $Date: 2000/04/04 09:59:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/05/18 12:23:08 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import org.xml.sax.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2000/04/04 09:59:22 $
+ * @version $Revision: 1.2 $ $Date: 2000/05/18 12:23:08 $
  */
  public class CmsNewsContentFile extends A_CmsXmlContent implements I_CmsNewsConstants {
 
@@ -99,7 +99,12 @@ import org.xml.sax.*;
      * @return Author
      */
     public String getNewsAuthor() throws CmsException{
-        return getDataValue(C_NEWS_XML_AUTHOR);
+		String parValue = getDataValue(C_NEWS_XML_AUTHOR);
+		//Xml-encode string for processing 
+		if (parValue != null && !"".equals(parValue)) {
+			parValue = Encoder.escapeXml(parValue);
+		}
+        return parValue;
     }
 
     /**
@@ -115,7 +120,12 @@ import org.xml.sax.*;
      * @return Headline
      */
     public String getNewsHeadline() throws CmsException{
-        return getDataValue(C_NEWS_XML_HEADLINE);
+        String parValue = getDataValue(C_NEWS_XML_HEADLINE);
+		//Xml-encode string for processing 
+		if (parValue != null && !"".equals(parValue)) {
+			parValue = Encoder.escapeXml(parValue);
+		}
+        return parValue;
     }
 
     /**
@@ -177,7 +187,11 @@ import org.xml.sax.*;
             Node loop = articleChilds.item(i);
             if(loop.getNodeType() == loop.ELEMENT_NODE && loop.getNodeName().toLowerCase().equals("paragraph")) {
                 String parValue = Utils.removeLineBreaks(getTagValue((Element)loop));
-                if(result == null) {
+                //Xml-encode string for processing 
+				if (parValue != null && !"".equals(parValue)) {
+					parValue = Encoder.escapeXml(parValue);
+				}
+				if(result == null) {
                     result = new StringBuffer(parValue);
                 } else {
                     result.append(paragraphSeparator);
@@ -188,6 +202,7 @@ import org.xml.sax.*;
         if(result == null) {
             return "";
         } else {
+			System.err.println("!!![CmsNewsContentFile:TEXTOUTPUT]!!!: " + result.toString());
             return result.toString();
         }
     }
@@ -222,7 +237,13 @@ import org.xml.sax.*;
      * @return Article short text.
      */
     public String getNewsShortText() throws CmsException {
-        return Utils.removeLineBreaks(getDataValue(C_NEWS_XML_SHORTTEXT));
+		String parValue = Utils.removeLineBreaks(getDataValue(C_NEWS_XML_SHORTTEXT));
+        
+		//Xml-encode string for processing 
+		if (parValue != null && !"".equals(parValue)) {
+			parValue = Encoder.escapeXml(parValue);
+		}
+		return parValue;
     }
 
     /**
