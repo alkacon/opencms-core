@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/11/12 17:31:48 $
- * Version: $Revision: 1.215 $
+ * Date   : $Date: 2004/11/12 17:44:20 $
+ * Version: $Revision: 1.216 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.215 $ $Date: 2004/11/12 17:31:48 $
+ * @version $Revision: 1.216 $ $Date: 2004/11/12 17:44:20 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -381,6 +381,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(runtimeInfo, project);
 
+            // read the parent id
+            String parentId = internalReadParentId(runtimeInfo, project.getId(), resource.getRootPath());
+            
             // write the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, newStructureId.toString());
@@ -389,6 +392,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(4, newState);
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
+            stmt.setString(7, parentId);
             stmt.executeUpdate();
 
             m_sqlManager.closeAll(null, null, stmt, null);
@@ -630,25 +634,6 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * Filters all resources that are marked as undeleted.<p>
-     * 
-     * @param resources list of resources
-     * @return all resources that are markes as deleted
-     */
-//    protected List internalFilterUndeletedResources(List resources) {
-//        List undeletedResources = new ArrayList();
-//
-//        for (int i = 0; i < resources.size(); i++) {
-//            CmsResource resource = (CmsResource)resources.get(i);
-//            if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
-//                undeletedResources.add(resource);
-//            }
-//        }
-//
-//        return undeletedResources;
-//    }
-
-    /**
      * Removes a resource physically in the database.<p>
      * 
      * @param runtimeInfo a Cms runtimeInfo
@@ -717,8 +702,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
              
             query = m_sqlManager.readQuery(currentProject, "C_RESOURCES_GET_SUBRESOURCES") + " " + resourceTypeClause + " " + orderClause;
             stmt = m_sqlManager.getPreparedStatementForSql(conn, query);
-            stmt.setString(1, resource.getRootPath()+"_%");
-            stmt.setString(2, resource.getRootPath()+"_%/_%");
+            stmt.setString(1, resource.getStructureId().toString());
             res = stmt.executeQuery();
 
             while (res.next()) {
@@ -1720,7 +1704,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } else {
             resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
             structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
-        }
+        }       
         
         try {
             conn = m_sqlManager.getConnection(runtimeInfo, project);
@@ -1738,6 +1722,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             
             m_sqlManager.closeAll(null, null, stmt, null);
 
+            // read the parent id
+            String parentId = internalReadParentId(runtimeInfo, project.getId(), resourcePath);
+            
             // update the structure
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE");
             stmt.setString(1, resource.getResourceId().toString());
@@ -1745,7 +1732,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(3, structureState);
             stmt.setLong(4, resource.getDateReleased());
             stmt.setLong(5, resource.getDateExpired());
-            stmt.setString(6, resource.getStructureId().toString());
+            stmt.setString(6, parentId);
+            stmt.setString(7, resource.getStructureId().toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1810,7 +1798,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.executeUpdate();
 
                 m_sqlManager.closeAll(null, null, stmt, null);
-
+                
+                // read the parent id
+                String parentId = internalReadParentId(runtimeInfo, onlineProject.getId(), resourcePath);
+                
                 // update the online structure record
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_STRUCTURE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
@@ -1818,7 +1809,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
                 stmt.setLong(4, offlineResource.getDateReleased());
                 stmt.setLong(5, offlineResource.getDateExpired());
-                stmt.setString(6, offlineResource.getStructureId().toString());
+                stmt.setString(6, parentId);
+                stmt.setString(7, offlineResource.getStructureId().toString());
                 stmt.executeUpdate();
                 
             } else {
@@ -1830,7 +1822,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     resourceSize = offlineResource.getLength();
                     createContent(runtimeInfo, onlineProject, offlineResource.getResourceId(), ((CmsFile)offlineResource).getContents(), 0);
                 }
-
+                
                 // create the resource record online
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_WRITE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
@@ -1847,6 +1839,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.executeUpdate();
 
                 m_sqlManager.closeAll(null, null, stmt, null);
+                
+                // read the parent id
+                String parentId = internalReadParentId(runtimeInfo, onlineProject.getId(), resourcePath);
 
                 // create the structure record online
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_STRUCTURE_WRITE");
@@ -1856,6 +1851,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
                 stmt.setLong(5, offlineResource.getDateReleased());
                 stmt.setLong(6, offlineResource.getDateExpired());
+                stmt.setString(7, parentId);
                 stmt.executeUpdate();
             }
         } catch (SQLException e) {
@@ -2291,6 +2287,10 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
 
         try {
+            
+            // read the parent id
+            String parentId = internalReadParentId(runtimeInfo, project.getId(), resourcePath);
+                        
             conn = m_sqlManager.getConnection(runtimeInfo, project);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
             stmt.setString(1, newStructureId.toString());
@@ -2299,10 +2299,11 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(4, newState);
             stmt.setLong(5, resource.getDateReleased());
             stmt.setLong(6, resource.getDateExpired());
+            stmt.setString(7, parentId);
             stmt.executeUpdate();
             
             m_sqlManager.closeAll(null, null, stmt, null);
-
+            
             if (!validateResourceIdExists(runtimeInfo, project.getId(), resource.getResourceId())) {
 
                 // create the resource record
@@ -2374,7 +2375,50 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
 
         return readResource(runtimeInfo, project.getId(), newStructureId, false);
-    }    
+    }   
+    
+    /**
+     * Returns the parent id of the given resource.<p>
+     * 
+     * @param runtimeInfo the current runtime info
+     * @param projectId the current project id 
+     * @param resourcename the resource name to read the parent id for
+     * @return  the parent id of the given resource
+     * @throws CmsException if something goes wrong
+     */
+    protected String internalReadParentId(I_CmsRuntimeInfo runtimeInfo, int projectId, String resourcename) throws CmsException {
+
+        if ("/".equals(resourcename)) {
+            return CmsUUID.getNullUUID().toString();
+        }
+        
+        String parent = CmsResource.getParentFolder(resourcename);
+        parent = removeTrailingSeparator(parent);
+        
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        try {
+            conn = m_sqlManager.getConnection(runtimeInfo, projectId);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_PARENT_STRUCTURE_ID");
+            stmt.setString(1, parent);            
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                return res.getString(1);
+            }
+            
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } catch (Exception ex) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, ex, false);
+        } finally {
+            m_sqlManager.closeAll(runtimeInfo, conn, stmt, res);
+        }
+        
+        throw new CmsVfsResourceNotFoundException("Unable to read parent id of resource " + resourcename);
+    }
 
     /**
      * Removes a trailing separater from a path if required.<p>
