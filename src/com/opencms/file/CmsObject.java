@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/05 16:07:31 $
-* Version: $Revision: 1.396 $
+* Date   : $Date: 2003/09/08 09:02:08 $
+* Version: $Revision: 1.397 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -45,8 +44,6 @@ import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsCoreSession;
-import com.opencms.core.CmsCronEntry;
-import com.opencms.core.CmsCronTable;
 import com.opencms.core.CmsException;
 import com.opencms.core.CmsExportRequest;
 import com.opencms.core.CmsExportResponse;
@@ -85,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.396 $
+ * @version $Revision: 1.397 $
  */
 public class CmsObject {
 
@@ -143,6 +140,7 @@ public class CmsObject {
      * @param user the current user for this request
      * @param projectId the current projectId for this request
      * @param site the current site root of the user
+     * @param sessionStorage the core session
      * @param directoryTranslator Translator for directories (file with full path)
      * @param fileTranslator Translator for new file names (without path)
      * @throws CmsException if operation was not successful.
@@ -172,7 +170,7 @@ public class CmsObject {
     /**
      * Accept a task from the Cms.
      *
-     * @param taskid the id of the task to accept.
+     * @param taskId the id of the task to accept.
      *
      * @throws CmsException if operation was not successful.
      */
@@ -332,15 +330,13 @@ public class CmsObject {
     }
 
     /**
-     * Creates a backup of the published project
+     * Creates a backup of the published project.<p>
      *
-     * @param project The project in which the resource was published.
-     * @param projectresources The resources of the project
+     * @param projectId The id of the project in which the resource was published
      * @param versionId The version of the backup
      * @param publishDate The date of publishing
-     * @param userId The id of the user who had published the project
      *
-     * @throws CmsException Throws CmsException if operation was not succesful.
+     * @throws CmsException Throws CmsException if operation was not succesful
      */
     public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
         CmsProject backupProject = m_driverManager.readProject(projectId);
@@ -350,13 +346,13 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName			name of the resource
-     * @param principalType			the type of the principal (currently group or user)
-     * @param principalName			name of the principal
-     * @param allowedPermissions	bitset of allowed permissions
-     * @param deniedPermissions		bitset of denied permissions
-     * @param flags					flags
-     * @throws CmsException			if something goes wrong
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
+     * @param allowedPermissions bitset of allowed permissions
+     * @param deniedPermissions bitset of denied permissions
+     * @param flags flags
+     * @throws CmsException if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
@@ -380,11 +376,11 @@ public class CmsObject {
     /**
      * Changes the access control for a given resource and a given principal(user/group).
      * 
-     * @param resourceName	name 	of the resource
-     * @param principalType			the type of the principal (group or user)
-     * @param principalName	name 	of the principal
-     * @param permissionString		the permissions in the format ((+|-)(r|w|v|c|i))*
-     * @throws CmsException			if something goes wrong
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (group or user)
+     * @param principalName name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @throws CmsException if something goes wrong
      */
     // TODO: find a better mechanism to select the principalType
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
@@ -407,11 +403,11 @@ public class CmsObject {
 
     /**
      * Changes the project-id of a resource to the new project
-    	 * for publishing the resource directly.<p>
+     * for publishing the resource directly.<p>
      *
-    	 * @param projectId The new project-id
+     * @param projectId The new project-id
      * @param resourcename The name of the resource to change
-    	 * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
@@ -423,6 +419,7 @@ public class CmsObject {
      *
      * @param userId The id of the user to change
      * @param userType The new type of the user
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(CmsUUID userId, int userType) throws CmsException {
         m_driverManager.changeUserType(m_context, userId, userType);
@@ -433,6 +430,7 @@ public class CmsObject {
      *
      * @param username The name of the user to change
      * @param userType The new type of the user
+     * @throws CmsException if something goes wrong
      */
     public void changeUserType(String username, int userType) throws CmsException {
         m_driverManager.changeUserType(m_context, username, userType);
@@ -441,16 +439,23 @@ public class CmsObject {
     /**
      * Does nothing.<p>
      *
+     * @param filename the name of the file
+     * @param newGroup the name of the new group
+     * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup) throws CmsException {}
+    public void chgrp(String filename, String newGroup) throws CmsException { }
 
     /**
      * Does nothing.<p>
      *
+     * @param filename the name of the file
+     * @param newGroup the name of the new group
+     * @param chRekursive flag to change subresources, too
+     * @throws CmsException if something goes wrong
      * @deprecated the VFS now uses ACL's instead of user/group/permissions
      */
-    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {}
+    public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException { }
 
     /**
      * Does nothing.<p>
