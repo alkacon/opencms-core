@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/09/06 13:21:15 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/09/28 10:05:24 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.38 $ $Date: 2001/09/06 13:21:15 $
+ * @version $Revision: 1.39 $ $Date: 2001/09/28 10:05:24 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -2651,6 +2651,33 @@ public class CmsShellCommands implements I_CmsConstants {
         }
     }
 
+    /**
+     * Returns a user object.<P/>
+     *
+     * @param username The name of the user that is to be read.
+     */
+    public void readWebUser(String username) {
+        try {
+            System.out.println(m_cms.readWebUser(username));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+
+    /**
+     * Returns a user object.<P/>
+     *
+     * @param username The name of the user that is to be read.
+     */
+    public void readWebUser(String username, String password) {
+        try {
+            System.out.println(m_cms.readWebUser(username, password));
+        }
+        catch(Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
     /**
      * Reactivates a task from the Cms.
      *

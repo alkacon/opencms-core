@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/09/21 06:34:29 $
-* Version: $Revision: 1.189 $
+* Date   : $Date: 2001/09/28 10:05:49 $
+* Version: $Revision: 1.190 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.189 $ $Date: 2001/09/21 06:34:29 $
+ * @version $Revision: 1.190 $ $Date: 2001/09/28 10:05:49 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -3043,6 +3043,43 @@ public CmsUser readUser(String username, int type) throws CmsException {
  */
 public CmsUser readUser(String username, String password) throws CmsException {
     return (m_rb.readUser(m_context.currentUser(), m_context.currentProject(), username, password));
+}
+
+/**
+ * Returns a user object if the password for the user is correct.<P/>
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The username of the user that is to be read.
+ * @return User
+ *
+ * @exception CmsException  Throws CmsException if operation was not succesful
+*/
+public CmsUser readWebUser(String username)
+        throws CmsException{
+    return (m_rb.readWebUser(m_context.currentUser(), m_context.currentProject(), username));
+}
+
+/**
+ * Returns a user object if the password for the user is correct.<P/>
+ *
+ * <B>Security:</B>
+ * All users are granted.
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The username of the user that is to be read.
+ * @param password The password of the user that is to be read.
+ * @return User
+ *
+ * @exception CmsException  Throws CmsException if operation was not succesful
+ */
+public CmsUser readWebUser(String username, String password)
+        throws CmsException{
+    return (m_rb.readWebUser(m_context.currentUser(), m_context.currentProject(), username, password));
 }
 /**
  * Reactivates a task from the Cms.
