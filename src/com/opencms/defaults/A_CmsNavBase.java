@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
- * Date   : $Date: 2000/03/29 15:22:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/04/03 13:21:31 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.1 $ $Date: 2000/03/29 15:22:46 $
+ * @version $Revision: 1.2 $ $Date: 2000/04/03 13:21:31 $
  */
 public abstract class A_CmsNavBase extends CmsXmlTemplate {	
 	
@@ -57,11 +57,10 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      */
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
-    }		
-
+    }	
 	
 	/** 
-	 * gets the navigation.
+	 * gets the root folder.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -70,11 +69,11 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      * @return byte[] with the content of this subelement.
      * @exception CmsException
      */
-    protected abstract Object getNav(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    protected abstract Object getFolderRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException;
 	
 	/** 
-	 * gets the root path.
+	 * gets the current folder.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -83,7 +82,73 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      * @return byte[] with the content of this subelement.
      * @exception CmsException
      */
-    protected abstract Object getRootFolder(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    protected abstract Object getFolderCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the navigation of current folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getNavCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the navigation of root folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getNavRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the navigation of parent folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getNavParent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the navigation of all folder.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getNavTree(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+		
+	
+	/** 
+	 * gets the root page.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPageRoot(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException;
 	
 	/** 
@@ -96,11 +161,11 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      * @return byte[] with the content of this subelement.
      * @exception CmsException
      */
-    protected abstract Object getCurrentFolder(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    protected abstract Object getPageCurrent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException;
 	
 	/** 
-	 * gets the link on current Page.
+	 * gets the next page.
 	 * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -109,8 +174,35 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
      * @return byte[] with the content of this subelement.
      * @exception CmsException
      */
-    protected abstract Object getCurrentPage(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    protected abstract Object getPageNext(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException;
+	
+	/** 
+	 * gets the previous page.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPagePrevious(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
+	/** 
+	 * gets the parent page.
+	 * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+     * @param userObj Hashtable with parameters.
+     * @return byte[] with the content of this subelement.
+     * @exception CmsException
+     */
+    protected abstract Object getPageParent(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+            throws CmsException;
+	
 	
 	/**
 	 * Sorts the navigation.
@@ -124,6 +216,7 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
 	{
 		quickSort(0, size-1, navLink, navText, navPos);
 	}
+		
 	
 	/**
 	 * Sorts the navigation according to Quicksort method.
@@ -197,5 +290,5 @@ public abstract class A_CmsNavBase extends CmsXmlTemplate {
 		String navLinkTemp=navLink[dex1];
 		navLink[dex1]=navLink[dex2];
 		navLink[dex2]=navLinkTemp;		
-	}	
+	}
 }
