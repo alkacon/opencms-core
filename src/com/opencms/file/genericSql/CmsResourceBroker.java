@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/08/31 13:32:11 $
-* Version: $Revision: 1.267 $
+* Date   : $Date: 2001/09/03 11:42:23 $
+* Version: $Revision: 1.268 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.267 $ $Date: 2001/08/31 13:32:11 $
+ * @version $Revision: 1.268 $ $Date: 2001/09/03 11:42:23 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -5100,7 +5100,14 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         group=(CmsGroup)m_groupCache.get(project.getGroupId());
 
         if (group== null) {
-            group=m_dbAccess.readGroup(project.getGroupId()) ;
+            try {
+                group=m_dbAccess.readGroup(project.getGroupId()) ;
+            } catch(CmsException exc) {
+                if(exc.getType() == exc.C_NO_GROUP) {
+                    // the group does not exist any more - return a dummy-group
+                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getGroupId() + "", "deleted group", 0);
+                }
+            }
             m_groupCache.put(project.getGroupId(),group);
         }
 
@@ -5153,8 +5160,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject,
                                CmsTask task)
         throws CmsException {
-        // TODO: To be implemented
-        //return null;
         return m_dbAccess.readGroup(task.getRole());
     }
     /**
@@ -5202,7 +5207,14 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         // try to read group form cache
         group=(CmsGroup)m_groupCache.get(project.getManagerGroupId());
         if (group== null) {
-            group=m_dbAccess.readGroup(project.getManagerGroupId()) ;
+            try {
+                group=m_dbAccess.readGroup(project.getManagerGroupId()) ;
+            } catch(CmsException exc) {
+                if(exc.getType() == exc.C_NO_GROUP) {
+                    // the group does not exist any more - return a dummy-group
+                    return new CmsGroup(C_UNKNOWN_ID, C_UNKNOWN_ID, project.getManagerGroupId() + "", "deleted group", 0);
+                }
+            }
             m_groupCache.put(project.getManagerGroupId(),group);
         }
         return group;
