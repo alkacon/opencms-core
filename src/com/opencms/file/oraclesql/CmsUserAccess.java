@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oraclesql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 14:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/15 16:26:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * Oracle/OCI implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 16:26:43 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -99,10 +99,10 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         CmsUUID id = new CmsUUID();
         byte[] value = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        Connection conn = null;
         ResultSet res = null;
 
         try {
@@ -110,37 +110,37 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
-            con = m_SqlQueries.getConnection();
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORINSERT"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSFORINSERT");
 
-            statement.setString(1, id.toString());
-            statement.setString(2, name);
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
 
             // crypt the password with MD5
-            statement.setString(3, m_SqlQueries.validateNull(password));
+            stmt.setString(3, m_SqlQueries.validateNull(password));
 
-            statement.setString(4, m_SqlQueries.validateNull(recoveryPassword));
-            statement.setString(5, m_SqlQueries.validateNull(description));
-            statement.setString(6, m_SqlQueries.validateNull(firstname));
-            statement.setString(7, m_SqlQueries.validateNull(lastname));
-            statement.setString(8, m_SqlQueries.validateNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            statement.setString(12, defaultGroup.getId().toString());
-            statement.setString(13, m_SqlQueries.validateNull(address));
-            statement.setString(14, m_SqlQueries.validateNull(section));
-            statement.setInt(15, type);
+            stmt.setString(4, m_SqlQueries.validateNull(recoveryPassword));
+            stmt.setString(5, m_SqlQueries.validateNull(description));
+            stmt.setString(6, m_SqlQueries.validateNull(firstname));
+            stmt.setString(7, m_SqlQueries.validateNull(lastname));
+            stmt.setString(8, m_SqlQueries.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            stmt.setString(12, defaultGroup.getId().toString());
+            stmt.setString(13, m_SqlQueries.validateNull(address));
+            stmt.setString(14, m_SqlQueries.validateNull(section));
+            stmt.setInt(15, type);
 
-            statement.executeUpdate();
-            statement.close();
+            stmt.executeUpdate();
+            stmt.close();
 
             // now update user_info of the new user
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setString(1, id.toString());
-            con.setAutoCommit(false);
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
+            stmt2.setString(1, id.toString());
+            conn.setAutoCommit(false);
 
-            res = statement2.executeQuery();
+            res = stmt2.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -154,16 +154,16 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 outstream.close();
             }
 
-            statement2.close();
+            stmt2.close();
             res.close();
 
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
 
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
@@ -175,36 +175,36 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException se) {
                 }
             }
-            if (statement != null) {
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (statement2 != null) {
+            if (stmt2 != null) {
                 try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = conn.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
+                    nextStmt.execute();
                 } catch (SQLException se) {
                 }
             }
-            if (nextStatement != null) {
+            if (nextStmt != null) {
                 try {
-                    nextStatement.close();
+                    nextStmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (con != null) {
+            if (conn != null) {
                 try {
-                    con.setAutoCommit(true);
+                    conn.setAutoCommit(true);
                 } catch (SQLException se) {
                 }
                 try {
-                    con.close();
+                    conn.close();
                 } catch (SQLException e) {
                 }
             }
@@ -237,10 +237,10 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         byte[] value = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        Connection conn = null;
         ResultSet res = null;
 
         try {
@@ -248,35 +248,35 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
-            con = m_SqlQueries.getConnection();
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORINSERT"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSFORINSERT");
 
-            statement.setString(1, id.toString());
-            statement.setString(2, name);
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
 
             // crypt the password with MD5
-            statement.setString(3, digest(password));
+            stmt.setString(3, digest(password));
 
-            statement.setString(4, digest(""));
-            statement.setString(5, m_SqlQueries.validateNull(description));
-            statement.setString(6, m_SqlQueries.validateNull(firstname));
-            statement.setString(7, m_SqlQueries.validateNull(lastname));
-            statement.setString(8, m_SqlQueries.validateNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            statement.setString(12, defaultGroup.getId().toString());
-            statement.setString(13, m_SqlQueries.validateNull(address));
-            statement.setString(14, m_SqlQueries.validateNull(section));
-            statement.setInt(15, type);
-            statement.executeUpdate();
-            statement.close();
+            stmt.setString(4, digest(""));
+            stmt.setString(5, m_SqlQueries.validateNull(description));
+            stmt.setString(6, m_SqlQueries.validateNull(firstname));
+            stmt.setString(7, m_SqlQueries.validateNull(lastname));
+            stmt.setString(8, m_SqlQueries.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            stmt.setString(12, defaultGroup.getId().toString());
+            stmt.setString(13, m_SqlQueries.validateNull(address));
+            stmt.setString(14, m_SqlQueries.validateNull(section));
+            stmt.setInt(15, type);
+            stmt.executeUpdate();
+            stmt.close();
 
             // now update user_info of the new user
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setString(1, id.toString());
-            con.setAutoCommit(false);
-            res = statement2.executeQuery();
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
+            stmt2.setString(1, id.toString());
+            conn.setAutoCommit(false);
+            res = stmt2.executeQuery();
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");
                 ByteArrayInputStream instream = new ByteArrayInputStream(value);
@@ -290,15 +290,15 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 outstream.close();
             }
 
-            statement2.close();
+            stmt2.close();
             res.close();
             // for the oracle-driver commit or rollback must be executed manually
             // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-            nextStatement.execute();
+            nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+            nextStmt.execute();
 
-            nextStatement.close();
-            con.setAutoCommit(true);
+            nextStmt.close();
+            conn.setAutoCommit(true);
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
@@ -310,36 +310,36 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 } catch (SQLException se) {
                 }
             }
-            if (statement != null) {
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (statement2 != null) {
+            if (stmt2 != null) {
                 try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_ROLLBACK");
+                    nextStmt.execute();
                 } catch (SQLException se) {
                 }
             }
-            if (nextStatement != null) {
+            if (nextStmt != null) {
                 try {
-                    nextStatement.close();
+                    nextStmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (con != null) {
+            if (conn != null) {
                 try {
-                    con.setAutoCommit(true);
+                    conn.setAutoCommit(true);
                 } catch (SQLException se) {
                 }
                 try {
-                    con.close();
+                    conn.close();
                 } catch (SQLException e) {
                 }
             }
@@ -359,55 +359,53 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
       * Writes a user to the database.
       *
       * @param user the user to write
-      * @throws thorws CmsException if something goes wrong.
+      * @throws throws CmsException if something goes wrong.
       */
     public void writeUser(CmsUser user) throws CmsException {
 
         byte[] value = null;
-        PreparedStatement statement = null;
-        PreparedStatement statement2 = null;
-        PreparedStatement nextStatement = null;
-        PreparedStatement trimStatement = null;
+        PreparedStatement stmt = null;
+        PreparedStatement stmt2 = null;
+        PreparedStatement nextStmt = null;
+        PreparedStatement trimStmt = null;
 
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         try {
             value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
 
             // write data to database
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSWRITE"));
-            statement.setString(1, m_SqlQueries.validateNull(user.getDescription()));
-            statement.setString(2, m_SqlQueries.validateNull(user.getFirstname()));
-            statement.setString(3, m_SqlQueries.validateNull(user.getLastname()));
-            statement.setString(4, m_SqlQueries.validateNull(user.getEmail()));
-            statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
-            statement.setInt(7, user.getFlags());
-            statement.setString(8, user.getDefaultGroupId().toString());
-            statement.setString(9, m_SqlQueries.validateNull(user.getAddress()));
-            statement.setString(10, m_SqlQueries.validateNull(user.getSection()));
-            statement.setInt(11, user.getType());
-            statement.setString(12, user.getId().toString());
-            statement.executeUpdate();
-            statement.close();
+            conn = DriverManager.getConnection(m_poolName);
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSWRITE");
+            stmt.setString(1, m_SqlQueries.validateNull(user.getDescription()));
+            stmt.setString(2, m_SqlQueries.validateNull(user.getFirstname()));
+            stmt.setString(3, m_SqlQueries.validateNull(user.getLastname()));
+            stmt.setString(4, m_SqlQueries.validateNull(user.getEmail()));
+            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
+            stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
+            stmt.setInt(7, user.getFlags());
+            stmt.setString(8, user.getDefaultGroupId().toString());
+            stmt.setString(9, m_SqlQueries.validateNull(user.getAddress()));
+            stmt.setString(10, m_SqlQueries.validateNull(user.getSection()));
+            stmt.setInt(11, user.getType());
+            stmt.setString(12, user.getId().toString());
+            stmt.executeUpdate();
+            stmt.close();
             // update user_info in this special way because of using blob
-            statement2 = con.prepareStatement(m_SqlQueries.get("C_ORACLE_USERSFORUPDATE"));
-            statement2.setString(1, user.getId().toString());
-            con.setAutoCommit(false);
-            res = statement2.executeQuery();
+            stmt2 = m_SqlQueries.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
+            stmt2.setString(1, user.getId().toString());
+            conn.setAutoCommit(false);
+            res = stmt2.executeQuery();
             try {
                 while (res.next()) {
                     oracle.sql.BLOB blobnew = ((OracleResultSet) res).getBLOB("USER_INFO");
                     // first trim the blob to 0 bytes, otherwise ther could be left some bytes
                     // of the old content
-                    //trimStatement = (OraclePreparedStatement) con.prepareStatement(cq.get("C_TRIMBLOB);
-                    trimStatement = con.prepareStatement(m_SqlQueries.get("C_TRIMBLOB"));
-                    //trimStatement.setBLOB(1, blobnew);
-                    trimStatement.setBlob(1, blobnew);
-                    trimStatement.setInt(2, 0);
-                    trimStatement.execute();
-                    trimStatement.close();
+                    trimStmt = m_SqlQueries.getPreparedStatement(conn, "C_TRIMBLOB");
+                    trimStmt.setBlob(1, blobnew);
+                    trimStmt.setInt(2, 0);
+                    trimStmt.execute();
+                    trimStmt.close();
                     ByteArrayInputStream instream = new ByteArrayInputStream(value);
                     OutputStream outstream = blobnew.getBinaryOutputStream();
                     byte[] chunk = new byte[blobnew.getChunkSize()];
@@ -420,56 +418,56 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
                 }
                 // for the oracle-driver commit or rollback must be executed manually
                 // because setAutoCommit = false in CmsDbPool.CmsDbPool
-                nextStatement = con.prepareStatement(m_SqlQueries.get("C_COMMIT"));
-                nextStatement.execute();
-                nextStatement.close();
-                con.setAutoCommit(true);
+                nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_COMMIT");
+                nextStmt.execute();
+                nextStmt.close();
+                conn.setAutoCommit(true);
             } catch (IOException e) {
                 throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), e);
             }
-            statement2.close();
+            stmt2.close();
             res.close();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
             throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
         } finally {
-            if (statement != null) {
+            if (stmt != null) {
                 try {
-                    statement.close();
+                    stmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (statement2 != null) {
+            if (stmt2 != null) {
                 try {
-                    statement2.close();
+                    stmt2.close();
                 } catch (SQLException exc) {
                 }
                 try {
-                    nextStatement = con.prepareStatement(m_SqlQueries.get("C_ROLLBACK"));
-                    nextStatement.execute();
+                    nextStmt = m_SqlQueries.getPreparedStatement(conn, "C_ROLLBACK");
+                    nextStmt.execute();
                 } catch (SQLException se) {
                 }
             }
-            if (nextStatement != null) {
+            if (nextStmt != null) {
                 try {
-                    nextStatement.close();
+                    nextStmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (trimStatement != null) {
+            if (trimStmt != null) {
                 try {
-                    trimStatement.close();
+                    trimStmt.close();
                 } catch (SQLException exc) {
                 }
             }
-            if (con != null) {
+            if (conn != null) {
                 try {
-                    con.setAutoCommit(true);
+                    conn.setAutoCommit(true);
                 } catch (SQLException se) {
                 }
                 try {
-                    con.close();
+                    conn.close();
                 } catch (SQLException se) {
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 15:18:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/05/15 16:26:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic, database server independent, implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/05/15 15:18:35 $
+ * @version $Revision: 1.6 $ $Date: 2003/05/15 16:26:43 $
  */
 public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogChannels, I_CmsUserAccess {
 
@@ -171,47 +171,47 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @param type user-type
      *
      * @return the created user.
-     * @throws thorws CmsException if something goes wrong.
+     * @throws throws CmsException if something goes wrong.
      */
     public CmsUser addImportUser(String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, long lastlogin, long lastused, int flags, Hashtable additionalInfos, CmsGroup defaultGroup, String address, String section, int type) throws CmsException {
         byte[] value = null;
         //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
             value = serializeAdditionalUserInfo(additionalInfos);
 
             // write data to database
-            con = DriverManager.getConnection(m_poolName);
+            conn = DriverManager.getConnection(m_poolName);
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
+            stmt = conn.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
 
-            statement.setString(1, id.toString());
-            statement.setString(2, name);
-            statement.setString(3, m_SqlQueries.validateNull(password));
-            statement.setString(4, m_SqlQueries.validateNull(recoveryPassword));
-            statement.setString(5, m_SqlQueries.validateNull(description));
-            statement.setString(6, m_SqlQueries.validateNull(firstname));
-            statement.setString(7, m_SqlQueries.validateNull(lastname));
-            statement.setString(8, m_SqlQueries.validateNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            m_SqlQueries.setBytes(statement, 12, value);
-            statement.setString(13, defaultGroup.getId().toString());
-            statement.setString(14, m_SqlQueries.validateNull(address));
-            statement.setString(15, m_SqlQueries.validateNull(section));
-            statement.setInt(16, type);
-            statement.executeUpdate();
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
+            stmt.setString(3, m_SqlQueries.validateNull(password));
+            stmt.setString(4, m_SqlQueries.validateNull(recoveryPassword));
+            stmt.setString(5, m_SqlQueries.validateNull(description));
+            stmt.setString(6, m_SqlQueries.validateNull(firstname));
+            stmt.setString(7, m_SqlQueries.validateNull(lastname));
+            stmt.setString(8, m_SqlQueries.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            m_SqlQueries.setBytes(stmt, 12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, m_SqlQueries.validateNull(address));
+            stmt.setString(15, m_SqlQueries.validateNull(section));
+            stmt.setInt(16, type);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
             throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return readUser(id);
@@ -243,41 +243,41 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
             value = serializeAdditionalUserInfo(additionalInfos);
 
             // write data to database
-            con = DriverManager.getConnection(m_poolName);
+            
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_ADD");
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
-
-            statement.setString(1, id.toString());
-            statement.setString(2, name);
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
             // crypt the password with MD5
-            statement.setString(3, digest(password));
-            statement.setString(4, digest(""));
-            statement.setString(5, m_SqlQueries.validateNull(description));
-            statement.setString(6, m_SqlQueries.validateNull(firstname));
-            statement.setString(7, m_SqlQueries.validateNull(lastname));
-            statement.setString(8, m_SqlQueries.validateNull(email));
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            m_SqlQueries.setBytes(statement, 12, value);
-            statement.setString(13, defaultGroup.getId().toString());
-            statement.setString(14, m_SqlQueries.validateNull(address));
-            statement.setString(15, m_SqlQueries.validateNull(section));
-            statement.setInt(16, type);
-            statement.executeUpdate();
+            stmt.setString(3, digest(password));
+            stmt.setString(4, digest(""));
+            stmt.setString(5, m_SqlQueries.validateNull(description));
+            stmt.setString(6, m_SqlQueries.validateNull(firstname));
+            stmt.setString(7, m_SqlQueries.validateNull(lastname));
+            stmt.setString(8, m_SqlQueries.validateNull(email));
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            m_SqlQueries.setBytes(stmt, 12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, m_SqlQueries.validateNull(address));
+            stmt.setString(15, m_SqlQueries.validateNull(section));
+            stmt.setInt(16, type);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return readUser(id);
@@ -293,28 +293,28 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws CmsException Throws CmsException if operation was not succesfull.
      */
     public void addUserToGroup(CmsUUID userid, CmsUUID groupid) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         // check if user is already in group
         if (!isUserInGroup(userid, groupid)) {
             // if not, add this user to the group
             try {
                 // create statement
-                con = m_SqlQueries.getConnection();
-                statement = m_SqlQueries.getPreparedStatement(con, "C_GROUPS_ADDUSERTOGROUP");               
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_ADDUSERTOGROUP");               
                 
                 // write the new assingment to the database
-                statement.setString(1, groupid.toString());
-                statement.setString(2, userid.toString());
+                stmt.setString(1, groupid.toString());
+                stmt.setString(2, userid.toString());
                 // flag field is not used yet
-                statement.setInt(3, C_UNKNOWN_INT);
-                statement.executeUpdate();
+                stmt.setInt(3, C_UNKNOWN_INT);
+                stmt.executeUpdate();
 
             } catch (SQLException e) {
                 throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
             } finally {
-                m_SqlQueries.closeAll(con, statement, null);
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
         }
     }
@@ -326,20 +326,22 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @param userType The new usertype of the user
      */
     public void changeUserType(CmsUUID userId, int userType) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_UPDATE_USERTYPE");               
+
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_UPDATE_USERTYPE"));
-            statement.setInt(1, userType);
-            statement.setString(2, userId.toString());
-            statement.executeUpdate();
+            stmt.setInt(1, userType);
+            stmt.setString(2, userId.toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -409,8 +411,8 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         CmsGroup group = null;
         CmsUUID groupId = new CmsUUID();
 
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
 
@@ -418,27 +420,27 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             if ((parentGroupName != null) && (!"".equals(parentGroupName))) {
                 parentId = readGroup(parentGroupName).getId();
             }
-
-            con = DriverManager.getConnection(m_poolName);
+            
             // create statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_CREATEGROUP"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
 
             // write new group to the database
-            statement.setString(1, groupId.toString());
-            statement.setString(2, parentId.toString());
-            statement.setString(3, groupName);
-            statement.setString(4, m_SqlQueries.validateNull(description));
-            statement.setInt(5, flags);
-            statement.executeUpdate();
+            stmt.setString(1, groupId.toString());
+            stmt.setString(2, parentId.toString());
+            stmt.setString(3, groupName);
+            stmt.setString(4, m_SqlQueries.validateNull(description));
+            stmt.setInt(5, flags);
+            stmt.executeUpdate();
 
             // create the user group by reading it from the database.
             // this is necessary to get the group id which is generated in the
             // database.
             group = readGroup(groupName);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return group;
@@ -454,18 +456,19 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void deleteGroup(String delgroup) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
             // create statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_DELETEGROUP"));
-            statement.setString(1, delgroup);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_DELETEGROUP");
+
+            stmt.setString(1, delgroup);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -476,18 +479,18 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws thorws CmsException if something goes wrong.
      */
     public void deleteUser(CmsUUID userId) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_DELETEBYID"));
-            statement.setString(1, userId.toString());
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_DELETEBYID");
+            stmt.setString(1, userId.toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -498,18 +501,18 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws thorws CmsException if something goes wrong.
      */
     public void deleteUser(String userName) throws CmsException {
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_DELETE"));
-            statement.setString(1, userName);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_DELETE");
+            stmt.setString(1, userName);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -559,26 +562,25 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     public Vector getAllAccessibleProjectsByGroup(CmsGroup group) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
-        Connection con = null;
-        PreparedStatement statement = null;
+        Connection conn = null;
+        PreparedStatement stmt = null;
 
         try {
             // create the statement
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ_BYGROUP");
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYGROUP"));
-
-            statement.setString(1, group.getId().toString());
-            statement.setString(2, group.getId().toString());
-            res = statement.executeQuery();
+            stmt.setString(1, group.getId().toString());
+            stmt.setString(2, group.getId().toString());
+            res = stmt.executeQuery();
 
             while (res.next()) {
                 projects.addElement(new CmsProject(res, m_SqlQueries));
             }
         } catch (Exception exc) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return (projects);
     }
@@ -593,25 +595,24 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     public Vector getAllAccessibleProjectsByManagerGroup(CmsGroup group) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
             // create the statement
-            con = DriverManager.getConnection(m_poolName);
-
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYMANAGER"));
-
-            statement.setString(1, group.getId().toString());
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ_BYMANAGER");
+            
+            stmt.setString(1, group.getId().toString());
+            res = stmt.executeQuery();
 
             while (res.next()) {
                 projects.addElement(new CmsProject(res, m_SqlQueries));
             }
         } catch (Exception exc) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return (projects);
     }
@@ -626,25 +627,24 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     public Vector getAllAccessibleProjectsByUser(CmsUser user) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
             // create the statement
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_PROJECTS_READ_BYUSER");
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_PROJECTS_READ_BYUSER"));
-
-            statement.setString(1, user.getId().toString());
-            res = statement.executeQuery();
+            stmt.setString(1, user.getId().toString());
+            res = stmt.executeQuery();
 
             while (res.next()) {
                 projects.addElement(new CmsProject(res, m_SqlQueries));
             }
         } catch (Exception exc) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, exc);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return (projects);
     }
@@ -659,14 +659,14 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         Vector groups = new Vector();
         //CmsGroup group = null;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
             // create statement
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_GETGROUPS"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_GETGROUPS");
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
 
             // create new Cms group objects
             while (res.next()) {
@@ -674,9 +674,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             }
 
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return groups;
     }
@@ -692,26 +692,26 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         //CmsGroup group;
         Vector groups = new Vector();
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_GETGROUPSOFUSER");
 
             //  get all all groups of the user
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_GETGROUPSOFUSER"));
-            statement.setString(1, name);
+            stmt.setString(1, name);
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
 
             while (res.next()) {
                 groups.addElement(createCmsGroupFromResultSet(res, true));
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return groups;
     }
@@ -724,25 +724,25 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      */
     public Vector getUsers(int type) throws CmsException {
         Vector users = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_GETUSERS"));
-            statement.setInt(1, type);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_GETUSERS");
+            stmt.setInt(1, type);
+            res = stmt.executeQuery();
             // create new Cms user objects
             while (res.next()) {
                 users.addElement(createCmsUserFromResultSet(res, true));
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return users;
     }
@@ -756,14 +756,14 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     */
     public Vector getUsers(int type, String namefilter) throws CmsException {
         Vector users = new Vector();
-        Statement statement = null;
+        Statement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.createStatement();
-            res = statement.executeQuery(m_SqlQueries.get("C_USERS_GETUSERS_FILTER1") + type + m_SqlQueries.get("C_USERS_GETUSERS_FILTER2") + namefilter + m_SqlQueries.get("C_USERS_GETUSERS_FILTER3"));
+            conn = m_SqlQueries.getConnection();
+            stmt = conn.createStatement();
+            res = stmt.executeQuery(m_SqlQueries.get("C_USERS_GETUSERS_FILTER1") + type + m_SqlQueries.get("C_USERS_GETUSERS_FILTER2") + namefilter + m_SqlQueries.get("C_USERS_GETUSERS_FILTER3"));
 
             // create new Cms user objects
             while (res.next()) {
@@ -771,11 +771,11 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             }
 
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return users;
@@ -796,40 +796,40 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      */
     public Vector getUsersByLastname(String lastname, int userType, int userStatus, int wasLoggedIn, int nMax) throws CmsException {
         Vector users = new Vector();
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
         int i = 0;
         // "" =  return (nearly) all users
         if (lastname == null)
             lastname = "";
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
             
             if (wasLoggedIn == C_AT_LEAST_ONCE)
-                statement = con.prepareStatement(m_SqlQueries.get("C_USERS_GETUSERS_BY_LASTNAME_ONCE"));
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_ONCE");
             else if (wasLoggedIn == C_NEVER)
-                statement = con.prepareStatement(m_SqlQueries.get("C_USERS_GETUSERS_BY_LASTNAME_NEVER"));
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_NEVER");
             else // C_WHATEVER or whatever else
-                statement = con.prepareStatement(m_SqlQueries.get("C_USERS_GETUSERS_BY_LASTNAME_WHATEVER"));
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_GETUSERS_BY_LASTNAME_WHATEVER");
 
-            statement.setString(1, lastname + "%");
-            statement.setInt(2, userType);
-            statement.setInt(3, userStatus);
+            stmt.setString(1, lastname + "%");
+            stmt.setInt(2, userType);
+            stmt.setInt(3, userStatus);
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
             // create new Cms user objects
             while (res.next() && (i++ < nMax)) {               
                 users.addElement(createCmsUserFromResultSet(res, true));
             }
 
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return users;
@@ -846,27 +846,27 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     public Vector getUsersOfGroup(String name, int type) throws CmsException {
         Vector users = new Vector();
 
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_GETUSERSOFGROUP"));
-            statement.setString(1, name);
-            statement.setInt(2, type);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_GETUSERSOFGROUP");
+            stmt.setString(1, name);
+            stmt.setInt(2, type);
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
 
             while (res.next()) {
                 users.addElement(createCmsUserFromResultSet(res, false));
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (Exception e) {
-            throw new CmsException("[" + this.getClass().getName() + "]", e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return users;
@@ -888,16 +888,16 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
     public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
         CmsGroup group = null;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_READGROUP2");
 
             // read the group from the database
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_READGROUP2"));
-            statement.setString(1, groupId.toString());
-            res = statement.executeQuery();
+            stmt.setString(1, groupId.toString());
+            res = stmt.executeQuery();
             // create new Cms group object
             if (res.next()) {
                 group = createCmsGroupFromResultSet(res, true);
@@ -906,10 +906,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             }
 
         } catch (SQLException e) {
-
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return group;
@@ -925,15 +924,16 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
         CmsGroup group = null;
         ResultSet res = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_READGROUP");
+
             // read the group from the database
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_READGROUP"));
-            statement.setString(1, groupName);
-            res = statement.executeQuery();
+            stmt.setString(1, groupName);
+            res = stmt.executeQuery();
 
             // create new Cms group object
             if (res.next()) {
@@ -943,9 +943,9 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
             }
 
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
         return group;
     }
@@ -959,17 +959,17 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws thorws CmsException if something goes wrong.
      */
     public CmsUser readUser(CmsUUID id) throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = m_SqlQueries.getConnection();
-            statement = m_SqlQueries.getPreparedStatement(con, "C_USERS_READID");
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_READID");
 
-            statement.setString(1, id.toString());
-            res = statement.executeQuery();
+            stmt.setString(1, id.toString());
+            res = stmt.executeQuery();
 
             // create new Cms user object
             if (res.next()) {
@@ -982,7 +982,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
             return user;
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         // a.lucas: catch CmsException here and throw it again.
         // Don't wrap another CmsException around it, since this may cause problems during login.
@@ -991,7 +991,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         } catch (Exception e) {
             throw new CmsException("[" + this.getClass().getName() + "]", e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -1004,17 +1004,17 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws throws CmsException if something goes wrong.
      */
     public CmsUser readUser(String name, int type) throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_READ"));
-            statement.setString(1, name);
-            statement.setInt(2, type);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_READ");
+            stmt.setString(1, name);
+            stmt.setInt(2, type);
 
-            res = statement.executeQuery();
+            res = stmt.executeQuery();
 
             // create new Cms user object
             if (res.next()) {
@@ -1027,7 +1027,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
             return user;
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         // a.lucas: catch CmsException here and throw it again.
         // Don't wrap another CmsException around it, since this may cause problems during login.
@@ -1036,7 +1036,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         } catch (Exception e) {
             throw new CmsException("[" + this.getClass().getName() + "]", e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -1050,17 +1050,17 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws throws CmsException if something goes wrong.
      */
     public CmsUser readUser(String name, String password, int type) throws CmsException {
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
         CmsUser user = null;
-        Connection con = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_READPW"));
-            statement.setString(1, name);
-            statement.setString(2, digest(password));
-            statement.setInt(3, type);
-            res = statement.executeQuery();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_READPW");
+            stmt.setString(1, name);
+            stmt.setString(2, digest(password));
+            stmt.setInt(3, type);
+            res = stmt.executeQuery();
 
             // create new Cms user object
             if (res.next()) {
@@ -1073,7 +1073,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
 
             return user;
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         }
         // a.lucas: catch CmsException here and throw it again.
         // Don't wrap another CmsException around it, since this may cause problems during login.
@@ -1082,7 +1082,7 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
         } catch (Exception e) {
             throw new CmsException("[" + this.getClass().getName() + "]", e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
     }
 
@@ -1095,24 +1095,23 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws throws CmsException if something goes wrong.
      */
     public void recoverPassword(String userName, String recoveryPassword, String password) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         int result;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_RECOVERPW");
 
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_RECOVERPW"));
-
-            statement.setString(1, digest(password));
-            statement.setString(2, userName);
-            statement.setString(3, digest(recoveryPassword));
-            result = statement.executeUpdate();
+            stmt.setString(1, digest(password));
+            stmt.setString(2, userName);
+            stmt.setString(3, digest(recoveryPassword));
+            result = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         if (result != 1) {
@@ -1131,20 +1130,20 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void removeUserFromGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         try {
-            con = DriverManager.getConnection(m_poolName);
             // create statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_REMOVEUSERFROMGROUP"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_REMOVEUSERFROMGROUP");
 
-            statement.setString(1, groupId.toString());
-            statement.setString(2, userId.toString());
-            statement.executeUpdate();
+            stmt.setString(1, groupId.toString());
+            stmt.setString(2, userId.toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1156,19 +1155,19 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws throws CmsException if something goes wrong.
      */
     public void setPassword(String userName, String password) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_SETPW"));
-            statement.setString(1, digest(password));
-            statement.setString(2, userName);
-            statement.executeUpdate();
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_SETPW");
+            stmt.setString(1, digest(password));
+            stmt.setString(2, userName);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
@@ -1180,21 +1179,21 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws throws CmsException if something goes wrong.
      */
     public void setRecoveryPassword(String userName, String password) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         int result;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_SETRECPW"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_SETRECPW");
 
-            statement.setString(1, digest(password));
-            statement.setString(2, userName);
-            result = statement.executeUpdate();
+            stmt.setString(1, digest(password));
+            stmt.setString(2, userName);
+            result = stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         if (result != 1) {
@@ -1214,25 +1213,25 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      */
     public boolean isUserInGroup(CmsUUID userId, CmsUUID groupId) throws CmsException {
         boolean userInGroup = false;
-        PreparedStatement statement = null;
+        PreparedStatement stmt = null;
         ResultSet res = null;
-        Connection con = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
             // create statement
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_USERINGROUP"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_USERINGROUP");
 
-            statement.setString(1, groupId.toString());
-            statement.setString(2, userId.toString());
-            res = statement.executeQuery();
+            stmt.setString(1, groupId.toString());
+            stmt.setString(2, userId.toString());
+            res = stmt.executeQuery();
             if (res.next()) {
                 userInGroup = true;
             }
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, res);
+            m_SqlQueries.closeAll(conn, stmt, res);
         }
 
         return userInGroup;
@@ -1247,27 +1246,28 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      * @throws CmsException  Throws CmsException if operation was not succesfull.
      */
     public void writeGroup(CmsGroup group) throws CmsException {
-        PreparedStatement statement = null;
-        Connection con = null;
-
-        try {
-            con = DriverManager.getConnection(m_poolName);
-
-            if (group != null) {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        if (group != null) {
+            try {        
+                
                 // create statement
-                statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_WRITEGROUP"));
-                statement.setString(1, m_SqlQueries.validateNull(group.getDescription()));
-                statement.setInt(2, group.getFlags());
-                statement.setString(3, group.getParentId().toString());
-                statement.setString(4, group.getId().toString());
-                statement.executeUpdate();
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_GROUP);
+                conn = m_SqlQueries.getConnection();
+                stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_WRITEGROUP");
+
+                stmt.setString(1, m_SqlQueries.validateNull(group.getDescription()));
+                stmt.setInt(2, group.getFlags());
+                stmt.setString(3, group.getParentId().toString());
+                stmt.setString(4, group.getId().toString());
+                stmt.executeUpdate();
+                
+            } catch (SQLException e) {
+                throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            } finally {
+                m_SqlQueries.closeAll(conn, stmt, null);
             }
-        } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
-        } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+        } else {
+            throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_NO_GROUP);
         }
     }
 
@@ -1279,37 +1279,36 @@ public class CmsUserAccess extends Object implements I_CmsConstants, I_CmsLogCha
      */
     public void writeUser(CmsUser user) throws CmsException {
         byte[] value = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_WRITE");
             
             value = serializeAdditionalUserInfo(user.getAdditionalInfo());
 
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_WRITE"));
-
-            statement.setString(1, m_SqlQueries.validateNull(user.getDescription()));
-            statement.setString(2, m_SqlQueries.validateNull(user.getFirstname()));
-            statement.setString(3, m_SqlQueries.validateNull(user.getLastname()));
-            statement.setString(4, m_SqlQueries.validateNull(user.getEmail()));
-            statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
-            statement.setInt(7, user.getFlags());
-            m_SqlQueries.setBytes(statement, 8, value);
-            statement.setString(9, user.getDefaultGroupId().toString());
-            statement.setString(10, m_SqlQueries.validateNull(user.getAddress()));
-            statement.setString(11, m_SqlQueries.validateNull(user.getSection()));
-            statement.setInt(12, user.getType());
-            statement.setString(13, user.getId().toString());
-            statement.executeUpdate();
+            stmt.setString(1, m_SqlQueries.validateNull(user.getDescription()));
+            stmt.setString(2, m_SqlQueries.validateNull(user.getFirstname()));
+            stmt.setString(3, m_SqlQueries.validateNull(user.getLastname()));
+            stmt.setString(4, m_SqlQueries.validateNull(user.getEmail()));
+            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
+            stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
+            stmt.setInt(7, user.getFlags());
+            m_SqlQueries.setBytes(stmt, 8, value);
+            stmt.setString(9, user.getDefaultGroupId().toString());
+            stmt.setString(10, m_SqlQueries.validateNull(user.getAddress()));
+            stmt.setString(11, m_SqlQueries.validateNull(user.getSection()));
+            stmt.setInt(12, user.getType());
+            stmt.setString(13, user.getId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsUserAccess.java,v $
- * Date   : $Date: 2003/05/15 14:02:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/05/15 16:26:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import com.opencms.flex.util.CmsUUID;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -53,7 +52,7 @@ import source.org.apache.java.util.Configurations;
  * MySQL implementation of the user access methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/15 14:02:43 $
+ * @version $Revision: 1.5 $ $Date: 2003/05/15 16:26:43 $
  * 
  * @see com.opencms.file.genericSql.CmsUserAccess
  * @see com.opencms.file.genericSql.I_CmsUserAccess
@@ -95,44 +94,44 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
         //int id = m_SqlQueries.nextPkId("C_TABLE_USERS");
         CmsUUID id = new CmsUUID();
         byte[] value = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
             value = serializeAdditionalUserInfo( additionalInfos );
 
             // user data is project independent- use a "dummy" project ID to receive
             // a JDBC connection from the offline connection pool
-            con = m_SqlQueries.getConnection();
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_ADD"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_ADD");
 
-            statement.setString(1, id.toString());
-            statement.setString(2, name);
+            stmt.setString(1, id.toString());
+            stmt.setString(2, name);
 
             // crypt the password with MD5
-            statement.setString(3, digest(password));
+            stmt.setString(3, digest(password));
 
-            statement.setString(4, digest(""));
-            statement.setString(5, description);
-            statement.setString(6, firstname);
-            statement.setString(7, lastname);
-            statement.setString(8, email);
-            statement.setTimestamp(9, new Timestamp(lastlogin));
-            statement.setTimestamp(10, new Timestamp(lastused));
-            statement.setInt(11, flags);
-            statement.setBytes(12, value);
-            statement.setString(13, defaultGroup.getId().toString());
-            statement.setString(14, address);
-            statement.setString(15, section);
-            statement.setInt(16, type);
+            stmt.setString(4, digest(""));
+            stmt.setString(5, description);
+            stmt.setString(6, firstname);
+            stmt.setString(7, lastname);
+            stmt.setString(8, email);
+            stmt.setTimestamp(9, new Timestamp(lastlogin));
+            stmt.setTimestamp(10, new Timestamp(lastused));
+            stmt.setInt(11, flags);
+            stmt.setBytes(12, value);
+            stmt.setString(13, defaultGroup.getId().toString());
+            stmt.setString(14, address);
+            stmt.setString(15, section);
+            stmt.setInt(16, type);
 
-            statement.executeUpdate();
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return readUser(id);
@@ -155,8 +154,8 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
     public CmsGroup createGroup(String name, String description, int flags, String parent) throws CmsException {
         CmsUUID parentId = CmsUUID.getNullUUID();
         CmsGroup newGroup = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
         CmsUUID newGroupId = new CmsUUID();
         
         try {
@@ -166,25 +165,25 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
             }
             
             // create statement
-            con = m_SqlQueries.getConnection();
-            statement = con.prepareStatement(m_SqlQueries.get("C_GROUPS_CREATEGROUP"));
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_GROUPS_CREATEGROUP");
             
             // write new group to the database
-            statement.setString(1, newGroupId.toString());
-            statement.setString(2, parentId.toString());
-            statement.setString(3, name);
-            statement.setString(4, description);
-            statement.setInt(5, flags);
-            statement.executeUpdate();
+            stmt.setString(1, newGroupId.toString());
+            stmt.setString(2, parentId.toString());
+            stmt.setString(3, name);
+            stmt.setString(4, description);
+            stmt.setInt(5, flags);
+            stmt.executeUpdate();
 
             // create the user group by reading it from the database.
             // this is nescessary to get the group id which is generated in the
             // database.
             newGroup = readGroup(name);
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
 
         return newGroup;
@@ -205,37 +204,36 @@ public class CmsUserAccess extends com.opencms.file.genericSql.CmsUserAccess imp
      */
     public void writeUser(CmsUser user) throws CmsException {
         byte[] value = null;
-        PreparedStatement statement = null;
-        Connection con = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
 
         try {
-            con = DriverManager.getConnection(m_poolName);
+            conn = m_SqlQueries.getConnection();
+            stmt = m_SqlQueries.getPreparedStatement(conn, "C_USERS_WRITE");
             
             value = serializeAdditionalUserInfo( user.getAdditionalInfo() );
 
             // write data to database
-            statement = con.prepareStatement(m_SqlQueries.get("C_USERS_WRITE"));
-
-            statement.setString(1, user.getDescription());
-            statement.setString(2, user.getFirstname());
-            statement.setString(3, user.getLastname());
-            statement.setString(4, user.getEmail());
-            statement.setTimestamp(5, new Timestamp(user.getLastlogin()));
-            statement.setTimestamp(6, new Timestamp(user.getLastUsed()));
-            statement.setInt(7, user.getFlags());
-            statement.setBytes(8, value);
-            statement.setString(9, user.getDefaultGroupId().toString());
-            statement.setString(10, user.getAddress());
-            statement.setString(11, user.getSection());
-            statement.setInt(12, user.getType());
-            statement.setString(13, user.getId().toString());
-            statement.executeUpdate();
+            stmt.setString(1, user.getDescription());
+            stmt.setString(2, user.getFirstname());
+            stmt.setString(3, user.getLastname());
+            stmt.setString(4, user.getEmail());
+            stmt.setTimestamp(5, new Timestamp(user.getLastlogin()));
+            stmt.setTimestamp(6, new Timestamp(user.getLastUsed()));
+            stmt.setInt(7, user.getFlags());
+            stmt.setBytes(8, value);
+            stmt.setString(9, user.getDefaultGroupId().toString());
+            stmt.setString(10, user.getAddress());
+            stmt.setString(11, user.getSection());
+            stmt.setInt(12, user.getType());
+            stmt.setString(13, user.getId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + e.getMessage(), CmsException.C_SQL_ERROR, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
         } catch (IOException e) {
-            throw new CmsException("[CmsAccessUserInfoMySql/addUserInformation(id,object)]:" + CmsException.C_SERIALIZATION, e);
+            throw m_SqlQueries.getCmsException(this, null, CmsException.C_SERIALIZATION, e);
         } finally {
-            m_SqlQueries.closeAll(con, statement, null);
+            m_SqlQueries.closeAll(conn, stmt, null);
         }
     }
 
