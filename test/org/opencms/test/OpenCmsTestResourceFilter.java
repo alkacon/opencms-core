@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/08/20 11:44:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/11/02 09:47:38 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,13 +50,16 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
     /** Definition of a filter used for the chacc method. */
     public static final OpenCmsTestResourceFilter FILTER_CHACC = getFilterChacc();
-    
+   
+    /** Definition of a filter used for the chtype method. */
+    public static final OpenCmsTestResourceFilter FILTER_CHTYPE = getFilterChtype();
+           
     /** Definition of a filter used for the create resource method. */
     public static final OpenCmsTestResourceFilter FILTER_CREATE_RESOURCE = getFilterCreateResource();    
     
@@ -223,6 +226,20 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableProjectLastModifiedTest();
         filter.disableAclTest();
         filter.disableAceTest();
+
+        return filter;        
+    }
+    
+    /**
+     * Creates a new filter used for the "chtype" method.<p>
+     * 
+     * @return the created filter
+     */
+    private static OpenCmsTestResourceConfigurableFilter getFilterChtype() {
+        OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
+
+        filter.disableTypeTest();
+        filter.disableDateLastModifiedTest();
 
         return filter;        
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/10/28 09:11:17 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/11/02 09:47:38 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.dom4j.util.NodeComparator;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 5.3.5
  */
@@ -2021,6 +2021,29 @@ public class OpenCmsTestCase extends TestCase {
         }
     }
 
+    /**
+     * Compares the current type of a resource with a given type.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param type the type
+     */
+    public void assertType(CmsObject cms, String resourceName, int type) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getTypeId() != type) {
+                fail("[State " + type + " != " + res.getTypeId() + "]");
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+    
+    
     /**
      * Compares the user who created a resource with a given user.<p>
      * 

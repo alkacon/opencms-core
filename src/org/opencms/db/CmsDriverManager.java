@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/10/31 21:30:18 $
- * Version: $Revision: 1.435 $
+ * Date   : $Date: 2004/11/02 09:47:38 $
+ * Version: $Revision: 1.436 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.435 $ $Date: 2004/10/31 21:30:18 $
+ * @version $Revision: 1.436 $ $Date: 2004/11/02 09:47:38 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7332,7 +7332,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // access was granted - write the resource
         resource.setUserLastModified(context.currentUser().getId());
 
-        m_vfsDriver.writeResource(runtimeInfo, context.currentProject(), resource, C_UPDATE_ALL);
+        m_vfsDriver.writeResource(runtimeInfo, context.currentProject(), resource, C_UPDATE_STRUCTURE_STATE);
 
         // make sure the written resource has the state corretly set
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
