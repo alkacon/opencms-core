@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/07/24 06:01:09 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -486,9 +486,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         CmsI18nInfo i18nInfo;
         
         if (resource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
-            || resource.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES)
             || resource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
-            // the workplace/login/modules use the workplace locale handler
+            // the workplace/login folders use the workplace locale handler
             i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
         } else {
             // request for resource outside of workplace, use default handler
