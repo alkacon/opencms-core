@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2001/02/19 13:10:58 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/02/19 16:22:05 $
+* Version: $Revision: 1.15 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.14 $ $Date: 2001/02/19 13:10:58 $
+ * @version $Revision: 1.15 $ $Date: 2001/02/19 16:22:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -224,7 +224,9 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         // get the systems-exportpath
         String exportpath = cms.readExportPath();
         File folder = new File(exportpath);
-
+        if (!folder.exists()){
+            folder.mkdirs();
+        }
         // get a list of all files
         String[] list = folder.list();
         for(int i = 0;i < list.length;i++) {
