@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/11/08 15:55:29 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/12/11 12:27:18 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.73 $
+ * @version $Revision: 1.74 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -638,7 +638,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
-            if (i2 > i1) {
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
@@ -733,7 +736,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         while (i1 >= 0) {
             // parse the file and set/replace page encoding
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
-            if (i2 > i1) {
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
@@ -837,7 +843,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
             i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
-            if (i2 > i1) {
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("JspLoader: Detected " + C_DIRECTIVE_START + directive + C_DIRECTIVE_END);
