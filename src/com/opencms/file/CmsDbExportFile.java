@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/27 16:22:10 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -157,6 +157,8 @@ class CmsDbExportFile implements I_CmsConstants {
 		Enumeration fifenum=filesinfolder.elements();
 		while (fifenum.hasMoreElements()) {
 			CmsFile fif=(CmsFile)fifenum.nextElement();
+			System.out.print("Exporting: " + fif.getName());
+			System.out.flush();
 			m_newElement= m_docXml.createElement(C_TFILEOBJ);
 			m_firstElement.appendChild(m_newElement);
 			m_sectionElement=m_newElement;
@@ -167,6 +169,8 @@ class CmsDbExportFile implements I_CmsConstants {
 		Enumeration sfenum=subfolders.elements();
 		while (sfenum.hasMoreElements()) {
 			CmsFolder sf=(CmsFolder)sfenum.nextElement();
+			System.out.print("Exporting: " + sf.getAbsolutePath());
+			System.out.flush();
 			fileExport(sf.getAbsolutePath(), parentName+sf.getName());
 		}
 		

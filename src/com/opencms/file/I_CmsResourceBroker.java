@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/22 14:19:17 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.51 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2000/03/22 14:19:17 $
+ * @version $Revision: 1.51 $ $Date: 2000/03/27 16:22:10 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -205,6 +205,34 @@ interface I_CmsResourceBroker {
 												  String name, String resourcetype)
 		throws CmsException;
 	
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void writeExportPath(A_CmsUser currentUser, A_CmsProject currentProject, String path)
+		throws CmsException ;
+	
+	/**
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return the exportpath.
+	 */
+	public String readExportPath(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException ;
+							
 	/**
 	 * Reads all metadefinitions for the given resource type.
 	 * 

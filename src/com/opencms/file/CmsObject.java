@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/03/22 14:19:17 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.56 $ $Date: 2000/03/22 14:19:17 $ 
+ * @version $Revision: 1.57 $ $Date: 2000/03/27 16:22:10 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1564,6 +1564,28 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return c_rb.readMimeTypes(null, null);
 	}
 	
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void writeExportPath(String path)
+		throws CmsException {
+		c_rb.writeExportPath(m_context.currentUser(), m_context.currentProject(), path);
+	}
+	
+	/**
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @return the exportpath.
+	 */
+	public String readExportPath()
+		throws CmsException {
+		return c_rb.readExportPath(m_context.currentUser(), m_context.currentProject());
+	}
+	
     /**
 	 * Adds a new CmsMountPoint. 
 	 * A new mountpoint for a mysql filesystem is added.
@@ -1791,8 +1813,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 */
 	public void exportDb(String exportFile, String exportPath, int exportType) 
-		throws Exception {
-		c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
+		throws CmsException {
+		try {
+			c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}
 	}
 	
 	/**
@@ -1803,8 +1829,12 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * 
 	 */
 	public void importDb(String importFile, String importPath)
-		throws Exception {
-		c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importFile, importPath);
+		throws CmsException {
+		try {
+			c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importFile, importPath);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}			
 	}
 
 	 /**

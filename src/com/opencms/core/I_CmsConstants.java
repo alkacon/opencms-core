@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/03/27 10:02:52 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.61 $ $Date: 2000/03/27 10:02:52 $
+ * @version $Revision: 1.62 $ $Date: 2000/03/27 16:22:10 $
  */
 public interface I_CmsConstants
 {
@@ -458,6 +458,11 @@ public interface I_CmsConstants
       */
      static final String C_ROOT = C_FOLDER_SEPERATOR;
 	 
+	 /**
+	  * The name of the exportpath-property.
+	  */
+	 static final String C_PROPERTY_EXPORTPATH = "EXPORTPATH";
+
 	 /**
 	  * The name of the mountpoint-property.
 	  */

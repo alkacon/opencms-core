@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/03/15 09:46:13 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2000/03/15 09:46:13 $
+ * @version $Revision: 1.34 $ $Date: 2000/03/27 16:22:10 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1442,6 +1442,36 @@ public class CmsShell implements I_CmsConstants {
 	public void importDb(String importFile, String importPath ){
 		try {
 			m_cms.importDb(importFile, importPath);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	public void writeExportPath(String path)
+		throws CmsException {
+		try {
+			m_cms.writeExportPath(path);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @return the exportpath.
+	 */
+	public void readExportPath()
+		throws CmsException {
+		try {
+			System.out.println( m_cms.readExportPath() );
 		} catch( Exception exc ) {
 			printException(exc);
 		}

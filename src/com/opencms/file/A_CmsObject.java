@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/03/22 14:19:17 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.55 $ $Date: 2000/03/22 14:19:17 $ 
+ * @version $Revision: 1.56 $ $Date: 2000/03/27 16:22:10 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1246,6 +1246,24 @@ public abstract class A_CmsObject {
 	abstract public Hashtable readMimeTypes()
 		throws CmsException;
 	
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	abstract public void writeExportPath(String path)
+		throws CmsException;
+	
+	/**
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * @return the exportpath.
+	 */
+	public abstract String readExportPath()
+		throws CmsException;
+	
     /**
 	 * Adds a new CmsMountPoint. 
 	 * A new mountpoint for a mysql filesystem is added.
@@ -1432,7 +1450,7 @@ public abstract class A_CmsObject {
 	 * 
 	 */
 	abstract public void exportDb(String exportFile, String exportPath, int exportType) 
-		throws Exception;
+		throws CmsException;
 	
 	/**
 	 * imports a (files, groups, users) XML file into database
@@ -1444,7 +1462,7 @@ public abstract class A_CmsObject {
 	 * 
 	 */
 	abstract public void importDb(String importFile, String importPath)
-		throws Exception;
+		throws CmsException;
 
 	 /**
 	  * Reads all tasks for a user in a project.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/03/24 13:48:38 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2000/03/27 16:22:10 $
+ * Version: $Revision: 1.89 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.88 $ $Date: 2000/03/24 13:48:38 $
+ * @version $Revision: 1.89 $ $Date: 2000/03/27 16:22:10 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1867,6 +1867,55 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		return((Hashtable) m_propertyRb.readProperty(C_PROPERTY_MIMETYPES) );			
 	}
 	
+	/**
+	 * Writes the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param mountpoint The mount point in the Cms filesystem.
+	 */
+	synchronized public void writeExportPath(A_CmsUser currentUser, A_CmsProject currentProject, String path)
+		throws CmsException {
+		// check the security
+		if( isAdmin(currentUser, currentProject) ) {
+			
+			// security is ok - write the exportpath.
+			if(m_propertyRb.readProperty(C_PROPERTY_EXPORTPATH) == null) {
+				// the property wasn't set before.
+				m_propertyRb.addProperty(C_PROPERTY_EXPORTPATH, path);
+			} else {
+				// overwrite the property.
+				m_propertyRb.writeProperty(C_PROPERTY_EXPORTPATH, path);
+			}	
+			
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + path, 
+				CmsException.C_NO_ACCESS);
+		}		
+	}
+	
+	/**
+	 * Reads the export-path for the system.
+	 * This path is used for db-export and db-import.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return the exportpath.
+	 */
+	public String readExportPath(A_CmsUser currentUser, A_CmsProject currentProject)
+		throws CmsException {
+		
+		// return the exportpath.
+		return (String) m_propertyRb.readProperty(C_PROPERTY_EXPORTPATH);
+	}
+	
     /**
 	 * Deletes a CmsMountPoint. 
 	 * A mountpoint will be deleted.
@@ -3491,12 +3540,13 @@ System.err.println(">>> readFile(2) error for\n" +
 	 */
 	public void exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType)
 		throws Exception {
-			boolean admin=false;
-			admin=this.isAdmin(currentUser, currentProject);
-			if (admin) {
-				CmsDbExport export= new CmsDbExport(this, currentUser, currentProject, exportFile,  exportPath, exportType);
-				export.export();	
-			}
+		if(isAdmin(currentUser, currentProject) ) {
+			CmsDbExport export= new CmsDbExport(this, currentUser, currentProject, exportFile,  exportPath, exportType);
+			export.export();	
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] exportDb",
+				 CmsException.C_NO_ACCESS);
+		}
 	}
 	
 	/**
@@ -3515,15 +3565,16 @@ System.err.println(">>> readFile(2) error for\n" +
 	 */
 	public void importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath)
 	throws Exception {
-		boolean admin=false;
-		admin = this.isAdmin(currentUser, currentProject);
-		if (admin) {
+		if(isAdmin(currentUser, currentProject)) {
 			CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importFile, importPath);
 			cmsImport.xmlImport();
 				
 			if(cmsImport.getFilesImported()==C_FILES_IMPORTED) {
 				this.fileSystemChanged(currentProject.getName(), importPath);
 			}
+		} else {
+			 throw new CmsException("[" + this.getClass().getName() + "] importDb",
+				 CmsException.C_NO_ACCESS);
 		}
 	}
 	
