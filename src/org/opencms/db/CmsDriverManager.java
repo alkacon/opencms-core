@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/02 13:50:28 $
- * Version: $Revision: 1.189 $
+ * Date   : $Date: 2003/09/02 14:39:42 $
+ * Version: $Revision: 1.190 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.189 $ $Date: 2003/09/02 13:50:28 $
+ * @version $Revision: 1.190 $ $Date: 2003/09/02 14:39:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -850,6 +850,34 @@ public class CmsDriverManager extends Object {
             }
         }
         changeUserType(context, theUser, userType);
+    }
+    
+    
+    
+    /**
+     * Checks if all parents of a resource are already published in the online project.<p>
+     * 
+     * This method is required for direct publishing, only resources wich all parent resources published
+     * can be published.
+     * 
+     * @param cms the current CmsObject
+     * @param context the current request ocntext
+     * @param directPublishResource the resource to be published
+     * @throws CmsException if a parent resource is not in the online project or if something goes wrong
+     */
+    private void checkParentsPublished(CmsObject cms, CmsRequestContext context, CmsResource directPublishResource) throws CmsException {
+        CmsUUID parentID = directPublishResource.getParentId();
+        // get the onlineProject
+        CmsProject onlineProject=readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        try {
+            getVfsDriver().readFolder(onlineProject.getId(), parentID);
+        } catch (CmsException e) {
+            if (e.getType()==2) {
+                throw new CmsException("Parent folder not published yet",2);
+            } else {
+                throw e;
+            }
+        }                
     }
 
     /**
@@ -4893,6 +4921,7 @@ public class CmsDriverManager extends Object {
         int publishProjectId = context.currentProject().getId();
         boolean backupEnabled = isHistoryEnabled(cms);
         int versionId = 0;
+  
 
         // check the security
         if ((isAdmin(context) || isManagerOfProject(context)) && (context.currentProject().getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED) && (publishProjectId != I_CmsConstants.C_PROJECT_ONLINE_ID)) {
@@ -4903,8 +4932,21 @@ public class CmsDriverManager extends Object {
                     versionId = 0;
                 }
                 
+                //if we do a direct publishing, check if all parent resources are already published
+                if (directPublishResource != null) {
+                    try {
+                        checkParentsPublished(cms, context, directPublishResource); 
+                    } catch (CmsException e) {
+                        allChanged.setChangedCosResources(new Vector());
+                        allChanged.setChangedVfsResources(new Vector());
+                        report.println(e.getMessage(), I_CmsReport.C_FORMAT_WARNING);     
+                        return null;                
+                    }
+                
+                }
+                
                 changedResources = m_projectDriver.publishProject(context, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), isHistoryEnabled(cms), versionId, report, m_registry.getExportpoints(), directPublishResource);
-
+                                
                 // now publish the module masters
                 Vector publishModules = new Vector();
                 cms.getRegistry().getModulePublishables(publishModules, null);
