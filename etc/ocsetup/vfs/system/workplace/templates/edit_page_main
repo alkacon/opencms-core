@@ -3,16 +3,11 @@
 <template>
 <![CDATA[
 <html>
-
 <head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
-
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">   
-    
-    ]]><ELEMENT name="edit_options"/><![CDATA[
-
     // which button is clicked
     function doTemplSubmit(para)
     {
@@ -88,6 +83,7 @@
     var LANG_DELETECELL = "]]><LABEL value="editor.context.deletecell"/><![CDATA[";
     var LANG_MERGECELL = "]]><LABEL value="editor.context.mergecell"/><![CDATA[";
     var LANG_SPLITCELL = "]]><LABEL value="editor.context.splitcell"/><![CDATA[";
+
 </SCRIPT>
 
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms_]]><PROCESS>editor</PROCESS><![CDATA[.js"></SCRIPT>
@@ -125,26 +121,10 @@
 //-->
 </script>
 
-<script LANGUAGE="vbscript">
-Sub getStyles()
-    ' Create the block fmt names holder
-    Set fmt = CreateObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam.1")
-
-    ' Get the localized strings for the DECMD_SETBLOCKFMT command
-    EDITOR.EDIT_HTML.ExecCommand DECMD_GETBLOCKFMTNAMES, OLECMDEXECOPT_DONTPROMPTUSER, fmt
-
-    ' Put the localized strings into a (JavaScript) array
-    i = 0
-    For Each fmtName In fmt.Names
-        setStyles i, fmtName
-        i = i + 1
-    Next
-End Sub
-</script>
 
 </head>
 
-<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();initStyles();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
+<body background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed scroll=no onLoad="setText();" marginwidth=5 marginheight=5 leftmargin=5 topmargin=5>
 
 <table cellspacing=0 cellpadding=0 border=0 width="100%" height="100%"> <tr> <td valign="top">
 <form name=EDITOR id=EDITOR METHOD=POST>
@@ -155,46 +135,22 @@ End Sub
             <tr>
                 <td class=dialogtxt>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]> <INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
                 <td class=dialogtxt>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
+                <td class=menu align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
+            </tr>
+        </table>
+</td></tr><tr><td>
+        <hr>
+</td></tr><tr><td>
+        <table>
+            <tr>
+                <td class=menubold>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+                <td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>
+                <td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>
 
-                <script language="JavaScript">                  
-                if (USE_TEMPLATESELECTOR && (! USE_BODYSELECTOR)) {            
-                    document.write('<td class=dialogtxt><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
-                    document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
-                } else if (! USE_TEMPLATESELECTOR) {
-                    document.write('<td style="visibility:hidden;">]]><SELECT class="textfeld" name="template" width="1" method="getAvailableTemplates" /><![CDATA[</td>');
-                }
-                if (! USE_BODYSELECTOR) {
-                    document.write('<td style="visibility:hidden;">]]><SELECT class="textfeld" name="body" width="1" method="getBodys" /><![CDATA[</td>');
-                    document.write('<td><INPUT TYPE=HIDDEN name="bodytitle"></td>');
-                }
-                </script>
-
-                <td class=menu align=right width="100%">]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
-                
-                <script language="JavaScript">                  
-                if (USE_BODYSELECTOR && USE_TEMPLATESELECTOR) {            
-                    document.write('</tr></table></td></tr><tr><td><hr></td></tr><tr><td><table><tr>');
-                }
-                </script>
-        
-                ]]><!-- FLEX: Removed static body select entries and replaced them with dynamic entries:    
                 <td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
-                --><![CDATA[
-                                    
-                <script language="JavaScript">                  
-                if (USE_BODYSELECTOR) {
-                    document.write('<td class=menubold>]]><LABEL value="input.body"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
-                    document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[</td>');
-                    document.write('<td class=dialogtxt>]]><INPUTFIELD name="bodytitle" class="textfeld" size="10" length="255" method="setBodyTitle"/><![CDATA[</td>');
-                    document.write('<td class=menu><p class=tab><A href="javascript:doTemplSubmit(6);" onmousedown="ChPush(\'bt_newdoc\');" onmouseout="ChOff(\'bt_newdoc\')" onmouseover="ChOn(\'bt_newdoc\')" onmouseup="ChOn(\'bt_newdoc\')"><IMG alt="]]><LABEL value="button.newbody"/><![CDATA[" width=32 border=0 name=bt_newdoc src="/opencms/pics/system/bt_newdoc_off.gif" ></a></td>');
-                }        
-                if (USE_TEMPLATESELECTOR && USE_BODYSELECTOR) {            
-                    document.write('<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
-                    document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
-                    document.write('<td class=menu width="100%" align=right>&nbsp;</td>');
-                }
-                </script>
-                                                           
+                <td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
+                <td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
+                <td class=menu width="100%" align=right>&nbsp;</td>
             </tr>
         </table>
 </td></tr>
@@ -238,10 +194,5 @@ End Sub
 <TEMPLATE name="errorsave">
 <ERRORPAGE title="error.title.editorsave" message="error.message.editorsave" reason="error.reason.editorsave" suggestion="error.suggestion.editorsave" ref="edit_page_main.html" ><process>errordetail</process></ERRORPAGE>
 </TEMPLATE>
-
-<ELEMENTDEF name="edit_options">
-    <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-    <TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
-</ELEMENTDEF> 
 
 </workplace>

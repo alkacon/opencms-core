@@ -9,8 +9,6 @@
 <title>]]><LABEL value="label.wptitle" /><![CDATA[ ]]><METHOD name="userName" /><![CDATA[</title>
 <link rel=stylesheet type="text/css" href="../css/format.css">
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript">
-
-    ]]><ELEMENT name="edit_options"/><![CDATA[
         
     <!-- Sets the Document Source-Code for later including into the text editor -->
     var text="]]><METHOD name="setText"/><![CDATA[";
@@ -101,9 +99,5 @@
 <ERRORPAGE title="error.title.editorsave" message="error.message.editorsave" reason="error.reason.editorsave" suggestion="error.suggestion.editorsave" ref="" ><process>errordetail</process><process>errorlasturl</process></ERRORPAGE>
 </TEMPLATE>
 
-<ELEMENTDEF name="edit_options">
-    <CLASS>com.opencms.template.CmsXmlTemplate</CLASS>
-    <TEMPLATE>/system/workplace/templates/edit_options</TEMPLATE>
-</ELEMENTDEF> 
 
 </WORKPLACE>
