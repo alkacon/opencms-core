@@ -3418,6 +3418,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/channel_tree.html</source>
+            <destination>system/workplace/action/channel_tree.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/checkmem.html</source>
             <destination>system/workplace/action/checkmem.html</destination>
             <type>XMLTemplate</type>
@@ -9930,6 +9939,15 @@
         <file>
             <source>system/workplace/templates/ButtonTemplate</source>
             <destination>system/workplace/templates/ButtonTemplate</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/templates/channel_tree</source>
+            <destination>system/workplace/templates/channel_tree</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
