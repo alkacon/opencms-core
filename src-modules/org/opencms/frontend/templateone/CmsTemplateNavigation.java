@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/02/03 08:29:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/17 11:46:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,11 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -68,53 +72,65 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
-    /** Request parameter name for the head navigation start folder.<p> */
+    /** Request parameter name for the head navigation start folder. */
     public static final String C_PARAM_HEADNAV_FOLDER = "headnavfolder";
-    /** Request parameter name for the head navigation flag to use images on 1st level.<p> */
+    /** Request parameter name for the head navigation flag to use images on 1st level. */
     public static final String C_PARAM_HEADNAV_IMAGES = "headnavimages";
-    /** Request parameter name for the current locale.<p> */
+    /** Request parameter name for the head navigation flag to mark the current top level folder. */
+    public static final String C_PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
+    /** Request parameter name for the head navigation flag to expand the submenus on click (true) or mouseover (false). */
+    public static final String C_PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
+    /** Request parameter name for the head navigation sub menu depth. */
+    public static final String C_PARAM_HEADNAV_MENUDEPTH = "headnavmenudepth";
+    /** Request parameter name for the current locale. */
     public static final String C_PARAM_LOCALE = "locale";
-    /** Request parameter name for the left navigation editable include element uri.<p> */
+    /** Request parameter name for the left navigation editable include element uri. */
     public static final String C_PARAM_NAVLEFT_ELEMENTURI = "navleftelementuri";
-    /** Request parameter name for the flag if the left navigation should display only the selected resources.<p> */
+    /** Request parameter name for the flag if the left navigation should display only the selected resources. */
     public static final String C_PARAM_NAVLEFT_SHOWSELECTED = "navleftselected";
-    /** Request parameter name for the flag if the left navigation tree should be displayed.<p> */
+    /** Request parameter name for the flag if the left navigation tree should be displayed. */
     public static final String C_PARAM_NAVLEFT_SHOWTREE = "navleftshowtree";
-    /** Request parameter name for the current resource path.<p> */
+    /** Request parameter name for the current resource path. */
     public static final String C_PARAM_RESPATH = "respath";
-    /** Request parameter name for the flag if the head navigation menus should be shown.<p> */
+    /** Request parameter name for the flag if the head navigation menus should be shown. */
     public static final String C_PARAM_SHOWMENUS = "showmenus";
-    /** Request parameter name for the current start folder.<p> */
+    /** Request parameter name for the current start folder. */
     public static final String C_PARAM_STARTFOLDER = "startfolder";
     
-    /** Name of the property key to determine if the current element is shown in headnav.<p> */
+    /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
     
-    /** Stores the path to the head navigation start folder.<p> */
+    /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
     /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
     private boolean m_headNavItemDefaultValue;
-    /** Stores the current locale value.<p> */
+    /** Determines if the currently active top folder should be marked in the head navigation. */
+    private boolean m_headNavMarkCurrent;
+    /** Determines if the submenus are expanded on click (true) or mouseover (false). */
+    private boolean m_headNavMenuClick;
+    /** Stores the current locale value. */
     private String m_locale;
-    /** Stores the localized resource Strings.<p> */
+    /** Stores the localized resource Strings. */
     private CmsMessages m_messages;
-    /** Stores the left navigation include element uri.<p> */
+    /** The maximum depth of the sub menus in the head navigation. */
+    private int m_menuDepth;
+    /** Stores the left navigation include element uri. */
     private String m_navLeftElementUri;
-    /** Flag if the left navigation should display only the selected resources.<p> */
+    /** Flag if the left navigation should display only the selected resources. */
     private boolean m_navLeftShowSelected;
-    /** Flag if the left navigation tree should be displayed.<p> */
+    /** Flag if the left navigation tree should be displayed. */
     private boolean m_navLeftShowTree;
-    /** Stores the substituted path to the modules resources.<p> */
+    /** Stores the substituted path to the modules resources. */
     private String m_resPath;
     /** Flag that determines if the head navigation 1st row should use images instead of text links. */
     private boolean m_showHeadNavImages;
-    /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown.<p> */
+    /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown. */
     private boolean m_showMenus;
-    /** Stores the path to the start folder for navigation and search.<p> */
+    /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
     
     /**
@@ -271,18 +287,22 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     result.append("<td style= \"vertical-align: middle\">");
                     result.append("<a");
                     if (showMenus()) {
-                        result.append(" onmouseover=\"showMenu(");
+                        result.append(" onmouseover=\"buttonMouseover(event, 'menu");
                         result.append(count);
-                        result.append(");\"");
+                        result.append("');\"");
+                        if (getHeadNavMenuClick()) {
+                            // only show menus on mouse click
+                            result.append(" onclick=\"return buttonClick(event, 'menu");
+                            result.append(count);
+                            result.append("');\"");
+                        }
                     }
                     result.append(" title=\"");
                     result.append(navText);
                     result.append("\" href=\"");
                     result.append(link(nav.getResourceName()));
                     result.append("\">");
-                    result.append("<img id=\"xbparent");
-                    result.append(count);
-                    result.append("\" src=\"");
+                    result.append("<img src=\"");
                     result.append(link(nav.getNavImage()));
                     result.append("\" border=\"0\" alt=\"");
                     result.append(navText);
@@ -295,13 +315,21 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                         result.append(styleSeparator);
                         result.append("\">|</span>\n");
                     }
-                    result.append("<a id=\"xbparent");
-                    result.append(count);
-                    result.append("\"");
+                    result.append("<a");
                     if (showMenus()) {
-                        result.append(" onmouseover=\"showMenu(");
+                        result.append(" onmouseover=\"buttonMouseover(event, 'menu");
                         result.append(count);
-                        result.append(");\"");
+                        result.append("');\"");
+                        if (getHeadNavMenuClick()) {
+                            // only show menus on mouse click
+                            result.append(" onclick=\"return buttonClick(event, 'menu");
+                            result.append(count);
+                            result.append("');\"");
+                        }
+                    }
+                    if (getHeadNavMarkCurrent() && getRequestContext().getUri().startsWith(nav.getResourceName())) {
+                        // mark currently active top folder with bold font
+                        result.append(" style=\"font-weight: bold;\"");
                     }
                     result.append(" class=\"");
                     result.append(styleLink);
@@ -333,69 +361,203 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * This method only creates the menu entries, be sure to
      * build the head row calling the menus, too.<p>
      * 
-     * @param styleClass the CSS class name of the &lt;div&gt; and &lt;a&gt; nodes
+     * @param styleClass the CSS class name of the &lt;div&gt; nodes
      * @return the html for the head navigation menus
      */
     public String buildNavigationHeadMenus(String styleClass) {
+        
         StringBuffer result = new StringBuffer(4096);
-        // only create navigation if the template is configured to show it
-        List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
- 
-        int count = -1;
-        String showItemProperty;
-        for (int i=0; i<navElements.size(); i++) {
-            CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
-            boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
-            if (foldernav.isFolderLink() && showItem) {
-                // create a menu entry for every found folder
-                count++;
-                String subfolder = foldernav.getResourceName();
-                
-                // get all navigation elements in the sub folder
-                List pages = getNavigation().getNavigationForFolder(subfolder);
-                result.append("<div id=\"xbmenu");
-                result.append(count);
-                result.append("\" class=\"");
-                result.append(styleClass);
-                result.append("\">\n");
-                result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"150\">\n");
-                            
-                for (int k=0; k<pages.size(); k++) {
-                    // add the current page to the menu
-                    CmsJspNavElement nav = (CmsJspNavElement)pages.get(k);
-                    String target = nav.getResourceName();
-                    showItemProperty = property(C_PROPERTY_HEADNAV_USE, target, getHeadNavItemDefaultStringValue());
-                    boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
-                    if (showEntry) {
-                        if (nav.isFolderLink()) { 
-                            // check folders
-                            if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
-                                target = link(target);
-                            } else {
-                                target = null;
-                            }
-                        } else {
-                            target = link(target);
-                        }   
-                        if (target != null) {
-                            // create the entry
-                            result.append("\t<tr><td><a class=\"");
-                            result.append(styleClass);
-                            result.append("\" href=\"");
-                            result.append(target);
-                            result.append("\">");
-                            result.append(nav.getNavText());
-                            result.append("</a></td></tr>\n");               
-                        }
-                    }
+        
+        if (showMenus()) {
+            // only create navigation if the template is configured to show it
+            List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
+     
+            int count = -1;
+            String showItemProperty;
+            for (int i=0; i<navElements.size(); i++) {
+                CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
+                showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
+                boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
+                if (foldernav.isFolderLink() && showItem) {
+                    // create a menu entry for every found folder
+                    count++;
+                    String subfolder = foldernav.getResourceName();
+                    
+                    // get all navigation elements of the sub folder
+                    List subNav = getNavigation().getNavigationForFolder(subfolder);
+                    result.append(getMenuNavigation(subNav, styleClass, "menu" + count, 1));   
                 }
-                result.append("</table>\n");
-                result.append("</div>\n");      
             }
         }
         return result.toString();
     }
+    
+    /**
+     * Returns the maximum depth of the head navigation sub menu structure.<p>
+     * 
+     * @return the maximum depth of the head navigation sub menu structure
+     */
+    public int getMenuDepth() {
+        
+        return m_menuDepth;
+    }
+
+    /**
+     * This method builds a complete menu navigation with entries of all branches 
+     * from the specified folder.<p>
+     * 
+     * @param curNav the List of current navigation elements
+     * @param styleClass the CSS class name of the &lt;div&gt; nodes
+     * @param prefix the prefix to generate the unique menu node id.
+     * @param currentDepth the depth of the current submenu
+     * @return the HTML to generate menu entries
+     */
+    public StringBuffer getMenuNavigation(List curNav, String styleClass, String prefix, int currentDepth) {
+        
+        StringBuffer result = new StringBuffer(64);
+        String showItemProperty;
+        
+        int navSize = curNav.size();
+        if (navSize > 0) {
+            // at least one navigation entry present, create menu
+            Map subNav = new HashMap();
+            boolean entryPresent = false;
+            // loop through all nav entries
+            for (int i=0; i<navSize; i++) {
+                CmsJspNavElement ne = (CmsJspNavElement)curNav.get(i);
+                String resName = ne.getResourceName();
+                showItemProperty = property(C_PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
+                boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
+                if (showEntry) {
+                    entryPresent = true;
+                    List navEntries = new ArrayList();
+                    // check if entry is folder and depth smaller than maximum depth -> if so, get the navigation from this folder as well
+                    if (ne.isFolderLink() && currentDepth < getMenuDepth()) {
+                        navEntries = getNavigation().getNavigationForFolder(resName);
+                    }
+                    result.append("<a class=\"");
+                    result.append("mI");
+                    result.append("\" href=\"");
+                    result.append(link(resName));
+                    result.append("\"");
+                    if (ne.isFolderLink() && hasSubMenuEntries(navEntries)) {
+                        // sub menu(s) present, create special entry
+                        result.append(" onmouseover=\"menuItemMouseover(event, '");
+                        result.append(prefix);
+                        result.append("_");
+                        result.append(resName.hashCode());
+                        result.append("');\">");
+                        result.append("<span class=\"mIText\">");
+                        result.append(ne.getNavText());
+                        result.append("</span><span class=\"mIArrow\">&#9654;</span></a>");
+                        // add current entry to temporary Map to create the sub menus
+                        subNav.put(resName, navEntries);
+                    } else {
+                        // no sub menu present, create common menu entry
+                        result.append(">");
+                        result.append(ne.getNavText());
+                        result.append("</a>");
+                    }   
+                }
+            }
+            result.append("</div>\n");
+            
+            StringBuffer openTag = new StringBuffer(8);
+            if (entryPresent) {                
+                openTag.append("<div class=\""); 
+                openTag.append(styleClass);
+                openTag.append("\" id=\"");
+                openTag.append(prefix);
+                openTag.append("\" onmouseover=\"menuMouseover(event);\">");
+            } else {
+                openTag.append("<div style=\"visibility: hidden;\" id=\""); 
+                openTag.append(prefix);
+                openTag.append("\">");
+            }
+            result.insert(0, openTag);
+            
+            // add the sub menus recursively from temporary Map
+            Iterator i = subNav.keySet().iterator();
+            while (i.hasNext()) {
+                String resName = (String)i.next();
+                List navEntries = (List)subNav.get(resName);
+                result.append(getMenuNavigation(navEntries, styleClass, prefix + "_" + resName.hashCode(), currentDepth + 1));
+            }
+        }
+        return result;    
+    }
+
+
+    
+//    /**
+//     * Returns the html for the head navigation menus.<p>
+//     * 
+//     * This method only creates the menu entries, be sure to
+//     * build the head row calling the menus, too.<p>
+//     * 
+//     * @param styleClass the CSS class name of the &lt;div&gt; and &lt;a&gt; nodes
+//     * @return the html for the head navigation menus
+//     */
+//    public String buildNavigationHeadMenus(String styleClass) {
+//        StringBuffer result = new StringBuffer(4096);
+//        // only create navigation if the template is configured to show it
+//        List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
+// 
+//        int count = -1;
+//        String showItemProperty;
+//        for (int i=0; i<navElements.size(); i++) {
+//            CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
+//            showItemProperty = property(C_PROPERTY_HEADNAV_USE, foldernav.getResourceName(), getHeadNavItemDefaultStringValue());
+//            boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
+//            if (foldernav.isFolderLink() && showItem) {
+//                // create a menu entry for every found folder
+//                count++;
+//                String subfolder = foldernav.getResourceName();
+//                
+//                // get all navigation elements in the sub folder
+//                List pages = getNavigation().getNavigationForFolder(subfolder);
+//                result.append("<div id=\"xbmenu");
+//                result.append(count);
+//                result.append("\" class=\"");
+//                result.append(styleClass);
+//                result.append("\">\n");
+//                result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"1\" width=\"150\">\n");
+//                            
+//                for (int k=0; k<pages.size(); k++) {
+//                    // add the current page to the menu
+//                    CmsJspNavElement nav = (CmsJspNavElement)pages.get(k);
+//                    String target = nav.getResourceName();
+//                    showItemProperty = property(C_PROPERTY_HEADNAV_USE, target, getHeadNavItemDefaultStringValue());
+//                    boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
+//                    if (showEntry) {
+//                        if (nav.isFolderLink()) { 
+//                            // check folders
+//                            if (! (CmsResource.getParentFolder(target).equals(getStartFolder()))) {
+//                                target = link(target);
+//                            } else {
+//                                target = null;
+//                            }
+//                        } else {
+//                            target = link(target);
+//                        }   
+//                        if (target != null) {
+//                            // create the entry
+//                            result.append("\t<tr><td><a class=\"");
+//                            result.append(styleClass);
+//                            result.append("\" href=\"");
+//                            result.append(target);
+//                            result.append("\">");
+//                            result.append(nav.getNavText());
+//                            result.append("</a></td></tr>\n");               
+//                        }
+//                    }
+//                }
+//                result.append("</table>\n");
+//                result.append("</div>\n");      
+//            }
+//        }
+//        return result.toString();
+//    }
     
     /**
      * Returns the html for the left navigation tree.<p>
@@ -517,6 +679,26 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     }
     
     /**
+     * Returns if the currently active top level folder should be marked in the head navigation.<p>
+     * 
+     * @return true if the currently active top level folder should be marked in the head navigation, otherwise false
+     */
+    public boolean getHeadNavMarkCurrent() {
+        
+        return m_headNavMarkCurrent;
+    }
+    
+    /**
+     * Returns if the submenus are expanded on click (true) or mouseover (false).<p>
+     * 
+     * @return true if the submenus are expanded on click, otherwise false
+     */
+    public boolean getHeadNavMenuClick() {
+        
+        return m_headNavMenuClick;
+    }
+    
+    /**
      * Returns the path to the head navigation start folder.<p>
      * 
      * @return the path to the head navigation start folder
@@ -582,6 +764,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
         m_showHeadNavImages = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_IMAGES)).booleanValue();
         m_headNavItemDefaultValue = true;
+        m_headNavMarkCurrent = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_MARKCURRENT)).booleanValue();
+        m_headNavMenuClick = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_MENUCLICK)).booleanValue();
+        m_menuDepth = Integer.parseInt(req.getParameter(C_PARAM_HEADNAV_MENUDEPTH));
         m_navLeftElementUri = req.getParameter(C_PARAM_NAVLEFT_ELEMENTURI);
         m_navLeftShowSelected = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
         m_navLeftShowTree = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWTREE)).booleanValue();
@@ -680,6 +865,24 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     private String getHeadNavItemDefaultStringValue() {
     
         return "" + m_headNavItemDefaultValue;
+    }
+    
+    /**
+     * Checks if a list of navigation entries contains at least one element which is shown in the head navigation.<p>
+     * 
+     * @param navEntries the navigation elements to check
+     * @return true if at least one element of the list should be shown in the head navigation
+     */
+    private boolean hasSubMenuEntries(List navEntries) {
+        
+        for (int i=navEntries.size() - 1; i>=0; i--) {
+            CmsJspNavElement nav = (CmsJspNavElement)navEntries.get(i);
+            String showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
+            if (Boolean.valueOf(showItemProperty).booleanValue()) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**

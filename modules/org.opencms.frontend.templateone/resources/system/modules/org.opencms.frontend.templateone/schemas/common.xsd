@@ -16,7 +16,10 @@
 			<xsd:element name="area.name" type="OpenCmsString" />
 			<xsd:element name="navigation.startfolder" type="OpenCmsVfsFile" />
 			<xsd:element name="headnav.menus" type="OpenCmsBoolean" default="true" />
-			<xsd:element name="headnav.images" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.menudepth" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="headnav.menuclick" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.markcurrent" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.images" type="OpenCmsBoolean" minOccurs="0" />			
 			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
 			<xsd:element name="login.uri" type="OpenCmsVfsFile" />
 			<xsd:element name="help.uri" type="OpenCmsVfsFile" />
@@ -26,4 +29,16 @@
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
 
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.workplace"/>
+			<layouts>
+				<layout element="headnav.menudepth" widget="SelectorWidget" />
+			</layouts>
+			<defaults>
+				<default element="headnav.menudepth" value="1*|2|3|4|5|6|7|8|9|10"/>
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
 </xsd:schema>

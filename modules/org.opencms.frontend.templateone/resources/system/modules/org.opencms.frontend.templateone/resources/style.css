@@ -105,10 +105,52 @@ a.navtop:hover		{ color: <%= headNavFont %>; text-decoration: none; }
 .navspacer { color: <%= headNavFont %>; font-size: 8pt; vertical-align: middle; }
 
 /* Head navigation submenu */
-div.topmenu { visibility: hidden; position: absolute; background-color: <%= headNavBorder %>; z-index: 1000000; }
-a.topmenu			{ color: <%= headNavFont %>; background-color: <%= headNavBg %>; font-family: <%= navFontFamily %>; font-size: 10px; padding: 0px 1px 0px 3px; display: block; margin: 0; width: 175px; line-height: 16px; text-decoration: none; }
-a.topmenu:visited	{ color: <%= headNavFont %>; text-decoration: none; }
-a.topmenu:hover		{ color: <%= headNavFontHover %>; background-color: <%= headNavBgHover %>; text-decoration: none; }
+div.menu, div.menu a.mI, div.menu a.mI span.mIText, div.menu a.mI span.mIArrow {
+  font-family: <%= navFontFamily %>;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: normal;
+}
+
+div.menu {
+  font-family: <%= navFontFamily %>;
+  font-size: 10px;
+  background-color: <%= headNavBg %>;
+  border: 1px solid <%= headNavBorder %>;
+  text-align: left;
+  left: 0px;
+  position: absolute;
+  top: 0px;
+  visibility: hidden;
+  z-index: 101;
+}
+
+div.menu a.mI, div.menu a.mICurrent {
+  color: <%= headNavFont %>;
+  background-color: <%= headNavBg %>;
+  cursor: pointer;
+  display: block;
+  padding: 3px 1em;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+div.menu a.mI:hover, div.menu a.mIHighlight, div.menu a.mICurrent, div.menu a.mI:hover span.mIText, div.menu a.mI:hover span.mIArrow {
+  font-family: <%= navFontFamily %>;
+  font-size: 10px;
+  color: <%= headNavFontHover %>;
+  background-color: <%= headNavBgHover %>;
+}
+
+div.menu a.mI span.mIText, div.menu a.mI span.mIArrow {
+  font-family: <%= navFontFamily %>;
+  font-size: 10px;
+  color: <%= headNavFont %>;
+}
+
+div.menu a.mI span.mIArrow {
+  margin-right: -.75em;
+}
 
 /* head and foot row links */
 a.linksheadfoot			{ font-family: <%= navFontFamily %>; font-size: 8pt; color: <%= footLinksFont %>; text-decoration: none; }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/02/04 14:55:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/02/17 11:46:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -764,6 +764,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
         getProperties().put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
         getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
         getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_IMAGES, getConfigurationValue("headnav.images", "false"));
+        getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_MARKCURRENT, getConfigurationValue("headnav.markcurrent", "false"));
+        getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUDEPTH, getConfigurationValue("headnav.menudepth", "1"));
+        getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_MENUCLICK, getConfigurationValue("headnav.menuclick", "false"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", "true"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_NAVLEFT_SHOWSELECTED, getConfigurationValue("navleft.showselected", "false"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_NAVLEFT_SHOWTREE, "" + showLeftNavigation());

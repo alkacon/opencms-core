@@ -11,7 +11,7 @@ cms.setHeadNavItemDefaultValue(true);
 if (cms.template("navrow")) {
 	out.print(cms.buildNavigationHead(cms.key("link.home"), "navtop", "navspacer"));
 } else {
-	out.print(cms.buildNavigationHeadMenus("topmenu"));
+	out.print(cms.buildNavigationHeadMenus("menu"));
 }
 
 %>
