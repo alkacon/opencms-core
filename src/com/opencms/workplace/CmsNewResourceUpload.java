@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/08/08 14:08:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2001/01/18 14:08:48 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/08/08 14:08:32 $
+ * @version $Revision: 1.21 $ $Date: 2001/01/18 14:08:48 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -91,7 +91,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 		
 	
 		String lastUrl = getLastUrl(cms, parameters); 
-		 
+		
 		// get the parameters from the request and session
 		String step=(String)parameters.get("STEP");   
 		String currentFolder = (String) parameters.get(C_PARA_FILELIST); 
@@ -137,6 +137,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 		
 		// get the document to display
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);       
+		xmlTemplateDocument.setData("lasturl", lastUrl);		 
 		
 		// there was a file uploaded, so select its type
 		if (step != null) {
@@ -174,7 +175,12 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 						session.removeValue(C_PARA_NEWTYPE);
 						// return to the filelist
 						try {
-							cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+							//cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+							if ((lastUrl != null) && (lastUrl!="")) {
+								cms.getRequestContext().getResponse().sendRedirect(lastUrl);	
+							} else { 
+								cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+							}
 						} catch (Exception ex) {
 							throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,ex);
 						}     
