@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/12/12 18:55:49 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/12/16 13:22:55 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.w3c.dom.NodeList;
  *
  * @author Andreas Schouten
  * @author Thomas Weckert
- * @version $Revision: 1.55 $ $Date: 2002/12/12 18:55:49 $
+ * @version $Revision: 1.56 $ $Date: 2002/12/16 13:22:55 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
@@ -122,8 +122,8 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         "</type><name>", 
         "</name><nicename>", 
         "</nicename><version>", 
-        "</version><description>", 
-        "</description><author>", 
+        "</version><description><![CDATA[", 
+        "]]></description><author>", 
         "</author><email/><creationdate>", 
         "</creationdate>",
         "<view/><publishclass/><documentation/><dependencies/><maintenance_class/><parameters/><repository/></module>" 
@@ -172,22 +172,7 @@ public CmsRegistry(String regFileName) throws CmsException {
         // get the file
         File xmlFile = new File(m_regFileName);
 
-        // get a buffered reader
-        //[removed by Gridnine AB, 2002-06-13]
-        /*
-        BufferedReader reader = new BufferedReader(new FileReader(xmlFile));
-
-        StringBuffer content = new StringBuffer();
-        String buffer = "";
-        do {
-            content.append(buffer);
-            buffer = reader.readLine();
-        } while (buffer != null);
-
-        reader.close();
-        */
         // parse the registry-xmlfile and store it.
-        //[removed by Gridnine AB, 2002-06-13] m_xmlReg = parse(content.toString());
         InputStream content = new FileInputStream(xmlFile);
         m_xmlReg = parse(content);
         init();
@@ -810,20 +795,8 @@ private Element getModuleElementFromImport(String filename) {
         // read the minifest
         ZipEntry entry = importZip.getEntry("manifest.xml");
         InputStream stream = importZip.getInputStream(entry);
-        //[removed by Gridnine AB, 2002-06-13]
-        /*
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-        String content = "";
-        String buffer = "";
-        do {
-            content += buffer;
-            buffer = reader.readLine();
-        } while (buffer != null);
-        */
         // parse the manifest
-        //[removed by Gridnine AB, 2002-06-13] Document manifest = parse(content);
         Document manifest = parse(stream);
-        //[removed by Gridnine AB, 2002-06-13] reader.close();
         importZip.close();
         // get the module-element
         return (Element)(manifest.getElementsByTagName("module").item(0));
@@ -1858,20 +1831,8 @@ private void saveRegistry() throws CmsException {
     try {
         // get the file
         File xmlFile = new File(m_regFileName);
-        /*
-        // get a buffered writer
-        BufferedWriter xmlWriter = new BufferedWriter(new
-FileWriter(xmlFile));
-
-        // parse the registry-xmlfile and store it.
-        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, xmlWriter);
-        */
-        //Gridnine AB Sep 2, 2002
-        BufferedOutputStream os = new BufferedOutputStream(new
-FileOutputStream(xmlFile));
-        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os,
-I_CmsXmlParser.C_XML_ENCODING);
-
+        BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(xmlFile));
+        A_CmsXmlContent.getXmlParser().getXmlText(m_xmlReg, os, I_CmsXmlParser.C_XML_ENCODING);
         // reinit the modules-hashtable
         init();
     } catch (Exception exc) {
@@ -2233,7 +2194,7 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
             Element type = m_xmlReg.createElement("type");
             Element value = m_xmlReg.createElement("value");
             name.appendChild(m_xmlReg.createTextNode(names.elementAt(i).toString()));
-            desc.appendChild(m_xmlReg.createTextNode(descriptions.elementAt(i).toString()));
+            desc.appendChild(m_xmlReg.createCDATASection(descriptions.elementAt(i).toString()));
             type.appendChild(m_xmlReg.createTextNode(types.elementAt(i).toString()));
             value.appendChild(m_xmlReg.createTextNode(values.elementAt(i).toString()));
             para.appendChild(name);
@@ -2401,7 +2362,11 @@ private void setTagValue(Node node, String value) {
     if (node.hasChildNodes()) {
         node.getFirstChild().setNodeValue(value);
     } else {
-        node.appendChild(m_xmlReg.createTextNode(value));
+        if ("description".equals(value)) {
+            node.appendChild(m_xmlReg.createCDATASection(value));            
+        } else {
+            node.appendChild(m_xmlReg.createTextNode(value));
+        }
     }
 }
 

@@ -68,7 +68,9 @@
                                 </tr>
                                 <tr>
                                     <td class=dialogtxt colspan="4" align="center">
-                                        <textarea name="description" id="description" style="width:470"  cols="47" rows="5" >]]><PROCESS>description</PROCESS><![CDATA[</textarea>
+<textarea name="description" id="description" style="width:470"  cols="47" rows="5" >
+]]><PROCESS>description</PROCESS><![CDATA[
+</textarea>
                                     </td>
                                 <tr>
                                 <tr>
