@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsTemplateCache.java,v $
-* Date   : $Date: 2004/03/04 11:33:54 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2004/03/08 07:30:22 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ public class CmsTemplateCache implements I_CmsTemplateCache {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"templateCache", templateCache);
             }
         } catch (Throwable t) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).error("Could not access memory monitor", t);
+            OpenCms.getLog(this).error("Could not access memory monitor", t);
         }
             
         if(OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled() ) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/03/05 16:51:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/03/08 07:30:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,12 +86,27 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * Implementation of the {@link I_CmsResourceLoader} for 
- * XMLTemplates.<p>
- *
+ * Implementation of the {@link I_CmsResourceLoader} for XMLTemplates.<p>
+ * 
+ * Parameters supported by this loader:<dl>
+ * 
+ * <dt>elementcache.enabled</dt>
+ * <dd>(Optional) Controls if the legacy XMLTemplate element cache is disabled 
+ * (the default) or enabled. Enable the element cache only to support old
+ * XMLTemplate based code that depend on specific element cache behaviour.</dd>
+ * 
+ * <dt>elementcache.uri</dt>
+ * <dd>(Optional) Element cache URI size. The default is 10000.</dd>
+ * 
+ * <dt>elementcache.elements</dt>
+ * <dd>(Optional) Element cache element size. The default is 50000.</dd>
+ * 
+ * <dt>elementcache.variants</dt>
+ * <dd>(Optional) Element cache variant size. The default is 100.</dd></dl>
+ * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -144,7 +159,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
 
     /**
-     * Returns the element cache that belongs to the given cms context,
+     * Returns the element cache,
      * or null if the element cache is not initialized.<p>
      * 
      * @return the element cache that belongs to the given cms context
@@ -172,9 +187,9 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }    
     
     /**
-     * Returns true if the element cache is enabled for the given cms context.<p>
+     * Returns true if the element cache is enabled.<p>
      * 
-     * @return true if the element cache is enabled for the given cms context
+     * @return true if the element cache is enabled
      */
     public static final boolean isElementCacheEnabled() {
         return m_elementCache != null;
@@ -596,17 +611,20 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     }
     
     /** 
-     * Initialize the ResourceLoader.<p> 
+     * Initialize this resource loader.<p> 
      */
     public void initialize() {
-        // Check, if the element cache should be enabled
+        // check if the element cache is enabled
         boolean elementCacheEnabled = m_configuration.getBoolean("elementcache.enabled", false);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Loader init          : XMLTemplate element cache " + (elementCacheEnabled ? "enabled" : "disabled"));
         }
         if (elementCacheEnabled) {
             try {
-                m_elementCache = new CmsElementCache(m_configuration.getInteger("elementcache.uri", 10000), m_configuration.getInteger("elementcache.elements", 50000), m_configuration.getInteger("elementcache.variants", 100));
+                m_elementCache = new CmsElementCache(
+                    m_configuration.getInteger("elementcache.uri", 10000), 
+                    m_configuration.getInteger("elementcache.elements", 50000), 
+                    m_configuration.getInteger("elementcache.variants", 100));
             } catch (Exception e) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Loader init          : XMLTemplate element cache non-critical error " + e.toString());

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2004/02/13 13:41:46 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2004/03/08 07:30:22 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,13 +28,13 @@
 
 package com.opencms.template.cache;
 
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-
-import org.opencms.file.CmsObject;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -70,6 +70,12 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
             variantCachesize = 100;
         }
         m_variantCachesize = variantCachesize;
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Legacy element cache : Uri cache size     = " + uriCachesize);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Legacy element cache : Element cache size = " + elementCachesize);
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Legacy element cache : Variant cache size = " + variantCachesize);
+        }        
         
         // add this class as an event handler to the Cms event listener
         OpenCms.addCmsEventListener(this, new int[] { 
@@ -173,6 +179,8 @@ public class CmsElementCache extends Object implements I_CmsEventListener {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT :
             case I_CmsEventListener.EVENT_PUBLISH_RESOURCE :
             case I_CmsEventListener.EVENT_CLEAR_CACHES :
+            case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
+            case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:                
                 clearCache();
                 break;
         }
