@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2001/09/24 14:18:46 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2001/09/28 11:28:54 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.57 $ $Date: 2001/09/24 14:18:46 $
+ * @version $Revision: 1.58 $ $Date: 2001/09/28 11:28:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -201,7 +201,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             session.removeValue("newProjectCallingFrom");
             reqCont.setCurrentProject(cms.onlineProject().getId());
         }
-        String newName, newGroup, newDescription, newManagerGroup, newFolder, projectType;
+        String newName, newGroup, newDescription, newManagerGroup, newFolder;
+        int projectType = 0;
         String newType = new String();
         String action = new String();
         action = (String)parameters.get("action");
@@ -268,6 +269,9 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
         if(allResources == null) {
             allResources = (String)session.getValue(C_NEWRESOURCES);
         }
+        if(newType == null) {
+            newType = (String)session.getValue(C_NEWTYPE);
+        }
         if(newName == null) {
             newName = "";
         }
@@ -284,10 +288,10 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
             allResources = "";
         }
         if(newType == null || "".equals(newType)) {
-            projectType = ""+I_CmsConstants.C_PROJECT_TYPE_NORMAL;
+            projectType = I_CmsConstants.C_PROJECT_TYPE_NORMAL;
             newType = "";
         } else {
-            projectType = ""+I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
+            projectType = I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
         }
 
         if(parameters.get("submitform") != null) {
@@ -311,14 +315,6 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
         // is the wait-page showing?
         if("working".equals(action)) {
-            // YES: get the stored data
-            newName = (String)session.getValue(C_NEWNAME);
-            newGroup = (String)session.getValue(C_NEWGROUP);
-            newDescription = (String)session.getValue(C_NEWDESCRIPTION);
-            newManagerGroup = (String)session.getValue(C_NEWMANAGERGROUP);
-            allResources = (String)session.getValue(C_NEWRESOURCES);
-            newType = (String)session.getValue(C_NEWTYPE);
-
             // create new Project
             try {
                 // append the /pics/ and /download/ path to the list of all resources
@@ -345,7 +341,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
 
                 // finally create the project
                 CmsProject project = cms.createProject(newName, newDescription, newGroup,
-                        newManagerGroup, Integer.parseInt(projectType));
+                        newManagerGroup, projectType);
                 // change the current project
                 reqCont.setCurrentProject(project.getId());
                 // copy the resources to the current project
@@ -371,6 +367,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault implements I_CmsCons
                 session.removeValue(C_NEWDESCRIPTION);
                 session.removeValue(C_NEWMANAGERGROUP);
                 session.removeValue(C_NEWFOLDER);
+                session.removeValue(C_NEWTYPE);
                 session.removeValue(C_NEWTYPE);
                 session.removeValue("lasturl");
                 session.removeValue("newProjectCallingFrom");
