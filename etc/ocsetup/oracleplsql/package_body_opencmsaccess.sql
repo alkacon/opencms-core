@@ -40,7 +40,7 @@ PACKAGE BODY opencmsAccess IS
     END IF;
     -- resource locked by another user => false
     IF vLockedBy != opencmsConstants.C_UNKNOWN_ID AND
-    	(recResource.locked_by != pUserID OR vLockedInProject != pProjectID) THEN
+    	(vLockedBy != pUserID OR vLockedInProject != pProjectID) THEN
         RETURN 0;
     END IF;
     -- for current resource no write access Other/Owner/Group => false
