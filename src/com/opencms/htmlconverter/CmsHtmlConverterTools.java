@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2001/11/23 15:04:56 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/12/06 14:03:15 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -182,8 +182,18 @@ final class CmsHtmlConverterTools {
 
         // HACK: if this link has already a link tag in it don't replace it
         // this is only for a special project and should be removed sometime...
-        if(valueParam != null && (valueParam.indexOf("<link>") != -1 || valueParam.indexOf("<LINK>") != -1)){
-            return false;
+        if(valueParam != null){
+            if(valueParam.indexOf("<link>") != -1 || valueParam.indexOf("<LINK>") != -1){
+                return false;
+            }
+            if(valueParam.startsWith("#")){
+                // its an anchor in the same page
+                return false;
+            }
+            if(valueParam.toLowerCase().startsWith("javascript:")){
+                // it is a javascript (or Javasript or JavaScript or ...)
+                return false;
+            }
         }
         if (orgUrl == null) {
             return false;
