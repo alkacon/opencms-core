@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/11/10 08:12:57 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/25 10:36:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public final class OpenCms {
     
@@ -141,6 +141,17 @@ public final class OpenCms {
      */
     public static List getDefaultFilenames() {
         return OpenCmsCore.getInstance().getDefaultFilenames();
+    }
+
+    /**
+     * Returns the configured list of default http headers.<p>
+     *  
+     * Caution: This list can not be modified.<p>
+     * 
+     * @return the configured list of default http headers
+     */
+    public static List getExportHeaders() {
+        return OpenCmsCore.getInstance().getExportHeaders();
     }
     
     /**

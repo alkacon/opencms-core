@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/11/12 11:32:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/11/25 10:36:34 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,11 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.util.Utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -59,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -105,6 +107,13 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         if (exportStream != null) {
             exportStream.write(file.getContents());
         }
+        
+        // Overwrite headers if set as default
+        for (Iterator i = OpenCms.getExportHeaders().listIterator(); i.hasNext();) {
+            String header[] = Utils.split(((String)i.next()), ":"); 
+            res.setHeader(header[0], header[1]);
+        }
+        
         load(cms, file, req, res);  
     }
     
@@ -166,10 +175,13 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             // allow proxy caching of 10 seconds only (required for PDF preview in offline project)
             expireTime = 10;
         }
-        res.setHeader("Cache-Control", "max-age=" + expireTime); // HTTP 1.1
-        res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
         
-        // now send the file to the client          
+        // set default headers for cache control only if not already set
+        if (!res.containsHeader("Cache-Control")) {
+            res.setHeader("Cache-Control", "max-age=" + expireTime); // HTTP 1.1
+            res.setDateHeader("Expires", System.currentTimeMillis() + (expireTime * 1000)); // HTTP 1.0
+        }
+                         
         service(cms, file, req, res);        
     }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/11/13 16:32:30 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/11/25 10:37:07 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -231,6 +231,9 @@ public final class OpenCmsCore {
     /** The default setting for the user language */
     private String m_userDefaultLanguage;
 
+    /** The additional http headers */
+    private String[] m_exportHeaders;
+    
     /** The version name (including version number) of this OpenCms installation */
     private String m_versionName;
 
@@ -686,6 +689,16 @@ public final class OpenCmsCore {
     protected CmsResourceTranslator getFileTranslator() {
         return m_fileTranslator;
     }    
+    
+    /**
+     * Returns a header for a given key this OpenCms has read from the opencms.properties
+     * 
+     * @param key a http header key, i.e. "Pragma"
+     * @return the value for this key from opencms.properties
+     */
+    protected List getExportHeaders() {
+        return Collections.unmodifiableList(Arrays.asList(m_exportHeaders));
+    }
     
     /**
      * Returns the link manager to resolve links in &lt;link&gt; tags.<p>
@@ -1573,6 +1586,25 @@ public final class OpenCmsCore {
         // set the property whether siblings should get published if a file gets published directly
         String directPublishSiblings = configuration.getString("workplace.directpublish.siblings", "false");
         setRuntimeProperty("workplace.directpublish.siblings", directPublishSiblings);
+
+        m_exportHeaders = null;
+        // try to initialize default directory file names (e.g. index.html)
+        try {
+            m_exportHeaders = configuration.getStringArray("staticexport.headers");
+            for (int i = 0; i < m_exportHeaders.length; i++) {
+                if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                    getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + m_exportHeaders[i]);
+                }
+            }
+        } catch (Exception e) {
+            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : non-critical error " + e.toString());
+            }
+        }
+        // make sure we always have at last an emtpy array      
+        if (m_exportHeaders == null) {
+            m_exportHeaders = new String[0];
+        }
         
         // save the configuration
         m_configuration = configuration;        
@@ -1753,7 +1785,7 @@ public final class OpenCmsCore {
                                      
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = configuration.getBoolean("auth.basic", true);        
-        m_authenticationFormURI = configuration.getString("auth.form_uri" , I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html");                
+        m_authenticationFormURI = configuration.getString("auth.form_uri" , I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html");
     }
     
     /**
