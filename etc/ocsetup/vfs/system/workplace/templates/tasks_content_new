@@ -167,7 +167,7 @@ iMaxOpts = iMaxOpts + 1;
 
 <TEMPLATE name="error">
 <![CDATA[
-]]><ERRORPAGE title="error.title.newtask" message="error.message.newtask" reason="error.reason.newtask" suggestion="error.suggestion.newtask" ref="task_content_new.html" /><![CDATA[
+]]><ERRORPAGE title="error.title.newtask" message="error.message.newtask" reason="error.reason.newtask" suggestion="error.suggestion.newtask" ref="tasks_content_new.html" /><![CDATA[
 ]]>
 </TEMPLATE>
 
