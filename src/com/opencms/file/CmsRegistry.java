@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/10/26 17:23:49 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/11/01 09:40:25 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/10/26 17:23:49 $
+ * @version $Revision: 1.16 $ $Date: 2000/11/01 09:40:25 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -217,6 +217,26 @@ private Vector checkDependencies(Element module) throws CmsException {
  */
 public I_CmsRegistry clone(CmsObject cms) {
 	return new CmsRegistry(this, cms);
+}
+/**
+ * This method creates a new module in the repository.
+ *
+ * @param String modulename the name of the module.
+ * @param String niceModulename another name of the module.
+ * @param String description the description of the module.
+ * @param String author the name of the author.
+ * @param long createDate the creation date of the module
+ * @param int version the version number of the module.
+ * @throws CmsException if the user has no right to create a new module.
+ */
+public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException {
+
+	// find out if the module exists already
+	if( !moduleExists(modulename) ) {
+		throw new CmsException("Module exists already " + modulename, CmsException.C_REGISTRY_ERROR);
+	}
+
+	
 }
 /**
  * This method checks which modules need this module. If a module depends on this the name 
@@ -413,6 +433,24 @@ public synchronized void deleteModule(String module, Vector exclusion) throws Cm
 		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
 }
+/**
+ * Deletes the view for a module.
+ * 
+ * @param String the name of the module.
+ */
+public void deleteModuleView(String modulename) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element view = (Element) (module.getElementsByTagName("view").item(0));
+		Node name = view.getElementsByTagName("name").item(0).getFirstChild();
+		Node url = view.getElementsByTagName("url").item(0).getFirstChild();
+		view.removeChild(name);
+		view.removeChild(url);
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+}
 	/**
 	 * Gets a description of this content type.
 	 * For OpenCms internal use only.
@@ -592,7 +630,6 @@ public Class getModuleMaintenanceEventClass(String modulname) {
 		
 		return loader.loadClass(getModuleData(modulname, "maintenance_class")); 
 		
-		//return java.lang.Class.forName(getModuleData(modulname, "maintenance_class"));
 	} catch(Exception exc) {
 		return null;
 	}
@@ -1305,6 +1342,122 @@ private void saveRegistry() throws CmsException {
 		throw new CmsException("couldn't save registry", CmsException.C_REGISTRY_ERROR, exc);
 	}
 }
+/**
+ * This method sets the author of the module.
+ *
+ * @param String the name of the module.
+ * @param String the name of the author.
+ */
+public void setModuleAuthor(String modulename, String author) {
+	setModuleData(modulename, "author", author);
+}
+/**
+ * This method sets the email of author of the module.
+ *
+ * @param String the name of the module.
+ * @param String the email of author of the module.
+ */
+public void setModuleAuthorEmail(String email) {
+}
+/**
+ * This method sets the email of author of the module.
+ *
+ * @param String the name of the module.
+ * @param String the email of author of the module.
+ */
+public void setModuleAuthorEmail(String modulename, String email) {
+	setModuleData(modulename, "email", email);
+}
+/**
+ * Sets the create date of the module.
+ *
+ * @param String the name of the module.
+ * @param long the create date of the module.
+ */
+public void setModuleCreateDate(String modulname, long createdate) {
+	setModuleData(modulname, "creationdate", m_dateFormat.format(new Date(createdate)));
+}
+/**
+ * Private method to set module data like author.
+ *
+ * @param String modulename the name of the module.
+ * @param String dataName the name of the tag to set the data for.
+ * @param String the value to be set.
+ */
+private void setModuleData(String module, String dataName, String value) {
+	try {
+		// TODO: check the access rights!
+		Element moduleElement = getModuleElement(module);
+		moduleElement.getElementsByTagName(dataName).item(0).getFirstChild().setNodeValue(value);
+		// save the registry
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - registry is not wellformed
+	}
+}
+/**
+ * Sets the module dependencies for the module.
+ *
+ * @param module String the name of the module to check.
+ * @param modules Vector in this parameter the names of the dependend modules will be returned.
+ * @param minVersions Vector in this parameter the minimum versions of the dependend modules will be returned.
+ * @param maxVersions Vector in this parameter the maximum versions of the dependend modules will be returned.
+ */
+public void setModuleDependencies(String modulename, Vector modules, Vector minVersions, Vector maxVersions) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element oldDependencies = (Element) (module.getElementsByTagName("dependencies").item(0));
+		Element newDependencies = m_xmlReg.createElement("dependencies");
+
+		// create the new dependencies
+		for (int i = 0; i < modules.size(); i++) {
+			Element name = m_xmlReg.createElement("name");
+			Element min = m_xmlReg.createElement("minversion");
+			Element max = m_xmlReg.createElement("maxversion");
+			name.setNodeValue((String) modules.elementAt(i));
+			min.setNodeValue((String) minVersions.elementAt(i));
+			max.setNodeValue((String) maxVersions.elementAt(i));
+			newDependencies.appendChild(name);
+			newDependencies.appendChild(min);
+			newDependencies.appendChild(max);
+		}
+
+		// replace the dependencies with the new one
+		module.replaceChild(oldDependencies, newDependencies);
+
+		// save the registry	
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+}
+/**
+ * Sets the description of the module.
+ *
+ * @param String the name of the module.
+ * @param String the description of the module.
+ */
+public void setModuleDescription(String module, String description) {
+	setModuleData(module, "description", description);
+}
+/**
+ * Sets the url to the documentation of the module.
+ * 
+ * @param String the name of the module.
+ * @param java.lang.String the url to the documentation of the module.
+ */
+public void setModuleDocumentPath(String modulename, String url) {
+	setModuleData(modulename, "documentation", url);
+}
+/**
+ * Sets the classname, that receives all maintenance-events for the module.
+ * 
+ * @param String the name of the module.
+ * @param String the name of the class that receives all maintenance-events for the module.
+ */
+public void setModuleMaintenanceEventClass(String modulname, String classname) {
+	setModuleData(modulname, "maintenance_class", classname);
+}
 	/**
 	 * Sets a parameter for a module.
 	 * 
@@ -1463,5 +1616,61 @@ public void setModuleParameter(String modulename, String parameter, String value
  */
 public void setModuleParameter(String modulename, String parameter, boolean value) throws CmsException {
 	setModuleParameter(modulename, parameter, value + "");
+}
+/**
+ * Sets all repositories for a module.
+ *
+ * @param String modulname the name of the module.
+ * @param String[] the reprositories of a module.
+ */
+public void setModuleRepositories(String modulename, String[] repositories) {
+	String[] retValue = null;
+	try {
+		Element module = getModuleElement(modulename);
+		Element oldRepository = (Element) (module.getElementsByTagName("repository").item(0));
+
+		Element newRepository = m_xmlReg.createElement("reporsitory");
+
+		// create the new repository
+		for(int i = 0; i < repositories.length; i++) {
+			Element path = m_xmlReg.createElement("path");
+			path.setNodeValue(repositories[i]);
+			newRepository.appendChild(path);
+		}
+		// replace the repository with the new one
+		module.replaceChild(oldRepository, newRepository);
+
+		// save the registry	
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
+}
+/**
+ * This method sets the version of the module.
+ *
+ * @param String the name of the module.
+ * @param int the version of the module.
+ */
+public void setModuleVersion(String modulename, int version) {
+	setModuleData(modulename, "version", version + "");
+}
+/**
+ * Sets a view for a module
+ * 
+ * @param String the name of the module.
+ * @param String the name of the view, that is implemented by the module.
+ * @param String the url of the view, that is implemented by the module.
+ */
+public void setModuleView(String modulename, String viewname, String viewurl) {
+	try {
+		Element module = getModuleElement(modulename);
+		Element view = (Element) (module.getElementsByTagName("view").item(0));
+		view.getElementsByTagName("name").item(0).getFirstChild().setNodeValue(viewname);
+		view.getElementsByTagName("url").item(0).getFirstChild().setNodeValue(viewurl);
+		saveRegistry();
+	} catch (Exception exc) {
+		// ignore the exception - reg is not welformed
+	}
 }
 }
