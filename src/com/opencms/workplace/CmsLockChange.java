@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/27 13:00:44 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.9 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/27 13:00:44 $
  */
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                   I_CmsConstants {
@@ -81,6 +81,9 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         // the template to be displayed
         String template=null;
         
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
+                
         String lock=(String)parameters.get(C_PARA_LOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
         if (filename != null) {
@@ -108,14 +111,27 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
 					}catch (CmsException e){
 						//TODO: ErrorHandling
 					}
+				} else if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_NEWSPAGE_NAME) ){
+					String newsContentPath = getNewsContentPath(cms, file);
+					try {
+						cms.readFile(newsContentPath);
+						cms.lockResource( newsContentPath,true );
+					}catch (CmsException e){
+						//TODO: ErrorHandling
+					}
 				}
+
                 cms.lockResource(filename,true);
 				session.removeValue(C_PARA_FILE);
             }
              // TODO: ErrorHandling
              // return to filelist
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                if(lasturl == null || "".equals(lasturl)) {
+                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                } else {
+                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                }                            
             } catch (Exception e) {
                   throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
             }
