@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/14 14:08:31 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/06/16 13:36:42 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.65 $ $Date: 2000/06/14 14:08:31 $ * 
+ * @version $Revision: 1.66 $ $Date: 2000/06/16 13:36:42 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2429,69 +2429,209 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @param onlineProject The online project of the OpenCms.
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
-    public void publishProject(CmsProject project, CmsProject onlineProject)
+    public void publishProject(CmsUser user, CmsProject project, CmsProject onlineProject)
         throws CmsException {
 		
-		CmsResource currentOnlineResource = null;
-		CmsResource currentOfflineResource = null;
-		Vector onlineResources;
-		Vector offlineResources;
+		CmsFolder currentFolder = null;
+		CmsFile currentFile = null;
+		Vector offlineFolders;
+		Vector offlineFiles;
+		Vector deletedFolders = new Vector();
+		// folderIdIndex:    offlinefolderId   |   onlinefolderId  
+		Hashtable folderIdIndex = new Hashtable();
 		
-		// TODO: dont't forget to ignore tempfiles
-		// TODO: set state in ol-project to unchanged
-		
-		// publish deleted marked resources to online-project
-		onlineResources = new Vector();
-		offlineResources = new Vector();
-		publishRead(project, onlineProject, C_STATE_DELETED, onlineResources, offlineResources);
-		for(int i = 0; i < onlineResources.size(); i++) {
-			currentOnlineResource = ((CmsResource)onlineResources.elementAt(i));
-			try {
-				deleteAllProperties(currentOnlineResource.getResourceId());
-			} catch(CmsException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineResource.toString() + " Message= " + exc.getMessage());
+		// read all folders in offlineProject
+		offlineFolders = readFolders(project);
+		for(int i = 0; i < offlineFolders.size(); i++) {
+			currentFolder = ((CmsFolder)offlineFolders.elementAt(i));
+			// C_STATE_DELETE
+			if (currentFolder.getState() == C_STATE_DELETED){
+				deletedFolders.addElement(currentFolder);
+			// C_STATE_NEW	
+			}else if (currentFolder.getState() == C_STATE_NEW){
+				// get parentId for onlineFolder either from folderIdIndex or from the database
+				Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
+				if (parentId == null){
+					CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+					parentId = new Integer(currentOnlineParent.getResourceId());
+					folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
 				}
+				// create the new folder and insert its id in the folderindex
+				CmsFolder newFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(),
+															currentFolder.getAbsolutePath());
+				newFolder.setState(C_STATE_UNCHANGED);
+				writeFolder(onlineProject, newFolder, false);
+				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(newFolder.getResourceId()));		
+				// TODO copy properties
+			// C_STATE_CHANGED	 		
+			}else if (currentFolder.getState() == C_STATE_CHANGED){
+			   CmsFolder onlineFolder = null;
+			   try{
+					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+	           } catch(CmsException exc) {
+					// if folder does not exist create it
+					if (exc.getType() == CmsException.C_NOT_FOUND){
+						// get parentId for onlineFolder either from folderIdIndex or from the database
+						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
+						if (parentId == null){
+							CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+							parentId = new Integer(currentOnlineParent.getResourceId());
+							folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+						}
+						// create the new folder 
+						onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(),
+																	currentFolder.getAbsolutePath());
+						onlineFolder.setState(C_STATE_UNCHANGED);
+						writeFolder(onlineProject, onlineFolder, false);
+						}else { 
+							throw exc;
+						}	
+	           }// end of catch
+	           PreparedStatement statement = null;
+	           try {   
+					// update the onlineFolder with data from offlineFolder
+				    statement = m_pool.getPreparedStatement(C_RESOURCES_UPDATE_KEY);
+					statement.setInt(1,currentFolder.getType());
+	                statement.setInt(2,currentFolder.getFlags());
+		            statement.setInt(3,currentFolder.getOwnerId());
+					statement.setInt(4,currentFolder.getGroupId());
+					statement.setInt(5,onlineFolder.getProjectId());
+					statement.setInt(6,currentFolder.getAccessFlags());
+					statement.setInt(7,C_STATE_UNCHANGED);
+					statement.setInt(8,currentFolder.isLockedBy());
+					statement.setInt(9,currentFolder.getLauncherType());
+					statement.setString(10,currentFolder.getLauncherClassname());
+					statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+					statement.setInt(12,currentFolder.getResourceLastModifiedBy());
+					statement.setInt(13,0);
+					statement.setInt(14,onlineFolder.getResourceId());
+					statement.executeUpdate();
+				} catch (SQLException e){
+					throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+				}finally {
+						if( statement != null) {
+							m_pool.putPreparedStatement(C_RESOURCES_UPDATE_KEY, statement);
+						}
+				} 
+				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));
+			// C_STATE_UNCHANGED	
+			}else if(currentFolder.getState() == C_STATE_UNCHANGED){
+				CmsFolder onlineFolder = null;
+				try{
+					onlineFolder = readFolder(onlineProject.getId(), currentFolder.getAbsolutePath());
+				} catch(CmsException exc){
+					if ( exc.getType() == CmsException.C_NOT_FOUND){
+						// get parentId for onlineFolder either from folderIdIndex or from the database
+						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
+						if (parentId == null){
+							CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+							parentId = new Integer(currentOnlineParent.getResourceId());
+							folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+						}
+						// create the new folder 
+						onlineFolder = createFolder(user, onlineProject, onlineProject, currentFolder, parentId.intValue(),
+																	currentFolder.getAbsolutePath());
+						onlineFolder.setState(C_STATE_UNCHANGED);
+						writeFolder(onlineProject, onlineFolder, false);
+					}else { 
+						throw exc;
+					}	
+				}// end of catch
+				folderIdIndex.put(new Integer(currentFolder.getResourceId()), new Integer(onlineFolder.getResourceId()));		
+			}// end of else if 
+		}// end of for(...
+		
+		// now read all FILES in offlineProject
+		offlineFiles = readFiles(project);
+		for (int i = 0; i < offlineFiles.size(); i++){
+			currentFile = ((CmsFile)offlineFiles.elementAt(i));
+			if (currentFile.getName().startsWith(C_TEMP_PREFIX)) {
+                 removeFile(project,currentFile.getAbsolutePath());
+            // C_STATE_DELETE
+            }else if (currentFile.getState() == C_STATE_DELETED){
+				CmsFile currentOnlineFile = readFile(onlineProject.getId(),onlineProject.getId(),currentFile.getAbsolutePath());
+				try {
+					deleteAllProperties(currentOnlineFile.getResourceId());
+				} catch(CmsException exc) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+					}
+				}
+				try {
+					deleteResource(currentOnlineFile.getResourceId());
+				} catch(CmsException exc) {
+					if(A_OpenCms.isLogging()) {
+						A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineFile.toString() + " Message= " + exc.getMessage());
+					}
+				}	
+			// C_STATE_CHANGED	
+			}else if ( currentFile.getState() == C_STATE_CHANGED){
+				CmsFile onlineFile = null;
+				try{
+					onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+				} catch(CmsException exc){
+					if ( exc.getType() == CmsException.C_NOT_FOUND){
+						// get parentId for onlineFolder either from folderIdIndex or from the database
+						Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFolder.getParentId()));
+						if (parentId == null){
+							CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFolder.getParent());
+							parentId = new Integer(currentOnlineParent.getResourceId());
+							folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+						}
+						// create a new File
+						currentFile.setState(C_STATE_UNCHANGED);
+						onlineFile = createFile(onlineProject, onlineProject, currentFile, user.getId(), parentId.intValue(),
+												currentFile.getAbsolutePath());
+					}
+				}// end of catch
+				PreparedStatement statement = null;
+				try {  
+					// update the onlineFile with data from offlineFile
+				    statement = m_pool.getPreparedStatement(C_RESOURCES_UPDATE_FILE_KEY);
+					statement.setInt(1,currentFile.getType());
+	                statement.setInt(2,currentFile.getFlags());
+		            statement.setInt(3,currentFile.getOwnerId());
+					statement.setInt(4,currentFile.getGroupId());
+					statement.setInt(5,onlineFile.getProjectId());
+					statement.setInt(6,currentFile.getAccessFlags());
+					statement.setInt(7,C_STATE_UNCHANGED);
+					statement.setInt(8,currentFile.isLockedBy());
+					statement.setInt(9,currentFile.getLauncherType());
+					statement.setString(10,currentFile.getLauncherClassname());
+					statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
+					statement.setInt(12,currentFile.getResourceLastModifiedBy());
+					statement.setInt(13,currentFile.getContents().length);
+					statement.setInt(14,currentFile.getFileId());
+					statement.setInt(15,onlineFile.getResourceId());
+					statement.executeUpdate();
+				} catch (SQLException e){
+					throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+				}finally {
+						if( statement != null) {
+							m_pool.putPreparedStatement(C_RESOURCES_UPDATE_FILE_KEY, statement);
+						}
+				}	
+			// C_STATE_NEW
+			}else if (currentFile.getState() == C_STATE_NEW){
+				// get parentId for onlineFile either from folderIdIndex or from the database
+				Integer parentId = (Integer)folderIdIndex.get(new Integer(currentFile.getParentId()));
+				if (parentId == null){
+					CmsFolder currentOnlineParent = readFolder(onlineProject.getId(), currentFile.getParent());
+					parentId = new Integer(currentOnlineParent.getResourceId());
+					folderIdIndex.put(new Integer(currentFolder.getParentId()), parentId);
+				}
+				// create the new file 
+				CmsFile newFile = createFile(onlineProject, onlineProject, currentFile, user.getId(),
+											parentId.intValue(),currentFile.getAbsolutePath());
+				newFile.setState(C_STATE_UNCHANGED);
+				writeFile(onlineProject, onlineProject,newFile,false);
 			}
-			try {
-				deleteResource(currentOnlineResource.getResourceId());
-			} catch(CmsException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineResource.toString() + " Message= " + exc.getMessage());
-				}
-			}
-		}
-		
-		// publish changed marked resources to online-project
-		onlineResources = new Vector();
-		offlineResources = new Vector();
-		publishRead(project, onlineProject, C_STATE_CHANGED, onlineResources, offlineResources);
-		for(int i = 0; i < onlineResources.size(); i++) {
-			currentOnlineResource = ((CmsResource)onlineResources.elementAt(i));
-			currentOfflineResource = ((CmsResource)offlineResources.elementAt(i));
-			try {
-				deleteAllProperties(currentOnlineResource.getResourceId());
-				Hashtable props = readAllProperties(currentOfflineResource.getResourceId(), currentOfflineResource.getType());
-				writeProperties(props, currentOnlineResource.getResourceId(), currentOfflineResource.getType());
-			} catch(CmsException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting properties for " + currentOnlineResource.toString() + " Message= " + exc.getMessage());
-				}
-			}
-/*			try {
-				
-			} catch(CmsException exc) {
-				if(A_OpenCms.isLogging()) {
-					A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsDbAccess] error publishing, deleting resource for " + currentOnlineResource.toString() + " Message= " + exc.getMessage());
-				}
-			} */
-		}
-
-		
-		// TODO: 3
-		// TODO: 4
-		
-		// TODO: update publishdate und publishedby in project
+		}// end of for(...
+		// now delete the "deleted" folders
+		for(int i = 0; i < deletedFolders.size(); i++) {
+			currentFolder = ((CmsFolder)deletedFolders.elementAt(i));
+			removeFolderForPublish(onlineProject, currentFolder.getAbsolutePath());
+		}// end of for
     }
 	
 	/**
@@ -2712,7 +2852,117 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		}
         return resources;
 	 }
-	 
+    
+	/**
+	 * Reads all folders from the Cms, that are in one project.<BR/>
+	 * 
+	 * @param project The project in which the folders are.
+	 * 
+	 * @return A Vecor of folders.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readFolders(CmsProject project)
+         throws CmsException {
+                 
+         Vector folders = new Vector();
+		 CmsFolder folder;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try {  
+               // read folder data from database
+               statement = m_pool.getPreparedStatement(C_RESOURCES_READFOLDERSBYPROJECT_KEY);
+               statement.setInt(1,project.getId());
+               res = statement.executeQuery();
+               
+               // create new folder
+               while(res.next()) {
+				    folder = new CmsFolder(res.getInt(C_RESOURCES_RESOURCE_ID),
+											   res.getInt(C_RESOURCES_PARENT_ID),
+											   res.getInt(C_RESOURCES_FILE_ID),
+											   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                               res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                               res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                               res.getInt(C_RESOURCES_USER_ID),
+                                               res.getInt(C_RESOURCES_GROUP_ID),
+                                               res.getInt(C_PROJECT_ID_RESOURCES),
+                                               res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                               res.getInt(C_RESOURCES_STATE),
+                                               res.getInt(C_RESOURCES_LOCKED_BY),
+                                               res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                               res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                               res.getInt(C_RESOURCES_LASTMODIFIED_BY)
+                                           );
+					folders.addElement(folder);
+			   }
+			res.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READFOLDERSBYPROJECT_KEY, statement);
+			}
+		}
+        return folders;
+	 }
+
+	/**
+	 * Reads all files from the Cms, that are in one project.<BR/>
+	 * 
+	 * @param project The project in which the files are.
+	 * 
+	 * @return A Vecor of files.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public Vector readFiles(CmsProject project)
+         throws CmsException {
+                 
+         Vector files = new Vector();
+		 CmsFile file;
+         ResultSet res = null;
+         PreparedStatement statement = null;
+         try {  
+               // read file data from database
+               statement = m_pool.getPreparedStatement(C_RESOURCES_READFILESBYPROJECT_KEY);
+               statement.setInt(1,project.getId());
+               res = statement.executeQuery();
+               
+               // create new file
+               while(res.next()) {
+				    file = new CmsFile(res.getInt(C_RESOURCES_RESOURCE_ID),
+										   res.getInt(C_RESOURCES_PARENT_ID),
+										   res.getInt(C_RESOURCES_FILE_ID),
+										   res.getString(C_RESOURCES_RESOURCE_NAME),
+                                           res.getInt(C_RESOURCES_RESOURCE_TYPE),
+                                           res.getInt(C_RESOURCES_RESOURCE_FLAGS),
+                                           res.getInt(C_RESOURCES_USER_ID),
+                                           res.getInt(C_RESOURCES_GROUP_ID),
+                                           res.getInt(C_PROJECT_ID_RESOURCES),
+                                           res.getInt(C_RESOURCES_ACCESS_FLAGS),
+                                           res.getInt(C_RESOURCES_STATE),
+                                           res.getInt(C_RESOURCES_LOCKED_BY),
+                                           res.getInt(C_RESOURCES_LAUNCHER_TYPE),
+                                           res.getString(C_RESOURCES_LAUNCHER_CLASSNAME),
+                                           res.getTimestamp(C_RESOURCES_DATE_CREATED).getTime(),
+                                           res.getTimestamp(C_RESOURCES_DATE_LASTMODIFIED).getTime(),
+                                           res.getInt(C_RESOURCES_LASTMODIFIED_BY),
+                                           new byte[0],
+                                           res.getInt(C_RESOURCES_SIZE)
+                                           );
+					files.addElement(file);
+			   }
+			res.close();
+         } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		}finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_READFILESBYPROJECT_KEY, statement);
+			}
+		}
+        return files;
+	 }
+
     /**
 	 * Creates a new resource from an given CmsResource object.
      *
@@ -3199,10 +3449,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
            }
            
            int resourceId = nextId(C_TABLE_RESOURCES);
-	       int fileId = nextId(C_TABLE_FILES);
-           
+	       
 		   PreparedStatement statementResourceWrite = null;
-		   PreparedStatement statementFileWrite = null;
            try {   
                 statementResourceWrite = m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
                 statementResourceWrite.setInt(1,resourceId);
@@ -3213,7 +3461,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceWrite.setInt(6,file.getOwnerId());
                 statementResourceWrite.setInt(7,file.getGroupId());
                 statementResourceWrite.setInt(8,project.getId());
-                statementResourceWrite.setInt(9,fileId);
+                statementResourceWrite.setInt(9,file.getFileId());
                 statementResourceWrite.setInt(10,file.getAccessFlags());
                 statementResourceWrite.setInt(11,state);
                 statementResourceWrite.setInt(12,file.isLockedBy());
@@ -3225,21 +3473,13 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceWrite.setInt(18,userId);
                 statementResourceWrite.executeUpdate();
                 
-                statementFileWrite = m_pool.getPreparedStatement(C_FILES_WRITE_KEY);
-                statementFileWrite.setInt(1,fileId);
-                statementFileWrite.setBytes(2,file.getContents());
-                statementFileWrite.executeUpdate();
-                   
          } catch (SQLException e){
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }finally {
 				if( statementResourceWrite != null) {
 					m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statementResourceWrite);
 				}
-				if( statementFileWrite != null) {
-					m_pool.putPreparedStatement(C_FILES_WRITE_KEY, statementFileWrite);
-				}
-			 }	 
+		 }		
          return readFile(project.getId(),onlineProject.getId(),filename);
       }
      
@@ -4172,6 +4412,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_PROJECT_READFILE_KEY,C_RESOURCES_PUBLISH_PROJECT_READFILE);
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_PROJECT_READFOLDER_KEY,C_RESOURCES_PUBLISH_PROJECT_READFOLDER);
         m_pool.initPreparedStatement(C_RESOURCES_UPDATE_KEY,C_RESOURCES_UPDATE);
+        m_pool.initPreparedStatement(C_RESOURCES_UPDATE_FILE_KEY,C_RESOURCES_UPDATE_FILE);
         m_pool.initPreparedStatement(C_RESOURCES_GET_LOST_ID_KEY,C_RESOURCES_GET_LOST_ID);
         m_pool.initPreparedStatement(C_FILE_DELETE_KEY,C_FILE_DELETE);
         m_pool.initPreparedStatement(C_RESOURCES_DELETE_PROJECT_KEY,C_RESOURCES_DELETE_PROJECT);
@@ -4181,6 +4422,8 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         m_pool.initPreparedStatement(C_RESOURCES_UNLOCK_KEY,C_RESOURCES_UNLOCK);
         m_pool.initPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY,C_RESOURCES_COUNTLOCKED);
         m_pool.initPreparedStatement(C_RESOURCES_READBYPROJECT_KEY,C_RESOURCES_READBYPROJECT);
+        m_pool.initPreparedStatement(C_RESOURCES_READFOLDERSBYPROJECT_KEY,C_RESOURCES_READFOLDERSBYPROJECT);
+        m_pool.initPreparedStatement(C_RESOURCES_READFILESBYPROJECT_KEY,C_RESOURCES_READFILESBYPROJECT);
         m_pool.initPreparedStatement(C_RESOURCES_PUBLISH_MARKED_KEY,C_RESOURCES_PUBLISH_MARKED);
         m_pool.initPreparedStatement(C_RESOURCES_DELETEBYID_KEY,C_RESOURCES_DELETEBYID);
         m_pool.initPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY,C_RESOURCES_RENAMERESOURCE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/14 12:44:13 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2000/06/16 13:36:42 $
+ * Version: $Revision: 1.41 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.40 $ $Date: 2000/06/14 12:44:13 $
+ * @version $Revision: 1.41 $ $Date: 2000/06/16 13:36:42 $
  */
 public interface I_CmsQuerys {
     
@@ -134,8 +134,24 @@ public interface I_CmsQuerys {
                                                                       +"WHERE " + C_DATABASE_PREFIX + "RESOURCES.PROJECT_ID = ? "
                                                                       +"AND " + C_DATABASE_PREFIX + "RESOURCES.RESOURCE_TYPE <> "+I_CmsConstants.C_TYPE_FOLDER;        
     
-	
-
+    public static final Integer C_RESOURCES_UPDATE_FILE_KEY = new Integer(112);
+	public static final String C_RESOURCES_UPDATE_FILE ="UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+                                               +"RESOURCE_TYPE = ? , "
+                                               +"RESOURCE_FLAGS = ? , "
+                                               +"USER_ID = ? , "
+                                               +"GROUP_ID = ? , "
+                                               +"PROJECT_ID = ? ,"
+                                               +"ACCESS_FLAGS = ? ,"
+                                               +"STATE = ? , "
+                                               +"LOCKED_BY = ? , "
+                                               +"LAUNCHER_TYPE = ? , "
+                                               +"LAUNCHER_CLASSNAME = ? ," 
+                                               +"DATE_LASTMODIFIED = ? ,"
+                                               +"RESOURCE_LASTMODIFIED_BY = ? ,"
+                                               +"SIZE = ? "
+                                               +"FILE_ID = ? "
+                                               +"WHERE RESOURCE_ID = ?";
+    
 	public static final Integer C_RESOURCES_UNLOCK_KEY = new Integer(120);
 	public static final String C_RESOURCES_UNLOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
 													+"LOCKED_BY = " + I_CmsConstants.C_UNKNOWN_ID
@@ -156,6 +172,15 @@ public interface I_CmsQuerys {
 	public static final Integer C_RESOURCES_DELETEBYID_KEY = new Integer(124);
 	public static final String C_RESOURCES_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "RESOURCES " + 
 														"WHERE RESOURCE_ID = ?";
+
+	public static final Integer C_RESOURCES_READFOLDERSBYPROJECT_KEY = new Integer(125);
+	public static final String C_RESOURCES_READFOLDERSBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX +
+						 "RESOURCES where PROJECT_ID = ? AND RESOURCE_TYPE = "+ I_CmsConstants.C_TYPE_FOLDER
+						 + " order by RESOURCE_NAME";
+
+	public static final Integer C_RESOURCES_READFILESBYPROJECT_KEY = new Integer(126);
+	public static final String C_RESOURCES_READFILESBYPROJECT = "SELECT * FROM " + C_DATABASE_PREFIX +
+						 "RESOURCES where PROJECT_ID = ? AND RESOURCE_TYPE <> "+ I_CmsConstants.C_TYPE_FOLDER;
 
     public static final Integer C_RESOURCES_GET_FILESINFOLDER_KEY = new Integer(130);
 	public static final String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> "
