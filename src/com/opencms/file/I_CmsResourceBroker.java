@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/04 17:19:29 $
-* Version: $Revision: 1.197 $
+* Date   : $Date: 2003/03/18 01:49:57 $
+* Version: $Revision: 1.198 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.197 $ $Date: 2003/03/04 17:19:29 $
+ * @version $Revision: 1.198 $ $Date: 2003/03/18 01:49:57 $
  *
  */
 
@@ -2225,30 +2225,6 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      * @throws CmsException if something goes wrong.
      */
     public void writeExportLinkProcessedState(CmsExportLink link) throws CmsException ;
-
-    /**
-     * Reads a file from a previous project of the Cms.<BR/>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
-     * </ul>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param projectId The id of the project to read the file from.
-     * @param filename The name of the file to be read.
-     *
-     * @return The file read from the Cms.
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
-     * */
-     public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
-                             int projectId, String filename)
-        throws CmsException;
-    //  Methods working with resources
 
     /**
      * Reads a file from the Cms.<BR/>
