@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2003/08/15 18:36:52 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.162 $ $Date: 2003/08/15 17:38:04 $
+ * @version $Revision: 1.163 $ $Date: 2003/08/15 18:36:52 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7564,39 +7564,13 @@ public class CmsDriverManager extends Object {
      */
     public void undeleteResource(CmsRequestContext context, String filename) throws CmsException {
         // try to trad the resource
-        //CmsResource resource = readFileHeader(context, filename, true);
-        
-        undoChanges(context, filename);
-        /*
-        // read the resource to check the access
         CmsResource resource = readFileHeader(context, filename, true);
-        
-        if (resource.isFile()) {
-            resource = (CmsFile)resource;
+        // this resource must be marked as deleted
+        if (resource.getState()==I_CmsConstants.C_STATE_DELETED) {
+            undoChanges(context, filename);
         } else {
-            resource = readFolder(context, filename, true);
-        }
-
-        // check if the user has write access to the destination folder
-        checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
-
-        // undelete the resource
-        resource.setState(I_CmsConstants.C_STATE_CHANGED);
-        resource.setLocked(context.currentUser().getId());
-
-        //if (resource.isHardLink())
-        //    m_vfsDriver.updateResourcestate(resource, C_UPDATE_RESOURCE_STATE);
-        // else
-            m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_STRUCTURE_STATE);
-        
-        clearResourceCache();
-
-        // undelete access control entries
-        undeleteAllAccessControlEntries(context, resource);
-
-        // inform about the file-system-change
-        fileSystemChanged(resource.isFolder());
-        */
+            throw new CmsException("Resource already exists. Remove the existing blue resource before undeleting.", CmsException.C_FILE_EXISTS);
+        }    
     }
 
     /**
@@ -8514,8 +8488,7 @@ public class CmsDriverManager extends Object {
                 onlineFolder = readFolder(context, resourcename);
                 contents = new byte[0];
                 properties = readProperties(context, resourcename, context.getAdjustedSiteRoot(resourcename), false);
-            }
-            
+}
             // switch back to the previous project
             context.setCurrentProject(oldProject.getId());
 
@@ -8572,7 +8545,7 @@ public class CmsDriverManager extends Object {
             throw e;
         } finally {
             // switch back to the previous project
-            context.setCurrentProject(oldProject.getId());
+            context.setCurrentProject(oldProject.getId());                        
             clearResourceCache();
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/08/15 16:09:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/15 18:36:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,13 @@ public class CmsImportVersion2 extends A_CmsImport {
         return 2;
     }
 
-    protected int m_importVersion = 2;
+
+    /**
+     * Creates a new CmsImportVerion2 object.<p>
+     */
+    public CmsImportVersion2() {
+        m_importVersion = 2;
+    }
 
 
     /**

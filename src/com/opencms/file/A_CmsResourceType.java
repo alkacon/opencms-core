@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/15 16:09:41 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/08/15 18:36:52 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -207,11 +207,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
             } else {
                 // a resource with the same name but different uuid does exist, so
-                // copy the existing resource to the lost&found folder and import the new one
-                cms.copyToLostAndFound(destination); 
-                // update the existing resource with the new content
-                resource.setState(I_CmsConstants.C_STATE_CHANGED);
-                importedResource = cms.doImportResource(resource, content, properties, destination);
+                // copy the new resource to the lost&found folder 
+                String des=copyToLostAndFound(cms, destination, false); 
+                            
+                CmsResource newRes = new CmsResource(resource.getId(), resource.getResourceId(), resource.getParentId(), resource.getFileId(),  CmsResource.getName(des), resource.getType(), resource.getFlags(), resource.getProjectId(), resource.getState(), resource.getLoaderId(), resource.getDateLastModified(), resource.getUserLastModified(), resource.getDateCreated(), resource.getUserCreated(), resource.getLength(), 1);
+                        
+                importedResource = cms.doImportResource(newRes, content, properties, des);
                 //cms.lockResource(destination);  
                 //importedResource = cms.readFileHeader(destination);
                      

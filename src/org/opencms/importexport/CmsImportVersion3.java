@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2003/08/15 16:09:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/15 18:36:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,6 +71,15 @@ import org.w3c.dom.NodeList;
  */
 public class CmsImportVersion3 extends A_CmsImport {
 
+
+
+    /**
+     * Creates a new CmsImportVerion3 object.<p>
+     */
+    public CmsImportVersion3() {
+        m_importVersion = 3;
+    }
+
     /**
      * Returns the import version of the import implementation.<p>
      * 
@@ -80,7 +89,6 @@ public class CmsImportVersion3 extends A_CmsImport {
         return 3;
     }
     
-    protected int m_importVersion = 3;
 
     /**
      * Imports the resources for a module.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2003/08/07 09:04:32 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/15 18:36:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,14 @@ package org.opencms.importexport;
  */
 public class CmsImportVersion1 extends CmsImportVersion2 {
 
+
+    /**
+     * Creates a new CmsImportVerion1 object.<p>
+     */
+    public CmsImportVersion1() {
+        m_importVersion = 1;
+    }
+
     /**
      * Returns the import version of the import implementation.<p>
      * 
@@ -53,5 +61,8 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
     public int getVersion() {
         return 1;
     }
+    
+
+
 
 }
