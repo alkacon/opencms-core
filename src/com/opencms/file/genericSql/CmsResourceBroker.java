@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/17 13:07:47 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/06/17 16:00:09 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.55 $ $Date: 2000/06/17 13:07:47 $
+ * @version $Revision: 1.56 $ $Date: 2000/06/17 16:00:09 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -79,6 +79,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     */    
     private CmsCache m_userCache=null;
     private CmsCache m_resourceCache=null;
+    private CmsCache m_projectCache=null;
     
     // Internal ResourceBroker methods   
     
@@ -102,6 +103,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         // initalize the caches
         // todo: define cache sizes in opencms.property file
         m_userCache=new CmsCache(50);
+        m_projectCache = new CmsCache(50);
         m_resourceCache=new CmsCache(1000);
         
     }
@@ -247,7 +249,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 
 			 // delete the project
 			 m_dbAccess.deleteProject(deleteProject);
-		} else {
+             m_projectCache.remove(id);
+        } else {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + id, 
 				CmsException.C_NO_ACCESS);
 		}
@@ -390,12 +393,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
          // the project-state will be set to "published", the date will be set.
 		 // the project must be written to the cms.
              
-         CmsProject project=m_dbAccess.readProject(id);
+         CmsProject project=readProject(currentUser,currentProject,id);
              
 	     project.setFlags(C_PROJECT_STATE_ARCHIVE);
 		 project.setPublishingDate(new Date().getTime());
 		 project.setPublishedBy(currentUser.getId());
          m_dbAccess.writeProject(project);
+         m_projectCache.put(project.getId(),project);
     }
     
 	/**
@@ -413,7 +417,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsProject readProject(CmsUser currentUser, CmsProject currentProject, 
 								   int id)
          throws CmsException {
-		 return m_dbAccess.readProject(id);
+         CmsProject project=null;
+         project=(CmsProject)m_projectCache.get(id);
+         if (project==null) {
+             project=m_dbAccess.readProject(id);
+             m_projectCache.put(id,project);
+         } 
+		 return project;
      }
      
      /**
@@ -899,7 +909,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 									 String resource, String property, String value)
         throws CmsException {
         
-       // read the resource
+       // read the resource       
         CmsResource res = readFileHeader(currentUser,currentProject, resource);
 		
 		// check the security
@@ -909,15 +919,17 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	
 		m_dbAccess.writeProperty(property, value, res.getResourceId(),res.getType());
+        res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){
+          
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
 		    // update the cache           
             m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
         } else {
 			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true);
             // update the cache           
-            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,res);
+            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);
          
 		}
 
@@ -942,24 +954,33 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // read the resource
    
+
 		CmsResource res = readFileHeader(currentUser,currentProject, resource);
-  
+
 		// check the security
 		if( ! accessWrite(currentUser, currentProject, res) ) {
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
 				CmsException.C_NO_ACCESS);
 		}
 
+        
 		m_dbAccess.writeProperties(propertyinfos,res.getResourceId(),res.getType());
+        res.setState(C_STATE_CHANGED);
 		// set the file-state to changed
 		if(res.isFile()){     
+
 			m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, false);
+
             // update the cache           
             m_resourceCache.put(C_FILE+currentProject.getId()+resource,res);
+
 		} else {
+
 			m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false);			
+
             // update the cache           
-            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,res);
+            m_resourceCache.put(C_FOLDER+currentProject.getId()+resource,(CmsFolder)res);
+    
 		}
     }
 
@@ -991,7 +1012,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * 
 	 * <B>Security:</B>
 	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
+	 *  
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param mountpoint The mount point in the Cms filesystem.
@@ -2587,6 +2608,12 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										 CmsProject currentProject, String filename)
          throws CmsException {
          CmsResource cmsFile;
+         
+         // check if this method is misused to read a folder
+         if (filename.endsWith("/")) {
+             return (CmsResource) readFolder(currentUser,currentProject,filename);
+         }
+                  
 		 // read the resource from the currentProject, or the online-project
 		 try {
              // try to read form cache first
@@ -2888,14 +2915,15 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
 								String folder, String folderName)
         throws CmsException {
+     
         CmsFolder cmsFolder;
 		// read the resource from the currentProject, or the online-project
 		 try {
              cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder + folderName);
              if (cmsFolder==null) {
-			    cmsFolder = cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
+			    cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
 													          folder + folderName);
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,cmsFolder);
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);
                 }
 		 } catch(CmsException exc) {
 			 // the resource was not readable
@@ -2907,7 +2935,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                  cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+C_PROJECT_ONLINE_ID+folder + folderName);
                  if (cmsFolder==null) {			    
 				    cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID,folder + folderName);
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,cmsFolder);                 }
+                    m_resourceCache.put(C_FOLDER+currentProject.getId()+folder + folderName,(CmsFolder)cmsFolder);                 }
 			 }
 		 }
 		 
@@ -2917,7 +2945,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             if (cmsFolder.getState() == C_STATE_DELETED) {
                 throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
             } else {
-			    return cmsFolder;
+               return cmsFolder;
             }
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + folderName, 
@@ -2950,35 +2978,41 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                                 String folder) 
         throws CmsException {
         CmsFolder cmsFolder;
-		// read the resource from the currentProject, or the online-project
+      		// read the resource from the currentProject, or the online-project
 		 try {
-             cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder);
-             if (cmsFolder==null) {
-			    cmsFolder = cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,cmsFolder);
+               cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+currentProject.getId()+folder);
+               if (cmsFolder==null) {
+			    cmsFolder =  m_dbAccess.readFolder(currentProject.getId(), folder);
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);
                 }
+
 		 } catch(CmsException exc) {
 			 // the resource was not readable
+
 			 if(currentProject.equals(onlineProject(currentUser, currentProject))) {
+                   
 				 // this IS the onlineproject - throw the exception
 				 throw exc;
 			 } else {
+
 				 // try to read the resource in the onlineproject
                  cmsFolder = (CmsFolder)m_resourceCache.get(C_FOLDER+C_PROJECT_ONLINE_ID+folder);
-                 if (cmsFolder==null) {			    
+
+                 if (cmsFolder==null) {		
+    
 				    cmsFolder = cmsFolder = m_dbAccess.readFolder(C_PROJECT_ONLINE_ID,folder);
-                    m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,cmsFolder);                 
+     
+                    m_resourceCache.put(C_FOLDER+currentProject.getId()+folder,(CmsFolder)cmsFolder);                 
                  }
 			 }
 		 }
-		 
+	
 		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-				
 			// acces to all subfolders was granted - return the folder.
             if (cmsFolder.getState() == C_STATE_DELETED) {
                 throw new CmsException("["+this.getClass().getName()+"]"+cmsFolder.getAbsolutePath(),CmsException.C_RESOURCE_DELETED);  
             } else {
-			    return cmsFolder;
+                   return cmsFolder;
             }
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder,
@@ -3409,7 +3443,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         
 		// read the resource, that shold be locked
         if (resourcename.endsWith("/")) {  
-              cmsResource = readFolder(currentUser,currentProject,resourcename);
+              cmsResource = (CmsFolder)readFolder(currentUser,currentProject,resourcename);
              } else {
               cmsResource = (CmsFile)readFileHeader(currentUser,currentProject,resourcename);
         }
@@ -3427,10 +3461,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             // lock the resouece
             cmsResource.setLocked(currentUser.getId());
             //update resource
+            
             if (resourcename.endsWith("/")) { 
                 m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
                  // update the cache           
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,cmsResource);        
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);        
             } else {           
                 m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
                 // update the cache           
@@ -3514,7 +3549,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
                 if (resourcename.endsWith("/")) { 
                     m_dbAccess.writeFolder(currentProject,(CmsFolder)cmsResource,false);
                     // update the cache           
-                    m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,cmsResource);              
+                    m_resourceCache.put(C_FOLDER+currentProject.getId()+resourcename,(CmsFolder)cmsResource);              
                 } else {           
                     m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)cmsResource,false);
                     // update the cache           
@@ -3776,7 +3811,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // has the user write-access?
 		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
-				
+			file.setState(C_STATE_CHANGED);
 			// write-acces  was granted - write the file.
 			m_dbAccess.writeFileHeader(currentProject, 
 									  onlineProject(currentUser, currentProject), file,true );
@@ -4047,11 +4082,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             resource.setAccessFlags(flags);
             //update file
             if (filename.endsWith("/")) { 
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
                 // update the cache
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,resource);      
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);      
             } else {           
-                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);                                
             }
@@ -4107,11 +4142,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             resource.setUserId(owner.getId());
 			// write-acces  was granted - write the file.
 			 if (filename.endsWith("/")) { 
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
                 // update the cache
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,resource);  
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);  
             } else {           
-                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
                 
@@ -4169,11 +4204,11 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             resource.setGroupId(group.getId());
 			// write-acces  was granted - write the file.
 			if (filename.endsWith("/")) { 
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
                 // update the cache
-                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,resource);   
+                m_resourceCache.put(C_FOLDER+currentProject.getId()+filename,(CmsFolder)resource);   
             } else {          
-                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,false);
+                m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser, currentProject),(CmsFile)resource,true);
                 // update the cache
                 m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
             }
@@ -4226,6 +4261,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
             resource.setType(type.getResourceType());
 			resource.setLauncherType(type.getLauncherType());
+            resource.setState(C_STATE_CHANGED);
             m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject),(CmsFile)resource,true);    
             // update the cache
             m_resourceCache.put(C_FILE+currentProject.getId()+filename,resource);   
@@ -4569,11 +4605,14 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				if(resource.getParent() != null) {
 					// ... current project
 					try {
-						resource = readFolder(currentUser,currentProject, resource.getParent());
+                   		 resource =(CmsResource)readFolder(currentUser,currentProject, resource.getParent());
+                     
 					} catch( CmsException exc ) {
 						// ... or in the online-project
-						resource = readFolder(currentUser,onlineProject(currentUser, currentProject), 
+             
+						resource =(CmsResource)readFolder(currentUser,onlineProject(currentUser, currentProject), 
 													   resource.getParent());
+           
 					}
 				}
 			} else {

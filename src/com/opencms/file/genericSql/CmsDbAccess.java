@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2000/06/17 16:00:09 $
+ * Version: $Revision: 1.70 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.69 $ $Date: 2000/06/17 11:41:36 $ * 
+ * @version $Revision: 1.70 $ $Date: 2000/06/17 16:00:09 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3733,6 +3733,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
            ResultSet tmpres;
            byte[] content;
       
+           System.err.println(file);
+           System.err.println(changed+" : "+file.getState());
+           
+           
            PreparedStatement statementFileRead = null;  
            PreparedStatement statementResourceUpdate = null;
            try {  

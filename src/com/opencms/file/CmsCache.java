@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/06/17 11:41:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/06/17 16:00:09 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import com.opencms.core.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/06/17 11:41:36 $
+ * @version $Revision: 1.7 $ $Date: 2000/06/17 16:00:09 $
  */
 
 public class CmsCache implements I_CmsConstants {
@@ -65,8 +65,8 @@ public class CmsCache implements I_CmsConstants {
 	 * @param strKey The key for the new object stroed in the cache.
 	 * @param value The value of the new object stroed in the cache.
 	 */
-	public void put(Object strKey, Object value) {
-		
+	public void put(String strKey, Object value) {
+
 		if (cache.size() < max_objects) {
 			cache.put(strKey,new CmsCachedObject(value));
 	
@@ -93,13 +93,13 @@ public class CmsCache implements I_CmsConstants {
 		String strKey = getStrKey(value);
 		if (strKey != null){
 			if (cache.size()<max_objects) {
-				cache.put(new Integer(key),new CmsCachedObject(value));
+				cache.put(strKey,new CmsCachedObject(value));
 	
 			} else {
 				removeLRU();
-				cache.put(new Integer(key),new CmsCachedObject(value));		
+				cache.put(strKey,new CmsCachedObject(value));		
 			}
-			index.put(new Integer(key),strKey);
+          	index.put(new Integer(key),strKey);
 		}
 	}
 	
@@ -111,7 +111,9 @@ public class CmsCache implements I_CmsConstants {
 	private String getStrKey(Object value){
 		if(value instanceof CmsFile) {			return C_FILE+((CmsFile)value).getProjectId()+((CmsFile)value).getAbsolutePath();
 		} else if(value instanceof CmsFolder) {			return C_FOLDER+((CmsFolder)value).getProjectId()+((CmsFolder)value).getAbsolutePath();
-		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getName();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getName();		} else {
+		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getName();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getName();
+        } else if(value instanceof CmsProject) {
+            return "p"+((CmsProject)value).getId();		} else {
 			return null;
 		}
 	}
@@ -123,7 +125,9 @@ public class CmsCache implements I_CmsConstants {
 	 */
 	private int getId(Object value){
 		if(value instanceof CmsFile) {			return ((CmsFile)value).getResourceId();
-		} else if(value instanceof CmsFolder) {			return ((CmsFolder)value).getResourceId();		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getId();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getId();		} else {
+		} else if(value instanceof CmsFolder) {			return ((CmsFolder)value).getResourceId();		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getId();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getId();
+        } else if(value instanceof CmsProject) {
+            return ((CmsProject)value).getId();		} else {
 			return C_UNKNOWN_ID;
 		}
 	}
@@ -173,8 +177,9 @@ public class CmsCache implements I_CmsConstants {
 		if (cachedObject != null) {
             // update  timestamp
 		    cachedObject.setTimestamp(); 
-			ret=(CmsCachedObject)cachedObject.clone();				
-   			return (((CmsCachedObject)ret).getContents());
+			ret=(CmsCachedObject)cachedObject.clone();	
+           	return (((CmsCachedObject)ret).getContents());
+            //return null;
 
 		} else {
 		   return null;
@@ -191,14 +196,17 @@ public class CmsCache implements I_CmsConstants {
 	 * @return Contents of the CmsCachedObject stored in the cache
 	 */
 	public  Object get(int id) {
+        
 		CmsCachedObject cachedObject=null;
 		CmsCachedObject ret=null;
 	
 		// get key for object
 		String key = (String)index.get(new Integer(id));
 		if (key == null) {
+ 
 			return null;
 		}
+
 		// get object from cache
         cachedObject=(CmsCachedObject)cache.get(key);  
 						
@@ -208,6 +216,7 @@ public class CmsCache implements I_CmsConstants {
 		    cachedObject.setTimestamp(); 
 			ret=(CmsCachedObject)cachedObject.clone();				
    			return (((CmsCachedObject)ret).getContents());
+            //return null;
 
 		} else {
 		   return null;
