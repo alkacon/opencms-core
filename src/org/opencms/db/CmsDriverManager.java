@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/11/17 17:09:00 $
- * Version: $Revision: 1.450 $
+ * Date   : $Date: 2004/11/18 14:40:30 $
+ * Version: $Revision: 1.451 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.450 $ $Date: 2004/11/17 17:09:00 $
+ * @version $Revision: 1.451 $ $Date: 2004/11/18 14:40:30 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6133,7 +6133,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsUUID principal) throws CmsException {
 
         // remove the ace
-        m_userDriver.removeAccessControlEntry(null, context.currentProject(), resource.getResourceId(), principal);
+        m_userDriver.removeAccessControlEntry(runtimeInfo, context.currentProject(), resource.getResourceId(), principal);
 
         // update the "last modified" information
         touch(
