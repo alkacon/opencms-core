@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2001/06/29 13:44:06 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/07/06 13:00:01 $
+* Version: $Revision: 1.39 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2001/06/29 13:44:06 $
+ * @version $Revision: 1.39 $ $Date: 2001/07/06 13:00:01 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -441,7 +441,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
     public Integer getTemplates(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
 
-        //Vector files=cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
         Vector files = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
 
         // get all module Templates
@@ -574,6 +573,17 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             Vector values, Hashtable parameters) throws CmsException {
 
         Vector files = cms.getFilesInFolder(C_CONTENTLAYOUTPATH);
+
+        // get all default bodies from the modules
+        Vector modules = new Vector();
+        modules = cms.getSubFolders(C_MODULES_PATH);
+        for(int i = 0;i < modules.size();i++) {
+            Vector moduleTemplateFiles = new Vector();
+            moduleTemplateFiles = cms.getFilesInFolder(((CmsFolder)modules.elementAt(i)).getAbsolutePath() + "default_bodies/");
+            for(int j = 0;j < moduleTemplateFiles.size();j++) {
+                files.addElement(moduleTemplateFiles.elementAt(j));
+            }
+        }
 
         Enumeration enum = files.elements();
         while(enum.hasMoreElements()) {
