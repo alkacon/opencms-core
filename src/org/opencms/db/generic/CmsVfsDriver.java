@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/31 16:14:32 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2003/07/31 16:44:31 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.69 $ $Date: 2003/07/31 16:14:32 $
+ * @version $Revision: 1.70 $ $Date: 2003/07/31 16:44:31 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1127,6 +1127,26 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
+    }
+    
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#updateProjectId(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     */
+    public void updateProjectId(CmsProject project, CmsResource resource) throws CmsException {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        
+        try {
+            conn = m_sqlManager.getConnection(project);            
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_PROJECT_ID");
+            stmt.setInt(1, project.getId());
+            stmt.setString(2, resource.getResourceId().toString());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }        
     }
 
     /**

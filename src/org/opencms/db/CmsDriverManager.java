@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 16:14:31 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2003/07/31 16:44:31 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.112 $ $Date: 2003/07/31 16:14:31 $
+ * @version $Revision: 1.113 $ $Date: 2003/07/31 16:44:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1947,6 +1947,8 @@ public class CmsDriverManager extends Object {
                     deleteAllAccessControlEntries(context, currentResource);
                     // the resource exists online => mark the file as deleted
                     m_vfsDriver.deleteFile(context.currentProject(), currentResource);
+                    // update the project ID
+                    m_vfsDriver.updateProjectId(context.currentProject(), currentResource);
                 }
             }
         }
@@ -2016,6 +2018,8 @@ public class CmsDriverManager extends Object {
             m_vfsDriver.updateResourceState(context.currentProject(), cmsFolder, C_UPDATE_STRUCTURE_STATE);
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
+            // update the project ID
+            m_vfsDriver.updateProjectId(context.currentProject(), cmsFolder);            
         }
         
         // update cache
@@ -2540,7 +2544,7 @@ public class CmsDriverManager extends Object {
                 readPath(context, (CmsResource) siblings.get(i), false);
             }
         } catch (CmsException e) {
-            siblings = (List) new ArrayList(0);
+            siblings = Collections.EMPTY_LIST;
         }
 
         return siblings;
