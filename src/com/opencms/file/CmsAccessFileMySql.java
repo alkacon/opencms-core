@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/03/22 09:22:34 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.43 $ $Date: 2000/03/22 09:22:34 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -1209,9 +1209,13 @@ import com.opencms.util.*;
          // check if the folder has any files in it
          Vector files= getFilesInFolder(project,foldername);
          if (files.size()==0) {
+             System.err.println("Files in folder "+files.size());
+             System.err.println(files);
              // check if the folder has any folders in it
              Vector folders= getSubFolders(project,foldername);
              if (folders.size()==0) {
+                 System.err.println("Folders in folder "+folders.size());
+                 System.err.println(folders);
                  //this folder is empty, delete it
                  try { 
                     // mark the folder as deleted       
@@ -1243,15 +1247,28 @@ import com.opencms.util.*;
      public void removeFolder(A_CmsProject project, String foldername) 
         throws CmsException{
          // the current implementation only deletes empty folders
-		try { 
-		    // delete the folder
-		    PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
-		    statementResourceDelete.setString(1,absoluteName(foldername));
-		    statementResourceDelete.setInt(2,project.getId());
-		    statementResourceDelete.executeUpdate();
-		} catch (SQLException e){
-		    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
-		}
+         // check if the folder has any files in it
+         Vector files= getFilesInFolder(project,foldername);
+         if (files.size()==0) {
+             System.err.println("Files in folder "+files.size());
+             System.err.println(files);
+             // check if the folder has any folders in it
+             Vector folders= getSubFolders(project,foldername);
+             if (folders.size()==0) {
+                 System.err.println("Folders in folder "+folders.size());
+                 System.err.println(folders);
+                 //this folder is empty, delete it
+                 try {             
+		            // delete the folder
+		            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+		            statementResourceDelete.setString(1,absoluteName(foldername));
+		            statementResourceDelete.setInt(2,project.getId());
+		            statementResourceDelete.executeUpdate();
+                 } catch (SQLException e){
+		              throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		         }
+             }
+         }
 	 }
      
 	/**

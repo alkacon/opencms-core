@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/03/22 09:22:35 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.18 $ $Date: 2000/03/22 09:22:35 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -58,7 +58,19 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      
      private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
    
-     
+      /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
      
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -288,6 +300,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             // get the nav information
             Hashtable storage = getNavData(cms);
             
+            if (storage.size() >0) {
             String[] nicenames=(String[])storage.get("NICENAMES");
             int count=((Integer)storage.get("COUNT")).intValue();      
     
@@ -295,6 +308,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             for (int i=0;i<=count;i++) {
                names.addElement(nicenames[i]);
                values.addElement(nicenames[i]);
+            }
+            } else {
+                values=new Vector();
             }
    
             return new Integer(values.size()-1);           
@@ -315,6 +331,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             // get the nav information
             Hashtable storage = getNavData(cms);
             
+            if (storage.size() >0 ) {
             String[] nicenames=(String[])storage.get("NICENAMES");
             String[] positions=(String[])storage.get("POSITIONS");
             int count=((Integer)storage.get("COUNT")).intValue();                    
@@ -334,7 +351,9 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
              } else {
                  newPos= new Float(positions[pos]).floatValue()+1;
              }
-        
+            } else {
+                newPos=1;
+            }
             cms.writeMetainformation(newfile.getAbsolutePath(),C_METAINFO_NAVPOS,new Float(newPos).toString());             
       }
     
@@ -387,6 +406,10 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
 
             CmsXmlLanguageFile lang= new CmsXmlLanguageFile(cms);
             
+            String[] filenames;
+            String[] nicenames;
+            String[] positions;
+            
             Hashtable storage=new Hashtable();
             
             CmsFolder folder=null;
@@ -419,14 +442,16 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 filefolders.addElement(file);
             }
             
+            if (filefolders.size()>0) {
             // Create some arrays to store filename, nicename and position for the
             // nav in there. The dimension of this arrays is set to the number of
             // found files and folders plus two more entrys for the first and last
             // element.
-            String[] filenames=new String[filefolders.size()+1];
-            String[] nicenames=new String[filefolders.size()+1];
-            String[] positions=new String[filefolders.size()+1];
+            filenames=new String[filefolders.size()+2];
+            nicenames=new String[filefolders.size()+2];
+            positions=new String[filefolders.size()+2];
             
+        
             //now check files and folders that are not deleted and include navigation
             // information
             enum=filefolders.elements();
@@ -454,6 +479,12 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    }
                 }
             }
+            
+            } else {
+                filenames=new String[2];
+                nicenames=new String[2];
+                positions=new String[2];
+            }
             // now add the first and last value
             filenames[0]="FIRSTENTRY";
             nicenames[0]=lang.getDataValue("input.firstelement");
@@ -470,6 +501,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             storage.put("NICENAMES",nicenames);
             storage.put("POSITIONS",positions);
             storage.put("COUNT",new Integer(count));
+            
             
             return storage;            
       }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2000/03/21 15:07:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/22 09:22:34 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,11 +47,26 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/21 15:07:11 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/22 09:22:34 $
  */
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
+    
+    
+     /**
+     * Indicates if the results of this class are cacheable.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
     
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -101,7 +116,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                             updateNavPos(cms,folder,navpos);
                         }
                    }
-
+                    cms.unlockResource(folder.getAbsolutePath());
                   } catch (CmsException ex) {
                     throw new CmsException("Error while creating new Folder"+ex.getMessage(),ex.getType(),ex);
                 }
@@ -169,13 +184,17 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             // get the nav information
             Hashtable storage = getNavData(cms);
             
-            String[] nicenames=(String[])storage.get("NICENAMES");
-            int count=((Integer)storage.get("COUNT")).intValue();      
+            if (storage.size() >0) {
+                String[] nicenames=(String[])storage.get("NICENAMES");
+                int count=((Integer)storage.get("COUNT")).intValue();      
     
-            // finally fill the result vectors
-            for (int i=0;i<=count;i++) {
-               names.addElement(nicenames[i]);
-               values.addElement(nicenames[i]);
+                // finally fill the result vectors
+                for (int i=0;i<=count;i++) {
+                    names.addElement(nicenames[i]);
+                    values.addElement(nicenames[i]);
+                }
+            } else {
+                values=new Vector();
             }
    
             return new Integer(values.size()-1);           
@@ -196,25 +215,29 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             // get the nav information
             Hashtable storage = getNavData(cms);
             
-            String[] nicenames=(String[])storage.get("NICENAMES");
-            String[] positions=(String[])storage.get("POSITIONS");
-            int count=((Integer)storage.get("COUNT")).intValue();                    
+            if (storage.size() >0 ) {
+                String[] nicenames=(String[])storage.get("NICENAMES");
+                String[] positions=(String[])storage.get("POSITIONS");
+                int count=((Integer)storage.get("COUNT")).intValue();                    
             
-            // now find the file after which the new file is sorted
-            int pos=0;
-            for (int i=0;i<nicenames.length;i++) {
-                 if (newpos.equals((String)nicenames[i])) {
-                     pos=i;
-                }                                                              
+                // now find the file after which the new file is sorted
+                int pos=0;
+                for (int i=0;i<nicenames.length;i++) {
+                    if (newpos.equals((String)nicenames[i])) {
+                        pos=i;
+                    }                                                              
+                }
+             
+                 if (pos < count) {
+                     float low=new Float(positions[pos]).floatValue();
+                     float high=new Float(positions[pos+1]).floatValue();
+                    newPos= (high+low)/2;
+                } else {
+                     newPos= new Float(positions[pos]).floatValue()+1;
+                }
+            } else {
+                newPos=1;
             }
-         
-             if (pos < count) {
-                 float low=new Float(positions[pos]).floatValue();
-                 float high=new Float(positions[pos+1]).floatValue();
-                 newPos= (high+low)/2;
-             } else {
-                 newPos= new Float(positions[pos]).floatValue()+1;
-             }
             cms.writeMetainformation(newfolder.getAbsolutePath(),C_METAINFO_NAVPOS,new Float(newPos).toString());             
       }
     
@@ -267,6 +290,10 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
 
             CmsXmlLanguageFile lang= new CmsXmlLanguageFile(cms);
             
+            String[] filenames;
+            String[] nicenames;
+            String[] positions;
+            
             Hashtable storage=new Hashtable();
             
             CmsFolder folder=null;
@@ -298,42 +325,50 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 file=(CmsFile)enum.nextElement();
                 filefolders.addElement(file);
             }
-            
+                      
+            if (filefolders.size()>0) {
             // Create some arrays to store filename, nicename and position for the
             // nav in there. The dimension of this arrays is set to the number of
             // found files and folders plus two more entrys for the first and last
             // element.
-            String[] filenames=new String[filefolders.size()+1];
-            String[] nicenames=new String[filefolders.size()+1];
-            String[] positions=new String[filefolders.size()+1];
-            
-            //now check files and folders that are not deleted and include navigation
-            // information
-            enum=filefolders.elements();
-            while (enum.hasMoreElements()) {
-                CmsResource res =(CmsResource)enum.nextElement();
+            filenames=new String[filefolders.size()+2];
+            nicenames=new String[filefolders.size()+2];
+            positions=new String[filefolders.size()+2];
+                 
+                //now check files and folders that are not deleted and include navigation
+                // information
+                enum=filefolders.elements();
+                while (enum.hasMoreElements()) {
+                    CmsResource res =(CmsResource)enum.nextElement();
                 
-                // check if the resource is not marked as deleted
-                if (res.getState() != C_STATE_DELETED) {
-                    String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
+                    // check if the resource is not marked as deleted
+                    if (res.getState() != C_STATE_DELETED) {
+                        String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
 
-                    // check if there is a navpos for this file/folder
-                    if (navpos!= null) {
-                        nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTITLE);
-                        if (nicename == null) {
-                            nicename=res.getName();
+                        // check if there is a navpos for this file/folder
+                        if (navpos!= null) {
+                                nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTITLE);
+                            if (nicename == null) {
+                                nicename=res.getName();
+                            }
+                        // add this file/folder to the storage.                        
+                        filenames[count]=res.getAbsolutePath();
+                        nicenames[count]=nicename;
+                        positions[count]=navpos;     
+                        if (new Float(navpos).floatValue() > max) {
+                             max = new Float(navpos).floatValue();
                         }
-                     // add this file/folder to the storage.                        
-                     filenames[count]=res.getAbsolutePath();
-                     nicenames[count]=nicename;
-                     positions[count]=navpos;     
-                     if (new Float(navpos).floatValue() > max) {
-                         max = new Float(navpos).floatValue();
-                     }
-                     count++;
-                   }
+                        count++;
+                        
+                        }
+                    }
                 }
+            } else {
+                filenames=new String[2];
+                nicenames=new String[2];
+                positions=new String[2];
             }
+             
             // now add the first and last value
             filenames[0]="FIRSTENTRY";
             nicenames[0]=lang.getDataValue("input.firstelement");
@@ -341,15 +376,16 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             filenames[count]="LASTENTRY";
             nicenames[count]=lang.getDataValue("input.lastelement");
             positions[count]=new Float(max+1).toString();
-            
+        
             // finally sort the nav information.
             sort(cms,filenames,nicenames,positions,count);     
-            
+     
             // put all arrays into a hashtable to return them to the calling method.
             storage.put("FILENAMES",filenames);
             storage.put("NICENAMES",nicenames);
             storage.put("POSITIONS",positions);
             storage.put("COUNT",new Integer(count));
+         
             
             return storage;            
       }
