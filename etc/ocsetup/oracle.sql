@@ -395,7 +395,7 @@ DATA_DATE_4 DATE,
 primary key(MASTER_ID));
 
 create table CMS_MODULE_ONLINE_CHANNEL_REL
-(MASTER_ID NUMBER not null,
+(MASTER_ID VARCHAR2(36) not null,
 CHANNEL_ID NUMBER not null,
 primary key(CHANNEL_ID, MASTER_ID));
 
@@ -521,7 +521,7 @@ DATA_DATE_4 DATE,
 primary key(MASTER_ID));
 
 create table CMS_MODULE_CHANNEL_REL
-(MASTER_ID NUMBER not null,
+(MASTER_ID VARCHAR2(36) not null,
 CHANNEL_ID NUMBER not null,
 primary key(CHANNEL_ID, MASTER_ID));
 
