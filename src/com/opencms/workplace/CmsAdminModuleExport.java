@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 15:27:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/03 16:47:32 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -97,7 +97,7 @@ System.err.println("mgm---------------------------------------******");
 			String[] resourcen = new String[3];
 			resourcen[0] = "/moduledemos/"+exportName+"/";
 			resourcen[1] = "/system/modules/"+exportName+"/";
-			resourcen[2] = "/system/modules/classes/" + exportName.replace('.','/') +"/";
+			resourcen[2] = "/system/classes/" + exportName.replace('.','/') +"/";
 			reg.exportModule(exportName, resourcen, cms.readExportPath()+exportName + "_" + reg.getModuleVersion(exportName));
 			templateSelector= "done";
 		}else{
