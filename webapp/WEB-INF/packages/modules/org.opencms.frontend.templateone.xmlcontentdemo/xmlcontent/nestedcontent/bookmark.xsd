@@ -23,6 +23,9 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>
 			<layouts>
 				<layout element="Link" widget="LinkGalleryWidget" />
 			</layouts>
