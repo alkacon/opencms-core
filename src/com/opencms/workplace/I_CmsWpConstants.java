@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/22 10:39:45 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2000/03/23 15:14:03 $
+ * Version: $Revision: 1.69 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.68 $ $Date: 2000/03/22 10:39:45 $
+ * @version $Revision: 1.69 $ $Date: 2000/03/23 15:14:03 $
  */
 public interface I_CmsWpConstants {
 
@@ -183,6 +183,9 @@ public interface I_CmsWpConstants {
     
     /** Parameter for java script filenames */
     public static final String C_PARA_JSFILE = "jsfile";
+
+    /** Parameter for metadefinitions */
+    public static final String C_PARA_METADEF = "metadef";
     
     
     // Filenames of workplace files

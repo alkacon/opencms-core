@@ -215,10 +215,8 @@ function doAction(action) {
 		} case 11: {
 			location.href='chtype.html?file='+ kontextparam;
 			break;
-		}
-		case 12:
-		{
-			location.href='explorer_files_meta.html';
+		} case 12: {
+		    location.href='property.html?file='+ kontextparam;
 			break;
 		}
 		case 13:

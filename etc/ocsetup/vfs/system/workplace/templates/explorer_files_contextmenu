@@ -11,7 +11,7 @@
 	<contextdisabled name="explorer.context.chgrp"/>
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="folderlock">
@@ -23,7 +23,7 @@
 	<contextdisabled name="explorer.context.chgrp"/>
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="folderlockuser">
@@ -35,7 +35,7 @@
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for folders end -->
 
@@ -57,7 +57,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="plainlock">
@@ -77,7 +77,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="plainlockuser">
@@ -97,7 +97,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for plain files end -->
 
@@ -118,7 +118,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="XMLTemplatelock">
@@ -137,7 +137,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="XMLTemplatelockuser">
@@ -156,7 +156,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for XMLTemplates end -->
 
@@ -177,7 +177,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="scriptlock">
@@ -196,7 +196,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="scriptlockuser">
@@ -215,7 +215,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for script files end -->
 
@@ -236,7 +236,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="pagelock">
@@ -255,7 +255,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="pagelockuser">
@@ -274,7 +274,7 @@
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for pages end -->
 
@@ -293,7 +293,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="imagelock">
@@ -309,7 +309,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="imagelockuser">
@@ -325,7 +325,7 @@
 	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for image files end -->
 
@@ -344,7 +344,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
     <contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="binarylock">
@@ -361,7 +361,7 @@
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
 <contextmenue name="binarylockuser">
@@ -378,14 +378,14 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="javascript:doAction(DO_CHTYPE)"/>
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for binary files end -->
 
 <!-- context menues for file not in project or in online project start -->
 <contextmenue name="online">
 	<contextentry name="explorer.context.history" href="#"/>
-	<contextentry name="explorer.context.property" href="#"/>	
+	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 <!-- context menues for file not in project or in online project end -->
 

@@ -97,8 +97,8 @@ function show_help()
 			<tr><td class=dialogtxt colspan=10>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="OK" id=OK name=OK onClick="location.href='chmod.html?newaccess=true&ur='+document.RIGHT.UR.checked+'&uw='+document.RIGHT.UW.checked+'&uv='+document.RIGHT.UV.checked +'&gr='+document.RIGHT.GR.checked+'&gw='+document.RIGHT.GW.checked+'&gv='+document.RIGHT.GV.checked+'&pr='+document.RIGHT.PR.checked+'&pw='+document.RIGHT.PW.checked+'&pv='+document.RIGHT.PV.checked+'&ir='+document.RIGHT.IR.checked"></td>
-					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="Abbrechen" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
+					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='chmod.html?newaccess=true&ur='+document.RIGHT.UR.checked+'&uw='+document.RIGHT.UW.checked+'&uv='+document.RIGHT.UV.checked +'&gr='+document.RIGHT.GR.checked+'&gw='+document.RIGHT.GW.checked+'&gv='+document.RIGHT.GV.checked+'&pr='+document.RIGHT.PR.checked+'&pw='+document.RIGHT.PW.checked+'&pv='+document.RIGHT.PV.checked+'&ir='+document.RIGHT.IR.checked"></td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL onClick="location.href='explorer_files.html'"></td>
 				</tr>
 				</table>
 			</td>
