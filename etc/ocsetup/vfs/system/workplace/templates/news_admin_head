@@ -24,7 +24,8 @@
 <table cellspacing=0 cellpadding=0 border=0>
 	<tr valign=center>
 		<td class=menu valign=middle><a href="#"><img src="]]><METHOD name="picsUrl">bt_back_in.gif</METHOD><![CDATA[" alt="]]><LABEL value="button.back" /><![CDATA[" border=0 width=32 heigth=32></a></td>
-		<td class=menu>]]><BUTTON href="javascript:window.top.body.location.href=newsurl;" name="bt_new" action="" alt="newarticle"/><![CDATA[</td>
+		<!-- <td class=menu>]]><BUTTON href="javascript:window.top.body.location.href=newsurl;" name="bt_new" action="" alt="newarticle"/><![CDATA[</td> -->
+		]]><PROCESS>NEW</PROCESS><![CDATA[
 		<td class=menu width=100% nowrap>&nbsp;</td>
 	</tr>
 </table>
@@ -32,4 +33,11 @@
 </html>
 ]]>
 </TEMPLATE>
+<NEW_DISABLED>
+<![CDATA[<td class=menu nowrap width=32px><IMG SRC="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=32 height=32></a></td>]]>
+</NEW_DISABLED>	
+
+<NEW_ENABLED>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:window.top.body.location.href=newsurl;" name="bt_new" action="" alt="newarticle"/><![CDATA[</td>]]>
+</NEW_ENABLED>	
 </WORKPLACE>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsAdmin.java,v $
- * Date   : $Date: 2000/04/04 09:58:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/05 14:42:45 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/04/04 09:58:45 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/05 14:42:45 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsNewsConstants, I_CmsFileListUsers {
@@ -57,6 +57,15 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
 
     /** Filelist datablock for news author value */
     private final static String C_NEWS_AUTHOR_VALUE = "NEWS_AUTHOR_VALUE";
+
+    /** Definition of the Datablock NEW */   
+    private final static String C_NEW="NEW";
+     
+    /** Definition of the Datablock NEW_ENABLED */   
+    private final static String C_NEW_ENABLED="NEW_ENABLED";    
+
+    /** Definition of the Datablock NEW_DISABLED */   
+    private final static String C_NEW_DISABLED="NEW_DISABLED"; 
     
     /**
      * Indicates if the results of this class are cacheable.
@@ -205,6 +214,17 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
                 session.removeValue(C_NEWS_PARAM_AUTHOR);
                 templateSelector = C_NEWS_DONE;                
 		    }
+        }
+        
+        
+        // check if the new resource button must be enabeld.
+        // this is only done if the project is not the online project.
+        if(xmlTemplateDocument.hasData(C_NEW_DISABLED) && xmlTemplateDocument.hasData(C_NEW_ENABLED)) {
+            if (cms.getRequestContext().currentProject().equals(cms.onlineProject()) || !checkWriteAccess(cms)) {
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_DISABLED,this));                
+            } else {
+                xmlTemplateDocument.setData(C_NEW,xmlTemplateDocument.getProcessedXmlDataValue(C_NEW_ENABLED,this));       
+            }
         }
         
         // Finally start the processing
@@ -632,5 +652,25 @@ public class CmsNewsAdmin extends CmsWorkplaceDefault implements I_CmsConstants,
         pageFile.write();
         cms.chmod(fullFilename, C_ACCESS_DEFAULT_FLAGS);
         cms.unlockResource(fullFilename);
+    }
+
+    /**
+     * Check if the current user has write access to the news folders
+     * in the current project.
+     * Used to decide if the "new article" should be shown.
+     * @param cms Cms Object for accessing system resources.
+     * @return <code>true</code> if the user has write access, <code>false</code> otherwise.  
+     * @exception CmsException if check access failed.
+     */
+    private boolean checkWriteAccess(A_CmsObject cms) throws CmsException {
+        CmsFolder pageFolder = null;
+        CmsFolder contentFolder = null;
+        try {
+            pageFolder = cms.readFolder(C_NEWS_FOLDER_PAGE);
+            contentFolder = cms.readFolder(C_NEWS_FOLDER_CONTENT);
+        } catch(Exception e) {
+            return false;
+        }
+        return cms.accessCreate(pageFolder) && cms.accessCreate(contentFolder);        
     }
 }
