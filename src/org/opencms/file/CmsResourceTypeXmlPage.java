@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/04/29 10:21:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/30 10:04:49 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -197,27 +197,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public void writeFile(CmsObject cms, CmsFile file) throws CmsException {     
-        validateXmlStructure(cms, file);
+        // validate the xml structure before writing the file           
+        CmsXmlPage.read(cms, file).validateXmlStructure();
+        // xml is valid if no exception occured
         cms.doWriteFile(file);
-    }
-    
-    /**
-     * Validates the xml structure of a given xmlpage file.<p>
-     * 
-     * @param cms the current cms objecz
-     * @param file the file to validate the xmlcontent of
-     * @throws CmsException if validation has failed
-     */
-    private void validateXmlStructure(CmsObject cms, CmsFile file) throws CmsException {
-        try {
-            CmsXmlPage xmlpage= CmsXmlPage.read(cms, file);
-            // validate the xml structure           
-            xmlpage.validateXmlStructure();
-        } catch (CmsXmlPageException e) {   
-            // there was an error during validation, so throw an CmsException that it can
-            // be displayed in an error dialog box
-            throw new CmsException(e.getMessage() , CmsException.C_XML_CORRUPT_INTERNAL_STRUCTURE);
-        }
-    }
-    
+    }        
 }
