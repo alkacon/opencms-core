@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2004/07/08 15:21:06 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2004/08/27 12:56:05 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2004/07/08 15:21:06 $
+ * @version $Revision: 1.43 $ $Date: 2004/08/27 12:56:05 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -156,7 +156,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData(C_TASKPARA_DELIVERY, paraDelivery);
 
         // are the constants read from the cms already?
-        if(C_ROLE == null) {
+        if (C_ROLE == null) {
 
             // declare the constants
             initConstants(xmlTemplateDocument);
@@ -223,8 +223,9 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
                 values.addElement(name);
             }
         }
-        names.addElement(lang.getLanguageValue("task.label.allroles"));
-        values.addElement(C_ALL_ROLES);
+        // TODO: CW: "all roles" not possible any longer, since a user has no default group(= default role) anymore
+        // names.addElement(lang.getLanguageValue("task.label.allroles"));
+        // values.addElement(C_ALL_ROLES);
 
         // no current group, set index to -1
         return new Integer(-1);
@@ -268,6 +269,8 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
         }
 
         // generate output for all users
+        // TODO: CW: "all roles" not possible any longer, since a user has no default group(= default role) anymore
+        /*
         retValue.append(C_ROLE_1 + C_ALL_ROLES + C_ROLE_2);
         retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + 0 + C_USER_3 + chooseUser + C_USER_4 + C_USER_5);
         Vector users = cms.getUsers();
@@ -277,6 +280,7 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
             // create entry for user
             retValue.append(C_USER_1 + C_ALL_ROLES + C_USER_2 + (m + 1) + C_USER_3 + user.getName() + C_USER_4 + user.getName() + C_USER_5);
         }
+        */
         return retValue.toString();
     }
 
