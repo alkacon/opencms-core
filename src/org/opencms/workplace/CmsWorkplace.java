@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/08/01 17:39:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,11 +30,15 @@
  */
 package org.opencms.workplace;
 
+import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteManager;
+
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
+import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.util.Encoder;
 import com.opencms.util.LinkSubstitution;
@@ -60,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.1
  */
@@ -214,7 +218,19 @@ public abstract class CmsWorkplace {
         settings.setProject(cms.getRequestContext().currentProject().getId());
         
         // save current site
-        settings.setSite(cms.getRequestContext().getSiteRoot());
+        String siteRoot = cms.getRequestContext().getSiteRoot();
+        try {
+            CmsResource res = cms.readFileHeader("/");
+            if(! cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
+                List sites = CmsSiteManager.getAvailableSites(cms);
+                if (sites.size() > 0) {
+                    siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
+                }
+            }            
+        } catch (CmsException e) {
+            // error reading site root, proceed with current site root 
+        }
+        settings.setSite(siteRoot);
         
         // check out the user information for a default view that might be stored there
         if (startSettings != null) {

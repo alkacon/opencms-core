@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 17:04:03 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2003/08/01 17:39:25 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.80 $ $Date: 2003/08/01 17:04:03 $
+ * @version $Revision: 1.81 $ $Date: 2003/08/01 17:39:25 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -178,7 +178,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createCmsFileFromResultSet(java.sql.ResultSet, int, boolean)
      */
-	protected CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException {                          
+    protected CmsFile createCmsFileFromResultSet(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException {                          
         byte[] content = null;
         int resProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
@@ -191,7 +191,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
+        // CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
         int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
@@ -209,7 +209,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         //if (!lockedBy.equals(CmsUUID.getNullUUID())) {
             // resource is locked
-            resProjectId = lockedInProject;
+        resProjectId = lockedInProject;
         //} else {
             // resource is not locked
         //    resProjectId = projectId;

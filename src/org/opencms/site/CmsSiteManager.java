@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2003/07/22 05:50:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/01 17:39:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -225,6 +225,7 @@ public final class CmsSiteManager implements Cloneable {
         }
 
         String currentRoot = cms.getRequestContext().getSiteRoot();
+        cms.getRequestContext().saveSiteRoot();
         try {
             // for all operations here we need no context
             cms.getRequestContext().setSiteRoot("/");
@@ -242,11 +243,13 @@ public final class CmsSiteManager implements Cloneable {
                 String folder = (String)i.next();
                 try {
                     CmsResource res = cms.readFileHeader(folder);
-                    String title = cms.readProperty(folder, I_CmsConstants.C_PROPERTY_TITLE);
-                    if (title == null) {
-                        title = folder;
+                    if(cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
+                        String title = cms.readProperty(folder, I_CmsConstants.C_PROPERTY_TITLE);
+                        if (title == null) {
+                            title = folder;
+                        }
+                        result.add(new CmsSite(folder, res.getId(), title, (CmsSiteMatcher)siteServers.get(folder)));
                     }
-                    result.add(new CmsSite(folder, res.getId(), title, (CmsSiteMatcher)siteServers.get(folder)));
                                         
                 } catch (CmsException e) {
                     // user probably has no read access to the folder, ignore and continue iterating            
@@ -258,7 +261,7 @@ public final class CmsSiteManager implements Cloneable {
             }            
         } finally {
             // restore the user's current context 
-            cms.getRequestContext().setSiteRoot(currentRoot);
+            cms.getRequestContext().restoreSiteRoot();
         }
         return result;
     }
