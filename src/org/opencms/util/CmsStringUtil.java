@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/02/17 12:44:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -62,6 +62,11 @@ public final class CmsStringUtil {
     /** Regular expression that matches the HTML body start tag. */
     public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
 
+    /**
+     * just a convienient shorthand to the line separator constant.<p>
+     */
+    public static final String C_LINE_SEPARATOR = System.getProperty("line.separator");
+
     /** String to indicate the start of a macro. */
     public static final String C_MACRO_DELIMITER = "$";
 
@@ -70,6 +75,10 @@ public final class CmsStringUtil {
 
     /** String to indicate the start of a macro. */
     public static final String C_MACRO_START = "{";
+    /**
+     * just a convienient shorthand to the tabulation constant.<p>
+     */
+    public static final String C_TABULATOR = "  ";
 
     /** Regex pattern that matches an end body tag. */
     private static final Pattern C_BODY_END_PATTERN = Pattern.compile(C_BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
@@ -88,15 +97,6 @@ public final class CmsStringUtil {
 
     /** Second constant. */
     private static final long C_SECONDS = 1000;
-
-    /**
-     * just a convienient shorthand to the line separator constant.<p>
-     */
-    public static final String C_LINE_SEPARATOR = System.getProperty("line.separator");
-    /**
-     * just a convienient shorthand to the tabulation constant.<p>
-     */
-    public static final String C_TABULATOR = "  ";
     
     /** Regex that matches an encoding String in an xml head. */
     private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile(
@@ -122,6 +122,52 @@ public final class CmsStringUtil {
     private CmsStringUtil() {
 
         // empty
+    }
+
+    /**
+     * Returns a block of html code.<p>
+     * 
+     * It appends a line separator at the end of the given string
+     * and the number of specified tabulators in front of each line.<p>
+     * 
+     * @param tabs the number of tabulators to insert
+     * @param htmlCode the code
+     * 
+     * @return html code
+     */
+    public static String code(int tabs, String htmlCode) {
+    
+        if (tabs <= 0) {
+            return htmlCode.endsWith(C_LINE_SEPARATOR) ? htmlCode : htmlCode + C_LINE_SEPARATOR;
+        }
+        String newCode = "";
+        List lines = splitAsList(htmlCode, C_LINE_SEPARATOR);
+        Iterator itLines = lines.iterator();
+        while (itLines.hasNext()) {
+            String line = (String)itLines.next();
+            if (line.trim().length() == 0) {
+                continue;
+            }
+            newCode += C_TABULATOR + line;
+            if (!newCode.endsWith(C_LINE_SEPARATOR)) {
+                newCode += C_LINE_SEPARATOR;
+            }
+        }
+        return code(tabs - 1, newCode);
+    }
+
+    /**
+     * Returns a block of html code.<p>
+     * 
+     * It appends a line separator at the end of the given string.<p>
+     * 
+     * @param htmlCode the code
+     * 
+     * @return html code
+     */
+    public static String code(String htmlCode) {
+    
+        return code(0, htmlCode);
     }
 
     /**
@@ -217,6 +263,51 @@ public final class CmsStringUtil {
             System.err.println("[CmsStringSubstitution]: escaped String to: " + result.toString());
         }
         return new String(result);
+    }
+
+    /**
+     * This method takes a part of a html tag definition, an attribute to extend within the
+     * given text and a default value for this attribute; and returns a <code>{@link Map}</code>
+     * with 2 values: a <code>{@link String}</code> with key <code>"text"</code> with the new text
+     * without the given attribute, and another <code>{@link String}</code> with key <code>"value"</code>
+     * with the new extended value for the given attribute, this value is sourrounded by the same type of 
+     * quotation marks as in the given text.<p> 
+     * 
+     * @param text the text to search in
+     * @param attribute the attribute to remove and extend from the text
+     * @param defValue a default value for the attribute, should not have any quotation mark
+     * 
+     * @return a map with the new text and the new value for the given attribute 
+     */
+    public static Map extendAttribute(String text, String attribute, String defValue) {
+    
+        Map retValue = new HashMap();
+        retValue.put("text", text);
+        retValue.put("value", "'" + defValue + "'");
+        if (text != null && text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0) {
+            // this doesnot work for things like "att=method()" without quotations.
+            String quotation = "\'";
+            int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
+            // looking for the opening quotation mark
+            int pos2 = text.indexOf(quotation, pos1);
+            int test = text.indexOf("\"", pos1);
+            if (test > -1 && (pos2 == -1 || test < pos2)) {
+                quotation = "\"";
+                pos2 = test;
+            }
+            // assuming there is a closing quotation mark
+            int pos3 = text.indexOf(quotation, pos2 + 1);
+            // building the new attribute value
+            String newValue = quotation + defValue + text.substring(pos2 + 1, pos3 + 1);
+            // removing the onload statement from the parameters
+            String newText = text.substring(0, pos1);
+            if (pos3 < text.length()) {
+                newText += text.substring(pos3 + 1);
+            }
+            retValue.put("text", newText);
+            retValue.put("value", newValue);
+        }
+        return retValue;
     }
 
     /**
@@ -337,6 +428,18 @@ public final class CmsStringUtil {
     public static boolean isEmpty(String value) {
 
         return (value == null) || (value.length() == 0);
+    }
+    
+    /**
+     * Returns <code>true</code> if the provided String is either <code>null</code>
+     * or contains only white spaces.<p> 
+     * 
+     * @param value the value to check
+     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     */
+    public static boolean isEmptyOrWhitespaceOnly(String value) {
+
+        return isEmpty(value) || (value.trim().length() == 0);
     }
 
     /**
@@ -747,96 +850,5 @@ public final class CmsStringUtil {
         }
 
         return true;
-    }
-
-    /**
-     * Returns a block of html code.<p>
-     * 
-     * It appends a line separator at the end of the given string
-     * and the number of specified tabulators in front of each line.<p>
-     * 
-     * @param tabs the number of tabulators to insert
-     * @param htmlCode the code
-     * 
-     * @return html code
-     */
-    public static String code(int tabs, String htmlCode) {
-    
-        if (tabs <= 0) {
-            return htmlCode.endsWith(C_LINE_SEPARATOR) ? htmlCode : htmlCode + C_LINE_SEPARATOR;
-        }
-        String newCode = "";
-        List lines = splitAsList(htmlCode, C_LINE_SEPARATOR);
-        Iterator itLines = lines.iterator();
-        while (itLines.hasNext()) {
-            String line = (String)itLines.next();
-            if (line.trim().length() == 0) {
-                continue;
-            }
-            newCode += C_TABULATOR + line;
-            if (!newCode.endsWith(C_LINE_SEPARATOR)) {
-                newCode += C_LINE_SEPARATOR;
-            }
-        }
-        return code(tabs - 1, newCode);
-    }
-
-    /**
-     * Returns a block of html code.<p>
-     * 
-     * It appends a line separator at the end of the given string.<p>
-     * 
-     * @param htmlCode the code
-     * 
-     * @return html code
-     */
-    public static String code(String htmlCode) {
-    
-        return code(0, htmlCode);
-    }
-
-    /**
-     * This method takes a part of a html tag definition, an attribute to extend within the
-     * given text and a default value for this attribute; and returns a <code>{@link Map}</code>
-     * with 2 values: a <code>{@link String}</code> with key <code>"text"</code> with the new text
-     * without the given attribute, and another <code>{@link String}</code> with key <code>"value"</code>
-     * with the new extended value for the given attribute, this value is sourrounded by the same type of 
-     * quotation marks as in the given text.<p> 
-     * 
-     * @param text the text to search in
-     * @param attribute the attribute to remove and extend from the text
-     * @param defValue a default value for the attribute, should not have any quotation mark
-     * 
-     * @return a map with the new text and the new value for the given attribute 
-     */
-    public static Map extendAttribute(String text, String attribute, String defValue) {
-    
-        Map retValue = new HashMap();
-        retValue.put("text", text);
-        retValue.put("value", "'" + defValue + "'");
-        if (text != null && text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0) {
-            // this doesnot work for things like "att=method()" without quotations.
-            String quotation = "\'";
-            int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
-            // looking for the opening quotation mark
-            int pos2 = text.indexOf(quotation, pos1);
-            int test = text.indexOf("\"", pos1);
-            if (test > -1 && (pos2 == -1 || test < pos2)) {
-                quotation = "\"";
-                pos2 = test;
-            }
-            // assuming there is a closing quotation mark
-            int pos3 = text.indexOf(quotation, pos2 + 1);
-            // building the new attribute value
-            String newValue = quotation + defValue + text.substring(pos2 + 1, pos3 + 1);
-            // removing the onload statement from the parameters
-            String newText = text.substring(0, pos1);
-            if (pos3 < text.length()) {
-                newText += text.substring(pos3 + 1);
-            }
-            retValue.put("text", newText);
-            retValue.put("value", newValue);
-        }
-        return retValue;
     }
 }

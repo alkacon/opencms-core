@@ -47,11 +47,7 @@
 
     <listener>
         <listener-class>org.opencms.main.OpenCmsListener</listener-class>
-    </listener>    
-    
-    <listener>
-        <listener-class>org.opencms.main.OpenCmsSessionManager</listener-class>
-    </listener>  
+    </listener>
         
     <servlet>
         <servlet-name>OpenCmsServlet</servlet-name>

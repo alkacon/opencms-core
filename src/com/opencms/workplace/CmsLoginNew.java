@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/02/18 15:18:51 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsObjectNotFoundException;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -56,7 +57,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -247,8 +248,14 @@ public class CmsLoginNew extends CmsXmlTemplate {
         } else {    
             // check out the user information if a default project is stored there.
             CmsUserSettings settings = new CmsUserSettings(cms.getRequestContext().currentUser());
-            CmsProject project = cms.readProject(settings.getStartProject());
-            currentProject = project.getId();
+            try {
+                CmsProject project = cms.readProject(settings.getStartProject());
+                currentProject = project.getId();
+            } catch (CmsObjectNotFoundException e) {
+                // the project does not exist, maybe it was deleted
+                // set ID to online project
+                currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+            }           
         }
 
         // try to set the current project

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,10 @@ import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
-import org.opencms.main.OpenCmsSessionManager;
+import org.opencms.main.CmsSessionManager;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -75,7 +74,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.40 $ $Date: 2005/03/04 15:11:32 $
+ * @version $Revision: 1.41 $ $Date: 2005/03/06 09:26:11 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -728,18 +727,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             content += "*** Please take action NOW to ensure that no OutOfMemoryException occurs.\n\n\n";
         }
 
-        OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
-        CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
+        CmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
 
-        if ((sm != null) && (cs != null)) {
+        if (sm != null) {
             content += "Current status of the sessions:\n\n";
-            content += "Logged in users          : " + cs.size() + "\n";
-            content += "Currently active sessions: " + sm.getCurrentSessions() + "\n";
-            content += "Total created sessions   : " + sm.getTotalSessions() + "\n\n\n";
+            content += "Logged in users          : " + sm.getSessionCountAuthenticated() + "\n";
+            content += "Currently active sessions: " + sm.getSessionCountCurrent() + "\n";
+            content += "Total created sessions   : " + sm.getSessionCountTotal() + "\n\n\n";
         }
 
         sm = null;
-        cs = null;
 
         content += "Current status of the caches:\n\n";
         List keyList = Arrays.asList(m_monitoredObjects.keySet().toArray());
@@ -904,21 +901,19 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             memStatus += "size monitored: " + totalSize + " (" + totalSize / 1048576 + " mb)";
             OpenCms.getLog(this).info(memStatus);
 
-            OpenCmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
-            CmsSessionInfoManager cs = OpenCms.getSessionInfoManager();
+            CmsSessionManager sm = OpenCmsCore.getInstance().getSessionManager();
 
-            if ((sm != null) && (cs != null)) {
+            if (sm != null) {
                 OpenCms.getLog(this).info(
                     "Sessions users: "
-                        + cs.size()
+                        + sm.getSessionCountAuthenticated()
                         + " current: "
-                        + sm.getCurrentSessions()
+                        + sm.getSessionCountCurrent()
                         + " total: "
-                        + sm.getTotalSessions());
+                        + sm.getSessionCountTotal());
             }
 
             sm = null;
-            cs = null;
         }
     }
 }

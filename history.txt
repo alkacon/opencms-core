@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.609 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.610 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,10 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
 - Improved implementation of SQL manager by adding additional methods for pool information
 ! Added individual "broadcast message" queues for each user
 * Fixed issue with temporary projects causing errors after publishing
+* Fixed issue in "templateone" causing wrong cahing of elements
+* Fixed issue with non-ascii chars in search terms being garbled on the secound result page
+- Optimized the session info handling and the implementation of the OpenCmsListener
+- Removed the requirement for a separate OpenCmsSessionManager listener in the web.xml
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler

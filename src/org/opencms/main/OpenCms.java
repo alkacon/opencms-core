@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/03/04 15:10:30 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/03/06 09:26:10 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public final class OpenCms {
 
@@ -114,10 +114,10 @@ public final class OpenCms {
      * @param data event data
      */
     public static void fireCmsEvent(int type, Map data) {
-        
+
         OpenCms.fireCmsEvent(new CmsEvent(type, data));
-    }   
-    
+    }
+
     /**
      * Returns the configured list of default directory file names.<p>
      *  
@@ -302,13 +302,13 @@ public final class OpenCms {
     }
 
     /**
-     * Returns the session info storage for all active users.<p>
+     * Returns the session manager that keeps track of the active users.<p>
      * 
-     * @return the session info storage for all active users
+     * @return the session manager that keeps track of the active users
      */
-    public static CmsSessionInfoManager getSessionInfoManager() {
+    public static CmsSessionManager getSessionManager() {
 
-        return OpenCmsCore.getInstance().getSessionInfoManager();
+        return OpenCmsCore.getInstance().getSessionManager();
     }
 
     /**
@@ -328,10 +328,10 @@ public final class OpenCms {
      * @return an instance of the common sql manager
      */
     public static CmsSqlManager getSqlManager() {
-        
+
         return OpenCmsCore.getInstance().getSqlManager();
     }
-    
+
     /**
      * Returns the properties for the static export.<p>
      * 

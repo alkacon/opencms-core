@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/03/04 15:56:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/06 09:26:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,15 @@ import org.opencms.file.CmsUser;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.collections.Buffer;
+import org.apache.commons.collections.BufferUtils;
+import org.apache.commons.collections.buffer.BoundedFifoBuffer;
+
 /**
  * Stores information about a user that has authenticated himself the OpenCms security system.<p>
  * 
  * This object is used to provide information about all authenticated users in the system 
- * with the {@link org.opencms.main.CmsSessionInfoManager}.<p> 
+ * with the {@link org.opencms.main.CmsSessionManager}.<p> 
  * 
  * This object is available for all authenticated users after login.
  * If a user has not logged in, he may have a session on the servlet engine,
@@ -49,17 +53,20 @@ import javax.servlet.http.HttpSession;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
 public class CmsSessionInfo implements Comparable {
 
-    /** The current site of the user. */
-    private String m_currentSite;
+    /** Maximum size of the broadcast queue for one user. */
+    public static final int C_QUEUE_SIZE = 10;
 
-    /** The broadcast message queue for the user of this session info. */
-    private CmsBroadcastMessageQueue m_messageQueue;
+    /** The broadcast queue buffer for the user of this session info. */
+    private Buffer m_broadcastQueue;
+
+    /** The current site of the user. */
+    private String m_currentSiteRoot;
 
     /** The current project id of the user. */
     private Integer m_project;
@@ -87,27 +94,44 @@ public class CmsSessionInfo implements Comparable {
         m_timeCreated = System.currentTimeMillis();
         update(context);
         m_session = session;
-        m_messageQueue = new CmsBroadcastMessageQueue(context.currentUser());
+        m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(C_QUEUE_SIZE));
     }
 
     /**
-     * Returns the current site of the user.<p>
+     * Allows sorting session info according to the user names.<p>
      * 
-     * @return the current site
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public String getCurrentSite() {
+    public int compareTo(Object o) {
 
-        return m_currentSite;
+        if (!(o instanceof CmsSessionInfo)) {
+            // not our type...
+            return 0;
+        }
+
+        CmsSessionInfo other = (CmsSessionInfo)o;
+        // compare the user names
+        return m_user.getName().compareTo(other.getUser().getName());
     }
 
     /**
-     * Returns the message queue of the user to which this session info belongs.<p>
+     * Returns the broadcast queue of the user to which this session info belongs.<p>
      * 
-     * @return the message queue of the user to which this session info belongs
+     * @return the broadcast queue of the user to which this session info belongs
      */
-    public CmsBroadcastMessageQueue getBroadcastMessageQueue() {
+    public Buffer getBroadcastQueue() {
 
-        return m_messageQueue;
+        return m_broadcastQueue;
+    }
+
+    /**
+     * Returns the current site root of the user.<p>
+     * 
+     * @return the current site root of the user
+     */
+    public String getCurrentSiteRoot() {
+
+        return m_currentSiteRoot;
     }
 
     /**
@@ -172,13 +196,13 @@ public class CmsSessionInfo implements Comparable {
     }
 
     /**
-     * Sets the current site of the user.<p>
+     * Sets the current site root of the user.<p>
      * 
-     * @param site the current site to set
+     * @param site the site root path to set
      */
-    public void setCurrentSite(String site) {
+    public void setCurrentSiteRoot(String site) {
 
-        m_currentSite = site;
+        m_currentSiteRoot = site;
     }
 
     /**
@@ -221,24 +245,7 @@ public class CmsSessionInfo implements Comparable {
 
         setUser(context.currentUser());
         setProject(new Integer(context.currentProject().getId()));
-        setCurrentSite(context.getSiteRoot());
+        setCurrentSiteRoot(context.getSiteRoot());
         m_timeUpdated = System.currentTimeMillis();
-    }
-
-    /**
-     * Allows sorting session info according to the user names.<p>
-     * 
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object o) {
-
-        if (! (o instanceof CmsSessionInfo)) {
-            // not our type...
-            return 0;
-        }
-        
-        CmsSessionInfo other = (CmsSessionInfo)o;
-        // compare the user names
-        return m_user.getName().compareTo(other.getUser().getName());
     }
 }

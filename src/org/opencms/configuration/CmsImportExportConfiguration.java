@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/02/17 12:43:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -478,7 +478,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public void setStaticExportManager(CmsStaticExportManager manager) {
         m_staticExportManager = manager;
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export manager settings init  : finished");
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export init   : finished");
         }
     }
     

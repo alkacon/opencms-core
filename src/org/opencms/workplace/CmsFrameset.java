@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/03/04 15:29:41 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsBroadcastMessage;
-import org.opencms.main.CmsBroadcastMessageQueue;
+import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
@@ -53,6 +52,8 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.Buffer;
+
 /**
  * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
  * 
@@ -64,7 +65,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 5.1
  */
@@ -137,15 +138,15 @@ public class CmsFrameset extends CmsWorkplace {
         StringBuffer result = new StringBuffer(512);
         String sessionId = getSession().getId();
         
-        CmsBroadcastMessageQueue messageQueue = OpenCms.getSessionInfoManager().getBroadcastMessageQueue(sessionId);
-        if (messageQueue.hasBroadcastMessagesPending()) {
+        Buffer messageQueue = OpenCms.getSessionManager().getBroadcastQueue(sessionId);
+        if (! messageQueue.isEmpty()) {
             // create a javascript alert for the message 
             result.append("\n<script type=\"text/javascript\">\n<!--\n");
             // the timeout gives the frameset enough time to load before the alert is shown
             result.append("setTimeout(\"alert(unescape('");            
             // the user has pending messages, display them all
-            while (messageQueue.hasBroadcastMessagesPending()) {
-                CmsBroadcastMessage message = messageQueue.getNextBroadcastMessage();
+            while (! messageQueue.isEmpty()) {
+                CmsBroadcast message = (CmsBroadcast)messageQueue.remove();
                 StringBuffer msg = new StringBuffer(256);
                 msg.append('[');
                 msg.append(getSettings().getMessages().getDateTime(message.getSendTime()));

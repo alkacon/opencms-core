@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/06 09:26:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.main;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.util.CmsUUID;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,24 +46,25 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {
-    
+
     /** Debug flag. */
     private static final boolean DEBUG = false;
-    
-    /** A map to store all system Threads in. */
-    private Map m_threads;
-    
+
     /** Indicates that this thread store is alive. */
     private boolean m_alive;
-    
+
+    /** A map to store all system Threads in. */
+    private Map m_threads;
+
     /**
      * Hides the public constructor.<p>
      */
     protected CmsThreadStore() {
+
         super(new ThreadGroup("OpenCms Thread Store"), "OpenCms: Grim Reaper");
         setDaemon(true);
         m_threads = Collections.synchronizedMap(new HashMap());
@@ -78,25 +78,13 @@ public class CmsThreadStore extends Thread {
      * @param thread the Thread to add
      */
     public void addThread(A_CmsReportThread thread) {
+
         m_threads.put(thread.getUUID(), thread);
         if (DEBUG) {
             dumpThreads();
         }
     }
-    
-    /**
-     * Method to dump all currently known Threads.<p> 
-     */
-    private void dumpThreads() {
-        System.err.println("\n[CmsThreadStore] size: " + m_threads.size());
-        Iterator i = m_threads.keySet().iterator();
-        while (i.hasNext()) {
-            CmsUUID key = (CmsUUID)i.next();
-            A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);            
-            System.err.println(thread.getName());
-        }
-    }
-    
+
     /**
      * Retrieves a Thread from this Thread store.<p>
      * 
@@ -104,23 +92,18 @@ public class CmsThreadStore extends Thread {
      * @return the Thread form this Thread store that matches the given key
      */
     public A_CmsReportThread retrieveThread(CmsUUID key) {
+
         if (DEBUG) {
             dumpThreads();
-        }     
-        return (A_CmsReportThread)m_threads.get(key);   
+        }
+        return (A_CmsReportThread)m_threads.get(key);
     }
-    
-    /**
-     * Shut down this thread store.<p>
-     */
-    protected void shutDown() {
-        m_alive = false;
-    }
-    
+
     /**
      * @see java.lang.Runnable#run()
      */
     public void run() {
+
         int m_minutesForSessionUpdate = 0;
         while (m_alive) {
             // the Grim Reaper is eternal, of course
@@ -133,24 +116,24 @@ public class CmsThreadStore extends Thread {
             try {
                 Iterator i;
                 i = m_threads.keySet().iterator();
-                Set doomed = new HashSet(); 
+                Set doomed = new HashSet();
                 // fisrt collect all doomed Threads
                 while (i.hasNext()) {
                     CmsUUID key = (CmsUUID)i.next();
-                    A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);            
+                    A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);
                     if (thread.isDoomed()) {
                         doomed.add(key);
                         if (DEBUG) {
                             System.err.println("[CmsThreadStore] Grim Reaper dooming: " + thread.getName());
                         }
                     }
-                } 
+                }
                 i = doomed.iterator();
                 // no remove all doomed Threads from the Thread store
                 while (i.hasNext()) {
                     m_threads.remove(i.next());
-                }              
-                if (DEBUG) {           
+                }
+                if (DEBUG) {
                     dumpThreads();
                 }
             } catch (Throwable t) {
@@ -165,17 +148,39 @@ public class CmsThreadStore extends Thread {
             if (m_minutesForSessionUpdate >= 5) {
                 // do this every 5 minutes
                 try {
-                    CmsSessionInfoManager sessionInfoManager = OpenCms.getSessionInfoManager();
+                    CmsSessionManager sessionInfoManager = OpenCms.getSessionManager();
                     if (sessionInfoManager != null) {
                         // will be null if only the shell is running
                         sessionInfoManager.validateSessionInfos();
                     }
                 } catch (Throwable t) {
                     System.err.println("[CmsThreadStore] Grim Reaper session update exception " + t);
-                }                
+                }
                 m_minutesForSessionUpdate = 0;
             }
 
+        }
+    }
+
+    /**
+     * Shut down this thread store.<p>
+     */
+    protected void shutDown() {
+
+        m_alive = false;
+    }
+
+    /**
+     * Method to dump all currently known Threads.<p> 
+     */
+    private void dumpThreads() {
+
+        System.err.println("\n[CmsThreadStore] size: " + m_threads.size());
+        Iterator i = m_threads.keySet().iterator();
+        while (i.hasNext()) {
+            CmsUUID key = (CmsUUID)i.next();
+            A_CmsReportThread thread = (A_CmsReportThread)m_threads.get(key);
+            System.err.println(thread.getName());
         }
     }
 }

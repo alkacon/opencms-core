@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/03/06 09:26:11 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,9 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsSessionInfo;
-import org.opencms.main.CmsSessionInfoManager;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.main.CmsSessionManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -50,7 +50,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -128,10 +128,10 @@ public class CmsPublishThread extends A_CmsReportThread {
      */
     private void updateSessionInfo() {
         // get the session menager
-        CmsSessionInfoManager manager = OpenCms.getSessionInfoManager();      
+        CmsSessionManager sessionManager = OpenCms.getSessionManager();      
          
         // get all sessions
-        List userSessions = manager.getSessionInfos();
+        List userSessions = sessionManager.getSessionInfos();
         Iterator i = userSessions.iterator();
         while (i.hasNext()) {
             CmsSessionInfo sessionInfo = (CmsSessionInfo)i.next();

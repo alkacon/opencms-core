@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/06 09:26:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,44 +33,59 @@ package org.opencms.main;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /**
+ * Provides the OpenCms system with information from the servlet context.<p>
+ * 
+ * Used for the following purposes:<ul>
+ * <li>Starting up OpenCms when the servlet container is started.</li>
+ * <li>Shutting down OpenCms when the servlet container is shut down.</li>
+ * <li>Informing the {@link org.opencms.main.CmsSessionManager} if a new session is created.</li>
+ * <li>Informing the {@link org.opencms.main.CmsSessionManager} session is destroyed or invalidated.</li>
+ * </ul>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.1
  */
-public class OpenCmsListener implements ServletContextListener {
-
-    private static final boolean DEBUG = false;
-
-    /**
-     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
-     */
-    public void contextInitialized(ServletContextEvent event) {
-        if (DEBUG) {
-            System.err.println(this.getClass().getName() + ".contextInitialized() called!");
-            System.err.println("Context is : " + event.getServletContext().getServletContextName());
-            System.err.println("Server info: " + event.getServletContext().getServerInfo());
-            System.err.println("Real path  : " + event.getServletContext().getRealPath("/"));
-        }  
-        
-        // upgrade the runlevel
-        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
-    }
+public class OpenCmsListener implements ServletContextListener, HttpSessionListener {
 
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent event) {
-        if (DEBUG) {
-            System.err.println(this.getClass().getName() + ".contextDestroyed() called!");        
-        }
-        
+
         // destroy the OpenCms instance
         OpenCmsCore.getInstance().destroy();
-    }   
+    }
 
+    /**
+     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     */
+    public void contextInitialized(ServletContextEvent event) {
 
+        // upgrade the OpenCms runlevel
+        OpenCmsCore.getInstance().upgradeRunlevel(event.getServletContext());
+    }
+
+    /**
+     * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)
+     */
+    public void sessionCreated(HttpSessionEvent event) {
+
+        // inform the OpenCms session manager
+        OpenCmsCore.getInstance().getSessionManager().sessionCreated(event);
+    }
+
+    /**
+     * @see javax.servlet.http.HttpSessionListener#sessionDestroyed(javax.servlet.http.HttpSessionEvent)
+     */
+    public void sessionDestroyed(HttpSessionEvent event) {
+
+        // inform the OpenCms session manager
+        OpenCmsCore.getInstance().getSessionManager().sessionDestroyed(event);
+    }
 }

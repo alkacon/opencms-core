@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2005/03/04 16:28:43 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2005/03/06 09:26:11 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.13 $ $Date: 2005/03/04 16:28:43 $
+ * @version $Revision: 1.14 $ $Date: 2005/03/06 09:26:11 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -79,10 +79,10 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
 
         if (parameters.get("message") != null) {
             // there is a message to all - send it
-            OpenCms.getSessionInfoManager().sendBroadcastMessage(cms, (String)parameters.get("message"));
+            OpenCms.getSessionManager().sendBroadcast(cms, (String)parameters.get("message"));
         }
 
-        List sessionInfos = OpenCms.getSessionInfoManager().getSessionInfos();
+        List sessionInfos = OpenCms.getSessionManager().getSessionInfos();
         // sort the session infos
         Collections.sort(sessionInfos);
         StringBuffer ret = new StringBuffer();
@@ -105,9 +105,12 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
                     + CmsDateUtil.getDateTimeShort(info.getTimeCreated())
                     + " - "
                     + CmsStringUtil.formatRuntime(System.currentTimeMillis() - info.getTimeUpdated()));
-                xmlTemplateDocument.setData("messagepending", String.valueOf(info.getBroadcastMessageQueue()
-                    .hasBroadcastMessagesPending()));
-                xmlTemplateDocument.setData("currentproject", cmsProject.getName());
+                xmlTemplateDocument.setData("messagepending", 
+                    String.valueOf(!info.getBroadcastQueue().isEmpty()));
+                xmlTemplateDocument.setData("currentproject", 
+                    cmsProject.getName()
+                    + " - "
+                    + info.getCurrentSiteRoot());
                 ret.append(xmlTemplateDocument.getProcessedDataValue("line"));
                 count++;
             } catch (Exception exc) {

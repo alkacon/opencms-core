@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
- * Version: $Revision: 1.163 $
+ * Date   : $Date: 2005/03/06 09:26:10 $
+ * Version: $Revision: 1.164 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.163 $
+ * @version $Revision: 1.164 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -130,9 +130,6 @@ public final class OpenCmsCore {
     
     /** Lock object for synchronization. */
     private static Object m_lock = new Object();
-
-    /** The session manager. */
-    private static OpenCmsSessionManager m_sessionManager;
 
     /** URI of the authentication form (read from properties) in case of form based authentication. */
     private String m_authenticationFormURI;
@@ -200,8 +197,8 @@ public final class OpenCmsCore {
     /** The security manager to access the database and validate user permissions. */
     private CmsSecurityManager m_securityManager;
 
-    /** The session info storage for all active users. */
-    private CmsSessionInfoManager m_sessionInfoManager;
+    /** The session manager. */
+    private CmsSessionManager m_sessionManager;
 
     /** The site manager contains information about all configured sites. */
     private CmsSiteManager m_siteManager;
@@ -274,9 +271,19 @@ public final class OpenCmsCore {
      * 
      * @return the session manager
      */
-    public OpenCmsSessionManager getSessionManager() {
+    public CmsSessionManager getSessionManager() {
         
         return m_sessionManager;
+    }
+
+    /**
+     * Returns an instance of the common sql manager.<p>
+     * 
+     * @return an instance of the common sql manager
+     */
+    public CmsSqlManager getSqlManager() {
+        
+        return m_securityManager.getSqlManager();
     }
 
     /**
@@ -720,16 +727,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the session info storage for all active users.<p>
-     * 
-     * @return the session info storage for all active users
-     */
-    protected CmsSessionInfoManager getSessionInfoManager() {
-
-        return m_sessionInfoManager;
-    }
-
-    /**
      * Returns the initialized site manager, 
      * which contains information about all configured sites.<p> 
      * 
@@ -738,16 +735,6 @@ public final class OpenCmsCore {
     protected CmsSiteManager getSiteManager() {
 
         return m_siteManager;
-    }
-
-    /**
-     * Returns an instance of the common sql manager.<p>
-     * 
-     * @return an instance of the common sql manager
-     */
-    public CmsSqlManager getSqlManager() {
-        
-        return m_securityManager.getSqlManager();
     }
     
     /**
@@ -1213,12 +1200,6 @@ public final class OpenCmsCore {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
         }       
 
-        // initalize the session storage
-        m_sessionInfoManager = new CmsSessionInfoManager();
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Session storage      : initialized");
-        }
-
         // check if basic or form based authentication should be used      
         m_useBasicAuthentication = configuration.getBoolean("auth.basic", true);
         m_authenticationFormURI = configuration.getString("auth.form_uri", I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/authenticate.html");
@@ -1229,7 +1210,7 @@ public final class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Session manager      : initialized");
             }
         } else {
-            getLog(CmsLog.CHANNEL_INIT).error(". Session manager     : NOT initialized");
+            getLog(CmsLog.CHANNEL_INIT).error(". Session manager      : NOT initialized");
         }
     }
     
@@ -1247,6 +1228,7 @@ public final class OpenCmsCore {
             m_exportPoints = Collections.EMPTY_SET;
             m_defaultUsers = new CmsDefaultUsers();
             m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
+            m_sessionManager = new CmsSessionManager();
         }
     }
 
@@ -1343,7 +1325,7 @@ public final class OpenCmsCore {
      * 
      * @param sessionManager the session manager to set
      */
-    protected void setSessionManager(OpenCmsSessionManager sessionManager) {
+    protected void setSessionManager(CmsSessionManager sessionManager) {
 
         m_sessionManager = sessionManager;
     }
@@ -1813,7 +1795,6 @@ public final class OpenCmsCore {
         String sessionId;
         
         // check if there is user data already stored in the session manager
-        String userName = null;
         if (session != null) {
             // session exists, try to reuse the user from the session
             sessionId = session.getId();
@@ -1821,16 +1802,17 @@ public final class OpenCmsCore {
             // special case for acessing a session from "outside" requests (e.g. upload applet)
             sessionId = req.getParameter("JSESSIONID");
         }
+        CmsSessionInfo sessionInfo = null;
         if (sessionId != null) {
-            userName = m_sessionInfoManager.getUser(sessionId).getName();
+            sessionInfo = m_sessionManager.getSessionInfo(sessionId);
         }        
 
         // initialize the requested site root
         CmsSite site = getSiteManager().matchRequest(req);
 
-        if (userName != null) {
+        if (sessionInfo != null) {
             // a user name is found in the session manager, reuse this user information
-            Integer project = m_sessionInfoManager.getCurrentProject(sessionId);
+            int project = sessionInfo.getProject().intValue();
 
             // initialize site root from request
             String siteroot = null;
@@ -1838,12 +1820,12 @@ public final class OpenCmsCore {
             if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
                 // if no dedicated workplace site is configured, 
                 // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = m_sessionInfoManager.getCurrentSite(sessionId);
+                siteroot = sessionInfo.getCurrentSiteRoot();
             }
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
             }
-            cms = initCmsObject(req, userName, siteroot, project.intValue());
+            cms = initCmsObject(req, sessionInfo.getUser().getName(), siteroot, project);
         } else {
             // no user name found in session or no session, login the user as guest user
             cms = initCmsObject(req, OpenCms.getDefaultUsers().getUserGuest(), site.getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID);
@@ -2091,10 +2073,8 @@ public final class OpenCmsCore {
         // update the information in the session info manager
         if (session != null) {
             if (!cms.getRequestContext().currentUser().isGuestUser()) {
-                // get the session id
-                String sessionId = session.getId();
                 // get the session info object for the user
-                CmsSessionInfo sessionInfo= m_sessionInfoManager.getSessionInfo(sessionId);                
+                CmsSessionInfo sessionInfo= m_sessionManager.getSessionInfo(session.getId());                
                 if (sessionInfo != null) {
                     // update the users session information
                     sessionInfo.update(cms.getRequestContext());                    
@@ -2102,11 +2082,7 @@ public final class OpenCmsCore {
                     // create a new session info for the user
                     sessionInfo = new CmsSessionInfo(cms.getRequestContext(), session);
                     // update the session info user data
-                    m_sessionInfoManager.addSessionInfo(sessionId, sessionInfo);
-                    // set the session binding listener
-                    // this is required to remove the session info from the session info manager on its destruction
-                    CmsSessionBindingListener sessionInfoRemover = new CmsSessionBindingListener(sessionId);
-                    session.setAttribute("SESSION_INFO_REMOVER", sessionInfoRemover);
+                    m_sessionManager.addSessionInfo(sessionInfo);
                 }
             }
         }

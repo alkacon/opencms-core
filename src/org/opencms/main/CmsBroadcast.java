@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsBroadcastMessage.java,v $
- * Date   : $Date: 2005/03/04 15:11:32 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsBroadcast.java,v $
+ * Date   : $Date: 2005/03/06 09:26:10 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -36,44 +36,45 @@ import org.opencms.file.CmsUser;
 /**
  * A single broadcast message, send from one OpenCms user to another.<p>
  * 
- * To addess a message to another user, it must be placed in the
- * {@link org.opencms.main.CmsBroadcastMessageQueue} of that user.<p>
+ * To addess a broadcast to another user, it must be placed in the
+ * broadcast queue of that user using for example 
+ * {@link org.opencms.main.CmsSessionManager#sendBroadcast(org.opencms.file.CmsObject, String, CmsUser)}.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @version $Revision: 1.1 $
  * 
  * @since 5.7.2
  */
-public class CmsBroadcastMessage {
+public class CmsBroadcast {
 
-    /** The message content. */
+    /** The broadcast content. */
     private String m_message;
 
-    /** The sender of the message. */
+    /** The sender of the broadcast. */
     private CmsUser m_sender;
 
-    /** Time the message was send. */
+    /** Time the broadcast was send. */
     private long m_sendTime;
 
     /**
-     * Creates a new message, with the current system time set as send time.<p> 
+     * Creates a new broadcast, with the current system time set as send time.<p> 
      * 
-     * @param sender the sender of the message
+     * @param sender the sender of the broadcast
      * @param message the message to send
      */
-    public CmsBroadcastMessage(CmsUser sender, String message) {
+    public CmsBroadcast(CmsUser sender, String message) {
 
         this(sender, message, System.currentTimeMillis());
     }
 
     /**
-     * Creates a new message.<p>
+     * Creates a new broadcast.<p>
      * 
-     * @param sender the sender of the broadcast message
+     * @param sender the sender of the broadcast
      * @param message the message to send
-     * @param sendTime the time the message was send
+     * @param sendTime the time the broadcast was send
      */
-    public CmsBroadcastMessage(CmsUser sender, String message, long sendTime) {
+    public CmsBroadcast(CmsUser sender, String message, long sendTime) {
 
         m_sender = sender;
         m_message = message;
@@ -91,22 +92,22 @@ public class CmsBroadcastMessage {
     }
 
     /**
-     * Returns the user that was the sender of this broadcast message.<p>
+     * Returns the time this broadcast was send.<p>
      *
-     * @return the user that was the sender of this broadcast message
-     */
-    public CmsUser getUser() {
-
-        return m_sender;
-    }
-
-    /**
-     * Returns the time this broadcast message was send.<p>
-     *
-     * @return the time this broadcast message was send
+     * @return the time this broadcast was send
      */
     public long getSendTime() {
 
         return m_sendTime;
+    }
+
+    /**
+     * Returns the user that was the sender of this broadcast.<p>
+     *
+     * @return the user that was the sender of this broadcast
+     */
+    public CmsUser getUser() {
+
+        return m_sender;
     }
 }
