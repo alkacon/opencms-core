@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.390 $
+ * Date   : $Date: 2004/07/01 10:39:01 $
+ * Version: $Revision: 1.391 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.390 $ $Date: 2004/06/29 14:38:56 $
+ * @version $Revision: 1.391 $ $Date: 2004/07/01 10:39:01 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -6555,7 +6555,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             currentResource = (CmsResource)i.next();          
-            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL)) {                
+            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, true, CmsResourceFilter.ALL)) {
                 if (criteria.equals("locked")) {                    
                     currentLock = getLock(context, currentResource);
                     if (!currentLock.isNullLock()) {
@@ -6570,6 +6570,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         resources.clear();
         resources = null;
 
+        setFullResourceNames(context, retValue);                
         return retValue;
     }
 
