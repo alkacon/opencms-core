@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/02/04 11:11:49 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/02/04 12:12:07 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2003/02/04 11:11:49 $
+ * @version $Revision: 1.45 $ $Date: 2003/02/04 12:12:07 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -332,11 +332,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             session.removeValue(C_PARA_OLDPANEL);
             
             try {
-                System.out.println( "redirecting to " + getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD );
                 cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD);
             }
             catch(Exception e) {
-                System.out.println( "failed!" );
                 throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() + C_WP_RELOAD, CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         
