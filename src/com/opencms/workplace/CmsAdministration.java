@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/10/12 12:03:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/10/25 08:35:23 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,13 +45,13 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.4 $ $Date: 2000/10/12 12:03:31 $
+ * @version $Name:  $ $Revision: 1.5 $ $Date: 2000/10/25 08:35:23 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
 	
 	/** The number of elements per row */
-	private static int C_ELEMENT_PER_ROW = 4;
+	private static int C_ELEMENT_PER_ROW = 5;
 	
 	private static String C_ADMIN_PATH = "system/workplace/action/administration_content_top.html";
 
@@ -195,8 +195,24 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 				sendBy = navPos;
 			}
 		}
+		Vector iconVector = new Vector();
+		if (sendBy.endsWith("/administration/")){
+			// we must serch for administrationPoints in AdminPaht and in system/modules/.. 
+			sendBy = confFile.getWorkplaceAdministrationPath();
+			iconVector = cms.getSubFoldersRecursively(sendBy);
+			Vector modules = new Vector();
+			modules = cms.getSubFoldersRecursively(C_MODULES_PATH);
+			for(int i=0; i<modules.size(); i++){
+				Vector moduleAdminPoints = new Vector();
+				moduleAdminPoints = cms.getSubFoldersRecursively( ((CmsFolder)modules.elementAt(i)).getAbsolutePath() +"administration/");
+				for(int j=0; j<moduleAdminPoints.size(); j++){
+					iconVector.addElement(moduleAdminPoints.elementAt(j));
+				}
+			}
+		}else {
+			iconVector = cms.getSubFoldersRecursively(sendBy);
+		}
 		session.putValue(C_SESSION_ADMIN_POS, sendBy);
-		Vector iconVector = cms.getSubFoldersRecursively(sendBy);
 		Vector iconVector2 = cms.getFilesInFolderRecursively(sendBy);
 		int numFolders = iconVector.size();
 		if (numFolders > 0){
