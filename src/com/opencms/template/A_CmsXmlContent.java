@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
- * Date   : $Date: 2000/03/15 13:54:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/04/03 15:57:27 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -72,7 +72,7 @@ import org.apache.xerces.parsers.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.18 $ $Date: 2000/03/15 13:54:35 $
+ * @version $Revision: 1.19 $ $Date: 2000/04/03 15:57:27 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChannels { 
     
@@ -1270,7 +1270,28 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent, I_CmsLogChanne
         if(parsedDoc == null) {
             String errorMessage = "Unknown error. Parsed DOM document is null.";
             throwException(errorMessage, CmsException.C_XML_PARSING_ERROR);
+        }        
+
+        parsedDoc.getDocumentElement().normalize();
+        
+        // Delete all unnecessary text nodes from the tree.
+        // These nodes could cause errors when serializing this document otherwise
+        Node loop = parsedDoc.getDocumentElement();
+        while(loop != null) {
+            Node next = treeWalker(loop);
+            if(loop.getNodeType() == loop.TEXT_NODE) {
+                Node leftSibling = loop.getPreviousSibling();
+                Node rightSibling = loop.getNextSibling();
+                if(leftSibling == null || rightSibling == null ||
+                        (leftSibling.getNodeType() == loop.ELEMENT_NODE && rightSibling.getNodeType() == loop.ELEMENT_NODE)) {
+                    if("".equals(loop.getNodeValue().trim())) {
+                        loop.getParentNode().removeChild(loop);
+                    }              
+                }
+            }
+            loop = next;
         }
+                
         return parsedDoc;
     }
 
