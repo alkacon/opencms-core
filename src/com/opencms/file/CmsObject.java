@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/04/05 14:43:38 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.61 $ $Date: 2000/04/04 12:42:19 $ 
+ * @version $Revision: 1.62 $ $Date: 2000/04/05 14:43:38 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1897,7 +1897,63 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		}			
 	}
 
-	 /**
+	/**
+	 * Checks, if the user may read this resource.
+	 * 
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+    public boolean accessRead(A_CmsResource resource) throws CmsException {
+    	try {
+			return c_rb.accessRead(m_context.currentUser(), m_context.currentProject(), resource);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}			
+    }
+
+	/**
+	 * Checks, if the user may create this resource.
+	 * 
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+    public boolean accessCreate(A_CmsResource resource) throws CmsException {
+    	try {
+			return c_rb.accessCreate(m_context.currentUser(), m_context.currentProject(), resource);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}			
+    }
+	
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @return wether the user has access, or not.
+	 */
+    public boolean accessWrite(A_CmsResource resource) throws CmsException {
+    	try {
+			return c_rb.accessWrite(m_context.currentUser(), m_context.currentProject(), resource);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}			
+    }
+	
+	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @return wether the user may lock this resource, or not.
+	 */
+    public boolean accessLock(A_CmsResource resource) throws CmsException {
+    	try {
+			return c_rb.accessLock(m_context.currentUser(), m_context.currentProject(), resource);
+		} catch(Exception exc) {
+			throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+		}			
+    }
+    
+    /**
 	  * Reads all tasks for a user in a project.
 	  * 
 	  * @param projectId The id of the Project in which the tasks are defined.

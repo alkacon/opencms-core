@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/04/05 14:43:31 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.60 $ $Date: 2000/04/04 12:42:19 $ 
+ * @version $Revision: 1.61 $ $Date: 2000/04/05 14:43:31 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1512,6 +1512,38 @@ public abstract class A_CmsObject {
 	abstract public void importDb(String importFile, String importPath)
 		throws CmsException;
 
+	/**
+	 * Checks, if the user may read this resource.
+	 * 
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	abstract public boolean accessRead(A_CmsResource resource) throws CmsException;
+
+	/**
+	 * Checks, if the user may create this resource.
+	 * 
+	 * @param resource The resource to check.
+	 * @return wether the user has access, or not.
+	 */
+	abstract public boolean accessCreate(A_CmsResource resource) throws CmsException;
+	
+	/**
+	 * Checks, if the user may write this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @return wether the user has access, or not.
+	 */
+	abstract public boolean accessWrite(A_CmsResource resource) throws CmsException;
+	
+	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @return wether the user may lock this resource, or not.
+	 */
+	abstract public boolean accessLock(A_CmsResource resource) throws CmsException;
+  
 	 /**
 	  * Reads all tasks for a user in a project.
 	  * 

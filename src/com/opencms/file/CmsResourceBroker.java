@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/05 07:34:32 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2000/04/05 14:43:45 $
+ * Version: $Revision: 1.96 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.95 $ $Date: 2000/04/05 07:34:32 $
+ * @version $Revision: 1.96 $ $Date: 2000/04/05 14:43:45 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3783,7 +3783,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
+	public boolean accessRead(A_CmsUser currentUser, A_CmsProject currentProject,
 							   A_CmsResource resource) 
 		throws CmsException	{
 		
@@ -3792,7 +3792,7 @@ System.err.println(">>> readFile(2) error for\n" +
 			// no access to the project!
 			return(false);
 		}
-		
+
 		// check the rights.
 		do {
 			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_READ) || 
@@ -3830,7 +3830,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
+	public boolean accessCreate(A_CmsUser currentUser, A_CmsProject currentProject,
 								 A_CmsResource resource) 
 		throws CmsException	{
 		
@@ -3846,6 +3846,11 @@ System.err.println(">>> readFile(2) error for\n" +
 			return(false);
 		}
 		
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
 		// check the rights and if the resource is not locked
 		do {
 			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
@@ -3881,7 +3886,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * 
 	 * @return wether the user has access, or not.
 	 */
-	private boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
+	public boolean accessWrite(A_CmsUser currentUser, A_CmsProject currentProject,
 								A_CmsResource resource) 
 		throws CmsException	{
 		
@@ -3896,7 +3901,12 @@ System.err.println(">>> readFile(2) error for\n" +
 			// no access to the project!
 			return(false);
 		}
-		
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
       	// check, if the resource is locked by the current user
 		if(resource.isLockedBy() != currentUser.getId()) {
 			// resource is not locked by the current user, no writing allowed
@@ -3947,7 +3957,7 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * 
 	 * @return wether the user may lock this resource, or not.
 	 */
-	private boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
+	public boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
 							   A_CmsResource resource) 
 		throws CmsException	{
 		
@@ -3962,7 +3972,12 @@ System.err.println(">>> readFile(2) error for\n" +
 			// no access to the project!
 			return(false);
 		}
-		
+
+        // check if the resource belongs to the current project
+        if(resource.getProjectId() != currentProject.getId()) {
+            return false;
+        }
+        
 		// read the parent folder
 		if(resource.getParent() != null) {
 			resource = m_fileRb.readFolder(currentProject, resource.getParent());
