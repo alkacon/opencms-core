@@ -8,6 +8,17 @@ Legend:
 * Bug fixed
 - General comment
 
+
+OpenCms 4.1.39 Arakis - 21 November 2000
+
+! Unchanged files may now be excluded when exporting an offline project.
+* Added a random number to wait for a free connection.
+* Enabled again the check, if a resource is locked by the user, in accessWrite.
+* Solved a problem with short exceptions in the shell.
+* After pressing [help] the head showed only "Object". This bug is now corrected
+- CmsShell is now able to print out very short exceptions for test-purposes.
+- Added some debug-informations to the pool.
+
 OpenCms 4.1.38 Arakis - 17 November 2000
 
 ! Added methods getFolderTree() and getSubResources(). 
