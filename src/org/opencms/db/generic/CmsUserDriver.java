@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/14 08:20:33 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/10/22 13:18:57 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.63 $ $Date: 2004/10/14 08:20:33 $
+ * @version $Revision: 1.64 $ $Date: 2004/10/22 13:18:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1215,16 +1215,18 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
     }
 
     /**
-     * @see org.opencms.db.I_CmsUserDriver#writePassword(java.lang.String, java.lang.String)
+     * @see org.opencms.db.I_CmsUserDriver#writePassword(java.lang.String, int, java.lang.String, java.lang.String)
      */
-    public void writePassword(String userName, String password) throws CmsException {
+    public void writePassword(String userName, int type, String oldPassword, String newPassword) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
 
+        // TODO: if old password is not null, check if it is valid
+        // TODO: use type in user selection
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_SETPW");
-            stmt.setString(1, m_driverManager.digest(password));
+            stmt.setString(1, m_driverManager.digest(newPassword));
             stmt.setString(2, userName);
             stmt.executeUpdate();
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2004/10/14 08:18:39 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/10/22 13:17:35 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.34 $ $Date: 2004/10/14 08:18:39 $
+ * @version $Revision: 1.35 $ $Date: 2004/10/22 13:17:35 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -413,12 +413,15 @@ public interface I_CmsUserDriver extends I_CmsDriver {
 
     /**
      * Sets a new password for a user.<p>
-     *
+     * 
      * @param userName the user to set the password for
-     * @param password the password to set
+     * @param type the type of the user
+     * @param oldPassword the current password
+     * @param newPassword the password to set
+     *
      * @throws CmsException if something goes wrong
      */
-    void writePassword(String userName, String password) throws CmsException;
+    void writePassword(String userName, int type, String oldPassword, String newPassword) throws CmsException;
 
     /**
      * Writes a user to the database.<p>
