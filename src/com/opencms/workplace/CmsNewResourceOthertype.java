@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/03/27 09:54:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/28 13:51:58 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/03/27 09:54:05 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/28 13:51:58 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -141,7 +141,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         
         // set the size of the radiobox entrys
-        getResources(cms,null,null,null,null);
+        getResources(cms,null,null,null,null,null);
         if (m_names != null) { 
              xmlTemplateDocument.setXmlData(C_RADIOSIZE,new Integer(m_names.size()).toString());
         } 
@@ -176,14 +176,15 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
       * Gets the resources displayed in the Radiobutton group on the new resource dialog.
       * @param cms The CmsObject.
       * @param lang The langauge definitions.
-      * @param names The names of the new rescources.
+      * @param names The names of the new rescources (used for optional images).
       * @param values The links that are connected with each resource.
+      * @param descriptions Description that will be displayed for the new resource.
       * @param parameters Hashtable of parameters (not used yet).
       * @returns The vectors names and values are filled with the information found in the 
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
-      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
             throws CmsException {
 
            // Check if the list of available resources is not yet loaded from the workplace.ini
@@ -203,6 +204,9 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
             if (values == null) {
                 values=new Vector();
             }   
+            if (descriptions == null) {
+                descriptions=new Vector();
+            }
             
             // OK. Now m_names and m_values contain all available
             // resource information.
@@ -212,7 +216,14 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
                 String loopValue = (String)m_values.elementAt(i);
                 String loopName = (String)m_names.elementAt(i);
                 values.addElement(loopValue);
-                names.addElement(loopName);
+                names.addElement("file_" + loopName);
+                String descr;
+                if(lang != null) {
+                    descr = lang.getLanguageValue("fileicon." + loopName);
+                } else {
+                    descr = loopName;
+                }
+                descriptions.addElement(descr);
             }
       }
 }

@@ -39,7 +39,7 @@ function show_help()
 			<table border=1 width=100%>
 				<tr><td class=wizard>
 					<table border=0 width=100%>
-						]]><RADIOBUTTON name="R_NEU" method="getResources" /><![CDATA[
+						]]><RADIOBUTTON name="R_NEU" method="getResources"/><![CDATA[
 					</table>
 				</td></tr>
 			</table>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2000/02/29 16:44:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/28 13:51:39 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/29 16:44:48 $
+ * @version $Revision: 1.6 $ $Date: 2000/03/28 13:51:39 $
  */
 public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -83,21 +83,22 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
       * Gets the resources displayed in the Radiobutton group on the new resource dialog.
       * @param cms The CmsObject.
       * @param lang The langauge definitions.
-      * @param names The names of the new rescources.
+      * @param names The names of the new rescources (used for optional images).
       * @param values The links that are connected with each resource.
+      * @param descriptions Description that will be displayed for the new resource.
       * @param parameters Hashtable of parameters (not used yet).
       * @returns The vectors names and values are filled with the information found in the 
       * workplace.ini.
       * @exception Throws CmsException if something goes wrong.
       */
-      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
             throws CmsException {
 
            // Check if the list of available resources is not yet loaded from the workplace.ini
             if(m_names == null || m_values == null) {
                 m_names = new Vector();
                 m_values = new Vector();
-
+                
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
             configFile.getWorkplaceIniData(m_names, m_values,"NEWRESOURCES","RESOURCE");
             }
@@ -110,7 +111,8 @@ public class CmsNewResource extends CmsWorkplaceDefault implements I_CmsWpConsta
                 String loopValue = (String)m_values.elementAt(i);
                 String loopName = (String)m_names.elementAt(i);
                 values.addElement(loopValue);
-                names.addElement(loopName);
+                names.addElement("file_" + loopName);
+                descriptions.addElement(lang.getLanguageValue("fileicon." + loopName));
             }
       }
 }

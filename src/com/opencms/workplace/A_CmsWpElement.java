@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/03/09 16:46:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/03/28 13:50:28 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/03/09 16:46:06 $
+ * @version $Revision: 1.20 $ $Date: 2000/03/28 13:50:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -104,7 +104,7 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      /**
      * Reference to the radio button defintion file
      */
-    protected static CmsXmlWpRadioDefFile m_radiodef = null;
+    protected static CmsXmlWpTemplateFile m_radiodef = null;
     
      /**
      * Reference to the box defintion file
@@ -313,13 +313,13 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
      * @return Reference to the radiobutton defintion file.
      * @exception CmsException
      */
-     public CmsXmlWpRadioDefFile getRadioDefinitions(A_CmsObject cms) throws CmsException {
+     public CmsXmlWpTemplateFile getRadioDefinitions(A_CmsObject cms) throws CmsException {
         //if(m_radiodef == null) {
             if(m_workplaceElementPath == null) {
                 CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
                 m_workplaceElementPath = configFile.getWorkplaceElementPath();
             }
-            m_radiodef = new CmsXmlWpRadioDefFile(cms, m_workplaceElementPath + C_RADIOTEMPLATE);  
+            m_radiodef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_RADIOTEMPLATE);  
         //}
         return m_radiodef;
     }

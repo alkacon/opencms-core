@@ -1,19 +1,21 @@
 <?xml version="1.0"?>
-<WP_RADIO>	
+<WORKPLACE>	
 	<radiobuttons>
-		<entry><![CDATA[<tr>
-		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA["></td>
-		<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16></td>
+		<colentry><![CDATA[<tr>
+		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" ]]><PROCESS>selectedentry</PROCESS><![CDATA[></td>
+		]]><PROCESS>imageentry</PROCESS><![CDATA[
 		<td align=left>]]><PROCESS>name</PROCESS><![CDATA[</td>
 		</tr>]]>
-		</entry>
-		<entryselected><![CDATA[<tr>
-		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" checked></td>
-		<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16></td>
-		<td align=left>]]><PROCESS>name</PROCESS><![CDATA[</td>
-		</tr>]]>
-		</entryselected>
+		</colentry>
+		<rowentry><![CDATA[
+		<td align=middle width=5%><INPUT type ="radio" id=]]><PROCESS>radioname</PROCESS><![CDATA[ name=]]><PROCESS>radioname</PROCESS><![CDATA[ value="]]><PROCESS>link</PROCESS><![CDATA[" ]]><PROCESS>selectedentry</PROCESS><![CDATA[></td>
+		]]><PROCESS>imageentry</PROCESS><![CDATA[
+		<td align=left nowrap>]]><PROCESS>name</PROCESS><![CDATA[</td><td>&nbsp;&nbsp;&nbsp;</td>
+		]]>
+		</rowentry>
+		<optionalimage><![CDATA[<td align=middle width=10%><IMG src="]]><METHOD name="picsUrl"><PROCESS>image</PROCESS></METHOD><![CDATA[" border=0 width=16 heigth=16></td>]]></optionalimage>
+		<optionalselected>checked </optionalselected>
 	</radiobuttons>	
-</WP_RADIO>
+</WORKPLACE>
 
 

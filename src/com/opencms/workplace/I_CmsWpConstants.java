@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/28 09:10:41 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2000/03/28 13:54:42 $
+ * Version: $Revision: 1.73 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.72 $ $Date: 2000/03/28 09:10:41 $
+ * @version $Revision: 1.73 $ $Date: 2000/03/28 13:54:42 $
  */
 public interface I_CmsWpConstants {
 
@@ -400,12 +400,27 @@ public interface I_CmsWpConstants {
     /** Name of the radio button link */
     public static final String C_RADIO_LINK = "link";
   
-    /** Name of the radio button image */
-    public static final String C_RADIO_IMAGE = "image";
+    /** Name of the radio button image name */
+    public static final String C_RADIO_IMAGENAME = "image";
+
+    /** Datablock conatining the image option*/
+    public static final String C_RADIO_IMAGEOPTION = "optionalimage";
+
+    /** Datablock conatining the optional entry for the image*/
+    public static final String C_RADIO_IMAGEENTRY = "imageentry";
+
+    /** Datablock conatining the "checked" option*/
+    public static final String C_RADIO_SELECTEDOPTION = "optionalselected";
+
+    /** Datablock conatining the optional entry for the "checked" option */
+    public static final String C_RADIO_SELECTEDENTRY = "selectedentry";
     
     /** Method of the radio buttons */
     public static final String C_RADIO_METHOD = "method";
 
+    /** Name of the radio ordering information */
+    public static final String C_RADIO_ORDER = "order";
+    
     
     
     // Parameters for input fields
