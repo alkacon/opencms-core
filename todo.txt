@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/Attic/todo.txt,v $
- * Date   : $Date: 2002/08/26 13:37:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2002/09/02 07:57:22 $
+ * Version: $Revision: 1.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -11,32 +11,32 @@
 
 TODO Items for OpenCms Release 5.0.
 
-This document serves as a base for discussion on what features should 
-be included in the next release of OpenCms. 
+This document serves as a base for discussion on what features should
+be included in the next release of OpenCms.
 
-Everyone is invited to make suggestions to this list, please use the 
+Everyone is invited to make suggestions to this list, please use the
 opencms-dev mailing list at www.opencms.org to do so.
 
-Legend: 
+Legend:
 + Decision: Feature will be implemented in the next release
 d Decision: Feature will be implemented, but implementation is delayed beyond next release
 - Decision: Feature will NOT be implemented
 ? No desicion made about this feature
 # Feature has already been implemented for the next release
 
-As a small rule, there can be only a decision to implement a feature if there is 
-also a volunteer to do the work! 
+As a small rule, there can be only a decision to implement a feature if there is
+also a volunteer to do the work!
 
 
 [ ? ] Consolidate top-level directories
 ================================================================================
-Suggested by: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
+Description:
   Even in an empty OpenCms installation, there are a lot of default directories
   in the root folder ("/"). This confuses users, esp. when one starts to
-  add his own directories, since it might not be clear which directory 
+  add his own directories, since it might not be clear which directory
   belongs to the application, and which is just a default directory with
   some special system function. The suggestion is to move all the default
   directories below the "/system" folder.
@@ -50,9 +50,9 @@ Description:
   /moduledemos
   /pics/system
   /system
-   
-  All above directories are only needed for special system purposes. 
-  This new folder structure would achive the same result, but without 
+
+  All above directories are only needed for special system purposes.
+  This new folder structure would achive the same result, but without
   clustering the root folder:
 
   /system (remains)
@@ -65,223 +65,253 @@ Description:
   /system/modules/default (former /content directory without /content/bodys)
   [other directories already below /system remain]
 
-Issues: 
+Issues:
    This changes require re-coding a lot of path information that might
-   be clustered in the Java sources and the workplace files. 
-   Esp. moving /content to /system/content might be difficult because 
-   of the XMLTemplate mechanism. 
+   be clustered in the Java sources and the workplace files.
+   Esp. moving /content to /system/content might be difficult because
+   of the XMLTemplate mechanism.
 
    Also important is to have a mechanism to update a running system
-   using the old structure to the new structure. This might be achived
-   with a special import / export filter method.
+   using the old structure to the new structure.
 
-Volunteers: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Volunteers:
+  Alexander Kandzior (a.kandzior@alkacon.com)
+  Michael Emmerich (Michael.Emmerich@framfab.de)
 
 Updates:
   (08/26/02) Alexander Kandzior:
   I updated several Workplace files that used hard - coded path information
   to use constants from com.opencms.workplace.I_CmsWpConstants instead. It's now
-  possible to move the "/content" directory in a fresh installation below 
-  "/system" by just changing the constants in I_CmsWpConstants, recompiling, 
-  installing the new JAR and moving the directories to the new locations in 
+  possible to move the "/content" directory in a fresh installation below
+  "/system" by just changing the constants in I_CmsWpConstants, recompiling,
+  installing the new JAR and moving the directories to the new locations in
   the wrokplace (see above).
-  I assume moving most of the galleries would no be to difficult either. 
+  I assume moving most of the galleries would no be to difficult either.
   Changing the "/pics" path requires a lot of search and replace in existing
-  templates, but should be doable in an acceptable time frame. The true issue is 
+  templates, but should be doable in an acceptable time frame. The true issue is
   finding a way to migrate an old system to the new structure.
+  (08/31/02) Alexander Kandzior
+  To overcome the issue of a system upgrade fomr the old to the new structure,
+  two methods have been discussed:
+  1. Write a tool that automatically analyzes and rewrites the content of pages.
+  2. Write some kind of "directory mapping"
+  M.E. will have to write a tool for the content transition anyway because of
+  issues with the i18n (see below). He will try to add directory translation
+  to it.
+  A.K. will try to devise a way to write a directory mapping wich will be
+  configured in the registry.xml, probably using regular expressions. This
+  mapping will be optional.
+  Even with this efforts it is still unclear if the new directory structure
+  will make it to the final release.
 
 
 [ ? ] Logfile rotation
 ================================================================================
-Suggested by: 
-  Andreas Schouten (andreas.schouten@framfab.de) 
+Suggested by:
+  Andreas Schouten (andreas.schouten@framfab.de)
 
-Description: 
+Description:
   The OpenCms logfile just grows and grows. Logfile rotation would help
   keep the filesize reasonable.
- 
+
 Issues:
     None known. Someone has to do the work.
 
-Volunteers: 
+Volunteers:
   (No volunteer yet)
 
 
 [ ? ] Native support for Velocity templates
 ================================================================================
-Suggested by: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  Thanks to contributions from the community, there is now a Velocity 
+Description:
+  Thanks to contributions from the community, there is now a Velocity
   template extension for OpenCms available. Based on this work,
-  Velocity support should be extended to be natively included in the 
-  standard release. In short, there should be a "Velocity Template" option 
+  Velocity support should be extended to be natively included in the
+  standard release. In short, there should be a "Velocity Template" option
   on the "Add new" dialog in the OpenCms workplace.
- 
+
 Issues:
   Adding a new resource type in OpenCms is tricky. Also, there must be a way devised
-  that binds the Velocity template to a corrosponding Velocity class. 
+  that binds the Velocity template to a corrosponding Velocity class.
 
-Volunteers:  
+Volunteers:
   (No volunteer yet)
 
 
 [ ? ] Check for old, unused template files in "/system/workplace" folders
 ================================================================================
-Suggested by: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  There are many files in "/system/workplace" folders. Some of them seem to 
+Description:
+  There are many files in "/system/workplace" folders. Some of them seem to
   be unused. This should be checked and unused files should be removed.
 
 Issues:
   None known. Someone has to do the work.
 
-Volunteers: 
+Volunteers:
   (No volunteer yet)
 
 
 [ ? ] Support for MS-SQL Server in setup wizard
 ================================================================================
-Suggested by: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  There is now a native MS-SQL Server resource broker available. 
+Description:
+  There is now a native MS-SQL Server resource broker available.
   This should be selectable during installation with the wizard.
-  Currently the opencms.properties file must be edited to enable MS-SQL 
+  Currently the opencms.properties file must be edited to enable MS-SQL
   server support, which is difficult to impossible for new users who want
   to try our OpenCms on their system.
 
 Issues:
   None known. Someone has to do the work.
 
-Volunteers: 
+Volunteers:
   (No volunteer yet)
 
 
-[ ? ] Create a default "Offline" project during installation
+[ + ] Create a default "Offline" project during installation
 ================================================================================
-From: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  Currently, the user must first create a project after installation to be able 
+Description:
+  Currently, the user must first create a project after installation to be able
   to make any changes. There should be a default "Offline" project that is
-  created during the installation, so that a new user can start checking out 
+  created during the installation, so that a new user can start checking out
   the system right away. This default "Offline" project should be just a normal
   project, so it can be deleted if not wanted. This change would help new users
-  to get started with OpenCms more easily. 
+  to get started with OpenCms more easily.
 
 Issues:
   None known.
 
-Volunteers: 
-  (No volunteer yet)
+Volunteers:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
 
-[ ? ] Rename "uk" locale to "en" 
+[ + ] Rename "uk" locale to "en"
 ================================================================================
-From: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  The locale for english language for some obscure reason is "uk", while 
+Description:
+  The locale for english language for some obscure reason is "uk", while
   the international standard is "en". Rename local and language files to "en"
 
 Issues:
   Make sure old modules that still use "uk" locale are still running.
 
-Volunteers: 
-  (No volunteer yet)
+Volunteers:
+  Alexander Kandzior (a.kandzior@alkacon.com)
+
+Updates:
+  (08/31/02) Alexander Kandzior
+  Should be working now.
+  You must rename the "uk" directories to "en" (esp. in old modules).
+  New modules are created only with the default language directory now,
+  which also is "en". Create other directories manually if needed.
 
 
 [ + ] Add i18n changes to release version
 ================================================================================
-From:  
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
+Description:
   There has been a great contribution from Gridnine systems to better support
-  i18n in the OpenCms XML process. This changes should be part of the next 
-  major release. 
+  i18n in the OpenCms XML process. This changes should be part of the next
+  major release.
 
-  As a side effect, these changes might also cause OpenCms to work with the 
-  Java 1.4 default XML parser. In this case a seperate Xerces jar would not  
-  longer be needed, reducing a lot of installation issues. This should 
+  As a side effect, these changes might also cause OpenCms to work with the
+  Java 1.4 default XML parser. In this case a seperate Xerces jar would not
+  longer be needed, reducing a lot of installation issues. This should
   be verified.
 
 Issues:
   Make sure the changes have no side - effect on the rest of the system.
 
-Volunteers: 
+Volunteers:
   Michael Emmerich (Michael.Emmerich@framfab.de)
 
 Updates:
   (08/26/02) Michael Emmerich:
-  Integration of Gridnine code so far has been successful. 
-  Some issues regarding German umlauts have been resolved in latest code 
-  version from Gridnine. Test have been succesful so for. 
+  Integration of Gridnine code so far has been successful.
+  Some issues regarding German umlauts have been resolved in latest code
+  version from Gridnine. Test have been succesful so for.
   Some changes to new "content-encoding" property still needed.
-  After final test have been made the code will be merged into the 5.0 branch.  
+  After final test have been made the code will be merged into the 5.0 branch.
 
   Other comments for this release:
   Features:
   Workplace is converted to UTF-8 encoding.
 
-  New variable in opencms.properties file: defaultContentEncoding - 
+  New variable in opencms.properties file: defaultContentEncoding -
   sets the default encoding of the pages.
 
-  New property "content-encoding" of the page is added. Content-encoding 
-  property sets the encoding of the specific page. If not specified the 
+  New property "content-encoding" of the page is added. Content-encoding
+  property sets the encoding of the specific page. If not specified the
   defaultContentEncoding from opencms.properties file will be used.
 
-  New user method getEncoding() in order to insert in XML templates 
+  New user method getEncoding() in order to insert in XML templates
   (<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD
   name="getEncoding"/><![CDATA[">)
 
   Property_value field in all *_properties tables is changed to TEXT from
-  VARCHAR(255) in MySQL database. This change is required since now properties 
-  are url-encoded to avoid Unicode problem (MySQL doesn't support Unicode yet). 
-  Therefore the length of the property string is bigger and it is not enough to 
-  have 255 characters. Attention: Developers shouldn't use ORDER BY clause in 
-  SQL statements since it will be not Unicode sort order but url-encoded 
+  VARCHAR(255) in MySQL database. This change is required since now properties
+  are url-encoded to avoid Unicode problem (MySQL doesn't support Unicode yet).
+  Therefore the length of the property string is bigger and it is not enough to
+  have 255 characters. Attention: Developers shouldn't use ORDER BY clause in
+  SQL statements since it will be not Unicode sort order but url-encoded
   sorting. There are no ORDER BY clauses for property_value in the current code.
 
   Known issues:
-  Change property_value field in all *_properties tables for supported databases. 
-  If database supports Unicode property_value should not be url-encoded. 
+  Change property_value field in all *_properties tables for supported databases.
+  If database supports Unicode property_value should not be url-encoded.
   For example it is possible to use nvarchar(4000) in SQL Server. It is better
-  to use more then 255 symbols since there is always need for more characters 
-  (description, keywords, etc) 
-  
-  Netscape Navigator 6.2 doesn't show the 
-  "Code editor" page properly. We are working on this now.  
+  to use more then 255 symbols since there is always need for more characters
+  (description, keywords, etc)
+
+  Netscape Navigator 6.2 doesn't show the
+  "Code editor" page properly. We are working on this now.
+
+  (08/30/02) Michael Emmerich
+  Most issues have been solved.
+
+  Spechial characters (Umlaute etc.) still cause problems in the registry.xml
+  (when used e.g. in module parameters). Also importing content of a previous
+  version might cause problems with special characters in the YWSIWYG.
+
+  To overcome this import issues, a translation tool will be written that
+  changes imported files from the old to the new standard.
 
 
 [ ? ] English help file translations
 ================================================================================
-From: 
-  Alexander Kandzior (a.kandzior@alkacon.com) 
+Suggested by:
+  Alexander Kandzior (a.kandzior@alkacon.com)
 
-Description: 
-  The help files are available only in German language. 
+Description:
+  The help files are available only in German language.
   They must be made available in English for international users.
   Other languages (eg. Italian) would also be great.
 
 Issues:
-  Find someone who translates the content. 
-  Also, the selection mechanism for the help language must be checked and 
-  perhaps adjusted to support more then one language. Moreover, all files 
+  Find someone who translates the content.
+  Also, the selection mechanism for the help language must be checked and
+  perhaps adjusted to support more then one language. Moreover, all files
   currently have German names. To make translation easier and to be more
   consistent, the names of the help files should be changed to english. This
-  in turn requires changing the reference to the helpfiles in all workplace 
-  files. 
+  in turn requires changing the reference to the helpfiles in all workplace
+  files.
 
-Volunteers: 
+Volunteers:
   Massimiliano Alessandri (m.alessandri@tiscali.it)
 
 Updates:
