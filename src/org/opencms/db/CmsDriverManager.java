@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/01 09:55:34 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2003/08/01 11:54:24 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.117 $ $Date: 2003/08/01 09:55:34 $
+ * @version $Revision: 1.118 $ $Date: 2003/08/01 11:54:24 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1737,13 +1737,18 @@ public class CmsDriverManager extends Object {
         CmsResource linkResource = null;
         String parentFolderName = null;
         CmsFolder parentFolder = null;
-        String resourceName = null;
+        String resourceName = null;        
 
         parentFolderName = linkName.substring(0, linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
         resourceName = linkName.substring(linkName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1, linkName.length());
 
         // read the target resource
         targetResource = this.readFileHeader(context, targetName);
+        
+        if (targetResource.isFolder()) {
+            throw new CmsException("Setting links on folders is not supported");
+        }
+        
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
 
