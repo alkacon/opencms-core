@@ -529,7 +529,7 @@ function printList(wo) {
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (vi.liste[i].isFolder) {
-				if ((mode == "projectview") || showlinks) {
+				if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
 					wo.write(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
@@ -543,7 +543,7 @@ function printList(wo) {
 					wo.write("</a>");
 				}
 			} else {
-				if ((mode == "projectview") || showlinks) {
+				if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
 					wo.writeln(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
@@ -591,7 +591,7 @@ function printList(wo) {
 			wo.writeln("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
 
 			var resourceName = vr.actDirectory + vi.liste[i].name;
-			if ((mode == "projectview") || showlinks) {
+			if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
 				if (vi.liste[i].type == 0) {
 					resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
 				} else {

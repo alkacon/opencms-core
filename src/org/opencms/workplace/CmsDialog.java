@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/11/04 14:23:10 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2004/12/10 10:49:31 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 5.1
  */
@@ -536,12 +536,19 @@ public class CmsDialog extends CmsWorkplace {
                 }
                 if (frameUri.endsWith("administration_content_top.html")) {
                     // TODO: remove this workaround for legacy backoffice
-                    try {
-                        // redirect to administration body frame with "sender" parameter
-                        getJsp().getResponse().sendRedirect(getJsp().link(frameUri) + "?sender=/system/workplace/administration/");
-                    } catch (IOException e) {
-                        params.put("sender", "/system/workplace/administration/");
-                        getJsp().include(frameUri, null, params);
+                    String wpClass = this.getClass().getName();
+                    String wpPackage = this.getClass().getPackage().getName();
+                    if ((wpPackage.endsWith("commons") || wpPackage.endsWith("gallery")) && (! wpClass.endsWith("Report"))) {
+                        // for returning from common workplace action, show explorer filelist again (i.e. gallery & project views)
+                        getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+                    } else {                   
+                        try {
+                            // redirect to administration body frame with "sender" parameter
+                            getJsp().getResponse().sendRedirect(getJsp().link(frameUri) + "?sender=/system/workplace/administration/");
+                        } catch (IOException e) {
+                            params.put("sender", "/system/workplace/administration/");
+                            getJsp().include(frameUri, null, params);
+                        }
                     }
                 } else {
                     // include the found frame URI

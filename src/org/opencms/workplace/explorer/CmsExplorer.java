@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/12/10 08:48:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/10 10:49:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1
  */
@@ -248,7 +248,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean showDateExpired = (preferences & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0;
 
         // now get the entries for the filelist
-        List resources = getRessources(getSettings().getExplorerResource());
+        List resources = getResources(getSettings().getExplorerResource());
 
         // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
@@ -683,7 +683,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param resource the resource to read the files from (usually a folder)
      * @return a list of resources to display
      */
-    private List getRessources(String resource) {
+    private List getResources(String resource) {
 
         if (getSettings().getExplorerShowLinks()) {
             // show all siblings of a resource
@@ -725,7 +725,7 @@ public class CmsExplorer extends CmsWorkplace {
         }  else if (C_VIEW_GALLERY.equals(getSettings().getExplorerMode())) { 
         
             // select galleries
-            CmsGallery gallery = CmsGallery.createInstance("imagegallery", getJsp());
+            CmsGallery gallery = CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
             return gallery.getGalleries();
         } else {
             // default is to return a list of all files in the folder
