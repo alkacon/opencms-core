@@ -52,7 +52,7 @@
 		<%			
 			if(setupOk)	{
 				for(int i = 0; i < (size-offset) ;i++)	{
-					out.println("output[" + i + "] = \"" + CmsSetupUtils.escape(messages.elementAt(i+offset).toString(),"UTF-8") + "\";");
+					out.println("output[" + i + "] = \"" + CmsSetupUtils.escape(messages.elementAt(i+offset).toString()) + "\";");
 				}			
 			}
 			else	{
