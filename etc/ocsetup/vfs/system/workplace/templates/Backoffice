@@ -1,0 +1,578 @@
+<?xml version="1.0"?>
+<WORKPLACE>	
+
+<tabledatabegin><![CDATA[<td>]]></tabledatabegin>
+<tabledataend><![CDATA[</a></td>]]></tabledataend>
+<tablerowbegin><![CDATA[<tr>]]></tablerowbegin>
+<tablerowend><![CDATA[</tr>]]></tablerowend>
+<urlbegin><![CDATA[<a href="javascript:location.href=']]></urlbegin>
+<urlend><![CDATA['">]]></urlend>
+
+<lockuser><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lock.gif" alt="" border=0 width=16 height=16></td>]]></lockuser>
+<lock><![CDATA[<td><img src="]]><method name="getServletPath"/><![CDATA[/pics/system/ic_lockuser.gif" alt="" border=0 width=16 height=16></td>]]></lock>
+<nolock><![CDATA[<td></td>]]></nolock>
+
+
+<nowand><![CDATA[]]></nowand>
+<wand><![CDATA[
+<td class=menu nowrap width=32px valign=top>
+	<a href="javascript:document.location.href='EditBackoffice.html';parent.frames[1].location.href='EditBackoffice.html?id=new'"  
+		onMouseDown="ChPush('bt_new')" onMouseUp="ChOn('bt_new')" onMouseOver="ChOn('bt_new')" onMouseOut="ChOff('bt_new')">
+		<img align=top src="/pics/system/bt_new_off.gif" name="bt_new" border=0 width=32 heigth=32>
+	</a>
+</td>
+]]></wand>
+
+<setaction></setaction>
+
+<TEMPLATE>
+
+<![CDATA[
+
+<html>
+
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<link rel=stylesheet type="text/css" href="]]><method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_edithtml.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript">admincontenturl="administration_content_top.html";</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+	var admincontenturl="administration_content_top.html";
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript">
+    ns = (document.layers)? true:false;
+    ie = (document.all)? true:false;
+
+    var nshowmuch=0;
+    opts=new Array()
+
+    function opt(p,l){
+        this.param=p;
+        this.llink=l;
+    }
+
+    function addoption(bla){
+        if(ns){
+            if(document.layers.pull.document.swl.selectbox.length<1+nshowmuch){
+
+                //window.alert(nshowmuch);
+                //opts[nshowmuch] = new opt(bla,p,l);
+
+                nshowmuch++;
+
+                for(i=0;i<document.layers.pull.document.swl.selectbox.length;i++){
+                    document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length] = null;
+                }
+
+                temp = new Option(bla);
+                document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length] = temp;
+                document.layers.pull.document.swl.selectbox.options[document.layers.pull.document.swl.selectbox.length-1].value = document.layers.pull.document.swl.selectbox.length-1;
+
+                if(nshowmuch == 1)document.layers.pull.document.swl.selectbox.options[0].selected=true;
+
+                history.go(0);
+            }
+        }
+
+        if(ie){
+            //opts[document.swl.selectbox.length] = new opt(bla,p,l);
+            temp = new Option(bla);
+            document.swl.selectbox.options[document.swl.selectbox.length]= temp;
+            document.swl.selectbox.options[document.swl.selectbox.length-1].value=document.swl.selectbox.length-1;
+        }
+
+    }
+
+
+
+    if(ns){
+    	var layerzeigen_01= 'document.layers.';
+    	var layerzeigen_02= '.visibility="show"';
+    	var layerverstecken_01= 'document.layers.';
+    	var layerverstecken_02= '.visibility="hide"';
+    }
+
+    if(ie){
+    	var layerzeigen_01= 'document.all.';
+    	var layerzeigen_02= '.style.visibility="visible"';
+    	var layerverstecken_01= 'document.all.';
+    	var layerverstecken_02= '.style.visibility="hidden"';
+    }
+    
+    var isshown=true;
+
+    function dellyr(welche){
+        eval(layerverstecken_01+welche+layerverstecken_02);
+    }
+    function showlyr(welche){
+        eval(layerzeigen_01+welche+layerzeigen_02);
+    }
+
+    function switchl(){
+
+
+
+//alert(document.layers.pull.document.swl.selectbox.selectedIndex); nur ns!!!!!!!!!!!!!!!!
+//alert(document.swl.selectbox.selectedIndex); nur ie !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    if(ie){
+        if(opts[document.swl.selectbox.selectedIndex].param==true){
+            showlyr('feld');
+        } else {
+            // hier richtigen frame angeben!
+            //document.location=opts[document.swl.selectbox.selectedIndex].llink;
+            dellyr('feld');
+        }
+    }
+	window.top.body.admin_content.location.href=']]><method name="getServletPath"></method><method name="getBackofficeUrl"></method><![CDATA[?selectbox=' + document.swl.selectbox.selectedIndex;
+
+}
+    function testit(){
+		]]><PROCESS>selectionbox</PROCESS><![CDATA[
+        if(opts.length<1){
+            if(ns)document.location=opts[document.layers.pull.document.swl.selectbox.selectedIndex].llink;
+            if(ie)document.location=opts[document.swl.selectbox.selectedIndex].llink;
+            dellyr("pull");
+            dellyr("feld");
+        }
+
+        else{
+            if(opts[0].param==false){
+                dellyr("feld");
+                showlyr("pull");
+            }else{
+            }
+       }
+                showlyr("feld");
+                showlyr("pull");
+    }
+
+
+</SCRIPT>
+
+</head>
+
+<body bgcolor="#C0C0C0" onLoad=testit();switchl(); background="]]><METHOD name="picsUrl">bg_grau.gif</METHOD><![CDATA[" bgproperties=fixed>
+
+	<table cellspacing=0 cellpadding=0 valign=bottom>
+	
+	<tr>
+		<td class=menu nowrap width=32px valign=top>
+			<a href="#" onmousedown="ChPush('bt_back')" onmouseout="ChOff('bt_back')" onmouseover="ChOn('bt_back')" onmouseup="ChOn('bt_back');
+				parent.frames[1].location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_content_top.html?sender=/system/workplace/administration/'">
+				<IMG align=top alt="]]><label value="button.back"/><![CDATA[" width=32 border=0 name=bt_back src="/pics/system/bt_back_off.gif" >
+			</a>
+		</td>	
+			
+		]]><PROCESS>createbutton</PROCESS><![CDATA[	
+		
+        <td valign=bottom>
+            <div id="pull" style="position:relative; visibility:hide" valign=bottom>
+                <form name=swl valign=bottom>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filter</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+        		<select valign=bottom class=textfeld name="selectbox" id="selectbox" onchange="javascript:switchl();" size="1"/></select>
+                </form>
+            </div>
+        </td>
+        
+        <td valign=bottom>        
+            <div id="feld" style="position:relative; visibility:hide">
+                <form>
+                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
+                	<input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
+ 					<a onmousedown="ChPush('bt_redo')" onmouseout="ChOff('bt_redo')" onmouseover="ChOn('bt_redo')" onmouseup="ChOn('bt_redo')"
+						onClick="javascript:window.top.body.admin_content.location.reload();"/>
+						<IMG align=absmiddle alt="]]><label value="button.reload"/><![CDATA[" width=22 border=0 name="bt_redo" src="/pics/system/bt_redo_off.gif" >
+					</a>           
+            	</form>
+            </div>            
+        </td>
+    </tr>
+    
+    </table>
+    
+</body>
+</html>
+
+]]>
+
+</TEMPLATE>
+
+<TEMPLATE name="list">
+<![CDATA[
+<html>
+
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '5_2_2_2.html';
+}
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<!-- Ende Style -->
+<!-- Beginn Script -->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></script>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_choosebrowser.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms_kontextmenu.js"></SCRIPT>
+
+<SCRIPT>
+start();
+</SCRIPT>
+
+<!-- Ende Script -->
+</head>
+
+<body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" 
+	bgproperties=fixed>
+					   
+<!-- Begin Content-->
+<table cellspacing=1 cellpadding=1 border=0>
+	<tr bgcolor="#c0c0c0"><td width=9 colspan=2 nowrap></td>
+	]]><PROCESS>tableheadline</PROCESS><![CDATA[</tr>
+	<tr bgcolor="#FFFFFF">]]><PROCESS>tablecontent</PROCESS><![CDATA[</tr>
+</table>
+<!-- End Content -->
+
+<!-- Begin Context -->
+</body>
+</html>
+]]>
+
+<contextmenue name="backofficeedit"> 
+	<contextentry name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+</contextmenue>
+
+<contextmenue name="backofficelockuser"> 
+	<contextdisabled name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.overridelock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+</contextmenue>
+		
+<contextmenue name="backofficelock"> 
+	<contextentry name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.unlock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+	</contextmenue>
+
+<contextmenue name="backofficenolock"> 
+	<contextdisabled name="explorer.context.editarticle" href="javascript:location.href='EditBackoffice.html?idedit='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href='Backoffice.html?iddelete='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.lock" href="javascript:location.href='Backoffice.html?idlock='+kontextparam;"/>
+</contextmenue>
+
+</TEMPLATE>
+
+<TEMPLATE name="lock">
+<![CDATA[
+<HTML>
+
+<SCRIPT LANGUAGE="JavaScript">							  
+<!--
+function show_help()
+{
+	return '5_2_2_1.html';
+}
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+//-->
+</SCRIPT>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><METHOD name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+</HEAD>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name="DELETE" action="Backoffice.html" method=get>
+<table cellspacing=0 cellpadding=0 border=2 width=310px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Begin tablehead blue -->
+			<tr> 
+           		<td colspan=3 class="head">]]><PROCESS>locktitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende tablehead blue -->
+			
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<tr>
+				<td class=dialogtxt colspan=3 align=center>
+				<br><br><br>
+				</td>
+			</tr>
+						
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+
+			<tr>
+				<td class=dialogtxt colspan=3 align=center>
+					]]><PROCESS>lockstate</PROCESS><![CDATA[<br>
+				</td>
+			</tr>
+
+
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<!-- Begin buttons -->
+			<tr><td class=dialogtxt colspan=3>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="ok" width="100" action="" /><![CDATA[</td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
+						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
+						onClick="window.top.body.admin_head.location.href='Backoffice.html';">
+					</td>
+				</tr>
+				</table>
+				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+			</td>
+			</tr>
+			<!-- End buttons -->			
+			</table>
+	</td></tr>
+</table>
+</form>
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<!--end lock-->
+
+
+<TEMPLATE name="delete">
+<![CDATA[
+<HTML>
+
+<SCRIPT LANGUAGE="JavaScript">							  
+<!--
+function show_help()
+{
+	return '5_2_2_1.html';
+}
+
+var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
+//-->
+</SCRIPT>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+</HEAD>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name="DELETE" action="Backoffice.html" method=get>
+<table cellspacing=0 cellpadding=0 border=2 width=310px>
+	<tr><td>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Begin tablehead blue -->
+			<tr> 
+           		<td colspan=3 class="head">]]><PROCESS>deletetitle</PROCESS><![CDATA[: ]]><PROCESS>newsentry</PROCESS><![CDATA[</td>
+			</tr>
+			<!-- Ende tablehead blue -->
+			
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<tr>
+				<td class=dialogtxt colspan=3>
+				<br><br><br>
+				</td>
+			</tr>
+						
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+
+			<tr>
+				<td class=dialogtxt colspan=3 align=center>
+					]]><PROCESS>deletedialog</PROCESS><![CDATA[<br>
+				</td>
+			</tr>
+
+
+			<!-- Begin empty row -->
+			<tr> 
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- End empty row -->
+			
+			<!-- Begin buttons -->
+			<tr><td class=dialogtxt colspan=3>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=right width=50%>]]><SUBMITBUTTON class="button" name="ok" value="delete" width="100" action="" /><![CDATA[</td>
+					<td class=formular align=left width=50%><INPUT class=button width=100 type="button" 
+						value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL name=CANCEL 
+						onClick="window.top.body.admin_head.location.href='Backoffice.html';">
+					</td>
+				</tr>
+				</table>
+				<INPUT type="hidden" name="action" value="]]><PROCESS>setaction</PROCESS><![CDATA[">
+			</td>
+			</tr>
+			<!-- End buttons -->			
+			</table>
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<!--delete-->
+
+<TEMPLATE name="error">
+<![CDATA[
+<html>
+<head>
+<!-- Beginn Style -->
+<link rel=stylesheet type="text/css" href="]]><Method name="getServletPath"/><![CDATA[system/workplace/css/format.css">
+<!-- Ende Style -->
+</head>
+
+<body bgcolor="#c0c0c0" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0
+onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPath"/><![CDATA[system/workplace/action/administration_head.html';">
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form id="ERROR" name="ERROR">
+<table cellspacing=0 cellpadding=0 border=2 width=350 align=center valign=abscenter>
+	<tr><td class=dialogtxt>
+		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+			
+			<!-- Beginn Tabellenkopf blau-->
+			<tr> 
+           		<td colspan=2 class="head">]]><LABEL value="label.errormessage"/><![CDATA[</td>
+			</tr>
+			<!-- Ende Tabellenkopf blau-->
+			<!-- Beginn Leerzeile-->
+			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+			<!-- Ende Leerzeile-->
+			<tr> 
+           		<td class="dialogtxt" rowspan=3 valign=middle><IMG border=0 src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" width=32 height=32></td>
+				<td class=dialogtxt align=center>]]><LABEL value="input.filter"/><![CDATA[ ]]><PROCESS>filtername</PROCESS><![CDATA[:
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>	
+			<tr>
+				<td class=dialogtxt align=center>]]><PROCESS>filtererror</PROCESS><![CDATA[!
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			</tr>
+				<!-- Beginn Leerzeile-->
+			<tr> 
+				<td class="leerzeile">&nbsp;</td>
+			</tr>
+			<!-- Ende Leerzeile-->
+			
+			<!-- Begin Buttons-->
+			<tr><td class=dialogtxt colspan=2>
+				<table cellspacing=0 cellpadding=5 width=100%>
+				<tr>
+					<td class=formular align=center><INPUT class=button width = 100                        
+						type="button" value="]]><LABEL value="button.ok"/><![CDATA[" id=OK name=OK onClick="window.top.body.admin_head.location.href='Backoffice.html';"></td>
+				</tr>
+				</table>
+			</td>
+			</tr>
+			</table>
+			<!-- End Buttons-->	
+	</td></tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</html>
+]]>
+
+</TEMPLATE>
+
+<TEMPLATE name="done">
+<![CDATA[
+<HEAD>
+	<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><Method name="getServletPath"/><![CDATA[system/workplace/templates/js/opencms.js"></SCRIPT>
+</HEAD>
+<HTML>
+	<BODY onLoad="window.top.body.admin_head.location.href='Backoffice.html';">
+	</BODY>
+</HTML>
+]]>
+</TEMPLATE>
+
+<!-- Begin processed data -->
+<singlerow>
+	<![CDATA[
+	<td valign=middle width=18 nowrap>
+		<A href="javascript:showkontext(']]><PROCESS>backofficecontextmenue</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[',']]><PROCESS>uniqueid</PROCESS><![CDATA[')";>
+		<IMG border=0  src="]]><method name="picsUrl">ic_file_page.gif</method><![CDATA[" width=16 height=16>
+		</A>
+	</td>
+	]]><PROCESS>lockedby</PROCESS><![CDATA[	
+	]]><PROCESS>entry</PROCESS>
+</singlerow>
+
+<singleselection><![CDATA[addoption("]]><PROCESS>selectname</PROCESS><![CDATA[");
+        		 opts[ ]]><PROCESS>selectnumber</PROCESS><![CDATA[ ] 
+        		 = new opt(]]><PROCESS>selectparameter</PROCESS><![CDATA[,
+        		 "window.top.body.admin_head.location.href='Backoffice.html';");]]>
+</singleselection>
+<!-- End processed data -->
+
+</WORKPLACE>
+
