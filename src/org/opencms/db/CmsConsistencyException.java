@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsConsistencyException.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/25 09:34:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,14 +28,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 /**
  * Signals that a data source consistency problem has been detected.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/01/04 17:34:07 $
+ * @version $Revision: 1.2 $ $Date: 2005/01/25 09:34:34 $
  * @since 5.1.2
  */
 public class CmsConsistencyException extends CmsDataAccessException {
@@ -46,6 +46,7 @@ public class CmsConsistencyException extends CmsDataAccessException {
      * @param message the detail message
      */
     public CmsConsistencyException(String message) {
+
         this(message, null);
     }
 
@@ -57,6 +58,7 @@ public class CmsConsistencyException extends CmsDataAccessException {
      * @param rootCause the delegated exception
      */
     public CmsConsistencyException(String message, Throwable rootCause) {
+
         super(message, C_DA_CONSISTENCY_EXCEPTION, rootCause);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2004/12/23 10:32:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@
  */
 
 package org.opencms.main;
-
 
 import org.opencms.file.CmsObject;
 import org.opencms.security.CmsSecurityException;
@@ -62,7 +61,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -77,53 +76,8 @@ public class CmsSessionInfoManager {
      * Constructor, creates a new CmsSessionInfoManager object.
      */
     public CmsSessionInfoManager() {
-        m_sessions = Collections.synchronizedMap(new HashMap());
-    }
 
-    /**
-     * Removes a user session from the session storage,
-     * this is done when the session of the user is destroyed.<p>
-     *
-     * @param sessionId the users session id
-     */
-    public void removeUserSession(String sessionId) {
-        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
-        CmsUUID userId = CmsUUID.getNullUUID();
-        if (sessionInfo != null) {
-            userId = sessionInfo.getUserId();
-        }
-        m_sessions.remove(sessionId);
-        if (!userId.isNullUUID() && getUserSessions(userId).size() == 0) {
-            // remove the temporary locks of this user from memory
-            OpenCms.getLockManager().removeTempLocks(userId);
-            
-        }
-    }
-    
-    /**
-     * Returns a list of all active CmsSessionInfo objects for the specified user id.<p>
-     * 
-     * An OpenCms user can have many active sessions. 
-     * This is e.g. possible when two people have logged in to the system using the
-     * same username. Even one person can have multiple sessions if he
-     * is logged in to OpenCms with several browser windows at the same time.<p>
-     * 
-     * @param userId the id of the user
-     * @return the list of all active CmsSessionInfo objects
-     */
-    public List getUserSessions(CmsUUID userId) {
-        List userSessions = new ArrayList();
-        synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
-            while (i.hasNext()) {
-                String key = (String)i.next();
-                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                if (userId.equals(sessionInfo.getUserId())) {
-                    userSessions.add(sessionInfo);
-                }
-            }
-        }
-        return userSessions;
+        m_sessions = Collections.synchronizedMap(new HashMap());
     }
 
     /**
@@ -133,6 +87,7 @@ public class CmsSessionInfoManager {
      * @return the current project of a user from the session storage
      */
     public Integer getCurrentProject(String sessionId) {
+
         Integer currentProject = null;
         CmsSessionInfo userinfo = getUserInfo(sessionId);
         // this user does exist, so get his current project
@@ -143,9 +98,9 @@ public class CmsSessionInfoManager {
             return new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID);
         } else {
             return currentProject;
-        }        
+        }
     }
-    
+
     /**
      * Returns the current site of a user from the session storage.<p>
      *
@@ -153,6 +108,7 @@ public class CmsSessionInfoManager {
      * @return the current site of a user from the session storage
      */
     public String getCurrentSite(String sessionId) {
+
         String currentSite = null;
         CmsSessionInfo userinfo = getUserInfo(sessionId);
         // this user does exist, so get his current site
@@ -164,78 +120,6 @@ public class CmsSessionInfoManager {
         } else {
             return currentSite;
         }
-    }    
-
-    /**
-     * Returns the name of a user from the session storage,
-     * or <code>null</code> if that user is not in the session storage.<p>
-     *
-     * @param sessionId the users session id
-     * @return the name of a user from the session storage
-     */
-    public String getUserName(String sessionId) {
-        String username = null;
-        CmsSessionInfo userinfo = getUserInfo(sessionId);
-        // this user does exist, so get his name.
-        if (userinfo != null) {
-            username = userinfo.getUserName();
-        }
-        return username;
-    }
-
-    /**
-     * Gets the complete user information of a user from the session storage.
-     *
-     * @param sessionId A currently valid session id
-     * @return table with user information or null
-     */
-    public CmsSessionInfo getUserInfo(String sessionId) {
-        return (CmsSessionInfo)m_sessions.get(sessionId);
-    }
-
-    /**
-     * Puts a new user into the session storage.<p>
-     * 
-     * This method also stores additional user information in a CmsSessionInfo object.<p>
-     * 
-     * A user is stored with its current session id after a positive authentification.<p>
-     *
-     * @param sessionId a currently valid session id
-     * @param sessionInfo a CmsSessionInfo object containing information (e.g. the name) about the user
-     */
-    public void putUser(String sessionId, CmsSessionInfo sessionInfo) {
-        m_sessions.put(sessionId, sessionInfo);
-    }
-
-    /**
-     * Returns the number of current core sessions in the system.<p>
-     *
-     * @return the number of current core sessions in the system
-     */
-    public int size() {
-        return m_sessions.size();
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        StringBuffer output = new StringBuffer();
-        String key;
-        CmsSessionInfo sessionInfo;
-        String name;
-        synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
-            output.append("[CmsSessions]:\n");
-            while (i.hasNext()) {
-                key = (String)i.next();
-                output.append(key + " : ");
-                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                name = sessionInfo.getUserName();
-                output.append(name + "\n");
-            }
-        }
-        return output.toString();
     }
 
     /**
@@ -248,6 +132,7 @@ public class CmsSessionInfoManager {
      * @return a list with all currently logged in users
      */
     public List getLoggedInUsers() {
+
         List output = new Vector();
         String key;
         CmsSessionInfo sessionInfo;
@@ -263,58 +148,12 @@ public class CmsSessionInfoManager {
                 sessionInfo = (CmsSessionInfo)m_sessions.get(key);
                 userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
                 userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
-                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(sessionInfo.getSession().getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));    
+                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(sessionInfo.getSession()
+                    .getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));
                 output.add(userentry);
             }
         }
         return output;
-    }
-
-    /**
-     * Broadcasts a message to all logged in users.<p>
-     * 
-     * @param message the message to broadcast
-     */
-    public void sendBroadcastMessage(String message) {
-        String key;
-        CmsSessionInfo sessionInfo;
-
-        HttpSession user_session;
-        String session_message;
-        
-        synchronized (m_sessions) {
-            Iterator i = m_sessions.keySet().iterator();
-            while (i.hasNext()) {
-                key = (String)i.next();
-                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                user_session = sessionInfo.getSession();
-                session_message = (String)user_session.getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
-                if (session_message == null) {
-                    session_message = "";
-                }
-                session_message += message;
-                user_session.setAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
-            }
-        }
-    }
-
-    /**
-     * Send a broadcast message to all currently logged in users.<p>
-     * 
-     * @param cms the context info for security checks. 
-     * @param message the message to send
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void sendBroadcastMessage(CmsObject cms, String message) throws CmsException {
-
-        if (cms.isAdmin()) {
-            sendBroadcastMessage(message);
-        } else {
-            throw new CmsSecurityException(
-                "[" + this.getClass().getName() + "] sendBroadcastMessage()",
-                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
     }
 
     /**
@@ -344,6 +183,179 @@ public class CmsSessionInfoManager {
                 "[" + this.getClass().getName() + "] getLoggedInUsers()",
                 CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
+    }
+
+    /**
+     * Gets the complete user information of a user from the session storage.
+     *
+     * @param sessionId A currently valid session id
+     * @return table with user information or null
+     */
+    public CmsSessionInfo getUserInfo(String sessionId) {
+
+        return (CmsSessionInfo)m_sessions.get(sessionId);
+    }
+
+    /**
+     * Returns the name of a user from the session storage,
+     * or <code>null</code> if that user is not in the session storage.<p>
+     *
+     * @param sessionId the users session id
+     * @return the name of a user from the session storage
+     */
+    public String getUserName(String sessionId) {
+
+        String username = null;
+        CmsSessionInfo userinfo = getUserInfo(sessionId);
+        // this user does exist, so get his name.
+        if (userinfo != null) {
+            username = userinfo.getUserName();
+        }
+        return username;
+    }
+
+    /**
+     * Returns a list of all active CmsSessionInfo objects for the specified user id.<p>
+     * 
+     * An OpenCms user can have many active sessions. 
+     * This is e.g. possible when two people have logged in to the system using the
+     * same username. Even one person can have multiple sessions if he
+     * is logged in to OpenCms with several browser windows at the same time.<p>
+     * 
+     * @param userId the id of the user
+     * @return the list of all active CmsSessionInfo objects
+     */
+    public List getUserSessions(CmsUUID userId) {
+
+        List userSessions = new ArrayList();
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            while (i.hasNext()) {
+                String key = (String)i.next();
+                CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                if (userId.equals(sessionInfo.getUserId())) {
+                    userSessions.add(sessionInfo);
+                }
+            }
+        }
+        return userSessions;
+    }
+
+    /**
+     * Puts a new user into the session storage.<p>
+     * 
+     * This method also stores additional user information in a CmsSessionInfo object.<p>
+     * 
+     * A user is stored with its current session id after a positive authentification.<p>
+     *
+     * @param sessionId a currently valid session id
+     * @param sessionInfo a CmsSessionInfo object containing information (e.g. the name) about the user
+     */
+    public void putUser(String sessionId, CmsSessionInfo sessionInfo) {
+
+        m_sessions.put(sessionId, sessionInfo);
+    }
+
+    /**
+     * Removes a user session from the session storage,
+     * this is done when the session of the user is destroyed.<p>
+     *
+     * @param sessionId the users session id
+     */
+    public void removeUserSession(String sessionId) {
+
+        CmsSessionInfo sessionInfo = (CmsSessionInfo)m_sessions.get(sessionId);
+        CmsUUID userId = CmsUUID.getNullUUID();
+        if (sessionInfo != null) {
+            userId = sessionInfo.getUserId();
+        }
+        m_sessions.remove(sessionId);
+        if (!userId.isNullUUID() && getUserSessions(userId).size() == 0) {
+            // remove the temporary locks of this user from memory
+            OpenCms.getLockManager().removeTempLocks(userId);
+
+        }
+    }
+
+    /**
+     * Send a broadcast message to all currently logged in users.<p>
+     * 
+     * @param cms the context info for security checks. 
+     * @param message the message to send
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void sendBroadcastMessage(CmsObject cms, String message) throws CmsException {
+
+        if (cms.isAdmin()) {
+            sendBroadcastMessage(message);
+        } else {
+            throw new CmsSecurityException(
+                "[" + this.getClass().getName() + "] sendBroadcastMessage()",
+                CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }
+
+    /**
+     * Broadcasts a message to all logged in users.<p>
+     * 
+     * @param message the message to broadcast
+     */
+    public void sendBroadcastMessage(String message) {
+
+        String key;
+        CmsSessionInfo sessionInfo;
+
+        HttpSession user_session;
+        String session_message;
+
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            while (i.hasNext()) {
+                key = (String)i.next();
+                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                user_session = sessionInfo.getSession();
+                session_message = (String)user_session.getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE);
+                if (session_message == null) {
+                    session_message = "";
+                }
+                session_message += message;
+                user_session.setAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE, session_message);
+            }
+        }
+    }
+
+    /**
+     * Returns the number of current core sessions in the system.<p>
+     *
+     * @return the number of current core sessions in the system
+     */
+    public int size() {
+
+        return m_sessions.size();
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer output = new StringBuffer();
+        String key;
+        CmsSessionInfo sessionInfo;
+        String name;
+        synchronized (m_sessions) {
+            Iterator i = m_sessions.keySet().iterator();
+            output.append("[CmsSessions]:\n");
+            while (i.hasNext()) {
+                key = (String)i.next();
+                output.append(key + " : ");
+                sessionInfo = (CmsSessionInfo)m_sessions.get(key);
+                name = sessionInfo.getUserName();
+                output.append(name + "\n");
+            }
+        }
+        return output.toString();
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Michael Moossen (m.moossen@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class CmsException extends Exception {
 

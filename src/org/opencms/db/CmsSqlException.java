@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSqlException.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/25 09:34:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 import org.opencms.main.OpenCms;
@@ -41,11 +41,11 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Used to signal sql related issues.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  */
 public class CmsSqlException extends CmsDataAccessException {
-    
+
     /**
      * Ctor given the originator, the statement and the exception.<p>
      * 
@@ -56,9 +56,8 @@ public class CmsSqlException extends CmsDataAccessException {
      * @param rootCause the originating exception, may be <code>null</code> 
      */
     public CmsSqlException(Object originator, Statement stmt, Exception rootCause) {
-        super(
-            createMessage(originator, rootCause, stmt), 
-            C_DA_SQL_EXCEPTION, rootCause);
+
+        super(createMessage(originator, rootCause, stmt), C_DA_SQL_EXCEPTION, rootCause);
 
         if (OpenCms.getLog(this).isErrorEnabled()) {
             if (rootCause != null) {
@@ -68,7 +67,7 @@ public class CmsSqlException extends CmsDataAccessException {
             }
         }
     }
-    
+
     /**
      * Creates a message given an originating statement and exception.<p> 
      * 
@@ -79,6 +78,7 @@ public class CmsSqlException extends CmsDataAccessException {
      * @return the new exception message
      */
     public static String createMessage(Object originator, Throwable rootCause, Statement stmt) {
+
         String message = "";
         if (originator != null) {
             if (originator instanceof String) {
@@ -93,18 +93,18 @@ public class CmsSqlException extends CmsDataAccessException {
             message += createMessage(rootCause);
         }
 
-        if (stmt!=null) {
+        if (stmt != null) {
             // unfortunately, DelegatingPreparedStatement has no toString() method implementation
             Statement s = stmt;
             while (s instanceof DelegatingPreparedStatement) {
                 s = ((DelegatingPreparedStatement)s).getDelegate();
             }
-            if (s!=null) {
+            if (s != null) {
                 // the query that crashed
                 message += "query: " + s.toString();
             }
         }
-        
+
         return message;
     }
 
@@ -116,6 +116,7 @@ public class CmsSqlException extends CmsDataAccessException {
      * @return a description from the given exception
      */
     public static String createMessage(Throwable rootCause) {
+
         StackTraceElement[] stackTraceElements = rootCause.getStackTrace();
         String stackTraceElement = "";
 
@@ -133,7 +134,7 @@ public class CmsSqlException extends CmsDataAccessException {
         String message = "where: " + stackTraceElement + ", ";
         // why did we crash?
         message += "why: " + rootCause.toString();
-        
+
         return message;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/01/20 12:45:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,12 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.staticexport;
 
 import java.util.Collections;
 import java.util.List;
-
 
 /**
  * The <code>CmsOnDemandStaticExportHandler</code> is the default implementation
@@ -43,7 +42,7 @@ import java.util.List;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */

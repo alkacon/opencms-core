@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/01/20 12:45:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.staticexport;
 
 import org.opencms.db.CmsPublishedResource;
@@ -49,7 +49,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * The <code>CmsOnDemandStaticExportHandler</code> is the default implementation
  * for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
@@ -58,7 +57,7 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -68,18 +67,18 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
-        
+
         final CmsUUID id = publishHistoryId;
-        
+
         Thread t = new Thread(new Runnable() {
 
             public void run() {
 
-                scrubExportFolders(id);        
+                scrubExportFolders(id);
             }
         });
         t.start();
-        
+
     }
 
     /**
@@ -89,14 +88,15 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
      * @param publishHistoryId id of the last published project
      */
     public void scrubExportFolders(CmsUUID publishHistoryId) {
-        
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Static export manager scrubbing export folders for project ID " + publishHistoryId);
-        }      
-        
+            OpenCms.getLog(this).debug(
+                "Static export manager scrubbing export folders for project ID " + publishHistoryId);
+        }
+
         Set scrubedFolders = new HashSet();
         Set scrubedFiles = new HashSet();
-        
+
         // get a export user cms context        
         CmsObject cms;
         try {
@@ -106,17 +106,20 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             OpenCms.getLog(this).error("Could not init CmsObject with default export user");
             return;
         }
-        
+
         List publishedResources;
         try {
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Static export manager could not read list of changes resources for project ID " + publishHistoryId);
-            }                    
+                OpenCms.getLog(this)
+                    .error(
+                        "Static export manager could not read list of changes resources for project ID "
+                            + publishHistoryId);
+            }
             return;
         }
-        
+
         Iterator it = publishedResources.iterator();
         while (it.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)it.next();
@@ -131,19 +134,21 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
             Iterator sibIt = siblings.iterator();
             while (sibIt.hasNext()) {
                 String vfsName = (String)sibIt.next();
-                
+
                 // get the link name for the published file 
                 String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
+                    OpenCms.getLog(this).debug(
+                        "Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
                 }
                 if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix())
                     && (!scrubedFiles.contains(rfsName))
                     && (!scrubedFolders.contains(CmsResource.getFolderPath(rfsName)))) {
-                    
+
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager()
+                                .getExportPath()
                                 + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
                             try {
                                 File exportFolder = new File(exportFolderName);
@@ -152,7 +157,8 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                                     CmsFileUtil.purgeDirectory(exportFolder);
                                     // write log message
                                     if (OpenCms.getLog(this).isInfoEnabled()) {
-                                        OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
+                                        OpenCms.getLog(this).info(
+                                            "Static export deleted export folder '" + exportFolderName + "'");
                                     }
                                     scrubedFolders.add(rfsName);
                                     continue;
@@ -160,7 +166,13 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                             } catch (Throwable t) {
                                 // ignore, nothing to do about this
                                 if (OpenCms.getLog(this).isWarnEnabled()) {
-                                    OpenCms.getLog(this).warn("Error deleting static export folder vfsName='" + vfsName + "' rfsName='" + exportFolderName + "'", t);
+                                    OpenCms.getLog(this).warn(
+                                        "Error deleting static export folder vfsName='"
+                                            + vfsName
+                                            + "' rfsName='"
+                                            + exportFolderName
+                                            + "'",
+                                        t);
                                 }
                             }
                         }
@@ -170,30 +182,36 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                             OpenCms.getLog(this).debug("Static export folder index file rfsName='" + rfsName + "'");
                         }
                     }
-                    
+
                     String exportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
                         + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
-                    
+
                     purgeFile(exportFileName);
                     scrubedFiles.add(rfsName);
-                    
+
                     if (!res.isFolder()) {
                         List fileList = getRelatedFilesToPurge(exportFileName);
                         Iterator iter = fileList.iterator();
                         while (iter.hasNext()) {
                             File file = (File)iter.next();
                             purgeFile(file.getAbsolutePath());
-                            rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix() + "/" + file.getAbsolutePath().substring(OpenCms.getStaticExportManager().getExportPath().length()));
-                            rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
+                            rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
+                                + "/"
+                                + file.getAbsolutePath().substring(
+                                    OpenCms.getStaticExportManager().getExportPath().length()));
+                            rfsName = CmsStringUtil.substitute(
+                                rfsName,
+                                new String(new char[] {File.separatorChar}),
+                                "/");
                             scrubedFiles.add(rfsName);
-                            
+
                         }
                     }
                 }
             }
         }
     }
-    
+
     /**
      * Returns a list of related files to purge.<p>
      * 
@@ -202,12 +220,35 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
      * @return a list of related files to purge
      */
     protected abstract List getRelatedFilesToPurge(String exportFileName);
-    
+
+    private List getSiblingsList(CmsObject cms, String resRootPath) {
+
+        List siblings = new ArrayList();
+
+        try {
+            List li = cms.readSiblings(resRootPath, CmsResourceFilter.ALL);
+            for (int i = 0, l = li.size(); i < l; i++) {
+                String vfsName = ((CmsResource)li.get(i)).getRootPath();
+                siblings.add(vfsName);
+            }
+        } catch (CmsException e) {
+            // ignore, nothing to do about this
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn(
+                    "Error while getting the siblings for resource vfsName='" + resRootPath + "'",
+                    e);
+            }
+        }
+        return siblings;
+    }
+
     private void purgeFile(String exportFileName) {
 
-        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix() + "/" + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath().length()));
+        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
+            + "/"
+            + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath().length()));
         rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
-        
+
         try {
             File exportFile = new File(exportFileName);
             // check if export file exists, if so delete it
@@ -224,24 +265,6 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                 OpenCms.getLog(this).warn("Error deleting static export file rfsName='" + rfsName + "'", t);
             }
         }
-        
-    }
 
-    private List getSiblingsList(CmsObject cms, String resRootPath) {
-        List siblings = new ArrayList();
-
-        try {
-            List li = cms.readSiblings(resRootPath, CmsResourceFilter.ALL);
-            for (int i = 0, l = li.size(); i < l; i++) {
-                String vfsName = ((CmsResource)li.get(i)).getRootPath();
-                siblings.add(vfsName);
-            }
-        } catch (CmsException e) {
-            // ignore, nothing to do about this
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Error while getting the siblings for resource vfsName='" + resRootPath + "'", e);
-            }
-        }
-        return siblings;
     }
 }

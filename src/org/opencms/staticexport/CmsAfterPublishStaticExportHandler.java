@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/01/07 08:48:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.staticexport;
 
 import org.opencms.db.CmsPublishedResource;
@@ -52,7 +52,6 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 
-
 /**
  * The <code>CmsAfterPublishStaticExportHandler</code> is a implementation
  * for the <code>{@link I_CmsStaticExportHandler}</code> interface.<p>
@@ -60,11 +59,61 @@ import javax.servlet.ServletException;
  * This handler exports all changes immediately after something is published.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
 public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHandler {
+
+    /**
+     * Does the actual static export.<p>
+     *  
+     * @param resources a list of CmsPublishedREsources to start the static export with
+     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file      
+     * @throws CmsException in case of errors accessing the VFS
+     * @throws IOException in case of erros writing to the export output stream
+     * @throws ServletException in case of errors accessing the servlet 
+     */
+    public void doExportAfterPublish(List resources, I_CmsReport report)
+    throws CmsException, IOException, ServletException {
+
+        boolean templatesFound;
+
+        // export must be done in the context of the export user 
+        CmsObject cmsExportObject = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+
+        // first export all non-template resources,
+        templatesFound = OpenCms.getStaticExportManager()
+            .exportNonTemplateResources(cmsExportObject, resources, report);
+
+        // export template resourses (check "plainoptimization" setting)
+        if ((templatesFound) || (!OpenCms.getStaticExportManager().getQuickPlainExport())) {
+
+            long timestamp = 0;
+            List publishedTemplateResources;
+            boolean newTemplateLinksFound;
+            int linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER;
+
+            do {
+                // get all template resources which are potential candidates for a static export
+                publishedTemplateResources = cmsExportObject.readStaticExportResources(linkMode, timestamp);
+                newTemplateLinksFound = publishedTemplateResources.size() > 0;
+                if (newTemplateLinksFound) {
+                    if (linkMode == CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER) {
+                        // first loop, switch mode to parameter links, leave the timestamp unchanged
+                        linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITH_PARAMETER;
+                    } else {
+                        // second and subsequent loops, only look for links not already exported
+                        // this can only be the case for a link with parameters 
+                        // that was present on a page also generated with parameters
+                        timestamp = System.currentTimeMillis();
+                    }
+                    OpenCms.getStaticExportManager().exportTemplateResources(publishedTemplateResources, report);
+                }
+                // if no new template links where found we are finished
+            } while (newTemplateLinksFound);
+        }
+    }
 
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
@@ -78,7 +127,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                 OpenCms.getLog(this).error("Error during static export:", t);
             }
         }
-        
+
     }
 
     /**
@@ -93,12 +142,14 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
      * @throws IOException in case of erros writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
-    private void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report) throws CmsException, IOException, ServletException {
+    private void exportAfterPublish(CmsUUID publishHistoryId, I_CmsReport report)
+    throws CmsException, IOException, ServletException {
 
         // first check if the test resource was published already
         // if not, we must do a complete export of all static resources
-        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath() + OpenCms.getStaticExportManager().getTestResource());
-        
+        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+            + OpenCms.getStaticExportManager().getTestResource());
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Static export, checking test resource " + rfsName);
         }
@@ -125,9 +176,9 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             // do the export
             doExportAfterPublish(publishedResources, report);
         }
-        
+
     }
-    
+
     /**
      * Scrubs all files from the export folder that might have been changed,
      * so that the export is newly created after the next request to the resource.<p>
@@ -135,11 +186,12 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
      * @param publishHistoryId id of the last published project
      */
     private void scrubExportFolders(CmsUUID publishHistoryId) {
-        
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
-            OpenCms.getLog(this).debug("Static export manager scrubbing export folders for project ID " + publishHistoryId);
-        }      
-        
+            OpenCms.getLog(this).debug(
+                "Static export manager scrubbing export folders for project ID " + publishHistoryId);
+        }
+
         Set scrubedFolders = new HashSet();
         Set scrubedFiles = new HashSet();
         // get a export user cms context        
@@ -156,8 +208,11 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             publishedResources = cms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Static export manager could not read list of changes resources for project ID " + publishHistoryId);
-            }                    
+                OpenCms.getLog(this)
+                    .error(
+                        "Static export manager could not read list of changes resources for project ID "
+                            + publishHistoryId);
+            }
             return;
         }
         Iterator it = publishedResources.iterator();
@@ -192,7 +247,8 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                 // get the link name for the published file 
                 String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
+                    OpenCms.getLog(this).debug(
+                        "Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
                 }
                 if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix())
                     && (!scrubedFiles.contains(vfsName))
@@ -202,7 +258,8 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                     String exportFileName;
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
+                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager()
+                                .getExportPath()
                                 + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length() + 1));
                             try {
                                 File exportFolder = new File(exportFolderName);
@@ -211,7 +268,8 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                                     CmsFileUtil.purgeDirectory(exportFolder);
                                     // write log message
                                     if (OpenCms.getLog(this).isInfoEnabled()) {
-                                        OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
+                                        OpenCms.getLog(this).info(
+                                            "Static export deleted export folder '" + exportFolderName + "'");
                                     }
                                     scrubedFolders.add(vfsName);
                                     continue;
@@ -219,7 +277,13 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                             } catch (Throwable t) {
                                 // ignore, nothing to do about this
                                 if (OpenCms.getLog(this).isWarnEnabled()) {
-                                    OpenCms.getLog(this).warn("Error deleting static export folder vfsName='" + vfsName + "' rfsName='" + exportFolderName + "'", t);
+                                    OpenCms.getLog(this).warn(
+                                        "Error deleting static export folder vfsName='"
+                                            + vfsName
+                                            + "' rfsName='"
+                                            + exportFolderName
+                                            + "'",
+                                        t);
                                 }
                             }
                         }
@@ -244,7 +308,13 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                     } catch (Throwable t) {
                         // ignore, nothing to do about this
                         if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Error deleting static export file vfsName='" + vfsName + "' rfsName='" + exportFileName + "'", t);
+                            OpenCms.getLog(this).warn(
+                                "Error deleting static export file vfsName='"
+                                    + vfsName
+                                    + "' rfsName='"
+                                    + exportFileName
+                                    + "'",
+                                t);
                         }
                     }
                 }
@@ -252,54 +322,4 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
         }
     }
 
-    /**
-     * Does the actual static export.<p>
-     *  
-     * @param resources a list of CmsPublishedREsources to start the static export with
-     * @param report an I_CmsReport instance to print output message, or null to write messages to the log file      
-     * @throws CmsException in case of errors accessing the VFS
-     * @throws IOException in case of erros writing to the export output stream
-     * @throws ServletException in case of errors accessing the servlet 
-     */
-    public void doExportAfterPublish(List resources, I_CmsReport report)
-    throws CmsException, IOException, ServletException {
-
-        boolean templatesFound;
-
-        // export must be done in the context of the export user 
-        CmsObject cmsExportObject = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-
-        // first export all non-template resources,
-        templatesFound = OpenCms.getStaticExportManager().exportNonTemplateResources(cmsExportObject, resources, report);
-
-        // export template resourses (check "plainoptimization" setting)
-        if ((templatesFound) || (!OpenCms.getStaticExportManager().getQuickPlainExport())) {
-
-            long timestamp = 0;
-            List publishedTemplateResources;
-            boolean newTemplateLinksFound;
-            int linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER;
-
-            do {
-                // get all template resources which are potential candidates for a static export
-                publishedTemplateResources = cmsExportObject.readStaticExportResources(linkMode, timestamp);
-                newTemplateLinksFound = publishedTemplateResources.size() > 0;
-                if (newTemplateLinksFound) {
-                    if (linkMode == CmsStaticExportManager.C_EXPORT_LINK_WITHOUT_PARAMETER) {
-                        // first loop, switch mode to parameter links, leave the timestamp unchanged
-                        linkMode = CmsStaticExportManager.C_EXPORT_LINK_WITH_PARAMETER;
-                    } else {
-                        // second and subsequent loops, only look for links not already exported
-                        // this can only be the case for a link with parameters 
-                        // that was present on a page also generated with parameters
-                        timestamp = System.currentTimeMillis();
-                    }
-                    OpenCms.getStaticExportManager().exportTemplateResources(publishedTemplateResources, report);
-                }
-                // if no new template links where found we are finished
-            } while (newTemplateLinksFound);
-        }
-    }
-
-    
 }

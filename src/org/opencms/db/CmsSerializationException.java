@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsSerializationException.java,v $
- * Date   : $Date: 2005/01/04 17:34:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/25 09:34:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,14 +28,14 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.db;
 
 /**
  * Signals that an attempt to (un)marshall an object was not successfull.<p> 
  * 
  * @author Michael Moossen (m.moossen@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2005/01/04 17:34:07 $
+ * @version $Revision: 1.2 $ $Date: 2005/01/25 09:34:35 $
  * @since 6.0
  */
 public class CmsSerializationException extends CmsDataAccessException {
@@ -46,6 +46,7 @@ public class CmsSerializationException extends CmsDataAccessException {
      * @param message the description message
      */
     public CmsSerializationException(String message) {
+
         this(message, null);
     }
 
@@ -57,6 +58,7 @@ public class CmsSerializationException extends CmsDataAccessException {
      * @param rootCause the exception
      */
     public CmsSerializationException(String message, Throwable rootCause) {
+
         super(message, C_DA_SERIALIZATION_EXCEPTION, rootCause);
     }
 }
