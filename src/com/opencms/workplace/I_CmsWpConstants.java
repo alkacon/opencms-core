@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/26 10:15:05 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/26 11:50:14 $
  */
 public interface I_CmsWpConstants {
 
@@ -21,7 +21,7 @@ public interface I_CmsWpConstants {
      /**
      *  Name of the template containing input field definitions
      */
-    public static final String C_INPUTTEMPLATE = "labelInput";
+    public static final String C_INPUTTEMPLATE = "inputTemplate";
     
     
     // tag defnitions
@@ -35,6 +35,11 @@ public interface I_CmsWpConstants {
     * Name if the label tag in the input definiton template
     */
    public static final String C_TAG_INPUTFIELD="inputfield";
+    
+   /**
+    * Name if the password tag in the input definiton template
+    */
+   public static final String C_TAG_PASSWORD="password";
     
     
     // Parameters for buttons
@@ -65,7 +70,6 @@ public interface I_CmsWpConstants {
     
     /** Style class of the input field  */
     public static final String C_INPUT_CLASS = "class";
-    
 
     /**  Size of the input field  */
     public static final String C_INPUT_SIZE = "size";

@@ -13,7 +13,7 @@ import java.util.*;
  *  Content definition for the workplace input element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 10:01:51 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/26 11:50:14 $
  */
 public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -83,4 +83,24 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsLogCha
         return getProcessedDataValue(C_TAG_INPUTFIELD);                
      }  
 
+     /**
+     * Gets the processed data for a password field.
+     * @param styleClass The style class of this password field.
+     * @param name The name of this password field.
+     * @param size The size of this password field
+     * @param length The input length of this password field.
+     * @return Processed password field.
+     * @exception CmsException
+     */
+    public String getPassword(String styleClass, String name, String size, String length)
+        throws CmsException {
+        setData(C_INPUT_CLASS, styleClass);
+        setData(C_INPUT_NAME, name);
+        setData(C_INPUT_SIZE, size);
+        setData(C_INPUT_LENGTH, length);
+        return getProcessedDataValue(C_TAG_PASSWORD);                
+     }  
+
+    
+    
 }

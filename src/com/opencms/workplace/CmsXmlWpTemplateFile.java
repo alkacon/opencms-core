@@ -15,7 +15,7 @@ import java.util.*;
  * @author Alexander Lucas
 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/01/26 10:40:22 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/26 11:50:14 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -93,6 +93,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         registerTag("BUTTONSEPARATOR", "com.opencms.workplace.CmsButtonSeparator");
         registerTag("LABEL", "com.opencms.workplace.CmsLabel");
         registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
+        registerTag("PASSWORD", "com.opencms.workplace.CmsInputPassword");
     }    
     
     /**
@@ -163,6 +164,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         I_CmsWpElement workplaceObject = null;        
         String tagname = n.getTagName().toLowerCase();
         String classname = null;
+
         
         classname = (String)m_wpTags.get(tagname);
         if(classname == null || "".equals(classname)) {

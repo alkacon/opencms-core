@@ -11,20 +11,20 @@ import java.util.*;
 
 
 /**
- * Class for building workplace input fields. <BR>
- * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
+ * Class for building workplace password fields. <BR>
+ * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PASSWORD&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/26 11:50:14 $
+ * @version $Revision: 1.1 $ $Date: 2000/01/26 11:50:14 $
  */
-public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
+public class CmsInputPassword extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
     /**
-     * Handling of the <CODE>&lt;INPUT&gt;</CODE> tags.
+     * Handling of the <CODE>&lt;PASSWORD&gt;</CODE> tags.
      * Calls the user method <code>elementTag</code> that has to be
      * defined in the XML template class. 
      * 
-     * @param XML element containing the <code>&lt;INPUT&gt;</code> tag.
+     * @param XML element containing the <code>&lt;PASSWORD&gt;</code> tag.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Result of user method <code>templateElement()</code>.
@@ -38,7 +38,7 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 
         
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms); 
-        String result = inputdef.getInput(styleClass,name,size,length);
+        String result = inputdef.getPassword(styleClass,name,size,length);
 
         return result; 
     }                    

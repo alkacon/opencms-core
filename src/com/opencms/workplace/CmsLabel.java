@@ -15,7 +15,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;LABEL&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/26 09:55:48 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/26 11:50:14 $
  */
 public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -24,7 +24,7 @@ public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
      * Calls the user method <code>elementTag</code> that has to be
      * defined in the XML template class. 
      * 
-     * @param n XML element containing the <code>&lt;LABEL&gt;</code> tag.
+     * @param XML element containing the <code>&lt;LABEL&gt;</code> tag.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Result of user method <code>templateElement()</code>.

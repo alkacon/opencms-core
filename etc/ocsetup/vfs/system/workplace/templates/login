@@ -37,18 +37,18 @@
             <td colspan=2 class=dialogtxt> 
 			]]><LABEL value="message.login1" /><![CDATA[<br>
 			]]><LABEL value="message.login2" /><![CDATA[
-           	</td>
+	       	</td>
         </tr>
         <tr>
             <td width=35% class=formular>]]><LABEL value="input.username" /><![CDATA[:</td>
-            <td class=formular><input class="textfeld" size=15 maxlength=8 name="LOGIN" ></td>
+		    <td class=formular>]]><INPUTFIELD name="LOGIN" class="textfeld" size="15" length="8" /><![CDATA[</td>
         </tr>
          <tr>
-            <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>
-            <td class=formular><input class="textfeld" size=15 maxlength=8 name="PASWORD" ></td>
+            <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>	
+            <td class=formular>]]><PASSWORD name="PASSWORD" class="textfeld" size="15" length="8" /><![CDATA[</td>
         </tr>
         <tr>
-            <td colspan=2 align=middle class=formular><input class=button width=100 type="submit" value="Enter" id=LOGIN name=LOGIN onclick="openwin('index.html', 'opencms', 0, 0); window.close(); return false;"></td>
+            <td colspan=2 align=middle class=formular><input class=button width=100 type="submit" value="Enter" id=LOGIN name=LOGIN onclick="openwin('login.html', 'opencms', 0, 0); window.close(); return false;"></td>
         </tr>
         </table>
 </td></tr>
