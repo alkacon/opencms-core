@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/12 11:38:44 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/09/14 08:44:30 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.35 $ $Date: 2000/09/12 11:38:44 $
+ * @version $Revision: 1.36 $ $Date: 2000/09/14 08:44:30 $
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -93,7 +93,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	private CmsCache m_propertyDefCache=null;
 	private CmsCache m_propertyDefVectorCache=null;
 	private String m_refresh=null;
-
 
 /**
  * Accept a task from the Cms.
@@ -2699,6 +2698,25 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 		// return the files
 		return files;
 	}
+/**
+ * Returns a Vector with all resource-names that have set the given property to the given value.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername the complete path to the folder.
+ * @param propertydef, the name of the propertydefinition to check.
+ * @param property, the value of the property for the resource.
+ * 
+ * @return Vector with all names of resources.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException {
+	return m_dbAccess.getFilesWithProperty(currentProject.getId(), propertyDefinition, propertyValue);
+}
 	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this

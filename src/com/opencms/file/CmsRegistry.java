@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/09/12 11:44:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/14 08:44:27 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 import java.text.*;
+import java.security.*;
 import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
@@ -40,7 +41,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/09/12 11:44:33 $
+ * @version $Revision: 1.10 $ $Date: 2000/09/14 08:44:27 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -70,6 +71,11 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	 */
 	private SimpleDateFormat m_dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
 
+	/**
+	 *  A message digest to check the resource-codes
+	 */
+	private MessageDigest m_digest;
+
 /**
  * Creates a new CmsRegistry for a user. The cms-object represents the current state of the current user.
  *
@@ -83,6 +89,11 @@ public CmsRegistry(CmsRegistry reg, CmsObject cms) {
 	m_xmlReg = reg.m_xmlReg;
 	// store the cms-object for this instance.
 	m_cms = cms;
+	try {
+		m_digest = MessageDigest.getInstance(CmsImport.C_IMPORT_DIGEST); 
+	} catch (NoSuchAlgorithmException e) {
+		m_digest = null;
+	}
 }
 /**
  * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
@@ -245,37 +256,60 @@ public void deleteGetConflictingFileNames(String modulename, Vector filesWithPro
 	Vector otherFiles = new Vector();
 	Vector otherChecksums = new Vector();
 	Enumeration modules = getModuleNames();
-
-	while(modules.hasMoreElements()) {
-		String module = (String)modules.nextElement();
+	while (modules.hasMoreElements()) {
+		String module = (String) modules.nextElement();
 		// get the files only for modules that are not for the current module.
-		if(!module.equals(modulename)) {
+		if (!module.equals(modulename)) {
 			// get the files
 			getModuleFiles(module, otherFiles, otherChecksums);
 		}
 	}
-
-	for(int i = 0; i < moduleFiles.size(); i++) {
+	for (int i = 0; i < moduleFiles.size(); i++) {
 		// get the current file and checksum
-		String currentFile = (String)moduleFiles.elementAt(i);
-		String currentChecksum = (String)moduleChecksums.elementAt(i);
+		String currentFile = (String) moduleFiles.elementAt(i);
+		String currentChecksum = (String) moduleChecksums.elementAt(i);
+		CmsFile file = null;
 
-		// exists the file in the cms?
-		System.err.println(currentFile);
-		try {
-			m_cms.readFileHeader(currentFile);
-		} catch(CmsException exc) {
-			// the file dosen't exist - mark it as deleted
-			missingFiles.addElement(currentFile);
+		// is it a file - then check all the possibilities
+		if (!currentFile.endsWith("/")) {
+			// exists the file in the cms?
+			try {
+				file = m_cms.readFile(currentFile);
+			} catch (CmsException exc) {
+				// the file dosen't exist - mark it as deleted
+				missingFiles.addElement(currentFile);
+			}
+
+			// is the file in use of another module?
+			if (otherFiles.contains(currentFile)) {
+				// yes - mark it as in use
+				filesInUse.addElement(currentFile);
+			}
+
+			// was the file changed?
+			if (file != null) {
+				// create the current digest-content for the file
+				String digestContent = com.opencms.util.Encoder.escape(new String(m_digest.digest(file.getContents())));
+				if (!currentChecksum.equals(digestContent)) {
+					// the file was changed, the checksums are different
+					wrongChecksum.addElement(currentFile);
+				}
+			}
 		}
+	}
 
-		// is the file in use of another module?
-		if( otherFiles.contains(currentFile) ) {
-			// yes - mark it as in use
-			filesInUse.addElement(currentFile);
+	// TODO: determine the files with the property for this module.
+
+	Vector files = m_cms.getFilesWithProperty("module", modulename + "_" + getModuleVersion(modulename));
+	for(int i = 0; i < files.size(); i++) {
+		String currentFile = (String)files.elementAt(i);
+		if(!moduleFiles.contains(currentFile )) {
+			// is the file in use of another module?
+			if (!otherFiles.contains(currentFile)) {
+				wrongChecksum.addElement(currentFile);
+			}
 		}
-
-		// todo: was the file changed? Is the checksum correct
+		
 	}
 }
 /**

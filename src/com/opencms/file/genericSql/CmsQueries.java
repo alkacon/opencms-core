@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/13 13:46:10 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/09/14 08:44:29 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $ $Date: 2000/09/13 13:46:10 $
+ * @version $Revision: 1.3 $ $Date: 2000/09/14 08:44:29 $
  */
 public class CmsQueries
 {
@@ -119,6 +119,8 @@ public class CmsQueries
 	public String C_RESOURCES_RENAMERESOURCE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "RESOURCE_NAME = ? , " + "RESOURCE_LASTMODIFIED_BY = ? " + "WHERE RESOURCE_ID = ?";
 	public Integer C_RESOURCES_UPDATE_LOCK_KEY = new Integer(141);
 	public String C_RESOURCES_UPDATE_LOCK = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET " + "LOCKED_BY = ? " + "WHERE RESOURCE_ID = ?";
+	public Integer C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY = new Integer(142);
+	public String C_RESOURCES_GET_FILES_WITH_PROPERTY = "select res.RESOURCE_NAME from " + C_DATABASE_PREFIX + "RESOURCES res, " + C_DATABASE_PREFIX + "PROPERTYDEF propdef, " + C_DATABASE_PREFIX + "PROPERTIES prop where res.PROJECT_ID = ? and prop.PROPERTY_VALUE = ? and propdef.PROPERTYDEF_NAME = ? and res.RESOURCE_ID = prop.RESOURCE_ID and prop.PROPERTYDEF_ID = propdef.PROPERTYDEF_ID";
 
 
 	// Constants for files table

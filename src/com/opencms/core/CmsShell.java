@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/05 17:13:05 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2000/09/14 08:44:27 $
+ * Version: $Revision: 1.24 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.23 $ $Date: 2000/09/05 17:13:05 $
+ * @version $Revision: 1.24 $ $Date: 2000/09/14 08:44:27 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -476,7 +476,31 @@ public class CmsShell implements I_CmsConstants {
 	public void deleteModule(String module) {
 		try {
 			I_CmsRegistry reg = m_cms.getRegistry();
-			reg.deleteModule(module, new Vector());
+			// reg.deleteModule(module, new Vector());
+
+			Vector filesWithProperty = new Vector();
+			Vector missingFiles = new Vector();
+			Vector wrongChecksum = new Vector();
+			Vector filesInUse = new Vector();
+			reg.deleteGetConflictingFileNames(module, filesWithProperty, missingFiles, wrongChecksum, filesInUse);
+
+			System.out.println("Files with module-property:");
+			for(int i = 0; i < filesWithProperty.size(); i++) {
+				System.out.println(filesWithProperty.elementAt(i));
+			}
+			System.out.println("Missing files: ");
+			for(int i = 0; i < missingFiles.size(); i++) {
+				System.out.println(missingFiles.elementAt(i));
+			}
+			System.out.println("Files with wrong checksum: ");
+			for(int i = 0; i < wrongChecksum.size(); i++) {
+				System.out.println(wrongChecksum.elementAt(i));
+			}
+			System.out.println("Files are in use by other modules: ");
+			for(int i = 0; i < filesInUse.size(); i++) {
+				System.out.println(filesInUse.elementAt(i));
+			}
+			
 		} catch (Exception exc) {
 			printException(exc);
 		}

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/08 12:19:18 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2000/09/14 08:44:27 $
+ * Version: $Revision: 1.106 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.105 $ $Date: 2000/09/08 12:19:18 $
+ * @version $Revision: 1.106 $ $Date: 2000/09/14 08:44:27 $
  * 
  */
 
@@ -1035,6 +1035,23 @@ public interface I_CmsResourceBroker {
 	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
 								   String foldername)
 		throws CmsException;
+/**
+ * Returns a Vector with all resource-names that have set the given property to the given value.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ *
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param foldername the complete path to the folder.
+ * @param propertydef, the name of the propertydefinition to check.
+ * @param property, the value of the property for the resource.
+ * 
+ * @return Vector with all names of resources.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProject, String propertyDefinition, String propertyValue) throws CmsException;
 	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this

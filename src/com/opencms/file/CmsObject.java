@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/09/08 08:16:40 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2000/09/14 08:44:27 $
+ * Version: $Revision: 1.110 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.109 $ $Date: 2000/09/08 08:16:40 $ 
+ * @version $Revision: 1.110 $ $Date: 2000/09/14 08:44:27 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -942,6 +942,19 @@ public class CmsObject implements I_CmsConstants {
 		return( m_rb.getFilesInFolder(m_context.currentUser(), m_context.currentProject(),
 									  foldername) );
 	}
+/**
+ * Returns a Vector with all resource-names that have set the given property to the given value.
+ * 
+ * @param propertydef, the name of the propertydefinition to check.
+ * @param property, the value of the property for the resource.
+ * 
+ * @return Vector with all names of resources.
+ * 
+ * @exception CmsException Throws CmsException if operation was not succesful.
+ */
+public Vector getFilesWithProperty(String propertyDefinition, String propertyValue) throws CmsException {
+	return m_rb.getFilesWithProperty(m_context.currentUser(), m_context.currentProject(), propertyDefinition, propertyValue);
+}
 	/**
 	 * This method can be called, to determine if the file-system was changed 
 	 * in the past. A module can compare its previosly stored number with this

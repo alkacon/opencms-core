@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/09/05 17:13:05 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/09/14 08:44:27 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,14 +43,14 @@ import source.org.apache.java.util.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.21 $ $Date: 2000/09/05 17:13:05 $
+ * @version $Revision: 1.22 $ $Date: 2000/09/14 08:44:27 $
  */
 public class CmsImport implements I_CmsConstants {
 
 	/**
 	 * The algorithm for the message digest
 	 */
-	private String C_IMPORT_DIGEST="MD5";
+	public static final String C_IMPORT_DIGEST="MD5";
 	
 	/**
 	 * The import-file to load resources from
