@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/03/20 23:44:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/03/21 08:08:56 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0 alpha 3
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
@@ -132,12 +132,12 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         String beanName = null;
 
         if ((dotIndex > 1) && (dotIndex < (macro.length() - 1))) {
-            beanName = macro.substring(2, dotIndex);
+            beanName = macro.substring(0, dotIndex);
         } else {
             return null;
         }
         
-        String variableName = macro.substring(dotIndex + 1, macro.length() - 1);
+        String variableName = macro.substring(dotIndex + 1, macro.length());
         
         if (CmsStringUtil.isEmpty(beanName) || CmsStringUtil.isEmpty(variableName)) {
             return null;
