@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/17 12:23:21 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.37 $ $Date: 2000/02/17 12:23:21 $
+ * @version $Revision: 1.38 $ $Date: 2000/02/17 15:48:49 $
  */
 public interface I_CmsConstants
 {
@@ -619,6 +619,12 @@ public interface I_CmsConstants
 	final static String C_TFTYPE = "TYPE";
 	/** XML tag to defines the resource typename */
 	final static String C_TFTYPENAME = "TYPENAME";
+    /** XML tag to defines user acces */
+	final static String C_TFUSER = "USER";
+    /** XML tag to defines group acces */
+	final static String C_TFGROUP = "GROUP";
+    /** XML tag to defines file acces */
+	final static String C_TFACCESS = "ACCESFLAG";
 	
 	/** XML tag to defines the resource metainfo */
 	final static String C_TFMETAINFO = "METAINFO";

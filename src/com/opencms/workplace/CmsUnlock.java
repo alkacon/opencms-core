@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/17 09:57:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,8 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/17 09:57:39 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.7 $ $Date: 2000/02/17 15:48:49 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,9 +79,13 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
         if (unlock != null) {
-            if (unlock.equals("true")) {            
-                   cms.unlockResource(filename);
-				   session.removeValue(C_PARA_FILE);
+            if (unlock.equals("true")) {
+				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+					int help = C_CONTENTBODYPATH.lastIndexOf("/");
+					cms.unlockResource( (C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath()) );
+				}
+                cms.unlockResource(filename);
+				session.removeValue(C_PARA_FILE);
             }
              // TODO: ErrorHandling
              // return to filelist

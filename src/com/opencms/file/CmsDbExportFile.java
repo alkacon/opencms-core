@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
@@ -205,7 +205,25 @@ class CmsDbExportFile implements I_CmsConstants {
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
 			m_newElement.appendChild(m_newNode);
-		
+			
+			m_newElement= m_docXml.createElement(C_TFUSER);
+			parent.appendChild(m_newElement);
+			A_CmsUser hUser=m_RB.readOwner(m_user, m_project, folder);
+			m_newNode = m_docXml.createTextNode(hUser.getName());
+			m_newElement.appendChild(m_newNode);
+			
+			m_newElement= m_docXml.createElement(C_TFGROUP);
+			A_CmsGroup hGroup=m_RB.readGroup(m_user, m_project, folder);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(hGroup.getName());
+			m_newElement.appendChild(m_newNode);
+
+			m_newElement= m_docXml.createElement(C_TFACCESS);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(String.valueOf(folder.getAccessFlags()));
+			m_newElement.appendChild(m_newNode);
+
+	
 			/** read and write metainfo */
 			m_newElement=m_docXml.createElement(C_TFMETAINFO);
 			parent.appendChild(m_newElement);
@@ -243,6 +261,23 @@ class CmsDbExportFile implements I_CmsConstants {
 			m_newElement= m_docXml.createElement(C_TFTYPENAME);
 			parent.appendChild(m_newElement);
 			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
+			m_newElement.appendChild(m_newNode);
+			
+			m_newElement= m_docXml.createElement(C_TFUSER);
+			parent.appendChild(m_newElement);
+			A_CmsUser hUser=m_RB.readOwner(m_user, m_project, fif);
+			m_newNode = m_docXml.createTextNode(hUser.getName());
+			m_newElement.appendChild(m_newNode);
+			
+			m_newElement= m_docXml.createElement(C_TFGROUP);
+			A_CmsGroup hGroup=m_RB.readGroup(m_user, m_project, fif);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(hGroup.getName());
+			m_newElement.appendChild(m_newNode);
+
+			m_newElement= m_docXml.createElement(C_TFACCESS);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(String.valueOf(fif.getAccessFlags()));
 			m_newElement.appendChild(m_newNode);
 			
 			// read and write metainfo

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,8 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:28 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/17 15:48:49 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -64,6 +64,12 @@ class CmsDbImportFiles implements I_CmsConstants {
 	private String m_fName=null;
 	/** to update and the db and creates the folder and files - resource typename */
 	private String m_fTypename=new String();
+	/** to update and the db and creates the folder and files - resource owner */
+	private String m_fUser=new String();
+	/** to update and the db and creates the folder and files - resource group */
+	private String m_fGroup=new String();
+	/** to update and the db and creates the folder and files - resource accessflags */
+	private String m_fAccess=new String();
 	/** to update and the db and creates the folder and files - file content */
 	private String m_fContent=null;
 
@@ -152,6 +158,15 @@ class CmsDbImportFiles implements I_CmsConstants {
 				if(help.equals(C_TFTYPENAME)){
 					m_fTypename=m_resourceElements.item(i).getFirstChild().getNodeValue();
 				}
+				if(help.equals(C_TFUSER)){
+					m_fUser=m_resourceElements.item(i).getFirstChild().getNodeValue();
+				}
+				if(help.equals(C_TFGROUP)){
+					m_fGroup=m_resourceElements.item(i).getFirstChild().getNodeValue();
+				}
+				if(help.equals(C_TFACCESS)){
+					m_fAccess=m_resourceElements.item(i).getFirstChild().getNodeValue();
+				}
 				
 				// Metadefinitions
 				
@@ -180,6 +195,11 @@ class CmsDbImportFiles implements I_CmsConstants {
 			try {
 				if( !(m_fName.equals("")) ) {
 					CmsFolder newFolder = m_RB.createFolder(m_user,m_project,m_importPath, m_fName, h_fMeta);
+					m_RB.lockResource(m_user, m_project,newFolder.getAbsolutePath(),true);
+					m_RB.chown(m_user, m_project, newFolder.getAbsolutePath(), m_fUser);
+					m_RB.chgrp(m_user, m_project, newFolder.getAbsolutePath(), m_fGroup);
+					m_RB.chmod(m_user, m_project, newFolder.getAbsolutePath(), Integer.parseInt(m_fAccess));
+					m_RB.unlockResource(m_user,m_project,newFolder.getAbsolutePath());
 				}
 			} catch (CmsException e) {
 				m_errMsg.addElement(e.getMessage());
@@ -195,7 +215,17 @@ class CmsDbImportFiles implements I_CmsConstants {
 			}
 			m_fName=m_fName.substring((m_fName.lastIndexOf("/")+1),m_fName.length());
 			try {
+				System.out.println(m_fName);
 				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fMeta);
+				System.out.println("lock");
+				m_RB.lockResource(m_user,m_project,newFile.getAbsolutePath(), true);
+				System.out.println("gelocked");
+				m_RB.chown(m_user, m_project, newFile.getAbsolutePath(), m_fUser);
+				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
+				System.out.println(m_fAccess);
+				m_RB.chmod(m_user, m_project, newFile.getAbsolutePath(), Integer.parseInt(m_fAccess) );
+				m_RB.unlockResource(m_user,m_project,newFile.getAbsolutePath());
+				System.out.println("geschrieben");
 			} catch (CmsException e) {
 				m_errMsg.addElement(e.getMessage());	
 			}
@@ -283,6 +313,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 		for(i=0; i<sl; i++) {
 			fContent[i]=(byte)Integer.parseInt( v_erg.elementAt(i).toString());	
 		}
+		System.out.println("read Content");
 		return fContent;
 		
 	}

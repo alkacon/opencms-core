@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
- * Date   : $Date: 2000/02/17 09:57:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,8 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/17 09:57:39 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
  */
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                   I_CmsConstants {
@@ -79,8 +80,12 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
         if (lock != null) {
             if (lock.equals("true")) {
-                   cms.lockResource(filename,true);
-				   session.removeValue(C_PARA_FILE);
+				if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+					int help = C_CONTENTBODYPATH.lastIndexOf("/");
+					cms.lockResource( (C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath()),true );
+				}
+                cms.lockResource(filename,true);
+				session.removeValue(C_PARA_FILE);
             }
              // TODO: ErrorHandling
              // return to filelist

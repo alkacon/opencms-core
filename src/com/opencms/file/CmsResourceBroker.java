@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/16 18:06:27 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michaela Schleich
- * @version $Revision: 1.61 $ $Date: 2000/02/16 18:06:27 $
+ * @version $Revision: 1.62 $ $Date: 2000/02/17 15:48:49 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3299,7 +3299,7 @@ System.err.println(">>> readFile(2) error for\n" +
 		int filesimported = 0;
 			admin = this.isAdmin(currentUser, currentProject);
 			if (admin) {
-				CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importPath, importFile);
+				CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importFile, importPath);
 				Vector errLogImport= cmsImport.xmlImport();
 				
 				if(cmsImport.getFilesImported()==C_FILES_IMPORTED) {

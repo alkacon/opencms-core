@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/02/17 09:57:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/17 15:48:49 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,8 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/17 09:57:39 $
+ * @author Michaela Schleich
+  * @version $Revision: 1.6 $ $Date: 2000/02/17 15:48:49 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -80,7 +81,13 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // if not, the delete page is shown for the first time
     
         if (delete != null) {
-            // delete the file
+			//check if the file type name is page
+			//if so delete the file body and content
+			// else delete only file
+			if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				cms.deleteFile( (C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath()) );
+			}
             cms.deleteFile(filename);
             session.removeValue(C_PARA_FILE);
             
