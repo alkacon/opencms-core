@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.29 $
- * $Date: 2003/05/15 12:39:34 $
+ * $Revision: 1.30 $
+ * $Date: 2003/05/16 14:49:01 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -126,10 +126,10 @@ public abstract class CmsMasterContent
      * @param id the master-id of the dataset to read.
      * @throws CmsException if the data couldn't be read from the database.
      */
-    public CmsMasterContent(CmsObject cms, Integer id) throws CmsException {
+    public CmsMasterContent(CmsObject cms, CmsUUID contentId) throws CmsException {
         m_cms = cms;
         initValues();
-        getDbAccessObject(getSubId()).read(m_cms, this, m_dataSet, id.intValue());
+        getDbAccessObject(getSubId()).read(m_cms, this, m_dataSet, contentId);
     }
     
     /**
@@ -371,18 +371,20 @@ public abstract class CmsMasterContent
      * Gets the lockstate.
      * @return a int with the user who has locked the ressource.
      */
-    public CmsUUID getLockstate() {
-        CmsUUID lockedByUserId = CmsUUID.getNullUUID();
-        
-        try {
-            if(hasWriteAccess(m_cms)) {
-                lockedByUserId = m_dataSet.m_lockedBy;
-            }
-        } catch(CmsException exc) {
-            // NOOP
-        }
-        
-        return lockedByUserId;
+    public CmsUUID getLockstate() {        
+//        CmsUUID lockedByUserId = CmsUUID.getNullUUID();
+//        
+//        try {
+//            if(hasWriteAccess(m_cms)) {
+//                lockedByUserId = m_dataSet.m_lockedBy;
+//            }
+//        } catch(CmsException exc) {
+//            // NOOP
+//        }
+//        
+//        return lockedByUserId;
+
+        return m_dataSet.m_lockedBy;
     }
 
     /**

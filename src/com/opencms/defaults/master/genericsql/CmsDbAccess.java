@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -342,7 +342,7 @@ public class CmsDbAccess {
      * @param content the CmsMasterContent to write to the database.
      * @param dataset the set of data for this contentdefinition.
      */
-    public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, int masterId)
+    public void read(CmsObject cms, CmsMasterContent content, CmsMasterDataSet dataset, CmsUUID contentId)
         throws CmsException {
         if(!content.isReadable()) {
             // no read access
@@ -361,13 +361,13 @@ public class CmsDbAccess {
         try {
             con = DriverManager.getConnection(poolToUse);
             stmnt = sqlPrepare(con, statement_key);
-            stmnt.setInt(1, masterId);
+            stmnt.setString(1, contentId.toString());
             stmnt.setInt(2, content.getSubId());
             res = stmnt.executeQuery();
             if(res.next()) {
                 sqlFillValues(res, cms, dataset);
             } else {
-                throw new CmsException( "[" + this.getClass().getName() + ".read] no content found for CID:" + masterId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
+                throw new CmsException( "[" + this.getClass().getName() + ".read] no content found for CID:" + contentId + ", SID: " + content.getSubId() + ", statement: " + statement_key, CmsException.C_NOT_FOUND);
             }
             if(!checkAccess(content, false)) {
                 throw new CmsException("Not readable", CmsException.C_NO_ACCESS);
@@ -1860,7 +1860,7 @@ public class CmsDbAccess {
             con = DriverManager.getConnection(m_poolName);
             stmnt = sqlPrepare(con, "update_state_offline");
             stmnt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
-            stmnt.setInt(2, I_CmsConstants.C_UNKNOWN_ID);
+            stmnt.setString(2, CmsUUID.getNullUUID().toString());
             stmnt.setString(3, dataset.m_masterId.toString());
             stmnt.setInt(4, subId);
             stmnt.executeUpdate();

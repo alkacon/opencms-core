@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,16 +48,24 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
 
     /** Default value of permission*/
     protected final static int C_DEFAULT_PERMISSIONS=383;
+    
     // possible accessflags
     protected final static String[] C_ACCESS_FLAGS = {"1","2","4","8","16","32","64","128","256"};
-    //CmsChannelContent
-    private CmsChannelContent cd = null;
-    //int/Integer id
-    private String idvalue = "0";
-    //int/Integer id
-    private String resid = "-1";
-    /** UNNKNOWN ID */
-    private static final int C_UNKNOWN_ID=-1;
+    
+    /**
+     * The COS channel.
+     */
+    private CmsChannelContent m_channel;
+    
+    /**
+     * The ID of the channel which is set as a property on the folder representing the channel.
+     */
+    private String m_channelId = "0";
+    
+    /**
+     * The resource ID of the folder representing the channel.
+     */
+    private CmsUUID m_folderId;
 
     public Class getContentDefinitionClass() {
         return CmsChannelContent.class;
@@ -129,25 +137,30 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
 
         // Get the parameter values
 
-        //get value of id
-        String id = (String) parameters.get("id");
-        String channelid = (String) parameters.get("channelId");
-        String resourceid = (String) parameters.get("resourceid");
-        //get value of parentId
+        // get value of id
+        String id = (String) parameters.get("id");        
+        String channelId = (String) parameters.get("channelId");
+        String resourceId = (String) parameters.get("resourceid");
+        String nullUUIDStr = CmsUUID.getNullUUID().toString();
+        
+        // get value of parentId
         String parentName = (String) parameters.get("parentName");
         if(parentName == null || parentName.equals("")){
             parentName="/";
         }
-        //channelname
+        
+        // channelname
         String channelname = (String) parameters.get("channelName");
         if(channelname == null){
             channelname = "";
         }
-        //plausibility check
+        
+        // plausibility check
         if(!action.equals("") && channelname.trim().equals("")){
             error = lang.getLanguageValue(moduleName+".error.message2");
         }
-        //title of channel
+        
+        // title of channel
         String title = (String) parameters.get("title");
 
         String owner=(String) parameters.get("owner");
@@ -161,55 +174,55 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         if (id == null || id.equals("")){
             id = "new";
         }
-        if(channelid==null || channelid.trim().equals("")){
-            channelid="-1";
+        if(channelId==null || channelId.trim().equals("")){
+            channelId="-1";
         }
-        if(resourceid==null || resourceid.trim().equals("")){
-            resourceid="-1";
+        if(resourceId==null || resourceId.trim().equals("")){
+            resourceId=nullUUIDStr;
         }
         if(id.equals("new")){
-            if(resourceid.equals("-1")){
-                cd=null;
+            if(resourceId.equals(nullUUIDStr)){
+                m_channel=null;
             }else{
-                id=resourceid;
+                id=resourceId;
             }
         }
         // for the first call check if the id exist, i.e. if the category is to edit
         // and it is not created new one then read the information of category
         if (action.equals("") && !id.equals("new")) {            
-            try {
-                Integer.parseInt(id);
-            } catch (Exception err) {
-                throw new CmsException(err.getMessage());
-            }
+//            try {
+//                Integer.parseInt(id);
+//            } catch (Exception err) {
+//                throw new CmsException(err.getMessage());
+//            }
             // gets the already existing ouputchannel's content definition.
-            cd = new CmsChannelContent(cms,new CmsUUID(id));
-            parentName=cd.getParentName();
-            idvalue=cd.getChannelId();
-            resid=""+cd.getId();
-            channelname=cd.getChannelName();
-            title=cd.getTitle();
-            owner=cd.getOwner().toString();
-            group=cd.getGroupId().toString();
-            accessFlags=cd.getAccessFlags();
-        }else if(cd==null){            
+            m_channel = new CmsChannelContent(cms,new CmsUUID(id));
+            parentName=m_channel.getParentName();
+            m_channelId=m_channel.getChannelId();
+            m_folderId = m_channel.getId();
+            channelname=m_channel.getChannelName();
+            title=m_channel.getTitle();
+            owner=m_channel.getOwner().toString();
+            group=m_channel.getGroupId().toString();
+            accessFlags=m_channel.getAccessFlags();
+        }else if(m_channel==null){            
             //create a new ouputchannels content definition.
-            cd = new CmsChannelContent(cms);
-            idvalue=C_UNKNOWN_ID+"";
-            resid=C_UNKNOWN_ID+"";
+            m_channel = new CmsChannelContent(cms);
+            m_channelId=C_UNKNOWN_ID+"";
+            m_folderId = CmsUUID.getNullUUID();
         }
         //put parentId in session for user method
         session.putValue("parentName",parentName);
-        session.putValue("id",resid+"");
+        session.putValue("id",m_folderId.toString());
         //set data in CD when data is correct
         if(error.equals("") && !action.equals("")) {           
-            cd.setChannelId(idvalue);
-            cd.setParentName(parentName);
-            cd.setChannelName(channelname);
-            cd.setTitle(title);
-            cd.setGroup(new CmsUUID(group));
-            cd.setOwner(new CmsUUID(owner));
-            cd.setAccessFlags(accessFlags);
+            m_channel.setChannelId(m_channelId);
+            m_channel.setParentName(parentName);
+            m_channel.setChannelName(channelname);
+            m_channel.setTitle(title);
+            m_channel.setGroup(new CmsUUID(group));
+            m_channel.setOwner(new CmsUUID(owner));
+            m_channel.setAccessFlags(accessFlags);
         }
         //get values of the user for new entry
         String defaultGroup=cms.getRequestContext().currentGroup().getName();
@@ -225,7 +238,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             template.setData("value",groupId.toString());
             if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
                 template.setData("check","selected");
-            }else if(idvalue.equals(C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
+            }else if(m_channelId.equals(C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
                 template.setData("check","selected");
             }else{
                 template.setData("check","");
@@ -243,7 +256,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             template.setData("value",userId.toString());
             if (!owner.equals("") && (cms.readUser(new CmsUUID(owner)).getName()).equals(userName)) {
                 template.setData("check","selected");
-            }else if(idvalue.equals(C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
+            }else if(m_channelId.equals(C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
                 template.setData("check","selected");
             }else{
                 template.setData("check","");
@@ -252,29 +265,29 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         }
         template.setData("users",userOptions);
         // set the access flags
-        this.setAccessValue(template, cd.getAccessFlags());
+        this.setAccessValue(template, m_channel.getAccessFlags());
         //set data in template
-        template.setData("channelId", ""+cd.getChannelId());
-        template.setData("resourceid", ""+cd.getId());
-        template.setData("channelName", cd.getChannelName());
-        template.setData("title", Encoder.escape(cd.getTitle(),
+        template.setData("channelId", ""+m_channel.getChannelId());
+        template.setData("resourceid", m_channel.getId().toString());
+        template.setData("channelName", m_channel.getChannelName());
+        template.setData("title", Encoder.escape(m_channel.getTitle(),
             cms.getRequestContext().getEncoding()));
-        template.setData("parentName", cd.getParentName());
+        template.setData("parentName", m_channel.getParentName());
         template.setData("error", error);
 
         //if the saveexit-button has been clicked.
         if(action.equals("saveexit") && error.equals("")){
             try{
-                cd.setChannelId(channelid);
+                m_channel.setChannelId(channelId);
                 //write/save
-                cd.write(cms);
+                m_channel.write(cms);
                 //exit
                 clearSession(session);
                 templateSelector = "done";
                 return startProcessing(cms, template, "", parameters, templateSelector);
             }catch (CmsException exc){
-                template.setData("channelId", channelid);
-                template.setData("resourceid", ""+cd.getId());
+                template.setData("channelId", channelId);
+                template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
                     cms.getRequestContext().getEncoding()));
@@ -284,8 +297,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 //log
                 exc.printStackTrace(System.err);
             }catch (Exception e){
-                template.setData("channelId", channelid);
-                template.setData("resourceid", ""+cd.getId());
+                template.setData("channelId", channelId);
+                template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
                     cms.getRequestContext().getEncoding()));
@@ -300,17 +313,17 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         //if the "save"-button has been clicked.
         if(action.equals("save") && error.equals("")){
             try{
-                cd.setChannelId(channelid);                
+                m_channel.setChannelId(channelId);                
                 //write
-                cd.write(cms);
-                idvalue=cd.getChannelId();
-                template.setData("channelId", channelid);
-                template.setData("resourceid", ""+cd.getId());
+                m_channel.write(cms);
+                m_channelId=m_channel.getChannelId();
+                template.setData("channelId", m_channelId);
+                template.setData("resourceid", m_channel.getId().toString());
                 //indicator for saved new entrys - the new id
-                template.setData("newChannelId", idvalue);
+                template.setData("newChannelId", m_channelId);
             }catch (CmsException exc){
-                template.setData("channelId", channelid);
-                template.setData("resourceid", ""+cd.getId());
+                template.setData("channelId", channelId);
+                template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
                     cms.getRequestContext().getEncoding()));
@@ -321,8 +334,8 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
                 exc.printStackTrace(System.err);
             }catch (Exception e){
                 e.printStackTrace(System.err);
-                template.setData("channelId",  channelid);
-                template.setData("resourceid", ""+cd.getId());
+                template.setData("channelId",  channelId);
+                template.setData("resourceid", m_channel.getId().toString());
                 template.setData("channelName", channelname);
                 template.setData("title", Encoder.escape(title,
                     cms.getRequestContext().getEncoding()));

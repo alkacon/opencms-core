@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.19 $
- * $Date: 2003/05/15 12:39:34 $
+ * $Revision: 1.20 $
+ * $Date: 2003/05/16 14:49:01 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -381,7 +381,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
                     cms.writeProperty(newChannel.getAbsolutePath(), I_CmsConstants.C_PROPERTY_TITLE, this.getTitle());
                 }
                 // check if the lockstate has changed
-                if(newChannel.isLockedBy() != this.getLockstate() ||
+                if(!newChannel.isLockedBy().equals(this.getLockstate()) ||
                     newChannel.getLockedInProject() != cms.getRequestContext().currentProject().getId()){
                     if(this.getLockstate().isNullUUID()){
                         // unlock the channel
@@ -393,11 +393,11 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 };
             }
             // check if the owner has changed
-            if(newChannel.getOwnerId() != this.getOwner()){
+            if(!newChannel.getOwnerId().equals(this.getOwner())){
                 cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
             };
             // check if the group has changed
-            if(newChannel.getGroupId() != this.getGroupId()){
+            if(!newChannel.getGroupId().equals(this.getGroupId())){
                 cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
             };
             // check if the accessflags has changed

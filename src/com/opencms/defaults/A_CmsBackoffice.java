@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.59 $
+ * @version $Revision: 1.60 $
  */
 public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_CmsConstants{
 
@@ -529,11 +529,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * Gets the content definition class method constructor
   * @return content definition object
   */
-  protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
+  protected Object getContentDefinition(CmsObject cms, Class contentClass, CmsUUID contentId) {
     Object o = null;
       try {
-        Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class, Integer.class});
-        o = c.newInstance(new Object[] {cms, id});
+        Constructor c = contentClass.getConstructor(new Class[] {CmsObject.class, CmsUUID.class});
+        o = c.newInstance(new Object[] {cms, contentId});
       } catch (InvocationTargetException ite) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
       A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
@@ -667,9 +667,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
   * @throws CmsException
   */
 
-  public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-
-    //return var
+public byte[] getContentDelete(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+    // return var
     byte[] processResult = null;
 
     // session will be created or fetched
@@ -680,7 +679,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //get (stored) id parameter
     String id = (String) parameters.get("id");
     if (id == null) {
-      id = "";
+        id = "";
     }
 
     // get value of hidden input field action
@@ -689,64 +688,64 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //no button pressed, go to the default section!
     //delete dialog, displays the title of the entry to be deleted
     if (action == null || action.equals("")) {
-      if (id != "") {
-        //set template section
-    templateSelector = "delete";
+        if (id != "") {
+            //set template section
+            templateSelector = "delete";
 
-        //create new language file object
-    CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+            //create new language file object
+            CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
-    //get the dialog from the language file and set it in the template
-    template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
-    template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
-    template.setData("newsentry", id);
-    template.setData("setaction", "default");
-      }
-      // confirmation button pressed, process data!
+            //get the dialog from the language file and set it in the template
+            template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
+            template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
+            template.setData("newsentry", id);
+            template.setData("setaction", "default");
+        }
+        // confirmation button pressed, process data!
     } else {
-      //set template section
-      templateSelector = "done";
-      //remove marker
-      session.removeValue("iddelete");
-      //delete the content definition instance
-      Integer idInteger = null;
-      try {
-        idInteger = Integer.valueOf(id);
-      } catch (Exception e) {
-    //access content definition constructor by reflection
-    Object o = null;
-    o = getContentDefinition(cms, cdClass, id);
-    //get delete method and delete content definition instance
-    try {
-         ((A_CmsContentDefinition) o).delete(cms);
-    } catch (Exception e1) {
-          if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
+        //set template section
+        templateSelector = "done";
+        //remove marker
+        session.removeValue("iddelete");
+        //delete the content definition instance
+        CmsUUID contentId = new CmsUUID(id);
+//        try {
+//            idInteger = Integer.valueOf(id);
+//        } catch (Exception e) {
+//            //access content definition constructor by reflection
+//            Object o = null;
+//            o = getContentDefinition(cms, cdClass, id);
+//            //get delete method and delete content definition instance
+//            try {
+//                ((A_CmsContentDefinition) o).delete(cms);
+//            } catch (Exception e1) {
+//                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+//                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
+//                }
+//                templateSelector = "deleteerror";
+//                template.setData("deleteerror", e1.getMessage());
+//            }
+//            //finally start the processing
+//            processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+//            return processResult;
+//        }
+
+        //access content definition constructor by reflection
+        Object o = null;
+        o = getContentDefinition(cms, cdClass, contentId);
+        //get delete method and delete content definition instance
+        try {
+            ((A_CmsContentDefinition) o).delete(cms);
+        } catch (Exception e) {
+            templateSelector = "deleteerror";
+            template.setData("deleteerror", e.getMessage());
+        }
     }
-      templateSelector = "deleteerror";
-      template.setData("deleteerror", e1.getMessage());
-    }
+
     //finally start the processing
     processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
     return processResult;
-      }
-
-      //access content definition constructor by reflection
-      Object o = null;
-      o = getContentDefinition(cms, cdClass, idInteger);
-      //get delete method and delete content definition instance
-      try {
-        ((A_CmsContentDefinition) o).delete(cms);
-      }catch (Exception e) {
-        templateSelector = "deleteerror";
-        template.setData("deleteerror", e.getMessage());
-      }
-    }
-
-    //finally start the processing
-    processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
-    return processResult;
-  }
+}
 
     /**
      * Gets the content of a given template file.
@@ -783,30 +782,31 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         //remove marker
         session.removeValue("idundelete");
         //undelete the content definition instance
-        Integer idInteger = null;
-        try {
-            idInteger = Integer.valueOf(id);
-        } catch (Exception e) {
-            //access content definition constructor by reflection
-            Object o = null;
-            o = getContentDefinition(cms, cdClass, id);
-            //get undelete method and undelete content definition instance
-            try {
-                ((I_CmsExtendedContentDefinition) o).undelete(cms);
-            } catch (Exception e1) {
-                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
-                }
-                templateSelector = "undeleteerror";
-                template.setData("undeleteerror", e1.getMessage());
-            }
-            //finally start the processing
-            processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
-            return processResult;
-        }
+        CmsUUID contentId = new CmsUUID(id);
+//        Integer idInteger = null;
+//        try {
+//            idInteger = Integer.valueOf(id);
+//        } catch (Exception e) {
+//            //access content definition constructor by reflection
+//            Object o = null;
+//            o = getContentDefinition(cms, cdClass, id);
+//            //get undelete method and undelete content definition instance
+//            try {
+//                ((I_CmsExtendedContentDefinition) o).undelete(cms);
+//            } catch (Exception e1) {
+//                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+//                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: undelete method throwed an exception!");
+//                }
+//                templateSelector = "undeleteerror";
+//                template.setData("undeleteerror", e1.getMessage());
+//            }
+//            //finally start the processing
+//            processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+//            return processResult;
+//        }
         //access content definition constructor by reflection
         Object o = null;
-        o = getContentDefinition(cms, cdClass, idInteger);
+        o = getContentDefinition(cms, cdClass, contentId);
         //get undelete method and undelete content definition instance
         try {
             ((I_CmsExtendedContentDefinition) o).undelete(cms);
@@ -857,7 +857,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         if (action == null || action.equals("")) {
             if (id != "") {
                 //access content definition constructor by reflection
-                Object o = getContentDefinition(cms, cdClass, new Integer(id));
+                Object o = getContentDefinition(cms, cdClass, new CmsUUID(id));
                 // get owner and group of content definition
                 String curOwner = readSaveUserName(cms, ((I_CmsExtendedContentDefinition) o).getOwner());
                 String curGroup = readSaveGroupName(cms, ((I_CmsExtendedContentDefinition) o).getGroupId());                
@@ -878,16 +878,19 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             //remove marker
             session.removeValue("idcopy");
             //copy the content definition instance
-            Integer idInteger = null;
-            Object o = null;
-            try {
-                idInteger = Integer.valueOf(id);
-                //access content definition constructor by reflection
-                o = getContentDefinition(cms, cdClass, idInteger);
-            } catch (Exception e) {
-                //access content definition constructor by reflection
-                o = getContentDefinition(cms, cdClass, id);
-            }
+            CmsUUID contentId = new CmsUUID(id);
+            Object o = getContentDefinition(cms, cdClass, contentId);
+            
+//            Integer contentId = null;
+//            Object o = null;
+//            try {
+//                contentId = Integer.valueOf(id);
+//                //access content definition constructor by reflection
+//                o = getContentDefinition(cms, cdClass, contentId);
+//            } catch (Exception e) {
+//                //access content definition constructor by reflection
+//                o = getContentDefinition(cms, cdClass, id);
+//            }
 
             //get copy method and copy content definition instance
             try {
@@ -961,31 +964,32 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                 //remove marker
                 session.removeValue("idsave");
                 //publish the content definition instance
-                Integer idInteger = null;
-                try {
-                    idInteger = Integer.valueOf(id);
-                } catch (Exception e) {
-                    //access content definition constructor by reflection
-                    Object o = null;
-                    o = getContentDefinition(cms, cdClass, id);
-                    //get publish method and publish content definition instance
-                    try {
-                        ((I_CmsExtendedContentDefinition) o).publishResource(cms);
-                    } catch (Exception e1) {
-                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
-                        }
-                        templateSelector = "publisherror";
-                        template.setData("publisherror", e1.getMessage());
-                    }
-                    //finally start the processing
-                    processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
-                    return processResult;
-                }
+                CmsUUID contentId = new CmsUUID(id);
+//                Integer contentId = null;
+//                try {
+//                    contentId = Integer.valueOf(id);
+//                } catch (Exception e) {
+//                    //access content definition constructor by reflection
+//                    Object o = null;
+//                    o = getContentDefinition(cms, cdClass, id);
+//                    //get publish method and publish content definition instance
+//                    try {
+//                        ((I_CmsExtendedContentDefinition) o).publishResource(cms);
+//                    } catch (Exception e1) {
+//                        if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+//                            A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: publish method throwed an exception!");
+//                        }
+//                        templateSelector = "publisherror";
+//                        template.setData("publisherror", e1.getMessage());
+//                    }
+//                    //finally start the processing
+//                    processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+//                    return processResult;
+//                }
 
                 //access content definition constructor by reflection
                 Object o = null;
-                o = getContentDefinition(cms, cdClass, idInteger);
+                o = getContentDefinition(cms, cdClass, contentId);
                 //get publish method and publish content definition instance
                 try {
                     ((I_CmsExtendedContentDefinition) o).publishResource(cms);
@@ -1064,7 +1068,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
                 templateSelector = "historydetail";
                 //access content definition constructor by reflection
                 Object o = null;
-                o = getContentDefinition(cms, cdClass, new Integer(id));
+                o = getContentDefinition(cms, cdClass, new CmsUUID(id));
                 //get the version from history
                 try {
                     I_CmsExtendedContentDefinition curVersion = (I_CmsExtendedContentDefinition)((I_CmsExtendedContentDefinition)o).getVersionFromHistory(cms, Integer.parseInt(versionId));
@@ -1139,7 +1143,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             if(versionId != null && !"".equals(versionId)){
                 //access content definition constructor by reflection
                 Object o = null;
-                o = getContentDefinition(cms, cdClass, new Integer(id));
+                o = getContentDefinition(cms, cdClass, new CmsUUID(id));
                 //get restore method and restore content definition instance
                 try {
                     ((I_CmsExtendedContentDefinition)o).restore(cms, Integer.parseInt(versionId));
@@ -1184,7 +1188,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Class cdClass = getContentDefinitionClass();
             //access content definition constructor by reflection
             Object o = null;
-            o = getContentDefinition(cms, cdClass, new Integer(id));
+            o = getContentDefinition(cms, cdClass, new CmsUUID(id));
             //get history method and return the vector of the versions
             try {
                 cdHistory = ((I_CmsExtendedContentDefinition) o).getHistory(cms);
@@ -1268,7 +1272,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         if (action == null || action.equals("")) {
             if (id != "" && mode != "") {
                 //access content definition constructor by reflection
-                o = getContentDefinition(cms, cdClass, new Integer(id));
+                o = getContentDefinition(cms, cdClass, new CmsUUID(id));
                 //set template section
                 templateSelector = mode;
                 CmsUUID curOwner = ((I_CmsExtendedContentDefinition) o).getOwner();
@@ -1288,15 +1292,16 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             //remove marker
             session.removeValue("idpermissions");
             //change the content definition instance
-            Integer idInteger = null;
-            try {
-                idInteger = Integer.valueOf(id);
-                //access content definition constructor by reflection
-                o = getContentDefinition(cms, cdClass, idInteger);
-            } catch (Exception e) {
-                //access content definition constructor by reflection
-                o = getContentDefinition(cms, cdClass, id);
-            }
+            CmsUUID contentId = new CmsUUID(id);
+            o = getContentDefinition(cms, cdClass, contentId);
+//            try {
+//                contentId = Integer.valueOf(id);
+//                //access content definition constructor by reflection
+//                o = getContentDefinition(cms, cdClass, contentId);
+//            } catch (Exception e) {
+//                //access content definition constructor by reflection
+//                o = getContentDefinition(cms, cdClass, id);
+//            }
 
             //get change method and change content definition instance
             try {
@@ -1496,8 +1501,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
    * @return Processed content of the given template file.
    * @throws CmsException
    */
-  private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName,
-                                Hashtable parameters, String templateSelector) throws CmsException {
+  private byte[] getContentList(CmsObject cms, CmsXmlWpTemplateFile template, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
     //return var
     byte[] processResult = null;
     // session will be created or fetched
@@ -2112,29 +2116,30 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     if (action == null || action.equals("")) {
       //lock dialog, displays the title of the entry to be changed in lockstate
       templateSelector = "lock";
-      Integer idInteger = null;
+      CmsUUID contentId = new CmsUUID(id);
       
       CmsUUID lockedByUserId = CmsUUID.getNullUUID();
       
-      try {
-        idInteger = Integer.valueOf(id);
-      } catch (Exception e) {
-        lockedByUserId = CmsUUID.getNullUUID();
-        //access content definition object specified by id through reflection
-        Object o = null;
-        o = getContentDefinition(cms, cdClass, id);
-        try {
-          lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
-            /*Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-            ls = (int) getLockstateMethod.invoke(o, new Object[0]); */
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
-      }
+//      try {
+//        contentId = Integer.valueOf(id);
+//      } catch (Exception e) {
+//        lockedByUserId = CmsUUID.getNullUUID();
+//        //access content definition object specified by id through reflection
+//        Object o = null;
+//        o = getContentDefinition(cms, cdClass, id);
+//        try {
+//          lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
+//            /*Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
+//            ls = (int) getLockstateMethod.invoke(o, new Object[0]); */
+//        } catch (Exception exc) {
+//            exc.printStackTrace();
+//        }
+//      }
+
       //access content definition object specified by id through reflection
       Object o = null;
-      if (idInteger != null) {
-        o = getContentDefinition(cms, cdClass, idInteger);
+      if (contentId != null) {
+        o = getContentDefinition(cms, cdClass, contentId);
         try {
           lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
         } catch (Exception e) {
@@ -2188,49 +2193,58 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       templateSelector = "done";
       // session.removeValue("idsave");
       //access content definition constructor by reflection
-      Integer idInteger = null;
+      CmsUUID contentId = new CmsUUID(id);
       
       CmsUUID lockedByUserId = CmsUUID.getNullUUID();
       
-      try {
-        idInteger = Integer.valueOf(id);
-      } catch (Exception e) {
-        lockedByUserId = CmsUUID.getNullUUID();
-
-      //access content definition object specified by id through reflection
-      Object o = null;
-      o = getContentDefinition(cms, cdClass, id);
-      try {
-        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
-      } catch (Exception ex) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(C_OPENCMS_INFO, ex.getMessage() );
-        }
-      }
-    }
+//      try {
+//        idInteger = Integer.valueOf(id);
+//      } catch (Exception e) {
+//        lockedByUserId = CmsUUID.getNullUUID();
+//
+//      //access content definition object specified by id through reflection
+//      Object o = null;
+//      o = getContentDefinition(cms, cdClass, id);
+//      try {
+//        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
+//      } catch (Exception ex) {
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+//          A_OpenCms.log(C_OPENCMS_INFO, ex.getMessage() );
+//        }
+//      }
+//    }
 
     //call the appropriate content definition constructor
     Object o = null;
-    if (idInteger != null) {
-      o = getContentDefinition(cms, cdClass, idInteger);
+      o = getContentDefinition(cms, cdClass, contentId);
       try {
         lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
       } catch (Exception e) {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
         }
-      }
-    } else {
-
-      o = getContentDefinition(cms, cdClass, id);
-      try {
-        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
-      } catch (Exception e) {
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
-        }
-      }
-    }
+      }    
+      
+//    if (contentId != null) {
+//      o = getContentDefinition(cms, cdClass, contentId);
+//      try {
+//        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
+//      } catch (Exception e) {
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+//         A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+//        }
+//      }
+//    } else {
+//
+//      o = getContentDefinition(cms, cdClass, id);
+//      try {
+//        lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
+//      } catch (Exception e) {
+//        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+//          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
+//        }
+//      }
+//    }
     try {
       lockedByUserId = ((A_CmsContentDefinition) o).getLockstate();
     } catch (Exception e) {
@@ -2241,7 +2255,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
     //show the possible cases of a lockstate in the template
     //and change lockstate in content definition (and in DB or VFS)
-    if (lockedByUserId == actUserId) {
+    if (lockedByUserId.equals(actUserId)) {
         if(isExtendedList()){
             // if its an extended list check if the current project is the same as the
             // project, in which the resource is locked
@@ -2424,6 +2438,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String lockString = null;
     CmsUUID actUserId = cms.getRequestContext().currentUser().getId();
     String isLockedBy = null;
+    boolean hasWriteAccess = false;
 
     //is the content definition object (i.e. the table entry) lockable?
     try {
@@ -2463,6 +2478,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             //get the method lockstate
             lockedByUserId = ((A_CmsContentDefinition) entryObject).getLockstate();
+            hasWriteAccess = ((A_CmsContentDefinition) entryObject).hasWriteAccess(cms);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: " + e.toString());
@@ -2470,7 +2486,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         }
         try {
             //show the possible cases of a lockstate in the template
-            if (lockedByUserId == actUserId) {
+            if (lockedByUserId.equals(actUserId)) {
                 // lockuser
                 isLockedBy = cms.getRequestContext().currentUser().getName();
                 template.setData("isLockedBy", isLockedBy); // set current users name in the template
@@ -2481,20 +2497,17 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 if (!lockedByUserId.isNullUUID()) {
                     // lock
                     // set the name of the user who locked the file in the template ...
-                    // TODO: it seems as if C_NO_ACCESS is nowhere set, check if this is the case
-                    /*
-                    if (lockedByUserId == C_NO_ACCESS) {
+                    if (!hasWriteAccess) {
                         lockString = template.getProcessedDataValue("noaccess", this, parameters);
                         template.setData("lockedby", lockString);
                         template.setData("backofficecontextmenue", "backofficenoaccess");
-                    } else {
-                    */
+                    } else {                    
                         isLockedBy = readSaveUserName(cms, lockedByUserId);
                         template.setData("isLockedBy", isLockedBy);
                         lockString = template.getProcessedDataValue("lock", this, parameters);
                         template.setData("lockedby", lockString);
                         template.setData("backofficecontextmenue", "backofficelock");
-                    //}
+                    }
                 } else {
                     // nolock
                     lockString = template.getProcessedDataValue("nolock", this, parameters);
@@ -2531,6 +2544,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
     String isLockedBy = null;
     int lockedInProject = -1;
     int curProjectId = cms.getRequestContext().currentProject().getId();
+    boolean hasWriteAccess = false;
 
     //is the content definition object (i.e. the table entry) lockable?
     try {
@@ -2569,6 +2583,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         try {
             //get the method lockstate
             lockedByUserId = ((A_CmsContentDefinition) entryObject).getLockstate();
+            hasWriteAccess = ((A_CmsContentDefinition) entryObject).hasWriteAccess(cms);
         } catch (Exception e) {
             if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
@@ -2576,7 +2591,7 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
         }
         try {
             //show the possible cases of a lockstate in the template
-            if (lockedByUserId == actUserId) {
+            if (lockedByUserId.equals(actUserId)) {
                 // lockuser
                 isLockedBy = cms.getRequestContext().currentUser().getName();
                 template.setData("isLockedBy", isLockedBy);   // set current users name in the template
@@ -2599,18 +2614,15 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
                 if (!lockedByUserId.isNullUUID()) {
                     // lock
                     // set the name of the user who locked the file in the template ...
-                    // TODO: it seems as if C_NO_ACCESS is nowhere set, check if this is the case
-                    /*
-                    if (lockedByUserId==C_NO_ACCESS) {
+                    if (!hasWriteAccess) {
                         lockString = template.getProcessedDataValue("noaccess", this, parameters);
                         template.setData("lockedby", lockString);
                     } else {
-                    */
                         isLockedBy = readSaveUserName(cms, lockedByUserId);
                         template.setData("isLockedBy", isLockedBy);
                         lockString = template.getProcessedDataValue("lock", this, parameters);
                         template.setData("lockedby", lockString);
-                    //}
+                    }
                 } else {
                     // nolock
                     lockString = template.getProcessedDataValue("nolock", this, parameters);
@@ -3082,8 +3094,8 @@ private void setLockstates(CmsObject cms, CmsXmlWpTemplateFile template, Class c
       cd = (A_CmsContentDefinition) session.getValue(this.getContentDefinitionClass().getName());
       if (cd == null) {
         // not successful, so read new content definition with given id
-        Integer idvalue=new Integer (id);
-        cd = (A_CmsContentDefinition) this.getContentDefinition(cms,this.getContentDefinitionClass(),idvalue);
+        CmsUUID contentId=new CmsUUID (id);
+        cd = (A_CmsContentDefinition) this.getContentDefinition(cms,this.getContentDefinitionClass(),contentId);
       }
 
       //get all existing parameters

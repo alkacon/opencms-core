@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/05/16 14:49:01 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent, I_CmsConstants {
 
@@ -265,7 +265,7 @@ protected boolean hasReadAccess(CmsObject cms) throws CmsException {
  * has the current user the right to write the CD
  * @return a boolean
  */
-protected boolean hasWriteAccess(CmsObject cms) throws CmsException {
+public boolean hasWriteAccess(CmsObject cms) throws CmsException {
     CmsUser currentUser = cms.getRequestContext().currentUser();
     // check, if the resource is locked by the current user
 

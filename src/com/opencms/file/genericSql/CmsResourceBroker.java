@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/05/15 13:10:02 $
-* Version: $Revision: 1.379 $
+* Date   : $Date: 2003/05/16 14:49:37 $
+* Version: $Revision: 1.380 $
 
 *
 * This library is part of OpenCms -
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.379 $ $Date: 2003/05/15 13:10:02 $
+ * @version $Revision: 1.380 $ $Date: 2003/05/16 14:49:37 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -7202,7 +7202,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // unlock the resource.
             if (cmsResource.isLocked()){
                 // check if the resource is locked by the actual user
-                if (cmsResource.isLockedBy()==currentUser.getId()) {
+                if (cmsResource.isLockedBy().equals(currentUser.getId())) {
 
                 // unlock the resource
                 cmsResource.setLocked(CmsUUID.getNullUUID());
