@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/02/16 15:42:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -97,7 +97,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     private Map m_parameters;
     
     /** Attribute name used for checking if _flex request parameters have already been processed */
-    public static final String ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
+    public static final String C_ATTRIBUTE_PROCESSED = "__com.opencms.flex.cache.CmsFlexRequest";
+    
+    /** Request parameter for FlexCache commands */
+    public static final String C_PARAMETER_FLEX = "_flex";
     
     /** Debug flag */
     private static final boolean DEBUG = false;
@@ -122,7 +125,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         } catch (Exception e) {
             // m_isOnline will be false
         }        
-        String[] paras = req.getParameterValues("_flex");
+        String[] paras = req.getParameterValues(C_PARAMETER_FLEX);
         boolean nocachepara = false;
         boolean dorecompile = false;
         boolean isAdmin = false;
@@ -134,10 +137,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             }
             if (isAdmin) {                        
                 List l = Arrays.asList(paras);
-                String context = (String)req.getAttribute(ATTRIBUTE_PROCESSED);
+                String context = (String)req.getAttribute(C_ATTRIBUTE_PROCESSED);
                 boolean firstCall = (context == null);
                 if (firstCall) {
-                    req.setAttribute(ATTRIBUTE_PROCESSED, "true");
+                    req.setAttribute(C_ATTRIBUTE_PROCESSED, "true");
                 }
                 nocachepara = l.contains("nocache");            
                 dorecompile = l.contains("recompile");
