@@ -12,15 +12,6 @@ All Packages  Class Hierarchy  This Package  Previous  Next  Index
 
 This interface describes the registry for OpenCms. 
 
-\begin{description}
-\item {\bf Version:}  
-
-\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
-\item {\bf Author:}  
-
-Andreas Schouten 
-\end{description}
-
 \htmlHR
 
 \subsection*{  Variable Index }
@@ -188,6 +179,10 @@ Returns the url to the view-url for the module within the system.
 \item o {\bf getRepositories}()  
 
 Returns all repositories for all modules.  
+\item o {\bf getResourceTypes}(Vector, Vector, Vector, Vector)  
+
+Returns all Resourcetypes and korresponding parameter for System and all
+modules.  
 \item o {\bf getSystemValue}(String)  
 
 Returns a value for a system-key.  
@@ -293,7 +288,13 @@ Sets all repositories for a module.
 This method sets the version of the module.  
 \item o {\bf setModuleView}(String, String, String)  
 
-Sets a view for a module 
+Sets a view for a module  
+\item o {\bf setSystemValue}(String, String)  
+
+Public method to set system values.  
+\item o {\bf setSystemValues}(String, Hashtable)  
+
+Public method to set system values with hashtable. 
 \end{description}
 
 \subsection*{  Variables }
@@ -1490,6 +1491,40 @@ java.lang.String[] the reprositories of all modules.
 
 \end{description}
 
+o {\bf getResourceTypes} 
+
+\begin{PRE}
+ public abstract int getResourceTypes(Vector names,
+                                      Vector launcherTypes,
+                                      Vector launcherClass,
+                                      Vector resourceClass)
+\end{PRE}
+
+\begin{description}
+\htmlDD Returns all Resourcetypes and korresponding parameter for System and
+all modules. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+eter - Vector names in this parameter the names of the Resourcetypes will be
+returned.  
+
+eter - Vector launcherTypes in this parameters the launcherType will be
+returned(int).  
+
+eter - Vector launcherClass in this parameters the launcherClass will be
+returned.  
+
+eter - Vector resourceClass in this parameters the resourceClass will be
+returned.  
+\item {\bf Returns:}  
+
+int the amount of resourcetypes.  
+\end{description}
+
+\end{description}
+
 o {\bf getSystemValue} 
 
 \begin{PRE}
@@ -2258,6 +2293,46 @@ String - the name of the module.
 String - the name of the view, that is implemented by the module.  
 
 String - the url of the view, that is implemented by the module.  
+\end{description}
+
+\end{description}
+
+o {\bf setSystemValue} 
+
+\begin{PRE}
+ public abstract void setSystemValue(String dataName,
+                                     String value) throws CmsException
+\end{PRE}
+
+\begin{description}
+\htmlDD Public method to set system values. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+String - dataName the name of the tag to set the data for.  
+
+String - the value to be set.  
+\end{description}
+
+\end{description}
+
+o {\bf setSystemValues} 
+
+\begin{PRE}
+ public abstract void setSystemValues(String dataName,
+                                      Hashtable values) throws CmsException
+\end{PRE}
+
+\begin{description}
+\htmlDD Public method to set system values with hashtable. 
+
+\begin{description}
+\item {\bf Parameters:}  
+
+String - dataName the name of the tag to set the data for.  
+
+Hashtable - the value to be set.  
 \end{description}
 
 \end{description}

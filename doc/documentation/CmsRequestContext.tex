@@ -21,42 +21,7 @@ This class provides access to the CmsRequestContext. \htmlBR
 In the CmsRequestContext class are all methods bundled, which can inform about
 the current request properties, like the url or uri of the request. 
 
-\begin{description}
-\item {\bf Version:}  
-
-\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
-\item {\bf Author:}  
-
-Andreas Schouten, Michael Emmerich, Anders Fugmann 
-\end{description}
-
 \htmlHR
-
-\subsection*{  Variable Index }
-
-\begin{description}
-\item o {\bf m\_currentGroup}  
-
-The current group of the user.  
-\item o {\bf m\_currentProject}  
-
-The current project.  
-\item o {\bf m\_rb}  
-
-The rb to get access to the OpenCms.  
-\item o {\bf m\_req}  
-
-The current CmsRequest.  
-\item o {\bf m\_resp}  
-
-The current CmsResponse.  
-\item o {\bf m\_streaming}  
-
-Is this response streaming?  
-\item o {\bf m\_user}  
-
-The current user. 
-\end{description}
 
 \subsection*{  Constructor Index }
 
@@ -81,6 +46,12 @@ Returns the current project of the current user.
 \item o {\bf currentUser}()  
 
 Returns the current user object.  
+\item o {\bf getAcceptedLanguages}()  
+
+Get a Vector of all accepted languages for this request.  
+\item o {\bf getElementCache}()  
+
+Get the CmsElementCache object.  
 \item o {\bf getFileUri}()  
 
 Gets the name of the requested file without any path-information.  
@@ -96,13 +67,12 @@ Gets the Session for this request.
 \item o {\bf getUri}()  
 
 Gets the uri for the requested resource.  
-\item o {\bf init}(I\_CmsResourceBroker, I\_CmsRequest, I\_CmsResponse,
-String, String, int, boolean)  
-
-Initializes this RequestContext.  
 \item o {\bf isAdmin}()  
 
 Determines if the users is in the admin-group.  
+\item o {\bf isElementCacheEnabled}()  
+
+Get the current mode for element cache.  
 \item o {\bf isProjectManager}()  
 
 Determines if the users current group is the projectmanager-group.  
@@ -121,85 +91,6 @@ Set the current mode for HTTP streaming.
 
 Calling this method is only allowed, if the response output stream was not
 used before. 
-\end{description}
-
-\subsection*{  Variables }
-
-o {\bf m\_rb} 
-
-\begin{PRE}
- private I\_CmsResourceBroker m\_rb
-\end{PRE}
-
-\begin{description}
-\htmlDD The rb to get access to the OpenCms.
-
-\end{description}
-
-o {\bf m\_req} 
-
-\begin{PRE}
- private I\_CmsRequest m\_req
-\end{PRE}
-
-\begin{description}
-\htmlDD The current CmsRequest.
-
-\end{description}
-
-o {\bf m\_resp} 
-
-\begin{PRE}
- private I\_CmsResponse m\_resp
-\end{PRE}
-
-\begin{description}
-\htmlDD The current CmsResponse.
-
-\end{description}
-
-o {\bf m\_user} 
-
-\begin{PRE}
- private CmsUser m\_user
-\end{PRE}
-
-\begin{description}
-\htmlDD The current user.
-
-\end{description}
-
-o {\bf m\_currentGroup} 
-
-\begin{PRE}
- private CmsGroup m\_currentGroup
-\end{PRE}
-
-\begin{description}
-\htmlDD The current group of the user.
-
-\end{description}
-
-o {\bf m\_currentProject} 
-
-\begin{PRE}
- private CmsProject m\_currentProject
-\end{PRE}
-
-\begin{description}
-\htmlDD The current project.
-
-\end{description}
-
-o {\bf m\_streaming} 
-
-\begin{PRE}
- private boolean m\_streaming
-\end{PRE}
-
-\begin{description}
-\htmlDD Is this response streaming?
-
 \end{description}
 
 \subsection*{  Constructors }
@@ -387,43 +278,6 @@ the path to the requested resource.
 
 \end{description}
 
-o {\bf init} 
-
-\begin{PRE}
- void init(I\_CmsResourceBroker rb,
-           I\_CmsRequest req,
-           I\_CmsResponse resp,
-           String user,
-           String currentGroup,
-           int currentProjectId,
-           boolean streaming) throws CmsException
-\end{PRE}
-
-\begin{description}
-\htmlDD Initializes this RequestContext. 
-
-\begin{description}
-\item {\bf Parameters:}  
-
-req - the CmsRequest.  
-
-resp - the CmsResponse.  
-
-user - the current user for this request.  
-
-currentGroup - the current group for this request.  
-
-currentProjectId - the id of the current project for this request.  
-
-streaming - {\tt true} if streaming should be enabled for this response, {\tt
-false} otherwise.  
-\item {\bf Throws:} CmsException  
-
-if operation was not successful.  
-\end{description}
-
-\end{description}
-
 o {\bf isAdmin} 
 
 \begin{PRE}
@@ -546,6 +400,62 @@ response's output stream theirselves, {\tt false} otherwise.
 \item {\bf Throws:} CmsException  
 
 if the output stream was already used previously.  
+\end{description}
+
+\end{description}
+
+o {\bf isElementCacheEnabled} 
+
+\begin{PRE}
+ public boolean isElementCacheEnabled()
+\end{PRE}
+
+\begin{description}
+\htmlDD Get the current mode for element cache. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+{\tt true} if element cache is active, {\tt false} otherwise.  
+\end{description}
+
+\end{description}
+
+o {\bf getElementCache} 
+
+\begin{PRE}
+ public CmsElementCache getElementCache()
+\end{PRE}
+
+\begin{description}
+\htmlDD Get the CmsElementCache object. This is the starting point for the
+element cache area. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+CmsElementCachee  
+\end{description}
+
+\end{description}
+
+o {\bf getAcceptedLanguages} 
+
+\begin{PRE}
+ public Vector getAcceptedLanguages()
+\end{PRE}
+
+\begin{description}
+\htmlDD Get a Vector of all accepted languages for this request. Languages are
+coded in international shortcuts like ``en'' or ``de''. If the browser has
+sent special versions of languages (e.g. ``de-ch'' for Swiss-German) these
+extensions will be cut off. 
+
+\begin{description}
+\item {\bf Returns:}  
+
+Vector of Strings with language codes or {\tt null} if no request object is
+available.  
 \end{description}
 
 \end{description}

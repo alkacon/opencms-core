@@ -21,30 +21,13 @@ com.opencms.file.CmsResource
 
 This class describes a file in the Cms. 
 
-\begin{description}
-\item {\bf Version:}  
-
-\$Revision: 1.1 $ \$Date: 2001/07/31 12:25:45 $  
-\item {\bf Author:}  
-
-Michael Emmerich 
-\end{description}
-
 \htmlHR
-
-\subsection*{  Variable Index }
-
-\begin{description}
-\item o {\bf m\_fileContent}  
-
-The content of the file. 
-\end{description}
 
 \subsection*{  Constructor Index }
 
 \begin{description}
 \item o {\bf CmsFile}(int, int, int, String, int, int, int, int, int, int,
-int, int, int, String, long, long, int, byte[], int)  
+int, int, int, String, long, long, int, byte[], int, int)  
 
 Constructor, creates a new CmsFile object. 
 \end{description}
@@ -64,19 +47,6 @@ Gets the file-extension.
 \item o {\bf setContents}(byte[])  
 
 Sets the content of this file. 
-\end{description}
-
-\subsection*{  Variables }
-
-o {\bf m\_fileContent} 
-
-\begin{PRE}
- private byte m\_fileContent[]
-\end{PRE}
-
-\begin{description}
-\htmlDD The content of the file.
-
 \end{description}
 
 \subsection*{  Constructors }
@@ -102,7 +72,8 @@ o {\bf CmsFile}
                 long dateLastModified,
                 int resourceLastModifiedBy,
                 byte fileContent[],
-                int size)
+                int size,
+                int lockedInProject)
 \end{PRE}
 
 \begin{description}
