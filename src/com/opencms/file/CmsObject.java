@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/27 16:47:15 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2000/06/29 07:59:35 $
+ * Version: $Revision: 1.95 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.94 $ $Date: 2000/06/27 16:47:15 $ 
+ * @version $Revision: 1.95 $ $Date: 2000/06/29 07:59:35 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1608,6 +1608,21 @@ public class CmsObject implements I_CmsConstants {
 		c_rb.writeUser(m_context.currentUser(), m_context.currentProject(), user );
 	}
 	
+     /**
+	 * Updates the userinformation of a webuser.<BR/>
+	 * 
+	 * Only a web user can be updated this way.
+	 * 
+	 * @param user The user to be written.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeWebUser(CmsUser user)
+		throws CmsException { 
+		c_rb.writeWebUser(m_context.currentUser(), m_context.currentProject(), user );
+	}
+    
+    
 	/**
 	 * Gets all users in the group.
 	 * 

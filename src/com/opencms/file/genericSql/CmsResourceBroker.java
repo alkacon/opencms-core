@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/28 08:50:34 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/06/29 07:59:35 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.77 $ $Date: 2000/06/28 08:50:34 $
+ * @version $Revision: 1.78 $ $Date: 2000/06/29 07:59:35 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2306,6 +2306,37 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			if( isAdmin(user, currentProject) ) {
 				user.setEnabled();
 			}			
+			m_dbAccess.writeUser(user);
+            // update the cache
+            m_userCache.put(user.getName(),user);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + user.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+    }
+    
+    
+     /**
+	 * Updates the user information of a web user.<BR/>
+	 * 
+	 * Only a web user can be updated this way.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users of the user type webuser can be updated this way.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param user The  user to be updated.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+    public void writeWebUser(CmsUser currentUser, CmsProject currentProject, 
+						  CmsUser user)			
+        throws CmsException	{
+        // Check the security
+        if( user.getType() == C_USER_TYPE_WEBUSER) {
+			
+			
 			m_dbAccess.writeUser(user);
             // update the cache
             m_userCache.put(user.getName(),user);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/27 16:47:15 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2000/06/29 07:59:35 $
+ * Version: $Revision: 1.90 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.89 $ $Date: 2000/06/27 16:47:15 $
+ * @version $Revision: 1.90 $ $Date: 2000/06/29 07:59:35 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -1236,6 +1236,26 @@ public interface I_CmsResourceBroker {
 						  CmsUser user)			
 		throws CmsException;
 
+    /**
+	 * Updated the user information of a web user.<BR/>
+	 * 
+	 * Only a web user can be updated this way.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users of the user type webuser can be updated this way.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param user The  user to be updated.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+    public void writeWebUser(CmsUser currentUser, CmsProject currentProject, 
+						  CmsUser user)			
+		throws CmsException;
+    
+    
+    
 	/**
 	 * Add a new group to the Cms.<BR/>
 	 * 
