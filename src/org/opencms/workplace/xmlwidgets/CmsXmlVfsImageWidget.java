@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsImageWidget.java,v $
- * Date   : $Date: 2004/12/02 09:07:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/12/06 12:12:46 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,11 +43,11 @@ import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlVfsImageValue}.<p>
+ * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlVfsFileValue}.<p>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.3
  */
 public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {

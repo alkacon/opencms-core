@@ -86,7 +86,8 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />			
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />	
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlVfsImageWidget" /> 		
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />
@@ -94,8 +95,6 @@
 				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlDateTimeWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlSimpleHtmlValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlHtmlWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlSimpleLinkValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlStringWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlVfsFileWidget" />
 			</schematypes>

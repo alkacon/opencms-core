@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlHtmlWidget.java,v $
- * Date   : $Date: 2004/12/02 09:07:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/06 12:12:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,11 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.util.Map;
 
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlSimpleHtmlValue}.<p>
+ * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlHtmlValue}.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlWidget extends A_CmsXmlWidget {

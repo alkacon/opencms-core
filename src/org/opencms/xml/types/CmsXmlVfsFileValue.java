@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2004/12/05 15:35:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/12/06 12:12:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,14 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.5.2
  */
 public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
-
+    
+    /** Value to mark that no link is defined, "none". */
+    public static final String C_NO_LINK = "none";
+    
     /** The name of this type as used in the XML schema. */
     public static final String C_TYPE_NAME = "OpenCmsVfsFile";
 
@@ -108,8 +111,10 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public CmsLinkTable getLinkTable() {
 
         CmsLinkTable linkTable = new CmsLinkTable();
-        CmsLink link = new CmsLink("link0", "vfs", m_element.getText(), true);
-        linkTable.addLink(link);
+        if (! C_NO_LINK.equals(m_element.getText())) {
+            CmsLink link = new CmsLink("link0", "vfs", m_element.getText(), true);
+            linkTable.addLink(link);
+        }
         return linkTable;
     }
 
@@ -126,7 +131,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public String getStringValue(CmsObject cms) {
 
-        if (cms != null) {
+        if (cms != null && CmsStringUtil.isNotEmpty(m_stringValue) && ! C_NO_LINK.equals(m_stringValue)) {
             return cms.getRequestContext().removeSiteRoot(m_stringValue);
         } else {
             return m_stringValue;
@@ -154,7 +159,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      */
     public void setStringValue(CmsObject cms, String value) {
 
-        if (cms != null) {
+        if (cms != null && ! C_NO_LINK.equals(value)) {
             // add site path if required
             value = CmsLinkManager.getSitePath(cms, null, value);
         }
