@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2002/09/12 09:57:50 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.59 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.60 $ $Date: 2002/09/12 09:57:50 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -943,7 +943,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         datablock = (Element)((Element)m_blocks.get(blockname));
         if(datablock == null) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Requested datablock  \"" + blockname + "\" not found!");
+                String logUri = "";
+                try{
+                    logUri = " RequestUri is "+ m_cms.getRequestContext().getFolderUri() + m_cms.getRequestContext().getFileUri() + ".";
+                }catch(Exception e){
+                }
+                A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Requested datablock  \"" + blockname + "\" not found in "+m_filename+"!" + logUri);
             }
             return C_ERR_NODATABLOCK + blockname;
         }
