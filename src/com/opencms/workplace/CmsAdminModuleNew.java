@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2002/12/12 19:06:37 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -117,25 +117,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                 session.removeValue(C_MODULE_THREAD);
             }
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
-            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
-            
-            /*
-        } 
-        else if ("working".equals(step)) {
-
-            // TODO: remove this old code once the reports work without problems  
-            Thread doImport = (Thread) session.getValue(C_MODULE_THREAD);
-            if (doImport.isAlive()) {
-                String time = (String) parameters.get("time");
-                int wert = Integer.parseInt(time);
-                wert += 20;
-                xmlTemplateDocument.setData("time", "" + wert);
-                return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_WAIT);
-            } else {
-                CmsXmlWpTemplateFile.clearcache();
-                return startProcessing(cms, xmlTemplateDocument, elementName, parameters, C_DONE);
-            }
-        */            
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");         
         } else if ("server".equals(step)) {
             File modulefolder =
                 new File(

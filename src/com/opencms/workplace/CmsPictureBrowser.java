@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2002/12/15 14:21:18 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.38 $ $Date: 2002/12/15 14:21:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -360,7 +360,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
             // Set all datablocks for the current picture list entry
             xmlTemplateDocument.setData("picsource", hostName + picsUrl + file.getName());
             xmlTemplateDocument.setData("filepath", file.getAbsolutePath());
-            xmlTemplateDocument.setData("title", title);
+            xmlTemplateDocument.setData("title", Encoder.escapeXml(title));
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);

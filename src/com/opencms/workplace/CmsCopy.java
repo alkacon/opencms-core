@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2002/12/06 23:16:48 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.template.CmsXmlControlFile;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -52,7 +53,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.47 $ $Date: 2002/12/06 23:16:48 $
+ * @version $Revision: 1.48 $ $Date: 2002/12/15 14:21:19 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -302,7 +303,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             title = "";
         }
         CmsUser owner = cms.readOwner(file);
-        xmlTemplateDocument.setData("TITLE", title);
+        xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", Utils.getFullName(owner));
         xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());

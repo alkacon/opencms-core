@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.template.CmsXmlControlFile;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.27 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.28 $ $Date: 2002/12/15 14:21:19 $
  */
 
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -204,7 +205,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         }
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         CmsUser owner = cms.readOwner(file);
-        xmlTemplateDocument.setData("TITLE", title);
+        xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", Utils.getFullName(owner));
         xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());

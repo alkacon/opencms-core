@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/12/15 14:21:18 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.I_CmsRegistry;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Enumeration;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.35 $ $Date: 2002/12/15 14:21:18 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -260,7 +261,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 }else{
                     // user pressed backbutton. show the first template again
                     xmlTemplateDocument.setData("name", newFolder);
-                    xmlTemplateDocument.setData("title", title);
+                    xmlTemplateDocument.setData("title", Encoder.escapeXml(title));
                     if (navtitle != null){
                         xmlTemplateDocument.setData("navtext", navtitle);
                     }else{
@@ -273,7 +274,7 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
                 // error while creating the folder go to firs page and set the stored parameter
                 template = null;
                 xmlTemplateDocument.setData("name", (String)session.getValue(C_SESSIONHEADER + C_PARA_NEWFOLDER));
-                xmlTemplateDocument.setData("title", (String)session.getValue(C_SESSIONHEADER + C_PARA_TITLE));
+                xmlTemplateDocument.setData("title", Encoder.escapeXml((String)session.getValue(C_SESSIONHEADER + C_PARA_TITLE)));
                 navtitle = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVTEXT);
                 if (navtitle != null){
                     xmlTemplateDocument.setData("navtext", navtitle);

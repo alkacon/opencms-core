@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2002/12/15 14:21:18 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -45,7 +46,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.40 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.41 $ $Date: 2002/12/15 14:21:18 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -168,7 +169,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             }
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
             CmsUser owner = cms.readOwner(file);
-            xmlTemplateDocument.setData("TITLE", title);
+            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
             xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
             xmlTemplateDocument.setData("OWNER", Utils.getFullName(owner));
             xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());

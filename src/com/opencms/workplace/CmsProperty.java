@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Collections;
@@ -49,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2002/12/06 23:16:47 $
+ * @version $Revision: 1.30 $ $Date: 2002/12/15 14:21:19 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -184,13 +185,9 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 // check if a edited property is available
                 String newValue = (String)parameters.get("EDITEDPROPERTY");
                 if(newValue != null) {
-
                     // update the property
                     cms.writeProperty(filename, propertydef, newValue);
                     template = "ownlocked";
-
-                //session.removeValue(C_PARA_FILE);
-                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
             else {
@@ -208,9 +205,6 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 if(propertydef != null) {
                     cms.deleteProperty(filename, propertydef);
                     template = "ownlocked";
-
-                //session.removeValue(C_PARA_FILE);
-                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
@@ -230,21 +224,15 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                         // add the property
                         cms.writeProperty(filename, propertydef, newValue);
                         template = "ownlocked";
-
-                    //session.removeValue(C_PARA_FILE);
-                    //session.removeValue(C_PARA_PROPERTYDEF);
                     }
                     else {
 
 
-                    // todo: add an error message that this key is already exisitng
+                    // TODO: add an error message that this key is already exisitng
                     }
                 }
                 else {
                     template = "ownlocked";
-
-                //session.removeValue(C_PARA_FILE);
-                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
@@ -261,11 +249,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                     I_CmsResourceType type = cms.getResourceType(file.getType());
                     try {
                         CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceTypeName());
-                        // TESTFIX (a.kandzior@alkcacon.com) Depreceated code: cms.writePropertydefinition(def);
                         template = "ownlocked";
-
-                    //session.removeValue(C_PARA_FILE);
-                    //session.removeValue(C_PARA_PROPERTYDEF);
                     }
                     catch(CmsException e) {
 
@@ -279,9 +263,6 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 }
                 else {
                     template = "ownlocked";
-
-                //session.removeValue(C_PARA_FILE);
-                //session.removeValue(C_PARA_PROPERTYDEF);
                 }
             }
         }
@@ -292,7 +273,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             title = "";
         }
         CmsUser owner = cms.readOwner(file);
-        xmlTemplateDocument.setData("TITLE", title);
+        xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
         xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
         xmlTemplateDocument.setData("OWNER", owner.getFirstname() + " " + owner.getLastname() + "(" + owner.getName() + ")");
         xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());
@@ -304,8 +285,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     }
 
     /**
-     * Gets all property the file.
-     * <P>
+     * Gets all property of a resource.<p>
+     * 
      * The given vectors <code>names</code> and <code>values</code> will
      * be filled with the appropriate information to be used for building
      * a select box.
@@ -327,11 +308,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             while(enu.hasMoreElements()) {
                 String key = (String)enu.nextElement();
                 String value = (String)property.get(key);
-                names.addElement(key + ":" + value);
-                values.addElement(key);
-                Collections.sort(names);
-                Collections.sort(values);
+                names.addElement(Encoder.escapeXml(key + ":" + value));
+                values.addElement(Encoder.escapeXml(key));
             }
+            Collections.sort(names);
+            Collections.sort(values);
         }
 
         // no current user, set index to -1
@@ -370,10 +351,12 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 CmsPropertydefinition prop = (CmsPropertydefinition)enu.nextElement();
                 String propertyvalue = (String)property.get(prop.getName());
                 if(propertyvalue == null) {
-                    names.addElement(prop.getName());
-                    values.addElement(prop.getName());
+                    names.addElement(Encoder.escapeXml(prop.getName()));
+                    values.addElement(Encoder.escapeXml(prop.getName()));
                 }
             }
+            Collections.sort(names);
+            Collections.sort(values);
         }
 
         // no current user, set index to -1
@@ -408,7 +391,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 }
             }
         }
-        return propertyValue;
+        return Encoder.escapeXml(propertyValue);
     }
 
     /**

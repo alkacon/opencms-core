@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2002/12/06 23:16:48 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2002/12/06 23:16:48 $
+ * @version $Revision: 1.25 $ $Date: 2002/12/15 14:21:19 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -126,13 +127,13 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 }
             }
             String editedBy = backupFile.getLastModifiedByName();
-            xmlTemplateDocument.setData("TITLE", title);
+            xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
             xmlTemplateDocument.setData("SIZE", new Integer(backupFile.getLength()).toString());
             xmlTemplateDocument.setData("EDITEDBY", editedBy);
             xmlTemplateDocument.setData("EDITEDAT", Utils.getNiceDate(backupFile.getDateLastModified()));
             xmlTemplateDocument.setData("PUBLISHEDBY", project.getPublishedByName());
             xmlTemplateDocument.setData("PUBLISHEDAT", Utils.getNiceDate(project.getPublishingDate()));
-            xmlTemplateDocument.setData("PROJECTDESCRIPTION", project.getDescription());
+            xmlTemplateDocument.setData("PROJECTDESCRIPTION", Encoder.escapeXml(project.getDescription()));
         }
         xmlTemplateDocument.setData("FILENAME", theFileName);
 

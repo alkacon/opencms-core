@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import com.opencms.template.CmsCacheDirectives;
 import com.opencms.template.I_CmsDumpTemplate;
 import com.opencms.template.cache.A_CmsElement;
 import com.opencms.template.cache.CmsElementDump;
+import com.opencms.util.Encoder;
 import com.opencms.util.Utils;
 
 import java.util.Hashtable;
@@ -54,7 +55,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.51 $ $Date: 2002/12/15 14:21:19 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -122,28 +123,6 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     }
 
     /**
-     * Insert the method's description here.
-     * Creation date: (07.12.00 17:08:30)
-     * @return java.lang.String
-     * @param value java.lang.String
-     */
-
-    private String getChars(String value) {
-        String ret = "";
-        int num;
-        for(int i = 0;i < value.length();i++) {
-            num = value.charAt(i);
-            if((num > 122) || (num < 48)) {
-                ret += "&#" + num + ";";
-            }
-            else {
-                ret += value.charAt(i);
-            }
-        }
-        return ret + "";
-    }
-
-    /**
      * Gets the content of a given template file.
      *
      * @param cms CmsObject Object for accessing system resources
@@ -203,7 +182,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // get the currentFolder Id
         int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
         // start creating content
-        StringBuffer content = new StringBuffer();
+        StringBuffer content = new StringBuffer(2048);
         content.append("<html> \n<head> \n<script language=JavaScript>\n");
         content.append("function initialize() {\n");
 
@@ -227,7 +206,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
         // the flaturl
         if(flaturl != null) {
-            content.append("top.flaturl='" + flaturl + "';\n");
+            content.append("top.flaturl='");
+            content.append(flaturl);
+            content.append("';\n");
         } else if (!listonly){
             content.append("top.flaturl='';\n");
         }
@@ -235,17 +216,29 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // the help_url
         content.append("top.help_url='ExplorerAnsicht/index.html';\n");
         // the project
-        content.append("top.setProject(" + cms.getRequestContext().currentProject().getId() + ");\n");
+        content.append("top.setProject(");
+        content.append(cms.getRequestContext().currentProject().getId());
+        content.append(");\n");
         // the onlineProject
-        content.append("top.setOnlineProject(" + cms.onlineProject().getId() + ");\n");
+        content.append("top.setOnlineProject(");
+        content.append(cms.onlineProject().getId());
+        content.append(");\n");
         // set the checksum for the tree
-        content.append("top.setChecksum(" + check + ");\n");
+        content.append("top.setChecksum(");
+        content.append(check);
+        content.append(");\n");
         // set the writeAccess for the current Folder
         CmsFolder test = cms.readFolder(currentFolder);
         boolean writeAccess = test.getProjectId() == cms.getRequestContext().currentProject().getId();
-        content.append("top.enableNewButton(" + writeAccess + ");\n");
+        content.append("top.enableNewButton(");
+        content.append(writeAccess);
+        content.append(");\n");
         // the folder
-        content.append("top.setDirectory(" + currentFolderId + ",\"" + currentFolder + "\");\n");
+        content.append("top.setDirectory(");
+        content.append(currentFolderId);
+        content.append(",\"");
+        content.append(currentFolder);
+        content.append("\");\n");
         content.append("top.rD();\n\n");
 
         // now look which filelist colums we want to show
@@ -296,10 +289,14 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append("top.aF(");
             // the name
-            content.append("\"" + res.getName() + "\",");
+            content.append("\"");
+            content.append(res.getName());
+            content.append("\",");
             // the path
             if(projectView){
-                content.append("\"" + res.getPath() + "\",");
+                content.append("\"");
+                content.append(res.getPath());
+                content.append("\",");
             }else{
                 //is taken from top.setDirectory
                 content.append("\"\",");
@@ -314,15 +311,22 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 if(title == null) {
                     title = "";
                 }
-                content.append("\"" + getChars(title) + "\",");
+                content.append("\"");
+                if (title != null) content.append(Encoder.escapeHtml(title));
+                content.append("\",");
+                
             }else{
                 content.append("\"\",");
             }
             // the type
-            content.append(res.getType() + ",");
+            content.append(res.getType());
+            content.append(",");
             // date of last change
             if(showDateChanged){
-                content.append("\"" + Utils.getNiceDate(res.getDateLastModified()) + "\",");
+                content.append("\"");
+                content.append(Utils.getNiceDate(res.getDateLastModified()));
+                content.append("\",");
+                
             }else{
                 content.append("\"\",");
             }
@@ -335,31 +339,41 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             if(res.isFolder() || (!showSize)) {
                 content.append("\"\",");
             }else {
-                content.append( res.getLength() + ",");
+                content.append( res.getLength());
+                content.append(",");                
             }
             // state
-            content.append(res.getState() + ",");
+            content.append(res.getState());
+            content.append(",");            
             // project
-            content.append(res.getProjectId() + ",");
+            content.append(res.getProjectId());
+            content.append(",");            
             // owner
             if(showOwner){
-                content.append("\"" + cms.readUser(res.getOwnerId()).getName() + "\",");
+                content.append("\"");                
+                content.append(cms.readUser(res.getOwnerId()).getName());
+                content.append("\",");                
             }else{
                 content.append("\"\",");
             }
             // group
             if(showGroup){
-                content.append("\"" + cms.readGroup(res).getName() + "\",");
+                content.append("\"");                
+                content.append(cms.readGroup(res).getName());
+                content.append("\",");                
             }else{
                 content.append("\"\",");
             }
             // accessFlags
-            content.append(res.getAccessFlags() + ",");
+            content.append(res.getAccessFlags());
+            content.append(",");            
             // locked by
             if(res.isLockedBy() == C_UNKNOWN_ID) {
                 content.append("\"\",");
             }else {
-                content.append("\"" + cms.lockedBy(res).getName() + "\",");
+                content.append("\"");                
+                content.append(cms.lockedBy(res).getName());
+                content.append("\",");                
             }
             // locked in project
             int lockedInProject = res.getLockedInProject();
@@ -369,7 +383,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             } catch(CmsException exc) {
                 // ignore the exception - this is an old project so ignore it
             }
-            content.append("\"" + lockedInProjectName + "\"," + lockedInProject + ");\n");
+            content.append("\"");            
+            content.append(lockedInProjectName);
+            content.append("\",");
+            content.append(lockedInProject);
+            content.append(");\n");
         }
 
         //  now the tree, only if changed
@@ -385,18 +403,26 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 // all easy: we are in the onlineProject
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
                 content.append("top.aC(");
-                content.append(rootFolder.getResourceId() + ", ");
-                content.append("\"" + lang.getDataValue("title.rootfolder") + "\", ");
-                content.append(rootFolder.getParentId() + ", false);\n");
+                content.append(rootFolder.getResourceId());
+                content.append(", ");
+                content.append("\"");
+                content.append(lang.getDataValue("title.rootfolder"));
+                content.append("\", ");
+                content.append(rootFolder.getParentId());
+                content.append(", false);\n");
                 for(int i = startAt;i < tree.size();i++) {
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
                     content.append("top.aC(");
                     // id
-                    content.append(folder.getResourceId() + ", ");
+                    content.append(folder.getResourceId());
+                    content.append(", ");
                     // name
-                    content.append("\"" + folder.getName() + "\", ");
+                    content.append("\"");
+                    content.append(folder.getName());
+                    content.append("\", ");
                     // parentId
-                    content.append(folder.getParentId() + ", false);\n");
+                    content.append(folder.getParentId());
+                    content.append(", false);\n");
                 }
             }else {
                 // offline Project
@@ -412,9 +438,15 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                     grey = true;
                 }
                 content.append("top.aC(");
-                content.append(rootFolder.getResourceId() + ", ");
-                content.append("\"" + lang.getDataValue("title.rootfolder") + "\", ");
-                content.append(rootFolder.getParentId() + ", " + grey + ");\n");
+                content.append(rootFolder.getResourceId());
+                content.append(", ");
+                content.append("\"");
+                content.append(lang.getDataValue("title.rootfolder"));
+                content.append("\", ");
+                content.append(rootFolder.getParentId());
+                content.append(", ");
+                content.append(grey);
+                content.append(");\n");
                 for(int i = startAt;i < tree.size();i++) {
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
                     if((folder.getState() == C_STATE_DELETED) || (folder.getAbsolutePath().equals(folderToIgnore))) {
@@ -444,11 +476,17 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                         }
                         content.append("top.aC(");
                         // id
-                        content.append(folder.getResourceId() + ", ");
+                        content.append(folder.getResourceId());
+                        content.append(", ");
                         // name
-                        content.append("\"" + folder.getName() + "\", ");
+                        content.append("\"");
+                        content.append(folder.getName());
+                        content.append("\", ");
                         // parentId
-                        content.append(parentId + ", " + grey + ");\n");
+                        content.append(parentId);
+                        content.append(", ");
+                        content.append(grey);
+                        content.append(");\n");
                     }
                 }
             }
@@ -458,7 +496,11 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(" top.dUL(document); \n");
         } else {
             // update all frames
-            content.append(" top.dU(document,"+numberOfPages+","+selectedPage+"); \n");
+            content.append(" top.dU(document,");
+            content.append(numberOfPages);
+            content.append(",");
+            content.append(selectedPage);
+            content.append("); \n");
         }
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");
@@ -516,15 +558,12 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
     public Object getKey(CmsObject cms, String templateFile, Hashtable parameter,
             String templateSelector) {
-
-        //return templateFile.getAbsolutePath();
-        //Vector v = new Vector();
         CmsRequestContext reqContext = cms.getRequestContext();
-
-        //v.addElement(reqContext.currentProject().getName());
-        //v.addElement(templateFile);
-        //return v;
-        return "" + reqContext.currentProject().getId() + ":" + templateFile;
+        StringBuffer buf = new StringBuffer();
+        buf.append(reqContext.currentProject().getId());
+        buf.append(":");
+        buf.append(templateFile);
+        return new String(buf);
     }
 
     /**

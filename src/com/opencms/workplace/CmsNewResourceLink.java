@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2002/12/06 23:16:49 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2002/12/15 14:21:18 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsLinkCheck;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
+import com.opencms.util.Encoder;
 
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.28 $ $Date: 2002/12/06 23:16:49 $
+ * @version $Revision: 1.29 $ $Date: 2002/12/15 14:21:18 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -164,7 +165,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         // set the values e.g. after an error
         xmlTemplateDocument.setData("LINKNAME", filename);
         xmlTemplateDocument.setData("LINKVALUE", link);
-        xmlTemplateDocument.setData("NAVTITLE", navtitle);
+        xmlTemplateDocument.setData("NAVTITLE", Encoder.escapeHtml(navtitle));
         xmlTemplateDocument.setData("KEEPPROPERTIES", keepTargetProperties==true ? "true" : "false" );
         xmlTemplateDocument.setData("ADDTONAV", addToNav==true ? "true" : "false" );
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2002/12/14 01:06:48 $
-* Version: $Revision: 1.74 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.75 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.74 $ $Date: 2002/12/14 01:06:48 $
+ * @version $Revision: 1.75 $ $Date: 2002/12/15 14:21:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -223,7 +223,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         int numBodys = allBodys.size();
         for(int i = 0;i < numBodys;i++) {
             String bodyname = (String)allBodys.elementAt(i);
-            String encodedBodyname = makeHtmlEntities(bodyname);
+            String encodedBodyname = Encoder.escapeXml(bodyname);
             if(bodyname.equals(currentBodySection)) {
                 currentBodySectionIndex = loop;
             }
@@ -839,7 +839,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
     public String setBodyTitle(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String title = (String)session.getValue("te_oldbodytitle");
-        return makeHtmlEntities(title);
+        return Encoder.escapeXml(title);
     }
     
     //Gridnine AB Aug 9, 2002
@@ -895,16 +895,6 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String name = (String)session.getValue("te_title");
-        return makeHtmlEntities(name);
-    }
-
-
-    private String makeHtmlEntities(String s) {
-        int idx = s.indexOf("\"");
-        while(idx > -1) {
-            s = s.substring(0, idx) + "&quot;" + s.substring(idx + 1);
-            idx = s.indexOf("\"");
-        }
-        return s;
+        return Encoder.escapeXml(name);
     }
 }

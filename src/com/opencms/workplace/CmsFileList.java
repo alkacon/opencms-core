@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2002/12/06 23:16:46 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/12/15 14:21:19 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
 import com.opencms.template.A_CmsXmlContent;
+import com.opencms.util.Encoder;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -61,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.53 $ $Date: 2002/12/06 23:16:46 $
+ * @version $Revision: 1.54 $ $Date: 2002/12/15 14:21:19 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -466,7 +467,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // set the folder title
                         title = "";
                         try {
-                            title = cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE);
+                            title = Encoder.escapeXml(cms.readProperty(res.getAbsolutePath(), C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
@@ -567,7 +568,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                         // set the file title
                         title = "";
                         try {
-                            title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
+                            title = Encoder.escapeXml(cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE));
                         }
                         catch(CmsException e) {
 
