@@ -14,6 +14,7 @@
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+document.LOGIN.NAME.focus();
 ]]><PROCESS>STARTUP</PROCESS><![CDATA[
 </SCRIPT>
 
@@ -22,7 +23,7 @@
 </head>
 
 <!-- Begin content login -->
-<body bgcolor="#ffffff" marginwidth = 0 marginheight = 20 leftmargin=0 topmargin=20>
+<body bgcolor="#ffffff" marginwidth = 0 marginheight = 20 leftmargin=0 topmargin=20 onload="document.LOGIN.NAME.focus()">
 
 <form action="login.html" method=post id=LOGIN name=LOGIN>
 <CENTER>
