@@ -62,7 +62,7 @@
 				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 			}
 			else {
-				if (createDb) {
+				if (createDb || createTables) {
 			  		nextPage = "create_database.jsp";
 			  	}
 			}
@@ -102,17 +102,17 @@
 						<tr>
 							<td align="center" valign="top" height="50">
 							<%
-								if(!createDb && !dbExists)	{
+								if(!createDb && !createTables && !dbExists)	{
 									out.println("<p>You have not created the OpenCms database.</p><p><b>Warning: &nbsp;&nbsp;</b>You cannot import the workplace succesfully without the database and tables!</p>");						
 								}
 								else {	
-									if(dbExists && createDb && !dropDb)	{
+									if(dbExists && createTables && !dropDb)	{
 										db.closeConnection();
 										out.println("<p><strong><font color=\"#ff0000\">Warning:</font> An existing database has been detected. Drop it ?</strong></p>");
 										out.println("<p><nobr><input type=\"submit\" name=\"dropDb\" class=\"button\" value=\"Yes\" style=\"width:150px;\" width=\"150\">&nbsp;&nbsp;&nbsp;&nbsp;<input type=\"button\" value=\"No\" onClick=\"history.go(-3)\" style=\"width:150px;\" class=\"button\" width=\"150\"></nobr></p>");
 									}
 									else	{
-										if(dropDb)	{
+										if(createDb && dropDb)	{
 
 											//Drop Database
 											out.print("<p>Trying to drop database  ...");
@@ -164,7 +164,7 @@
 							<%			
 										if (createTables) {
 											db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());									
-											//Drop Tables (itentionally quiet)
+											//Drop Tables (intentionally quiet)
 											db.dropTables(Bean.getResourceBroker());
 											db.clearErrors();
 											db.closeConnection();

@@ -210,7 +210,7 @@
 										<td>Connection String</td><td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:250px;" value='<%= Bean.getDbCreateConStr() %>'></td>
 									</tr>
 									<tr><td colspan="3"><hr></td></tr>
-									<tr><td colspan="3" align="center"><input type="checkbox" name="createTables" value="true" checked> Create database and tables<br>
+									<tr><td colspan="3" align="center"><input type="checkbox" name="createTables" value="true" checked> Create database and tables<input type="hidden" name="createTables" value="false"><br>
 									<b><font color="FF0000">Warning:</font></b> Existing database will be dropped !<br></td></tr>
 									
 								</table>
