@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2000/03/27 12:42:00 $
+ * Version: $Revision: 1.19 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.19 $ $Date: 2000/03/27 12:42:00 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -116,7 +116,18 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 			return( C_ROOT );
 		}
 	}
-	
+
+   /** 
+    * Returns the name of the requested file without any path-information.
+    * 
+    * @return the requested filename
+    */
+	public String getFileUri() { 
+		String uri = m_req.getRequestedResource();
+		uri=uri.substring(uri.lastIndexOf("/")+1);
+		return uri;
+	}
+
 	/**
 	 * Returns the current folder object.
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsRequestContext.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/03/27 12:42:00 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/02/15 17:43:59 $ 
+ * @version $Revision: 1.12 $ $Date: 2000/03/27 12:42:00 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -67,6 +67,13 @@ public abstract class A_CmsRequestContext
 	 * @return the uri for this CmsObject.
 	 */
 	public abstract String getUri();
+	
+   /** 
+    * Returns the name of the requested file without any path-information.
+    * 
+    * @return the requested filename
+    */
+	public abstract String getFileUri() ;
 	
 	/**
 	 * Returns the current folder object.
