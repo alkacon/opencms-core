@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDbPool.java,v $
- * Date   : $Date: 2003/05/23 16:26:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/06/02 13:38:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package com.opencms.db;
 
 import org.apache.commons.dbcp.AbandonedConfig;
@@ -44,11 +44,11 @@ import source.org.apache.java.util.Configurations;
 /**
  * Various methods to create DBCP pools.<p>
  * 
- * Only JDBC Driver based pools are supported currently. Probably JNDI DataSource 
- * based pools might be added later.
+ * Only JDBC Driver based pools are supported currently. JNDI DataSource 
+ * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.5 $ $Date: 2003/06/02 13:38:22 $
  * @since 5.1.2
  */
 public class CmsDbPool extends Object {
@@ -58,10 +58,12 @@ public class CmsDbPool extends Object {
      */
     public static final String C_DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
 
-    public static final String C_KEY_DATABASE_POOL = "db.pool";
-    public static final String C_KEY_DEFAULT_POOL_KEY = "default";
-    public static final String C_KEY_USER_POOL_KEY = "user";
-    public static final String C_KEY_VFS_POOL_KEY = "vfs";
+    public static final String C_KEY_DATABASE = "db.";
+    public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";
+    public static final String C_KEY_DATABASE_POOL = C_KEY_DATABASE + "pool";
+    public static final String C_KEY_POOL_DEFAULT = "default";
+    public static final String C_KEY_POOL_USER = "user";
+    public static final String C_KEY_POOL_VFS = "vfs";
 
     protected static final String C_KEY_JDBC_DRIVER = "jdbcDriver";
     protected static final String C_KEY_JDBC_URL = "jdbcUrl";
@@ -81,7 +83,7 @@ public class CmsDbPool extends Object {
     }
 
     /**
-     * Creates a DBCP connection pool to acces as a JDBC Driver.<p>
+     * Creates a Driver based DBCP connection pool.<p>
      * 
      * @param config the configuration (opencms.properties)
      * @param key the key of the database pool in the configuration
@@ -99,33 +101,43 @@ public class CmsDbPool extends Object {
         String username = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_USERNAME);
         String password = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_PASSWORD);
         String poolUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_POOL_URL);
+        String dbName =  config.getString(C_KEY_DATABASE_NAME);
 
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
-                
-        // settings for handling abandoned db connections
-        AbandonedConfig abandonedConfig = new AbandonedConfig();
-        abandonedConfig.setLogAbandoned(true);
-        abandonedConfig.setRemoveAbandoned(true);
         
         // initialize a keyed object pool to store connections
-        GenericObjectPool connectionPool = new AbandonedObjectPool(null, abandonedConfig);
+        GenericObjectPool connectionPool = null;        
+        
+        if ("mysql".equalsIgnoreCase(dbName.trim())) {
+            // settings to handle abandoned db connections in case of a MySQL server
+            // TODO read these database values from config settings
+            AbandonedConfig abandonedConfig = new AbandonedConfig();
+            abandonedConfig.setLogAbandoned(true);
+            abandonedConfig.setRemoveAbandoned(true); 
+            
+            connectionPool = new AbandonedObjectPool(null, abandonedConfig);   
+            connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+            connectionPool.setTestOnBorrow(true);                    
+        } else {
+            connectionPool = new GenericObjectPool(null);
+        }
+
+        // initialize a keyed object pool to store connections
         connectionPool.setMaxActive(maxActive);
         connectionPool.setMaxIdle(maxIdle);
         connectionPool.setMaxWait(maxWait);
-        connectionPool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-        connectionPool.setTestOnBorrow(true);
-        
+
         // initialize a connection factory to make the DriverManager taking connections from the pool
         ConnectionFactory connectionFactory = new DriverManagerConnectionFactory(jdbcUrl, username, password);
-        
+
         // initialize a keyed object pool to store PreparedStatements
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory();
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
-                
+
         // initialize a factory to obtain pooled connections and prepared statements
         new PoolableConnectionFactory(connectionFactory, connectionPool, null, testQuery, false, true);
-        
+
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
