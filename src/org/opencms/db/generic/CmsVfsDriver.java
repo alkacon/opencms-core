@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/27 13:05:09 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2003/08/27 13:07:02 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,6 +60,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -74,7 +75,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.105 $ $Date: 2003/08/27 13:05:09 $
+ * @version $Revision: 1.106 $ $Date: 2003/08/27 13:07:02 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1718,8 +1719,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
-        CmsFolder currentFolder = null;
-        CmsAdjacencyTree tree = new CmsAdjacencyTree();
+        CmsAdjacencyTree adjacencyTree = new CmsAdjacencyTree();        
+        CmsUUID parentId = null;
+        CmsUUID structureId = null;
                
         /*
          * possible other SQL queries to select a tree view:
@@ -1730,11 +1732,15 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         try {
             conn = m_sqlManager.getConnection(currentProject);
             stmt = m_sqlManager.getPreparedStatement(conn, currentProject, "C_RESOURCES_GET_FOLDERTREE");
+            stmt.setInt(1, I_CmsConstants.C_STATE_CHANGED);
+            stmt.setInt(2, I_CmsConstants.C_STATE_NEW);
+            stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
             res = stmt.executeQuery();
 
-            while (res.next()) {
-                currentFolder = createCmsFolderFromResultSet(res, currentProject.getId(), true);
-                tree.addResource(currentFolder);
+            while (res.next()) {                
+                parentId = new CmsUUID(res.getString(1));
+                structureId = new CmsUUID(res.getString(2));
+                adjacencyTree.add(parentId, structureId);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1744,7 +1750,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             m_sqlManager.closeAll(conn, stmt, res);
         }
 
-        return tree.toList(parentResource);
+        List dfsList = adjacencyTree.toList(parentResource.getId());
+        return dfsList;
     }  
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/08/27 13:07:02 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import com.opencms.file.CmsResource;
+import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -47,10 +48,10 @@ import java.util.Vector;
  * A tree represented by the adjacency list model.<p>
  * 
  * The tree is built in-memory using a Map keyed by CmsUUID parent ID's with values that are 
- * ArrayLists of child CmsResources.
+ * ArrayLists of CmsUUID child ID's.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/08/15 17:38:04 $
+ * @version $Revision: 1.8 $ $Date: 2003/08/27 13:07:02 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
@@ -65,32 +66,30 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
      * Constructs an empty tree.<p>
      */
     public CmsAdjacencyTree() {
-        m_treeMap = Collections.synchronizedMap(new HashMap());
+        m_treeMap = Collections.synchronizedMap((Map) new HashMap());
         m_size = 0;
     }
 
     /**
-     * Adds a CmsResource to the tree.<p>
+     * Adds a child ID to the tree.<p>
      * 
-     * @param resource the CmsResource to add
+     * @param parentId the parent ID of the child
+     * @param childId the ID of the child object
      */
-    public void addResource(CmsResource resource) {
-        // get the child list of the current folder
-        List children = (List) m_treeMap.get(resource.getParentId().toString());
+    public void add(CmsUUID parentId, CmsUUID childId) {
+        // get the child list of the folder specified by the parent ID
+        List children = (List) m_treeMap.get(parentId.toString());
 
         if (children == null) {
-            // the current folder is obviously the first child of it's parent folder
+            // the child is obviously the first child of it's parent folder
             children = (List) new ArrayList();
 
             // add the new child list as a sub-tree
-            m_treeMap.put(resource.getParentId().toString(), children);
+            m_treeMap.put(parentId.toString(), children);
         }
 
-        // add the current folder to the child list
-        children.add(resource);
-
-        // sort the children by their resource name        
-        Collections.sort(children);
+        // add the child to the child list
+        children.add(childId);
 
         // increment the size counter
         m_size++;
@@ -99,7 +98,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
     /**
      * Removes all resources from the tree.<p>
      */
-    public synchronized void clear() {
+    public synchronized void clear() {        
         if (m_treeMap == null) {
             return;
         }
@@ -109,20 +108,20 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
         while (i.hasMoreElements()) {
             String currentParentId = (String) i.nextElement();
 
-            // clear and remove the current adjacency list
+            // clear the adjacency list of the current parent
             List currentAdjacencyList = (List) m_treeMap.get(currentParentId);
             currentAdjacencyList.clear();
+            
+            // remove the parent from the tree
             m_treeMap.remove(currentParentId);
         }
 
-        // clear the tree map itself
+        // clear the tree map again (robustness)
         m_treeMap.clear();
         m_size = 0;
     }
 
     /**
-     * Releases any allocated resources during garbage collection.<p>
-     * 
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
@@ -131,21 +130,21 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
     }
 
     /**
-     * Recursively builds a DFS list view of a sub-tree including the parent resource.<p>
+     * Recursively builds a DFS list of a sub-tree beginning from the specified parent ID.<p>
      * 
-     * @param parentResource the CmsResource from where the sub-tree is built
-     * @return a DFS list view of the sub-tree with sub-resources in alphabetical order
+     * @param parentId the structure ID from where the sub-tree is built
+     * @return a List of structure ID's in the sub tree in DFS order
      */
-    public List toList(CmsResource parentResource) {
-        if (parentResource == null) {
+    public List toList(CmsUUID parentId) {
+        if (parentId == null) {
             return null;
         }
 
         List result = (List) new ArrayList();
-        result.add(parentResource.clone());
+        result.add(parentId.clone());
 
-        // get the adjacency list with the child resources of the current parent resource
-        List children = (List) m_treeMap.get(parentResource.getId().toString());
+        // get the adjacency list with the child objects of the current parent ID
+        List children = (List) m_treeMap.get(parentId.toString());
         if (children == null) {
             return result;
         }
@@ -153,7 +152,7 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
         // add the sub-tree of the current parent resource to the result list
         Iterator i = children.iterator();
         while (i.hasNext()) {
-            CmsResource currentChild = (CmsResource) i.next();
+            CmsUUID currentChild = (CmsUUID) i.next();
             result.addAll(toList(currentChild));
         }
 

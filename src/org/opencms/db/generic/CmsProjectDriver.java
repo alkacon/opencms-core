@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/27 09:52:42 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2003/08/27 13:07:02 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.68 $ $Date: 2003/08/27 09:52:42 $
+ * @version $Revision: 1.69 $ $Date: 2003/08/27 13:07:02 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1266,6 +1266,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
 
+                    i.remove();
+
                     properties = null;
                     currentFolder = null;
                     newFolder = null;
@@ -1274,13 +1276,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             if (sortedFolderList != null) {
-            sortedFolderList.clear();
-            sortedFolderList = null;
+                sortedFolderList.clear();
+                sortedFolderList = null;
             }
 
             if (sortedFolderMap != null) {
-            sortedFolderMap.clear();
-            sortedFolderMap = null;
+                sortedFolderMap.clear();
+                sortedFolderMap = null;
             }
 
             // now read all changed/new/deleted FILES in offlineProject
@@ -1561,6 +1563,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     m_driverManager.getVfsDriver().resetProjectId(context.currentProject(), currentFile);
 
                     OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFile)));
+                    
+                    i.remove();
 
                     properties = null;
                     currentFile = null;
@@ -1572,8 +1576,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             }
 
             if (offlineFiles != null) {
-            offlineFiles.clear();
-            offlineFiles = null;
+                offlineFiles.clear();
+                offlineFiles = null;
             }
 
             // now delete the "deleted" folders       
@@ -1594,8 +1598,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             Collections.reverse(sortedFolderList);
 
             if (deletedFolders != null) {
-            deletedFolders.clear();
-            deletedFolders = null;
+                deletedFolders.clear();
+                deletedFolders = null;
             }
 
             i = sortedFolderList.iterator();
@@ -1638,19 +1642,21 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", (CmsResource)currentFolder)));
                 
+                i.remove();
+                
                 currentFolder = null;
                 delOnlineFolder = null;
             }
 
             if (sortedFolderList != null) {
-            sortedFolderList.clear();
-            sortedFolderList = null;
+                sortedFolderList.clear();
+                sortedFolderList = null;
             }
 
             if (sortedFolderMap != null) {
-            sortedFolderMap.clear();
-            sortedFolderMap = null;            
-            }           
+                sortedFolderMap.clear();
+                sortedFolderMap = null;
+            }          
         } catch (CmsException e) {
             // these are dummy catch blocks to have a finally block for clearing 
             // allocated resources. thus the exceptions are just logged and 
@@ -1663,12 +1669,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw e;
         } catch (OutOfMemoryError o) {
             if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) {
-                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject] " + o.getMessage());
+                OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + ".publishProject] out of memory error!");
             }
-                       
+            
+            // clear all caches to reclaim memory
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_CLEAR_CACHES, (Map) new HashMap(), false));
+
             // force a complete object finalization and garbage collection 
-            System.runFinalization();                        
-            System.gc(); 
+            System.runFinalization();
+            System.gc();
             Runtime.getRuntime().gc();
             
             throw o;           
