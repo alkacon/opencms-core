@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/01/28 17:42:30 $
+ * @version $Revision: 1.25 $ $Date: 2000/01/28 18:45:53 $
  */
 public interface I_CmsConstants
 {
@@ -403,5 +403,50 @@ public interface I_CmsConstants
     
     /** Identifier for request type console */
     public static final int C_RESPONSE_CONSOLE = 1;
-    
+
+	/**
+	 * Task type values of getting tasks 
+	 */
+	public static final int C_TASKS_ALL    = 1;
+	public static final int C_TASKS_NEW    = 2;
+	public static final int C_TASKS_OPEN   = 3;
+	public static final int C_TASKS_ACTIVE = 4;
+	public static final int C_TASKS_DONE   = 5;
+
+	
+	/**
+	 * Task priority
+	 */
+	public static final int C_TASK_PRIORITY_HIGH   = 1;
+	public static final int C_TASK_PRIORITY_NORMAL = 2;
+	public static final int C_TASK_PRIORITY_LOW    = 3;
+	
+	/**
+	 * Values for order tasks 
+	 */
+	public static final int C_TASKORDER_NONE      = 0;
+	public static final int C_TASKORDER_STARTDATE = 1;
+	public static final int C_TASKORDER_TIMEOUT   = 2;
+	public static final int C_TASKSORDER_TASKNAME = 3;
+		
+	
+	/**
+	 * state values of a task internal
+	 */
+	public static final int C_TASK_STATE_PREPARE  = 0;
+	public static final int C_TASK_STATE_START	  = 1;
+	public static final int C_TASK_STATE_STARTED  = 2;
+	public static final int C_TASK_STATE_NOTENDED = 3;
+	public static final int C_TASK_STATE_ENDED	  = 4;
+	public static final int C_TASK_STATE_HALTED   = 5;
+	public static final int C_TASK_STATE_MAIL	  = 7;
+	public static final int C_TASK_STATE_ONHOLD   = 8; 
+
+	/**
+	 * Type values for the task log
+	 */
+	public static final int C_TASKLOG_SYSTEM = 0;
+	public static final int C_TASKLOG_USER   = 1;	
+	
 }
+
