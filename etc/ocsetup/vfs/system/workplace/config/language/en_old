@@ -421,7 +421,7 @@
 			<changegroup>Edit Group</changegroup>
 			<author>Author</author>
 			<close>Close</close>
-			<createdby>Created by</createdby>
+			<createdby>Task Agent</createdby>
 			<createnewproject>Create new Project</createnewproject>
 			<createnewuser>Create new User</createnewuser>
 			<createnewgroup>Create new Group</createnewgroup>
@@ -644,10 +644,10 @@ A new task was reactivated for you or your role.</content>
 				<task>Task</task>
 				<foruser>For User</foruser>
 				<forrole>For Group</forrole>
-				<editor>Created by</editor>
+				<editor>Task Agent</editor>
 				<documentation>Documentation</documentation>
 				<filter>Filter</filter>
-				<actuator>Task creator</actuator>
+				<actuator>Task Initiatior</actuator>
 				<due>Date due</due>
 				<from>Date created</from>
 				<project>Project</project>
