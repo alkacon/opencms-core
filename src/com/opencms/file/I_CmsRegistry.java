@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/08/17 13:47:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/08/21 08:36:43 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/08/17 13:47:34 $
+ * @version $Revision: 1.2 $ $Date: 2000/08/21 08:36:43 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -326,7 +326,7 @@ public long getModuleUploadDate(String modulename);
  * @parameter String the name of the module.
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
-public String getModuleUploadedBy();
+public String getModuleUploadedBy(String module);
 /**
  * This method returns the version of the module.
  *
@@ -340,14 +340,14 @@ public int getModuleVersion(String modulename);
  * @parameter String the name of the module.
  * @return java.lang.String the name of the view, that is implemented by the module.
  */
-public String getModuleViewName();
+public String getModuleViewName(String modulename);
 /**
  * Returns the url to the view-url for the module within the system. 
  * 
  * @parameter String the name of the module.
  * @return java.lang.String the view-url to the module.
  */
-public String getModuleViewUrl();
+public String getModuleViewUrl(String modulename);
 /**
  * Returns all repositories for all modules.
  * 
@@ -361,7 +361,7 @@ public String[] getRepositories();
  * @parameter String[] urls in this parameters the urls vor the views will be returned.
  * @return int the amount of views.
  */
-public int getViews(String[] views, String[] urls);
+public int getViews(Vector views, Vector urls);
 /**
  * Sets a parameter for a module.
  * 

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistryDummy.java,v $
- * Date   : $Date: 2000/08/17 16:05:56 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/21 08:36:43 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.util.*;
  * This class implements a dumy registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/08/17 16:05:56 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/21 08:36:43 $
  * 
  */
 public class CmsRegistryDummy implements I_CmsRegistry {
@@ -409,7 +409,7 @@ public long getModuleUploadDate(String modulename) {
  * @parameter String the name of the module.
  * @return java.lang.String the user-name of the user who had uploaded the module.
  */
-public String getModuleUploadedBy() {
+public String getModuleUploadedBy(String modulename) {
 	return "Andy Administrator";
 }
 /**
@@ -427,7 +427,7 @@ public int getModuleVersion(String modulename) {
  * @parameter String the name of the module.
  * @return java.lang.String the name of the view, that is implemented by the module.
  */
-public String getModuleViewName() {
+public String getModuleViewName(String modulename) {
 	return "hamstercam";
 }
 /**
@@ -436,7 +436,7 @@ public String getModuleViewName() {
  * @parameter String the name of the module.
  * @return java.lang.String the view-url to the module.
  */
-public String getModuleViewUrl() {
+public String getModuleViewUrl(String modulename) {
 	return "/system/modules/templates/action/hamsterview.html";
 }
 /**
@@ -455,12 +455,8 @@ public java.lang.String[] getRepositories() {
  * @parameter String[] urls in this parameters the urls vor the views will be returned.
  * @return int the amount of views.
  */
-public int getViews(java.lang.String[] views, java.lang.String[] urls) {
-	String retViews[] = {"hamstercam", "forum"};
-	String retUrls[] = {"system/mnodules/example/templates/hamsterview.html", "system/mnodules/example/templates/forum.html"};
-	views = retViews;
-	urls = retUrls;
-	return views.length;
+public int getViews(Vector views, Vector urls) {
+	return 0;
 }
 	/**
 	 * Sets a parameter for a module.
