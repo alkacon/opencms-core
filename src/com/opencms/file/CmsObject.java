@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/10/10 08:50:59 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2000/10/11 12:43:27 $
+ * Version: $Revision: 1.135 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.134 $ $Date: 2000/10/10 08:50:59 $ 
+ * @version $Revision: 1.135 $ $Date: 2000/10/11 12:43:27 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -680,14 +680,14 @@ public CmsTask createProject(String projectname, int projectType, String roleNam
 public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException
 {
 	CmsProject newProject = m_rb.createProject(m_context.currentUser(), m_context.currentProject(), name, description, groupname, managergroupname);
-	if (CmsConstants.USE_MULTISITE)
-	{
+//	if (CmsConstants.USE_MULTISITE)
+//	{
 		CmsSite cs = getSite((m_context.currentProject()).getId());
 		m_rb.newSiteProjectsRecord(
 			m_context.currentUser(), 
 			m_context.currentProject(), 
 			cs.getId(), newProject.getId());
-	}
+//	}
 	return (newProject);
 }
 /**

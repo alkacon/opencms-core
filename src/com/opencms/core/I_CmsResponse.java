@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
- * Date   : $Date: 2000/10/11 12:38:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/10/11 12:43:27 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.io.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.8 $ $Date: 2000/10/11 12:38:22 $  
+ * @version $Revision: 1.9 $ $Date: 2000/10/11 12:43:27 $  
  */
 public interface I_CmsResponse { 
 	
@@ -77,6 +77,15 @@ public boolean isRedirected() ;
 	public void sendCmsRedirect(String location)
 		throws IOException;
 	/**
+	 * Sets the error code that is returnd by the response. The error code is specified
+	 * by a numeric value.
+	 * 
+	 * @param code The error code to be set.
+	 * @exception Throws IOException if an error occurs.
+	 */
+	public void sendError(int code) 
+		throws IOException;
+	/**
 	 * Sets the error code and a additional message that is returnd by the response. 
 	 * The error code is specified by a numeric value.
 	 * 
@@ -85,15 +94,6 @@ public boolean isRedirected() ;
 	 * @exception Throws IOException if an error occurs.
 	 */
 	public void sendError(int code, String msg)
-		throws IOException;
-	/**
-	 * Sets the error code that is returnd by the response. The error code is specified
-	 * by a numeric value.
-	 * 
-	 * @param code The error code to be set.
-	 * @exception Throws IOException if an error occurs.
-	 */
-	public void sendError(int code) 
 		throws IOException;
 	/**
 	 *  Helper function for a redirect to the cluster url. 
