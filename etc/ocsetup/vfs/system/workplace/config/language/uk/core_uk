@@ -401,7 +401,7 @@
                 <copy>Copy</copy>
                 <copytoproject>Copy To Project</copytoproject>
                 <delete>Delete</delete>
-                <edit>Edit Code</edit>
+                <edit>Edit Sourcecode</edit>
                 <editlink>Edit Link</editlink>
                 <editarticle>Edit article</editarticle>
                 <editcontrolfile>Edit Controlcode</editcontrolfile>

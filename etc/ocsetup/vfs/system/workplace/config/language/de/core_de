@@ -400,7 +400,7 @@
                 <copy>Kopieren</copy>
                 <copytoproject>In Projekt übernehmen</copytoproject>
                 <delete>Löschen</delete>
-                <edit>Seite editieren</edit>
+                <edit>Quelltext editieren</edit>
                 <editlink>Verknüpfung editieren</editlink>
                 <editarticle>Artikel bearbeiten</editarticle>
                 <editcontrolfile>Steuerdatei bearbeiten</editcontrolfile>
