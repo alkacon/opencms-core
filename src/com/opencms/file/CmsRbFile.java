@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/01/11 16:34:00 $
+ * @version $Revision: 1.8 $ $Date: 2000/01/11 19:07:50 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -744,7 +744,7 @@ import com.opencms.core.*;
       }
  
     
-      /**
+     /**
      * Copies a resource from the online project to a new, specified project.<br>
      * Copying a resource will copy the file header or folder into the specified 
      * offline project and set its state to UNCHANGED.
@@ -752,9 +752,8 @@ import com.opencms.core.*;
      * <B>Security:</B>
 	 * Access is granted, if:
 	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is not locked by another user</li>
+	 * <li>the user is the owner of the project</li>
+	 * <li>the user can read the resource in the onlineproject</li>
 	 * </ul>
      *	 
      * @param project The project to be published.

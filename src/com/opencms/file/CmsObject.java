@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $ 
+ * @version $Revision: 1.16 $ $Date: 2000/01/11 19:07:50 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -511,6 +511,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		return ; // TODO: implement this! 
 	}
 
+    /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     * Copying a resource will copy the file header or folder into the specified 
+     * offline project and set its state to UNCHANGED.
+     * 
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void copyResourceToProject(String resource)
+		throws CmsException {
+		c_rb.copyResourceToProject(m_context.currentUser(), 
+								   m_context.getCurrentProject(), resource );
+	}
+	
 	/**
 	 * Creates a new folder.
 	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
@@ -1444,4 +1458,13 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		 return( c_rb.readFile(m_context.currentUser(), 
 							   m_context.getCurrentProject(), filename ) );
 	 }
+
+	/**
+	 * Returns a version-string for this OpenCms.
+	 * 
+	 * @return version A Version-string.
+	 */
+	 public String version() {
+		 return( C_VERSION );
+	 }	 
 }

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/01/11 11:46:05 $
+ * @version $Revision: 1.17 $ $Date: 2000/01/11 19:07:50 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1438,6 +1438,54 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 	
+     /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     * Copying a resource will copy the file header or folder into the specified 
+     * offline project and set its state to UNCHANGED.
+     * 
+     * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user is the owner of the project</li>
+	 * </ul>
+     *	 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void copyResourceToProject(A_CmsUser currentUser, 
+									  A_CmsProject currentProject,
+                                      String resource)
+        throws CmsException {
+		
+		// read the onlineproject
+		A_CmsProject online = onlineProject(currentUser, currentProject);
+		
+		// is the current project the onlineproject?
+		// and is the current user the owner of the project?		
+		if( (!currentProject.equals( online ) ) &&
+			 (currentProject.getOwnerId() == currentUser.getId() ) ) {
+			// is offlineproject and is owner
+			m_fileRb.copyResourceToProject(currentProject, online, resource);
+			
+			// walk rekursively throug all parents and copy them, too
+			resource = getParentOfResource(resource);
+			try {
+				while(resource != null) {
+					m_fileRb.copyResourceToProject(currentProject, online, resource);				
+					resource = getParentOfResource(resource);
+				}
+			} catch (CmsException exc) {
+				// if the subfolder exists already - all is ok
+			}
+		} else {
+			// no changes on the onlineproject!
+			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
+				CmsException.C_NO_ACCESS);
+		}
+	}
+		
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
@@ -1758,4 +1806,22 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 	}
+	
+	/**
+	 * Returns the absolute path of the parent.<BR/>
+	 * Example: /system/def has the parent /system/<BR/>
+	 * / has no parent
+	 * 
+	 * @return the parent absolute path, or null if this is the root-resource.
+	 */
+     private String getParentOfResource(String resource){
+         String parent=null;
+         // check if this is the root resource
+         if (!resource.equals(C_ROOT)) {
+                parent=resource.substring(0,resource.length()-1);
+                parent=parent.substring(0,parent.lastIndexOf("/")+1);         
+         }
+         return parent;
+     }
+	
 }

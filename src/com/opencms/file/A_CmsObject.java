@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/01/11 10:24:30 $ 
+ * @version $Revision: 1.20 $ $Date: 2000/01/11 19:07:50 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -430,6 +430,17 @@ public abstract class A_CmsObject {
 										 Hashtable metainfos)
 		throws CmsException;
 
+    /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     * Copying a resource will copy the file header or folder into the specified 
+     * offline project and set its state to UNCHANGED.
+     * 
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    abstract public void copyResourceToProject(String resource)
+        throws CmsException;
+	
 	/**
 	 * Creates a new folder.
 	 * If there are some mandatory Metadefinitions for the folder-resourcetype, a 
@@ -1192,4 +1203,11 @@ public abstract class A_CmsObject {
 	abstract public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String filename)
 		 throws CmsException;
+
+	/**
+	 * Returns a version-string for this OpenCms.
+	 * 
+	 * @return version A Version-string.
+	 */
+	abstract public String version();
 }

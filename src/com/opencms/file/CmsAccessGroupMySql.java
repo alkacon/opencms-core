@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/04 16:23:26 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/11 19:07:50 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
      
@@ -394,7 +394,7 @@ import com.opencms.core.*;
          try {
        
             // get the id of the parent group if nescessary
-            if (parent != null) {
+            if ((parent != null) && (!"".equals(parent))) {
                 parentId=readGroup(parent).getId();
             }
             synchronized (m_statementGroupCreate){

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/11 19:07:50 $
  */
 interface I_CmsResourceBroker {
 
@@ -812,6 +812,27 @@ interface I_CmsResourceBroker {
 							 String filename)
 		throws CmsException;
 
+    /**
+     * Copies a resource from the online project to a new, specified project.<br>
+     * Copying a resource will copy the file header or folder into the specified 
+     * offline project and set its state to UNCHANGED.
+     * 
+     * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user is the owner of the project</li>
+	 * </ul>
+     *	 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void copyResourceToProject(A_CmsUser currentUser, 
+									  A_CmsProject currentProject,
+                                      String resource)
+        throws CmsException;
+								
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 

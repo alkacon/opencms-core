@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/11 11:46:05 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/11 19:07:50 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -206,7 +206,12 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	public A_CmsProject setCurrentProject(String projectname)
 		throws CmsException  {
 		// TODO: check if this is correct?!
-		m_currentProject = m_rb.readProject(m_user, m_currentProject, projectname);
+		A_CmsProject newProject = m_rb.readProject(m_user, 
+												   m_currentProject, 
+												   projectname);
+		if( newProject != null ) {
+			m_currentProject = newProject;
+		}
 		return( m_currentProject );
 	}
 
