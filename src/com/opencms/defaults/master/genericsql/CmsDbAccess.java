@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2004/08/05 11:17:37 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,6 +45,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import org.opencms.db.CmsDbUtil;
@@ -53,6 +55,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -103,6 +106,61 @@ public class CmsDbAccess {
         return new com.opencms.defaults.master.genericsql.CmsSqlManager(dbPoolUrl, currentClass);
     }
 
+    /**
+     * Checks if the master module table is available by performing
+     * a simple query on it.<p>
+     * 
+     * @return true if the query was successfully performed, false otherwise
+     */
+    public boolean checkTables() {
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection();
+            stmt = m_sqlManager.getPreparedStatement(conn, "check_module_master");
+            stmt.executeQuery();
+            return true;                
+                
+        } catch (SQLException exc) {
+            return false;
+            
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, null);
+        }
+    }
+
+    /**
+     * Performs an update script on a database.<p>
+     * 
+     * @param updateScript the script
+     * @param replacers parameter/values to replace within the script
+     * @throws CmsException if something goes wrong
+     */
+    public void updateDatabase(String updateScript, Map replacers) throws CmsException {
+        CmsSetupDb setup = new CmsSetupDb(""); /* TODO: add base path, even if not needed */
+        Connection conn = null;
+        
+        try {
+            conn = m_sqlManager.getConnection();
+            setup.setConnection(conn);
+            setup.updateDatabase(updateScript, replacers);
+            
+            Vector errors = setup.getErrors();
+            if (!errors.isEmpty()) {
+                StringBuffer errorMessages = new StringBuffer();
+                for (Iterator i = errors.iterator(); i.hasNext();) {
+                    errorMessages.append((String)i.next());
+                    errorMessages.append("\n");
+                }
+                throw new CmsException(errorMessages.toString(), CmsException.C_SQL_ERROR);
+            }
+        } catch (SQLException exc) {
+            throw new CmsException(CmsException.C_SQL_ERROR, exc);
+        } finally {
+            m_sqlManager.closeAll(conn, null, null);
+        }
+    }
+    
     /**
      * Set the root channel of the content.<p>
      * 
