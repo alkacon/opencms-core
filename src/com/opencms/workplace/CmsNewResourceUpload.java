@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/01/20 23:59:19 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/04/09 10:00:44 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/01/20 23:59:19 $
+ * @version $Revision: 1.34 $ $Date: 2003/04/09 10:00:44 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -78,7 +79,14 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
          // the template to be displayed
         String template = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-
+        
+        // get the file size upload limitation value (value is in kB)
+        int maxFileSize = ((Integer)A_OpenCms.getRuntimeProperty("file.maxuploadsize")).intValue();
+        boolean limitedFileSize = true;
+        if (maxFileSize < 1) {
+            limitedFileSize = false;
+        }
+        
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if (initial != null) {
@@ -192,11 +200,20 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
                 // display the select filetype screen
                 if(filename != null) {
+                    
+                    // get the file size upload limitation value in bytes
+                    int maxFileSizeBytes = maxFileSize * 1024;
 
                     // check if the file size is 0
                     if(filecontent.length == 0) {
                         template = "error";
                         xmlTemplateDocument.setData("details", filename);
+                    }
+                    
+                    // check if the file size is larger than the maximum allowed upload size 
+                    else if ((limitedFileSize) && (filecontent.length > maxFileSizeBytes)) {
+                        template = "errorfilesize";
+                        xmlTemplateDocument.setData("details", filename+": "+(filecontent.length/1024)+" kb, max. "+maxFileSize+" kb.");
                     }
                     else {
                         if(unzip != null) {
@@ -363,6 +380,17 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         return null;
                     }
                 }
+            }
+        }
+        // display upload form with limitation of file size
+        else {
+            if (limitedFileSize) {
+                xmlTemplateDocument.setData("maxfilesize", "" + maxFileSize);
+                String limitation = xmlTemplateDocument.getProcessedDataValue("filesize_limited");
+                xmlTemplateDocument.setData("limitation", limitation);
+            }
+            else {
+                xmlTemplateDocument.setData("limitation", "");
             }
         }
         if(filename != null) {

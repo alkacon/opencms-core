@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/03/28 10:56:33 $
-* Version: $Revision: 1.119 $
+* Date   : $Date: 2003/04/09 10:00:44 $
+* Version: $Revision: 1.120 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.119 $ $Date: 2003/03/28 10:56:33 $
+ * @version $Revision: 1.120 $ $Date: 2003/04/09 10:00:44 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -356,8 +356,13 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Directory translation: non-critical error " + e.toString());
         }   
-        // make sure we always have at last an emtpy array      
+        // make sure we always have at least an empty array      
         if (m_directoryTranslator == null) m_directoryTranslator = new CmsResourceTranslator(new String[0], false);
+        
+        // read the maximum file upload size limit
+        Integer fileMaxUploadSize = new Integer(conf.getInteger("file.maxuploadsize", -1));
+        setRuntimeProperty("file.maxuploadsize", fileMaxUploadSize);
+        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". File max. upload size: " + (fileMaxUploadSize.intValue()>0?(fileMaxUploadSize+" KB"):"unlimited"));
         
         // try to initialize filename translations
         try {
