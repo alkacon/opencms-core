@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/19 11:57:08 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/19 11:57:08 $
  */
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -90,7 +90,7 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
         
         // build errorbox
         String result = errordef.getErrorpage(errorTitle,errorMessage,errorReason,
-                                             errorSuggestion,errorLink,reason,button);
+                                             errorSuggestion,errorLink,reason,button,callingObject);
         return result; 
 
     }                    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbUserGroupCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 11:57:08 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
  */
  class CmsRbUserGroupCache extends CmsRbUserGroup {
 
@@ -58,19 +58,25 @@ import com.opencms.core.*;
      
      /** The groupcache */
      private CmsCache m_usersofgroupcache=null;
+
+     /** The useringroupcache */
+     private CmsCache m_useringroupcache=null;
+     
      
      /** The cache size */
-     private final static int C_USERCACHE=2000;
+     private final static int C_USERCACHE=1000;
 
      /** The cache size */
-     private final static int C_GROUPCACHE=2000;
+     private final static int C_GROUPCACHE=1000;
 
      /** The cache size */
-     private final static int C_GROUPSOFUSERCACHE=2000;
+     private final static int C_GROUPSOFUSERCACHE=1000;
 
      /** The cache size */
-     private final static int C_USERSOFGROUPCACHE=2000;
-     
+     private final static int C_USERSOFGROUPCACHE=1000;
+
+     /** The cache size */
+     private final static int C_USERSINGROUPCACHE=1000;
      
      /**
      * Constructor, creates a new Cms User & Group Resource Broker.
@@ -79,12 +85,17 @@ import com.opencms.core.*;
      */
     public CmsRbUserGroupCache(I_CmsAccessUserGroup accessUserGroup)
     {
+   
         super(accessUserGroup);
         m_accessUserGroup=accessUserGroup;
         m_usercache=new CmsCache(C_USERCACHE);
         m_groupcache=new CmsCache(C_GROUPCACHE);
         m_groupsofusercache=new CmsCache(C_GROUPSOFUSERCACHE);
         m_usersofgroupcache=new CmsCache(C_USERSOFGROUPCACHE);
+        m_useringroupcache=new CmsCache(C_USERSINGROUPCACHE);
+        
+             System.err.println("Starting Cache Modules.....");
+        System.err.println("");
     }
     
      /**
@@ -223,4 +234,34 @@ import com.opencms.core.*;
          return allGroups;
        }
     
+     /**
+	 * Checks if a user is member of a group.<P/>
+	 *  
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param nameuser The name of the user to check.
+	 * @param groupname The name of the group to check.
+	 * @return True or False
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	 public boolean userInGroup(String username, String groupname)
+         throws CmsException {
+         Boolean uig=null;
+         uig=(Boolean)m_useringroupcache.get(username+groupname);
+         if (uig==null) {
+		    Vector groups = getGroupsOfUser(username);
+		    A_CmsGroup group;
+		    for(int z = 0; z < groups.size(); z++) {
+			     group = (A_CmsGroup) groups.elementAt(z);
+			    if(m_accessUserGroup.userInGroup(username, group.getName())) {
+				     uig=new Boolean(true);
+			    }
+		    }
+          uig=new Boolean(false);
+          m_useringroupcache.put(username+groupname,uig);
+         }
+		return uig.booleanValue();
+    }
  }

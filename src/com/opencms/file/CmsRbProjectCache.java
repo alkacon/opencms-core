@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbProjectCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 11:57:08 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
  */
 class CmsRbProjectCache extends CmsRbProject {
 	
@@ -58,4 +58,24 @@ class CmsRbProjectCache extends CmsRbProject {
         super(accessProject);
         m_projectcache=new CmsCache(C_PROJECTCACHE);     
     }
+    
+    	
+	/**
+	 * Reads a project from the Cms.
+	 * 
+	 * @param name The name of the project to read.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public A_CmsProject readProject(String name)
+		 throws CmsException {
+         A_CmsProject project=null;
+         project=(A_CmsProject)m_projectcache.get(name);
+         if (project== null) {
+             project=m_accessProject.readProject(name);
+             m_projectcache.put(name,project);
+         }
+		 return project;
+	 }
+    
 }

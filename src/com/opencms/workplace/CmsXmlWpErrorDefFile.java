@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpErrorDefFile.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/19 11:57:08 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  *  Content definition for the workplace error element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/19 11:57:08 $
  */
 public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -107,7 +107,7 @@ public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogCha
      */
     public String getErrorbox(String title, String message, String reason, 
                            String suggestion, String link, String msgReason,
-                           String msgButton)
+                           String msgButton,Object callingObject)
         throws CmsException {
         setData(C_ERROR_TITLE, title);
         setData(C_ERROR_MESSAGE, message);
@@ -116,7 +116,7 @@ public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogCha
         setData(C_ERROR_LINK,link);
         setData(C_ERROR_MSG_REASON,msgReason);
         setData(C_ERROR_MSG_BUTTON,msgButton);
-        return getProcessedDataValue(C_TAG_ERRORBOX);                
+        return getProcessedDataValue(C_TAG_ERRORBOX,callingObject,null);           
      }  
     
       /**
@@ -133,7 +133,7 @@ public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogCha
      */
     public String getErrorpage(String title, String message, String reason, 
                            String suggestion, String link, String msgReason,
-                           String msgButton)
+                           String msgButton,Object callingObject)
         throws CmsException {
         setData(C_ERROR_TITLE, title);
         setData(C_ERROR_MESSAGE, message);
@@ -142,7 +142,7 @@ public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogCha
         setData(C_ERROR_LINK,link);
         setData(C_ERROR_MSG_REASON,msgReason);
         setData(C_ERROR_MSG_BUTTON,msgButton);
-        return getProcessedDataValue(C_TAG_ERRORPAGE);                
+        return getProcessedDataValue(C_TAG_ERRORPAGE,callingObject,null);                
      }  
     
 }

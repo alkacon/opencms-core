@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlCache.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/19 11:57:08 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 11:57:08 $
  */
 public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 	
@@ -76,7 +76,7 @@ public class CmsInitMySqlCache extends A_CmsInit implements I_CmsConstants {
 				new CmsAccessPropertyMySql(propertyDriver, propertyConnectString));
 		
 		I_CmsRbProject projectRb = 
-			new CmsRbProject(
+			new CmsRbProjectCache(
 				new CmsAccessProjectMySql(propertyDriver, propertyConnectString));
 		
 		I_CmsRbTask taskRb = 
