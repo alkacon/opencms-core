@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/01/29 13:03:44 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/02/06 15:01:54 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.26 $ $Date: 2002/01/29 13:03:44 $
+ * @version $Revision: 1.27 $ $Date: 2002/02/06 15:01:54 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -120,10 +120,14 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
     int filecounter = 0;
 
     /**
-     * The webAppUrl from the original request.
+     * The data from the original request. We save them to get them after the
+     * original request is expired.
      */
     private String m_webAppUrl="";
     private String m_servletUrl="";
+    private String m_serverName="";
+    private String m_scheme="";
+    private int m_serverPort;
 
     /**
      * Constructor, creates a new CmsRequestHttpServlet object.
@@ -140,6 +144,9 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
             // this is the old servlet-api without this method
             // ignore this missing method and the context-path
         }
+        m_serverName = m_req.getServerName();
+        m_scheme = m_req.getScheme();
+        m_serverPort = m_req.getServerPort();
         m_servletUrl = m_webAppUrl + m_req.getServletPath();
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
@@ -705,5 +712,24 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      */
     public String getServletUrl(){
         return m_servletUrl;
+    }
+
+    /**
+     * Methods to get the data from the original request.
+     */
+    public String getServerName(){
+        return m_serverName;
+    }
+    /**
+     * Methods to get the data from the original request.
+     */
+    public int getServerPort(){
+        return m_serverPort;
+    }
+    /**
+     * Methods to get the data from the original request.
+     */
+    public String getScheme(){
+        return m_scheme;
     }
 }

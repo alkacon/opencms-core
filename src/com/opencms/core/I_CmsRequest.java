@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/02/06 15:01:54 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.7 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.8 $ $Date: 2002/02/06 15:01:54 $
  */
 public interface I_CmsRequest {
 
@@ -130,4 +130,11 @@ public interface I_CmsRequest {
      * Web-Application.
      */
     public String getServletUrl();
+
+    /**
+     * Methods to get the data from the original request.
+     */
+    public String getServerName();
+    public String getScheme();
+    public int getServerPort();
 }

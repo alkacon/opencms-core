@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportRequest.java,v $
-* Date   : $Date: 2002/01/28 17:20:45 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/02/06 15:01:54 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,6 +50,9 @@ public class CmsExportRequest implements I_CmsRequest {
      */
     private String m_webAppUrl="";
     private String m_servletUrl="";
+    private String m_serverName="";
+    private String m_scheme="";
+    private int m_serverPort;
 
     public CmsExportRequest( HttpServletRequest req) {
         try {
@@ -58,6 +61,9 @@ public class CmsExportRequest implements I_CmsRequest {
             // this is the old servlet-api without this method
             // ignore this missing method and the context-path
         }
+        m_serverName = req.getServerName();
+        m_scheme = req.getScheme();
+        m_serverPort = req.getServerPort();
         m_servletUrl = m_webAppUrl + req.getServletPath();
     }
     public CmsExportRequest(String webAppUrl, String servletUrl) {
@@ -130,5 +136,23 @@ public class CmsExportRequest implements I_CmsRequest {
      */
     public String getServletUrl() {
         return m_servletUrl;
+    }
+    /**
+     * Methods to get the data from the original request.
+     */
+    public String getServerName(){
+        return m_serverName;
+    }
+    /**
+     * Methods to get the data from the original request.
+     */
+    public int getServerPort(){
+        return m_serverPort;
+    }
+    /**
+     * Methods to get the data from the original request.
+     */
+    public String getScheme(){
+        return m_scheme;
     }
 }
