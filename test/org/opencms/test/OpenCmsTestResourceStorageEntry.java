@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/08/11 10:50:48 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -63,7 +63,7 @@ public class OpenCmsTestResourceStorageEntry {
     private CmsAccessControlList m_accessControlList;
     
        /** The ID of the content database record. */
-    private CmsUUID m_contentId;
+    // private CmsUUID m_contentId;
     
     /** The content of the resource. If the resource is a folder, the content is null. */
     private byte[] m_contents;
@@ -141,7 +141,7 @@ public class OpenCmsTestResourceStorageEntry {
      * @throws CmsException if something goes wrong 
      */
     public OpenCmsTestResourceStorageEntry(CmsObject cms, String resourceName, CmsResource res) throws CmsException {
-        m_contentId = res.getContentId();
+        // m_contentId = res.getContentId();
         m_dateCreated = res.getDateCreated();
         m_dateLastModified = res.getDateLastModified();
         m_dateReleased = res.getDateReleased();
@@ -251,9 +251,9 @@ public class OpenCmsTestResourceStorageEntry {
      *
      * @return the ID of the file content database entry
      */
-    public CmsUUID getFileId() {
+    /* public CmsUUID getFileId() {
         return m_contentId;
-    }
+    } */
 
     /**
      * Returns the flags of this resource.<p>

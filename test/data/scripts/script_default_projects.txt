@@ -1,0 +1,5 @@
+#
+# Script: Create the default "Offline" project
+#
+createDefaultProject "Offline" "The Offline Project"
+setSiteRoot "/sites/default/"

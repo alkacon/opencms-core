@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2004/08/11 10:50:48 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,17 +82,20 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 5.3.5
  */
 public class OpenCmsTestCase extends TestCase {
 
-    /** Name of the test database instance. */
-    public static final String C_DATABASE_NAME = "ocjutest";
+    /** Key for tests on MySql database. */
+    public static final String C_DB_MYSQL = "mysql";
     
+    /** Key for tests on Oracle database. */
+    public static final String C_DB_ORACLE = "oracle";
+      
     /** DB product used for the tests. */
-    public static final String C_DB_PRODUCT = "mysql";
+    public static String m_dbProduct = C_DB_MYSQL;
     
     /** The internal storages. */
     public static HashMap m_resourceStorages;
@@ -109,6 +112,45 @@ public class OpenCmsTestCase extends TestCase {
     /** The current resource storage. */
     public OpenCmsTestResourceStorage m_currentResourceStrorage;
     
+    /** The OpenCms/database configuration. */
+    public static ExtendedProperties m_configuration = null;
+    
+    /** The name of the database. */
+    public static String m_dbName;
+    
+    /** The name of the user. */
+    public static String m_userName;
+    
+    /** The password of the user. */
+    public static String m_userPassword;
+    
+    /** The setup jdbc url */
+    public static String m_setupUrl;
+    
+    /** The name of the setup user. */
+    public static String m_setupName;
+    
+    /** The password of the setup user. */
+    public static String m_setupPassword;
+    
+    /** Name of the default tablespace (oracle only). */
+    public static String m_defaultTablespace;
+    
+    /** Name of the index tablespace (oracle only). */
+    public static String m_indexTablespace;
+    
+    /** Name of the temporary tablespace (oracle only). */
+    public static String m_tempTablespace;
+    
+    /** The database driver. */
+    public static String m_jdbcDriver;
+    
+    /** The database url. */
+    public static String m_jdbcUrl;
+    
+    /** Additional database params. */
+    public static String m_jdbcUrlParams;
+    
     /**
      * Default JUnit constructor.<p>
      * 
@@ -119,12 +161,60 @@ public class OpenCmsTestCase extends TestCase {
         OpenCmsTestLogAppender.setBreakOnError(false);
         if (m_resourceStorages == null) {
             m_resourceStorages = new HashMap();
-        }       
+        }
+        
+        // initialize configuration
+        initConfiguration();
+        
         // set "OpenCmsLog" system property to enable the logger
         System.setProperty(CmsLog.SYSPROP_LOGFILE, "opencms_test.log");
-        OpenCmsTestLogAppender.setBreakOnError(true);
+        OpenCmsTestLogAppender.setBreakOnError(true);       
     }
     
+    /**
+     * Initializies the OpenCms/database configuration 
+     * by reading the appropriate values from opencms.properties.<p>
+     */
+    private void initConfiguration() {
+        
+        if (m_configuration == null) {
+            try {
+                String propertyFile = getTestDataPath() + "../test.properties";
+                m_configuration = CmsPropertyUtils.loadProperties(propertyFile);
+                m_dbProduct = m_configuration.getString("db.product");
+            } catch (IOException e) {
+                fail(e.toString());
+                return;
+            }
+            
+            try {
+                String propertyFile = getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/opencms.properties";        
+                m_configuration = CmsPropertyUtils.loadProperties(propertyFile);
+            } catch (IOException e) {
+                fail(e.toString());
+                return;
+            }
+            
+            m_setupUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE + "setup." + "jdbcUrl");
+            m_setupName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE + "setup." + "user");
+            m_setupPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE + "setup." + "password");    
+            
+            String key = "default";
+            m_dbName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + "dbName");
+            m_userName = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
+            m_userPassword = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);        
+
+            m_jdbcDriver = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
+            m_jdbcUrl = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
+            m_jdbcUrlParams = m_configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
+            
+            m_defaultTablespace = m_configuration.getString("db.oracle.defaultTablespace");
+            m_indexTablespace = m_configuration.getString("db.oracle.indexTablespace");
+            m_tempTablespace = m_configuration.getString("db.oracle.temporaryTablespace");
+            
+            System.out.println("----- Starting tests on database " + m_dbProduct + " (" + m_setupUrl + ") " + "-----");
+        }
+    }
     
     /**
      * Removes the initialized OpenCms database and all 
@@ -146,13 +236,13 @@ public class OpenCmsTestCase extends TestCase {
         removeDatabase();
         
         // copy the configuration files to re-create the original configuration
-        String configFolder = getTestDataPath() + "WEB-INF/config-ori/";
+        String configFolder = getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/";
         copyConfiguration(configFolder);
 
         // remove potentially created "classes, "lib" and "backup" folder
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/classes/"));        
         CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/lib/"));
-        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));           
+        CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "WEB-INF/config/backup/"));        
     }
 
     /**
@@ -165,7 +255,7 @@ public class OpenCmsTestCase extends TestCase {
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder) {
     
-        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config-ori/");
+        return setupOpenCms(importFolder, targetFolder, getTestDataPath() + "WEB-INF/config." + m_dbProduct + "/");
     }
     
     /**
@@ -178,15 +268,12 @@ public class OpenCmsTestCase extends TestCase {
      * @return an initialized OpenCms context with "Admin" user in the "Offline" project with the site root set to "/" 
      */
     public static CmsObject setupOpenCms(String importFolder, String targetFolder, String configFolder) {
-
+        
         // turn off exceptions after error logging during setup (won't work otherwise)
         OpenCmsTestLogAppender.setBreakOnError(false);
         // output a message 
         System.out.println("\n\n\n----- Starting test case: Importing OpenCms VFS data -----");
-        
-        // create a new database first
-        setupDatabase();
-        
+                
         // kill any old shell that might have remained from a previous test 
         if (m_shell != null) {
             try {
@@ -199,6 +286,9 @@ public class OpenCmsTestCase extends TestCase {
         
         // copy the configuration files
         copyConfiguration(configFolder);
+
+        // create a new database first
+        setupDatabase();
         
         // create a shell instance
         m_shell = new CmsShell(
@@ -227,13 +317,23 @@ public class OpenCmsTestCase extends TestCase {
             cms.loginUser("Admin", "admin");
             cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
             
-            // import the "simpletest" files
-            importResources(cms, importFolder, targetFolder);                 
+            if (importFolder != null) {
+                // import the "simpletest" files
+                importResources(cms, importFolder, targetFolder);
+                
+                // publish the current project by script
+                script = new File(getTestDataPath() + "scripts/script_publish.txt");
+                stream = new FileInputStream(script);        
+                m_shell.start(stream);
+            } else {
+                // unlock project resources if not published
+                cms.unlockProject(cms.readProject("_setupProject").getId());
+            }
             
-            // publish the current project by script
-            script = new File(getTestDataPath() + "scripts/script_publish.txt");
+            // create the default projects by script
+            script = new File(getTestDataPath() + "scripts/script_default_projects.txt");
             stream = new FileInputStream(script);        
-            m_shell.start(stream);      
+            m_shell.start(stream);            
             
             // switch to the "Offline" project
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -248,6 +348,15 @@ public class OpenCmsTestCase extends TestCase {
         OpenCmsTestLogAppender.setBreakOnError(true);
         // return the initialized cms context Object
         return cms;
+    }
+    
+    /**
+     * Returns the name of the database product.<p>
+     * 
+     * @return returns either oracle or mysql
+     */
+    public String getDatabaseProduct() {
+        return m_dbProduct;
     }
     
     /**
@@ -270,14 +379,14 @@ public class OpenCmsTestCase extends TestCase {
      * Tests database creation.<p>
      * 
      * @return the setup DB object used for connection to the DB
-     */
+     */    
     protected static CmsSetupDb createDatabase() {
-           
+                
         // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
+        CmsSetupDb setupDb = getSetupDb(true);
         
         // create the database
-        setupDb.createDatabase(C_DB_PRODUCT, getReplacer());        
+        setupDb.createDatabase(m_dbProduct, getReplacer());        
         return setupDb;
     }
     
@@ -289,10 +398,10 @@ public class OpenCmsTestCase extends TestCase {
     protected static CmsSetupDb createTables() {
 
         // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
+        CmsSetupDb setupDb = getSetupDb(false);
         
         // create the database tables
-        setupDb.createTables(C_DB_PRODUCT, getReplacer());      
+        setupDb.createTables(m_dbProduct, getReplacer());      
         return setupDb;     
     }
  
@@ -304,10 +413,10 @@ public class OpenCmsTestCase extends TestCase {
     protected static CmsSetupDb dropDatabase() {
 
         // create a setup DB object for DB creation
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, true);
+        CmsSetupDb setupDb = getSetupDb(true);
         
         // drop the database
-        setupDb.dropDatabase(C_DB_PRODUCT, getReplacer());
+        setupDb.dropDatabase(m_dbProduct, getReplacer());
         return setupDb;       
     }
     
@@ -319,10 +428,10 @@ public class OpenCmsTestCase extends TestCase {
     protected static CmsSetupDb dropTables() {
         
         // create a setup DB object 
-        CmsSetupDb setupDb = getSetupDb(C_DB_PRODUCT, false);
+        CmsSetupDb setupDb = getSetupDb(false);
         
         // create the database
-        setupDb.dropTables(C_DB_PRODUCT);
+        setupDb.dropTables(m_dbProduct);
         return setupDb;      
     }
 
@@ -332,8 +441,15 @@ public class OpenCmsTestCase extends TestCase {
      * @return an initialized replacer map
      */
     protected static Map getReplacer() {
+        
         Map replacer = new HashMap();
-        replacer.put("${database}", C_DATABASE_NAME);
+        replacer.put("${database}", m_dbName);
+        replacer.put("${user}", m_userName);
+        replacer.put("${password}", m_userPassword);
+        replacer.put("${defaultTablespace}", m_defaultTablespace);
+        replacer.put("${indexTablespace}", m_indexTablespace);
+        replacer.put("${temporaryTablespace}", m_tempTablespace);
+            
         return replacer;
     }
     
@@ -365,50 +481,21 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Returns an initialized DB setup object.<p>
      *  
-     * @param dbProduct the name of the DB product to use, e.g. "mysql"
      * @param create if true, the DB will be initialized for creation
      * @return the initialized setup DB object
      */
-    protected static CmsSetupDb getSetupDb(String dbProduct, boolean create) {
-        
-        ExtendedProperties dbConfiguration;
-        ExtendedProperties configuration;
-        try {
-            // load DB configuration
-            String dbConfigFile = getSetupDataPath() + "setup/database/" + dbProduct + "/database.properties";
-            dbConfiguration = CmsPropertyUtils.loadProperties(dbConfigFile);
-                    
-            // load test configuration
-            String propertyFile = getTestDataPath() + "WEB-INF/config/opencms.properties";        
-            configuration = CmsPropertyUtils.loadProperties(propertyFile);
-            configuration.setProperty("DATABASE_NAME", C_DATABASE_NAME);
-        } catch (IOException e) {
-            fail(e.toString());
-            return null;
-        }
-        
-        // get connection values from properties
-        String key = "default";        
-        String jdbcDriver = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_DRIVER);
-        String username = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_USERNAME);
-        String password = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_PASSWORD);        
-
-        String jdbcUrl;
-        String jdbcUrlParams;
-        if (create) {
-            jdbcUrl = dbConfiguration.getString(dbProduct + ".constr");
-            jdbcUrlParams = dbConfiguration.getString(dbProduct + ".constr.params");
-        } else {
-            jdbcUrl = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL);
-            jdbcUrlParams = configuration.getString(CmsDbPool.C_KEY_DATABASE_POOL + "." + key + "." + CmsDbPool.C_KEY_JDBC_URL_PARAMS);
-        }
-        
+    protected static CmsSetupDb getSetupDb(boolean create) {
+                 
         // create setup DB instance
         CmsSetupDb setupDb = new CmsSetupDb(getSetupDataPath());
         
         // connecto to the DB
-        setupDb.setConnection(jdbcDriver, jdbcUrl, jdbcUrlParams, username, password);
-                
+        if (create) {
+            setupDb.setConnection(m_jdbcDriver, m_setupUrl, m_jdbcUrlParams, m_setupName, m_setupPassword);
+        } else {
+            setupDb.setConnection(m_jdbcDriver, m_jdbcUrl, m_jdbcUrlParams, m_userName, m_userPassword);
+        }
+        
         // check for errors 
         checkErrors(setupDb);
         
@@ -461,8 +548,13 @@ public class OpenCmsTestCase extends TestCase {
         CmsSetupDb setupDb;
         setupDb = dropTables();
         checkErrors(setupDb);
+        setupDb.closeConnection();
+        
         setupDb = dropDatabase();
-        checkErrors(setupDb);
+        if (!"oracle".equals(m_dbProduct)) {
+            checkErrors(setupDb);
+        }       
+        setupDb.closeConnection();
     }    
     
     /**
@@ -471,16 +563,27 @@ public class OpenCmsTestCase extends TestCase {
      * Any existing instance of the test database is forcefully removed first.<p>
      */
     protected static void setupDatabase() {
-                
+        CmsSetupDb setupDb;
+    
         // first kill any existing old database instance
-        dropDatabase();
+        if (C_DB_ORACLE.equals(m_dbProduct)) {
+            setupDb = dropTables();
+        } else {
+            setupDb = dropDatabase();
+        }
+        setupDb.closeConnection();
         
         // now setup the new instance
-        CmsSetupDb setupDb;
         setupDb = createDatabase();
-        checkErrors(setupDb);        
+        if (!"oracle".equals(m_dbProduct)) {
+            checkErrors(setupDb);
+        }
+        setupDb.closeConnection();
+        
+
         setupDb = createTables();            
         checkErrors(setupDb);
+        setupDb.closeConnection();
     }
     
     
@@ -830,16 +933,6 @@ public class OpenCmsTestCase extends TestCase {
             noMatches = "";
             resourceName = cms.getRequestContext().removeSiteRoot(res.getRootPath());
 
-            // compare the content id if necessary
-            if (filter.testContentId()) {
-                if (!storedResource.getFileId().equals(res.getContentId())) {
-                    noMatches += "[ContentId "
-                        + storedResource.getFileId()
-                        + " != "
-                        + res.getContentId()
-                        + "]\n";
-                }
-            }
             // compare the contents if necessary
             if (filter.testContents()) {
                 byte[] contents;
@@ -1813,11 +1906,11 @@ public class OpenCmsTestCase extends TestCase {
      */
     protected void echo(String message) {
         try {
-            m_shell.printPrompt();
-            System.out.println(message);
+        	m_shell.printPrompt();
+        	System.out.println(message);
         } catch (Throwable t) {
             throw new RuntimeException(t);
-        }
+    }   
     }   
     
     /**

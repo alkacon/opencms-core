@@ -4,7 +4,3 @@
 # Publish the project
 unlockCurrentProject
 publishProject
-
-# Create the default "Offline" project
-createDefaultProject "Offline" "The Offline Project"
-setSiteRoot "/sites/default/"

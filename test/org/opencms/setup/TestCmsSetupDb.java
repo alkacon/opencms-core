@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2004/07/07 18:44:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/08/11 10:50:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Tests the database creation / removal used during setup.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.5
  */
@@ -57,11 +57,19 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateDatabase() {
         
+        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+            System.out.println("testCreateDatabase not applicable for oracle.");
+            return;
+        }
+        
         // use create method form superclass
         CmsSetupDb setupDb = createDatabase();    
         
         // check for errors 
-        checkErrors(setupDb);             
+        checkErrors(setupDb);
+        
+        // close connections
+        setupDb.closeConnection();
     }
     
     /**
@@ -73,7 +81,10 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = createTables();     
         
         // check for errors 
-        checkErrors(setupDb);         
+        checkErrors(setupDb);
+        
+        // close connections
+        setupDb.closeConnection();
     }
     
     /**
@@ -85,7 +96,10 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
         CmsSetupDb setupDb = dropTables();         
         
         // check for errors 
-        checkErrors(setupDb);         
+        checkErrors(setupDb);     
+        
+        // close connections
+        setupDb.closeConnection();
     }
  
     /**
@@ -93,10 +107,18 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testDropDatabase() {
 
+        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+            System.out.println("testDropDatabase not applicable for oracle.");
+            return;
+        }
+        
         // use drop method form superclass
         CmsSetupDb setupDb = dropDatabase();     
         
         // check for errors 
-        checkErrors(setupDb);         
+        checkErrors(setupDb);     
+        
+        // close connections
+        setupDb.closeConnection();
     }
 }
