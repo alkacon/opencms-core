@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * It helps the core to set up all layers correctly.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2000/01/04 16:52:44 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/05 17:49:14 $
  */
 public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 	
@@ -61,7 +61,7 @@ public class CmsInitMySql extends A_CmsInit implements I_CmsConstants {
 			mountPoint = (A_CmsMountPoint) mountPoints.get(key);
 			
 			// select the right access-module for the mount-point
-			if( mountPoint.getType() == C_MOUNTPOINT_MYSQL ) {
+			if( mountPoint.getMountpointType() == C_MOUNTPOINT_MYSQL ) {
 				mountedAccessModules.put(key, new CmsAccessFileMySql(mountPoint));
 			} else {
 				mountedAccessModules.put(key, new CmsAccessFileFilesystem(mountPoint));
