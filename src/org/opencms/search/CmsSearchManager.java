@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,13 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.search.documents.CmsCosDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
@@ -65,7 +68,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
@@ -280,7 +283,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     }
           
     /**
-     * Creates new index entries for all resources below the given path.<p>
+     * Creates new index entries for all vfs resources below the given path.<p>
      * 
      * @param writer the write used to write to the index
      * @param path the path to the root of the subtree to index
@@ -289,7 +292,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @param threadManager the thread manager for controlling the indexing threads
      * @throws CmsIndexException if something goes wrong
      */
-    private void createSubtreeIndex(IndexWriter writer, String path, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
+    private void createVfsSubtreeIndex(IndexWriter writer, String path, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) throws CmsIndexException {
         
         boolean folderReported = false;
         
@@ -302,7 +305,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                 
                 res = (CmsResource)resources.get(i);
                 if (res instanceof CmsFolder) {                    
-                    createSubtreeIndex(writer, m_cms.getRequestContext().removeSiteRoot(res.getRootPath()), index, report, threadManager);
+                    createVfsSubtreeIndex(writer, m_cms.getRequestContext().removeSiteRoot(res.getRootPath()), index, report, threadManager);
                     continue;
                 } 
 
@@ -318,8 +321,9 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     report.print(res.getName(), I_CmsReport.C_FORMAT_DEFAULT);
                     report.print(report.key("search.dots"), I_CmsReport.C_FORMAT_DEFAULT);
                 }
-                                
-                threadManager.createIndexingThread(writer, res, index);
+                
+                CmsIndexResource ires = new CmsIndexResource(res); 
+                threadManager.createIndexingThread(writer, ires, index);
             }
                                 
         } catch (CmsIndexException exc) {
@@ -355,7 +359,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             throw new CmsIndexException("Indexing contents of " + path + " failed.", exc);
         }
     }
-
+    
     /**
      * Writes the index for a single file.<p>
      * 
@@ -481,13 +485,20 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
      * @param resource a cms resource
      * @return a lucene document factory or null
      */
-    protected I_CmsDocumentFactory getDocumentFactory (CmsResource resource) {
+    protected I_CmsDocumentFactory getDocumentFactory (CmsIndexResource resource) {
 
-        String documentTypeKey = resource.getType() + ":" + OpenCms.getMimeType(resource.getName(), null);
+        String documentTypeKey;
+        if (resource.getObject() instanceof CmsMasterDataSet) {
+            documentTypeKey = "COS" + resource.getType(); 
+        } else {
+            documentTypeKey = "VFS" + resource.getType() + ":" + resource.getMimetype();
+        }
+        
         I_CmsDocumentFactory factory = (I_CmsDocumentFactory)m_documenttypes.get(documentTypeKey);                           
         if (factory == null) {
             factory = (I_CmsDocumentFactory)m_documenttypes.get(resource.getType() + "");
         }
+        
         return factory;
     }
 
@@ -636,10 +647,14 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             for (Iterator r = resourceTypes.iterator(); r.hasNext();) {
            
                 String resourceType = (String)r.next();
-                int resourceTypeId;
+                String resourceTypeId;
                 
                 try {
-                    resourceTypeId = ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
+                    if (documentFactory instanceof CmsCosDocument) {
+                        resourceTypeId = "COS" + ((CmsMasterContent)Class.forName(resourceType).newInstance()).getSubId();
+                    } else {
+                        resourceTypeId = "VFS" + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getResourceType();
+                    }
                 } catch (Exception exc) {
                     throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Instanciation of resource type" + resourceType + " failed", exc);    
                 }
@@ -693,7 +708,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
         CmsRequestContext context = m_cms.getRequestContext();
         int currentProject = context.currentProject().getId();
         
-        context.saveSiteRoot();
+        String currentSiteRoot = context.getSiteRoot();
         context.setSiteRoot(index.getSite());
         context.setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         if (report != null) {
@@ -708,9 +723,9 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
             
             for (Iterator i = sources.iterator(); i.hasNext();) {
                 String vfsPath = (String)i.next();
-                createSubtreeIndex(writer, vfsPath, index, report, threadManager);
+                createVfsSubtreeIndex(writer, vfsPath, index, report, threadManager);
             }
-
+            
             threadManager.reportStatistics();
                         
         } catch (Exception exc) {
@@ -731,7 +746,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
                     //
                 }
             }
-            context.restoreSiteRoot();
+            context.setSiteRoot(currentSiteRoot);
             context.setCurrentProject(currentProject);
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,10 @@ package org.opencms.search;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
-import com.opencms.file.CmsResource;
-
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsIndexingThreadManager extends Thread {
@@ -87,7 +85,7 @@ public class CmsIndexingThreadManager extends Thread {
      * @param res the resource
      * @param index the index
      */
-    public void createIndexingThread(IndexWriter writer, CmsResource res, CmsSearchIndex index) {
+    public void createIndexingThread(IndexWriter writer, CmsIndexResource res, CmsSearchIndex index) {
 
         CmsIndexingThread thread = new CmsIndexingThread(m_manager, writer, res, index, m_report, this);
 

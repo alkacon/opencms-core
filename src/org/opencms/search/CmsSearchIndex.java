@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/02/12 16:54:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
@@ -62,7 +63,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Searcher;
 
 /**
- * @version $Revision: 1.4 $ $Date: 2004/02/12 16:54:20 $
+ * @version $Revision: 1.5 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchIndex {
@@ -137,7 +138,7 @@ public class CmsSearchIndex {
      * @throws CmsIndexException if mandatory configuration values missing
      */
     protected CmsSearchIndex(CmsSearchManager indexManager, CmsObject cms, String path, Map configuration) throws CmsIndexException {
-
+       
         m_cms = cms;
         m_indexManager = indexManager;
 
@@ -156,7 +157,7 @@ public class CmsSearchIndex {
         if ((m_site = (String)configuration.get("site")) == null) {
             throw new CmsIndexException("[" + this.getClass().getName() + "] " + "Site undefined");
         }
-
+        
         m_sources = null;
         try {
             m_sources = (List)configuration.get("source");
@@ -421,11 +422,32 @@ public class CmsSearchIndex {
             for (int i = 0; i < hits.length(); i++) { 
                 try {
                 
-                    Document doc = hits.doc(i);                    
-                    CmsResource res = m_cms.readFileHeader(doc.getField(I_CmsDocumentFactory.DOC_PATH).stringValue());
-                    if (m_cms.hasPermissions(res, I_CmsConstants.C_READ_ACCESS)) {
+                    Document doc = hits.doc(i);
+                    CmsIndexResource resource = null;
+                    String channel = null;
+                    String path = null;
+                    Field f;
+                    
+                    if ((f = doc.getField(I_CmsDocumentFactory.DOC_CHANNEL)) != null) {
+                        channel = f.stringValue();
+                    }
+                    
+                    if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
+                        path = f.stringValue();
+                    }
+                    
+                    if (channel != null) {
+                        resource = CmsCosIndexer.readResource(m_cms, doc); 
+                    } else {
+                        CmsResource res = m_cms.readFileHeader(path);
+                        if (m_cms.hasPermissions(res, I_CmsConstants.C_READ_ACCESS)) {
+                            resource = new CmsIndexResource(res);
+                        }
+                    }
+                    
+                    if (resource != null) {
                         maxScore = (maxScore < hits.score(i)) ? hits.score(i) : maxScore;
-                        result.add(new CmsSearchResult(this, searchQuery, res, doc, (int)((hits.score(i) / maxScore) * 100.0)));
+                        result.add(new CmsSearchResult(this, searchQuery, resource, doc, (int)((hits.score(i) / maxScore) * 100.0)));
                     }
                     
                 } catch (Exception exc) {

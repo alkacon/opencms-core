@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsGenericDocument.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsVfsDocument.java,v $
+ * Date   : $Date: 2004/02/13 11:27:46 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -31,6 +31,7 @@
 package org.opencms.search.documents;
 
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsIndexResource;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -42,10 +43,10 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:00 $
+ * @version $Revision: 1.1 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
-public class CmsGenericDocument implements I_CmsDocumentFactory {
+public class CmsVfsDocument implements I_CmsDocumentFactory {
 
     /**
      * The cms object
@@ -63,7 +64,7 @@ public class CmsGenericDocument implements I_CmsDocumentFactory {
      * @param cms the cms object
      * @param name name of the documenttype
      */
-    public CmsGenericDocument(CmsObject cms, String name) {
+    public CmsVfsDocument(CmsObject cms, String name) {
         m_cms = cms;
         m_name = name;
     }
@@ -76,7 +77,7 @@ public class CmsGenericDocument implements I_CmsDocumentFactory {
      * @return the raw text content
      * @throws CmsException if something goes wrong
      */
-    public String getRawContent(CmsResource resource, String language) throws CmsException {        
+    public String getRawContent(CmsIndexResource resource, String language) throws CmsException {        
         if (resource == null) {
             throw new CmsIndexException("Can not get raw content for language " + language + " from a 'null' resource");
         }
@@ -84,11 +85,12 @@ public class CmsGenericDocument implements I_CmsDocumentFactory {
     }
     
     /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(com.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (CmsResource resource, String language) throws CmsException {
+    public Document newInstance (CmsIndexResource resource, String language) throws CmsException {
         
         Document document = new Document();
+        CmsResource res = (CmsResource)resource.getObject();
         String path = m_cms.getRequestContext().removeSiteRoot(resource.getRootPath());
         String value;
 
@@ -103,9 +105,9 @@ public class CmsGenericDocument implements I_CmsDocumentFactory {
         }                
 
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, 
-            DateField.timeToString(resource.getDateCreated())));
+            DateField.timeToString(res.getDateCreated())));
         document.add(Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, 
-            DateField.timeToString(resource.getDateLastModified())));
+            DateField.timeToString(res.getDateLastModified())));
     
         document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
 

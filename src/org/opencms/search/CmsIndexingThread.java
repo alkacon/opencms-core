@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,11 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
-import com.opencms.file.CmsResource;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexWriter;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsIndexingThread extends Thread {
@@ -55,7 +53,7 @@ public class CmsIndexingThread extends Thread {
     IndexWriter m_writer; 
     
     // the resource
-    CmsResource m_res; 
+    CmsIndexResource m_res; 
     
     // the index
     CmsSearchIndex m_index;
@@ -76,7 +74,7 @@ public class CmsIndexingThread extends Thread {
      * @param report the report to write out progress information
      * @param threadManager the thread manager
      */
-    public CmsIndexingThread(CmsSearchManager manager, IndexWriter writer, CmsResource res, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) {
+    public CmsIndexingThread(CmsSearchManager manager, IndexWriter writer, CmsIndexResource res, CmsSearchIndex index, I_CmsReport report, CmsIndexingThreadManager threadManager) {
     
         m_manager = manager;
         m_writer = writer;

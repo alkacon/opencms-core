@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/11/12 17:36:51 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2004/02/13 11:27:46 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -771,7 +771,8 @@ public class CmsDbAccess {
         int i = 1;
         //// COREDATA ////
         dataset.m_masterId = new CmsUUID(res.getString(i++));
-        res.getInt(i++); // we don't have to store the sub-id
+        // cw/12.02.2004 - subId was not read, but was already defined in data set - need it in search
+        dataset.m_subId = res.getInt(i++);
         dataset.m_userId = new CmsUUID(res.getString(i++));
         dataset.m_groupId = new CmsUUID(res.getString(i++));
         dataset.m_lockedInProject = res.getInt(i++);

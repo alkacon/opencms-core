@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,13 +30,14 @@
  */
 package org.opencms.search.documents;
 
+import org.opencms.search.CmsIndexResource;
+
 import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
 
 import org.apache.lucene.document.Document;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:00 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public interface I_CmsDocumentFactory {
@@ -77,6 +78,21 @@ public interface I_CmsDocumentFactory {
     String DOC_TITLE = "title";
 
     /**
+     * Channel of cos document
+     */
+    String DOC_CHANNEL = "channel";
+    
+    /**
+     * Content definition of cos document
+     */
+    String DOC_CONTENT_DEFINITION = "contentdefinition";
+    
+    /**
+     * Content id of cos document
+     */
+    String DOC_CONTENT_ID = "contentid";
+    
+    /**
      * Returns the raw content of a given resource according to the concrete file type.<p>
      * 
      * @param resource a cms resource
@@ -84,7 +100,7 @@ public interface I_CmsDocumentFactory {
      * @return the raw textual content of the resource
      * @throws CmsException if somethin goes wrong
      */
-    String getRawContent(CmsResource resource, String language) throws CmsException;
+    String getRawContent(CmsIndexResource resource, String language) throws CmsException;
     
     /**
      * Creates a new instance of a lucene document type for the concrete file type.<p>
@@ -94,7 +110,7 @@ public interface I_CmsDocumentFactory {
      * @return a lucene document for the given resource
      * @throws CmsException if something goes wrong
      */
-    Document newInstance(CmsResource resource, String language) throws CmsException;
+    Document newInstance(CmsIndexResource resource, String language) throws CmsException;
     
     /**
      * Returns the name of the documenttype

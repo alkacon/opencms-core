@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2004/02/11 15:01:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,15 @@ import org.opencms.monitor.I_CmsMemoryMonitorable;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import com.opencms.core.CmsException;
-import com.opencms.file.CmsResource;
 
+import java.util.Date;
+
+import org.apache.lucene.document.DateField;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:01 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsSearchResult implements I_CmsMemoryMonitorable {
@@ -65,7 +67,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
     /* 
      * The resource found
      */
-    private CmsResource m_resource;
+    private CmsIndexResource m_resource;
     
     /*
      * The score of this search result
@@ -81,7 +83,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
      * @param doc the document found
      * @param score the search score
      */
-    protected CmsSearchResult (CmsSearchIndex index, String query, CmsResource res, Document doc, int score) {
+    protected CmsSearchResult (CmsSearchIndex index, String query, CmsIndexResource res, Document doc, int score) {
         
         m_index = index;
         m_query = query;
@@ -172,7 +174,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
         if (f.isStored()) {
             rawContent = f.stringValue();
         } else {
-            try { 
+            try {
                 rawContent = m_index.getIndexManager().getDocumentFactory(m_resource).getRawContent(m_resource, m_index.getLanguage());
             } catch (CmsException exc) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -189,7 +191,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
      * 
      * @return the CmsResource
      */
-    public CmsResource getResource() {
+    public Object getResource() {
 
         return m_resource;
     }
@@ -219,6 +221,36 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable {
         return null;
     }
 
+    /**
+     * Gets the last modification date.<p>
+     * 
+     * @return the last modification date
+     */
+    public Date getDateLastModified() {
+        
+        Field f = m_document.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED);
+        if (f != null) {
+            return DateField.stringToDate(f.stringValue());
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Get the access path.<p>
+     * 
+     * @return the access path
+     */
+    public String getPath() {
+        
+        Field f = m_document.getField(I_CmsDocumentFactory.DOC_PATH);
+        if (f != null) {
+            return f.stringValue();
+        }
+        
+        return null;
+    }
+    
     /**
      * @see org.opencms.monitor.I_CmsMemoryMonitorable#getMemorySize()
      */

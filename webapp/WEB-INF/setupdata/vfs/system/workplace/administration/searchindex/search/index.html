@@ -83,7 +83,7 @@ top.head.helpUrl='administration/index.html';
 %>
 
 <h3><%= i %>.&nbsp;<%= entry.getTitle() %>&nbsp;(<%= entry.getScore() %>%)</h3>
-<%= entry.getResource().getRootPath() %>
+<%= entry.getPath() %>
 <h6>Keywords</h6>
 <%= entry.getKeywords() %>
 <h6>Excerpt</h6>
@@ -91,7 +91,7 @@ top.head.helpUrl='administration/index.html';
 <h6>Description</h6>
 <%= entry.getDescription() %>
 <h6>Last modified</h6>
-<%= new Date(entry.getResource().getDateLastModified()) %>
+<%= entry.getDateLastModified() %>
 <%
     }   }
 %> 

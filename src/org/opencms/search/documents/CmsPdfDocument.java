@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2004/02/11 15:01:00 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 11:27:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.search.documents;
 
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsIndexResource;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
@@ -51,10 +52,10 @@ import org.pdfbox.pdmodel.PDDocument;
 import org.pdfbox.util.PDFTextStripper;
 
 /**
- * @version $Revision: 1.1 $ $Date: 2004/02/11 15:01:00 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/13 11:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
-public class CmsPdfDocument extends CmsGenericDocument {
+public class CmsPdfDocument extends CmsVfsDocument {
 
     /**
      * Creates a new instance of a lucene document for PDF files.<p>
@@ -67,10 +68,11 @@ public class CmsPdfDocument extends CmsGenericDocument {
     }
     
     /**
-     * @see org.opencms.search.documents.CmsGenericDocument#getRawContent(com.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.search.documents.CmsVfsDocument#getRawContent(org.opencms.search.CmsIndexResource, java.lang.String)
      */
-    public String getRawContent(CmsResource resource, String language) throws CmsException {
+    public String getRawContent(CmsIndexResource indexResource, String language) throws CmsException {
 
+        CmsResource resource = (CmsResource)indexResource.getObject();
         PDDocument pdfDocument = null;
         String rawContent = null;
         
@@ -121,9 +123,9 @@ public class CmsPdfDocument extends CmsGenericDocument {
     }
     
     /**
-     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(com.opencms.file.CmsResource, java.lang.String)
+     * @see org.opencms.search.documents.I_CmsDocumentFactory#newInstance(org.opencms.search.CmsIndexResource, java.lang.String)
      */
-    public Document newInstance (CmsResource resource, String language) throws CmsException {
+    public Document newInstance (CmsIndexResource resource, String language) throws CmsException {
                    
         Document document = super.newInstance(resource, language);
         document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, getRawContent(resource, language)));
