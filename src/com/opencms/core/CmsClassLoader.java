@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
-* Date   : $Date: 2001/02/20 14:20:30 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/02/20 15:20:17 $
+* Version: $Revision: 1.21 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -107,7 +107,7 @@ import java.lang.reflect.*;
  * with a parent classloader. Normally this should be the classloader
  * that loaded this loader.
  * @author Alexander Lucas
- * @version $Revision: 1.20 $ $Date: 2001/02/20 14:20:30 $
+ * @version $Revision: 1.21 $ $Date: 2001/02/20 15:20:17 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -138,6 +138,12 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
      * Each element of the vector should be a String that desribes a cms folder.
      */
     private Vector repository;
+    /**
+     * The filenames incl path of the classes loaded from the virtual file system.
+     * Each element of the vector is a String.
+     */
+    private Vector m_filenames = new Vector();
+
     private Object m_cms;
     private Class m_cmsObjectClass;
     private Class m_cmsFileClass;
@@ -425,6 +431,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
                 throw new ClassNotFoundException("Something really bad happened while loading class " + filename);
             }
             cache.put(name, c);
+            m_filenames.addElement(filename);
             if(resolve) {
                 resolveClass(c);
             }
@@ -480,5 +487,9 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
             return null;
         }
 
+    }
+
+    public Vector getFilenames(){
+        return m_filenames;
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/02/20 08:52:16 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2001/02/20 15:20:17 $
+* Version: $Revision: 1.77 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,6 +44,8 @@ public class OpenCmsServlet extends HttpServlet {
 
     private HttpServlet m_servlet;
 
+    private ServletConfig m_config;
+
     /**
      * Initialization of the OpenCms HttpServlet.
      * Used instead of a constructor (Overloaded Servlet API method)
@@ -55,6 +57,7 @@ public class OpenCmsServlet extends HttpServlet {
      * @exception ServletException Thrown when sevlet initalization fails.
      */
     public void init(ServletConfig config) throws ServletException {
+        m_config = config;
         String classname = "com.opencms.core.OpenCmsHttpServlet";
         try {
             ClassLoader loader = new CmsClassLoader();
@@ -71,6 +74,16 @@ public class OpenCmsServlet extends HttpServlet {
      * calls the service method of the real servlet.
      */
     public void service(ServletRequest p0, ServletResponse p1) throws ServletException, IOException {
+        // test if we must create a new http-servlet
+        if (    false){ //m_servlet.shouldReloadClasses()){
+            System.err.println("[OpenCmsServlet] there are new Classes,"
+                        +" we have to create a new http-servlet to throw away the old ones.");
+            System.err.println("[OpenCmsServlet] first destroy the old http-servlet.");
+            destroy();
+            System.err.println("[OpenCmsServlet] now init the a new http-servlet.");
+            init(m_config);
+            System.err.println("[OpenCmsServlet] finaly call the service.");
+        }
         m_servlet.service(p0, p1);
     }
     /**
