@@ -27,7 +27,7 @@ url_prefix_http   = /${WEB_APP_NAME}/opencms
 
 The string \texttt{\${WEB\_APP\_NAME}} will be replaced by the current name of the webapplication. In normal installations this would be opencms.
 
-Now you can define resource(s) the static export should start with. This can be a single or multiple file(s) or folder(s).
+Now you can define resource(s) the static export should start with. This can be a single or multiple file(s) or folder(s). This property is only used if you start the static export manually (via admin view).
 
 \texttt{staticexport.start = /}
 
@@ -65,13 +65,15 @@ You need to call this method for dynamic creation of pages. E.g. a navigation el
 
 \section{How does static export work?}
 
-After the publishing to the online project is done OpenCms starts to export all static resources. It starts with the resource(s) you have defined in the \texttt{opencms.properties} file. After the export of this resource(s) it will follow all links defined in the link tags or substituted with the \texttt{getLinkSubstitution } method. These resources will be exported, too. This cycle will end if all resources are exported.
+After the publishing to the online project is done OpenCms starts to export all static resources. It starts with all changed resource(s) in that project. After the export of this resource(s) it will follow all links defined in the link tags or substituted with the \texttt{getLinkSubstitution } method. These resources will be exported, too. This cycle will end if all resources are exported.
 
 A next run of the static export will only export the changed resources. A resource is marked as changed, if one of the resources this resource depends on was changed. OpenCms will find the "normal" dependencies like mastertemplate, frametemplate, contenttemplate and elements. Additional dependencies like dependencies for dynamic navigation templates or displaying content definitions you have to register yourself. How to register these dependencies you have learned in the chapter about using the element cache.
 
+Note: You can find the names of all exported resources in the opencms.log file. So you can check which resources are exported.
+
 \section{How to control what is exported?}
 
-You can control the export behaviour of resources by adding properties to that resource. The property "\texttt{export}" controls if and how the resource will be exported. The following values are possible:
+Only resources that are readable as a \texttt{Guest} user are exported. You can control the export behaviour of these resources by adding properties to that resource. The property "\texttt{export}" controls if and how the resource will be exported. The following values are possible:
 
 \begin{itemize}
 \item false:\\
