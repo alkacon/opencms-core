@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/01/31 14:14:50 $
-  * Version: $Revision: 1.19 $
+  * Date   : $Date: 2001/02/06 10:18:10 $
+  * Version: $Revision: 1.20 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -649,7 +649,7 @@ function closeTreeWin(){
  */
 function showTree(doc,windowed) {
 
-    var showTreeHead="<html><head><title>opencms explorer tree</title><style type='text/css'> a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;} a.is { text-decoration: none; color: silver; font-family:arial; font-size:8pt;} a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;} var a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;} body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace:0; margin-top:3px;} </style></head><body><font face='arial' size=2><table border=0 cellpadding=0 cellspacing=0><tr><td valign=bottom align=left nowrap>";
+    var showTreeHead="<html><head><title>opencms explorer tree</title><style type='text/css'> a { text-decoration: none; color: #000000; font-family:arial; font-size:8pt;} a.ig { text-decoration: none; color: silver; font-family:arial; font-size:8pt;} a.tf { text-decoration: none; color: #000000; font-family:MS Sans Serif, Arial, helvetica, sans-serif; font-size:8px;} var a:hover { text-decoration: none; color: #FFFFFF; background:#000066 font-family:arial; font-size:8pt;} body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace:0; margin-top:3px;} </style></head><body><font face='arial' size=2><table border=0 cellpadding=0 cellspacing=0><tr><td valign=bottom align=left nowrap>";
 
     var showTreeFoot="</font></TD></TR></table></body></html>";
 
