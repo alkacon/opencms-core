@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/28 13:35:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -115,7 +116,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setAction(ACTION_OK);                            
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else {                        
+        } else {
+            // set resource name if we are in new folder wizard mode
+            setInitialResourceName();
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
             setParamTitle(key("title.newpage"));
@@ -135,7 +138,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * @throws JspException if including an element fails
      */
     public void actionCloseDialog() throws JspException {     
-        if (CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
+        if (isCreateIndexMode()) {
             // set the current explorer resource to the new created folder
             String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
             getSettings().setExplorerResource(updateFolder);
@@ -203,7 +206,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         if (editProps) {
             // edit properties checkbox checked, redirect to property dialog
             String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
-            if (CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
+            if (isCreateIndexMode()) {
                 params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_INDEXCREATED; 
             } else {
                 params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD; 
@@ -290,6 +293,15 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             }
         }     
         return buildSelect(attributes, options, values, -1, false);
+    }
+    
+    /**
+     * Returns true if the current mode is: create an index page in a newly created folder.<p>
+     * 
+     * @return true if we are in wizard mode to create an index page, otherwise false
+     */
+    public boolean isCreateIndexMode() {
+        return CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode());    
     }
     
     /**
@@ -418,6 +430,32 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      */
     public void setParamDialogmode(String value) {
         m_paramDialogMode = value;
+    }
+    
+    /**
+     * Sets the initial resource name of the new page.<p>
+     * 
+     * This is used for the "new" wizard after creating a new folder followed
+     * by the "create index file" procedure.<p> 
+     */
+    private void setInitialResourceName() {
+        if (isCreateIndexMode()) {
+            // creation of an index file in a new folder, use default file name
+            String defaultFile = "";
+            try {
+                defaultFile = (String)OpenCms.getDefaultFilenames().get(0);
+            } catch (IndexOutOfBoundsException e) {
+                // list is empty, ignore    
+            }
+            if (CmsStringUtil.isEmpty(defaultFile)) {
+                // make sure that the default file name is not empty
+                defaultFile = "index.html";  
+            }         
+            setParamResource(defaultFile);    
+        } else {
+            // set resource name to empty string for common dialog mode
+            setParamResource("");    
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/28 13:35:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -135,10 +136,20 @@ public class CmsNewResourceFolder extends CmsNewResource {
                 // edit properties of folder, redirect to property dialog
                 sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER + params);
             } else if (createIndex) {
-                // create an index file in the new folder, redirect to new xmlpage dialog
+                // create an index file in the new folder, redirect to new xmlpage dialog              
+                String newFolder = getParamResource();
+                if (!newFolder.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                    newFolder += I_CmsConstants.C_FOLDER_SEPARATOR;
+                }
+                // set the current explorer resource to the new created folder
+                getSettings().setExplorerResource(newFolder);
+
                 String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.C_RESOURCE_TYPE_NAME).getNewResourceUri();
+                newUri += "?" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
                 try {
+                    // redirect to new xmlpage dialog
                     sendCmsRedirect(C_PATH_DIALOGS + newUri);
+                    return;
                 } catch (Exception e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error redirecting to new xmlpage dialog " + C_PATH_DIALOGS + newUri);

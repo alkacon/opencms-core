@@ -69,7 +69,7 @@ default:
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
-	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
+	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" id="newresfield" type="text" value="<%= wp.getParamResource() %>" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.template") %></td>
@@ -93,6 +93,12 @@ default:
 </form>
 
 <%= wp.dialogEnd() %>
+
+<script type="text/javascript">
+<!--
+	checkValue();
+//-->
+</script>
 
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
