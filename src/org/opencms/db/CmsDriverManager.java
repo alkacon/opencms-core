@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/08 15:02:58 $
- * Version: $Revision: 1.266 $
+ * Date   : $Date: 2003/10/08 16:17:10 $
+ * Version: $Revision: 1.267 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.266 $ $Date: 2003/10/08 15:02:58 $
+ * @version $Revision: 1.267 $ $Date: 2003/10/08 16:17:10 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4155,7 +4155,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             while (i.hasNext()) {
                 CmsResource currentResource = (CmsResource)i.next();
                 if (currentResource.equals(resource)) {
-                    currentResource = (CmsResource)i.next();
+                    continue;
                 }
                 currentResource.setFullResourceName(readPath(context, currentResource, true));
                 String curPath = currentResource.getRootPath();
