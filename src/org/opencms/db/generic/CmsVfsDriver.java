@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/01 10:39:58 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2003/08/01 12:40:52 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.76 $ $Date: 2003/08/01 10:39:58 $
+ * @version $Revision: 1.77 $ $Date: 2003/08/01 12:40:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -1017,26 +1017,15 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
       if (newResource.getResourceId()!=CmsUUID.getNullUUID()) {
           resourceId=newResource.getResourceId();
       }
-
+      if (newResource.getFileId()!=CmsUUID.getNullUUID()) {
+          newFileId=newResource.getFileId();
+      }
 
       // now write the resource
       try {
           conn = m_sqlManager.getConnection(project);
             
-          // write the content
-          if (!isFolder) {
-              newFileId = new CmsUUID();
-              if (newResource.getFileId()!=CmsUUID.getNullUUID()) {
-                  newFileId=newResource.getFileId();
-              }
-              try {
-                  createFileContent(newFileId, filecontent, 0, project.getId(), false);
-              } catch (CmsException se) {
-                  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                      A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
-                  }
-              }
-          }            
+        
             
           // write the structure                                  
           stmt = m_sqlManager.getPreparedStatement(conn, project, "C_STRUCTURE_WRITE");
@@ -1067,6 +1056,18 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(14, 1);
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
+            
+            //write the content
+              if (!isFolder) {
+                try {
+                    createFileContent(newFileId, filecontent, 0, project.getId(), false);
+                } catch (CmsException se) {
+                    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + this.getClass().getName() + "] " + se.getMessage());
+                    }
+                }
+             }                    
+            
           } else {
               // update the link Count
                stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_LINK_COUNT");
