@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2004/04/10 12:58:55 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/05/21 15:17:35 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -199,18 +199,18 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @return the editable flag
      */
     public String getEditable() {
-        return ""+m_editable;
+        
+        return String.valueOf(m_editable);
     }
 
     /**
      * Sets the editable flag.<p>
      * 
-     * @param editable the flag to set, everything else than "true" is considered as false
+     * @param editable the flag to set
      */
     public void setEditable(String editable) {
-        if (editable != null) {
-            m_editable = "true".equalsIgnoreCase(editable.trim());
-        }        
+        
+        m_editable = Boolean.valueOf(editable).booleanValue();    
     }
     
     /**
