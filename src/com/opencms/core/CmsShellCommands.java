@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/06/09 16:34:35 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,9 +53,9 @@ import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsRegistry;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
-import com.opencms.security.CmsAccessControlEntry;
-import com.opencms.security.CmsAccessControlList;
-import com.opencms.security.I_CmsPrincipal;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.I_CmsPrincipal;
 
 /**
  * This class is a commad line interface to OpenCms which 
@@ -64,7 +64,7 @@ import com.opencms.security.I_CmsPrincipal;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.75 $ $Date: 2003/06/09 16:34:35 $
+ * @version $Revision: 1.76 $ $Date: 2003/06/13 10:04:20 $
  * 
  * @see com.opencms.file.CmsObject
  */

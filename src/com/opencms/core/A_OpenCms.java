@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/05/23 16:26:46 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.core;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDriverManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.39 $ $Date: 2003/06/13 10:04:20 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 

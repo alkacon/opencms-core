@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2003/06/11 17:04:23 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2003/06/13 10:04:20 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import com.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlEntry;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -71,7 +71,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Schouten
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.56 $ $Date: 2003/06/11 17:04:23 $
+ * @version $Revision: 1.57 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -712,7 +712,7 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * @throws CmsException if something goes wrong
      */
     private void writeXmlEntrys(CmsResource resource) throws CmsException {
-        String source, type, user, group, access, launcherStartClass, lastModified;
+        String source, type, /*user, group, access,*/ launcherStartClass, lastModified;
 
         // get all needed informations from the resource
         source = getSourceFilename(resource.getAbsolutePath());

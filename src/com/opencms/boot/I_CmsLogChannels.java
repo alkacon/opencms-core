@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/I_CmsLogChannels.java,v $
-* Date   : $Date: 2002/10/30 10:01:12 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.boot;
  * @author Alexander Lucas
  * @author Andreas Schouten
  * 
- * @version $Revision: 1.11 $ $Date: 2002/10/30 10:01:12 $
+ * @version $Revision: 1.12 $ $Date: 2003/06/13 10:04:21 $
  */
 public interface I_CmsLogChannels {
 
@@ -53,53 +53,53 @@ public interface I_CmsLogChannels {
      *
      * This value should generally be set to true!
      */
-    public static final boolean C_PREPROCESSOR_IS_LOGGING = true;
-    public static final boolean C_LOGGING = C_PREPROCESSOR_IS_LOGGING;
+    static final boolean C_PREPROCESSOR_IS_LOGGING = true;
+    static final boolean C_LOGGING = C_PREPROCESSOR_IS_LOGGING;
     
     /** Debugging messages */
-    public static final String C_OPENCMS_INIT = "opencms_init";
+    static final String C_OPENCMS_INIT = "opencms_init";
 
     /** Debugging messages */
-    public static final String C_OPENCMS_DEBUG = "opencms_debug";
+    static final String C_OPENCMS_DEBUG = "opencms_debug";
 
     /** Cache messages */
-    public static final String C_OPENCMS_CACHE = "opencms_cache";
+    static final String C_OPENCMS_CACHE = "opencms_cache";
 
     /** Debugging messages for the streaming mode */
-    public static final String C_OPENCMS_STREAMING = "opencms_streaming";
+    static final String C_OPENCMS_STREAMING = "opencms_streaming";
 
     /** Informational messages */
-    public static final String C_OPENCMS_INFO = "opencms_info";
+    static final String C_OPENCMS_INFO = "opencms_info";
 
     /** Critical messages that stop further processing */
-    public static final String C_OPENCMS_CRITICAL = "opencms_critical";
+    static final String C_OPENCMS_CRITICAL = "opencms_critical";
 
     /** Debugging messages for the dbpool */
-    public static final String C_OPENCMS_POOL = "opencms_pool";
+    static final String C_OPENCMS_POOL = "opencms_pool";
 
     /** Messages of the new OpenCms element cache */
-    public static final String C_OPENCMS_ELEMENTCACHE = "opencms_elementcache";
+    static final String C_OPENCMS_ELEMENTCACHE = "opencms_elementcache";
 
     /** Messages of the OpenCms Scheduler */
-    public static final String C_OPENCMS_CRONSCHEDULER = "opencms_cronscheduler";
+    static final String C_OPENCMS_CRONSCHEDULER = "opencms_cronscheduler";
 
     /** Messages of the static export */
-    public static final String C_OPENCMS_STATICEXPORT = "opencms_staticexport";
+    static final String C_OPENCMS_STATICEXPORT = "opencms_staticexport";
 
 
     /** Debugging messages */
-    public static final String C_MODULE_DEBUG = "module_debug";
+    static final String C_MODULE_DEBUG = "module_debug";
 
     /** Informational messages */
-    public static final String C_MODULE_INFO = "module_info";
+    static final String C_MODULE_INFO = "module_info";
 
     /** Critical messages that stop further processing */
-    public static final String C_MODULE_CRITICAL = "module_critical";
+    static final String C_MODULE_CRITICAL = "module_critical";
     
     
     /** Flex cache messages */
-    public static final String C_FLEX_CACHE = "flex_cache";
+    static final String C_FLEX_CACHE = "flex_cache";
     
     /** Flex loader messages */
-    public static final String C_FLEX_LOADER = "flex_loader"; 
+    static final String C_FLEX_LOADER = "flex_loader"; 
 }

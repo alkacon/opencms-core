@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2003/02/15 11:14:57 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -95,8 +95,7 @@ public class CmsSetupUtils {
             // delete temp file
             File temp = new File(m_configFolder + tempFile);
             temp.delete();
-        }
-        else  {
+        } else  {
             m_errors.addElement("No valid file: " + originalFile+ "\n");
         }
 
@@ -122,8 +121,7 @@ public class CmsSetupUtils {
             
             lnr.close();
             fw.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             m_errors.addElement("Could not copy " + sourceFilename + " to " + destFilename + " \n");
             m_errors.addElement(e.toString() + "\n");
         }
@@ -142,8 +140,7 @@ public class CmsSetupUtils {
         
         if (originalRegistry.exists()) {
             this.copyFile(originalRegistryFilename,registryFilename);
-        }
-        else {
+        } else {
             this.copyFile(registryFilename,originalRegistryFilename);
         }
     }
@@ -185,22 +182,20 @@ public class CmsSetupUtils {
                         }
                         // write it
                         fw.write(value);
-                    }
-                    catch (NullPointerException e)  {
+                    } catch (NullPointerException e)  {
                         // no value found - do nothing 
                     }                    
                     // add trailing line feed
                     fw.write("\n");                    
-                }
-                else if ("".equals(line)) {
+                } else if ("".equals(line)) {
                     // output empty line
                     fw.write("\n");
                 }
             }
+            
             lnr.close();
             fw.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             m_errors.addElement("Could not save properties to " + target + " \n");
             m_errors.addElement(e.toString() + "\n");
         }

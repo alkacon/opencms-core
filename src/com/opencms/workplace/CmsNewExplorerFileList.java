@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2003/06/12 09:39:55 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.65 $ $Date: 2003/06/12 09:39:55 $
+ * @version $Revision: 1.66 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
 
@@ -219,7 +219,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         // get the currentFolder Id
         CmsUUID currentFolderId;
         if (! vfslinkView) {
-            currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
+            currentFolderId = (cms.readFolder(currentFolder)).getId();
         } else {
             currentFolderId = CmsUUID.getNullUUID();            
         }
@@ -464,7 +464,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 // all easy: we are in the onlineProject
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
                 content.append("top.aC(\"");
-                content.append(rootFolder.getResourceId());
+                content.append(rootFolder.getId());
                 content.append("\", ");
                 content.append("\"");
                 content.append(messages.key("title.rootfolder"));
@@ -475,7 +475,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
                     content.append("top.aC(\"");
                     // id
-                    content.append(folder.getResourceId());
+                    content.append(folder.getId());
                     content.append("\", ");
                     // name
                     content.append("\"");
@@ -493,12 +493,12 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                 if(rootFolder.getProjectId() != onlineProjectId) {
                     startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getResourceId());
+                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getId());
                 }else {
                     grey = true;
                 }
                 content.append("top.aC(\"");
-                content.append(rootFolder.getResourceId());
+                content.append(rootFolder.getId());
                 content.append("\", ");
                 content.append("\"");
                 content.append(messages.key("title.rootfolder"));
@@ -521,7 +521,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                                 // the next res is the same res in the online-project: ignore it!
                                 if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getResourceId());
+                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
@@ -535,7 +535,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
                         }
                         content.append("top.aC(\"");
                         // id
-                        content.append(folder.getResourceId());
+                        content.append(folder.getId());
                         content.append("\", ");
                         // name
                         content.append("\"");

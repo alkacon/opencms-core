@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
- * Date   : $Date: 2003/04/01 15:20:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/06/13 10:04:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,12 +44,19 @@ import java.lang.reflect.Method;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.12 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.13 $ $Date: 2003/06/13 10:04:21 $
  */
-public class CmsMain {
+public class CmsMain extends Object {
 
   private static final int C_MODE_ECMASCRIPT = 1;
   private static final int C_MODE_CLASSIC = 0;
+  
+  /**
+   * Default constructor. Nobody is allowed to create an instance of this class!
+   */
+  private CmsMain() {
+      super();
+  }  
 
     /**
      * Main program entry point when started via the command line.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.*;
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.5 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable,Serializable {
 
@@ -93,23 +93,23 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
       * @param lastModifiedByName The name of user who changed the file.
       * @param size The size of the file content.
       */
-     public CmsBackupResource(int versionId, CmsUUID resourceId, CmsUUID parentId, CmsUUID fileId,
-                              String resourceName, int resourceType, int resourceFlags,
-                              CmsUUID userId, String userName, CmsUUID groupId, String groupName,
-                              int projectId, int accessFlags, int state,
-                              int launcherType, String launcherClassname,
-                              long dateCreated, long dateLastModified,
-                              CmsUUID resourceLastModifiedByUserId, String lastModifiedByName,
-                              byte[] fileContent,int size, int lockedInProject){
+     public CmsBackupResource(int versionId, CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
+                              CmsUUID fileId, String resourceName, int resourceType,
+                              int resourceFlags, CmsUUID userId, String userName, CmsUUID groupId,
+                              String groupName, int projectId, int accessFlags,
+                              int state, int launcherType,
+                              String launcherClassname, long dateCreated,
+                              long dateLastModified, CmsUUID resourceLastModifiedByUserId,
+                              String lastModifiedByName,byte[] fileContent, int size, int lockedInProject){
 
         // create the CmsResource.
-        super(resourceId, parentId, fileId,
-              resourceName,resourceType,resourceFlags,
-              userId,groupId,projectId,
-              accessFlags,state,CmsUUID.getNullUUID(),
-              launcherType,launcherClassname,
-              dateCreated,dateLastModified,
-              resourceLastModifiedByUserId,size, lockedInProject);
+        super(structureId, resourceId, parentId,
+              fileId,resourceName,resourceType,
+              resourceFlags,userId,groupId,
+              projectId,accessFlags,state,
+              CmsUUID.getNullUUID(),launcherType,
+              launcherClassname,dateCreated,
+              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject);
 
         // set content and size.
         m_fileContent=fileContent;
@@ -135,16 +135,16 @@ public class CmsBackupResource extends CmsResource implements Cloneable,Serializ
         byte[] newContent = new byte[ this.getContents().length ];
         System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
-        return new CmsBackupResource(this.getVersionId(), this.getResourceId(), this.getParentId(),
-                                     this.getFileId(), new String(this.getAbsolutePath()),
-                                     this.getType(), this.getFlags(), this.getOwnerId(),
-                                     this.getOwnerName(), this.getGroupId(), this.getGroupName(),
-                                     this.getProjectId(), this.getAccessFlags(), this.getState(),
-                                     this.getLauncherType(),
-                                     new String(this.getLauncherClassname()), this.getDateCreated(),
-                                     this.getDateLastModified(),this.getResourceLastModifiedBy(),
-                                     this.getLastModifiedByName(),
-                                     newContent, this.getLength(), this.getLockedInProject());
+        return new CmsBackupResource(this.getVersionId(), this.getId(), this.getResourceId(),
+                                     this.getParentId(), this.getFileId(),
+                                     new String(this.getAbsolutePath()), this.getType(), this.getFlags(),
+                                     this.getOwnerId(), this.getOwnerName(), this.getGroupId(),
+                                     this.getGroupName(), this.getProjectId(), this.getAccessFlags(),
+                                     this.getState(),
+                                     this.getLauncherType(), new String(this.getLauncherClassname()),
+                                     this.getDateCreated(),this.getDateLastModified(),
+                                     this.getResourceLastModifiedBy(),
+                                     this.getLastModifiedByName(), newContent, this.getLength(), this.getLockedInProject());
     }
     /**
      * Gets the content of this file.

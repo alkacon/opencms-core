@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/12 09:39:08 $
-* Version: $Revision: 1.283 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.284 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.core.OpenCms;
-import com.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.launcher.CmsLauncherManager;
@@ -58,10 +58,10 @@ import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
-import com.opencms.security.CmsAccessControlEntry;
-import com.opencms.security.CmsAccessControlList;
-import com.opencms.security.CmsPermissionSet;
-import com.opencms.security.I_CmsPrincipal;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.283 $
+ * @version $Revision: 1.284 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -924,7 +924,7 @@ public CmsFolder createChannel(String parentChannel, String newChannelName) thro
     try {
         setContextToCos();
         Hashtable properties = new Hashtable();
-        int newChannelId = com.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
+        int newChannelId = org.opencms.db.CmsIdGenerator.nextId(com.opencms.defaults.master.CmsChannelBackoffice.C_TABLE_CHANNELID);
         properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         return (CmsFolder)createResource(parentChannel, newChannelName, C_TYPE_FOLDER_NAME, properties);
     } finally {
@@ -3650,8 +3650,8 @@ public CmsFolder rootFolder() throws CmsException {
  * Set the launcher manager used with this instance of CmsObject.
  * @param newM_launcherManager com.opencms.launcher.CmsLauncherManager
  */
-public void setLauncherManager(com.opencms.launcher.CmsLauncherManager newM_launcherManager) {
-    m_launcherManager = newM_launcherManager;
+public void setLauncherManager(com.opencms.launcher.CmsLauncherManager launcherManager) {
+    m_launcherManager = launcherManager;
 }
 /**
  * Set a new name for a task.
@@ -4267,7 +4267,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     public int deleteBackups(int weeks) throws CmsException{
        return m_driverManager.deleteBackups(this, m_context.currentUser(), m_context.currentProject(), weeks);
     }
-        
+    
     /**
      * Returns a Vector with all resources of the given type that have set the given property to the given value.
      *
@@ -4315,7 +4315,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * Joins all links with their targets for the current project.
      * 
      * @return an ArrayList with the resources identified as broken links
-     * @see com.opencms.db.generic.CmsDriverManager#joinLinksToTargets
+     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
      * @throws CmsException
      */
     public ArrayList joinLinksToTargets() throws CmsException {
@@ -4327,7 +4327,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * 
      * @param theProject the CmsProject for which the links should be joined with their targets
      * @return an ArrayList with the resources identified as broken links
-     * @see com.opencms.db.generic.CmsDriverManager#joinLinksToTargets
+     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
      * @throws CmsException
      */    
     public ArrayList joinLinksToTargets( CmsProject theProject ) throws CmsException {
@@ -4340,7 +4340,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * 
      * @param theReport the report to print the output
      * @return an ArrayList with the resources identified as broken links
-     * @see com.opencms.db.generic.CmsDriverManager#joinLinksToTargets
+     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
      * @throws CmsException
      */  
     public ArrayList joinLinksToTargets( I_CmsReport theReport ) throws CmsException {    
@@ -4354,7 +4354,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @param theProject the CmsProject for which the links should be joined with their targets
      * @param theReport the report to print the output
      * @return an ArrayList with the resources identified as broken links
-     * @see com.opencms.db.generic.CmsDriverManager#joinLinksToTargets
+     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
      * @throws CmsException
      */ 
     public ArrayList joinLinksToTargets( CmsProject theProject, I_CmsReport theReport ) throws CmsException {  
@@ -4369,7 +4369,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
      * @param theProject the CmsProject for which the links should be joined with their targets
      * @param theReport the report to print the output
      * @return an ArrayList with the resources identified as broken links
-     * @see com.opencms.db.generic.CmsDriverManager#joinLinksToTargets
+     * @see org.opencms.db.generic.CmsDriverManager#joinLinksToTargets
      * @throws CmsException
      */     
     public ArrayList joinLinksToTargets(CmsUser theUser, CmsProject theProject, I_CmsReport theReport) throws CmsException {
@@ -4479,12 +4479,11 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
     }
     
     // TODO: added for testing purposes - check later, if useful/neccessary
-    
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlList(m_context.currentUser(), m_context.currentProject(), res); 
     }
-	
+    
 	public Vector getAccessControlEntries(String resourceName) throws CmsException {
 		return getAccessControlEntries(resourceName, true);    
 	}
@@ -4512,11 +4511,11 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource resource = readFileHeader(resourceName);
 		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
 	}
-	
+		
 	public boolean checkPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), m_context.currentProject()).check(resource, requiredPermissions, false);		
 	}
-	
+		
 	public boolean checkPermissions(CmsProject project, CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 		return m_driverManager.getVfsAccessGuard(m_context.currentUser(), project).check(resource, requiredPermissions, false);
 	}
@@ -4562,10 +4561,10 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource source = readFileHeader(sourceName);
 		CmsResource dest = readFileHeader(destName);
 		m_driverManager.copyAccessControlEntries(m_context.currentUser(), m_context.currentProject(), source, dest);
-	}
+}
 	
 	public void writeAccessControlEntries(String resourceName, Vector acEntries) throws CmsException {
 		CmsResource resource = readFileHeader(resourceName);
 		m_driverManager.writeAccessControlEntries(m_context.currentUser(), m_context.currentProject(), resource, acEntries);
-	}
+}
 }

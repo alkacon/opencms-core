@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/06/09 17:08:47 $
-* Version: $Revision: 1.64 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.65 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.64 $ $Date: 2003/06/09 17:08:47 $
+ * @version $Revision: 1.65 $ $Date: 2003/06/13 10:04:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -503,7 +503,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the access flags
-                        int access = res.getAccessFlags();
+//                        int access = res.getAccessFlags();
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */
@@ -609,7 +609,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
                     if((filelist & C_FILELIST_ACCESS) != 0) {
 
                         // get the access flags
-                        int access = file.getAccessFlags();
+//                        int access = file.getAccessFlags();
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */

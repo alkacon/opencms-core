@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsResourceNotFoundException.java,v $
- * Date   : $Date: 2003/05/22 16:06:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 10:04:21 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import com.opencms.core.CmsException;
 /**
  * Signals that an attempt to open a resource in the VFS denoted by a specified 
  * pathname has failed. This exception is thrown by various Cms driver classes 
- * in the com.opencms.db package and its sub-packages.
+ * in the org.opencms.db package and its sub-packages.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/22 16:06:09 $
+ * @version $Revision: 1.2 $ $Date: 2003/06/13 10:04:21 $
  * @since 5.1.2
  */
 public class CmsResourceNotFoundException extends CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.27 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.28 $ $Date: 2003/06/13 10:04:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -150,8 +150,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
         if("new".equals(action)) {
             String galleryname = (String)parameters.get("NAME");
             String group = (String)parameters.get("GROUP");
-            boolean read = parameters.get("READ") != null;
-            boolean write = parameters.get("WRITE") != null;
+//            boolean read = parameters.get("READ") != null;
+//            boolean write = parameters.get("WRITE") != null;
             try {
 
                 // create the folder

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupLoggingThread.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.*;
 public class CmsSetupLoggingThread extends Thread  {
     private static Vector messages;
     private PipedInputStream m_pipedIn;
-    private LineNumberReader m_LineReader;
+    private LineNumberReader m_lineReader;
     private boolean m_stopThread;
 
     /** Constructor */
@@ -52,9 +52,8 @@ public class CmsSetupLoggingThread extends Thread  {
         try {
             m_pipedIn = new PipedInputStream();
             m_pipedIn.connect(pipedOut);
-            m_LineReader = new LineNumberReader(new BufferedReader(new InputStreamReader(m_pipedIn)));
-        }
-        catch (Exception e) {
+            m_lineReader = new LineNumberReader(new BufferedReader(new InputStreamReader(m_pipedIn)));
+        } catch (Exception e) {
             messages.addElement(e.toString());
         }
     }
@@ -69,10 +68,9 @@ public class CmsSetupLoggingThread extends Thread  {
         String line = null;
         while(!m_stopThread)  {
             try {
-                lineNr = m_LineReader.getLineNumber();
-                line = m_LineReader.readLine();
-            }
-            catch (IOException e) {
+                lineNr = m_lineReader.getLineNumber();
+                line = m_lineReader.readLine();
+            } catch (IOException e) {
                 messages.addElement(e.toString());
                 m_stopThread = true;
             }
@@ -80,10 +78,10 @@ public class CmsSetupLoggingThread extends Thread  {
                 messages.addElement(lineNr + ":\t" + line);
             }
         }
+        
         try {
             m_pipedIn.close();
-        }
-        catch(IOException e)  {
+        } catch(IOException e)  {
             e.printStackTrace();
         };
     }

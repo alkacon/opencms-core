@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/06/11 17:04:23 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,13 +42,13 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
-//import com.opencms.db.generic.linkmanagement.*;
+//import org.opencms.db.generic.linkmanagement.*;
 
 /**
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.55 $ $Date: 2003/06/11 17:04:23 $
+ * @version $Revision: 1.56 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -929,7 +929,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                   String orgFolder=completePath+foldername+"/";
                   orgFolder=orgFolder.substring(C_VFS_PATH_BODIES.length()-1);
                   CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
-                  CmsFolder folder=cms.readFolder(orgFolder);
+                  //CmsFolder folder = cms.readFolder(orgFolder);
                   cms.doLockResource(newfolder.getAbsolutePath(),false);
                   cms.cpacc(orgFolder, newfolder.getAbsolutePath());
                   // TODO: remove this later

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/06/12 15:16:32 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/06/13 10:04:20 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.34 $ $Date: 2003/06/13 10:04:20 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -83,16 +83,16 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		CmsResource file = (CmsResource)cms.readFileHeader(filename);
 
 		// get all access flags from the request
-		String ur = (String)parameters.get("ur");
-		String uw = (String)parameters.get("uw");
-		String uv = (String)parameters.get("uv");
-		String gr = (String)parameters.get("gr");
-		String gw = (String)parameters.get("gw");
-		String gv = (String)parameters.get("gv");
-		String pr = (String)parameters.get("pr");
-		String pw = (String)parameters.get("pw");
-		String pv = (String)parameters.get("pv");
-		String ir = (String)parameters.get("ir");
+//		String ur = (String)parameters.get("ur");
+//		String uw = (String)parameters.get("uw");
+//		String uv = (String)parameters.get("uv");
+//		String gr = (String)parameters.get("gr");
+//		String gw = (String)parameters.get("gw");
+//		String gv = (String)parameters.get("gv");
+//		String pr = (String)parameters.get("pr");
+//		String pw = (String)parameters.get("pw");
+//		String pv = (String)parameters.get("pv");
+//		String ir = (String)parameters.get("ir");
 		String allflag = (String)parameters.get(C_PARA_FLAGS);
 		if(allflag == null) allflag = "false";
 
@@ -184,7 +184,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		xmlTemplateDocument.setData("FILENAME", file.getName());
 
 		// now set the actual access flags i the dialog
-		int flags = file.getAccessFlags();
+//		int flags = file.getAccessFlags();
 // TODO: replace with new dialog
 //		if((flags & C_PERMISSION_READ) > 0)
 //			xmlTemplateDocument.setData("CHECKUR", "CHECKED");

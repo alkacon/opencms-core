@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/06/12 16:32:26 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
-import com.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.73 $ $Date: 2003/06/12 16:32:26 $
+ * @version $Revision: 1.74 $ $Date: 2003/06/13 10:04:20 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -169,7 +169,7 @@ public class CmsRequestContext implements I_CmsConstants {
         m_links = new Vector();
         m_dependencies = new Vector();
         
-        CmsProject project = null;
+        //CmsProject project = null;
         
         try {
             m_user = m_driverManager.readUser(null, null, user);
@@ -187,10 +187,10 @@ public class CmsRequestContext implements I_CmsConstants {
 
         // set current project, group and streaming proerties for this request
         try {
-            project = setCurrentProject(currentProjectId);
+            setCurrentProject(currentProjectId);
         } catch (CmsException exc) {
             // there was a problem to set the needed project - using the online one
-            project = setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
         
         m_currentGroup = m_driverManager.readGroup(m_user, currentGroup);

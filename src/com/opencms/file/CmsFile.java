@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.18 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsFile extends CmsResource implements Cloneable,Serializable {
 
@@ -68,23 +68,23 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
       * @param resourceLastModifiedBy The user who changed the file.
       * @param size The size of the file content.
       */
-     public CmsFile(CmsUUID resourceId, CmsUUID parentId, CmsUUID fileId,
-                        String resourceName, int resourceType, int resourceFlags,
-                        CmsUUID userId, CmsUUID groupId, int projectId,
-                        int accessFlags, int state, CmsUUID lockedByUserId,
-                        int launcherType, String launcherClassname,
-                        long dateCreated, long dateLastModified,
-                        CmsUUID resourceLastModifiedByUserId,
-                        byte[] fileContent,int size, int lockedInProject){
+     public CmsFile(CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
+                        CmsUUID fileId, String resourceName, int resourceType,
+                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
+                        int projectId, int accessFlags, int state,
+                        CmsUUID lockedByUserId, int launcherType,
+                        String launcherClassname, long dateCreated,
+                        long dateLastModified,
+                        CmsUUID resourceLastModifiedByUserId,byte[] fileContent, int size, int lockedInProject){
 
         // create the CmsResource.
-        super(resourceId, parentId, fileId,
-              resourceName,resourceType,resourceFlags,
-              userId,groupId,projectId,
-              accessFlags,state,lockedByUserId,
-              launcherType,launcherClassname,
-              dateCreated,dateLastModified,
-              resourceLastModifiedByUserId,size, lockedInProject);
+        super(structureId, resourceId, parentId,
+              fileId,resourceName,resourceType,
+              resourceFlags,userId,groupId,
+              projectId,accessFlags,state,
+              lockedByUserId,launcherType,
+              launcherClassname,dateCreated,
+              dateLastModified,resourceLastModifiedByUserId, size, lockedInProject);
 
         // set content and size.
         m_fileContent=fileContent;
@@ -98,14 +98,14 @@ public class CmsFile extends CmsResource implements Cloneable,Serializable {
         byte[] newContent = new byte[ this.getContents().length ];
         System.arraycopy(getContents(), 0, newContent, 0, getContents().length);
 
-        return new CmsFile(this.getResourceId(), this.getParentId(), this.getFileId(),
-                             new String(this.getResourceName()),this.getType(),
-                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
-                             this.getProjectId(),this.getAccessFlags(),
-                             this.getState(),this.isLockedBy(), this.getLauncherType(),
-                             new String(this.getLauncherClassname()), this.getDateCreated(),
-                             this.getDateLastModified(),this.getResourceLastModifiedBy(),
-                             newContent, this.getLength(), this.getLockedInProject());
+        return new CmsFile(this.getId(), this.getResourceId(), this.getParentId(),
+                             this.getFileId(),new String(this.getResourceName()),
+                             this.getType(), this.getFlags(), this.getOwnerId(),
+                             this.getGroupId(),this.getProjectId(),
+                             this.getAccessFlags(),this.getState(), this.isLockedBy(),
+                             this.getLauncherType(), new String(this.getLauncherClassname()),
+                             this.getDateCreated(),this.getDateLastModified(),
+                             this.getResourceLastModifiedBy(), newContent, this.getLength(), this.getLockedInProject());
     }
     /**
      * Gets the content of this file.

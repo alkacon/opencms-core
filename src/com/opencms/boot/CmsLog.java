@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsLog.java,v $
-* Date   : $Date: 2001/07/31 15:50:12 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,22 +39,22 @@ import java.io.*;
  * (de)activated by the log settings in the proerty file.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2001/07/31 15:50:12 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/13 10:04:21 $
  */
 public class CmsLog implements Logger {
 
-    /** The internal m_Logger */
-    private LogWriter m_Logger = null;
+    /** The internal m_logger */
+    private LogWriter m_logger = null;
 
-    /** Shows if this log is m_Active or not */
-    private boolean m_Active = false;
+    /** Shows if this log is m_active or not */
+    private boolean m_active = false;
 
     /** The main constructor */
     public CmsLog(String identifier, Configurations confs) {
-        m_Logger = null;
+        m_logger = null;
         try {
-            m_Logger = new LogWriter(identifier, confs);
-            m_Active = m_Logger.active;
+            m_logger = new LogWriter(identifier, confs);
+            m_active = m_logger.active;
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -65,8 +65,8 @@ public class CmsLog implements Logger {
      * Writes any pending messages into the log media.
      */
     public void flush() {
-        if(m_Logger != null) {
-            m_Logger.flush();
+        if(m_logger != null) {
+            m_logger.flush();
         }
     }
 
@@ -75,7 +75,7 @@ public class CmsLog implements Logger {
      * @return <code>true</code> the log is active, <code>false</code> otherwise.
      */
     public boolean isActive() {
-        return (m_Logger != null) ? m_Logger.active : false;
+        return (m_logger != null) ? m_logger.active : false;
     }
 
     /**
@@ -84,7 +84,7 @@ public class CmsLog implements Logger {
      * @return <code>true</code> the given channel is active, <code>false</code> otherwise.
      */
     public boolean isActive(String channel) {
-        return (m_Logger != null) ? m_Logger.isActive(channel) : false;
+        return (m_logger != null) ? m_logger.isActive(channel) : false;
     }
 
     /**
@@ -100,8 +100,8 @@ public class CmsLog implements Logger {
      * @param name the message to log.
      */
     public void log(String channel, String message) {
-        if(m_Logger != null) {
-            m_Logger.log(channel, message);
+        if(m_logger != null) {
+            m_logger.log(channel, message);
         }
     }
 
@@ -110,8 +110,8 @@ public class CmsLog implements Logger {
      * @param t the error thrown.
      */
     public void log(String channel, Throwable t) {
-        if(m_Logger != null) {
-            m_Logger.log(channel, t);
+        if(m_logger != null) {
+            m_logger.log(channel, t);
         }
     }
 }

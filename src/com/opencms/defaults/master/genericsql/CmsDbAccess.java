@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/21 16:10:09 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.db.CmsIdGenerator;
+import org.opencms.db.CmsIdGenerator;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;

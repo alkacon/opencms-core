@@ -11,7 +11,11 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-public class CmsSetupDb {
+/**
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.4 $ $Date: 2003/06/13 10:04:21 $
+ */
+public class CmsSetupDb extends Object {
 
     private Connection m_con;
     private Vector m_errors;
@@ -85,12 +89,13 @@ public class CmsSetupDb {
 
         /* indicates if the setup script contains included files (oracle) */
         boolean includedFile = false;
+        
+        String statement = "";
 
         /* get and parse the setup script */
         try {
             LineNumberReader reader = new LineNumberReader(new FileReader(m_basePath + C_OCSETUP_FOLDER + file));
             String line = null;
-            String statement = "";
             while (true) {
                 line = reader.readLine();
                 if (line == null)
@@ -153,7 +158,7 @@ public class CmsSetupDb {
             reader.close();
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement(e.toString() + "\n");
+                m_errors.addElement( "error: " + e.toString() + "\nin statement:\n" + statement);
             }
         }
     }
@@ -243,7 +248,7 @@ public class CmsSetupDb {
             stat.close();
         } catch (Exception e) {
             if (m_errorLogging) {
-                m_errors.addElement(e.toString() + "\n");
+                m_errors.addElement( "error: " + e.toString() + "\nin statement:\n" + statement);
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.9 $ $Date: 2003/06/13 10:04:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -131,8 +131,8 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
             String galleryname = (String)parameters.get("NAME");
             String group = (String)parameters.get("GROUP");
             if(galleryname != null && group != null && galleryname != "" && group != "") {
-                boolean read = parameters.get("READ") != null;
-                boolean write = parameters.get("WRITE") != null;
+//                boolean read = parameters.get("READ") != null;
+//                boolean write = parameters.get("WRITE") != null;
                 try {
 
                     // create the folder

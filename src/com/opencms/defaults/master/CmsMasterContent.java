@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,8 +51,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.33 $
- * $Date: 2003/06/06 12:48:11 $
+ * $Revision: 1.34 $
+ * $Date: 2003/06/13 10:04:21 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -537,7 +537,7 @@ public abstract class CmsMasterContent
      * @return String of access rights
      */
     public String getAccessFlagsAsString() {
-        int accessFlags = getAccessFlags();
+//        int accessFlags = getAccessFlags();
         String str = "NOT YET";
         // TODO: reimplement using acl
         /*

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/06/12 16:32:26 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.94 $ $Date: 2003/06/12 16:32:26 $
+ * @version $Revision: 1.95 $ $Date: 2003/06/13 10:04:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -94,44 +94,44 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
     protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
         String temporaryFilename = file.getPath() + C_TEMP_PREFIX + file.getName();
-
         boolean ok = true;
+        
         cms.getRequestContext().setCurrentProject(tempProject);
+        
         try {
             cms.copyResource(file.getAbsolutePath(), temporaryFilename);
             cms.chmod(temporaryFilename, 91);
-        }
-        catch(CmsException e) {
-            if((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
+        } catch (CmsException e) {
+            if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {
                     // try to re-use the old temporary file
                     cms.changeLockedInProject(tempProject, temporaryFilename);
                     cms.lockResource(temporaryFilename, true);
                     cms.chmod(temporaryFilename, 91);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     ok = false;
                 }
             } else {
                 throw e;
             }
         }
+        
         String extendedTempFile = temporaryFilename;
 
         int loop = 0;
-        while(!ok) {
+        while (!ok) {
             ok = true;
             extendedTempFile = temporaryFilename + loop;
+            
             try {
                 cms.copyResource(file.getAbsolutePath(), extendedTempFile);
                 cms.chmod(extendedTempFile, 91);
-            }
-            catch(CmsException e) {
-                if((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
+            } catch (CmsException e) {
+                if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     cms.getRequestContext().setCurrentProject(curProject);
-                    // This was no file exists exception.
-                    // Vary bad. We should not go on here since we may run
-                    // in an endless loop.
+                    // This was not a file-exists-exception.
+                    // Very bad. We should not continue here since we may run
+                    // into an endless looooooooooooooooooooooooooooooooooop.
                     throw e;
                 }
 
@@ -142,8 +142,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
         }
 
         cms.getRequestContext().setCurrentProject(curProject);
-        // Oh. we have found a temporary file.
+        // Oh how lucky we are! We have found a temporary file!
         temporaryFilename = extendedTempFile;
+        
         return temporaryFilename;
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/06/12 09:39:08 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.report.I_CmsReport;
-import com.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlEntry;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.util.LinkSubstitution;
@@ -83,7 +83,7 @@ import com.opencms.workplace.I_CmsWpConstants;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.94 $ $Date: 2003/06/12 09:39:08 $
+ * @version $Revision: 1.95 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -581,7 +581,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
-                    int newChannelId = com.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+                    int newChannelId = org.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
@@ -675,7 +675,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
         Element currentElement, currentProperty, currentEntry;
         String source, destination, type, user, group, access, launcherStartClass, timestamp;
         long lastmodified = 0;
-        Map properties, acentries;
+        Map properties = null;
         
         Vector types = new Vector(); // stores the file types for which the property already exists
         if (excludeList == null) {
@@ -772,7 +772,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     // get all properties for this file
                     propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
                     // clear all stores for property information
-                    properties = new HashMap();
+                    properties = (Map) new HashMap();
                     // add the module property to properties
                     if (propertyName != null && propertyValue != null && !"".equals(propertyName)) {
                         if (!types.contains(type)) {
@@ -805,9 +805,8 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
 					// write all imported access control entries for this file
 					acentryNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_ACCESSCONTROL_ENTRY);
-					acentries = new HashMap();
 					// collect all access control entries
-					String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
+					//String resid = getTextNodeValue(currentElement, C_EXPORT_TAG_ID);
 					for (int j = 0; j < acentryNodes.getLength(); j++) {
 						currentEntry = (Element) acentryNodes.item(j);
 						// get the data of the access control entry

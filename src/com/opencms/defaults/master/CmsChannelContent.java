@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.24 $
- * $Date: 2003/06/06 12:48:11 $
+ * $Revision: 1.25 $
+ * $Date: 2003/06/13 10:04:21 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -215,16 +215,16 @@ public class CmsChannelContent extends A_CmsContentDefinition
         // int lockedBy, int launcherType, String launcherClassname, long dateCreated,
         // long dateLastModified, int resourceLastModifiedBy,int size, int lockedInProject
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
-                                     CmsUUID.getNullUUID(), "", I_CmsConstants.C_TYPE_FOLDER, 0,
+                                     CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", I_CmsConstants.C_TYPE_FOLDER,
+                                     0,
                                      m_cms.getRequestContext().currentUser().getId(),
                                      m_cms.getRequestContext().currentGroup().getId(),
-                                     m_cms.getRequestContext().currentProject().getId(),
-                                     I_CmsConstants.C_ACCESS_DEFAULT_FLAGS, 1,
-                                     m_cms.getRequestContext().currentUser().getId(),
-                                     I_CmsConstants.C_UNKNOWN_ID, "",
-                                     System.currentTimeMillis(), System.currentTimeMillis(),
-                                     m_cms.getRequestContext().currentUser().getId(), 0,
-                                     m_cms.getRequestContext().currentProject().getId());
+                                     m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_ACCESS_DEFAULT_FLAGS,
+                                     1,
+                                     m_cms.getRequestContext().currentUser().getId(), I_CmsConstants.C_UNKNOWN_ID,
+                                     "", System.currentTimeMillis(),
+                                     System.currentTimeMillis(), m_cms.getRequestContext().currentUser().getId(),
+                                     0, m_cms.getRequestContext().currentProject().getId());
         m_properties = new Hashtable();
     }
 
@@ -423,7 +423,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @return a string with the Id
      */
     public String getUniqueId(CmsObject cms) {
-        return m_channel.getResourceId() + "";
+        return m_channel.getId().toString();
     }
 
     /**
@@ -432,7 +432,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @return int The unique id
      */
     public CmsUUID getId() {
-        return m_channel.getResourceId();
+        return m_channel.getId();
     }
 
     /**
@@ -781,7 +781,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * @return String of access rights
      */
     public String getAccessFlagsAsString() {
-        int accessFlags = m_channel.getAccessFlags();
+//        int accessFlags = m_channel.getAccessFlags();
         String str = "NOT YET";
         // TODO: reimplement using acl
         /*
@@ -817,7 +817,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = com.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+        int newChannelId = org.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }

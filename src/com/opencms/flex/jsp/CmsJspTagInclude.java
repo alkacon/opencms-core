@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/06/13 10:04:21 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -234,8 +234,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 target = m_target + getSuffix();
             } else if (m_property != null) {            
                 // Option 2: target is set with "property" parameter
+                if (DEBUG) System.err.println("IncludeTag: property=" + m_property);
                 try { 
                     String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
+                    if (DEBUG) System.err.println("IncludeTag: property=" + m_property + " is " + prop);                    
                     if (prop != null) target = prop + getSuffix();
                 } catch (Exception e) {} // target will be null
             } else if (m_attribute != null) {            
@@ -289,13 +291,16 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     static void includeTagAction(PageContext context, String target, String element, Map paramMap, ServletRequest req, ServletResponse res) 
     throws JspException {
         
+        if (DEBUG) System.err.println("includeTagAction/1: target=" + target);
+        
         CmsFlexController controller = (CmsFlexController)req.getAttribute(CmsFlexController.ATTRIBUTE_NAME);
         
         if (target == null) {
             // set target to default
             target = controller.getCmsObject().getRequestContext().getUri();
+            if (DEBUG) System.err.println("includeTagAction/2: target=" + target);
         }
-        
+                
         Map parameterMap = new HashMap();      
         if (paramMap != null) {
             // add all parameters 
@@ -355,7 +360,9 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
             // for other cases setting of "target" is fine             
         }          
-               
+
+        if (DEBUG) System.err.println("includeTagAction/3: target=" + target);
+       
         // save old parameters from request
         Map oldParamterMap = req.getParameterMap();
         controller.getCurrentRequest().addParameterMap(parameterMap);  

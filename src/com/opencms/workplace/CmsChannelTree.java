@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2003/06/12 15:16:32 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2003/06/12 15:16:32 $
+ * @version $Revision: 1.16 $ $Date: 2003/06/13 10:04:20 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -163,7 +163,7 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
      */
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
-        boolean access = false;
+        //boolean access = false;
         if(res.getState() == C_STATE_DELETED){
             return false;
         }

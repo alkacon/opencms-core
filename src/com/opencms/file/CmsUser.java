@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
-* Date   : $Date: 2003/06/03 16:06:07 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,14 +33,14 @@ import java.util.Hashtable;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
-import com.opencms.security.I_CmsPrincipal;
+import org.opencms.security.I_CmsPrincipal;
 
 
  /**
  * Describes the Cms user object and the methods to access it.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/06/03 16:06:07 $
+ * @version $Revision: 1.37 $ $Date: 2003/06/13 10:04:20 $
  */
 
 public class CmsUser implements I_CmsPrincipal, I_CmsConstants, Cloneable {

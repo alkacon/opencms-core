@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2003/01/20 23:59:26 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:26 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/13 10:04:21 $
  */
-public class CmsBase implements I_CmsLogChannels {
+public class CmsBase extends Object implements I_CmsLogChannels {
 
     /** Reference to the OpenCms base path ("home directory" of OpenCms) */
     private static String c_basePath = null;
@@ -49,6 +49,13 @@ public class CmsBase implements I_CmsLogChannels {
 
     /** Indicates if the system log is initialized */
     protected static boolean c_servletLogging = false;
+    
+    /**
+     * Default constructor. Nobody is allowed to create an instance of this class!
+     */
+    private CmsBase() {
+        super();
+    }    
 
     /**
      * Initialize the logging mechanism of the Jserv

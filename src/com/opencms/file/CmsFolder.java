@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.16 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.17 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.*;
  * Describes a folder in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.17 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable,
@@ -61,33 +61,33 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
       * @param dateLastModified The date of the last modification of the resource.
       * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsFolder(CmsUUID resourceId, CmsUUID parentId,CmsUUID fileId,
-                        String resourceName, int resourceType, int resourceFlags,
-                        CmsUUID userId, CmsUUID groupId, int projectId,
-                        int accessFlags, int state, CmsUUID lockedByUserId,
-                        long dateCreated, long dateLastModified
-                        ,CmsUUID resourceLastModifiedByUserId, int lockedInProject){
+     public CmsFolder(CmsUUID structureId, CmsUUID resourceId,CmsUUID parentId,
+                        CmsUUID fileId, String resourceName, int resourceType,
+                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
+                        int projectId, int accessFlags, int state,
+                        CmsUUID lockedByUserId, long dateCreated
+                        ,long dateLastModified, CmsUUID resourceLastModifiedByUserId, int lockedInProject){
 
         // create the CmsResource.
-        super(resourceId, parentId,fileId,resourceName,
-              resourceType,resourceFlags,
-              userId,groupId,projectId,
-              accessFlags,state,lockedByUserId,
-              C_UNKNOWN_LAUNCHER_ID,C_UNKNOWN_LAUNCHER,
-              dateCreated,dateLastModified,
-              resourceLastModifiedByUserId,-1, lockedInProject);
+        super(structureId, resourceId,parentId,fileId,
+              resourceName,resourceType,
+              resourceFlags,userId,groupId,
+              projectId,accessFlags,state,
+              lockedByUserId,C_UNKNOWN_LAUNCHER_ID,
+              C_UNKNOWN_LAUNCHER,dateCreated,
+              dateLastModified,resourceLastModifiedByUserId, -1, lockedInProject);
    }
     /**
     * Clones the CmsFolder by creating a new CmsFolder.
     * @return Cloned CmsFolder.
     */
     public Object clone() {
-        return new CmsFolder(this.getResourceId(), this.getParentId(), this.getFileId(),
-                             new String(this.getResourceName()),this.getType(),
-                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
-                             this.getProjectId(),this.getAccessFlags(),
-                             this.getState(),this.isLockedBy(),this.getDateCreated(),
-                             this.getDateLastModified(), this.getResourceLastModifiedBy(),
-                             this.getLockedInProject());
+        return new CmsFolder(this.getId(), this.getResourceId(), this.getParentId(),
+                             this.getFileId(),new String(this.getResourceName()),
+                             this.getType(), this.getFlags(), this.getOwnerId(),
+                             this.getGroupId(),this.getProjectId(),
+                             this.getAccessFlags(),this.getState(),this.isLockedBy(),
+                             this.getDateCreated(), this.getDateLastModified(),
+                             this.getResourceLastModifiedBy(), this.getLockedInProject());
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/06/10 16:21:00 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,28 +34,33 @@ import com.opencms.flex.util.CmsUUID;
 import java.io.Serializable;
 
 /**
- * Describes a resource in the Cms.
- * This resource can be a A_CmsFile or a A_CmsFolder.
+ * This is the base class for all resources, files, and folders in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.48 $ $Date: 2003/06/10 16:21:00 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.49 $ $Date: 2003/06/13 10:04:20 $
  */
 public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     
      /**
-      * The database ID
+      * The ID of the file header database entry.
       */
      private CmsUUID m_resourceId;
 
      /**
-      * The database Parent ID
+      * The ID of the parent's file tree/hierarchy database entry.
       */
      private CmsUUID m_parentId;
 
      /**
-      * The database Parent ID
+      * The ID of the file content database entry.
       */
      private CmsUUID m_fileId;
+     
+     /**
+      * The ID of the file tree/hierarchy database entry.
+      */
+     private CmsUUID m_structureId;
 
      /**
       * The name of this resource.
@@ -167,15 +172,15 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
       * @param dateLastModified The date of the last modification of the resource.
       * @param resourceLastModifiedBy The user who changed the file.
       */
-     public CmsResource(CmsUUID resourceId, CmsUUID parentId,
-                        CmsUUID fileId,String resourceName,
-                        int resourceType, int resourceFlags,
-                        CmsUUID userId, CmsUUID groupId, int projectId,
-                        int accessFlags, int state, CmsUUID lockedByUserId,
-                        int launcherType, String launcherClassname,
-                        long dateCreated, long dateLastModified,
-                        CmsUUID resourceLastModifiedByUserId,int size, int lockedInProject){
-
+     public CmsResource(CmsUUID structureId, CmsUUID resourceId,
+                        CmsUUID parentId,CmsUUID fileId,
+                        String resourceName, int resourceType,
+                        int resourceFlags, CmsUUID userId, CmsUUID groupId,
+                        int projectId, int accessFlags, int state,
+                        CmsUUID lockedByUserId, int launcherType,
+                        String launcherClassname, long dateCreated,
+                        long dateLastModified,CmsUUID resourceLastModifiedByUserId, int size, int lockedInProject){
+        m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
         m_fileId = fileId;
@@ -202,13 +207,13 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      * @return Cloned CmsObject.
      */
     public Object clone() {
-        return new CmsResource(m_resourceId, m_parentId,m_fileId,
-                               m_resourceName, m_resourceType, m_resourceFlags,
-                               m_userId, m_groupId, m_projectId,
-                               m_accessFlags, m_state, m_lockedByUserId,
-                               m_launcherType, m_launcherClassname,
-                               m_dateCreated, m_dateLastModified,
-                               m_resourceLastModifiedByUserId,m_size, m_lockedInProject);
+        return new CmsResource(m_structureId, m_resourceId,m_parentId,
+                               m_fileId, m_resourceName, m_resourceType,
+                               m_resourceFlags, m_userId, m_groupId,
+                               m_projectId, m_accessFlags, m_state,
+                               m_lockedByUserId, m_launcherType,
+                               m_launcherClassname, m_dateCreated,
+                               m_dateLastModified,m_resourceLastModifiedByUserId, m_size, m_lockedInProject);
     }
     /**
      * Compares the overgiven object with this object.
@@ -303,13 +308,14 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      }
           
     /**
-     * Gets the File id for this resource.
+     * Gets the ID of the file content database entry.
      *
-     * @return the File id of this resource.
+     * @return the ID of the file content database entry
      */
      public CmsUUID getFileId(){
         return m_fileId;
      }
+     
     /**
      * Returns the flags of this resource ( not used yet; the Accessflags are served in getAccessFlags).
      *
@@ -340,7 +346,7 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
         str += ((m_accessFlags & C_ACCESS_PUBLIC_VISIBLE)>0?"v":"-");
         str += ((m_accessFlags & C_ACCESS_INTERNAL_READ)>0?"i":"-");
 */
-                return str;
+        return str;
     }
     /**
      * Returns the groupid of this resource.
@@ -539,9 +545,9 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     }    
         
     /**
-     * Gets the Parent database id for this resource.
+     * Gets the ID of the parent's file tree/hierarchy database entry.
      *
-     * @return the Parent database id of this resource.
+     * @return the ID of the parent's file tree/hierarchy database entry.
      */
     public CmsUUID getParentId() {
         return m_parentId;
@@ -557,16 +563,21 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     }
       
     /**
-     * Gets the database id for this resource.
+     * Gets the ID of the file header database entry.
      *
-     * @return the database id of this resource.
+     * @return the ID of the file header database entry
      */
      public CmsUUID getResourceId(){
         return m_resourceId;
      }
      
-     public CmsUUID getResourceAceId() {
-     	return m_resourceId;
+     /**
+      * Gets the ID of the file tree/hierarchy database entry to identify a resource.
+      * 
+      * @return the ID of the file tree/hierarchy database entry
+      */
+     public CmsUUID getId() {
+         return m_structureId;
      }
      
     /**
@@ -816,5 +827,14 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
 	public boolean isTouched() {
 		return m_isTouched;
 	}
-
+    
+    /**
+     * Helper to encapsulate which ID of a resource is used to handle ACE's for resources/files/folders.
+     * 
+     * @return the "resource-ID" of a resource
+     */
+    public CmsUUID getResourceAceId() {
+        return this.getResourceId();
+    }
+    
 }

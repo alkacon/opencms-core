@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupThread.java,v $
-* Date   : $Date: 2002/12/06 23:16:54 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/06/13 10:04:21 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ public class CmsSetupThread extends Thread {
     private CmsSetupLoggingThread m_lt;
 
     /** Path to opencms home folder */
-    private String basePath;
+    private String m_basePath;
 
     /** System.out and System.err are redirected to this stream */
     private PipedOutputStream m_pipedOut;
@@ -80,19 +80,17 @@ public class CmsSetupThread extends Thread {
         m_lt.start();
 
         /* start importing the workplace */
-        CmsMain.startSetup(basePath + "WEB-INF/ocsetup/cmssetup.txt", basePath + "WEB-INF/");
+        CmsMain.startSetup(m_basePath + "WEB-INF/ocsetup/cmssetup.txt", m_basePath + "WEB-INF/");
 
         /* stop the logging thread */
         try {
             sleep(1000);
             m_lt.stopThread();
             m_pipedOut.close();
-        }
-        catch (InterruptedException e)  {
+        } catch (InterruptedException e)  {
             m_lt.stopThread();
             e.printStackTrace(m_tempErr);
-        }
-        catch (IOException e)  {
+        } catch (IOException e)  {
             m_lt.stopThread();
             e.printStackTrace(m_tempErr);
         }
@@ -106,11 +104,11 @@ public class CmsSetupThread extends Thread {
 
     /** Set the base path to the given value */
     public void setBasePath(String basePath)  {
-        this.basePath = basePath;
+        this.m_basePath = basePath;
         if (! basePath.endsWith(File.separator)) {
             // Make sure that Path always ends with a separator, not always the case in different environments
             // since getServletContext().getRealPath("/") does not end with a "/" in all servlet runtimes
-            this.basePath += File.separator;
+            this.m_basePath += File.separator;
         }
     }
 

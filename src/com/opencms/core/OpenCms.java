@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/05/23 16:26:46 $
-* Version: $Revision: 1.128 $
+* Date   : $Date: 2003/06/13 10:04:20 $
+* Version: $Revision: 1.129 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@ package com.opencms.core;
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.exceptions.CmsCheckResourceException;
-import com.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDriverManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.128 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.129 $ $Date: 2003/06/13 10:04:20 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
