@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.53 $ $Date: 2000/02/11 18:59:59 $
+ * @version $Revision: 1.54 $ $Date: 2000/02/14 17:43:37 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -561,12 +561,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 		
-		// was the resource deleted?
-		if(res.getState() == C_STATE_DELETED) {
-			// yes: return null
-			return(null);
-		}
-		
 		// check the security
 		if( ! accessRead(currentUser, currentProject, res) ) {
 			throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
@@ -673,12 +667,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				res = m_fileRb.readFileHeader(onlineProject(currentUser, currentProject),
 											  resource);
 			}
-		}
-		
-		// was the resource deleted?
-		if(res.getState() == C_STATE_DELETED) {
-			// yes: return null
-			return(new Hashtable());
 		}
 		
 		// check the security
@@ -2037,6 +2025,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 public CmsFile readFile(A_CmsUser currentUser, A_CmsProject currentProject,
 							 String filename)
 		 throws CmsException {
+		 // TODO: delete the following debug message
+		 System.err.println(">>> readFile() for\n" +
+							currentUser.toString() + "in project\n" +
+							currentProject.toString());
 		 CmsFile cmsFile;
 		 // read the resource from the currentProject, or the online-project
 		 try {
@@ -2454,7 +2446,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		A_CmsResource cmsResource = m_fileRb.readFileHeader(currentProject, 
 															resourcename);
 		// check, if the user may lock the resource
-		if( accessCreate(currentUser, currentProject, cmsResource) ) {
+		if( accessLock(currentUser, currentProject, cmsResource) ) {
 				
 			// write-acces  was granted - lock the folder.
 			m_fileRb.lockResource(currentUser, currentProject, 
@@ -3394,6 +3386,66 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 	
 	/**
+	 * Checks, if the user may lock this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * 
+	 * @return wether the user may lock this resource, or not.
+	 */
+	private boolean accessLock(A_CmsUser currentUser, A_CmsProject currentProject,
+							   A_CmsResource resource) 
+		throws CmsException	{
+		
+		// check, if this is the onlineproject
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+			// the online-project is not writeable!
+			return(false);
+		}
+		
+		// check the access to the project
+		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
+			// no access to the project!
+			return(false);
+		}
+		
+		// read the parent folder
+		if(resource.getParent() != null) {
+			resource = m_fileRb.readFolder(currentProject, resource.getParent());
+		} else {
+			// no parent folder!
+			return true;
+		}
+		
+		
+		// check the rights and if the resource is not locked
+		do {
+			if( accessOther(currentUser, currentProject, resource, C_ACCESS_PUBLIC_WRITE) || 
+				accessOwner(currentUser, currentProject, resource, C_ACCESS_OWNER_WRITE) ||
+				accessGroup(currentUser, currentProject, resource, C_ACCESS_GROUP_WRITE) ) {
+				
+				// is the resource locked?
+				if(resource.isLocked()) {
+					// resource locked, no writing allowed
+					return(false);					
+				}
+				
+				// read next resource
+				if(resource.getParent() != null) {
+					resource = m_fileRb.readFolder(currentProject, resource.getParent());
+				}
+			} else {
+				// last check was negative
+				return(false);
+			}
+		} while(resource.getParent() != null);
+		
+		// all checks are done positive
+		return(true);
+	}
+	
+	/**
 	 * Checks, if the owner may access this resource.
 	 * 
 	 * @param currentUser The user who requested this method.
@@ -3561,4 +3613,83 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// resources was null - nothing was changed - ignore it
 		}
 	}
+	
+	// task-stuff
+
+	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+								 String agentName, String roleName, 
+								 String taskname, String taskcomment, 
+								 long timeout, int priority)
+		 throws CmsException {
+		 // read the agent
+		 A_CmsUser agent = readUser(currentUser, currentProject, agentName);
+		 // read the role
+		 A_CmsGroup role = readGroup(currentUser, currentProject, roleName);
+		 // create the timestamp
+		 java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
+		 
+		 return m_taskRb.createTask(currentUser, currentProject, agent, role, 
+									taskname, taskcomment, timestamp, priority);
+	 }
+
+	 /**
+	  * Set a Parameter for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * @param parvalue Value if the parameter.
+	  * 
+	  * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+						   int taskid, String parname, String parvalue)
+		 throws CmsException {
+		 m_taskRb.setTaskPar(taskid, parname, parvalue);
+	 }
+
+	 /**
+	  * Get a parameter value for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public String getTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String parname)
+		 throws CmsException {
+		 return m_taskRb.getTaskPar(taskid, parname);
+	 }
 }

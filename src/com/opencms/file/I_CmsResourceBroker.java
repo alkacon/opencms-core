@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ $Date: 2000/02/11 19:00:00 $
+ * @version $Revision: 1.36 $ $Date: 2000/02/14 17:45:34 $
  */
 interface I_CmsResourceBroker {
 
@@ -1652,6 +1652,32 @@ interface I_CmsResourceBroker {
 	 * @return the number of file-system-changes.
 	 */
 	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject);
+
+	 /**
+	  * Creates a new task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param agent User who will edit the task 
+	  * @param role Usergroup for the task
+	  * @param taskname Name of the task
+	  * @param taskcomment Description of the task
+	  * @param timeout Time when the task must finished
+	  * @param priority Id for the priority
+	  * 
+	  * @return A new Task Object
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 
+	 public A_CmsTask createTask(A_CmsUser currentUser, A_CmsProject currentProject, 
+								 String agentName, String roleName, 
+								 String taskname, String taskcomment, 
+								 long timeout, int priority)
+		 throws CmsException;
 	
 	
 	// database import and export stuff
@@ -1690,4 +1716,41 @@ interface I_CmsResourceBroker {
 	 *         if he has access, the export will be executed.
 	 */
 	public boolean importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importPath, String importFile);
+
+	 /**
+	  * Set a Parameter for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * @param parvalue Value if the parameter.
+	  * 
+	  * @return The id of the inserted parameter or 0 if the parameter already exists for this task.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void setTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+						   int taskid, String parname, String parvalue)
+		 throws CmsException;
+
+	 /**
+	  * Get a parameter value for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task.
+	  * @param parname Name of the parameter.
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public String getTaskPar(A_CmsUser currentUser, A_CmsProject currentProject, 
+							  int taskid, String parname)
+		 throws CmsException;
 }
