@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2003/11/13 16:29:59 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/13 17:35:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.16 $ $Date: 2003/11/13 16:29:59 $
+ * @version $Revision: 1.17 $ $Date: 2003/11/13 17:35:20 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -305,7 +305,13 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             }
         } catch (ConcurrentModificationException e) {
             // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+            } 
         }
+        
         return keySize;
     }
     
@@ -391,7 +397,13 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             }
         } catch (ConcurrentModificationException e) {
             // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+            } 
         }
+        
         return totalSize;
     }
     
@@ -432,7 +444,13 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
             }
         } catch (ConcurrentModificationException e) {
             // this might happen since even the .toArray() method internally creates an iterator
-        }        
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug(", Caught throwable "+t.getMessage());
+            } 
+        }
+              
         return totalSize;
     }
     
