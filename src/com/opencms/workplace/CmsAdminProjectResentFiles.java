@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResentFiles.java,v $
-* Date   : $Date: 2001/01/24 09:43:26 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/01/25 13:50:08 $
+* Version: $Revision: 1.14 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * editing news.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2001/01/24 09:43:26 $
+ * @version $Revision: 1.14 $ $Date: 2001/01/25 13:50:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -197,7 +197,7 @@ public class CmsAdminProjectResentFiles extends CmsWorkplaceDefault implements I
                 parameters, templateSelector);
         
         //set the current project back
-        cms.getRequestContext().setCurrentProject(currentProjectId);
+        //cms.getRequestContext().setCurrentProject(currentProjectId);
         return content;
     }
     
