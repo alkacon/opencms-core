@@ -84,8 +84,10 @@ print out the following list of tables:
 Step 6
 After this, edit the cmssetup.txt and fill in your personal path to your earlier
 copied pics folder in the apache docroot in the line beginning with
-"AddMountPoint" (You will find this line near to the end of the file). cd to
-the parent opencms folder, start the OpenCms console and initialize the database
+"AddMountPoint". 
+Change the export path to an existing empty folder in the line beginning with
+"setExportPath" (You will find these lines near to the end of the file).
+cd to the parent opencms folder, start the OpenCms console and initialize the database
 with all workplace default files by calling:
 
 jre -cp opencms.jar -cp xerces.jar -cp mysql_uncomp.jar \
