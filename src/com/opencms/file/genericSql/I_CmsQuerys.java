@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/13 12:17:37 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/06/14 12:44:13 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.39 $ $Date: 2000/06/13 12:17:37 $
+ * @version $Revision: 1.40 $ $Date: 2000/06/14 12:44:13 $
  */
 public interface I_CmsQuerys {
     
@@ -457,7 +457,7 @@ public interface I_CmsQuerys {
 	public static final String C_USERS_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
 
 	public static final Integer C_USERS_READID_KEY = new Integer(253);
-	public static final String C_USERS_READID = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_ID = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
+	public static final String C_USERS_READID = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_ID = ?  and USER_DEFAULT_GROUP_ID = GROUP_ID";
 
 	public static final Integer C_USERS_READPW_KEY = new Integer(254);
 	public static final String C_USERS_READPW = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS WHERE USER_NAME = ? and USER_PASSWORD = ? and USER_TYPE = ? and USER_DEFAULT_GROUP_ID = GROUP_ID";
@@ -485,5 +485,9 @@ public interface I_CmsQuerys {
 
 	public static final Integer C_USERS_SETPW_KEY = new Integer(258);
 	public static final String C_USERS_SETPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? ";
+
+	public static final Integer C_USERS_DELETEBYID_KEY = new Integer(259);
+	public static final String C_USERS_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_ID = ?";
+
 }
 

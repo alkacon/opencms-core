@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/13 16:02:23 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/06/14 12:44:12 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.84 $ $Date: 2000/06/13 16:02:23 $ 
+ * @version $Revision: 1.85 $ $Date: 2000/06/14 12:44:12 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1325,7 +1325,7 @@ public class CmsObject implements I_CmsConstants {
 							  id) );
 	}
 	
-    	/**
+    /**
 	 * Returns a user in the Cms.
 	 * 
 	 * @param username The name of the user to be returned.
@@ -1341,22 +1341,6 @@ public class CmsObject implements I_CmsConstants {
 							  username,type) );
 	}
     
-     /**
-	 * Returns a user in the Cms.
-	 * 
-	 * @param id The id of the user to be returned.
-	 * @param type The type of the user.
-	 * @return a user in the Cms.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public CmsUser readUser(int id,int type) 
-		throws CmsException { 
-		return( c_rb.readUser(m_context.currentUser(), 
-							  m_context.currentProject(), 
-							  id,type) );
-	}
-
 	/**
 	 * Returns a user in the Cms, if the password is correct.
 	 * 
@@ -1463,6 +1447,21 @@ public class CmsObject implements I_CmsConstants {
 		throws CmsException { 
 		c_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), username);
 	}
+
+	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * Only a adminstrator can do this.
+	 * 
+	 * @param name The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteUser(int userId)
+		throws CmsException { 
+		c_rb.deleteUser(m_context.currentUser(), m_context.currentProject(), userId);
+	}
+
 	
 	/**
 	 * Updated the userinformation.<BR/>

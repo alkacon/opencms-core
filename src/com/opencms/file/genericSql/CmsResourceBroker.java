@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/13 16:02:24 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2000/06/14 12:44:13 $
+ * Version: $Revision: 1.50 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2000/06/13 16:02:24 $
+ * @version $Revision: 1.50 $ $Date: 2000/06/14 12:44:13 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1346,7 +1346,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readAgent(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-		return m_dbAccess.readUser(task.getAgentUser(), C_USER_TYPE_SYSTEMUSER) ;
+		return m_dbAccess.readUser(task.getAgentUser());
     }
     
     
@@ -1366,7 +1366,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOriginalAgent(CmsUser currentUser, CmsProject currentProject, 
 									   CmsTask task) 
         throws CmsException {
-		return m_dbAccess.readUser(task.getOriginalUser(), C_USER_TYPE_SYSTEMUSER);
+		return m_dbAccess.readUser(task.getOriginalUser());
     }
     
 	/**
@@ -1384,7 +1384,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsResource resource) 
         throws CmsException {
-		return m_dbAccess.readUser(resource.getOwnerId(), C_USER_TYPE_SYSTEMUSER);
+		return m_dbAccess.readUser(resource.getOwnerId() );
     }
 	
 	/**
@@ -1401,7 +1401,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, CmsTaskLog log) 
         throws CmsException {
-		return m_dbAccess.readUser(log.getUser(), C_USER_TYPE_SYSTEMUSER);
+		return m_dbAccess.readUser(log.getUser());
     }
 							
 	/**
@@ -1420,7 +1420,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsTask task) 
         throws CmsException {
-		return this.m_dbAccess.readUser(task.getInitiatorUser(), C_USER_TYPE_SYSTEMUSER);
+		return this.m_dbAccess.readUser(task.getInitiatorUser());
     }
 							
 	/**
@@ -1476,7 +1476,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser readOwner(CmsUser currentUser, CmsProject currentProject, 
 							   CmsProject project) 
         throws CmsException {
-		return m_dbAccess.readUser(project.getOwnerId(), C_USER_TYPE_SYSTEMUSER);
+		return m_dbAccess.readUser(project.getOwnerId());
     }
 	
 	/**
@@ -1640,7 +1640,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							  int id)
         throws CmsException {
 		
-		return m_dbAccess.readUser(id, C_USER_TYPE_SYSTEMUSER);
+		return m_dbAccess.readUser(id);
     }
     
      /**
@@ -1663,27 +1663,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		return m_dbAccess.readUser(username, type);
     }
 	
-    /**
-	 * Returns a user object.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the user that is to be read.
-	 * @param type The type of the user.
-	 * @return User
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
-							  int id, int type)
-        throws CmsException {
-		
-		return m_dbAccess.readUser(id, type);
-    }
-    
-    
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
 	 * 
@@ -1929,6 +1908,36 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
         throws CmsException {
+		// Check the security
+		// Avoid to delete admin or guest-user
+		if( isAdmin(currentUser, currentProject) && 
+			!(username.equals(C_USER_ADMIN) || username.equals(C_USER_GUEST))) {
+			m_dbAccess.deleteUser(username);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+		}
+    }
+
+	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param userId The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
+						   int userId)
+        throws CmsException {
+        CmsUser user = m_dbAccess.readUser(userId);
+        String username = user.getName();
 		// Check the security
 		// Avoid to delete admin or guest-user
 		if( isAdmin(currentUser, currentProject) && 
@@ -3385,7 +3394,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  String resource)
         throws CmsException {
-		return m_dbAccess.readUser(readFileHeader(currentUser, currentProject, resource).isLockedBy(), C_USER_TYPE_SYSTEMUSER) ;
+		return m_dbAccess.readUser(readFileHeader(currentUser, currentProject, resource).isLockedBy() ) ;
     }
 	
 	/**
@@ -3406,7 +3415,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsUser lockedBy(CmsUser currentUser, CmsProject currentProject,
 							  CmsResource resource)
         throws CmsException {
-		return m_dbAccess.readUser(resource.isLockedBy(), C_USER_TYPE_SYSTEMUSER) ;
+		return m_dbAccess.readUser(resource.isLockedBy() ) ;
     }
 	
 	/**

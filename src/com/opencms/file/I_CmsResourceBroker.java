@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/13 16:02:24 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2000/06/14 12:44:13 $
+ * Version: $Revision: 1.83 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.82 $ $Date: 2000/06/13 16:02:24 $
+ * @version $Revision: 1.83 $ $Date: 2000/06/14 12:44:13 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -954,22 +954,6 @@ public interface I_CmsResourceBroker {
 							  String username,int type)
         throws CmsException ;
 	
-    /**
-	 * Returns a user object.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param id The id of the user that is to be read.
-	 * @param type The type of the user.
-	 * @return User
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
-							  int id, int type)
-        throws CmsException ;    
     
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
@@ -1146,6 +1130,25 @@ public interface I_CmsResourceBroker {
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
 		throws CmsException;
+
+	/** 
+	 * Deletes a user from the Cms.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param userId The Id of the user to be deleted.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
+						   int userId)
+		throws CmsException;
+
 
 	/**
 	 * Updated the user information.<BR/>

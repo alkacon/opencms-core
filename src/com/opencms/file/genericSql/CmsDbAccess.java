@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/13 12:17:36 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/06/14 12:44:13 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.63 $ $Date: 2000/06/13 12:17:36 $ * 
+ * @version $Revision: 1.64 $ $Date: 2000/06/14 12:44:13 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -886,7 +886,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				m_pool.putPreparedStatement(C_USERS_ADD_KEY, statement);
 			}
 		}
-		return readUser(id, type);
+		return readUser(id);
 	}
 	
 	/**
@@ -1035,7 +1035,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 	 * @return the read user.
 	 * @exception thorws CmsException if something goes wrong.
 	 */
-	public CmsUser readUser(int id, int type) 
+	public CmsUser readUser(int id) 
 		throws CmsException {
 		PreparedStatement statement = null;
 		ResultSet res = null;
@@ -1044,7 +1044,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		try	{			
             statement = m_pool.getPreparedStatement(C_USERS_READID_KEY);
             statement.setInt(1,id);
-			statement.setInt(2,type);
 			res = statement.executeQuery();
 			
 			// create new Cms user object
@@ -1166,6 +1165,31 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 			}
 		}
 	}
+	
+	/**
+	 * Deletes a user from the database.
+	 * 
+	 * @param userId The Id of the user to delete
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public void deleteUser(int id) 
+		throws CmsException {
+		PreparedStatement statement = null;
+		
+		try	{
+            statement = m_pool.getPreparedStatement(C_USERS_DELETEBYID_KEY);
+			statement.setInt(1,id);
+			statement.executeUpdate();
+		}
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_USERS_DELETEBYID_KEY, statement);
+			}
+		}
+	}
+
 	
 	/**
 	 * Gets all users of a type.
@@ -4187,6 +4211,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		m_pool.initPreparedStatement(C_USERS_DELETE_KEY,C_USERS_DELETE);
 		m_pool.initPreparedStatement(C_USERS_GETUSERS_KEY,C_USERS_GETUSERS);
 		m_pool.initPreparedStatement(C_USERS_SETPW_KEY,C_USERS_SETPW);
+		m_pool.initPreparedStatement(C_USERS_DELETEBYID_KEY,C_USERS_DELETEBYID);
 		
 		// init statements for projects        
 		m_pool.initPreparedStatement(C_PROJECTS_MAXID_KEY, C_PROJECTS_MAXID);
