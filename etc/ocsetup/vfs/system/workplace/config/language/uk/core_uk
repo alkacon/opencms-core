@@ -393,6 +393,7 @@
             <statenip>not in project</statenip>
             <lockedby>Locked by </lockedby>
             <lockedin><![CDATA[ in project ]]></lockedin>
+            <altbelongto><![CDATA[ belongs to project ]]></altbelongto>
             <context>
                 <access>Change Permissions</access>
                 <chgrp>Change Group</chgrp>

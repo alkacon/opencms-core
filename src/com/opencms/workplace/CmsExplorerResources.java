@@ -1,8 +1,8 @@
 
 /*
 * File   : $File$
-* Date   : $Date: 2001/07/23 16:54:19 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/07/24 09:35:01 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -100,6 +100,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
 		jsOutput.append(" this.langloading=\"" + lang.getLanguageValue("label.loading") + "\";\n");
         jsOutput.append(" this.altlockedby=\"" + lang.getLanguageValue("explorer.lockedby") + "\";\n");
         jsOutput.append(" this.altlockedin=\"" + lang.getLanguageValue("explorer.lockedin") + "\";\n");
+        jsOutput.append(" this.altbelongto=\"" + lang.getLanguageValue("explorer.altbelongto") + "\";\n");
         jsOutput.append(" this.servpath=\"" + servletPath + "\";\n");
         int filelist = getDefaultPreferences(cms);
         jsOutput.append(" this.viewcfg = " + filelist + ";\n");

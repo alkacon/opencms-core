@@ -392,6 +392,7 @@
             <statenip>keine Projektdatei</statenip>
             <lockedby>Zur Bearbeitung gesperrt von </lockedby>
             <lockedin><![CDATA[ im Projekt ]]></lockedin>
+            <altbelongto><![CDATA[ gehört zu Projekt ]]></altbelongto>
             <context>
                 <access>Zugriff ändern</access>
                 <chgrp>Gruppe ändern</chgrp>

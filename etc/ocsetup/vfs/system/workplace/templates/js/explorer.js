@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2001/07/24 06:52:43 $
-  * Version: $Revision: 1.31 $
+  * Date   : $Date: 2001/07/24 09:35:01 $
+  * Version: $Revision: 1.32 $
   *
   * Copyright (C) 2000  The OpenCms Group
   *
@@ -989,7 +989,8 @@ function enableNewButton(showit){
      wo.writeln("<table cellpadding=1 cellspacing=1 border=0><tr>");
 
      wo.writeln("<td nowrap class=t width=20>&nbsp;</td>");
-     wo.writeln("<td nowrap class=t width=20 colspan=2>&nbsp;</td>");
+     wo.writeln("<td nowrap class=t width=20><img src=\"" + vi.iconPath+"empty.gif" + "\" border=0 width=16 height=1></td>");
+     wo.writeln("<td nowrap class=t width=20><img src=\"" + vi.iconPath+"empty.gif" + "\" border=0 width=16 height=1></td>");
      if(vi.check_name)wo.writeln("<td nowrap class=t width=100>&nbsp;"+vr.descr[0]+"</td>");
 
      if(vi.check_title)wo.writeln("<td nowrap class=t width=100>&nbsp;"+vr.descr[1]+"</td>");
@@ -1024,39 +1025,46 @@ function enableNewButton(showit){
          wo.write("<img src='"+vi.resource[vi.liste[i].type].icon+"' border=0 width=16 height=16></a>");
          wo.writeln("</td>");
 
-        wo.write("<td nowrap align=center>");
+        
+        if(vi.liste[i].project == vr.actProject) {
+            wo.write("<td nowrap align=center>");
+            // the ressource is in the current project, so display the lock and projectstate
 
-        var lockIcon;
+            var lockIcon;
 
-         if(vi.liste[i].lockedBy!=""){
-            if( (vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vi.liste[i].project)){
-                 lockIcon=vi.iconPath+'ic_lockuser.gif';
-            }else{
-                lockIcon=vi.iconPath+'ic_lock.gif';
+             if(vi.liste[i].lockedBy!=""){
+                if( (vr.userName == vi.liste[i].lockedBy) && (vi.liste[i].lockedInProjectId == vi.liste[i].project)){
+                     lockIcon=vi.iconPath+'ic_lockuser.gif';
+                }else{
+                    lockIcon=vi.iconPath+'ic_lock.gif';
+                }
+                lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+ vr.altlockedin + vi.liste[i].lockedInProjectName + "\"";
+                wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
+             }
+            wo.write("</td>");
+
+            wo.write("<td nowrap align=center>");
+            var projectIcon;
+            var projectAltText;
+            if(vi.liste[i].status != 0) {
+                if (vi.liste[i].lockedInProjectId == vi.liste[i].project) {
+                    projectIcon=vi.iconPath+'ic_inthisproject.gif';         
+                    projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+                } else {
+                    projectIcon=vi.iconPath+'ic_inanotherproject.gif';         
+                    projectAltText = vr.altbelongto + vi.liste[i].lockedInProjectName;
+                }
+            } else {
+                projectIcon=vi.iconPath+'ic_innoproject.gif';
+                projectAltText = "";
             }
-            lockedBystring="alt=\""+vr.altlockedby+" "+vi.liste[i].lockedBy+ vr.altlockedin + vi.liste[i].lockedInProjectName + "\"";
-            wo.write("<img src='"+lockIcon+"' "+lockedBystring+" border=0 width=16 height=16></a>");
-         }
-        wo.write("</td>");
 
-        wo.write("<td nowrap align=center>");
-         var projectIcon;
-         var projectAltText;
-         if(vi.liste[i].lockedInProjectId == vr.onlineProject){
-            projectIcon=vi.iconPath+'ic_innoproject.gif';
-            projectAltText = "";
-         } else if (vi.liste[i].lockedInProjectId == vi.liste[i].project) {
-            projectIcon=vi.iconPath+'ic_inthisproject.gif';         
-            projectAltText = vi.liste[i].lockedInProjectName;
-         } else {
-            projectIcon=vi.iconPath+'ic_inanotherproject.gif';         
-            projectAltText = vi.liste[i].lockedInProjectName;
-         }
-         
-         projectAltText += " lockedInProject " + vi.liste[i].lockedInProjectId + " is in Project " + vi.liste[i].project;
-         
-         wo.write("<img src='"+projectIcon+"' alt='"+projectAltText+"' border=0 width=16 height=16></a>");
-         wo.write("</td>");
+            wo.write("<img src='"+projectIcon+"' alt='"+projectAltText+"' border=0 width=16 height=16></a>");
+            wo.write("</td>");
+        } else {
+            // nothing to do here
+            wo.write("<td></td><td></td>");
+        }
 
  
          if(vi.check_name){
