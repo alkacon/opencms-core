@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.58 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.59 $ $Date: 2003/07/03 13:29:45 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -381,7 +381,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
         String bodyPath=(C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")))+(source);
-        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
+        String body = hXml.getElementTemplate("body");
+        body = hXml.validateBodyPath(cms, body, file);
+        String bodyXml=cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + body);        
 
         if ((C_DEFVFS + bodyPath).equals(bodyXml)){
 
@@ -705,11 +707,11 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
         CmsFile file = cms.readFile(source);
         String bodyPath = checkBodyPath(cms, file);
-        cms.doMoveFile(source, destination);
+        cms.doMoveResource(source, destination);
         if(bodyPath != null) {
             String hbodyPath = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
-            cms.doMoveFile(bodyPath, hbodyPath);
+            cms.doMoveResource(bodyPath, hbodyPath);
             changeContent(cms, destination, hbodyPath);
         }
         
@@ -730,22 +732,32 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @throws CmsException if the user has not the rights
     * to rename the file, or if the file couldn't be renamed.
     */
-    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
+    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException {
+        // the file that should be renamed
         CmsFile file = cms.readFile(oldname);
-        String bodyPath = readBodyPath(cms, file);
-        int help = C_VFS_PATH_BODIES.lastIndexOf("/");
-        String hbodyPath=(C_VFS_PATH_BODIES.substring(0,help)) + oldname;
-        cms.doRenameResource(oldname,newname);
-        if(hbodyPath.equals(bodyPath)) {
-            cms.doRenameResource(bodyPath, newname);
-            help=bodyPath.lastIndexOf("/") + 1;
-            hbodyPath = bodyPath.substring(0,help) + newname;
-            changeContent(cms, file.getParent()+newname, hbodyPath);
+        // the current body path as it is saved in the XML page file
+        String currentBodyPath = readBodyPath(cms, file);
+
+        // build the body path from scratch to control if the current 
+        // body path in the XML page is a path where the Cms expects
+        // it's body files
+        int lastSlashIndex = C_VFS_PATH_BODIES.lastIndexOf("/");
+        String defaultBodyPath = (C_VFS_PATH_BODIES.substring(0, lastSlashIndex)) + oldname;
+
+        // rename the file itself
+        cms.doRenameResource(oldname, newname);
+
+        // unless somebody edited the body path by hand, rename the file in the body path additionally
+        if (defaultBodyPath.equals(currentBodyPath)) {
+            cms.doRenameResource(currentBodyPath, newname);
+            lastSlashIndex = currentBodyPath.lastIndexOf("/") + 1;
+            defaultBodyPath = currentBodyPath.substring(0, lastSlashIndex) + newname;
+            changeContent(cms, file.getParent() + newname, defaultBodyPath);
         }
-        
+
         // linkmanagement: delete the links of the old page and create them for the new one
         CmsUUID oldId = file.getFileId();
-        CmsUUID newId = cms.readFileHeader(file.getParent()+newname).getFileId();
+        CmsUUID newId = cms.readFileHeader(file.getParent() + newname).getFileId();
         cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
         cms.deleteLinkEntrys(oldId);
     }
@@ -862,7 +874,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         String body = "";
         try{
             // Return translated path name for body
-            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + hXml.getElementTemplate("body"));        
+            body = hXml.getElementTemplate("body");
+            body = hXml.validateBodyPath(cms, body, file);
+            body = cms.getRequestContext().getDirectoryTranslator().translateResource(C_DEFVFS + body);        
             if (body.startsWith(C_DEFVFS)) body = body.substring(C_DEFVFS.length());
         } catch (CmsException exc){
             // could not read body

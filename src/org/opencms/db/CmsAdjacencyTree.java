@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsAdjacencyTree.java,v $
- * Date   : $Date: 2003/07/02 11:03:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/07/03 13:29:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,11 @@ import java.util.Map;
 /**
  * A tree represented by the adjacency list model.<p>
  * 
- * The tree is in-memory built using a Map keyed by CmsUUID parent ID's with values that are 
+ * The tree is built in-memory using a Map keyed by CmsUUID parent ID's with values that are 
  * ArrayLists of child CmsResources.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.2 $ $Date: 2003/07/03 13:29:45 $
  * @since 5.1.3
  */
 public class CmsAdjacencyTree extends Object implements Serializable, Cloneable {
@@ -125,10 +125,6 @@ public class CmsAdjacencyTree extends Object implements Serializable, Cloneable 
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        if (m_treeMap == null) {
-            return;
-        }
-
         clear();
         m_treeMap = null;
     }

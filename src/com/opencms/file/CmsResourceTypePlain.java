@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -468,7 +468,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * or if the file couldn't be moved.
     */
     public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
-        cms.doMoveFile(source, destination);
+        cms.doMoveResource(source, destination);
     }
 
     /**

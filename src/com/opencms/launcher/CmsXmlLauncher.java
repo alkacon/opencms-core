@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  * be used to create output.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/07/02 11:03:13 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/03 13:29:45 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I_CmsConstants {
     
@@ -189,6 +189,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
                     // need to check for the body template here so that non-XMLTemplate templates 
                     // like JSPs know where to find the body defined in the XMLTemplate
                     String template = doc.getElementTemplate(elementName);
+                    template = doc.validateBodyPath(cms, template, file);
                     if (I_CmsConstants.C_XML_BODY_ELEMENT.equalsIgnoreCase(elementName)) {
                         // found body element
                         if (template != null) {
@@ -364,4 +365,5 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels, I
         }
         return masterTemplate;
     }
+    
 }

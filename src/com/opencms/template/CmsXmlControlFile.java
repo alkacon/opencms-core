@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,9 +34,11 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
 import com.opencms.util.Utils;
+import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -51,7 +53,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.28 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.29 $ $Date: 2003/07/03 13:29:45 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -439,5 +441,42 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         return result;
     }
 
+    /**
+     * Validates a given body path.<p>
+     * 
+     * After a folder is moved or renamed, the XML control files still contain the old body path.
+     * This method first tries to read the given body path from the XML control file. If this path
+     * is invalid, it tries to read the body file in "/system/bodies/" + current folder + filename.
+     * 
+     * @param cms the user's CmsObject instance
+     * @param bodyPath the body path that gets validated
+     * @param page the page of which the body path gets validated
+     * @return the original body path if it valid, or "/system/bodies/" + current folder + filename
+     */
+    public String validateBodyPath( CmsObject cms, String bodyPath, CmsResource page) {
+        String validatedBodyPath = null;
+        
+        if (bodyPath==null || "".equals(bodyPath)) {
+            return bodyPath;
+        }
+                
+        try {
+            cms.readFileHeader(bodyPath);
+            validatedBodyPath = bodyPath;
+        } catch (CmsException e) {
+            if (e.getType()==CmsException.C_NOT_FOUND) {
+                String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParent(cms.readAbsolutePath(page)).substring(1) + page.getResourceName();
+                try {
+                    cms.readFileHeader(defaultBodyPath);
+                    validatedBodyPath = defaultBodyPath;
+                    setElementTemplate(CmsXmlTemplate.C_BODY_ELEMENT, validatedBodyPath);
+                } catch (CmsException e1) {
+                    validatedBodyPath = null;
+                }                
+            }
+        }
+        
+        return validatedBodyPath;
+    }
 
 }

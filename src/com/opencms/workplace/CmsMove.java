@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.55 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.56 $ $Date: 2003/07/03 13:29:45 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -91,30 +91,31 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         String lasturl = getLastUrl(cms, parameters);
 
         // get the file to be copied
-        String filename = (String)parameters.get(C_PARA_FILE);
-        if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+        String sourceFilename = (String)parameters.get(C_PARA_FILE);
+        if(sourceFilename != null) {
+            session.putValue(C_PARA_FILE, sourceFilename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
-        CmsResource file = (CmsResource)cms.readFileHeader(filename);
+        
+        sourceFilename = (String)session.getValue(C_PARA_FILE);
+        CmsResource source = (CmsResource)cms.readFileHeader(sourceFilename);
 
         // read all request parameters
         String newFolder = new String();
         String newFile = new String();
-        String wholePath = (String)parameters.get(C_PARA_NEWFOLDER);
+        String destinationName = (String)parameters.get(C_PARA_NEWFOLDER);
 
         // the wholePath includes the folder and/or the filename
-        if(wholePath != null && !("".equals(wholePath))){
-            if(wholePath.startsWith("/")){
+        if(destinationName != null && !("".equals(destinationName))){
+            if(destinationName.startsWith("/")){
                 // get the foldername
-                newFolder = wholePath.substring(0, wholePath.lastIndexOf("/")+1);
-                newFile = wholePath.substring(wholePath.lastIndexOf("/")+1);
+                newFolder = destinationName.substring(0, destinationName.lastIndexOf("/")+1);
+                newFile = destinationName.substring(destinationName.lastIndexOf("/")+1);
                 if (newFile == null || "".equals(newFile)){
-                    newFile = file.getName();
+                    newFile = source.getResourceName();
                 }
             } else {
-                newFolder = file.getParent();
-                newFile = wholePath;
+                newFolder = source.getParent();
+                newFile = destinationName;
             }
         }
         if(newFolder != null && !("".equals(newFolder))) {
@@ -141,7 +142,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             }
 
             // ednfal: check if the user try to move the resource into itself
-            if(newFolder.equals(cms.readAbsolutePath(file))) {
+            if(newFolder.equals(cms.readAbsolutePath(source))) {
                  // something went wrong, so remove all session parameters
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_NEWFOLDER);
@@ -176,7 +177,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         }
 
         // select the template to be displayed
-        if(file.isFile()) {
+        if(source.isFile()) {
             template = "file";
         }
         else {
@@ -190,11 +191,11 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                 template = "wait";
             }
             else {
-                if(file.isFile()) {
+                if(source.isFile()) {
 
                     // this is a file, so move it
                     try {
-                        cms.moveResource(cms.readAbsolutePath((CmsFile)file), newFolder + newFile);
+                        cms.moveResource(cms.readAbsolutePath((CmsFile)source), newFolder + newFile);
                     }
                     catch(CmsException ex) {
 
@@ -236,7 +237,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     // this is a folder
                     // get all subfolders and files
                     try {
-                        cms.moveResource(cms.readAbsolutePath((CmsFile)file), newFolder + newFile);
+                        cms.moveResource(cms.readAbsolutePath(source), newFolder + newFile);
                     } catch(CmsException e) {
                         // something went wrong, so remove all session parameters
                         session.removeValue(C_PARA_FILE);
@@ -262,17 +263,17 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.readAbsolutePath(source), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
 //			TODO fix this later
             // CmsUser owner = cms.readOwner(file);
             xmlTemplateDocument.setData("TITLE", Encoder.escapeXml(title));
-            xmlTemplateDocument.setData("STATE", getState(cms, file, lang));
+            xmlTemplateDocument.setData("STATE", getState(cms, source, lang));
             xmlTemplateDocument.setData("OWNER", "" /* Utils.getFullName(owner) */);
             xmlTemplateDocument.setData("GROUP", "" /* cms.readGroup(file).getName() */);
-            xmlTemplateDocument.setData("FILENAME", file.getName());
+            xmlTemplateDocument.setData("FILENAME", source.getName());
         }
 
         // process the selected template

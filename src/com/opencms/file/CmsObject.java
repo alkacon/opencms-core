@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.294 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.295 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.294 $
+ * @version $Revision: 1.295 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -2327,20 +2327,6 @@ public String loginWebUser(String username, String password) throws CmsException
     // return the user-name
     return (newUser.getName());
 }
-/**
- * Moves a file to the given destination.
- *
- * @param source the complete path of the sourcefile.
- * @param destination the complete path of the destinationfile.
- *
- * @throws CmsException if the user has not the rights to move this resource,
- * or if the file couldn't be moved.
- *
- * @deprecated Use moveResource instead.
- */
-public void moveFile(String source, String destination) throws CmsException {
-    moveResource(source, destination);
-}
 
 /**
  * Moves a resource to the given destination.
@@ -2366,8 +2352,8 @@ public void moveResource(String source, String destination) throws CmsException 
  * @throws CmsException if the user has not the rights to move this resource,
  * or if the file couldn't be moved.
  */
-protected void doMoveFile(String source, String destination) throws CmsException {
-    m_driverManager.moveFile(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
+protected void doMoveResource(String source, String destination) throws CmsException {
+    m_driverManager.moveResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(source), getSiteRoot(destination));
 }
 
 

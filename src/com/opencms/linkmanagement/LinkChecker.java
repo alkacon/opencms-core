@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/02 11:03:13 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,8 @@ public class LinkChecker {
     public CmsPageLinks extractLinks(CmsObject cms, String page) throws CmsException{
 
         // first lets get the prefix of the page name (we need it later)
-        String rootName = cms.readFileHeader(page).getRootName();
+        CmsResource resource = cms.readFileHeader(page);
+        String rootName = resource.getRootName();
         //String rootName = cms.getRootName(page);
         
         // get the pages content
@@ -65,6 +66,7 @@ public class LinkChecker {
         CmsXmlControlFile pageControlFile = new CmsXmlControlFile(cms, page);
         if(pageControlFile.isElementTemplateDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
             bodyFileName = pageControlFile.getElementTemplate(I_CmsConstants.C_TYPE_BODY_NAME);
+            bodyFileName = pageControlFile.validateBodyPath(cms, bodyFileName, resource);
         }
         if(pageControlFile.isElementClassDefined(I_CmsConstants.C_TYPE_BODY_NAME)){
             bodyClassName = pageControlFile.getElementClass(I_CmsConstants.C_TYPE_BODY_NAME);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/02 12:44:11 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/03 13:29:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
+	 * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -206,7 +206,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.16 $ $Date: 2003/07/02 12:44:11 $
+	 * @version $Revision: 1.17 $ $Date: 2003/07/03 13:29:45 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -1404,21 +1404,23 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
         throws CmsException {
 
         // the name of the folder.
-        String foldername = null;
+        String destinationFoldername = null;
+        String destinationResourceName = null;
 
         // checks, if the destinateion is valid, if not it throws a exception
         validFilename(destination.replace('/', 'a'));
-        foldername = destination.substring(0, destination.substring(0, destination.length() - 1).lastIndexOf("/") + 1);
-        CmsFolder destinationFolder = readFolder(currentUser, currentProject, foldername);
+        
+        destinationFoldername = destination.substring(0, destination.substring(0, destination.length() - 1).lastIndexOf("/") + 1);
+        destinationResourceName = destination.substring(destinationFoldername.length(),destination.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR));
+        
+        CmsFolder destinationFolder = readFolder(currentUser, currentProject, destinationFoldername);
         CmsFolder sourceFolder = readFolder(currentUser, currentProject, source);
 
         // check if the user has write access to the destination folder (checking read access to the source is done implicitly by read folder)
         getVfsAccessGuard(currentUser, currentProject).check(destinationFolder, C_WRITE_ACCESS);
 
-        // copy the folder
-        m_vfsDriver.createFolder(currentUser, currentProject, destinationFolder.getId(), CmsUUID.getNullUUID(), sourceFolder.getResourceName(), sourceFolder.getFlags());
-        
-        //m_vfsDriver.createFolder(currentUser, currentProject, sourceFolder, destinationFolder.getId(), destination);
+        // create a copy of the folder
+        m_vfsDriver.createFolder(currentUser, currentProject, destinationFolder.getId(), CmsUUID.getNullUUID(), destinationResourceName, sourceFolder.getFlags());
         
         this.clearResourceCache(destination, currentProject, currentUser);
         // copy the properties
@@ -4399,22 +4401,28 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * The CmsException will also be thrown, if the user has not the rights
      * for this resource.
      */
-    public void moveFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
+    public void moveResource(CmsUser currentUser, CmsProject currentProject, String sourceName, String destinationName) throws CmsException {
 
-        // read the file to check access
-        CmsResource file = readFileHeader(currentUser, currentProject, source);
+        // read the source file
+        CmsResource source = readFileHeader(currentUser, currentProject, sourceName);
+        
+        // read the parent folder of the destination
+        String parentResourceName = CmsResource.getParent(destinationName);
+        String resourceName = destinationName.substring(destinationName.lastIndexOf(I_CmsConstants.C_FOLDER_SEPARATOR) + 1);
+        CmsFolder destinationFolder = readFolder(currentUser, currentProject, parentResourceName);
 
-        // check if the user has write access to the folder
-        getVfsAccessGuard(currentUser, currentProject).check(file, C_WRITE_ACCESS);
+        // check if the user has write access
+        getVfsAccessGuard(currentUser, currentProject).check(source, C_WRITE_ACCESS);
+        getVfsAccessGuard(currentUser, currentProject).check(destinationFolder, C_WRITE_ACCESS);
 
-        // first copy the file, this may ends with an exception
-        copyFile(currentUser, currentProject, source, destination);
-
-        // then delete the source-file, this may end with an exception
-        // => the file was only copied, not moved!
-        deleteFile(currentUser, currentProject, source);
+        // move the resource
+        m_vfsDriver.moveResource(currentUser, currentProject, source, destinationFolder, resourceName);
+        
+        // invalidate the cache
+        clearResourceCache();
+        
         // inform about the file-system-change
-        fileSystemChanged(file.isFolder());
+        fileSystemChanged(source.isFolder());
     }
 
     /**

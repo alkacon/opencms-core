@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/03 13:29:45 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -870,37 +870,39 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
-        // it is a folder so we need the end /
-        destination = destination +"/";
-       // we have to copy the folder and all resources in the folder
-        Vector allSubFolders = new Vector();
-        Vector allSubFiles   = new Vector();
-        getAllResources(cms, source, allSubFiles, allSubFolders);
-        //if(!cms.accessWrite(source)){
-        if(!cms.checkPermissions(source, I_CmsConstants.C_WRITE_ACCESS)) {
-            throw new CmsException(source, CmsException.C_NO_ACCESS);
-        }
-        // first copy the folder
-        cms.doCopyFolder(source, destination);
-        // now copy the subfolders
-        for (int i=0; i<allSubFolders.size(); i++){
-            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
-            if(curFolder.getState() != C_STATE_DELETED){
-                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
-                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination );
-            }
-        }
-        // now move the files
-        for (int i=0; i<allSubFiles.size(); i++){
-            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-            if(curFile.getState() != C_STATE_DELETED){
-                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
-                cms.moveResource(cms.readAbsolutePath(curFile), curDest);
-            }
-        }
-        // finaly remove the original folders
-        deleteResource(cms, source);
+    public void moveResource(CmsObject cms, String source, String destination) throws CmsException {
+        cms.doMoveResource(source, destination);
+        
+//        // it is a folder so we need the end /
+//        destination = destination + "/";
+//        // we have to copy the folder and all resources in the folder
+//        Vector allSubFolders = new Vector();
+//        Vector allSubFiles = new Vector();
+//        getAllResources(cms, source, allSubFiles, allSubFolders);
+//        //if(!cms.accessWrite(source)){
+//        if (!cms.checkPermissions(source, I_CmsConstants.C_WRITE_ACCESS)) {
+//            throw new CmsException(source, CmsException.C_NO_ACCESS);
+//        }
+//        // first copy the folder
+//        cms.doCopyFolder(source, destination);
+//        // now copy the subfolders
+//        for (int i = 0; i < allSubFolders.size(); i++) {
+//            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
+//            if (curFolder.getState() != C_STATE_DELETED) {
+//                String curDestination = destination + cms.readAbsolutePath(curFolder).substring(source.length());
+//                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination);
+//            }
+//        }
+//        // now move the files
+//        for (int i = 0; i < allSubFiles.size(); i++) {
+//            CmsFile curFile = (CmsFile) allSubFiles.elementAt(i);
+//            if (curFile.getState() != C_STATE_DELETED) {
+//                String curDest = destination + cms.readAbsolutePath(curFile).substring(source.length());
+//                cms.moveResource(cms.readAbsolutePath(curFile), curDest);
+//            }
+//        }
+//        // finaly remove the original folders
+//        deleteResource(cms, source);
     }
 
     /**
@@ -912,55 +914,17 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException if the user has not the rights
     * to rename the file, or if the file couldn't be renamed.
     */
-    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
-        
-        // TODO change the handling of body-paths in page files
-        
+    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{       
         validResourcename(newname.replace('/','\n'));
         
+        // rename the folder itself
         cms.doRenameResource(oldname, newname);
         
         oldname = oldname.substring(1);
         String bodyPath = C_VFS_PATH_BODIES + oldname;
         
-        cms.lockResource(bodyPath);
+        // rename the corresponding body folder
         cms.doRenameResource(bodyPath, newname);
-        
-//       // we have to copy the folder and all resources in the folder
-//        Vector allSubFolders = new Vector();
-//        Vector allSubFiles   = new Vector();
-//        getAllResources(cms, oldname, allSubFiles, allSubFolders);
-//        String parent = ((CmsResource)cms.readFileHeader(oldname)).getParent();
-//        //if(!cms.accessWrite(oldname)){
-//        if (!cms.checkPermissions(oldname, I_CmsConstants.C_WRITE_ACCESS)) {
-//            throw new CmsException(oldname, CmsException.C_NO_ACCESS);
-//        }
-//        if(!newname.endsWith("/")){
-//            newname = newname+"/";
-//        }
-//        // first copy the folder
-//        cms.doCopyFolder(oldname, parent + newname);
-//        // now copy the subfolders
-//        for (int i=0; i<allSubFolders.size(); i++){
-//            CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
-//            if(curFolder.getState() != C_STATE_DELETED){
-//                String curDestination = parent + newname
-//                                        + cms.readAbsolutePath(curFolder).substring(oldname.length());
-//                cms.doCopyFolder(cms.readAbsolutePath(curFolder), curDestination );
-//            }
-//        }
-//        // now move the files
-//        for (int i=0; i<allSubFiles.size(); i++){
-//            CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
-//            if(curFile.getState() != C_STATE_DELETED){
-//                String curDest = parent + newname
-//                                + cms.readAbsolutePath(curFile).substring(oldname.length());
-//                cms.moveResource(cms.readAbsolutePath(curFile), curDest);
-//            }
-//        }
-//        // finaly remove the original folders
-//        deleteResource(cms, oldname);
-
     }
 
     /**
