@@ -316,6 +316,7 @@ End Sub
 <input type="hidden" name="directedit" value="<%= wp.getParamDirectedit() %>">
 <input type="hidden" name="oldbodyname" value="<%= wp.getParamBodyname() %>">
 <input type="hidden" name="oldbodylanguage" value="<%= wp.getParamBodylanguage() %>">
+<input type="hidden" name="backlink" value="<%= wp.getParamBacklink() %>">
 </form>
 </table>
 

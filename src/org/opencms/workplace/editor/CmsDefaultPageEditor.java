@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/06 15:28:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/07 13:09:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -78,6 +78,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramOldbodylanguage;
     private String m_paramOldbodyname; 
     private String m_paramPageTemplate;
+    private String m_paramBackLink;
 
     /** Page object used from the action and init methods, be sure to initialize this e.g. in the initWorkplaceRequestValues method.<p>  */
     protected CmsXmlPage m_page;
@@ -227,6 +228,27 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      */
     public final void setParamPagetemplate(String pageTemplate) {
         m_paramPageTemplate = pageTemplate;
+    }  
+    
+    /**
+     * Returns the back link when closing the editor.<p>
+     * 
+     * @return the back link
+     */
+    public final String getParamBacklink() {
+        if (m_paramBackLink == null) {
+            m_paramBackLink = "";
+        }
+        return m_paramBackLink;
+    }
+    
+    /**
+     * Sets the back link when closing the editor.<p>
+     * 
+     * @param backLink the back link
+     */
+    public final void setParamBacklink(String backLink) {
+        m_paramBackLink = backLink;
     }  
     
     /**
@@ -578,8 +600,14 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         // clear temporary file and unlock resource, if in directedit mode
         actionClear(false);
         if ("true".equals(getParamDirectedit())) {
-            // redirect to the edited resource
-            getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
+            // editor is in direct edit mode
+            if (!"".equals(getParamBacklink())) {
+                // redirect to the specified back link target
+                getJsp().getResponse().sendRedirect(getJsp().link(getParamBacklink()));
+            } else {
+                // redirect to the edited resource
+                getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
+            }
         } else {
             // redirect to the workplace explorer view 
             getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));

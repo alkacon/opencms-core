@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/01/06 16:15:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/01/07 13:09:03 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.0
  */
@@ -80,8 +80,14 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         String params = "?resource=" + editor.getParamResource() + "&action=" + CmsDialog.DIALOG_CONFIRMED;
         params += "&title=" + Encoder.escapeWBlanks(editor.key("messagebox.title.publishresource") + ": " + editor.getParamResource(), Encoder.C_UTF8_ENCODING) + "&oklink=";
         if ("true".equals(editor.getParamDirectedit())) {
+            String linkTarget;
+            if (!"".equals(editor.getParamBacklink())) {
+                linkTarget = jsp.link(editor.getParamBacklink());
+            } else {
+                linkTarget = jsp.link(editor.getParamResource());
+            }
             // append the parameters and the report "ok" button action to the link
-            publishLink += params + Encoder.escapeWBlanks("onclick=\"location.href('" + jsp.link(editor.getParamResource()) + "');\"", Encoder.C_UTF8_ENCODING);
+            publishLink += params + Encoder.escapeWBlanks("onclick=\"location.href('" + linkTarget + "');\"", Encoder.C_UTF8_ENCODING);
         } else {
             // append the parameters and the report "ok" button action to the link
             publishLink += params + Encoder.escapeWBlanks("onclick=\"location.href('" + jsp.link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI) + "');\"", Encoder.C_UTF8_ENCODING);
