@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/07/29 15:33:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -159,11 +159,16 @@ public class CmsRename extends CmsDialog {
         String target = getParamTarget();
         if (target == null) target = "";     
         
+        // calculate the target name
+        if (! target.startsWith("/")) {
+            // target is not an absolute path, add the current parent folder
+            target = CmsResource.getParent(getParamFile()) + target; 
+        }
+        
         // check if target already exists, if so, throw exception and terminate
-        String parentFolder = CmsResource.getParent(getParamFile());
         boolean targetExists = false;
         try {
-            getCms().readFileHeader(parentFolder + target);
+            getCms().readFileHeader(target);
             targetExists = true;
         } catch (CmsException e) { } 
         if (targetExists) {
