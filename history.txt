@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.20 
+! Added otherChangeDate for timed contentdefinitions. 
 - Enabled variant caching for class "CmsShowMedia".
 
 OpenCms 4.5.19 Chusuk       - 13 November 2001
