@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/09/13 09:55:50 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2001/09/13 10:21:08 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.38 $ $Date: 2001/09/13 09:55:50 $
+ * @version $Revision: 1.39 $ $Date: 2001/09/13 10:21:08 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -66,6 +66,9 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      *      can say how much he wants to see at once(and how long he has to wait for it)
      */
     private final static int C_ENTRYS_PER_PAGE = 50;
+
+    // the session key for the current page
+    private final static String C_SESSION_CURRENT_PAGE = "explorerFilelistCurrentPage";
 
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
@@ -248,9 +251,13 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         int maxEntrys = C_ENTRYS_PER_PAGE; // later this comes from the usersettings
         if(!(listonly || projectView)){
             String selPage = (String)parameters.get("selPage");
+            if(selPage == null || "".equals(selPage)){
+                selPage = (String)session.getValue(C_SESSION_CURRENT_PAGE);
+            }
             if(selPage != null && !"".equals(selPage)){
                 try{
                     selectedPage = Integer.parseInt(selPage);
+                    session.putValue(C_SESSION_CURRENT_PAGE, selPage);
                 }catch(Exception e){
                 }
             }
