@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="OpenCms" default="compile" basedir=".">
 
-    <!-- property environment="env"/ -->
+    <property environment="env"/>
 
     <!-- The version-number ${version.number} is automatically set to the
     current date and time. For official builds this should be set to a proper
@@ -50,7 +50,7 @@
 
     <property name="build.excludes"             value=""/>
     <property name="excludes"                   value="**/CVS/*,**/.nbattrs,**/.project,**/.classpath"/>
-
+        
     <target name="init" description="Checks if all needed libaries are available">
         <condition property="libsAvailable">
             <and>
@@ -79,11 +79,11 @@
         <condition property="tomcat.home" value="${env.TOMCAT_HOME}">
             <available file="${env.TOMCAT_HOME}" type="dir"/>
         </condition>
-        
+
         <condition property="tomcat.home" value="${env.CATALINA_HOME}">
             <available file="${env.CATALINA_HOME}" type="dir"/>
         </condition>
-
+    
         <tstamp>
             <format property="timestamp" pattern="yyyy-MM-dd-HH-mm"/>
         </tstamp>
@@ -94,6 +94,7 @@
         <echo message="Working directory is: ${basedir}" />
         <echo message="Destination directory is: ${destdir}" />
         <echo message="Local additions in: ${build.local}" />
+        <echo message="Tomcat home is: ${tomcat.home}" />        
         <echo message="Excluding from build: ${build.excludes}" />
         <echo message=" " />
     </target>
@@ -131,6 +132,11 @@ ${build.inputlib.tidy}
         <delete dir="${build.home}"/>
     </target>
 
+    
+    <target name="cleanclasses" description="Delete existing class directory">
+        <delete dir="${build.classes}"/>
+    </target>
+        
 
     <target name="compileclasses" depends="prepare" if="libsAvailable" description="Compiles all OpenCms classes">
        <javac
@@ -261,7 +267,23 @@ ${build.inputlib.tidy}
         </copy>
     </target>
 
+    <target  name="tomcat.copy" description="Copy updated files to Tomcat directorys">
+        <copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
+            <fileset dir="${build.lib}">
+                <include name="*.jar"/>
+                <include name="*.zip"/>
+                <exclude name="servlet.jar"/>
+                <exclude name="${excludes}" />
+            </fileset>
+        </copy>    
+        <copy file="${basedir}/etc/web.xml" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+        <copy file="${basedir}/etc/opencms.tld" todir="${tomcat.home}/webapps/${app.name}/WEB-INF"/>
+    </target>     
+    
+    <target name="tomcat.update" depends="jar,tomcat.copy" description="Recompile changed classes and install in Tomcat webapps directory"/>      
 
+    <target name="tomcat.all" depends="cleanclasses,tomcat.update" description="Do a complete recompile of all classes and install in Tomcat webapps directory"/>          
+    
     <target name="setup" depends="tomcat.dist" description="Creates a new OC version and imports all workplace files">
         <sql
             classpath="${build.inputlib.mysql}"
@@ -338,7 +360,7 @@ ${build.inputlib.tidy}
         <echo message=" " />
         <echo message="Working directory is: ${basedir}" />
         <echo message="Destination directory is: ${destdir}" />
-        <echo message="Local additions in: ${build.local}" />
+        <echo message="Local additions in: ${build.local}" />        
         <echo message=" " />
 
         <property name="build.srcdist"              value="${build.home}/srcdist"/>
