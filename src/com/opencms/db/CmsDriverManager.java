@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/02 16:03:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/06/03 16:12:21 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,19 +92,20 @@ import com.opencms.flex.util.CmsUUID;
 import com.opencms.report.I_CmsReport;
 import com.opencms.security.CmsAccessControlEntry;
 import com.opencms.security.CmsAccessControlList;
+import com.opencms.security.I_CmsPrincipal;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Utils;
 import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.9 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/03 16:12:21 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.9 $ $Date: 2003/06/02 16:03:20 $
+ * @version $Revision: 1.10 $ $Date: 2003/06/03 16:12:21 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -166,7 +167,8 @@ public class CmsDriverManager implements I_CmsConstants {
     protected Map m_propertyDefVectorCache = null;
     protected Map m_accessCache = null;
     protected Map m_resourceCache = null;
-    protected Map m_resourceListCache = null;    
+    protected Map m_resourceListCache = null;
+    protected Map m_accessControlListCache = null;    
     
     // Constants used for cache property lookup
     protected static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
@@ -3156,7 +3158,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         m_propertyDefVectorCache = null;
         m_accessCache = null;
         m_resourceCache = null;
-        m_resourceListCache = null;                 
+        m_resourceListCache = null;
+        m_accessControlListCache = null;                 
         
         m_projectDriver = null;
         m_userDriver = null;
@@ -3532,6 +3535,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
     info.put("PropertyDefinitionCache",""+m_propertyDefCache.size());
     info.put("PropertyDefinitionVectorCache",""+m_propertyDefVectorCache.size());
     info.put("AccessCache",""+m_accessCache.size());
+    info.put("AccessControlListCache",""+m_accessControlListCache.size());
 
     return info;
     }
@@ -4558,6 +4562,8 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_propertyDefCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100)));
         m_propertyDefVectorCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
         m_accessCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000)));
+	    m_accessControlListCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000)));
+	    
         m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
@@ -9219,6 +9225,25 @@ protected void validName(String name, boolean blank) throws CmsException {
 		return m_userDriver.getAccessControlEntries(resource.getResourceId());
 	}
 	
+	public Vector getAccessControlEntries(CmsResource resource, boolean getInherited) throws CmsException {
+			
+		CmsResource res = resource;
+		CmsUUID resId = res.getResourceId();	
+		CmsAccessControlList acList = new CmsAccessControlList();
+		
+		// add the aces of the resource itself
+		Vector acEntries = getAccessControlEntries(resId);
+		
+		// add the aces of each predecessor
+		while (getInherited && !(resId = res.getParentId()).isNullUUID()) {
+			
+			res = m_vfsDriver.readFolder(res.getProjectId(), resId);
+			acEntries.addAll(getAccessControlEntries(resId));
+		}
+		
+		return acEntries;
+	}
+	
 	// TODO: this is the neccessary method - check if it should be exposed in the interface
 	protected Vector getAccessControlEntries(CmsUUID resourceId) throws CmsException {
 		
@@ -9252,5 +9277,69 @@ protected void validName(String name, boolean blank) throws CmsException {
 		}
 		
 		return acList;
+	}
+	
+	//
+	//	Principal
+	//
+	
+	/**
+	 * Lookup and read the user or group with the given UUID.
+	 * 
+	 * @param principalId
+	 * @return
+	 * @throws CmsException
+	 */
+	public I_CmsPrincipal lookupPrincipal (CmsUUID principalId) throws CmsException {
+	
+		try {
+			CmsGroup group = m_userDriver.readGroup(principalId);
+			if (group != null) {
+				return (I_CmsPrincipal)group;
+			}
+		} catch (Exception e) {
+			// ignore this exception 
+		}
+		
+		try {
+			CmsUser user = m_userDriver.readUser(principalId); 
+			if (user != null) {
+				return (I_CmsPrincipal)user;
+			}
+		} catch (Exception e) {
+			// ignore this exception
+		}
+		
+		return (I_CmsPrincipal)null;
+	}
+	
+	/**
+	 * Lookup and read the user or group with the given name.
+	 * 
+	 * @param principalName
+	 * @return
+	 * @throws CmsException
+	 */
+	public I_CmsPrincipal lookupPrincipal (String principalName) throws CmsException {
+		
+		try {
+			CmsGroup group = m_userDriver.readGroup(principalName);
+			if (group != null) {
+				return (I_CmsPrincipal)group;
+			}
+		} catch (Exception e) {
+			// ignore this exception
+		}
+		
+		try {
+			CmsUser user = m_userDriver.readUser(principalName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
+			if (user != null) {
+				return (I_CmsPrincipal)user;
+			}
+		} catch (Exception e) {
+			// ignore this exception
+		}
+		
+		return (I_CmsPrincipal)null;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/06/02 15:31:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/06/03 16:05:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import com.opencms.util.SqlHelper;
  * Generic (ANSI-SQL) database server implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/06/02 15:31:19 $
+ * @version $Revision: 1.8 $ $Date: 2003/06/03 16:05:31 $
  * @since 5.1.2
  */
 public class CmsUserDriver extends Object implements I_CmsUserDriver {
@@ -963,11 +963,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             if (res.next()) {
                 group = createCmsGroupFromResultSet(res, true);
             } else {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception());
+                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception(),false);
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1004,7 +1004,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             }
 
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1043,14 +1043,14 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
             return user;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         }
         // a.lucas: catch CmsException here and throw it again.
         // Don't wrap another CmsException around it, since this may cause problems during login.
         catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1088,12 +1088,12 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 
             return user;
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         }
         catch (CmsException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1352,7 +1352,7 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
             m_sqlManager.closeAll(conn, stmt, null);
         }
     }
-
+	
 	//
 	//	Access Control Entry
 	//
@@ -1530,7 +1530,6 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			stmt.setString(4, acEntry.getResource().toString());
 			stmt.setString(5, acEntry.getPrincipal().toString());
 
-
 			stmt.executeUpdate();
 			
 		} catch (SQLException e) {
@@ -1575,7 +1574,8 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 			return ace;
 			
 		} catch (SQLException e) {
-			throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e);
+			throw new CmsException("[" + this.getClass().getName() + "] ", CmsException.C_SQL_ERROR, e);
+			// TODO: changed from m_sqlManager.getCmsException(this, null, , e) to avoid message in CmsShell
 		} finally {
 			m_sqlManager.closeAll(conn, stmt, null);
 		}
@@ -1625,9 +1625,11 @@ public class CmsUserDriver extends Object implements I_CmsUserDriver {
 	private CmsAccessControlEntry createAceFromResultSet(ResultSet res) throws SQLException {
 		// this method is final to allow the java compiler to inline this code!
 
+		CmsUUID resourceId   = new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID")));
+		CmsUUID principalId  = new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID")));
+		 
 		return new CmsAccessControlEntry(
-			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_RESOURCE_ID"))),
-			new CmsUUID(res.getString(m_sqlManager.get("C_ACCESS_PRINCIPAL_ID"))),
+			resourceId, principalId, 
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_ALLOWED")),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_DENIED")),
 			res.getInt(m_sqlManager.get("C_ACCESS_ACCESS_FLAGS"))

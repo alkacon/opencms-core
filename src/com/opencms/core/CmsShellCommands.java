@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/05/23 16:26:46 $
-* Version: $Revision: 1.70 $
+* Date   : $Date: 2003/06/03 16:07:14 $
+* Version: $Revision: 1.71 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,6 @@
 
 package com.opencms.core;
 
-import com.opencms.file.*;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.report.CmsShellReport;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.reflect.Method;
@@ -44,6 +40,22 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import com.opencms.file.CmsBackupProject;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsFolder;
+import com.opencms.file.CmsGroup;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
+import com.opencms.file.CmsPropertydefinition;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsTask;
+import com.opencms.file.CmsUser;
+import com.opencms.file.I_CmsRegistry;
+import com.opencms.flex.util.CmsUUID;
+import com.opencms.report.CmsShellReport;
+import com.opencms.security.CmsAccessControlEntry;
+import com.opencms.security.I_CmsPrincipal;
+
 /**
  * This class is a commad line interface to OpenCms which 
  * can be used for the initial setup and to test the system.<p>
@@ -51,7 +63,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.70 $ $Date: 2003/05/23 16:26:46 $
+ * @version $Revision: 1.71 $ $Date: 2003/06/03 16:07:14 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3636,5 +3648,31 @@ class CmsShellCommands implements I_CmsConstants {
         } catch (Exception e){
             CmsShell.printException(e);
         }
+    }
+    
+    public void getAccessControlEntries(String resourceName) {
+    	try {
+			Vector acList = m_cms.getAccessControlEntries(resourceName);
+			for (int i=0; i<acList.size(); i++) {
+				CmsAccessControlEntry ace = (CmsAccessControlEntry)acList.elementAt(i);
+				I_CmsPrincipal principal = m_cms.lookupPrincipal(ace.getPrincipal());
+				String principalName = (principal != null) ? principal.getName() : ace.getPrincipal().toString();
+				
+				int allowedPermissions = ace.getAllowedPermissions();
+				String permissionString = (((allowedPermissions & C_ACCESS_READ)>0)?"r":"-") + (((allowedPermissions & C_ACCESS_WRITE)>0)?"w":"-") + (((allowedPermissions & C_ACCESS_VISIBLE)>0)?"v":"-");
+							
+				System.out.println(principalName + " " + permissionString);
+			}
+    	} catch (Exception e) {
+			CmsShell.printException(e);    	
+   		}
+    }
+    
+    public void createAccessControlEntry (String resourceName, String principalName, String permissionControl) {
+    	try {
+	    	m_cms.createAccessControlEntry(resourceName, principalName, permissionControl);
+    	} catch (Exception e) {
+			CmsShell.printException(e);	
+    	}
     }
 }

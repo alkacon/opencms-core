@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/generic/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/23 16:26:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/06/03 16:05:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Properties;
  * from different connection pools in the Cms depending on the CmsProject/project-ID and database pool.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/05/23 16:26:47 $
+ * @version $Revision: 1.4 $ $Date: 2003/06/03 16:05:23 $
  * @since 5.1.2
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -217,10 +217,11 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * @param message a message that is written to the log
      * @param type the type of the exception
      * @param rootCause the exception that was thrown
+     * @param log logs optionally the message if set to true
      * @return CmsException
      */
-    public CmsException getCmsException(Object o, String message, int type, Throwable rootCause) {
-        if (A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
+    public CmsException getCmsException(Object o, String message, int type, Throwable rootCause, boolean log) {
+        if (log && A_OpenCms.isLogging() && I_CmsLogChannels.C_LOGGING) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[" + o.getClass().getName() + "] " + ((message==null)?"":message) + ((rootCause==null)?"":rootCause.toString()) );
         }
         
@@ -230,6 +231,20 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
                 
         return new CmsException("[" + o.getClass().getName() + "] " + ((message==null)?"":message), type, rootCause);
     }
+
+	/**
+	 * Wraps an exception in a new CmsException object. Optionally, a log message is
+	 * written to the "critical" OpenCms logging channel.
+	 * 
+	 * @param o the object caused the exception
+	 * @param message a message that is written to the log
+	 * @param type the type of the exception
+	 * @param rootCause the exception that was thrown
+	 * @return CmsException
+	 */    
+	public CmsException getCmsException(Object o, String message, int type, Throwable rootCause) {
+		return getCmsException(o, message, type, rootCause, true);
+	}    
     
     /**
      * Receives a JDBC connection from the (offline) pool. Use this method with caution! 

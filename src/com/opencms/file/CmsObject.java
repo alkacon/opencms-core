@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/02 15:32:47 $
-* Version: $Revision: 1.272 $
+* Date   : $Date: 2003/06/03 16:05:59 $
+* Version: $Revision: 1.273 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
@@ -59,6 +60,7 @@ import com.opencms.linkmanagement.LinkChecker;
 import com.opencms.report.CmsShellReport;
 import com.opencms.report.I_CmsReport;
 import com.opencms.security.CmsAccessControlList;
+import com.opencms.security.I_CmsPrincipal;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
@@ -77,7 +79,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.272 $
+ * @version $Revision: 1.273 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4487,10 +4489,63 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
         //m_driverManager.linkResourceToTarget( m_context.currentProject(), this.getSiteRoot(theLinkResourceName), this.getSiteRoot(theTargetResourceName) );
     }   
     
+    /**
+     * Lookup and reads the user or group with the given UUID.
+     *   
+	 * @param principalId
+	 * @return
+	 */
+	public I_CmsPrincipal lookupPrincipal (CmsUUID principalId) throws CmsException {
+    	return m_driverManager.lookupPrincipal(principalId);
+    }
+    
+    /**
+     * Looup and reads the user or group with the given name.
+     * 
+	 * @param principalName
+	 * @return
+	 * @throws CmsException
+	 */
+	public I_CmsPrincipal lookupPrincipal (String principalName) throws CmsException {
+    	return m_driverManager.lookupPrincipal(principalName);
+    }
     
     // TODO: added for testing purposes - check later, if useful/neccessary
     public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
 		CmsResource res = readFileHeader(resourceName);
 		return m_driverManager.getAccessControlList(res); 
     }
+    
+	public Vector getAccessControlEntries(String resourceName) throws CmsException {
+		CmsResource res = readFileHeader(resourceName);
+		return m_driverManager.getAccessControlEntries(res,true);
+	}
+	
+	public void createAccessControlEntry(String resourceName, String principalName, String permissions) throws CmsException {
+		CmsResource res = readFileHeader(resourceName);
+		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(principalName);
+		
+		StringTokenizer tok = new StringTokenizer(permissions, "+-", true);
+		int allowed = 0, denied = 0, flags = 0;
+		
+		while(tok.hasMoreElements()) {
+			String prefix = tok.nextToken();
+			String suffix = tok.nextToken();
+			switch (suffix.charAt(0)) {
+				case 'R': case 'r':
+					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_READ;
+					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_READ;
+					break;
+				case 'W': case 'w':
+					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_WRITE;
+					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_WRITE;				
+					break;
+				case 'V': case 'v':
+					if (prefix.charAt(0) == '+') allowed |= I_CmsConstants.C_ACCESS_VISIBLE;
+					if (prefix.charAt(0) == '-') denied  |= I_CmsConstants.C_ACCESS_VISIBLE;
+					break;
+			}
+		}
+		m_driverManager.createAccessControlEntry(res,principal.getId(),allowed,denied,flags);
+	}
 }
