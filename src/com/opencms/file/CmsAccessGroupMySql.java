@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessGroupMySql.java,v $
- * Date   : $Date: 2000/04/04 12:42:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,9 +40,20 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/04/04 12:42:19 $
+ * @version $Revision: 1.22 $ $Date: 2000/05/18 13:39:47 $
  */
  class CmsAccessGroupMySql implements I_CmsAccessGroup, I_CmsConstants  {
+     
+    /**
+    * This is the connection pool to the database
+    */
+    private Stack m_conPool=new Stack();
+    
+     /**
+     * This is the connection object to the database
+     */
+    private Connection m_con  = null;
+
      
     /**
     * SQL Command for writing groups.
@@ -147,11 +158,6 @@ import com.opencms.core.*;
      */
     private static final String C_USER_ID="USER_ID";
     
-    
-    /**
-    * This is the connection object to the database
-    */
-    private Connection m_Con  = null;
 
      /**
      * Constructor, creartes a new CmsAccessGroupMySql object and connects it to the
@@ -177,15 +183,17 @@ import com.opencms.core.*;
 	 */
 	public Vector getGroupsOfUser(int userid)
 		throws CmsException {
+        Connection con=null;
         A_CmsGroup group;
         Vector groups=new Vector();
         ResultSet res = null;
         try {
           //  get all all groups of the user
-            PreparedStatement statementGetGroupsOfUser=m_Con.prepareStatement(C_GETGROUPSOFUSER);
+            con=getConnection();
+            PreparedStatement statementGetGroupsOfUser=con.prepareStatement(C_GETGROUPSOFUSER);
             statementGetGroupsOfUser.setInt(1,userid);
             res = statementGetGroupsOfUser.executeQuery();
-
+            putConnection(con);
 		    while ( res.next() ) {
                  group=new CmsGroup(res.getInt(C_GROUP_ID),
                                    res.getInt(C_PARENT_GROUP_ID),
@@ -196,6 +204,7 @@ import com.opencms.core.*;
              }
   
          } catch (SQLException e){
+             putConnection(con);
              throw new CmsException("[" + this.getClass().getName() + "] " + e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
@@ -214,16 +223,17 @@ import com.opencms.core.*;
 	 */
      public A_CmsGroup readGroup(String groupname)
          throws CmsException {
-  
+         Connection con=null;
          A_CmsGroup group=null;
          ResultSet res = null;
    
          try{ 
              // read the group from the database
-             PreparedStatement statementGroupRead=m_Con.prepareStatement(C_GROUP_READ);
+             con=getConnection();
+             PreparedStatement statementGroupRead=con.prepareStatement(C_GROUP_READ);
              statementGroupRead.setString(1,groupname);
              res = statementGroupRead.executeQuery();
-   
+             putConnection(con);
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -236,6 +246,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
@@ -251,17 +262,17 @@ import com.opencms.core.*;
 	 */
      public A_CmsGroup readGroup(int id)
          throws CmsException {
-  
+         Connection con=null;
          A_CmsGroup group=null;
          ResultSet res = null;
    
          try{
               // read the group from the database
-
-                PreparedStatement statementGroupReadId=m_Con.prepareStatement(C_GROUP_READID);             
+                con=getConnection();
+                PreparedStatement statementGroupReadId=con.prepareStatement(C_GROUP_READID);             
                 statementGroupReadId.setInt(1,id);
                 res = statementGroupReadId.executeQuery();
-   
+                putConnection(con);
              // create new Cms group object
 			 if(res.next()) {
                 group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -274,6 +285,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
+              putConnection(con);
              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          return group;
@@ -288,23 +300,26 @@ import com.opencms.core.*;
 	 */
 	 public Vector getUsersOfGroup(int groupId)
          throws CmsException {
-         
+         Connection con=null;
          Vector userid=new Vector();
          ResultSet res = null;
          try {
 			// create statement
+            con=getConnection();
 			PreparedStatement statementGetUsersInGroup =
-				m_Con.prepareStatement(C_GETUSERSINGROUP);
+				con.prepareStatement(C_GETUSERSINGROUP);
 			 
 			//  get all all users id's of this group.
 			statementGetUsersInGroup.setInt(1,groupId);
 			res = statementGetUsersInGroup.executeQuery();
+            putConnection(con);
             // create new Vector.
 		    while ( res.next() ) {
                   userid.addElement(new Integer(res.getInt(C_USER_ID)));
              }
   
          } catch (SQLException e){
+              putConnection(con);
              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
          
@@ -324,19 +339,22 @@ import com.opencms.core.*;
          throws CmsException {
          boolean userInGroup=false;
          ResultSet res=null;
-                     
+         Connection con=null;            
         try {
 			// create statement
+            con=getConnection();
 			PreparedStatement statementUserInGroup =
-				m_Con.prepareStatement(C_USERINGROUP);
+				con.prepareStatement(C_USERINGROUP);
 			
 			statementUserInGroup.setInt(1,groupid);
 			statementUserInGroup.setInt(2,userid);
 			res = statementUserInGroup.executeQuery();
+            putConnection(con);
             if (res.next()){        
                 userInGroup=true;
             }                     
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}             
          return userInGroup;
@@ -362,7 +380,7 @@ import com.opencms.core.*;
          
          int parentId=C_UNKNOWN_ID;
          A_CmsGroup group=null;
-        
+         Connection con=null;
          try {
        
             // get the id of the parent group if nescessary
@@ -370,7 +388,8 @@ import com.opencms.core.*;
                 parentId=readGroup(parent).getId();
             }
 			// create statement
-			PreparedStatement statementGroupCreate=m_Con.prepareStatement(C_GROUP_CREATE);
+            con=getConnection();
+			PreparedStatement statementGroupCreate=con.prepareStatement(C_GROUP_CREATE);
 
             // write new group to the database
             statementGroupCreate.setInt(1,0);
@@ -379,12 +398,13 @@ import com.opencms.core.*;
             statementGroupCreate.setString(4,description);
             statementGroupCreate.setInt(5,flags);
             statementGroupCreate.executeUpdate();
-            
+            putConnection(con);
             // create the user group by reading it from the database.
             // this is nescessary to get the group id which is generated in the
             // database.
             group=readGroup(name);
          } catch (SQLException e){
+             putConnection(con);
              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
   		}
          return group;
@@ -401,20 +421,24 @@ import com.opencms.core.*;
 	 */	
 	 public void writeGroup(A_CmsGroup group)
          throws CmsException {
+         Connection con=null;
          try {
             if (group != null){
 				// create statement
-				PreparedStatement statementGroupWrite=m_Con.prepareStatement(C_GROUP_WRITE);
+                con=getConnection();
+				PreparedStatement statementGroupWrite=con.prepareStatement(C_GROUP_WRITE);
 				
 				statementGroupWrite.setString(1,group.getDescription());
 				statementGroupWrite.setInt(2,group.getFlags());
 				statementGroupWrite.setInt(3,group.getParentId());
 				statementGroupWrite.setInt(4,group.getId());
 				statementGroupWrite.executeUpdate();  
+                putConnection(con);
             } else {
                 throw new CmsException("[" + this.getClass().getName() + "] ",CmsException.C_NO_GROUP);	
             }
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
@@ -430,13 +454,17 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteGroup(String delgroup)
          throws CmsException {
+         Connection con=null;
          try {
 			 // create statement
-			 PreparedStatement statementGroupDelete=m_Con.prepareStatement(C_GROUP_DELETE);
+             con=getConnection();
+			 PreparedStatement statementGroupDelete=con.prepareStatement(C_GROUP_DELETE);
 			 
 			 statementGroupDelete.setString(1,delgroup);
 			 statementGroupDelete.executeUpdate();
+             putConnection(con);
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
@@ -452,14 +480,15 @@ import com.opencms.core.*;
 	 */	
 	public void addUserToGroup(int userid, int groupid)
         throws CmsException {
-        
+        Connection con=null;
         // check if user is already in group
         if (!userInGroup(userid,groupid)) {
             // if not, add this user to the group
             try {
 				// create statement
+                con=getConnection();
 				PreparedStatement statementAddUserToGroup =
-					m_Con.prepareStatement(C_ADDUSERTOGROUP);
+					con.prepareStatement(C_ADDUSERTOGROUP);
 				
 				// write the new assingment to the database
 				statementAddUserToGroup.setInt(1,groupid);
@@ -467,8 +496,9 @@ import com.opencms.core.*;
 				// flag field is not used yet
 				statementAddUserToGroup.setInt(3,C_UNKNOWN_INT);
 				statementAddUserToGroup.executeUpdate();
-   
+                putConnection(con);
              } catch (SQLException e){
+                 putConnection(con);
                  throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
           
 	    	}
@@ -487,15 +517,19 @@ import com.opencms.core.*;
 	 */	
 	 public void removeUserFromGroup(int userid, int groupid)
          throws CmsException {
+         Connection con=null;
          try {
 			 // create statement
+             con=getConnection();
 			 PreparedStatement statementRemoveUserFromGroup =
-				m_Con.prepareStatement(C_REMOVEUSERFROMGROUP);
+				con.prepareStatement(C_REMOVEUSERFROMGROUP);
 			 
 			 statementRemoveUserFromGroup.setInt(1,groupid);
 			 statementRemoveUserFromGroup.setInt(2,userid);
 			 statementRemoveUserFromGroup.executeUpdate();
+             putConnection(con);
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
      }
@@ -508,14 +542,18 @@ import com.opencms.core.*;
 	 */	
 	 public void deleteUser(int userid)
          throws CmsException {
+         Connection con=null;
          try {
 			 // create statement
+             con=getConnection();
 			 PreparedStatement statementRemoveUserFromGroup =
-				m_Con.prepareStatement(C_REMOVEUSER);
+				con.prepareStatement(C_REMOVEUSER);
 			 
 			 statementRemoveUserFromGroup.setInt(1,userid);
 			 statementRemoveUserFromGroup.executeUpdate();
+             putConnection(con);
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
      }
@@ -531,13 +569,15 @@ import com.opencms.core.*;
          Vector groups = new Vector();
          A_CmsGroup group=null;
          ResultSet res = null;
-         
+         Connection con=null;
          try {
             //  get all groups
 			// create statement
-			PreparedStatement statementGroupGetAll=m_Con.prepareStatement(C_GROUP_GETALL);
+            con=getConnection();
+			PreparedStatement statementGroupGetAll=con.prepareStatement(C_GROUP_GETALL);
  
 			res = statementGroupGetAll.executeQuery();			
+            putConnection(con);
             // create new Cms group objects
 		    while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -550,6 +590,7 @@ import com.opencms.core.*;
              
        
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
          }
       return groups;
@@ -570,19 +611,20 @@ import com.opencms.core.*;
          A_CmsGroup group;
          A_CmsGroup parent;
          ResultSet res = null;
-         
+         Connection con=null;
          try {
              // get parent group
              parent=readGroup(groupname);
             // parent group exists, so get all childs
             if (parent != null) {
 				// create statement
+                con=getConnection();
 				PreparedStatement statementGroupChilds =
-					m_Con.prepareStatement(C_GROUP_CHILDS);
+					con.prepareStatement(C_GROUP_CHILDS);
 				
 				statementGroupChilds.setInt(1,parent.getId());
 				res = statementGroupChilds.executeQuery();
-				
+                putConnection(con);	
                 // create new Cms group objects
 		    	while ( res.next() ) {
                     group=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -595,6 +637,7 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
+             putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
          //check if the child vector has no elements, set it to null.
@@ -619,16 +662,18 @@ import com.opencms.core.*;
         
         // read the actual user group to get access to the parent group id.
         A_CmsGroup group= readGroup(groupname);
-        
+        Connection con=null;        
         ResultSet res = null;
    
         try{
 			 // read the group from the database
 			 // create statement
-			 PreparedStatement statementGroupParent=m_Con.prepareStatement(C_GROUP_PARENT);
+             con=getConnection();
+			 PreparedStatement statementGroupParent=con.prepareStatement(C_GROUP_PARENT);
 			
 			 statementGroupParent.setInt(1,group.getParentId());
 			 res = statementGroupParent.executeQuery();
+             putConnection(con);
              // create new Cms group object
 			 if(res.next()) {
                 parent=new CmsGroup(res.getInt(C_GROUP_ID),
@@ -639,13 +684,14 @@ import com.opencms.core.*;
              }
        
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         return parent;
     }
     
-     /**
-     * Connects to the group database.
+      /**
+     * Connects to the file database and sets up the connection pool.
      * 
      * @param conUrl The connection string to the database.
      * 
@@ -653,11 +699,42 @@ import com.opencms.core.*;
      */
     private void initConnections(String conUrl)	
       throws CmsException {
-      
+
+        
         try {
-        	m_Con = DriverManager.getConnection(conUrl);
+            for (int i=0;i<C_CONNECTIONS;i++) {
+               // Connection con=DriverManager.getConnection(conUrl);
+               // m_conPool.push(con);
+            }
+            m_con=DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
-         	throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+         	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
+    
+    /**
+     * Gets a connection from the connection pool or waits until 
+     * a connection is available
+     * @return Connection to the DB
+     */       
+    private Connection getConnection() {
+        /*while (m_conPool.size()==0) ;
+        Connection con=(Connection)m_conPool.pop();
+        return con;*/
+        return m_con;
+        
+    }
+    
+    
+    /**
+     * Returns a used connection to the connection pool.
+     * @param con The connection.
+     */    
+    private void putConnection(Connection con) {
+        /*if (con!= null) {
+            m_conPool.push(con);
+         }*/
+    }
+    
+    
  }

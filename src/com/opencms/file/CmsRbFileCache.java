@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.15 $ $Date: 2000/05/18 13:39:47 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -113,6 +113,65 @@ import com.opencms.core.*;
        return res;
      }
        
+        /**
+	 * Reads a file from the Cms.<BR>
+	 * 
+	 * A file can be read form an offline project and the online project, the state 
+	 * of the file is unchanged.<BR>
+	 * If the file is read from the online project, file header and file content are
+	 * read  from the online project.<BR>
+	 * If the file is read from an offline project and its state is CHANGED or NEW 
+	 * (i.e. the file content is already present in the offline project), file and
+	 * file content are read from the offline project.
+	 * If the file is read from an offline project and its state is UNCHANGED, its 
+	 * file content is not available in the offline project yet. Therefore, the file
+	 * header is read from the offline project and the file content is read form the
+	 * online project! <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(A_CmsProject project,
+                             A_CmsProject onlineProject,
+                             String filename)
+		throws CmsException{
+         A_CmsResource res=null;
+         String key=null;
+         if (filename.endsWith("/")) {
+            key=C_FOLDER+project.getId()+filename;
+            res=m_accessFile.readFolder(project,filename);
+            m_filecache.remove(key);
+        } else {
+            key=C_FILE+project.getId()+filename;
+            // check if resource is available in cache
+            res=(A_CmsResource)m_filecache.get(key);
+             // not found in cache, so get it from the database and add it to cache
+            if ((res == null) || (((CmsFile)res).getContents().length ==0)) {
+                res=m_accessFile.readFile(project,onlineProject,filename);
+                if (((CmsFile)res).getContents().length < C_MAXFILESIZE) {
+                    m_filecache.put(key,res);
+                }
+                                                         
+            } else {
+              // System.err.println("Got form cache "+filename);
+            }
+         }
+         
+        return (CmsFile)res;
+     }
+     
      
      /**
 	 * Writes the fileheader to the Cms.<br>
@@ -152,6 +211,7 @@ import com.opencms.core.*;
             m_accessFile.writeFileHeader(project,onlineProject,file,changed);
         }
     
+    
     	 /**
 	 * Writes a file to the Cms.<br>
 	 * 
@@ -178,7 +238,7 @@ import com.opencms.core.*;
 	public void writeFile(A_CmsProject project,
                           A_CmsProject onlineProject,
                           CmsFile file, boolean changed)
-		throws CmsException{        
+		throws CmsException{
         String key= null;
         if (file.isFolder()) {
             key=C_FOLDER+project.getId()+file.getAbsolutePath();
@@ -189,6 +249,7 @@ import com.opencms.core.*;
         m_accessFile.writeFile(project,onlineProject,file,changed);
      }
     
+   
     
      /**
 	 * Deletes a file in the Cms.<br>
@@ -419,5 +480,30 @@ import com.opencms.core.*;
 		// delete the filecache
 		m_filecache = new CmsCache(C_FILECACHE);
 		super.deleteProject(project);
+    }
+    
+    
+      /**
+     * Publishes a specified project to the online project. <br>
+     * This is done by copying all resources of the specified project to the online
+     * project. The action proformed on the resources depends on the actual resource
+     * state of each resource:
+     * 
+     * <ul>
+     * <li> State UNCHANGED (0): Nothing is done with this resource. </li>
+     * <li> State CHANGED (1): Copy resource to online project </li>
+     * <li> State NEW (2): Copy resource to online project </li>
+     * <li> State DELETED (3): Delete the resource in the online project </li>
+     * </ul>
+     *
+     * @param project The project to be published.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @return Vector of all resource names that are published.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Vector publishProject(A_CmsProject project, A_CmsProject onlineProject)
+        throws CmsException {
+        m_filecache.clear();
+        return  m_accessFile.publishProject(project,onlineProject);
     }
 }

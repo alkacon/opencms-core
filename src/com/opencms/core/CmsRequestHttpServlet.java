@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/05/09 08:47:06 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/05/09 08:47:06 $  
+ * @version $Revision: 1.10 $ $Date: 2000/05/18 13:39:47 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
                                               I_CmsRequest { 
@@ -130,7 +130,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
      CmsRequestHttpServlet(HttpServletRequest req)
      throws IOException {
         m_req=req;
-                
+               
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");

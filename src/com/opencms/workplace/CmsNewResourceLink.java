@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/05/11 10:18:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/05/11 10:18:40 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/18 13:39:47 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -90,7 +90,6 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if (initial!= null) {
             // remove all session values
             session.removeValue(C_PARA_FILE);
-            session.removeValue(C_PARA_TITLE);    
             session.removeValue(C_PARA_LINK);    
         }
         // get the parameters
@@ -98,10 +97,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if (filename!= null) {
             session.putValue(C_PARA_FILE,filename);
         }
-        title=cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE);
-        if (title!= null) {
-            session.putValue(C_PARA_TITLE,title);
-        }
+
         link=cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
         if (link!= null) {
             session.putValue(C_PARA_LINK,link);
@@ -126,10 +122,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 // create the new file
                             
                 cms.createFile(foldername,filename,link.getBytes(),type); 
-                // lock the new file 
-                cms.lockResource(foldername+filename);      
-                cms.writeProperty(foldername+filename,C_PROPERTY_TITLE,title);  
-                cms.unlockResource(foldername+filename);  
+          
                 // remove values from session
                 session.removeValue(C_PARA_FILE);
                 session.removeValue(C_PARA_TITLE);     

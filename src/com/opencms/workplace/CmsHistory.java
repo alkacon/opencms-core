@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
- * Date   : $Date: 2000/04/28 13:47:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/28 13:47:07 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/18 13:39:47 $
  */
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -166,23 +166,25 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		    // fill the names and values
 		    for(int i = 0; i < allFiles.size(); i++) {
 			    CmsFile file = ((CmsFile)allFiles.elementAt(i));
-                A_CmsProject project=cms.readProject(file);
-                if (project.getFlags() ==  this.C_PROJECT_STATE_ARCHIVE){
+                if (file.getState() != C_STATE_UNCHANGED) {
+                    A_CmsProject project=cms.readProject(file);
+                    if (project.getFlags() ==  this.C_PROJECT_STATE_ARCHIVE){
                     
-                    String projectName="unknown Project";
-				    String projectId = "-1"; 
+                        String projectName="unknown Project";
+				        String projectId = "-1"; 
 				
-                    if (project != null) {
-                        projectName=project.getName();
-		    			projectId=project.getId()+"";
+                        if (project != null) {
+                            projectName=project.getName();
+		        			projectId=project.getId()+"";
+                        }
+                    
+                        //long updated = file.getDateLastModified();                                                   
+                        long updated = cms.readProject(file).getPublishingDate();
+                        String output=Utils.getNiceDate(updated)+": "+projectName;
+                    
+			   	        names.addElement(output);
+    			        values.addElement(projectId);       
                     }
-                
-                    //long updated = file.getDateLastModified();                                                   
-                    long updated = cms.readProject(file).getPublishingDate();
-                    String output=Utils.getNiceDate(updated)+": "+projectName;
-                
-			   	    names.addElement(output);
-    			    values.addElement(projectId);       
                 }
 	    	}
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.56 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,14 +41,21 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.55 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.56 $ $Date: 2000/05/18 13:39:47 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
     /**
-    * This is the connection object to the database
+    * This is the connection pool to the database
     */
-    private Connection m_Con  = null;
+    private Stack m_conPool=new Stack();
+                                      
+   
+     /**
+     * This is the connection object to the database
+     */
+    private Connection m_con  = null;
+
     
     /** Definition of a temp file */
     private static final String C_TEMPFILE = "%/"+C_TEMP_PREFIX+"%";
@@ -212,6 +219,13 @@ import com.opencms.util.*;
             
   
      /**
+     *  SQL Command for getting all subfolders.
+     */   
+    private static final String C_RESOURCE_GETSUBFOLDERS = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE "+
+                                                           "PROJECT_ID = ? AND RESOURCE_TYPE=0 AND "+
+                                                           "RESOURCE_NAME like ? "+
+                                                           "ORDER BY RESOURCE_NAME ASC";
+     /**
      * SQL Command for getting all subfolders.
      * Because of the regular expression in this SQL command, this cannot be made with 
      * a prepared statement.
@@ -232,7 +246,16 @@ import com.opencms.util.*;
      */   
     private static final String C_RESOURCE_GETSUBFOLDERS3 = " ORDER BY RESOURCE_NAME ASC";
                                           
-            
+    /**
+     *  SQL Command for getting all subfolders.
+     */   
+    private static final String C_RESOURCE_GETFILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE "+
+                                                              "PROJECT_ID = ? AND RESOURCE_TYPE<>0 AND "+
+                                                              "RESOURCE_NAME like ? "+
+                                                              "ORDER BY RESOURCE_NAME ASC";
+     
+    
+    
       /**
      * SQL Command for getting all files of a folder.
      * Because of the regular expression in this SQL command, this cannot be made with 
@@ -376,8 +399,8 @@ import com.opencms.util.*;
 							
          throws CmsException {
 
-           int state= C_STATE_NEW;
-           
+          int state= C_STATE_NEW;
+           Connection con=null;           
            // Test if the file is already there and marked as deleted.
            // If so, delete it
            try {
@@ -392,7 +415,8 @@ import com.opencms.util.*;
          
          
            try {             
-                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+                con=getConnection();
+                PreparedStatement statementResourceWrite=con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
                 statementResourceWrite.setString(1,absoluteName(filename));
@@ -423,8 +447,10 @@ import com.opencms.util.*;
                 //SIZE
                 statementResourceWrite.setInt(14,contents.length);
                 statementResourceWrite.executeUpdate();
+                putConnection(con);
 
-                PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+                con=getConnection();
+                PreparedStatement statementFileWrite=con.prepareStatement(C_FILE_WRITE);
                 //RESOURCE_NAME
                 statementFileWrite.setString(1,absoluteName(filename));
                 //PROJECT_ID
@@ -432,8 +458,9 @@ import com.opencms.util.*;
                 //FILE_CONTENT
                 statementFileWrite.setBytes(3,contents);
                 statementFileWrite.executeUpdate();
-
+                putConnection(con);
          } catch (SQLException e){                        
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          return readFile(project,onlineProject,filename);
@@ -455,7 +482,7 @@ import com.opencms.util.*;
                                A_CmsProject onlineProject,
                                CmsFile file,String filename)
          throws CmsException {
-         
+          Connection con=null; 
           int state=0;         
           if (project.equals(onlineProject)) {
              state= file.getState();
@@ -475,7 +502,8 @@ import com.opencms.util.*;
                }              
            }
            try {   
-                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+                con=getConnection();
+                PreparedStatement statementResourceWrite=con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
                 statementResourceWrite.setString(1,absoluteName(filename));
@@ -506,8 +534,10 @@ import com.opencms.util.*;
                 //SIZE
                 statementResourceWrite.setInt(14,file.getContents().length);
                 statementResourceWrite.executeUpdate();
+                putConnection(con);
                 
-                PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+                con=getConnection();
+                PreparedStatement statementFileWrite=con.prepareStatement(C_FILE_WRITE);
                 //RESOURCE_NAME
                 statementFileWrite.setString(1,absoluteName(filename));
                 //PROJECT_ID
@@ -515,10 +545,13 @@ import com.opencms.util.*;
                 //FILE_CONTENT
                 statementFileWrite.setBytes(3,file.getContents());
                 statementFileWrite.executeUpdate();
+                putConnection(con);
                    
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          } 
+       
          return readFile(project,onlineProject,filename);
       }
      
@@ -538,8 +571,10 @@ import com.opencms.util.*;
                                          A_CmsProject onlineProject,
                                          A_CmsResource resource)
          throws CmsException {
+            Connection con=null;  
             try {   
-                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+                con=getConnection();
+                PreparedStatement statementResourceWrite=con.prepareStatement(C_RESOURCE_WRITE);
                 // write new resource to the database
                 //RESOURCE_NAME
                 statementResourceWrite.setString(1,absoluteName(resource.getAbsolutePath()));
@@ -570,10 +605,13 @@ import com.opencms.util.*;
                 //SIZE
                 statementResourceWrite.setInt(14,resource.getLength());
                 statementResourceWrite.executeUpdate();
+                putConnection(con);
 
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
+     
          return readResource(project,resource.getAbsolutePath());
       } 
      
@@ -593,6 +631,7 @@ import com.opencms.util.*;
                              String filename)
          throws CmsException {
           
+         Connection con=null; 
          CmsFile file=null;
          int projectId;
          
@@ -601,10 +640,12 @@ import com.opencms.util.*;
              // if the actual prject is the online project read file header and content
              // from the online project
              if (project.equals(onlineProject)) {
-                    PreparedStatement statementFileReadOnline=m_Con.prepareStatement(C_FILE_READ_ONLINE);
+                    con=getConnection();
+                    PreparedStatement statementFileReadOnline=con.prepareStatement(C_FILE_READ_ONLINE);
                     statementFileReadOnline.setString(1,absoluteName(filename));
                     statementFileReadOnline.setInt(2,onlineProject.getId());
                     res = statementFileReadOnline.executeQuery();  
+                    putConnection(con);
                     if(res.next()) {
                          file = new CmsFile(filename,
                                             res.getInt(C_RESOURCE_TYPE),
@@ -650,10 +691,12 @@ import com.opencms.util.*;
                    projectId=project.getId();
                }
                // read the file content
-                   PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+                   con=getConnection();
+                   PreparedStatement statementFileRead=con.prepareStatement(C_FILE_READ);
                    statementFileRead.setString(1,absoluteName(filename));
                    statementFileRead.setInt(2,projectId);
                    res = statementFileRead.executeQuery();
+                   putConnection(con);
                    if (res.next()) {
                        file.setContents(res.getBytes(C_FILE_CONTENT));
                    } else {
@@ -661,10 +704,13 @@ import com.opencms.util.*;
                    }    
              }                
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
  		} catch( Exception exc ) {
+            putConnection(con);
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
+
          return file;
      }
 	
@@ -682,17 +728,19 @@ import com.opencms.util.*;
 	 */
 	 public CmsFile readFileHeader(A_CmsProject project, String filename)
          throws CmsException {
-                 
+         
+         Connection con=null;
          CmsFile file=null;
          ResultSet res =null;
            
-         try {  
-               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+         try {
+               con=getConnection();
+               PreparedStatement statementResourceRead=con.prepareStatement(C_RESOURCE_READ);
                // read file data from database
                statementResourceRead.setString(1,absoluteName(filename));
                statementResourceRead.setInt(2,project.getId());
                res = statementResourceRead.executeQuery();
-
+               putConnection(con);
                // create new file
                if(res.next()) {
                         file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -719,12 +767,16 @@ import com.opencms.util.*;
                  throw new CmsException("["+this.getClass().getName()+"] "+filename,CmsException.C_NOT_FOUND);  
                }
          } catch (SQLException e){
+             putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          } catch (CmsException ex) {
+            putConnection(con);
             throw ex;       
          } catch( Exception exc ) {
+               putConnection(con);
 			throw new CmsException("readFile "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
+
         return file;
        }
 	 
@@ -740,16 +792,19 @@ import com.opencms.util.*;
 	 */
 	 public Vector readAllFileHeaders(String filename)
          throws CmsException {
-          
+         
+         Connection con=null;
          CmsFile file=null;
          ResultSet res =null;
          Vector allHeaders = new Vector();
          
          try {  
-               PreparedStatement statementResourceReadAll=m_Con.prepareStatement(C_RESOURCE_READ_ALL);
+               con=getConnection();
+               PreparedStatement statementResourceReadAll=con.prepareStatement(C_RESOURCE_READ_ALL);
                // read file header data from database
                statementResourceReadAll.setString(1,absoluteName(filename));
                res = statementResourceReadAll.executeQuery();
+               putConnection(con);
                // create new file headers
                while(res.next()) {
                         file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -772,10 +827,13 @@ import com.opencms.util.*;
                         allHeaders.addElement(file);
                }
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
+             putConnection(con);               
 			throw new CmsException("readAllFileHeaders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
+
          return allHeaders;
      }
      
@@ -794,23 +852,26 @@ import com.opencms.util.*;
                            CmsFile file,boolean changed)
        throws CmsException {
     
-        
+           Connection con=null;
            try {   
              // update the file header in the RESOURCE database.
              writeFileHeader(project,onlineProject,file,changed);
             // file.setState(C_STATE_CHANGED);
              // update the file content in the FILES database.
-             PreparedStatement statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
+             con=getConnection();
+             PreparedStatement statementFileUpdate=con.prepareStatement(C_FILE_UPDATE);
              //FILE_CONTENT
              statementFileUpdate.setBytes(1,file.getContents());
              // set query parameters
              statementFileUpdate.setString(2,absoluteName(file.getAbsolutePath()));
              statementFileUpdate.setInt(3,file.getProjectId());
              statementFileUpdate.executeUpdate();
+             putConnection(con);  
            } catch (SQLException e){
+            putConnection(con);  
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
-      }
+     }
 	
 	 /**
 	 * Writes the fileheader to the Cms.
@@ -827,6 +888,7 @@ import com.opencms.util.*;
                                  CmsFile file,boolean changed)
          throws CmsException {
          
+           Connection con=null;
            ResultSet res;
            ResultSet tmpres;
            byte[] content;
@@ -838,11 +900,12 @@ import com.opencms.util.*;
                   
                if ((file.getState() == C_STATE_UNCHANGED) && (changed == true) ) {
                     // read file content form the online project
-    
-                    PreparedStatement statementFileRead=m_Con.prepareStatement(C_FILE_READ);
+                    con=getConnection();
+                    PreparedStatement statementFileRead=con.prepareStatement(C_FILE_READ);
                     statementFileRead.setString(1,absoluteName(file.getAbsolutePath()));
                     statementFileRead.setInt(2,onlineProject.getId());     
                     res = statementFileRead.executeQuery();
+                    putConnection(con); 
                     if (res.next()) {
                        content=res.getBytes(C_FILE_CONTENT);
                     } else {
@@ -851,11 +914,13 @@ import com.opencms.util.*;
                     // add the file content to the offline project.
                
                     try {
-                        PreparedStatement statementFileWrite=m_Con.prepareStatement(C_FILE_WRITE);
+                        con=getConnection();
+                        PreparedStatement statementFileWrite=con.prepareStatement(C_FILE_WRITE);
                         statementFileWrite.setString(1,absoluteName(file.getAbsolutePath()));
                         statementFileWrite.setInt(2,project.getId());     
                         statementFileWrite.setBytes(3,content);
                         statementFileWrite.executeUpdate();
+                        putConnection(con); 
                         } catch (SQLException se) {
                         if(A_OpenCms.isLogging()) {
                             A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsAccessFileMySql] " + se.getMessage());
@@ -864,7 +929,8 @@ import com.opencms.util.*;
                         }
                 }             
                 // update resource in the database
-                PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
+                con=getConnection();
+                PreparedStatement statementResourceUpdate=con.prepareStatement(C_RESOURCE_UPDATE);
                 //RESOURCE_TYPE
                 statementResourceUpdate.setInt(1,file.getType());
                 //RESOURCE_FLAGS
@@ -899,10 +965,13 @@ import com.opencms.util.*;
                 // set query parameters
                 statementResourceUpdate.setString(12,absoluteName(file.getAbsolutePath()));
                 statementResourceUpdate.setInt(13,file.getProjectId());
-                statementResourceUpdate.executeUpdate();               
+                statementResourceUpdate.executeUpdate();    
+                putConnection(con);
                 } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                  putConnection(con);
+                throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
+
      }
      
 	 /**
@@ -920,7 +989,7 @@ import com.opencms.util.*;
                             String oldname, String newname)
          throws CmsException {
          
-         // copy the file to the new name
+          // copy the file to the new name
          copyFile(project,onlineProject,oldname,newname);
          // delete the file with the old name
          try {
@@ -941,16 +1010,19 @@ import com.opencms.util.*;
 	 */	
 	 public void deleteFile(A_CmsProject project, String filename)
          throws CmsException {
+         Connection con=null;
          try { 
-           PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+           con=getConnection();
+           PreparedStatement statementResourceRemove=con.prepareStatement(C_RESOURCE_REMOVE);  
            // mark the file as deleted       
            statementResourceRemove.setInt(1,C_STATE_DELETED);
            statementResourceRemove.setInt(2,C_UNKNOWN_ID);
            statementResourceRemove.setString(3,absoluteName(filename));
            statementResourceRemove.setInt(4,project.getId());
            statementResourceRemove.executeUpdate();               
-          
+           putConnection(con);  
          } catch (SQLException e){
+            putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }        
      }
@@ -966,16 +1038,19 @@ import com.opencms.util.*;
 	 */	
 	 public void undeleteFile(A_CmsProject project, String filename)
          throws CmsException {
+         Connection con=null;
          try { 
-           PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+           con=getConnection();
+           PreparedStatement statementResourceRemove=con.prepareStatement(C_RESOURCE_REMOVE);  
            // mark the file as deleted       
            statementResourceRemove.setInt(1,C_STATE_CHANGED);
            statementResourceRemove.setInt(2,C_UNKNOWN_ID);
            statementResourceRemove.setString(3,absoluteName(filename));
            statementResourceRemove.setInt(4,project.getId());
            statementResourceRemove.executeUpdate();               
-          
+           putConnection(con);
          } catch (SQLException e){
+            putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }        
      }
@@ -991,20 +1066,27 @@ import com.opencms.util.*;
       */
      public void removeFile(A_CmsProject project, String filename) 
         throws CmsException{
-            try { 
+        
+         Connection con=null;
+         try { 
             // delete the file header
-            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+            con=getConnection();
+            PreparedStatement statementResourceDelete=con.prepareStatement(C_RESOURCE_DELETE);
             statementResourceDelete.setString(1,absoluteName(filename));
             statementResourceDelete.setInt(2,project.getId());
             statementResourceDelete.executeUpdate(); 
+            putConnection(con); 
             
             // delete the file content
-            PreparedStatement statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
+            con=getConnection();
+            PreparedStatement statementFileDelete=con.prepareStatement(C_FILE_DELETE);
             statementFileDelete.setString(1,absoluteName(filename));
             statementFileDelete.setInt(2,project.getId());
             statementFileDelete.executeUpdate();               
+            putConnection(con);
             } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+                putConnection(con);
+                throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }         
      }
      
@@ -1048,9 +1130,11 @@ import com.opencms.util.*;
                                    String foldername,
                                    int flags)
          throws CmsException {
+         Connection con=null;
          try {  
+            con=getConnection();
             // write new resource to the database
-            PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+            PreparedStatement statementResourceWrite=con.prepareStatement(C_RESOURCE_WRITE);
             //RESOURCE_NAME
             statementResourceWrite.setString(1,absoluteName(foldername));
             //RESOURCE_TYPE
@@ -1080,8 +1164,10 @@ import com.opencms.util.*;
             //SIZE
             statementResourceWrite.setInt(14,0);
             statementResourceWrite.executeUpdate();
+            putConnection(con); 
             
            } catch (SQLException e){
+             putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          } 
          return readFolder(project,foldername);
@@ -1104,7 +1190,7 @@ import com.opencms.util.*;
                                    CmsFolder folder,
                                    String foldername)
          throws CmsException{
-          
+           Connection con=null;
           int state=0;         
           if (project.equals(onlineProject)) {
              state= folder.getState();
@@ -1126,7 +1212,8 @@ import com.opencms.util.*;
          
             try {   
                 // write new resource to the database
-                PreparedStatement statementResourceWrite=m_Con.prepareStatement(C_RESOURCE_WRITE);
+                con=getConnection();
+                PreparedStatement statementResourceWrite=con.prepareStatement(C_RESOURCE_WRITE);
                 //RESOURCE_NAME
                 //statementResourceWrite.setString(1,absoluteName(folder.getAbsolutePath()));
                 statementResourceWrite.setString(1,absoluteName(foldername));
@@ -1157,7 +1244,9 @@ import com.opencms.util.*;
                 //SIZE
                 statementResourceWrite.setInt(14,0);
                 statementResourceWrite.executeUpdate();
+                putConnection(con); 
             } catch (SQLException e){
+             putConnection(con);
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
          //return readFolder(project,folder.getAbsolutePath());
@@ -1179,12 +1268,14 @@ import com.opencms.util.*;
          
          CmsFolder folder=null;
          ResultSet res =null;
-           
+         Connection con=null;  
          try {  
-               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+               con=getConnection();     
+               PreparedStatement statementResourceRead=con.prepareStatement(C_RESOURCE_READ);
                statementResourceRead.setString(1,absoluteName(foldername));
                statementResourceRead.setInt(2,project.getId());
                res = statementResourceRead.executeQuery();
+               putConnection(con); 
                // create new resource
                if(res.next()) {
                         folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1207,8 +1298,10 @@ import com.opencms.util.*;
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_FOUND);  
                }
          } catch (SQLException e){
+            putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
+            putConnection(con); 
 			throw new CmsException("readFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return folder;
@@ -1227,10 +1320,11 @@ import com.opencms.util.*;
 	 public void writeFolder(A_CmsProject project, CmsFolder folder,
                              boolean changed)
          throws CmsException {
-         
+          Connection con=null;
            try {   
+                con=getConnection();
                 // update resource in the database
-                PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
+                PreparedStatement statementResourceUpdate=con.prepareStatement(C_RESOURCE_UPDATE);
                 //RESOURCE_TYPE
                 statementResourceUpdate.setInt(1,folder.getType());
                 //RESOURCE_FLAGS
@@ -1267,7 +1361,9 @@ import com.opencms.util.*;
                 statementResourceUpdate.setString(12,absoluteName(folder.getAbsolutePath()));
                 statementResourceUpdate.setInt(13,folder.getProjectId());
                 statementResourceUpdate.executeUpdate();
+                putConnection(con); 
             } catch (SQLException e){
+            putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }
      }
@@ -1287,7 +1383,7 @@ import com.opencms.util.*;
 	 */	
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
          throws CmsException {
-         
+         Connection con=null;
          // the current implementation only deletes empty folders
          // check if the folder has any files in it
          Vector files= getFilesInFolder(project,foldername);
@@ -1299,17 +1395,20 @@ import com.opencms.util.*;
              if (folders.size()==0) {
                  //this folder is empty, delete it
                  try { 
+                    con=getConnection();
                     // mark the folder as deleted       
-                    PreparedStatement statementResourceRemove=m_Con.prepareStatement(C_RESOURCE_REMOVE);  
+                    PreparedStatement statementResourceRemove=con.prepareStatement(C_RESOURCE_REMOVE);  
                     statementResourceRemove.setInt(1,C_STATE_DELETED);
                     statementResourceRemove.setInt(2,C_UNKNOWN_ID);
                     statementResourceRemove.setString(3,absoluteName(foldername));
                     statementResourceRemove.setInt(4,project.getId());
                     statementResourceRemove.executeUpdate();              
+                    putConnection(con); 
                 } catch (SQLException e){
+                      putConnection(con); 
                  throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
                 }        
-              } else {
+              } else {                 
                  throw new CmsException("["+this.getClass().getName()+"] "+foldername,CmsException.C_NOT_EMPTY);  
               }
          } else {
@@ -1327,6 +1426,8 @@ import com.opencms.util.*;
       */
      public void removeFolder(A_CmsProject project, String foldername) 
         throws CmsException{
+         
+         Connection con=null;
          // the current implementation only deletes empty folders
          // check if the folder has any files in it
          Vector files= getFilesInFolder(project,foldername);
@@ -1337,13 +1438,16 @@ import com.opencms.util.*;
              folders=getUndeletedResources(folders);
              if (folders.size()==0) {
              //this folder is empty, delete it
-                 try {             
+                 try {          
+                    con=getConnection();
 		            // delete the folder
-		            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+		            PreparedStatement statementResourceDelete=con.prepareStatement(C_RESOURCE_DELETE);
 		            statementResourceDelete.setString(1,absoluteName(foldername));
 		            statementResourceDelete.setInt(2,project.getId());
 		            statementResourceDelete.executeUpdate();
+                    putConnection(con); 
                  } catch (SQLException e){
+                      putConnection(con); 
 		              throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		         }
              } else {
@@ -1404,14 +1508,24 @@ import com.opencms.util.*;
          Vector folders=new Vector();
          CmsFolder folder=null;
          ResultSet res =null;
-         
+         Connection con=null;
            try {
             //  get all subfolders
-             Statement s = m_Con.createStatement();		
+             con=getConnection();
+             Statement s = con.createStatement();		
   
+               
+               
              res =s.executeQuery(C_RESOURCE_GETSUBFOLDERS1+absoluteName(foldername)
                                 +C_RESOURCE_GETSUBFOLDERS2+project.getId()+
                                  C_RESOURCE_GETSUBFOLDERS3);
+             putConnection(con); 
+            /*   
+            PreparedStatement statementGetSubFolder=con.prepareStatement(C_RESOURCE_GETSUBFOLDERS);
+            statementGetSubFolder.setInt(1,project.getId());
+		    statementGetSubFolder.setString(2,foldername+"%");
+            res = statementGetSubFolder.executeQuery();*/
+            
             // create new folder objects
 		    while ( res.next() ) {
                folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1430,8 +1544,10 @@ import com.opencms.util.*;
              }
 
          } catch (SQLException e){
+                putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
+                putConnection(con); 
 			throw new CmsException("getSubFolders "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
          return SortEntrys(folders);
@@ -1452,14 +1568,22 @@ import com.opencms.util.*;
          Vector files=new Vector();
          CmsResource file=null;
          ResultSet res =null;
-         
+         Connection con=null;
            try {
+            con=getConnection();
             //  get all files in folder
-             Statement s = m_Con.createStatement();		
+             Statement s = con.createStatement();		
   
              res =s.executeQuery(C_RESOURCE_GETFILESINFOLDER1+absoluteName(foldername)
                                 +C_RESOURCE_GETFILESINFOLDER2+project.getId()+
                                  C_RESOURCE_GETFILESINFOLDER3);
+             putConnection(con);                    
+            /*PreparedStatement statementGetFilesInFolder=con.prepareStatement(C_RESOURCE_GETFILESINFOLDER);
+            statementGetFilesInFolder.setInt(1,project.getId());
+		    statementGetFilesInFolder.setString(2,foldername+"%");
+                      
+            res = statementGetFilesInFolder.executeQuery();*/
+             
             // create new file objects
 		    while ( res.next() ) {
                      file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -1482,8 +1606,10 @@ import com.opencms.util.*;
              }
 
          } catch (SQLException e){
+            putConnection(con);    
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
+            putConnection(con);    
 			throw new CmsException("getFilesInFolder "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
            return SortEntrys(files);
@@ -1520,15 +1646,17 @@ import com.opencms.util.*;
         Vector resources = new Vector();
         CmsFile file;
         CmsFolder folder;
-        
+
         ResultSet res;
-        
+        Connection con=null;
         try {
+            con=getConnection();
             // read all files that are in the requested project
-            PreparedStatement statementProjectReadFiles=m_Con.prepareStatement(C_PROJECT_READ_FILES);
+            PreparedStatement statementProjectReadFiles=con.prepareStatement(C_PROJECT_READ_FILES);
             //get all files from the actual project
             statementProjectReadFiles.setInt(1,project.getId());
             res=statementProjectReadFiles.executeQuery();               
+            putConnection(con); 
             // create new file objects
 		    while ( res.next() ) {
                      file = new CmsFile(res.getString(C_RESOURCE_NAME),
@@ -1578,12 +1706,13 @@ import com.opencms.util.*;
              
              }
             // read all folders that are in the requested project
-            PreparedStatement statementProjectReadFolders=m_Con.prepareStatement(C_PROJECT_READ_FOLDER);
+            con=getConnection();
+            PreparedStatement statementProjectReadFolders=con.prepareStatement(C_PROJECT_READ_FOLDER);
             //get all folders from the actual project
             statementProjectReadFolders.setInt(1,project.getId());
             statementProjectReadFolders.setInt(2,C_TYPE_FOLDER);
             res=statementProjectReadFolders.executeQuery();               
-              
+            putConnection(con);   
             // create new folder objects
 		    while ( res.next() ) {
                      folder = new CmsFolder(res.getString(C_RESOURCE_NAME),
@@ -1612,7 +1741,9 @@ import com.opencms.util.*;
                         // HACK: remove a lock if nescessary. This is a temporary fix,
                         // this has to be done in the resource broker
                         folder.setLocked(C_UNKNOWN_ID);
-                        createFolder(onlineProject,onlineProject,folder,folder.getAbsolutePath());
+                        CmsFolder newFolder=createFolder(onlineProject,onlineProject,folder,folder.getAbsolutePath());
+                        newFolder.setState(C_STATE_UNCHANGED);
+                        writeFolder(onlineProject,newFolder,false);                       
                         resources.addElement(folder.getAbsolutePath()); 
                     } else if (folder.getState() == C_STATE_DELETED) {
                         removeFolderForPublish(onlineProject,folder.getAbsolutePath());
@@ -1621,8 +1752,10 @@ import com.opencms.util.*;
             }
 
          } catch (SQLException e){
+            putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);		
 		} catch( Exception exc ) {
+            putConnection(con); 
 			throw new CmsException("PublishProject "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
            return resources;
@@ -1638,12 +1771,16 @@ import com.opencms.util.*;
 	 */
 	public void unlockProject(A_CmsProject project)
 		throws CmsException {
+        Connection con=null;
 		try {
+            con=getConnection();
 			// unlock all project-resources.
-			PreparedStatement statementUnlockProject = m_Con.prepareStatement(C_PROJECT_UNLOCK_RESOURCES);
+			PreparedStatement statementUnlockProject = con.prepareStatement(C_PROJECT_UNLOCK_RESOURCES);
 			statementUnlockProject.setInt(1,project.getId());
 			statementUnlockProject.executeQuery();
+            putConnection(con); 
 		} catch (SQLException e){
+            putConnection(con); 
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 	}
@@ -1656,17 +1793,24 @@ import com.opencms.util.*;
      */
     public void deleteProject(A_CmsProject project)
         throws CmsException {
-		try {
+        
+        Connection con=null;
+        try {
 			// delete all project-resources.
-			PreparedStatement statementDeleteProject = m_Con.prepareStatement(C_PROJECT_DELETE_RESOURCES);
+            con=getConnection();
+			PreparedStatement statementDeleteProject = con.prepareStatement(C_PROJECT_DELETE_RESOURCES);
 			statementDeleteProject.setInt(1,project.getId());
 			statementDeleteProject.executeQuery();
-
-			// delete all project-files.
-			statementDeleteProject = m_Con.prepareStatement(C_PROJECT_DELETE_FILES);
+            putConnection(con); 
+			
+            // delete all project-files.
+            con=getConnection();
+			statementDeleteProject = con.prepareStatement(C_PROJECT_DELETE_FILES);
 			statementDeleteProject.setInt(1,project.getId());
 			statementDeleteProject.executeQuery();		
+            putConnection(con); 
 		} catch (SQLException e){
+             putConnection(con); 
 			throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
 	}
@@ -1688,13 +1832,15 @@ import com.opencms.util.*;
                  
          CmsResource file=null;
          ResultSet res =null;
-           
+         Connection con=null;
          try {  
+               con=getConnection();   
                // read resource data from database
-               PreparedStatement statementResourceRead=m_Con.prepareStatement(C_RESOURCE_READ);
+               PreparedStatement statementResourceRead=con.prepareStatement(C_RESOURCE_READ);
                statementResourceRead.setString(1,absoluteName(filename));
                statementResourceRead.setInt(2,project.getId());
                res = statementResourceRead.executeQuery();
+                 putConnection(con); 
                // create new resource
                if(res.next()) {
                         file = new CmsResource(res.getString(C_RESOURCE_NAME),
@@ -1717,8 +1863,10 @@ import com.opencms.util.*;
                }
  
          } catch (SQLException e){
+             putConnection(con); 
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch( Exception exc ) {
+             putConnection(con); 
 			throw new CmsException("readResource "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}
         return file;
@@ -1738,19 +1886,23 @@ import com.opencms.util.*;
       */
      private void removeFolderForPublish(A_CmsProject project, String foldername) 
         throws CmsException{
-        try {             
+         Connection con=null;
+         try {    
+            con=getConnection();
 		    // delete the folder
-		    PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+		    PreparedStatement statementResourceDelete=con.prepareStatement(C_RESOURCE_DELETE);
 		    statementResourceDelete.setString(1,absoluteName(foldername));
 		    statementResourceDelete.setInt(2,project.getId());
 		    statementResourceDelete.executeUpdate();
+            putConnection(con); 
         } catch (SQLException e){
+            putConnection(con); 
 		    throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
 	    }
      }
      
      /**
-     * Connects to the file database.
+     * Connects to the file database and sets up the connection pool.
      * 
      * @param conUrl The connection string to the database.
      * 
@@ -1758,14 +1910,49 @@ import com.opencms.util.*;
      */
     private void initConnections(String conUrl)	
       throws CmsException {
-      
+
+        
         try {
-        	m_Con = DriverManager.getConnection(conUrl);
+            for (int i=0;i<C_CONNECTIONS;i++) {
+               // Connection con=DriverManager.getConnection(conUrl);
+               // m_conPool.push(con);
+            }
+            m_con=DriverManager.getConnection(conUrl);
        	} catch (SQLException e)	{
          	throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);
 		}
     }
     
+    /**
+     * Gets a connection from the connection pool or waits until 
+     * a connection is available
+     * @return Connection to the DB
+     */       
+    private Connection getConnection() {
+        /*while (m_conPool.size()==0) ;
+        Connection con=(Connection)m_conPool.pop();
+        return con;*/
+        return m_con;
+        
+    }
+    
+    
+    /**
+     * Returns a used connection to the connection pool.
+     * @param con The connection.
+     */    
+    private void putConnection(Connection con) {
+        /*if (con!= null) {
+            m_conPool.push(con);
+         }*/
+    }
+    
+    
+    /**
+     * Gets all resources that are marked as undeleted.
+     * @param resources Vector of resources
+     * @return Returns all resources that are markes as deleted
+     */
     private Vector getUndeletedResources(Vector resources) {
         Vector undeletedResources=new Vector();
                 

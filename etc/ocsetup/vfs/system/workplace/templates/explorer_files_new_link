@@ -36,11 +36,6 @@ function show_help()
 		<td class=dialogtxt> ]]><INPUTFIELD name="NEUNAME" class="textfeld2" size="40" length="40" method="setValue" action="onfocus='NEU.WEITER.disabled=false;'"/><![CDATA[</td>
 	</tr>
 	<tr>
-		<td class=formular>]]><LABEL value="input.title" /><![CDATA[:</td>
-		<td class=dialogtxt> ]]><INPUTFIELD name="NEUTITEL" class="textfeld2" size="40" length="100" /><![CDATA[</td>
-		
-	</tr>
-	<tr>
 			<td class=formular>]]><LABEL value="input.link" /><![CDATA[:</td>
 			<td class=dialogtxt> ]]><INPUTFIELD name="NEULINK" class="textfeld2" size="40" length="100" /><![CDATA[</td>
 			
@@ -52,7 +47,7 @@ function show_help()
 			<table cellspacing=0 cellpadding=5 width=100%>
 			<tr>
 				<td class=formular align=right width=60%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.previousscreen" /><![CDATA[" id=ZURUECK name=ZURUECK onClick="location='explorer_files_new.html';"></td>
-				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_textfeld('NEU', 'NEUNAME'); if(a==true)location='explorer_files_new_link.html?step=1&file='+document.NEU.NEUNAME.value+'&title='+document.NEU.NEUTITEL.value+'&link='+document.NEU.NEULINK.value;"></td>
+				<td class=formular align=middle width=20%><INPUT disabled class=button width=100 type="button" value="]]><LABEL value="button.nextscreen" /><![CDATA[" id=WEITER name=WEITER onClick="a=check_textfeld('NEU', 'NEUNAME'); if(a==true)location='explorer_files_new_link.html?step=1&file='+document.NEU.NEUNAME.value+'&link='+document.NEU.NEULINK.value;"></td>
 				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location='explorer_files.html';"></td>
 			</tr>
 			</table>

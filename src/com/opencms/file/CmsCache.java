@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/04/18 14:13:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/05/18 13:39:47 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/04/18 14:13:27 $
+ * @version $Revision: 1.3 $ $Date: 2000/05/18 13:39:47 $
  */
 
 class CmsCache
@@ -64,7 +64,7 @@ class CmsCache
 	 * @param key The key for the new object stroed in the cache.
 	 * @param value The value of the new object stroed in the cache.
 	 */
-	public synchronized void put(Object key, Object value) {
+	public  void put(Object key, Object value) {
 
 		if (cache.size()<max_objects) {
 			cache.put(key,new CmsCachedObject(value));
@@ -106,7 +106,7 @@ class CmsCache
 	 * @param content Flag for getting the file content.
 	 * @return Contents of the CmsCachedObject stored in the cache
 	 */
-	public synchronized Object get(Object key) {
+	public  Object get(Object key) {
 		CmsCachedObject cachedObject=null;
 		CmsCachedObject ret=null;
 	
@@ -128,7 +128,7 @@ class CmsCache
 	 * Removes a CmsCachedObject from the cache.
 	 * @param key The key of the Object to be removed from the cache.
 	 */
-	public synchronized void remove(Object key)	{
+	public  void remove(Object key)	{
 	  cache.remove(key);
 	}
 	
@@ -138,7 +138,7 @@ class CmsCache
 	 * files from a folder in a seperate subresource cache. Everytime a file or folder is 
 	 * updated, read or deleted the subresource cache must be cleared.
 	 */
-	public synchronized void clear() {
+	public  void clear() {
       cache.clear();
     }	
 }

@@ -243,7 +243,7 @@
 	<contextdisabled name="explorer.context.access"/>
 	<contextspacer/>	
 	<contextdisabled name="explorer.context.type"/>
-	<contextentry name="explorer.context.history" href="#"/>
+	<contextentry name="explorer.context.history" href="javascript:doAction(DO_HISTORY)"/>
 	<contextentry name="explorer.context.property" href="javascript:doAction(DO_META)"/>	
 </contextmenue>
 
