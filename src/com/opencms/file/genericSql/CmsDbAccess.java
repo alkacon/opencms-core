@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/12/07 15:38:33 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2000/12/13 18:03:11 $
+ * Version: $Revision: 1.176 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.175 $ $Date: 2000/12/07 15:38:33 $ * 
+ * @version $Revision: 1.176 $ $Date: 2000/12/13 18:03:11 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2739,6 +2739,70 @@ void getResourcesInFolderHelper(ResultSet res, Vector resources) throws SQLExcep
 		}
 		return users;
 	}
+	 /**
+	 * Gets all users of a type and namefilter.
+	 * 
+	 * @param type The type of the user.
+	 * @param namestart The namefilter
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public Vector getUsers(int type, String namefilter) 
+		throws CmsException {
+		Vector users = new Vector();
+	    Statement statement = null;
+		ResultSet res = null;
+		
+		try	{			
+			statement = m_pool.getStatement();
+	
+			//res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");  
+			res = statement.executeQuery(m_cq.C_USERS_GETUSERS_FILTER1+type+m_cq.C_USERS_GETUSERS_FILTER2+namefilter+m_cq.C_USERS_GETUSERS_FILTER3);  
+			
+			// create new Cms user objects
+			while( res.next() ) {
+				// read the additional infos.
+				byte[] value = res.getBytes(m_cq.C_USERS_USER_INFO);
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+										   res.getString(m_cq.C_USERS_USER_NAME),
+										   res.getString(m_cq.C_USERS_USER_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+										   res.getString(m_cq.C_USERS_USER_LASTNAME),
+										   res.getString(m_cq.C_USERS_USER_EMAIL),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+														res.getString(m_cq.C_GROUPS_GROUP_NAME),
+														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+										   res.getString(m_cq.C_USERS_USER_ADDRESS),
+										   res.getString(m_cq.C_USERS_USER_SECTION),
+										   res.getInt(m_cq.C_USERS_USER_TYPE));
+				
+				users.addElement(user);
+			} 
+
+			res.close();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if (statement != null) {
+			( (com.opencms.file.genericSql.CmsDbPool)m_pool ).putStatement(statement);
+		} 
+		}
+		return users;
+	}
 	/**
 	 * Returns a list of users of a group.<P/>
 	 * 
@@ -3100,6 +3164,7 @@ protected void initIdStatements() throws com.opencms.core.CmsException {
 		m_pool.initPreparedStatement(m_cq.C_USERS_SETRECPW_KEY,m_cq.C_USERS_SETRECPW);
 		m_pool.initPreparedStatement(m_cq.C_USERS_RECOVERPW_KEY,m_cq.C_USERS_RECOVERPW);
 		m_pool.initPreparedStatement(m_cq.C_USERS_DELETEBYID_KEY,m_cq.C_USERS_DELETEBYID);
+		
 		
 		// init statements for projects        
 		m_pool.initPreparedStatement(m_cq.C_PROJECTS_MAXID_KEY, m_cq.C_PROJECTS_MAXID);

@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/12/07 15:38:34 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/12/13 18:03:12 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.36 $ $Date: 2000/12/07 15:38:34 $
+ * @version $Revision: 1.37 $ $Date: 2000/12/13 18:03:12 $
  */
 public class CmsQueries
 {
@@ -332,6 +332,10 @@ public class CmsQueries
 	public String C_USERS_RECOVERPW = "UPDATE " + C_DATABASE_PREFIX + "USERS SET USER_PASSWORD = ? WHERE USER_NAME = ? and USER_RECOVERY_PASSWORD = ?";
 	public Integer C_USERS_DELETEBYID_KEY = new Integer(261);
 	public String C_USERS_DELETEBYID = "DELETE FROM " + C_DATABASE_PREFIX + "USERS WHERE USER_ID = ?";
+	
+	public String C_USERS_GETUSERS_FILTER1 = "SELECT * FROM " + C_DATABASE_PREFIX + "USERS, " + C_DATABASE_PREFIX + "GROUPS where USER_TYPE = ";
+	public String C_USERS_GETUSERS_FILTER2 = " and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '";
+	public String C_USERS_GETUSERS_FILTER3 = "%' ORDER BY USER_NAME";
 
 	// Constants for Task table
 	public String C_TABLENAME_TASK = C_DATABASE_PREFIX + "Task";

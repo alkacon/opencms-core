@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/12 09:40:34 $
- * Version: $Revision: 1.211 $
+ * Date   : $Date: 2000/12/13 18:03:12 $
+ * Version: $Revision: 1.212 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.211 $ $Date: 2000/12/12 09:40:34 $
+ * @version $Revision: 1.212 $ $Date: 2000/12/13 18:03:12 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3167,6 +3167,29 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
 				CmsException.C_NO_ACCESS);
 		}
 	}
+	 /**
+	 * Returns all users from a given type that start with a specified string<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param type The type of the users.
+	 * @param namestart The filter for the username
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type, String namestart)
+		throws CmsException {
+		// check security
+		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
+			return m_dbAccess.getUsers(type,namestart);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + currentUser.getName(), 
+				CmsException.C_NO_ACCESS);
+		}
+	}
 	/**
 	 * Returns a list of users in a group.<P/>
 	 * 
@@ -5976,7 +5999,6 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
 				CmsException.C_NO_ACCESS);
 		}
 	}
-	
 	 /**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 

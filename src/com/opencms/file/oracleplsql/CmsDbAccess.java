@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/29 17:03:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/12/13 18:03:13 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,10 +52,10 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.9 $ $Date: 2000/11/29 17:03:10 $ * 
+ * @version $Revision: 1.10 $ $Date: 2000/12/13 18:03:13 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
-	
+
 	/**
 	 * Instanciates the access-module and sets up all required modules and connections.
 	 * @param config The OpenCms configuration.
@@ -966,6 +966,75 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 		}
 		return users;
 	}
+	 /**
+	 * Gets all users of a type and namefilter.
+	 * 
+	 * @param type The type of the user.
+	 * @param namestart The namefilter
+	 * @exception thorws CmsException if something goes wrong.
+	 */ 
+	public Vector getUsers(int type, String namefilter) 
+		throws CmsException {
+		Vector users = new Vector();
+	    Statement statement = null;
+		ResultSet res = null;
+		
+		try	{			
+			statement = m_pool.getStatement();
+			
+			/*statement.setInt(1,type);
+			statement.setString(2,namefilter+"%");
+			res = statement.executeQuery();*/
+
+			//res = statement.executeQuery("SELECT * FROM CMS_USERS,CMS_GROUPS where USER_TYPE = "+type+" and USER_DEFAULT_GROUP_ID = GROUP_ID and USER_NAME like '"+namefilter+"%' ORDER BY USER_NAME");  
+			res = statement.executeQuery(m_cq.C_USERS_GETUSERS_FILTER1+type+m_cq.C_USERS_GETUSERS_FILTER2+namefilter+m_cq.C_USERS_GETUSERS_FILTER3);  
+			// create new Cms user objects
+			while( res.next() ) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO); 
+				byte[] value = new byte[(int) blob.length()]; 
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+										   res.getString(m_cq.C_USERS_USER_NAME),
+										   res.getString(m_cq.C_USERS_USER_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+										   res.getString(m_cq.C_USERS_USER_LASTNAME),
+										   res.getString(m_cq.C_USERS_USER_EMAIL),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+														res.getString(m_cq.C_GROUPS_GROUP_NAME),
+														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+										   res.getString(m_cq.C_USERS_USER_ADDRESS),
+										   res.getString(m_cq.C_USERS_USER_SECTION),
+										   res.getInt(m_cq.C_USERS_USER_TYPE));
+				
+				users.addElement(user);
+			} 
+
+			res.close();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);			
+		} finally {
+			if (statement != null) {
+			( (com.opencms.file.genericSql.CmsDbPool)m_pool ).putStatement(statement);
+		} 
+		}
+		return users;
+	}
 /**
  * Returns a list of users of a group.<P/>
  * 
@@ -1767,6 +1836,7 @@ public Hashtable readSession(String sessionId) throws CmsException {
 												res.getString(m_cq.C_GROUPS_GROUP_NAME),
 												res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
 												res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+								  				
 								   res.getString(m_cq.C_USERS_USER_ADDRESS),
 								   res.getString(m_cq.C_USERS_USER_SECTION),
 								   res.getInt(m_cq.C_USERS_USER_TYPE));

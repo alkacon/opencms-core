@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/12/06 17:00:47 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2000/12/13 18:03:11 $
+ * Version: $Revision: 1.135 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.134 $ $Date: 2000/12/06 17:00:47 $
+ * @version $Revision: 1.135 $ $Date: 2000/12/13 18:03:11 $
  * 
  */
 
@@ -1329,6 +1329,21 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
+		throws CmsException;
+	 /**
+	 * Returns all users from a given type that start with a specified string<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param type The type of the users.
+	 * @param namestart The filter for the username
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type, String namestart)
 		throws CmsException;
 	/**
 	 * Returns a list of users in a group.<P/>

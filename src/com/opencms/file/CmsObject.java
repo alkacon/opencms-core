@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/12/06 17:00:47 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2000/12/13 18:03:09 $
+ * Version: $Revision: 1.146 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.145 $ $Date: 2000/12/06 17:00:47 $ 
+ * @version $Revision: 1.146 $ $Date: 2000/12/13 18:03:09 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -73,6 +73,7 @@ public class CmsObject implements I_CmsConstants {
 	 * Is needed to clear the template caches.
 	 */
 	private CmsLauncherManager m_launcherManager = null;
+
 
 	/**
 	 * The default constructor.
@@ -1077,6 +1078,18 @@ public Vector getUsers() throws CmsException {
  */
 public Vector getUsers(int type) throws CmsException {
 	return (m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type));
+}
+ /**
+ * Returns all users from a given type that start with a specified string<P/>
+ * 
+ * @param type the type of the users.
+ * @param namestart The filter for the username
+ * @return vector of all users of the given type in the Cms.
+ * 
+ * @exception CmsException if operation was not successful.
+ */
+public Vector getUsers(int type, String namefilter) throws CmsException {
+	return m_rb.getUsers(m_context.currentUser(), m_context.currentProject(), type,namefilter);
 }
 /**
  * Gets all users of a group.
