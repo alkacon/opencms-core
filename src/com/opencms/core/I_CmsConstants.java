@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/07/11 06:25:23 $
-* Version: $Revision: 1.240 $
+* Date   : $Date: 2003/07/11 14:54:01 $
+* Version: $Revision: 1.241 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.240 $ $Date: 2003/07/11 06:25:23 $
+ * @version $Revision: 1.241 $ $Date: 2003/07/11 14:54:01 $
  */
 public interface I_CmsConstants {
 
@@ -1022,7 +1022,7 @@ public interface I_CmsConstants {
     /**
      * The version of the opencms export (appears in the export manifest-file).
      */
-    String C_EXPORT_VERSION = "2";
+    String C_EXPORT_VERSION = "3";
 
     /**
      * A tag in the export manifest-file.
