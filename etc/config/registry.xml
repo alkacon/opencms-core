@@ -81,6 +81,7 @@
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
+		<searchbylucene>off</searchbylucene>
     </system>
     <modules/>
 </registry>
