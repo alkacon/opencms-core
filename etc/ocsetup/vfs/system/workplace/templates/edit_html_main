@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <workplace>
 <template>
-<![CDATA[ 
-
+<![CDATA[
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu>]]><BUTTON href="javascript:doEditHTML(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
@@ -39,52 +38,43 @@
 
 		<!-- Schriftformatierung -->
 <table cellspacing=0 cellpadding=0 border=0 width="100%"> 
-	<tr>
+	<tr height=34>
 		<td class=menu>]]><SELECT class="textfeld" name="BLOCK" width="100" method="getFontStyles" onchange="return ParagraphStyle_onchange()"/><![CDATA[</td>
 		<td class=menu>]]><SELECT class="textfeld" name="FONTFACE" width="120" method="getFonts" onchange="doEditHTML(22);"/><![CDATA[</td>
 		<td class=menu>]]><SELECT class="textfeld" name="FONTSIZE" width="40" method="getFontSizes" onchange="doEditHTML(23);"/><![CDATA[</td>		
 		<td class=menu>]]><BUTTON href="#" name="bt_bold" action="doEditHTML(24);" alt="bold"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_italic" action="doEditHTML(25);" alt="italic"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_underline" action="doEditHTML(26);" alt="underline"/><![CDATA[</td>
-		<td class=menu width="100%">&nbsp;</td>
-	</tr>
-</table>
-
-<hr>
-
-<table cellspacing=0 cellpadding=0 border=0 width="100%">
-	<tr height=32px>
+		<td class=menu width="100%" align="center">]]><BUTTONSEPARATOR/><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_alignleft" action="doEditHTML(31);" alt="alignleft"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_aligncenter" action="doEditHTML(32);" alt="aligncenter"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_alignright" action="doEditHTML(33);" alt="alignright"/><![CDATA[</td>
-		
+			
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_ul" action="doEditHTML(34);" alt="ul"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_ol" action="doEditHTML(35);" alt="ol"/><![CDATA[</td>
-
+		
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_indentin" action="doEditHTML(36);" alt="indentin"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_indentout" action="doEditHTML(37);" alt="indentout"/><![CDATA[</td>
-				
+					
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_fontcolor" action="doEditHTML(38);" alt="fontcolor"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_color" action="doEditHTML(39);" alt="color"/><![CDATA[</td>
-		
+				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_table" action="doEditHTML(40);" alt="table"/><![CDATA[</td>
-		
+				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="link"/><![CDATA[</td>
-		
+				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_imagelist" action="doEditHTML(43);" alt="imagelist"/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_download" action="doEditHTML(44);" alt="downloadlist"/><![CDATA[</td>
-		 
+				
 		<td class=menu width="100%">&nbsp;</td>
 	</tr>
-	<tr><td colspan=20><img src="]]><METHOD name="picsUrl">empty.gif</METHOD><![CDATA[" border=0 width=2 height=3></td></tr>
-</table>	
+</table>
 </td></tr>
 	<tr>
 		<td colspan=20 width=100% height=75%> 
@@ -107,7 +97,6 @@
 	</tr>
 </table> 
 <table>
-
 ]]>
 </template>
 </workplace>
