@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/26 09:37:57 $
- * Version: $Revision: 1.362 $
+ * Date   : $Date: 2004/05/26 16:03:38 $
+ * Version: $Revision: 1.363 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.362 $ $Date: 2004/05/26 09:37:57 $
+ * @version $Revision: 1.363 $ $Date: 2004/05/26 16:03:38 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2186,7 +2186,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public void deleteAllProperties(CmsRequestContext context, String resourceName, int deleteOption) throws CmsException {
 
         CmsResource resource = null;
-        List resources = (List) new ArrayList();
+        List resources = new ArrayList();
 
         try {
             // read the resource
