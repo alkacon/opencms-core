@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/22 10:10:18 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2000/09/22 11:08:20 $
+ * Version: $Revision: 1.113 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.112 $ $Date: 2000/09/22 10:10:18 $
+ * @version $Revision: 1.113 $ $Date: 2000/09/22 11:08:20 $
  * 
  */
 
@@ -757,23 +757,6 @@ public interface I_CmsResourceBroker {
 							  int id)
 		throws CmsException;
 	/**
-	 * Deletes a propertyinformation for a file or folder.
-	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to write the resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation 
-	 * has to be read.
-	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
-									  String resource, String property)
-		throws CmsException;
-	/**
 	 * Delete the propertydefinition for the resource type.<BR/>
 	 * 
 	 * <B>Security</B>
@@ -789,6 +772,23 @@ public interface I_CmsResourceBroker {
 	 */
 	public void deletePropertydefinition(CmsUser currentUser, CmsProject currentProject, 
 									 String name, String resourcetype)
+		throws CmsException;
+	/**
+	 * Deletes a propertyinformation for a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to write the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation 
+	 * has to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void deleteProperty(CmsUser currentUser, CmsProject currentProject, 
+									  String resource, String property)
 		throws CmsException;
 	/** 
 	 * Deletes a user from the Cms.
@@ -1223,6 +1223,19 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 */
 	public CmsCoreSession getSessionStorage(CmsUser currentUser, CmsCoreSession storage);
 /**
+ * Get the site corresponding to a specifik url.
+ * 
+ * <B>Security:</B>
+ * All users are granted.
+ * 
+ * @return com.opencms.file.CmsSite the site found.
+ * @param user com.opencms.file.CmsUser
+ * @param project com.opencms.file.CmsProject
+ * @param siteName java.lang.String
+ */
+CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer siteName)
+		throws CmsException;
+/**
  * Find the site of a project.
  *
  * <B>Security:</B>
@@ -1247,19 +1260,6 @@ CmsSite getSite(CmsUser user, CmsProject project, int projectId)
  * @param siteName java.lang.String
  */
 CmsSite getSite(CmsUser user, CmsProject project, String siteName)
-		throws CmsException;
-/**
- * Get the site corresponding to a specifik url.
- * 
- * <B>Security:</B>
- * All users are granted.
- * 
- * @return com.opencms.file.CmsSite the site found.
- * @param user com.opencms.file.CmsUser
- * @param project com.opencms.file.CmsProject
- * @param siteName java.lang.String
- */
-CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer siteName)
 		throws CmsException;
    	/**
 	 * Returns a Vector with all subfolders.<br>
@@ -1312,19 +1312,6 @@ CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer siteName)
 	public int getTaskType(String taskname)
 		throws CmsException;
 	/**
-	 * Returns all users<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @return users A Vector of all existing users.
-	 * @exception CmsException Throws CmsException if operation was not succesful.
-	 */
-	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
-		throws CmsException;
-	/**
 	 * Returns all users from a given type<P/>
 	 * 
 	 * <B>Security:</B>
@@ -1337,6 +1324,19 @@ CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer siteName)
 	 * @exception CmsException Throws CmsException if operation was not succesful.
 	 */
 	public Vector getUsers(CmsUser currentUser, CmsProject currentProject, int type)
+		throws CmsException;
+	/**
+	 * Returns all users<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted, except the anonymous user.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @return users A Vector of all existing users.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+	public Vector getUsers(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException;
 	/**
 	 * Returns a list of users in a group.<P/>
@@ -1598,6 +1598,16 @@ CmsSite getSiteFromUrl(CmsUser user, CmsProject project, StringBuffer siteName)
  * @param group java.lang.String
  */
 public CmsSite newSite(String Name, String Description, int Category, int Language, int Country, String url, String user, String group, CmsUser currentuser, CmsProject currentproject) throws CmsException;
+/**
+ * Creates a new Cms_Site_Project record in the DB.
+ *
+ * @author Jan Krag
+ * Creation date: (09/21/00 %r)
+ * @return int
+ * @param The site id of the corresponding site. java.lang.String
+ * @param The project id of the corresponding site. java.lang.String
+ */
+public void newSiteProjectsRecord(CmsUser currentUser, CmsProject currentProject, int siteID, int projectId) throws CmsException;
 	/**
 	 * Returns the onlineproject. This is the default project. All anonymous 
 	 * (CmsUser callingUser, or guest) user will see the rersources of this project.
@@ -1706,24 +1716,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										     int id, int type)
 		throws CmsException;
-	/**
-	 * Reads all propertydefinitions for the given resource type.
-	 * 
-	 * <B>Security</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
-	 * 
-	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
-	 * The Vector is maybe empty.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */	
-	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
-										 String resourcetype)
-		throws CmsException;
 	 /**
 	 * Reads all propertydefinitions for the given resource type.
 	 * 
@@ -1743,6 +1735,24 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
 										     String resourcetype, int type)
 		throws CmsException;
+	/**
+	 * Reads all propertydefinitions for the given resource type.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resourcetype The name of the resource type to read the propertydefinitions for.
+	 * 
+	 * @return propertydefinitions A Vector with propertydefefinitions for the resource type.
+	 * The Vector is maybe empty.
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */	
+	public Vector readAllPropertydefinitions(CmsUser currentUser, CmsProject currentProject, 
+										 String resourcetype)
+		throws CmsException;
 	// Methods working with system properties
 	
 	
@@ -1759,51 +1769,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	 */
 	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
 		throws CmsException ;
-	 /**
-	 * Reads a file from a previous project of the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param projectId The id of the project to read the file from.
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
-	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
-							 int projectId, String filename)
-		throws CmsException;
-	//  Methods working with resources
-	
-	/**
-	 * Reads a file from the Cms.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param filename The name of the file to be read.
-	 * 
-	 * @return The file read from the Cms.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 * */
-	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
-							 String filename)
-		throws CmsException;
 	/**
 	 * Gets the known file extensions (=suffixes) 
 	 * 
@@ -1884,6 +1849,51 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	 */
 	public Vector readFileHeaders(CmsUser currentUser, CmsProject currentProject,
 								  int projectId)
+		throws CmsException;
+	 /**
+	 * Reads a file from a previous project of the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param projectId The id of the project to read the file from.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+							 int projectId, String filename)
+		throws CmsException;
+	//  Methods working with resources
+	
+	/**
+	 * Reads a file from the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read the resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param filename The name of the file to be read.
+	 * 
+	 * @return The file read from the Cms.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(CmsUser currentUser, CmsProject currentProject,
+							 String filename)
 		throws CmsException;
 	  /**
 	 * Reads a folder from the Cms.<BR/>
@@ -2175,25 +2185,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 								   int projectId)
 		 throws CmsException;
 	/**
-	 * Returns a propertyinformation of a file or folder.
-	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to view the resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation has 
-	 * to be read.
-	 * @param property The propertydefinition-name of which the propertyinformation has to be read.
-	 * 
-	 * @return propertyinfo The propertyinfo as string.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
-									  String resource, String property)
-		throws CmsException;
-	/**
 	 * Reads a definition for the given resource type.
 	 * 
 	 * <B>Security</B>
@@ -2213,6 +2204,25 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	public CmsPropertydefinition readPropertydefinition(CmsUser currentUser, 
 												  CmsProject currentProject, 
 												  String name, String resourcetype)
+		throws CmsException;
+	/**
+	 * Returns a propertyinformation of a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to view the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation has 
+	 * to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be read.
+	 * 
+	 * @return propertyinfo The propertyinfo as string.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public String readProperty(CmsUser currentUser, CmsProject currentProject, 
+									  String resource, String property)
 		throws CmsException;
 	 /**
 	  * Read a task by id.
@@ -2316,21 +2326,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  int id)
 		throws CmsException ;
-	/**
-	 * Returns a user object.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user that is to be read.
-	 * @return User
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
-							  String username)
-		throws CmsException;
 	 /**
 	 * Returns a user object.<P/>
 	 * 
@@ -2347,6 +2342,21 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
 							  String username,int type)
 		throws CmsException ;
+	/**
+	 * Returns a user object.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user that is to be read.
+	 * @return User
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username)
+		throws CmsException;
 	/**
 	 * Returns a user object if the password for the user is correct.<P/>
 	 * 
@@ -2540,24 +2550,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	/** 
 	 * Sets the password for a user.
 	 * 
-	 * Only a adminstrator can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Users, which are in the group "administrators" are granted.<BR/>
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user.
-	 * @param newPassword The new password.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 */
-	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
-							String username, String newPassword)
-		throws CmsException;
-	/** 
-	 * Sets the password for a user.
-	 * 
 	 * Only a adminstrator or the curretuser can do this.<P/>
 	 * 
 	 * <B>Security:</B>
@@ -2574,6 +2566,24 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	 */
 	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
 							String username, String oldPassword, String newPassword)
+		throws CmsException;
+	/** 
+	 * Sets the password for a user.
+	 * 
+	 * Only a adminstrator can do this.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user.
+	 * @param newPassword The new password.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public void setPassword(CmsUser currentUser, CmsProject currentProject, 
+							String username, String newPassword)
 		throws CmsException;
 	 /**
 	  * Set priority of a task
@@ -2725,31 +2735,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	 */
 	public void writeExportPath(CmsUser currentUser, CmsProject currentProject, String path)
 		throws CmsException ;
-	 /**
-	 * Writes a file to the Cms.<br>
-	 * 
-	 * A file can only be written to an offline project.<br>
-	 * The state of the resource is set to  CHANGED (1). The file content of the file
-	 * is either updated (if it is already existing in the offline project), or created
-	 * in the offline project (if it is not available there).<br>
-	 * 
-	 * <B>Security:</B>
-	 * Access is granted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param currentUser The user who own this file.
-	 * @param currentProject The project in which the resource will be used.
-	 * @param file The name of the file to write.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
-						  CmsFile file)
-		throws CmsException ;
 	/**
 	 * Writes the file extensions  
 	 * 
@@ -2790,6 +2775,31 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 								CmsFile file)
 		throws CmsException;
 	 /**
+	 * Writes a file to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The name of the file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFile(CmsUser currentUser, CmsProject currentProject, 
+						  CmsFile file)
+		throws CmsException ;
+	 /**
 	 * Writes an already existing group in the Cms.<BR/>
 	 * 
 	 * Only the admin can do this.<P/>
@@ -2820,24 +2830,6 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 									  String resource, Hashtable propertyinfos)
 		throws CmsException;
 	/**
-	 * Writes a propertyinformation for a file or folder.
-	 * 
-	 * <B>Security</B>
-	 * Only the user is granted, who has the right to write the resource.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resource The name of the resource of which the propertyinformation has 
-	 * to be read.
-	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
-	 * @param value The value for the propertyinfo to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	public void writeProperty(CmsUser currentUser, CmsProject currentProject, 
-									 String resource, String property, String value)
-		throws CmsException;
-	/**
 	 * Updates the propertydefinition for the resource type.<BR/>
 	 * 
 	 * <B>Security</B>
@@ -2855,22 +2847,24 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 												   CmsProject currentProject, 
 												   CmsPropertydefinition propertydef)
 		throws CmsException;
-	 /**
-	  * Writes a new user tasklog for a task.
-	  * 
-	  * <B>Security:</B>
-	  * All users are granted.
-	  * 
-	  * @param currentUser The user who requested this method.
-	  * @param currentProject The current project of the user.
-	  * @param taskid The Id of the task .
-	  * @param comment Description for the log
-	  * 
-	  * @exception CmsException Throws CmsException if something goes wrong.
-	  */
-	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
-							  int taskid, String comment)
-		 throws CmsException ;
+	/**
+	 * Writes a propertyinformation for a file or folder.
+	 * 
+	 * <B>Security</B>
+	 * Only the user is granted, who has the right to write the resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The name of the resource of which the propertyinformation has 
+	 * to be read.
+	 * @param property The propertydefinition-name of which the propertyinformation has to be set.
+	 * @param value The value for the propertyinfo to be set.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public void writeProperty(CmsUser currentUser, CmsProject currentProject, 
+									 String resource, String property, String value)
+		throws CmsException;
 	 /**
 	  * Writes a new user tasklog for a task.
 	  * 
@@ -2888,6 +2882,22 @@ public CmsSite newSite(String Name, String Description, int Category, int Langua
 	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
 							  int taskid, String comment, int taskType)
 		 throws CmsException;
+	 /**
+	  * Writes a new user tasklog for a task.
+	  * 
+	  * <B>Security:</B>
+	  * All users are granted.
+	  * 
+	  * @param currentUser The user who requested this method.
+	  * @param currentProject The current project of the user.
+	  * @param taskid The Id of the task .
+	  * @param comment Description for the log
+	  * 
+	  * @exception CmsException Throws CmsException if something goes wrong.
+	  */
+	 public void writeTaskLog(CmsUser currentUser, CmsProject currentProject, 
+							  int taskid, String comment)
+		 throws CmsException ;
 	/**
 	 * Updates the user information.<BR/>
 	 * 
