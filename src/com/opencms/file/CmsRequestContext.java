@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/09/12 08:49:17 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import java.util.*;
 import javax.servlet.http.*;
 
 import com.opencms.core.*;
+import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.template.cache.*;
 
 /**
@@ -46,7 +47,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.53 $ $Date: 2002/09/12 08:49:17 $
+ * @version $Revision: 1.54 $ $Date: 2002/10/18 16:54:59 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -103,6 +104,9 @@ public class CmsRequestContext implements I_CmsConstants {
     /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
     private String m_fakeUri = null;
     
+    /** Resource name translator */
+    private CmsResourceTranslator m_translator = null;
+    
     /**
      * The default constructor.
      */
@@ -130,7 +134,8 @@ public class CmsRequestContext implements I_CmsConstants {
         String currentGroup,
         int currentProjectId,
         boolean streaming,
-        CmsElementCache elementCache)
+        CmsElementCache elementCache,
+        CmsResourceTranslator translator)
         throws CmsException {
         m_rb = rb;
         m_req = req;
@@ -162,6 +167,7 @@ public class CmsRequestContext implements I_CmsConstants {
         m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
+        m_translator = translator;
 
         // Analyze the user's preferred languages coming with the request
         if (req != null) {
@@ -237,8 +243,8 @@ public class CmsRequestContext implements I_CmsConstants {
             m_rb.readFolder(
                 currentUser(),
                 currentProject(),
-                getSiteRoot(getFolderUri()),
-                ""));
+                getSiteRoot(getFolderUri())
+                ));
     }
     
     /**
@@ -483,7 +489,7 @@ public class CmsRequestContext implements I_CmsConstants {
     public Vector getAcceptedLanguages() {
         return m_language;
     }
-
+    
     /**
      * Returns the name of the current site root, e.g. /default/vfs
      *
@@ -492,12 +498,19 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public String getSiteRoot(String resourcename) {
         if (resourcename.startsWith("///")) {
-            return resourcename.substring(2);
+            return m_translator.translateResource(resourcename.substring(2));
         } else if (resourcename.startsWith("//")) {
-            return C_DEFAULT_SITE + resourcename.substring(1);
+            return m_translator.translateResource(C_DEFAULT_SITE + resourcename.substring(1));
         } else {
-            return m_siteRoot + resourcename;
+            return m_translator.translateResource(m_siteRoot + resourcename);
         }
+    }
+    
+    /**
+     * @return The resouce name translator this context was initialized with
+     */
+    public CmsResourceTranslator getResourceTranslator() {
+        return m_translator;
     }
 
     /**

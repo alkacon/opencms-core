@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2002/09/02 07:48:42 $
-* Version: $Revision: 1.113 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.114 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.113 $ $Date: 2002/09/02 07:48:42 $
+ * @version $Revision: 1.114 $ $Date: 2002/10/18 16:54:03 $
  */
 
 public interface I_CmsWpConstants {
@@ -47,17 +47,45 @@ public interface I_CmsWpConstants {
     /** Parameter for the default language */
     public static final String C_DEFAULT_LANGUAGE = "en";
     
+    /** 
+     * Parameter to check if the new (since 5.0 beta 2) folder structure is to be used.
+     * @since 5.0 beta 2
+     */
+    // Resource translation project:    
+    public static final boolean C_NEW_VFS_STRUCTURE = true;
+    
     /** Parameter for content body folder */
-    // public static final String C_CONTENTBODYPATH = "/system/bodies/";
-    public static final String C_CONTENTBODYPATH = "/content/bodys/";
-
+    // Resource translation project:
+    public static final String C_CONTENTBODYPATH = C_NEW_VFS_STRUCTURE?"/system/bodies/":"/content/bodys/";
+ 
     /** Parameter for default module */
-    // public static final String C_DEFAULTMODULEPATH = "/system/modules/default/";
-    public static final String C_DEFAULTMODULEPATH = "/content/";
+    // Resource translation project:
+    public static final String C_DEFAULTMODULEPATH = C_NEW_VFS_STRUCTURE?"/system/modules/default/":"/content/";
     
     /** Path to module demo folder */
-    // public static final String C_MODULEDEMOPATH = "/system/modules/moduledemos/";
-    public static final String C_MODULEDEMOPATH = "/moduledemos/";
+    // Resource translation project:
+    public static final String C_MODULEDEMOPATH = C_NEW_VFS_STRUCTURE?"/system/modules/moduledemos/":"/moduledemos/";
+
+    /** Path to pics gallery folder */
+    // Resource translation project:
+    public static final String C_GALLERYPATH_PICS = C_NEW_VFS_STRUCTURE?"/system/galleries/pics/":"/pics/";
+
+    /** Path to download gallery folder */
+    // Resource translation project:
+    public static final String C_GALLERYPATH_DOWNLOAD = C_NEW_VFS_STRUCTURE?"/system/galleries/download/":"/download/";
+ 
+    /** Path to html gallery folder */
+    // Resource translation project:
+    public static final String C_GALLERYPATH_HTML = C_NEW_VFS_STRUCTURE?"/system/galleries/htmlgalleries/":"/htmlgalleries/";
+
+    /** Path to externallink gallery folder */
+    // Resource translation project:
+    public static final String C_GALLERYPATH_EXTERNALLINKS = C_NEW_VFS_STRUCTURE?"/system/galleries/externallinks/":"/externallinks/";
+
+    /** Path to system image folder */
+    // Resource translation project:
+    public static final String C_SYSTEM_PICS_PATH = C_NEW_VFS_STRUCTURE?"/system/pics/":"/pics/system/";
+
 
     /** Parameter for content templates folder */
     public static final String C_TEMPLATEDIR = "templates/";
@@ -77,7 +105,12 @@ public interface I_CmsWpConstants {
     /** Parameter for content default_bodies folder */
     public static final String C_CONTENTDEFAULTBODIESPATH = C_DEFAULTMODULEPATH + C_DEFAULTBODIESDIR;
 
+    /** Parameter for content layouts folder */
+    public static final String C_CONTENTLAYOUTPATH = C_DEFAULTMODULEPATH + "default_bodies/";
 
+    /** Parameter for layout  */
+    public static final String C_PARA_LAYOUT = "default_body";
+    
     // Parameters that are used in html requests
 
     /** Parameter for foldername  */
@@ -1257,10 +1290,5 @@ public interface I_CmsWpConstants {
     /** The default icon */
     public final static String C_ICON_DEFAULT = "ic_file_othertype.gif";
 
-     /** Parameter for content layouts folder */
-    public static final String C_CONTENTLAYOUTPATH = C_DEFAULTMODULEPATH + "default_bodies/";
-
-    /** Parameter for layout  */
-    public static final String C_PARA_LAYOUT = "default_body";
 
 }

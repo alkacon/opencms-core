@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.3 $ $Date: 2002/10/18 16:54:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -75,7 +75,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
 
         // test whether the links folder exists at all
         try {
-            cms.readFileHeader(C_LINKGALLERY_ROOTFOLDER);
+            cms.readFileHeader(C_GALLERYPATH_EXTERNALLINKS);
         } catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
             templateSelector = "error";
@@ -96,7 +96,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
             }
             folder = (String)session.getValue(C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
-                Vector galleries = cms.getSubFolders(C_LINKGALLERY_ROOTFOLDER);
+                Vector galleries = cms.getSubFolders(C_GALLERYPATH_EXTERNALLINKS);
                 if(galleries.size() > 0) {
 
                     // take the first gallery
@@ -104,7 +104,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
                     session.putValue(C_PARA_FOLDER, folder);
                 } else {
 
-                    // there was a /externallinks/ - folder but no galery in it
+                    // there was a C_GALLERYPATH_EXTERNALLINKS - folder but no galery in it
                     templateSelector = "error_no_gallery";
                 }
             }
@@ -205,7 +205,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         if(chosenFolder == null) {
             chosenFolder = "";
         }
-        Vector folders = cms.getSubFolders(C_LINKGALLERY_ROOTFOLDER);
+        Vector folders = cms.getSubFolders(C_GALLERYPATH_EXTERNALLINKS);
         int numFolders = folders.size();
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.elementAt(i);
@@ -292,7 +292,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
             folder = (String)session.getValue(C_PARA_FOLDER);
         }
         if(folder == null || "".equals(folder)) {
-            folder = C_LINKGALLERY_ROOTFOLDER;
+            folder = C_GALLERYPATH_EXTERNALLINKS;
             parameters.put(C_PARA_FOLDER, folder);
         }
 

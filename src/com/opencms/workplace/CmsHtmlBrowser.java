@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.2 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.3 $ $Date: 2002/10/18 16:54:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -77,7 +77,7 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
 
         // test whether the links folder exists at all
         try {
-            cms.readFileHeader(C_LINKGALLERY_ROOTFOLDER);
+            cms.readFileHeader(C_GALLERYPATH_EXTERNALLINKS);
         } catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", Utils.getStackTrace(e));
             templateSelector = "error";
@@ -106,7 +106,7 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
                     session.putValue(C_PARA_FOLDER, folder);
                 } else {
 
-                    // there was a /externallinks/ - folder but no galery in it
+                    // there was a C_GALLERYPATH_EXTERNALLINKS - folder but no galery in it
                     templateSelector = "error_no_gallery";
                 }
             }

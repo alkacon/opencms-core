@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2002/10/11 15:11:11 $
-* Version: $Revision: 1.206 $
+* Date   : $Date: 2002/10/18 16:56:31 $
+* Version: $Revision: 1.207 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.206 $ $Date: 2002/10/11 15:11:11 $
+ * @version $Revision: 1.207 $ $Date: 2002/10/18 16:56:31 $
  */
 public interface I_CmsConstants {
 
@@ -208,6 +208,11 @@ public interface I_CmsConstants {
      */
     // Encoding project:
     static final String C_PROPERTY_CONTENT_ENCODING = "content-encoding";
+
+    /**
+     * Property for default file in folders
+     */
+    static final String C_PROPERTY_DEFAULT_FILE = "default-file";
 
     /**
      * This is the group for guests.
@@ -1266,11 +1271,6 @@ public interface I_CmsConstants {
      * (i.e. the search module)
      */
     static final String C_PUBLISH_METHOD_LINK = "linkpublish";
-
-    /**
-     * The name of the rootfolder for external links
-     */
-    static final String C_LINKGALLERY_ROOTFOLDER = "/externallinks/";
 
     /**
      * The key for the date of the last linkcheck in the linkchecktable

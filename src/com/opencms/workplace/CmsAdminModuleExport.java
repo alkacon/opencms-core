@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/10/16 10:44:45 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -94,10 +94,11 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             int i = 0;
             
             if (reg.getModuleType(exportName).equals(CmsRegistry.C_MODULE_TYPE_SIMPLE)) {
-                // ADVANCED MODULE
+                // SIMPLE MODULE
                 
                 // check if additional resources outside the system/modules/{exportName} folder were 
-                // specified as module resources by reading the module property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}                
+                // specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
+                // to the module (in the module administration)
                 String additionalResources = OpenCms.getRegistry().getModuleParameterString( exportName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES );
                 int additionalResourceCount = 0;
                 StringTokenizer additionalResourceTokens = null;
@@ -139,8 +140,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
             }
             
             // finally, add the "standard" module resources to the string of all resources for the export
-            resourcen[ i++ ] = I_CmsConstants.C_MODULES_PATH + exportName + "/";
-            resourcen[ i++ ] = "/system/classes/" + exportName.replace('.', '/') + "/";
+            resourcen[ i++ ] = C_MODULES_PATH + exportName + "/";
             resourcen[ i++ ] = C_MODULEDEMOPATH + exportName + "/";
             resourcen[ i++ ] = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.length()-1) + C_MODULEDEMOPATH + exportName + "/";            
 	

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2002/08/26 14:44:48 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,126 +41,88 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.2 $ $Date: 2002/08/26 14:44:48 $
+ * @version $Revision: 1.3 $ $Date: 2002/10/18 16:54:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsConstants,I_CmsFileListUsers {
+public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
-
-
-
-
-
+    /**
+     * This method must be implemented by all galleries. 
+     * It must return the path to the gallery root folder.<p>
+     * 
+     * The root folder names are usually defined as constants in 
+     * the I_CmsWpConstants interface.
+     * 
+     * @see I_CmsWpConstants
+     */ 
+    public String getGalleryPath() {
+        return C_GALLERYPATH_HTML;
+    }
+    
+    /**
+     * This method must return the path to the gallery icon.<p>
+     * 
+     * The gallery image is displayed in the list of available galleries.
+     * 
+     * @param cms The current CmsObject
+     * @return The path to the gallery icon
+     * @throws CmsException In case of problem accessing system resources
+     */ 
+    public String getGalleryIconPath(CmsObject cms) throws CmsException {
+        CmsXmlWpConfigFile config = this.getConfigFile(cms);        
+        return config.getWpPicturePath() + "ic_file_htmlgallery.gif";
+    }   
+        
+    /**
+     * Default XMLTemplate method called to build the output,
+     *
+     * @param cms CmsObject for accessing system resources
+     * @param templateFile Filename of the template file
+     * @param elementName Element name of this template in our parent template
+     * @param parameters Hashtable with all template class parameters
+     * @param templateSelector template section that should be processed
+     * 
+     * @return A HTML String converted to bytes that contains the generated output
+     */    
     public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
-
-/*
-            Enumeration pkeys = parameters.keys();
-            Enumeration pvalues = parameters.elements();
-
-            System.err.println("-----------------------------------------------");
-            System.err.println("-------------Parameters--------------");
-            while(pkeys.hasMoreElements()) {
-              System.err.print("Key: " + pkeys.nextElement());
-              System.err.print(" --- ");
-              System.err.println("Value: " + pvalues.nextElement());
-            }
-            System.err.println("-----------------------------------------------");
-
-*/
-
 
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
 
+        // Get the URL to which we need to return when we're done
+        String lasturl = getLastUrl(cms, parameters);    
+        
+        // Check if this is the inital call to the page
+        String initial = getInitial(session, parameters);   
+                        
+        // Get the folder for the gallery
+        String foldername = getGalleryPath(cms, session, parameters);
+        CmsFolder thefolder = cms.readFolder(foldername);        
 
-        // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
-        if(initial != null) {
-
-            // remove all session values
-            session.removeValue(C_PARA_FOLDER);
-            session.removeValue("lasturl");
-        }
-
-
-        // read the parameters
-        String foldername = (String)parameters.get(C_PARA_FOLDER);
-
-        if(foldername != null) {
-          String htmlRootFolder = getConfigFile(cms).getHtmlGalleryPath();
-            try {
-                CmsFolder fold = cms.readFolder(foldername);
-                if(!(fold.getParent().equals(htmlRootFolder))) {
-                    foldername = htmlRootFolder;
-                }
-                if(fold.getState() == C_STATE_DELETED) {
-                    foldername = htmlRootFolder;
-                }
-            } catch(CmsException exc) {
-                // couldn't read the folder - switch to /htmlgalleries/
-                foldername = htmlRootFolder;
-            }
-          session.putValue("lastgallery",foldername);
-          // ednfal 02-08-26: set the parameter here because of indefinable problems with SAPDB 
-          parameters.put(C_PARA_FOLDER, foldername);
-        }
-        else {
-            foldername = (String)session.getValue(C_PARA_FOLDER);
-            String tmpFolder = (String)session.getValue("lastgallery") ;
-
-            if(foldername == null) {
-
-              if(tmpFolder != null) {
-                try {
-                  CmsFolder testfolder = cms.readFolder(tmpFolder);
-                  foldername = tmpFolder;
-                }
-                catch(CmsException e) {
-                  foldername = getConfigFile(cms).getHtmlGalleryPath();
-                }
-              }
-              else {
-                foldername = getConfigFile(cms).getHtmlGalleryPath();
-              }
-            }
-        }
-
-        // ednfal 02-08-26: there are indefinable problems with SAPDB if the parameter is set here
-        //parameters.put(C_PARA_FOLDER, foldername);
-
-        // need the foldername in the session in case of an exception in the dialog
-        session.putValue(C_PARA_FOLDER, foldername);
-
-        CmsFolder thefolder = cms.readFolder(foldername);
-
-
-        // maybe we have to redirect to head_1
-        if(foldername.equals("/htmlgalleries/") && templateFile.endsWith("administration_head_htmlgalleries2")) {
+        // Check if we must redirect to head_1
+        if(foldername.equals(C_GALLERYPATH_HTML) && templateFile.endsWith("administration_head_htmlgalleries2")) {
             // we are in the wrong head - use the first one
             xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_htmlgalleries1", elementName, parameters, templateSelector);
         }
 
-        // maybe we have to redirect to head_2
+        // Check if we must redirect to head_2
         try {
-            if(foldername.startsWith("/htmlgalleries/") && (thefolder.getParent().equals("/htmlgalleries/")) && templateFile.endsWith("administration_head_htmlgalleries1")) {
+            if(foldername.startsWith(C_GALLERYPATH_HTML) && (thefolder.getParent().equals(C_GALLERYPATH_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
             }
         }
         catch(Exception e) {}
 
-        // getting the URL to which we need to return when we're done
-        String lasturl = getLastUrl(cms, parameters);
-
+        // Now read further parameters    
         String action = (String)parameters.get("action");
         String newname = (String)parameters.get(C_PARA_NAME);
         String title = (String)parameters.get("TITLE"); // both for gallery and upload file
         String step = (String)parameters.get("step");
         String imagedescription = (String)parameters.get("DESCRIPTION");
-
 
         if("new".equals(action)) {
             String galleryname = (String)parameters.get("NAME");
@@ -230,172 +192,27 @@ public class CmsAdminHtmlGalleries extends CmsWorkplaceDefault implements I_CmsC
             }
         }
 
-        else if("snippet".equalsIgnoreCase(action)) {
-          if(foldername != null) {
-            String filename = (String)parameters.get("NEUNAME");
-            String pagetitle = (String)parameters.get("NEUTITEL");
-            String type = (String)parameters.get("type");
+		else if ("snippet".equalsIgnoreCase(action)) {
+			if (foldername != null) {
+				String filename = (String) parameters.get("NEUNAME");
+				String pagetitle = (String) parameters.get("NEUTITEL");
+				String type = (String) parameters.get("type");
 
-            if(filename != null && !"".equals(filename)) {
-              // create the new file
-              Hashtable prop = new Hashtable();
-              prop.put(C_PROPERTY_TITLE, pagetitle);
-              cms.createResource(foldername, filename, type, prop, new byte[0]);
-            }
-/*
-            try {
-              cms.getRequestContext().getResponse().sendRedirect(lasturl);
-            }
-            catch(IOException e) {
-              // no redirect possible
-            }
-            */
-          }
-        }
+				if (filename != null && !"".equals(filename)) {
+					// create the new file
+					Hashtable prop = new Hashtable();
+					prop.put(C_PROPERTY_TITLE, pagetitle);
+					cms.createResource(foldername,	filename, type,	prop, new byte[0]);
+				}
+			}
+		}
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-
-        xmlTemplateDocument.setData("htmlGalleryRootFolder", getConfigFile(cms).getHtmlGalleryPath());
-
+        xmlTemplateDocument.setData("galleryRootFolder", C_GALLERYPATH_HTML);
 
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
                 templateSelector);
     }
-
-
-
-
-
-
-
-    /**
-     * From interface <code>I_CmsFileListUsers</code>.
-     * <P>
-     * Fills all customized columns with the appropriate settings for the given file
-     * list entry. Any column filled by this method may be used in the customized template
-     * for the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param filelist Template file containing the definitions for the file list together with
-     * the included customized defintions.
-     * @param res CmsResource Object of the current file list entry.
-     * @param lang Current language file.
-     * @exception CmsException if access to system resources failed.
-     * @see I_CmsFileListUsers
-     */
-
-    public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
-            CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
-        CmsXmlWpConfigFile config = this.getConfigFile(cms);
-        filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,  cms.getRequestContext().getRequest().getServletUrl() + config.getWpPicturePath()
-                + "ic_file_htmlgallery.gif" );
-        filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
-        filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(res.getAbsolutePath(),
-                C_PROPERTY_TITLE));
-    }
-    /**
-     * From interface <code>I_CmsFileListUsers</code>.
-     * <P>
-     * Collects all folders and files that are displayed in the file list.
-     * @param cms The CmsObject.
-     * @return A vector of folder and file objects.
-     * @exception Throws CmsException if something goes wrong.
-     */
-
-    public Vector getFiles(CmsObject cms) throws CmsException {
-        Vector galleries = new Vector();
-        //Vector folders = cms.getSubFolders(getConfigFile(cms).getPicGalleryPath());
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getHtmlGalleryPath());
-        int numFolders = folders.size();
-        for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
-            galleries.addElement(currFolder);
-        }
-        return galleries;
-    }
-
-    /**
-     * Gets all groups for a select box
-     * <P>
-     * The given vectors <code>names</code> and <code>values</code> will
-     * be filled with the appropriate information to be used for building
-     * a select box.
-     *
-     * @param cms CmsObject Object for accessing system resources.
-     * @param names Vector to be filled with the appropriate values in this method.
-     * @param values Vector to be filled with the appropriate values in this method.
-     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-     * @return Index representing the current value in the vectors.
-     * @exception CmsException
-     */
-
-    public Integer getGroups(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
-            Vector values, Hashtable parameters) throws CmsException {
-
-        // get all groups
-        Vector groups = cms.getGroups();
-        int retValue = 0;
-
-        // fill the names and values
-        String prompt = lang.getDataValue("input.promptgroup");
-        names.addElement(prompt);
-        values.addElement("Aufforderung"); // without significance for the user
-        for(int z = 0;z < groups.size();z++) {
-            String name = ((CmsGroup)groups.elementAt(z)).getName();
-            if(! C_GROUP_GUEST.equals(name)){
-                names.addElement(name);
-                values.addElement(name);
-            }
-        }
-        return new Integer(retValue);
-    }
-
-
-    /**
-     * Indicates if the results of this class are cacheable.
-     *
-     * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
-     */
-
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
-            Hashtable parameters, String templateSelector) {
-        return false;
-    }
-
-    /**
-     * From interface <code>I_CmsFileListUsers</code>.
-     * <P>
-     * Used to modify the bit pattern for hiding and showing columns in
-     * the file list.
-     * @param cms Cms object for accessing system resources.
-     * @param prefs Old bit pattern.
-     * @return New modified bit pattern.
-     * @see I_CmsFileListUsers
-     */
-
-    public int modifyDisplayedColumns(CmsObject cms, int prefs) {
-        prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
-        prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
-        prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
-        prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
-        return prefs;
-    }
-
-    public Object onLoad(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
-        Hashtable parameters = (Hashtable) userObj;
-        String folder = (String)parameters.get("folder");
-        if(folder != null) {
-            String servletUrl = cms.getRequestContext().getRequest().getServletUrl() + "/";
-            return "window.top.body.admin_content.location.href='" + servletUrl + "system/workplace/action/explorer_files.html?mode=listonly&folder=" + folder + "'";
-        } else {
-            return "";
-        }
-    }
-
 }

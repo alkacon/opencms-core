@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2002/10/17 14:32:11 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -280,12 +280,12 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      *
      * @exception CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newFileName, Hashtable properties, byte[] contents) throws CmsException{
         CmsResource res;
         if (m_resourceTypeName == null) {
-            res = cms.doCreateFile(folder, name, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties); 
+            res = cms.doCreateFile(newFileName, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties); 
         } else {            
-            res = cms.doCreateFile(folder, name, contents, m_resourceTypeName, properties);
+            res = cms.doCreateFile(newFileName, contents, m_resourceTypeName, properties);
         }
         // lock the new file
         cms.doLockResource(res.getAbsolutePath(), true);
@@ -357,8 +357,8 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
                        throws CmsException {
         CmsResource importedResource = null;
 
-        String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+        destination = importPath + destination;
+
         boolean changed = true;
         int resourceType = cms.getResourceType(type).getResourceType();
 		int launcherType = cms.getResourceType(type).getLauncherType();
@@ -379,7 +379,7 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {
-            importedResource = cms.doCreateResource(path, name, resourceType ,properties, launcherType, 
+            importedResource = cms.doCreateResource(destination, resourceType ,properties, launcherType, 
                                              launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);
             if(importedResource != null){
                 changed = false;
@@ -389,9 +389,9 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
         }
         if(changed){
         	// if the resource already exists it must be updated
-            lockResource(cms,path+name, true);
-            cms.doWriteResource(path+name,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
-            importedResource = cms.readFileHeader(path+name);
+            lockResource(cms,destination, true);
+            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
+            importedResource = cms.readFileHeader(destination);
         }
 
         return importedResource;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsRequest.java,v $
-* Date   : $Date: 2002/09/19 15:49:25 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/10/18 16:56:31 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.9 $ $Date: 2002/09/19 15:49:25 $
+ * @version $Revision: 1.10 $ $Date: 2002/10/18 16:56:31 $
  */
 public interface I_CmsRequest {
 
@@ -121,6 +121,15 @@ public interface I_CmsRequest {
      * @return The path to the requested resource.
      */
     public String getRequestedResource();
+    
+    /**
+     * Set the name returned by getRequestedResource().
+     * This is required in case there was a folder name requested and 
+     * a default file (e.g. index.html) has to be used instead of the folder.
+     * 
+     * @param resourceName The name to set the requested resource name to 
+     */
+    public void setRequestedResource(String resourceName);
 
     /**
      * Returns the part of the Url that descibes the Web-Application.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/09/12 08:55:42 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2002/10/18 16:56:31 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,15 +33,11 @@ import java.util.*;
 import source.org.apache.java.io.*;
 import source.org.apache.java.util.*;
 import com.opencms.file.*;
+import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.boot.*;
 import com.opencms.util.*;
 import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
-
-// if you need one of these test if the OpenCms Shell still runs!
-//import javax.servlet.*;
-//import javax.servlet.http.*;
-
 
 /**
  * This class is the main class of the OpenCms system.
@@ -55,7 +51,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.94 $ $Date: 2002/09/12 08:55:42 $
+ * @version $Revision: 1.95 $ $Date: 2002/10/18 16:56:31 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -64,11 +60,6 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Define the default file.encoding that should be used by OpenCms
      */
     private static String C_PREFERED_FILE_ENCODING = "ISO8859_1";
-
-    /**
-     * Definition of the index page
-     */
-    private static String C_INDEX = "index.html";
 
     /**
      * The default mimetype
@@ -139,6 +130,16 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * like "ElementClass|ElementTemplate|VariantCacheKey"
      */
     private static Hashtable c_variantDeps = null;
+    
+    /**
+     * Directory translator class.
+     */
+    private static CmsResourceTranslator m_translator = null;
+    
+    /**
+     * List of fefault file names (for directories, e.g, "index.html";
+     */
+    private static String[] m_defaultFilenames = null;
 
     /**
      * Constructor, creates a new OpenCms object.
@@ -221,17 +222,55 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             throw e;
         }
         
-        // try to initialize the flex cache.
+        // try to initialize directory translations
         try {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initialize flex cache...");
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing directory translations...");
             }
-            com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
-        }
-        catch(Exception e) {
+            boolean translationEnabled = conf.getBoolean("directory.translation.enabled", false);
+            if (translationEnabled) {
+                String[] translations = conf.getStringArray("directory.translation.rules");
+                m_translator = new CmsResourceTranslator(translations);        
+            } else {
+                m_translator = new CmsResourceTranslator(new String[0]);
+            }
+        } catch(Exception e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
-                //e.printStackTrace( System.err );
+            }
+            m_translator = new CmsResourceTranslator(new String[0]);
+        }   
+        
+        // try to initialize default file names
+        try {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing directory default files...");
+            }
+            m_defaultFilenames = conf.getStringArray("directory.default.files");
+            for (int i=0; i<m_defaultFilenames.length; i++) {
+                // remove possible white space
+                m_defaultFilenames[i] = m_defaultFilenames[i].trim();
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] directory default file " + i + " is: " + m_defaultFilenames[i] );
+                }                
+            }
+        } catch(Exception e) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
+            }
+        }    
+        // make sure we always have at an array      
+        if (m_defaultFilenames == null) m_defaultFilenames = new String[0];                
+                
+        // try to initialize the flex cache
+        try {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing flex cache...");
+            }
+            com.opencms.flex.cache.CmsFlexCache flexCache = new com.opencms.flex.cache.CmsFlexCache(this);
+        } catch(Exception e) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.toString());
             }
         }        
 
@@ -383,7 +422,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] Exception initializing link rules: " + e.toString());
             }
         }
-        
+
         // Encoding project:
         String defaultEncoding = conf.getString("defaultContentEncoding", "UTF-8");        
         try {
@@ -495,71 +534,103 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     }
 
     /**
-     * This method gets the requested document from the OpenCms and returns it to the
-     * calling module.
+     * This method read the requested document from the OpenCms request context
+     * and returns it to the calling module.
      *
-     * @param cms The CmsObject containing all information about the requested document
-     * and the requesting user.
-     * @return CmsFile object.
+     * @param cms The current CmsObject
+     * @return CmsFile The requested file
+     * @throws CmsException In case the file does not exist or the user has insufficient access permissions 
      */
-    CmsFile initResource(CmsObject cms) throws CmsException,IOException {
-        CmsFile file = null;
+	CmsFile initResource(CmsObject cms) throws CmsException {
 
-        //check if the requested resource is a folder
-        // if this is the case, redirect to the according index.html
-        String resourceName = cms.getRequestContext().getUri();
-        if(resourceName.endsWith("/")) {
-            resourceName += C_INDEX;
-            cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
-            return null;
-        }
-        try {
+		CmsFile file = null;
+		// Get the requested filename from the request context
+		String resourceName = cms.getRequestContext().getUri();
 
-            //read the requested file
-            file = cms.readFile(cms.getRequestContext().getUri());
-        }
-        catch(CmsException e) {
-            if(e.getType() == CmsException.C_NOT_FOUND) {
+		try {
+			// Try to read the requested file
+			file = cms.readFile(resourceName);
+		} catch (CmsException e) {
+			if (e.getType() == CmsException.C_NOT_FOUND) {
+				// The requested file was not found
+				// Check if a folder name was requested, and if so, try
+				// to read the default pages in that folder
 
-                // there was no file found with this name.
-                // it is possible that the requested resource was a folder, so try to access an
-                // index.html there
-                resourceName = cms.getRequestContext().getUri();
-
-                // test if the requested file is already the index.html
-                if(!resourceName.endsWith(C_INDEX)) {
-
-                    // check if the requested file ends with an "/"
-                    if(!resourceName.endsWith("/")) {
-                        resourceName += "/";
+				try {
+					// Try to read the requested resource name as a folder
+					CmsFolder folder = cms.readFolder(resourceName);
+                    // If above call did not throw an exception the folder
+                    // was sucessfully read, so lets go on check for default 
+                    // pages in the folder now
+                    
+                    // Check if C_PROPERTY_DEFAULT_FILE is set on folder
+                    String defaultFileName = cms.readProperty(folder.getPath(), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    if (defaultFileName != null) {
+                        // Property was set, so look up this file first
+                        String tmpResourceName = folder.getPath() + defaultFileName;
+                        try {
+                            file = cms.readFile(tmpResourceName);
+                            // No exception? So we have found the default file                         
+                            cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);                    
+                        } catch (CmsException exc) {                           
+                            if (exc.getType() == CmsException.C_NO_ACCESS) {
+                                // Maybe no access to default file?
+                                throw exc;
+                            }
+                        }                        
                     }
+                    if (file == null) {
+                        // No luck with the property, so check default files specified in opencms.properties (if required)         
+                        for (int i=0; i<m_defaultFilenames.length; i++) {
+                            String tmpResourceName = folder.getPath() + m_defaultFilenames[i];
+                            try {
+                                file = cms.readFile(tmpResourceName);
+                                // No exception? So we have found the default file                         
+                                cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
+                                // Stop looking for default files   
+                                break;                     
+                            } catch (CmsException exc) {                           
+                                if (exc.getType() == CmsException.C_NO_ACCESS) {
+                                    // Maybe no access to default file?
+                                    throw exc;
+                                }
+                                // Otherwise just continue looking for files
+                            }                                                
+                        }       
+                    }                    
+                    if (file == null) {
+                        // No default file was found, throw original exception
+                        throw e;
+                    }                                                     
+				} catch (CmsException ex) {
+                    // Exception trying to read the folder (or it's properties)
+					if (ex.getType() == CmsException.C_NOT_FOUND) {
+                        // Folder with the name does not exist, throw original exception
+                        throw e;
+                    }
+                    // If the folder was found there might have been a permission problem
+                    throw ex;
+				}
 
-                    //redirect the request to the index.html
-                    resourceName += C_INDEX;
-                    cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
-                }
-                else {
+			} else {
+				// Throw the CmsException (possible cause e.g. no access permissions)
+				throw e;
+			}
+		}
 
-                    // throw the CmsException.
-                    throw e;
-                }
-            }
-            else {
-
-                // throw the CmsException.
-                throw e;
-            }
-        }
-        if(file != null) {
-
-            // test if this file is only available for internal access operations
-            if((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]
-                        + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
-            }
-        }
-        return file;
-    }
+		if (file != null) {
+			// Test if this file is only available for internal access operations
+			if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
+				throw new CmsException(
+					CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]
+						+ cms.getRequestContext().getUri(),
+					CmsException.C_INTERNAL_FILE);
+			}
+		}
+        
+        // Return the file read from the VFS
+		return file;
+	}
 
     /**
      * Inits a new user and sets it into the overgiven cms-object.
@@ -575,9 +646,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
 
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage);
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_translator);
         }else{
-            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage);
+            cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_translator);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/10/17 14:32:00 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2002/10/17 14:32:00 $
+ * @version $Revision: 1.31 $ $Date: 2002/10/18 16:54:59 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
@@ -329,7 +329,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
         String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
-        if (bodyPath.equals(hXml.getElementTemplate("body"))){
+        String bodyXml=cms.getRequestContext().getResourceTranslator().translateResource(C_DEFAULT_SITE + C_ROOTNAME_VFS + hXml.getElementTemplate("body"));        
+
+        if ((C_DEFAULT_SITE + C_ROOTNAME_VFS + bodyPath).equals(bodyXml)){
 
             // Evaluate some path information
             String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
@@ -393,7 +395,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      *
      * @exception CmsException if operation was not successful.
      */
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents) throws CmsException{
+
+        String folderName = newPageName.substring(0, newPageName.lastIndexOf(C_FOLDER_SEPERATOR, newPageName.length()-2)+1);
+        String pageName = newPageName.substring(folderName.length(), newPageName.length()-1);
 
         // Scan for mastertemplates
         Vector allMasterTemplates = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
@@ -405,26 +410,24 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
 
         // Evaluate the absolute path to the new body file
-        String bodyFolder =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))) + folder;
+        String bodyFolder =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/"))) + folderName;
 
         // Create the new page file
-        //CmsFile file = cms.doCreateFile(folder, name, "".getBytes(), I_CmsConstants.C_TYPE_PAGE_NAME, properties);
-        CmsFile file = cms.doCreateFile(folder, name, "".getBytes(), m_resourceTypeName, properties);
-        cms.doLockResource(folder + name, true);
+        CmsFile file = cms.doCreateFile(newPageName, "".getBytes(), m_resourceTypeName, properties);
+        cms.doLockResource(newPageName, true);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, file);
         pageXml.setTemplateClass(C_CLASSNAME);
         pageXml.setMasterTemplate(masterTemplate);
         pageXml.setElementClass("body", C_CLASSNAME);
-        pageXml.setElementTemplate("body", bodyFolder + name);
+        pageXml.setElementTemplate("body", bodyFolder + pageName);
         pageXml.write();
 
         // Check, if the body path exists and create missing folders, if neccessary
-        checkFolders(cms, folder);
+        checkFolders(cms, folderName);
 
         // Create the new body file
-        //CmsFile bodyFile = cms.doCreateFile(bodyFolder, name, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_BODY_NAME, new Hashtable());
-        CmsFile bodyFile = cms.doCreateFile(bodyFolder, name, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
-        cms.doLockResource(bodyFolder + name, true);
+        CmsFile bodyFile = cms.doCreateFile(bodyFolder + pageName, (C_DEFAULTBODY_START + new String(contents) + C_DEFAULTBODY_END).getBytes(), I_CmsConstants.C_TYPE_PLAIN_NAME, new Hashtable());
+        cms.doLockResource(bodyFolder + pageName, true);
         int flags = bodyFile.getAccessFlags();
         if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
             flags += C_ACCESS_INTERNAL_READ;
@@ -432,14 +435,14 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         cms.chmod(bodyFile.getAbsolutePath(), flags);
         // linkmanagement: create the links of the new page (for the case that the content was not empty
         if(contents.length > 1){
-            CmsPageLinks linkObject = cms.getPageLinks(folder+name);
+            CmsPageLinks linkObject = cms.getPageLinks(newPageName);
             cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
         }
         return file;
     }
 
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
-        CmsFile resource = (CmsFile)createResource(cms, folder, name, properties, contents);
+    public CmsResource createResource(CmsObject cms, String newPageName, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
+        CmsFile resource = (CmsFile)createResource(cms, newPageName, properties, contents);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
         pageXml.setMasterTemplate(masterTemplate);
         pageXml.write();
@@ -547,9 +550,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                                        String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
-
-        String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+        destination = importPath + destination;
+        
         boolean changed = true;
         int resourceType = cms.getResourceType(type).getResourceType();
 		int launcherType = cms.getResourceType(type).getLauncherType();
@@ -570,7 +572,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         	resgroup = cms.getRequestContext().currentGroup();	
         }        
         try {
-            importedResource = cms.doCreateResource(path, name, resourceType ,properties, launcherType, 
+            importedResource = cms.doCreateResource(destination, resourceType ,properties, launcherType, 
                                              launcherStartClass, resowner.getName(), resgroup.getName(), Integer.parseInt(access), content);
             if(importedResource != null){
                 changed = false;
@@ -580,9 +582,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         }
         if(changed){
         	// if the resource already exists it must be updated
-            lockResource(cms,path+name, true);
-            cms.doWriteResource(path+name,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
-            importedResource = cms.readFileHeader(path+name);
+            lockResource(cms,destination, true);
+            cms.doWriteResource(destination,properties,resowner.getName(), resgroup.getName(),Integer.parseInt(access),resourceType,content);
+            importedResource = cms.readFileHeader(destination);
         }
 
         return importedResource;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/09/19 15:49:25 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2002/10/18 16:56:31 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2002/09/19 15:49:25 $
+ * @version $Revision: 1.31 $ $Date: 2002/10/18 16:56:31 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -173,16 +173,6 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
                 req.setCharacterEncoding(encoding);
             }
             A_OpenCms.log(C_OPENCMS_DEBUG, "Request character encoding is: '" + req.getCharacterEncoding() + "'");
-        }
-        
-        if(m_req.getPathInfo().indexOf("?") != -1) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
-                A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
-            }
-            throw new IOException("URL parameters not extracted properly by servlet environment. " + m_req.getPathInfo());
         }
     }
 
@@ -419,6 +409,9 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         return m_req.getParameterValues(key);
     }
 
+    /** String to the requested resource */
+    private String m_requestedResource = null;
+
     /**
      * This funtion returns the name of the requested resource.
      * <P>
@@ -432,8 +425,31 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
      * @return The path to the requested resource.
      */
     public String getRequestedResource() {
-        return m_req.getPathInfo();
+        if (m_requestedResource != null) return m_requestedResource;
+        m_requestedResource = m_req.getPathInfo();        
+        /*
+        if (m_requestedResource == null) {
+            m_requestedResource = "/index.html";
+        } else if (m_requestedResource.endsWith("/")) {          
+            m_requestedResource += "index.html"; 
+        }
+        */
+        if (m_requestedResource == null) {
+            m_requestedResource = "/";
+        }       
+        return m_requestedResource;
     }
+    
+    /**
+     * Set the name returned by getRequestedResource().
+     * This is required in case there was a folder name requested and 
+     * a default file (e.g. index.html) has to be used instead of the folder.
+     * 
+     * @param resourceName The name to set the requested resource name to 
+     */
+    public void setRequestedResource(String resourceName) {
+        m_requestedResource = resourceName;
+    }    
 
     /**
      * A utility method that reads a single part of the multipart request

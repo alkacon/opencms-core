@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
-* Date   : $Date: 2002/09/19 06:04:09 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,22 +35,21 @@ import com.opencms.flex.CmsJspLoader;
  * It was needed because JSP should have property "export" set to "false" by default.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 
 public class CmsResourceTypeJsp extends com.opencms.file.CmsResourceTypePlain {
 
     public static final String C_TYPE_RESOURCE_NAME = "jsp";
 
-    public com.opencms.file.CmsResource createResource(com.opencms.file.CmsObject cms, String folder, String name, java.util.Hashtable properties, byte[] contents) throws com.opencms.core.CmsException{
-        com.opencms.file.CmsResource res = cms.doCreateFile(folder, name, contents, C_TYPE_RESOURCE_NAME, properties);
-        String filename = folder + name;
+    public com.opencms.file.CmsResource createResource(com.opencms.file.CmsObject cms, String newResourceName, java.util.Hashtable properties, byte[] contents) throws com.opencms.core.CmsException{
+        com.opencms.file.CmsResource res = cms.doCreateFile(newResourceName, contents, C_TYPE_RESOURCE_NAME, properties);
         // Lock the new file
-        cms.lockResource(filename);
+        cms.lockResource(newResourceName);
         // Attach default JSP properties
-        cms.writeProperty(filename, C_PROPERTY_EXPORT, "false");
+        cms.writeProperty(newResourceName, C_PROPERTY_EXPORT, "false");
         // JSP content encoding default it "ISO-8859-1" by JSP standard
-        cms.writeProperty(filename, C_PROPERTY_CONTENT_ENCODING, CmsJspLoader.C_DEFAULT_JSP_ENCODING);
+        cms.writeProperty(newResourceName, C_PROPERTY_CONTENT_ENCODING, CmsJspLoader.C_DEFAULT_JSP_ENCODING);
         return res;
     }
 }

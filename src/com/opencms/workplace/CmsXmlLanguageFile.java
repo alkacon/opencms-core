@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/09/19 12:15:42 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.31 $ $Date: 2002/09/19 12:15:42 $
+ * @version $Revision: 1.32 $ $Date: 2002/10/18 16:54:03 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -321,7 +321,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
      */
     private static boolean languageSupported(CmsObject cms, String lang) {
         try {
-            cms.readFolder(m_languagePath, lang + "/");
+            cms.readFolder(m_languagePath + lang);
         } catch(CmsException e) {
             // doesn't seem to exist
             return false;

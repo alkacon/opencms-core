@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeBinary.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ public class CmsResourceTypeBinary extends CmsResourceTypePlain {
     public static final String C_TYPE_RESOURCE_NAME = "binary";
 
     public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
-        CmsResource res = cms.doCreateFile(folder, name, contents, C_TYPE_RESOURCE_NAME, properties);
+        CmsResource res = cms.doCreateFile(folder + name, contents, C_TYPE_RESOURCE_NAME, properties);
         // lock the new file
         cms.lockResource(folder+name);
         return res;

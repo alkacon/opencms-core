@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/10/11 15:14:55 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/10/18 16:56:31 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.53 $ $Date: 2002/10/11 15:14:55 $
+ * @version $Revision: 1.54 $ $Date: 2002/10/18 16:56:31 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -2369,7 +2369,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void readFolder(String folder) {
         try {
-            System.out.println(m_cms.readFolder(folder, ""));
+            System.out.println(m_cms.readFolder(folder));
         }
         catch(Exception exc) {
             CmsShell.printException(exc);

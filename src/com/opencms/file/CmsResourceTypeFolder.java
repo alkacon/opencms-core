@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2002/10/17 14:31:52 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -515,9 +515,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @exception CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
-        CmsFolder res = cms.doCreateFolder(folder, name, properties);
-        cms.lockResource(folder+name+"/");
+    public CmsResource createResource(CmsObject cms, String newFolderName, Hashtable properties, byte[] contents) throws CmsException{
+        if (! newFolderName.endsWith(C_FOLDER_SEPERATOR)) newFolderName += C_FOLDER_SEPERATOR;
+        CmsFolder res = cms.doCreateFolder(newFolderName, properties);        
+        cms.lockResource(newFolderName);
         res.setLocked(cms.getRequestContext().currentUser().getId());
         return res;
     }
@@ -651,9 +652,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                                        String launcherStartClass, byte[] content, String importPath) 
                        throws CmsException {
         CmsResource importedResource = null;
+        destination = importPath + destination;
+        if (! destination.endsWith(C_FOLDER_SEPERATOR)) destination += C_FOLDER_SEPERATOR;
 
-        String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
         boolean changed = true;
         // try to read the new owner and group
         CmsUser resowner = null;
@@ -670,7 +671,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         } 
         // try to create the resource		
         try {
-            importedResource = cms.doCreateResource(path, name, C_TYPE_FOLDER,properties, C_UNKNOWN_LAUNCHER_ID, 
+            importedResource = cms.doCreateResource(destination, C_TYPE_FOLDER, properties, C_UNKNOWN_LAUNCHER_ID, 
                                              C_UNKNOWN_LAUNCHER, resowner.getName(), resgroup.getName(), Integer.parseInt(access), new byte[0]);
             if(importedResource != null){
                 changed = false;
@@ -681,7 +682,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         if(changed){
         	changed = false;
             //the resource exists, check if properties has to be updated
-            importedResource = cms.readFolder(path, name + "/");
+            importedResource = cms.readFolder(destination);
             Hashtable oldProperties = cms.readAllProperties(importedResource.getAbsolutePath());
             if(oldProperties == null){
                 oldProperties = new Hashtable();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2002/09/03 11:57:00 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2002/10/18 16:56:42 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -138,36 +138,35 @@ public class CmsSetupUtils {
                 line = line.trim();
 
                 if(line.startsWith("#")) {
-                    /* write comment). */
+                    // output comment
                     fw.write(line);
+                    fw.write("\n");                    
                 }
                 else if (line.indexOf('=') > -1) {
                     String key = line.substring(0,line.indexOf('=')).trim();
-
-                    /* write key */
+                    // write key
                     fw.write((key+"="));
-
                     try {
-                        /* Get the value to the given key from the properties*/
+                        // Get the value to the given key from the properties 
                         String value = extProp.get(key).toString();
 
-                        /* if this was a list, we need to delete leading and tailing '[]' characters */
+                        // if this was a list (array), we need to delete leading and tailing '[]' characters
                         if(value.startsWith("[") && value.endsWith("]") && value.indexOf(',')>-1) {
                             value = splitMultipleValues(value.substring(1,value.length()-1));
                         }
-                        /* write it */
+                        // write it
                         fw.write(value);
                     }
                     catch (NullPointerException e)  {
-                        /* no value found. Do nothing */
-                    }
+                        // no value found - do nothing 
+                    }                    
+                    // add trailing line feed
+                    fw.write("\n");                    
                 }
-                else  {
-                  //do nothing
+                else if ("".equals(line)) {
+                    // output empty line
+                    fw.write("\n");
                 }
-
-                /* add at the end of each line */
-                fw.write("\n");
             }
             lnr.close();
             fw.close();

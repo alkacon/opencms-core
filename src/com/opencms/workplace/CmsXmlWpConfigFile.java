@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2002/06/10 15:50:00 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2002/06/10 15:50:00 $
+ * @version $Revision: 1.43 $ $Date: 2002/10/18 16:54:03 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -74,7 +74,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for download galleries.
      */
     public String getDownGalleryPath(){
-        return "/download/";
+        return I_CmsWpConstants.C_GALLERYPATH_DOWNLOAD;
     }
 
     /**
@@ -82,7 +82,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for html galleries.
      */
     public String getHtmlGalleryPath(){
-        return "/htmlgalleries/";
+        return I_CmsWpConstants.C_GALLERYPATH_HTML;
     }
 
     /**
@@ -90,9 +90,17 @@ public class CmsXmlWpConfigFile {
      * @return Path for picture galleries.
      */
     public String getPicGalleryPath(){
-        return "/pics/";
+        return I_CmsWpConstants.C_GALLERYPATH_PICS;
     }
 
+    /**
+     * Gets the path at which the folders with the externallink galleries are
+     * @return Path for externallink galleries.
+     */
+    public String getLinkGalleryPath() {
+        return I_CmsWpConstants.C_GALLERYPATH_EXTERNALLINKS;
+    }
+    
     /**
      * Gets the path for OpenCms language files.
      * @return Path for language files.
@@ -129,20 +137,11 @@ public class CmsXmlWpConfigFile {
     public String getWpPicturePath() throws CmsException {
         if(new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS")).booleanValue()) {
             // read the wp images from the vfs - so add the servlet url to the return value
-            return m_cms.getRequestContext().getRequest().getServletUrl() + "/pics/system/";
+            return m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_SYSTEM_PICS_PATH;
         } else {
             // read the wp images from the webapps context
             return "/pics/system/";
         }
-    }
-
-    /**
-     * Gets the path for OpenCms workplace administration files.
-     * @return Path for OpenCms workplace administration files.
-     * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
-     */
-    public String getLinkGalleryPath() throws CmsException {
-        return "/externallinks/";
     }
 
     public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/17 14:31:13 $
-* Version: $Revision: 1.242 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.243 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import javax.servlet.http.*;
 import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
+import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.util.*;
 import com.opencms.launcher.*;
 import com.opencms.template.cache.*;
@@ -53,7 +54,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.242 $ $Date: 2002/10/17 14:31:13 $
+ * @version $Revision: 1.243 $ $Date: 2002/10/18 16:54:59 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -901,8 +902,12 @@ public CmsResource createResource(String folder, String name, String type, Hasht
 }
 
 public CmsResource createResource(String folder, String name, String type, Hashtable properties, byte[] contents) throws CmsException {
+    return createResource(folder + name, type, properties, contents);
+}
+
+public CmsResource createResource(String newResourceName, String type, Hashtable properties, byte[] contents) throws CmsException {
     I_CmsResourceType rt = getResourceType(type);
-    return rt.createResource(this, folder, name, properties, contents);
+    return rt.createResource(this, newResourceName, properties, contents);
 }
 
 /**
@@ -918,9 +923,9 @@ public CmsResource createResource(String folder, String name, String type, Hasht
  * @exception CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
  * filename is not valid or if the user has not the appropriate rights to create a new file.
  */
-protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type) throws CmsException {
+protected CmsFile doCreateFile(String newFileName, byte[] contents, String type) throws CmsException {
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), getSiteRoot(folder), filename, contents,
+                                   m_context.currentProject(), getSiteRoot(newFileName), contents,
                                    type, new Hashtable());
     return file;
 }
@@ -941,13 +946,13 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  * The CmsException is also thrown, if the filename is not valid or if the user
  * has not the appropriate rights to create a new file.
  */
-protected CmsFile doCreateFile(String folder, String filename, byte[] contents, String type, Hashtable properties) throws CmsException {
+protected CmsFile doCreateFile(String newFileName, byte[] contents, String type, Hashtable properties) throws CmsException {
     // avoid null-pointer exceptions
     if(properties == null) {
         properties = new Hashtable();
     }
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(),
-                                   m_context.currentProject(), getSiteRoot(folder), filename, contents,
+                                   m_context.currentProject(), getSiteRoot(newFileName), contents,
                                    type, properties);
     return file;
 }
@@ -966,7 +971,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            getSiteRoot(folder), newFolderName, new Hashtable());
+                                            getSiteRoot(folder + newFolderName + C_FOLDER_SEPERATOR), new Hashtable());
     return cmsFolder;
 }
 
@@ -985,10 +990,9 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  * a new folder.
  *
  */
-protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
+protected CmsFolder doCreateFolder(String newFolderName, Hashtable properties) throws CmsException {
     CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(),
-                                            getSiteRoot(folder), newFolderName, properties);
-
+                                            getSiteRoot(newFolderName), properties);
     return cmsFolder;
 }
 
@@ -1014,10 +1018,10 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtabl
 	 * a new resource.
 	 *
 	 */
-	protected CmsResource doCreateResource(String folder, String newResourceName, int resourceType, Hashtable properties, int launcherType,
+	protected CmsResource doCreateResource(String newResourceName, int resourceType, Hashtable properties, int launcherType,
                                         String launcherClassname, String ownername, String groupname, int accessFlags, byte[] filecontent) throws CmsException {
     	CmsResource cmsResource = m_rb.createResource(m_context.currentUser(), m_context.currentProject(),
-                                            getSiteRoot(folder), newResourceName, resourceType, properties, launcherType,
+                                            getSiteRoot(newResourceName), resourceType, properties, launcherType,
                                             launcherClassname, ownername, groupname, accessFlags, filecontent);
 
 	    return cmsResource;
@@ -1536,7 +1540,7 @@ public CmsObject getCmsObjectForStaticExport(CmsExportRequest dReq, CmsExportRes
 
     CmsObject cmsForStaticExport = new CmsObject();
     cmsForStaticExport.init(m_rb, dReq, dRes, C_USER_GUEST,
-                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null);
+                             C_GROUP_GUEST, C_PROJECT_ONLINE_ID, false, new CmsElementCache(), null, m_context.getResourceTranslator());
     cmsForStaticExport.setLauncherManager(getLauncherManager());
     return cmsForStaticExport;
 }
@@ -2181,11 +2185,11 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
  *
  * @exception CmsException if operation was not successful.
  */
-public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage) throws CmsException {
+public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming, CmsElementCache elementCache, CmsCoreSession sessionStorage, CmsResourceTranslator translator) throws CmsException {
     m_sessionStorage = sessionStorage;
     m_rb = broker;
     m_context = new CmsRequestContext();
-    m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache);
+    m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming, elementCache, translator);
     try {
         m_linkChecker = new LinkChecker();
         m_linkSubstitution = new LinkSubstitution();
@@ -2308,7 +2312,7 @@ public String loginUser(String username, String password) throws CmsException {
     // login the user
     CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage);
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getResourceTranslator());
 
     this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_LOGIN_USER, newUser);
 
@@ -2329,7 +2333,7 @@ public String loginWebUser(String username, String password) throws CmsException
     // login the user
     CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
     // init the new user
-    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage);
+    init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming(), m_context.getElementCache(), m_sessionStorage, m_context.getResourceTranslator());
     // return the user-name
     return (newUser.getName());
 }
@@ -3018,61 +3022,47 @@ public CmsBackupResource readFileForHist(String filename, int versionId) throws 
 public Vector readFileHeaders(int projectId) throws CmsException {
     return (m_rb.readFileHeaders(m_context.currentUser(), m_context.currentProject(), projectId));
 }
-/**
- * Reads a folder from the Cms.
- *
- * @param folder the complete path to the folder to be read.
- *
- * @return folder the read folder.
- *
- * @exception CmsException if the user has not the rights
- * to read this resource, or if the folder couldn't be read.
- */
-public CmsFolder readFolder(String folder) throws CmsException {
-    return (readFolder(folder, ""));
-}
 
 /**
  * Reads a folder from the Cms.
  *
- * @param folder the complete path to the folder to be read.
+ * @param folderName the complete path to the folder to be read
  * @param includeDeleted Include the folder if it is marked as deleted
  *
- * @return folder the read folder.
+ * @return The read folder 
  *
- * @exception CmsException if the user has not the rights
- * to read this resource, or if the folder couldn't be read.
+ * @exception CmsException If the user does not have the permissions
+ * to read this folder, or if the folder couldn't be read
  */
-public CmsFolder readFolder(String folder, boolean includeDeleted) throws CmsException {
-    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder), includeDeleted));
+public CmsFolder readFolder(String folderName, boolean includeDeleted) throws CmsException {
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folderName), includeDeleted));
 }
 
 /**
  * Reads a folder from the Cms.
  *
- * @param folder the complete path to the folder from which the folder will be
- * read.
- * @param foldername the name of the folder to be read.
+ * @param folder the complete path to the folder from which the folder will be read
+ * @param foldername the name of the folder to be read
  *
- * @return folder the read folder.
+ * @return The read folder
  *
- * @exception CmsException if the user has not the rights
- * to read this resource, or if the folder couldn't be read.
+ * @exception CmsException if the user does not have the permissions
+ * to read this folder, or if the folder couldn't be read
  */
-public CmsFolder readFolder(String folder, String folderName) throws CmsException {
-    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folder), folderName));
+public CmsFolder readFolder(String folderName) throws CmsException {
+    return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), getSiteRoot(folderName)));
 }
 
 /**
  * Reads a folder from the Cms.
  *
- * @param folderid the id of the folder to be read.
+ * @param folderid the id of the folder to be read
  * @param includeDeleted Include the folder if it is marked as deleted
  *
- * @return folder the read folder.
+ * @return folder the read folder
  *
- * @exception CmsException if the user has not the rights
- * to read this resource, or if the folder couldn't be read.
+ * @exception CmsException if the user does not have the permissions
+ * to read this folder, or if the folder couldn't be read
  */
 public CmsFolder readFolder(int folderid, boolean includeDeleted) throws CmsException {
     return (m_rb.readFolder(m_context.currentUser(), m_context.currentProject(), folderid, includeDeleted));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2002/08/26 13:00:40 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import java.util.*;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.5 $ $Date: 2002/08/26 13:00:40 $
+ * @version $Revision: 1.6 $ $Date: 2002/10/18 16:54:03 $
  */
 
 public class CmsHelperMastertemplates {
@@ -66,21 +66,20 @@ public class CmsHelperMastertemplates {
      * @exception Throws CmsException if something goes wrong.
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
-
         // first read the available templates from the VFS
         getTemplateElements(cms, I_CmsWpConstants.C_TEMPLATEDIR, names, values);
-
-        // find the correct index for the current template
+         // find the correct index for the current template
         if(currentTemplate != null) {
-            for(int i = 0; i < values.size(); i++) {
-                String template = (String) values.get(i);
+           // it's required to do directory translation if comparing directory names 
+           currentTemplate = cms.getRequestContext().getResourceTranslator().translateResource(I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + currentTemplate);        
+           for(int i = 0; i < values.size(); i++) {
+                String template =  cms.getRequestContext().getResourceTranslator().translateResource(I_CmsConstants.C_DEFAULT_SITE + I_CmsConstants.C_ROOTNAME_VFS + ((String)values.get(i)));
                 if(currentTemplate.equals(template)) {
                     // found the correct index - return it
                     return new Integer(i);
                 }
             }
         }
-
         return new Integer(defaultReturnValue);
     }
 
@@ -93,9 +92,14 @@ public class CmsHelperMastertemplates {
      * @exception Throws CmsException if something goes wrong.
      */
     public static void getTemplateElements(CmsObject cms, String subFolder, Vector names, Vector values) throws CmsException {
+        
+        Vector files = new Vector();
 
-        // get all template elements in the default folder
-        Vector files = cms.getFilesInFolder(I_CmsWpConstants.C_DEFAULTMODULEPATH + subFolder);
+        if (! I_CmsWpConstants.C_NEW_VFS_STRUCTURE) {
+            // get all template elements in the default folder
+            // only required in old structure
+            files = cms.getFilesInFolder(I_CmsWpConstants.C_DEFAULTMODULEPATH + subFolder);            
+        }        
 
         // get all selected template elements in the module folders
         Vector modules = new Vector();
@@ -103,13 +107,9 @@ public class CmsHelperMastertemplates {
         for(int i = 0;i < modules.size();i++) {
             Vector moduleTemplateFiles = new Vector();
             String folder = ((CmsFolder)modules.elementAt(i)).getAbsolutePath();
-            if (! folder.equals(I_CmsWpConstants.C_DEFAULTMODULEPATH)) {
-                // make sure the default folder is not included twice,
-                // this might happen if the default folder is inside module directory
-                moduleTemplateFiles = cms.getFilesInFolder(folder + subFolder);
-                for(int j = 0;j < moduleTemplateFiles.size();j++) {
-                    files.addElement(moduleTemplateFiles.elementAt(j));
-                }
+            moduleTemplateFiles = cms.getFilesInFolder(folder + subFolder);
+            for(int j = 0;j < moduleTemplateFiles.size();j++) {
+                files.addElement(moduleTemplateFiles.elementAt(j));
             }
         }
         

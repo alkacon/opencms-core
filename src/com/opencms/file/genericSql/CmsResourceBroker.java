@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/17 14:30:28 $
-* Version: $Revision: 1.336 $
+* Date   : $Date: 2002/10/18 16:55:35 $
+* Version: $Revision: 1.337 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.336 $ $Date: 2002/10/17 14:30:28 $
+ * @version $Revision: 1.337 $ $Date: 2002/10/18 16:55:35 $
 
  *
  */
@@ -1707,21 +1707,25 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup,
-                               CmsProject currentProject, String folder,
-                               String filename, byte[] contents, String type,
+                               CmsProject currentProject,
+                               String newFileName, byte[] contents, String type,
                                Hashtable propertyinfos)
 
          throws CmsException {
 
-        // checks, if the filename is valid, if not it throws a exception
-        validFilename(filename);
+        // extract folder information
+        String folderName = newFileName.substring(0, newFileName.lastIndexOf(C_FOLDER_SEPERATOR, newFileName.length()-2)+1);
+        String resourceName = newFileName.substring(folderName.length(), newFileName.length()-1);
 
-        CmsFolder cmsFolder = readFolder(currentUser,currentProject, folder);
+        // checks, if the filename is valid, if not it throws a exception
+        validFilename(resourceName);
+
+        CmsFolder cmsFolder = readFolder(currentUser,currentProject, folderName);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
             // write-access was granted - create and return the file.
             CmsFile file = m_dbAccess.createFile(currentUser, currentProject,
                                                onlineProject(currentUser, currentProject),
-                                               folder + filename, 0, cmsFolder.getResourceId(),
+                                               newFileName, 0, cmsFolder.getResourceId(),
                                                contents,
                                                getResourceType(currentUser, currentProject, type));
 
@@ -1741,7 +1745,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 
             m_dbAccess.writeFileHeader(currentProject, file,false);
 
-            this.clearResourceCache(folder + filename);
+            this.clearResourceCache(newFileName);
 
             // write the metainfos
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(),file, file.getType());
@@ -1751,7 +1755,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 
             return file ;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename,
+            throw new CmsException("[" + this.getClass().getName() + "] " + newFileName,
                 CmsException.C_NO_ACCESS);
         }
 
@@ -1785,21 +1789,27 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      */
     public CmsFolder createFolder(CmsUser currentUser, CmsGroup currentGroup,
                                   CmsProject currentProject,
-                                  String folder, String newFolderName,
+                                  String newFolderName,
                                   Hashtable propertyinfos)
         throws CmsException {
+            
+        // append C_FOLDER_SEPERATOR if required
+        if (! newFolderName.endsWith(C_FOLDER_SEPERATOR)) newFolderName += C_FOLDER_SEPERATOR;
+        
+        // extract folder information
+        String folderName = newFolderName.substring(0, newFolderName.lastIndexOf(C_FOLDER_SEPERATOR, newFolderName.length()-2)+1);
+        String resourceName = newFolderName.substring(folderName.length(), newFolderName.length()-1);
 
         // checks, if the filename is valid, if not it throws a exception
-        validFilename(newFolderName);
-        CmsFolder cmsFolder = readFolder(currentUser,currentProject, folder);
+        validFilename(resourceName);
+        CmsFolder cmsFolder = readFolder(currentUser,currentProject, folderName);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
 
             // write-acces  was granted - create the folder.
             CmsFolder newFolder = m_dbAccess.createFolder(currentUser, currentProject,
                                                           cmsFolder.getResourceId(),
                                                           C_UNKNOWN_ID,
-                                                          folder + newFolderName +
-                                                          C_FOLDER_SEPERATOR,
+                                                          newFolderName,
                                                           0);
             // update the access flags
             Hashtable startSettings=null;
@@ -1817,7 +1827,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             newFolder.setState(C_STATE_NEW);
 
             m_dbAccess.writeFolder(currentProject, newFolder, false);
-            this.clearResourceCache(folder + newFolderName + C_FOLDER_SEPERATOR);
+            this.clearResourceCache(newFolderName);
 
             // write metainfos for the folder
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), newFolder, newFolder.getType());
@@ -1827,7 +1837,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             // return the folder
             return newFolder ;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + folder + newFolderName,
+            throw new CmsException("[" + this.getClass().getName() + "] " + newFolderName,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -1867,23 +1877,26 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
      * user has not the rights for this resource.
      */
     public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
-                                       String folder, String newResourceName,
+                                       String newResourceName,
                                        int resourceType, Hashtable propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
                                        byte[] filecontent)
         throws CmsException {
-
+            
+        // extract folder information
+        String folderName = newResourceName.substring(0, newResourceName.lastIndexOf(C_FOLDER_SEPERATOR, newResourceName.length()-2)+1);
+        String resourceName = newResourceName.substring(folderName.length(), newResourceName.length()-1);
+        
         // checks, if the filename is valid, if not it throws a exception
-        validFilename(newResourceName);
-        String longResourcename = folder + newResourceName;
-        boolean isFolder = false;
-        if(resourceType == C_TYPE_FOLDER){
-        	longResourcename = folder + newResourceName + C_FOLDER_SEPERATOR;
-        	isFolder = true;
+        validFilename(resourceName);
+        boolean isFolder = (resourceType == C_TYPE_FOLDER);
+        if(isFolder){
+            // append C_FOLDER_SEPERATOR if required
+            if (! newResourceName.endsWith(C_FOLDER_SEPERATOR)) newResourceName += C_FOLDER_SEPERATOR;            
         }
 
-        CmsFolder parentFolder = readFolder(currentUser,currentProject, folder);
+        CmsFolder parentFolder = readFolder(currentUser, currentProject, folderName);
         if( accessCreate(currentUser, currentProject, (CmsResource)parentFolder) ) {
 			// try to read owner and group
 			CmsUser owner = this.readUser(currentUser, currentProject, ownername);
@@ -1893,7 +1906,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
 				filecontent = new byte[0];
 			}
 			CmsResource newResource = new CmsResource(C_UNKNOWN_ID,parentFolder.getResourceId(),
-			                        C_UNKNOWN_ID,longResourcename,
+			                        C_UNKNOWN_ID, newResourceName,
                                     resourceType, 0,
                                     owner.getId(), group.getId(), currentProject.getId(),
                                     accessFlags, C_STATE_NEW, currentUser.getId(),
@@ -1904,7 +1917,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             // write-acces  was granted - create the folder.
             newResource = m_dbAccess.createResource(currentProject,onlineProject(currentUser, currentProject),newResource,filecontent, currentUser.getId(), isFolder);
             
-            this.clearResourceCache(longResourcename);
+            this.clearResourceCache(newResourceName);
             // write metainfos for the folder
             m_dbAccess.writeProperties(propertyinfos, currentProject.getId(), newResource, newResource.getType(),true);
 
@@ -1913,7 +1926,7 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
             // return the folder
             return newResource;
         } else {
-            throw new CmsException("[" + this.getClass().getName() + "] " + folder + newResourceName,
+            throw new CmsException("[" + this.getClass().getName() + "] " + newResourceName,
                 CmsException.C_NO_ACCESS);
         }
     }
@@ -5564,7 +5577,7 @@ public CmsFile readFile(CmsUser currentUser, CmsProject currentProject, String f
  */
 protected CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int project, String folder) throws CmsException {
     if (folder == null) return null;
-    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(folder,currentProject.getId());
+    CmsFolder cmsFolder = (CmsFolder) m_resourceCache.get(folder, currentProject.getId());
     if (cmsFolder == null) {
         cmsFolder = m_dbAccess.readFolderInProject(project, folder);
         if (cmsFolder != null){
@@ -5624,6 +5637,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
  * for this resource.
  */
 public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, boolean includeDeleted) throws CmsException {
+    if (! folder.endsWith(C_FOLDER_SEPERATOR)) folder += C_FOLDER_SEPERATOR;
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {
@@ -5647,33 +5661,6 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
     } else {
         throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_ACCESS_DENIED);
     }
-}
-/**
- * Reads a folder from the Cms.<BR/>
- *
- * <B>Security:</B>
- * Access is granted, if:
- * <ul>
- * <li>the user has access to the project</li>
- * <li>the user can read the resource</li>
- * </ul>
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param folder The complete path to the folder from which the folder will be
- * read.
- * @param foldername The name of the folder to be read.
- *
- * @return folder The read folder.
- *
- * @exception CmsException will be thrown, if the folder couldn't be read.
- * The CmsException will also be thrown, if the user has not the rights
- * for this resource.
- *
- * @see #readFolder(CmsUser, CmsProject, String)
- */
-public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, String folder, String folderName) throws CmsException {
-    return readFolder(currentUser, currentProject, folder + folderName);
 }
 
 /**
@@ -5701,9 +5688,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {
-        if (cmsFolder == null) {
-            cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folderid);
-        }
+        cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folderid);
     } catch (CmsException exc) {
         throw exc;
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/10/18 16:54:03 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.33 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.34 $ $Date: 2002/10/18 16:54:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -108,7 +108,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                 }
                 else {
 
-                    // there was a /pics/ - folder but no galery in it
+                    // there was a C_GALLERYPATH_PICS - folder but no galery in it
                     templateSelector = "error_no_gallery";
                 }
             }

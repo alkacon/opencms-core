@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/09/03 11:57:01 $
-* Version: $Revision: 1.55 $
+* Date   : $Date: 2002/10/18 16:54:59 $
+* Version: $Revision: 1.56 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import java.lang.reflect.*;
 import java.security.*;
 import com.opencms.boot.*;
 import com.opencms.core.*;
-import com.opencms.file.*;
 import com.opencms.template.*;
+import com.opencms.util.Utils;
 import com.opencms.linkmanagement.*;
 import com.opencms.report.*;
 import org.w3c.dom.*;
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.55 $ $Date: 2002/09/03 11:57:01 $
+ * @version $Revision: 1.56 $ $Date: 2002/10/18 16:54:59 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -184,24 +184,23 @@ private void createDigest() throws CmsException {
     }
 
     /**
-     * checks if the file sticks to the rules for files in the conten path.
+     * Checks if the file sticks to the rules for files in the content path.
      * If not, it sets the type of the file to compatible_plain.
      * This is for exports of older versions of OpenCms. The imported files
      * will work as befor, but they cant be edited.
      *
-     * @param path the path the resource will be imported to.
-     * @param name The name of the resource.
+     * @param name The name of the resource including path that is imported
      * @param content the content of the resource.
      * @param type the type of the resourse, is set to compatible_plain if nessesary.
      * @param properties the properties, not yet used here.
      * @return the new type of the resouce
      */
-    private String fitFileType(String path, String name, byte[] content, String type, Hashtable properties){
+    private String fitFileType(String name, byte[] content, String type, Hashtable properties){
 
         // only check the file if the version of the export is 0
         if(m_importVersion == 0){
             // ok, an old system exported this, check if the file is ok
-            if(!(new CmsCompatibleCheck()).isTemplateCompatible(path+name, content, type)){
+            if(!(new CmsCompatibleCheck()).isTemplateCompatible(name, content, type)){
                 type = C_TYPE_COMPATIBLEPLAIN_NAME;
                 m_report.addString(" must set to "+C_TYPE_COMPATIBLEPLAIN_NAME+" ");
             }
@@ -467,13 +466,11 @@ private void importResource(String source, String destination, String type, Stri
     byte[] content = null;
     String fullname = null;
     try {
-        String path = m_importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
         if (source != null){
             content = getFileBytes(source);
         }
         // set invalid files to type compatible_plain
-        type = fitFileType(path, name, content, type, properties);
+        type = fitFileType(m_importPath + destination, content, type, properties);
 
         CmsResource res = m_cms.importResource(source, destination, type, user, group, access,
                                     properties, launcherStartClass, content, m_importPath);
@@ -488,8 +485,12 @@ private void importResource(String source, String destination, String type, Stri
     } catch (Exception exc) {
         // an error while importing the file
         success = false;
-        m_report.addString("Error: "+exc.toString());
-        m_report.addSeperator(0);
+        m_report.addString("Error: " + exc.toString() + Utils.getStackTrace(exc));
+        m_report.addSeperator(0); 
+        try {
+            // Sleep some time after an error so that the report output has a chance to keep up
+            Thread.sleep(1000);   
+        } catch (Exception e) {};
     }
     byte[] digestContent = {0};
     if (content != null) {

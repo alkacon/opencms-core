@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/17 14:31:03 $
-* Version: $Revision: 1.186 $
+* Date   : $Date: 2002/10/18 16:56:12 $
+* Version: $Revision: 1.187 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.186 $ $Date: 2002/10/17 14:31:03 $
+ * @version $Revision: 1.187 $ $Date: 2002/10/18 16:56:12 $
  *
  */
 
@@ -537,9 +537,7 @@ public interface I_CmsResourceBroker {
      * @param currentUser The user who owns this file.
      * @param currentGroup The group who owns this file.
      * @param currentProject The project in which the resource will be used.
-     * @param folder The complete path to the folder in which the new folder will
-     * be created.
-     * @param file The name of the new file (No pathinformation allowed).
+     * @param newFileName The name of the new file with full path information.
      * @param contents The contents of the new file.
      * @param type The name of the resourcetype of the new file.
      * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
@@ -550,8 +548,8 @@ public interface I_CmsResourceBroker {
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
      public CmsFile createFile(CmsUser currentUser, CmsGroup currentGroup,
-                               CmsProject currentProject, String folder,
-                               String filename, byte[] contents, String type,
+                               CmsProject currentProject,
+                               String newFileName, byte[] contents, String type,
                                Hashtable propertyinfos)
 
          throws CmsException;
@@ -569,8 +567,6 @@ public interface I_CmsResourceBroker {
      * @param currentUser The user who requested this method.
      * @param currentGroup The group who requested this method.
      * @param currentProject The current project of the user.
-     * @param folder The complete path to the folder in which the new folder will
-     * be created.
      * @param newFolderName The name of the new folder (No pathinformation allowed).
      * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
      * The keys for this Hashtable are the names for propertydefinitions, the values are
@@ -584,7 +580,7 @@ public interface I_CmsResourceBroker {
      */
     public CmsFolder createFolder(CmsUser currentUser, CmsGroup currentGroup,
                                   CmsProject currentProject,
-                                  String folder, String newFolderName,
+                                  String folderName,
                                   Hashtable propertyinfos)
         throws CmsException;
 
@@ -623,7 +619,7 @@ public interface I_CmsResourceBroker {
      * user has not the rights for this resource.
      */
     public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
-                                       String folder, String newResourceName,
+                                       String newResourceName,
                                        int resourceType, Hashtable propertyinfos, int launcherType,
                                        String launcherClassname,
                                        String ownername, String groupname, int accessFlags,
@@ -2481,7 +2477,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
-     * @param foldername The complete path of the folder to be read.
+     * @param folder The complete path of the folder to be read.
      *
      * @return folder The read folder.
      *
@@ -2491,32 +2487,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      */
     public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
                                 String folder)
-        throws CmsException ;
-    /**
-     * Reads a folder from the Cms.<BR/>
-     *
-     * <B>Security:</B>
-     * Access is granted, if:
-     * <ul>
-     * <li>the user has access to the project</li>
-     * <li>the user can read the resource</li>
-     * </ul>
-     *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param folder The complete path to the folder from which the folder will be
-     * read.
-     * @param foldername The name of the folder to be read.
-     *
-     * @return folder The read folder.
-     *
-     * @exception CmsException will be thrown, if the folder couldn't be read.
-     * The CmsException will also be thrown, if the user has not the rights
-     * for this resource.
-     */
-    public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject,
-                                String folder, String folderName)
-        throws CmsException ;
+        throws CmsException ;        
 
     /**
      * Reads a folder from the Cms.<BR/>
@@ -2530,7 +2501,7 @@ public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newR
      *
      * @param currentUser The user who requested this method.
      * @param currentProject The current project of the user.
-     * @param foldername The complete path of the folder to be read.
+     * @param folder The complete pathname of the folder to be read.
      * @param includeDeleted Include the folder if it is marked as deleted
      *
      * @return folder The read folder.

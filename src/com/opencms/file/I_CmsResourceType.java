@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
-* Date   : $Date: 2001/08/03 09:38:37 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/10/18 16:56:13 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -216,7 +216,7 @@ public interface I_CmsResourceType
     * @exception CmsException if the resourcetype is set to folder. The CmsException is also thrown, if the
     * filename is not valid or if the user has not the appropriate rights to create a new file.
     */
-    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException;
+    public CmsResource createResource(CmsObject cms, String newResourceName, Hashtable properties, byte[] contents) throws CmsException;
 
 
     /**
