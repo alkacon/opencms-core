@@ -19,7 +19,7 @@
     <property name="build.inputlib.mail"        value="${build.inputlib}/mail.jar"/>
     <property name="build.inputlib.xerces"      value="${build.inputlib}/xerces.jar"/>
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
-    <property name="build.inputlib.mysql"       value="${build.inputlib}/mysql_2_uncomp.jar"/>
+    <property name="build.inputlib.mysql"       value="${build.inputlib}/mm.mysql-2.0.4-bin.jar"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>
     <property name="build.inputlib.fesi"        value="${build.inputlib}/fesi.jar"/>
     <property name="build.web"                  value="${build.home}/${app.name}"/>
@@ -109,7 +109,6 @@
        <copy file="${build.inputlib.mysql}" todir="${build.lib}"/>
        <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
-       <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.fesi}" todir="${build.oclib}"/>
 
        <copy todir="${build.webinf}">
