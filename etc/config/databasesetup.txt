@@ -46,7 +46,7 @@ create table CMS_PROJECTS               (PROJECT_ID int not null auto_increment,
                                          PROJECT_FLAGS int not null,
 										 PROJECT_CREATEDATE datetime,
 										 PROJECT_PUBLISHDATE datetime,
-                                         primary key(PROJECT_ID), unique(PROJECT_NAME));
+                                         primary key(PROJECT_ID), unique(PROJECT_NAME, PROJECT_CREATEDATE));
 
 create table CMS_METADEF                (METADEF_ID int not null auto_increment, 
                                          METADEF_NAME VARCHAR(64) not null,
