@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/07 16:12:32 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/06/07 17:17:20 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.25 $ $Date: 2000/06/07 16:12:32 $ * 
+ * @version $Revision: 1.26 $ $Date: 2000/06/07 17:17:20 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -566,16 +566,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 			 // create statement
              statement=m_pool.getPreparedStatement(C_GROUPS_GETPARENT_KEY);
 			 statement.setInt(1,group.getParentId());
-			 res = statement.executeQuery();
+        	 res = statement.executeQuery();
              
              // create new Cms group object
 			 if(res.next()) {
-                group=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
+                parent=new CmsGroup(res.getInt(C_GROUPS_GROUP_ID),
                                   res.getInt(C_GROUPS_PARENT_GROUP_ID),
                                   res.getString(C_GROUPS_GROUP_NAME),
                                   res.getString(C_GROUPS_GROUP_DESCRIPTION),
-                                  res.getInt(C_GROUPS_GROUP_FLAGS));                          
-             }
+                                  res.getInt(C_GROUPS_GROUP_FLAGS));   
+              }
             res.close();
          } catch (SQLException e){
              throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
@@ -702,7 +702,35 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          return userInGroup;
      }
 
-    
+    /**
+	 * Removes a user from a group.
+	 * 
+	 * Only the admin can do this.<P/>
+	 * 
+	 * @param userid The id of the user that is to be added to the group.
+	 * @param groupid The id of the group.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void removeUserFromGroup(int userid, int groupid)
+         throws CmsException {
+         PreparedStatement statement = null;
+         try {
+			 // create statement
+             statement = m_pool.getPreparedStatement(C_GROUPS_REMOVEUSERFROMGROUP_KEY);
+					 
+			 statement.setInt(1,groupid);
+			 statement.setInt(2,userid);
+			 statement.executeUpdate();
+            
+         } catch (SQLException e){
+            
+            throw new CmsException("[" + this.getClass().getName() + "] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		} finally {
+			 if( statement != null) {
+				m_pool.putPreparedStatement(C_GROUPS_REMOVEUSERFROMGROUP_KEY, statement);
+            }            
+        }
+     }
     
 	/**
 	 * Adds a user to the database.
@@ -1602,7 +1630,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         m_pool.initPreparedStatement(C_GROUPS_GETGROUPSOFUSER_KEY,C_GROUPS_GETGROUPSOFUSER);
         m_pool.initPreparedStatement(C_GROUPS_ADDUSERTOGROUP_KEY,C_GROUPS_ADDUSERTOGROUP);
         m_pool.initPreparedStatement(C_GROUPS_USERINGROUP_KEY,C_GROUPS_USERINGROUP);
-       
+        m_pool.initPreparedStatement(C_GROUPS_REMOVEUSERFROMGROUP_KEY,C_GROUPS_REMOVEUSERFROMGROUP);
         
 		// init statements for users
 		m_pool.initPreparedStatement(C_USERS_MAXID_KEY,C_USERS_MAXID);

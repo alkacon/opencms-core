@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 16:09:53 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/06/07 17:17:20 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/06/07 16:09:53 $
+ * @version $Revision: 1.20 $ $Date: 2000/06/07 17:17:20 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1202,8 +1202,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
          Enumeration enu = groups.elements();
          while (enu.hasMoreElements()) {
              group=(CmsGroup)enu.nextElement();
+          
              subGroup=getParent(currentUser, currentProject,group.getName());
-			 while(subGroup != null) {
+             while(subGroup != null) {
+           
 				 // is the subGroup already in the vector?
 				 if(!allGroups.contains(subGroup)) {
 					 // no! add it
@@ -1231,7 +1233,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getDirectGroupsOfUser(CmsUser currentUser, CmsProject currentProject, 
 										String username)
         throws CmsException {
-        return null;
+        return m_dbAccess.getGroupsOfUser(username);
     }
 	
 	/**
@@ -1634,6 +1636,31 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void removeUserFromGroup(CmsUser currentUser, CmsProject currentProject, 
 									String username, String groupname)
         throws CmsException {
+        if( isAdmin(currentUser, currentProject) ) {
+		    CmsUser user;
+            CmsGroup group;
+         
+            user=readUser(currentUser,currentProject,username);
+            //check if the user exists
+            if (user != null) {
+                group=readGroup(currentUser,currentProject,groupname);
+                //check if group exists
+                if (group != null){       
+                  // do not remmove the user from its default group
+                  if (user.getDefaultGroupId() != group.getId()) {
+                    //remove this user from the group
+                    m_dbAccess.removeUserFromGroup(user.getId(),group.getId());
+                  } else {
+                    throw new CmsException("["+this.getClass().getName()+"]",CmsException.C_NO_DEFAULT_GROUP);
+                  }
+                } else {
+                    throw new CmsException("["+this.getClass().getName()+"]"+groupname,CmsException.C_NO_GROUP);
+                }
+		    } else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS);
+            }
+		}
     }
 
 	/**
@@ -1769,9 +1796,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
         throws CmsException {
         // check security
 		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-			//return m_dbAccess.getParent(groupname);
-            return null;
-		} else {
+          return m_dbAccess.getParent(groupname);
+   		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
 				CmsException.C_NO_ACCESS);
 		}

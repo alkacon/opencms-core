@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/07 16:12:32 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/06/07 17:17:20 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.14 $ $Date: 2000/06/07 16:12:32 $
+ * @version $Revision: 1.15 $ $Date: 2000/06/07 17:17:20 $
  */
 public interface I_CmsQuerys {
     
@@ -89,6 +89,9 @@ public interface I_CmsQuerys {
     public static final Integer C_GROUPS_USERINGROUP_KEY = new Integer(211);
     public static final String C_GROUPS_USERINGROUP = "SELECT * FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
 
+    public static final Integer C_GROUPS_REMOVEUSERFROMGROUP_KEY = new Integer(213);
+    public static final String C_GROUPS_REMOVEUSERFROMGROUP = "DELETE FROM " + C_DATABASE_PREFIX + "GROUPUSERS WHERE GROUP_ID = ? AND USER_ID = ?";
+    
     
     // Constants for Systemproperties
     public static final String C_SYSTEMPROPERTY_VALUE="SYSTEMPROPERTY_VALUE";
