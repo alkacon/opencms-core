@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/08/18 11:52:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/09/20 05:40:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,11 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.0
  */
 public final class CmsStringUtil {
-    
+
     /** Regex that matches an end body tag. */
     private static final Pattern C_BODY_END_REGEX = Pattern.compile("<\\s*/\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
 
@@ -59,40 +59,43 @@ public final class CmsStringUtil {
     private static final Pattern C_BODY_START_REGEX = Pattern.compile("<\\s*body[^>]*>", Pattern.CASE_INSENSITIVE);
 
     /** Day constant. */
-    private static final long C_DAYS = 1000 * 60 * 60 * 24;    
-    
+    private static final long C_DAYS = 1000 * 60 * 60 * 24;
+
     /** Hour constant. */
-    private static final long C_HOURS = 1000 * 60 * 60;        
-    
+    private static final long C_HOURS = 1000 * 60 * 60;
+
     /** Minute constant. */
     private static final long C_MINUTES = 1000 * 60;
-        
+
     /** Second constant. */
     private static final long C_SECONDS = 1000;
 
     /** Regex that matches an encoding String in an xml head. */
-    private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile("encoding\\s*=\\s*[\"'].+[\"']", Pattern.CASE_INSENSITIVE);
+    private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile(
+        "encoding\\s*=\\s*[\"'].+[\"']",
+        Pattern.CASE_INSENSITIVE);
 
     /** Regex that matches an xml head. */
     private static final Pattern C_XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
     /** DEBUG flag. */
     private static final int DEBUG = 0;
-    
-    /** OpenCms context replace String, static for performance reasons. */    
+
+    /** OpenCms context replace String, static for performance reasons. */
     private static String m_contextReplace;
-    
-    /** OpenCms context search String, static for performance reasons. */    
+
+    /** OpenCms context search String, static for performance reasons. */
     private static String m_contextSearch;
-        
+
     /** 
      * Default constructor (empty), private because this class has only 
      * static methods.<p>
      */
     private CmsStringUtil() {
+
         // empty
     }
-    
+
     /**
      * Escapes a String so it may be used in JavaScript String definitions.<p>
      * 
@@ -102,13 +105,14 @@ public final class CmsStringUtil {
      * @return the escaped String
      */
     public static String escapeJavaScript(String source) {
+
         source = CmsStringUtil.substitute(source, "\\", "\\\\");
         source = CmsStringUtil.substitute(source, "\"", "\\\"");
-        source = CmsStringUtil.substitute(source, "\r\n", "\\n");        
+        source = CmsStringUtil.substitute(source, "\r\n", "\\n");
         source = CmsStringUtil.substitute(source, "\n", "\\n");
         return source;
     }
-        
+
     /**
      * Escapes a String so it may be used as a Perl5 regular expression.<p>
      * 
@@ -120,6 +124,7 @@ public final class CmsStringUtil {
      * @return the escaped string
      */
     public static String escapePattern(String source) {
+
         if (DEBUG > 0) {
             System.err.println("[CmsStringSubstitution]: escaping String: " + source);
         }
@@ -130,52 +135,52 @@ public final class CmsStringUtil {
         for (int i = 0; i < source.length(); ++i) {
             char ch = source.charAt(i);
             switch (ch) {
-                case '\\' :
+                case '\\':
                     result.append("\\\\");
                     break;
-                case '/' :
+                case '/':
                     result.append("\\/");
                     break;
-                case '$' :
+                case '$':
                     result.append("\\$");
                     break;
-                case '^' :
+                case '^':
                     result.append("\\^");
                     break;
-                case '.' :
+                case '.':
                     result.append("\\.");
                     break;
-                case '*' :
+                case '*':
                     result.append("\\*");
                     break;
-                case '+' :
+                case '+':
                     result.append("\\+");
                     break;
-                case '|' :
+                case '|':
                     result.append("\\|");
                     break;
-                case '?' :
+                case '?':
                     result.append("\\?");
                     break;
-                case '{' :
+                case '{':
                     result.append("\\{");
                     break;
-                case '}' :
+                case '}':
                     result.append("\\}");
                     break;
-                case '[' :
+                case '[':
                     result.append("\\[");
                     break;
-                case ']' :
+                case ']':
                     result.append("\\]");
                     break;
-                case '(' :
+                case '(':
                     result.append("\\(");
                     break;
-                case ')' :
+                case ')':
                     result.append("\\)");
                     break;
-                default :
+                default:
                     result.append(ch);
             }
         }
@@ -184,7 +189,7 @@ public final class CmsStringUtil {
         }
         return new String(result);
     }
-    
+
     /**
      * Extracts the content of a &lt;body&gt tag in a HTML page.<p>
      * 
@@ -195,21 +200,21 @@ public final class CmsStringUtil {
      * @return the extracted body tag content
      */
     public static String extractHtmlBody(String content) {
-        
+
         Matcher startMatcher = C_BODY_START_REGEX.matcher(content);
-        Matcher endMatcher = C_BODY_END_REGEX.matcher(content);        
-        
+        Matcher endMatcher = C_BODY_END_REGEX.matcher(content);
+
         int start = 0;
         int end = content.length();
-               
+
         if (startMatcher.find()) {
-            start = startMatcher.end();            
+            start = startMatcher.end();
         }
-        
+
         if (endMatcher.find(start)) {
             end = endMatcher.start();
         }
-        
+
         return content.substring(start, end);
     }
 
@@ -231,6 +236,7 @@ public final class CmsStringUtil {
      * @return the extracted encoding, or null if no xml encoding setting was found in the input 
      */
     public static String extractXmlEncoding(String content) {
+
         String result = null;
         Matcher xmlHeadMatcher = C_XML_HEAD_REGEX.matcher(content);
         if (xmlHeadMatcher.find()) {
@@ -239,7 +245,7 @@ public final class CmsStringUtil {
             if (encodingMatcher.find()) {
                 String encoding = encodingMatcher.group();
                 int pos1 = encoding.indexOf('=') + 2;
-                String charset = encoding.substring(pos1, encoding.length()-1);
+                String charset = encoding.substring(pos1, encoding.length() - 1);
                 if (Charset.isSupported(charset)) {
                     result = charset;
                 }
@@ -247,7 +253,7 @@ public final class CmsStringUtil {
         }
         return result;
     }
-    
+
     /**
      * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
@@ -257,10 +263,11 @@ public final class CmsStringUtil {
      * @return the formatted runtime
      */
     public static String formatRuntime(long runtime) {
+
         long seconds = (runtime / C_SECONDS) % 60;
         long minutes = (runtime / C_MINUTES) % 60;
-        long hours   = (runtime / C_HOURS) % 24;
-        long days    = runtime / C_DAYS;
+        long hours = (runtime / C_HOURS) % 24;
+        long days = runtime / C_DAYS;
         StringBuffer strBuf = new StringBuffer();
 
         if (days > 0) {
@@ -270,27 +277,27 @@ public final class CmsStringUtil {
             strBuf.append(days);
             strBuf.append(':');
         }
-        
+
         if (hours < 10) {
             strBuf.append('0');
         }
         strBuf.append(hours);
         strBuf.append(':');
-        
+
         if (minutes < 10) {
-            strBuf.append('0');        
+            strBuf.append('0');
         }
-        strBuf.append(minutes);        
+        strBuf.append(minutes);
         strBuf.append(':');
-        
+
         if (seconds < 10) {
             strBuf.append('0');
         }
         strBuf.append(seconds);
-        
-        return strBuf.toString();        
+
+        return strBuf.toString();
     }
-    
+
     /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or the empty String <code>""</code>.<p> 
@@ -299,22 +306,57 @@ public final class CmsStringUtil {
      * @return true, if the provided value is null or the empty String, false otherwise
      */
     public static boolean isEmpty(String value) {
+
         return (value == null) || (value.length() == 0);
     }
-    
+
     /**
      * Returns <code>true</code> if the provided String is neither <code>null</code>
      * nor the empty String <code>""</code>.<p> 
      * 
      * @param value the value to check
      * @return true, if the provided value is not null and not the empty String, false otherwise
-     */    
+     */
     public static boolean isNotEmpty(String value) {
+
         return (value != null) && (value.length() != 0);
     }
 
     /**
-     * This method splits a String into substrings along the provided delimiter.<p>
+     * Checks if the given class name is a valid Java class name.<p>
+     * 
+     * @param className the name to check
+     * @return true if the given class name is a valid Java class name
+     */
+    public static boolean isValidJavaClassName(String className) {
+
+        int length = className.length();
+        boolean nodot = true;
+        for (int i = 0; i < length; i++) {
+            char ch = className.charAt(i);
+            if (nodot) {
+                if (ch == '.') {
+                    return false;
+                } else if (Character.isJavaIdentifierStart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            } else {
+                if (ch == '.') {
+                    nodot = true;
+                } else if (Character.isJavaIdentifierPart(ch)) {
+                    nodot = false;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This method splits a String into substrings along the provided String delimiter.<p>
      *
      * @param source the String to split
      * @param delimiter the delimiter to split at
@@ -322,6 +364,7 @@ public final class CmsStringUtil {
      * @return an array of Strings
      */
     public static String[] split(String source, String delimiter) {
+
         List parts = new ArrayList();
         int index = 0;
         int nextIndex = source.indexOf(delimiter);
@@ -333,7 +376,7 @@ public final class CmsStringUtil {
         parts.add(source.substring(index));
         return (String[])parts.toArray(new String[parts.size()]);
     }
-    
+
     /**
      * Substitutes searchString in content with replaceItem.<p>
      * 
@@ -343,6 +386,7 @@ public final class CmsStringUtil {
      * @return String the substituted String
      */
     public static String substitute(String content, String searchString, String replaceItem) {
+
         // high performance implementation to avoid regular expression overhead
         int findLength;
         if (content == null) {
@@ -390,7 +434,7 @@ public final class CmsStringUtil {
         sb.append(content.substring(start, end));
         return sb.toString();
     }
-        
+
     /**
      * Substitutes the OpenCms context path (e.g. /opencms/opencms/) in a HTML page with a 
      * special variable so that the content also runs if the context path of the server changes.<p>
@@ -400,13 +444,14 @@ public final class CmsStringUtil {
      * @return the HTML with the replaced context path
      */
     public static String substituteContextPath(String htmlContent, String context) {
+
         if (m_contextSearch == null) {
             m_contextSearch = "([^\\w/])" + context;
-            m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/"; 
-        }       
-        return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");            
+            m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
+        }
+        return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
     }
-    
+
     /**
      * Substitutes searchString in content with replaceItem.<p>
      * 
@@ -417,6 +462,7 @@ public final class CmsStringUtil {
      * @return String the substituted String
      */
     public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
+
         String translationRule = "s#" + searchString + "#" + replaceItem + "#" + occurences;
         Perl5Util perlUtil = new Perl5Util();
         try {
@@ -430,35 +476,61 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Checks if the given class name is a valid Java class name.<p>
-     * 
-     * @param className the name to check
-     * @return true if the given class name is a valid Java class name
+     * Checks if the provided name is a valid resource name, that is contains only
+     * valid characters.<p>
+     *
+     * PLEASE NOTE:
+     * This logic is NOT yet used in the current release.<p>
+     *
+     * @param name the resource name to check
+     * @return true if the resource name is vaild, false otherwise 
      */
-    public static boolean isValidJavaClassName(String className) {
-    
-        int length = className.length();
-        boolean nodot = true;
-        for (int i = 0; i < length; i++) {
-            char ch = className.charAt(i);
-            if (nodot) {
-                if (ch == '.') {
+    public static boolean validateResourceName(String name) {
+
+        if (name == null) {
+            return false;
+        }
+        int l = name.length();
+        if (l == 0) {
+            return false;
+        }
+        if (name.length() != name.trim().length()) {
+            // leading or trainling white space are not allowed
+            return false;
+        }
+        for (int i = 0; i < l; i++) {
+            char ch = name.charAt(i);
+            switch (ch) {
+                case '/':
                     return false;
-                } else if (Character.isJavaIdentifierStart(ch)) {
-                    nodot = false;
-                } else {
+                case '\\':
                     return false;
-                }
-            } else {
-                if (ch == '.') {
-                    nodot = true;
-                } else if (Character.isJavaIdentifierPart(ch)) {
-                    nodot = false;
-                } else {
+                case ':':
                     return false;
-                }
+                case '*':
+                    return false;
+                case '?':
+                    return false;
+                case '"':
+                    return false;
+                case '>':
+                    return false;
+                case '<':
+                    return false;
+                case '|':
+                    return false;
+                default:
+                    // ISO control chars are not allowed
+                    if (Character.isISOControl(ch)) {
+                        return false;
+                    }
+                    // chars not defined in unicode are not allowed
+                    if (!Character.isDefined(ch)) {
+                        return false;
+                    }
             }
-        }      
+        }
+
         return true;
     }
 }
