@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePdfpage.java,v $
- * Date   : $Date: 2000/10/12 11:27:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/10/25 08:14:28 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/10/12 11:27:09 $
+ * @version $Revision: 1.9 $ $Date: 2000/10/25 08:14:28 $
  */
 public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsWpConstants,
 																   I_CmsConstants {
@@ -429,6 +429,7 @@ public class CmsNewResourcePdfpage extends CmsWorkplaceDefault implements I_CmsW
 					values.addElement(file.getAbsolutePath());
 				}
 			}
+			bubblesort(names, values);
 			return new Integer(0);           
 	  }
 	  /**

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/10/13 13:24:40 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2000/10/25 08:14:28 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2000/10/13 13:24:40 $
+ * @version $Revision: 1.33 $ $Date: 2000/10/25 08:14:28 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -64,6 +64,33 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	 */
 	private final static String C_CURRENT_LANGUAGE = "de";
 	
+	/**
+ * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of
+ * by name in the template dropdown, because it is the title that is shown in the dropdown.
+ * Creation date: (10/24/00 13:55:12)
+ * @param names The vector to sort
+ * @param data Vector with data that accompanies names.
+ */
+public void bubblesort(Vector names, Vector data)
+{
+	for (int i = 0; i < names.size() - 1; i++)
+	{
+		int len = names.size() - i - 1;
+		for (int j = 0; j < len; j++)
+		{
+			String a = (String) names.elementAt(j);
+			String b = (String) names.elementAt(j + 1);
+			if (a.toLowerCase().compareTo(b.toLowerCase()) > 0)
+			{
+				names.setElementAt(a, j + 1);
+				names.setElementAt(b, j);
+				a = (String) data.elementAt(j);
+				data.setElementAt(data.elementAt(j + 1), j);
+				data.setElementAt(a, j + 1);
+			}
+		}
+	}
+}
 	/**
 	 * Checks a Java System property for containing the given value
 	 * @param propertyName Name of the property
@@ -181,6 +208,27 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 		getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES, lang);
 		return new Integer(0);
 	}
+	/** Gets all fonts available in the workplace screens.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * <P>
+	 * Used to build font select boxes in editors.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param lang reference to the currently valid language file
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the user's current workplace view in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getFontStyles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+			throws CmsException {
+		getConstantSelectEntries(names, values, C_SELECTBOX_FONTSTYLES, lang);
+		return new Integer(0);
+	}
 	/**
 	 * Gets all fonts available in the workplace screens.
 	 * <P>
@@ -201,27 +249,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	public Integer getFonts(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 			throws CmsException {
 		getConstantSelectEntries(names, values, C_SELECTBOX_FONTS, lang);
-		return new Integer(0);
-	}
-	/** Gets all fonts available in the workplace screens.
-	 * <P>
-	 * The given vectors <code>names</code> and <code>values</code> will 
-	 * be filled with the appropriate information to be used for building
-	 * a select box.
-	 * <P>
-	 * Used to build font select boxes in editors.
-	 * 
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param lang reference to the currently valid language file
-	 * @param names Vector to be filled with the appropriate values in this method.
-	 * @param values Vector to be filled with the appropriate values in this method.
-	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-	 * @return Index representing the user's current workplace view in the vectors.
-	 * @exception CmsException
-	 */
-	public Integer getFontStyles(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-			throws CmsException {
-		getConstantSelectEntries(names, values, C_SELECTBOX_FONTSTYLES, lang);
 		return new Integer(0);
 	}
 	/**
