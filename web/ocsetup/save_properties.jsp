@@ -81,7 +81,7 @@
 						</tr>
 						<tr>
 							<td align="center">
-								<b>Do you want to import the workplace ?</b><br>
+								<b>Do you want to import the workplace?</b><br>
 							</td>
 						</tr>
 						<tr>
@@ -89,7 +89,20 @@
 								<input type="radio" name="importWorkplace" value="true" checked> Yes
 								<input type="radio" name="importWorkplace" value="false" > No
 							</td>
+						</tr>
+						
+						<tr>
+							<td align="center">
+								<b>Do you want to use directory translation?</b><br>
+							</td>
+						</tr>
+						<tr>
+							<td class="bold" align="center">				
+								<input type="radio" name="useDirectoryTranslation" value="true" <%=Bean.isChecked(Bean.getUseDirectoryTranslation(),"true")%>> Yes
+								<input type="radio" name="useDirectoryTranslation" value="false" <%=Bean.isChecked(Bean.getUseDirectoryTranslation(),"false")%>> No
+							</td>
 						</tr>							
+						
 					</table>
 				</td>
 			</tr>

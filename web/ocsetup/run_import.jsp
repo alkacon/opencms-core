@@ -13,6 +13,9 @@
     if(param != null)   {
         importWp = param.equals("true");
     }
+	
+	param = request.getParameter("useDirectoryTranslation");
+	Bean.setUseDirectoryTranslation( "true".equals(param) );
     
     /* next page */
     String nextPage = "activex.jsp";
