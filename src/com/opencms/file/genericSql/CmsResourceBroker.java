@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/07 17:17:20 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2000/06/08 07:24:38 $
+ * Version: $Revision: 1.21 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.20 $ $Date: 2000/06/07 17:17:20 $
+ * @version $Revision: 1.21 $ $Date: 2000/06/08 07:24:38 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -612,7 +612,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 */
 	public String readExportPath(CmsUser currentUser, CmsProject currentProject)
         throws CmsException  {
-     return null;
+        return (String) m_dbAccess.readProperty(C_SYSTEMPROPERTY_EXPORTPATH);
     }
 							
     
