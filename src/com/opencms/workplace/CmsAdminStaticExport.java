@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/04/20 09:57:19 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/04/23 09:13:51 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -80,7 +80,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
         String allResources = (String)parameters.get("ALLRES");
         if(action == null) {
             // This is an initial request of the static export page
-            xmlTemplateDocument.setData("path", cms.readExportPath());
+            xmlTemplateDocument.setData("path", com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()));
         }
 
         // first we look if the thread is allready running
