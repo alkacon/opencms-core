@@ -5,7 +5,7 @@ package com.opencms.core;
  * class to get access to this contsnats.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/14 11:13:42 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/14 11:59:55 $
  */
 public interface I_CmsConstants
 {
@@ -29,32 +29,32 @@ public interface I_CmsConstants
 	/**
 	 * The resource type-id for a folder.
 	 */
-	 final static int C_FOLDER		= 0;
+	 final static int C_TYPE_FOLDER		= 0;
 	
 	/**
 	 * The resource type-id for a plain text file.
 	 */
-	 final static int C_TEXTPLAIN		= 1;
+	 final static int C_TYPE_TEXTPLAIN		= 1;
 	
 	/**
 	 * The resource type-id for a binary file.
 	 */
-	 final static int C_BINARY		= 2;
+	 final static int C_TYPE_BINARY		= 2;
 	
 	/**
 	 * The resource type-id for a xml base file.
 	 */
-	 final static int C_XMLBASE		= 3;
+	 final static int C_TYPE_XMLBASE		= 3;
 
 	/**
 	 * The resource type-id for a xml templatefile.
 	 */
-	 final static int C_XMLTEMPLATE	= 4;
+	 final static int C_TYPE_XMLTEMPLATE	= 4;
 	
 	/**
 	 * The resource type-id for a docloader file.
 	 */
-	 final static int C_DOCLOADER	= 5;
+	 final static int C_TYPE_DOCLOADER	= 5;
 	
 	/**
 	 * This constant signs a normal "classic" metadefinition.
@@ -78,18 +78,18 @@ public interface I_CmsConstants
 	/**
 	 * This is the group for guests.
 	 */
-	 static final String C_GUESTGROUP = "Guests";
+	 static final String C_GROUP_GUEST = "Guests";
 	
 	/**
 	 * This is the group for administrators.
 	 */
-	 static final String C_ADMINGROUP = "Administrators";
+	 static final String C_GROUP_ADMIN = "Administrators";
 	
 	/**
 	 * This is the group for projectleaders. It is the only group, which
 	 * can create new projects.
 	 */
-	 static final String C_PROJECTLEADERGROUP = "Projectleader";
+	 static final String C_GROUP_PROJECTLEADER = "Projectleader";
 
 	/**
 	 * Key for additional info emailaddress.
@@ -147,7 +147,7 @@ public interface I_CmsConstants
 	 * This constant defines the onlineproject. This is the project which
 	 * is used to show the resources for guestusers
 	 */
-	 static final String C_ONLINE_PROJECTNAME	= "Onlineproject";
+	 static final String C_PROJECT_ONLINE	= "Live";
 	
 	/**
 	 * This constant defines a unlocked project. 
@@ -177,87 +177,87 @@ public interface I_CmsConstants
 	/**
 	 * Owner may read this resource
 	 */
-	 final static int C_OWNER_READ		= 1;
+	 final static int C_ACCESS_OWNER_READ		= 1;
 
 	/**
 	 * Owner may write this resource
 	 */
-	 final static int C_OWNER_WRITE		= 2;
+	 final static int C_ACCESS_OWNER_WRITE		= 2;
 	
 	/**
 	 * Owner may view this resource
 	 */
-	 final static int C_OWNER_VISIBLE		= 4;
+	 final static int C_ACCESS_OWNER_VISIBLE		= 4;
 	
 	/**
 	 * Group may read this resource
 	 */	
-	 final static int C_GROUP_READ		= 8;
+	 final static int C_ACCESS_GROUP_READ		= 8;
 	
 	/**
 	 * Group may write this resource
 	 */
-	 final static int C_GROUP_WRITE		= 16;
+	 final static int C_ACCESS_GROUP_WRITE		= 16;
 	
 	/**
 	 * Group may view this resource
 	 */
-	 final static int C_GROUP_VISIBLE		= 32;
+	 final static int C_ACCESS_GROUP_VISIBLE		= 32;
 	
 	/**
 	 *  may read this resource
 	 */	
-	 final static int C__READ		= 64;
+	 final static int C_ACCESS_PUBLIC_ACCESS_READ		= 64;
 	
 	/**
 	 *  may write this resource
 	 */	
-	 final static int C__WRITE		= 128;
+	 final static int C_ACCESS_PUBLIC_ACCESS_WRITE		= 128;
 
 	/**
 	 *  may view this resource
 	 */
-	 final static int C__VISIBLE	= 256;
+	 final static int C_ACCESS_PUBLIC_ACCESS_VISIBLE	= 256;
 
 	/**
 	 * This is an internal resource, it can't be launched directly.
 	 */
-	 final static int C_INTERNAL_READ		= 512;
+	 final static int C_ACCESS_INTERNAL_READ		= 512;
 	
 	/**
 	 * All may read this resource.
 	 */
-	 final static int	C_READ				= C_OWNER_READ + C_GROUP_READ + C__READ;
+	 final static int	C_ACCESS_READ				= C_ACCESS_OWNER_READ + C_ACCESS_GROUP_READ + C_ACCESS_PUBLIC_ACCESS_READ;
 
 	/**
 	 * All may write this resource.
 	 */
-	 final static int	C_WRITE				= C_OWNER_WRITE + C_GROUP_WRITE + C__WRITE;
+	 final static int	C_ACCESS_WRITE				= C_ACCESS_OWNER_WRITE + C_ACCESS_GROUP_WRITE + C_ACCESS_PUBLIC_ACCESS_WRITE;
 	
 	/**
 	 * All may view this resource.
 	 */
-	 final static int	C_VISIBLE			= C_OWNER_VISIBLE + C_GROUP_VISIBLE + C__VISIBLE;
+	 final static int	C_ACCESS_VISIBLE			= C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
 	
 	/**
 	 * Owner has full access to this resource.
 	 */
-	 final static int C_OWNER				= C_OWNER_READ + C_OWNER_WRITE + C_OWNER_VISIBLE;
+	 final static int C_ACCESS_OWNER				= C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE;
 
 	/**
 	 * Group has full access to this resource.
 	 */
-	 final static int C_GROUP				= C_GROUP_READ + C_GROUP_WRITE + C_GROUP_VISIBLE;
+	 final static int C_ACCESS_GROUP				= C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE;
 
 	/**
 	 *  has full access to this resource.
 	 */
-	 final static int C_			= C__READ + C__WRITE + C__VISIBLE;
+	 final static int C_ACCESS_			= C_ACCESS_PUBLIC_ACCESS_READ + C_ACCESS_PUBLIC_ACCESS_WRITE + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
 	
 	/**
 	 * The default-flags for a new resource.
 	 */
-	 final static int C_DEFAULT_FLAGS		= C_OWNER_READ + C_OWNER_WRITE + C_OWNER_VISIBLE + C_GROUP_READ + C_GROUP_WRITE + C_GROUP_VISIBLE + C__READ + C__VISIBLE;
+	 final static int C_ACCESS_DEFAULT_FLAGS		= C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_ACCESS_READ + C_ACCESS_PUBLIC_ACCESS_VISIBLE;
 	
 	/**
 	 * Is set, if the resource is unchanged in this project.
