@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/03/09 16:47:15 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/03/27 09:55:34 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/03/09 16:47:15 $
+ * @version $Revision: 1.36 $ $Date: 2000/03/27 09:55:34 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -256,16 +256,18 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     * 
     * @param tag Key for this datablock.
     * @param data String to be put in the datablock.
+    * @deprecated Use setData instead.
     */
     public void setXmlData(String tag, String data) {
         setData(tag, data);
     }
         
-    /**
-     * Removes a datablock from the internal hashtable and
-     * from the XML document
-     * @param tag Key of the datablock to delete.
-     */    
+   /**
+    * Removes a datablock from the internal hashtable and
+    * from the XML document
+    * @param tag Key of the datablock to delete.
+    * @deprecated Use removeData instead.
+    */    
     public void removeXmlData(String tag) {
         removeData(tag);
     }
@@ -276,6 +278,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * 
 	 * @param tag Key for the datablocks hashtable.
 	 * @return Datablock content for the given key or null if no datablock
+     * @deprecated Use getDataValue instead.
 	 * is found for this key.
 	 */
     public String getXmlDataValue(String tag) throws CmsException {
@@ -293,6 +296,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @param callingObject Object that should be used to look up user methods.
 	 * @param userObj any object that should be passed to user methods
 	 * @return Processed datablock for the given key.
+     * @deprecated Use getProcessedDataValue instead.
 	 * @exception CmsException
 	 */
 	public String getProcessedXmlDataValue(String tag, Object callingObject, Object userObj) 
@@ -306,6 +310,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * 
 	 * @param tag Key for the datablocks hashtable.
 	 * @return Processed datablock for the given key.
+     * @deprecated Use getProcessedDataValue instead.
 	 * @exception CmsException
 	 */
 	public String getProcessedXmlDataValue(String tag) throws CmsException {
@@ -319,6 +324,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 	 * @param tag Key for the datablocks hashtable.
 	 * @param callingObject Object that should be used to look up user methods.
 	 * @return Processed datablock for the given key.
+     * @deprecated Use getProcessedDataValue instead.
 	 * @exception CmsException
 	 */
     public String getProcessedXmlDataValue(String tag, Object callingObject) throws CmsException {
@@ -328,6 +334,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
       /**
      * Checks if this Template owns a datablock with the given key.
      * @param key Datablock key to be checked.
+     * @deprecated Use hasData instead.
      * @return true if a datablock is found, false otherwise.
      */
     public boolean hasXmlData(String tag) throws CmsException {
