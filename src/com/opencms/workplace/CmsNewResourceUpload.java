@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/10/02 15:51:48 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2003/10/28 13:28:41 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,17 +32,23 @@ package com.opencms.workplace;
 import org.opencms.db.CmsImportFolder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResourceTypeImage;
+import com.opencms.file.CmsUser;
 import com.opencms.util.Encoder;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * Template class for displaying the new resource upload screen
@@ -50,7 +56,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2003/10/02 15:51:48 $
+ * @version $Revision: 1.53 $ $Date: 2003/10/28 13:28:41 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     
@@ -78,9 +84,17 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
      */
     public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
-         // the template to be displayed
-        String template = null;
+         
         I_CmsSession session = cms.getRequestContext().getSession(true);
+        // get the document to display
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
+        // the template to be displayed
+        String template = null;
+        String appletMode="";      
+        
+        try {
+
+       // I_CmsSession session = cms.getRequestContext().getSession(true);
         
         // get the file size upload limitation value (value is in kB)
         int maxFileSize = ((Integer)OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
@@ -108,8 +122,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
         String unzip = (String) parameters.get("unzip");
         String nofolder = (String) parameters.get("NOFOLDER");
 
-        // String currentFolder = (String)parameters.get(C_PARA_FILELIST);
-        String currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
+        String error = (String) parameters.get("error");
+
+
+        String currentFolder = (String)parameters.get(C_PARA_FILELIST);
+        //String currentFolder = CmsWorkplaceAction.getCurrentFolder(cms);
         if(currentFolder != null) {
             // session.putValue(C_PARA_FILELIST, currentFolder);
             CmsWorkplaceAction.setCurrentFolder(cms, currentFolder);
@@ -160,8 +177,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
         }
         newtype = (String)session.getValue(C_PARA_NEWTYPE);
 
-        // get the document to display
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
+
         xmlTemplateDocument.setData("lasturl", lastUrl);
         
         // get the overwrite parameter
@@ -209,11 +225,38 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
             System.out.println("cancel: " + cancelUpload);
         }                
 
-        // there was a file uploaded, so select its type
-        if(step != null) {
-            if(step.equals("1")) {
+       
 
-                // display the select filetype screen
+        // now we have to check if we use the applet upload or the old one
+        // get the startsettings for the user
+        CmsUser user=cms.getRequestContext().currentUser();
+        Hashtable startsettings =(Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);     
+         
+        if (startsettings !=null) {
+            // test if the user has selected the applet dialog    
+            appletMode = (String)startsettings.get(C_START_UPLOADAPPLET);
+        } 
+        
+        if (appletMode!=null && appletMode.equals("on")) {
+            // we are in applet mode, so display the applet
+            xmlTemplateDocument.setData("applet",this.createAppletCode(cms,currentFolder));
+            xmlTemplateDocument.setData("uploadform",xmlTemplateDocument.getProcessedDataValue(("appletform")));
+        } else {
+            // display the old upload dialog
+            xmlTemplateDocument.setData("uploadform",xmlTemplateDocument.getProcessedDataValue(("oldform"),this));
+
+        }
+
+        if (error!=null) {
+            template = "error";
+            xmlTemplateDocument.setData("details", error);
+        } else 
+                
+        // there was a file uploaded, so select its type
+        if(step != null ) {
+            if(step.equals("1")) {
+                
+                 // display the select filetype screen
                 if(filename != null) {
 
                     // check if the file size is 0
@@ -226,7 +269,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
                     else if ((maxFileSize > 0) && (filecontent.length > (maxFileSize * 1024))) {
                         template = "errorfilesize";
                         xmlTemplateDocument.setData("details", filename+": "+(filecontent.length/1024)+" kb, max. "+maxFileSize+" kb.");
-                    }
+                    }                                                        
                     else {
                         if(unzip != null) {
                             // try to unzip the file here ...
@@ -400,9 +443,24 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("FILENAME", filename);
         }
 
+        } catch (CmsException generalException) {
+
+        try {            
+            // send an error header if in applet mode
+            if (appletMode!=null && appletMode.equals("on")) {
+                cms.getRequestContext().getResponse().sendError(409, generalException.toString());
+            }
+        } catch (Exception e) {
+           
+        }            
+            throw generalException;
+        }
+    
+
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
+
 
     /**
      * Gets the resources displayed in the Radiobutton group on the chtype dialog.
@@ -492,4 +550,158 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault {
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
+    
+    
+    /**
+     * Returns the path to the currently selected skin.<p>
+     * 
+     * @return the path to the currently selected skin
+     */
+    public String getSkinUri(CmsObject cms) {
+        return cms.getRequestContext().getRequest().getWebAppUrl() + "/skins/modern/";        
+    }
+    
+
+    /**
+     * Creates the HTML code of the file upload applet with all required parameters.<p>
+     * @param cms the current CmsObject
+     * @return string containing the applet HTML code
+     */
+    private String createAppletCode(CmsObject cms, String currentFolder) throws CmsException {
+       
+        StringBuffer applet=new StringBuffer();
+        //collect some required server data first
+
+        String scheme=cms.getRequestContext().getRequest().getScheme();
+        String host=cms.getRequestContext().getRequest().getServerName();
+        String path=cms.getRequestContext().getRequest().getServletUrl();
+        String webapp=cms.getRequestContext().getRequest().getWebAppUrl();
+        int port=cms.getRequestContext().getRequest().getServerPort();
+        String fileExtensions=new String("");
+        
+        //get all file extensions
+        Hashtable extensions = cms.readFileExtensions();
+        Enumeration keys = extensions.keys();
+        while (keys.hasMoreElements()) {
+            String key=(String)keys.nextElement();
+            String value=(String)extensions.get(key);
+            fileExtensions+=key+"="+value+",";           
+        }
+        fileExtensions=fileExtensions.substring(0,fileExtensions.length()-1);
+        
+        //get the file size upload limitation value (value is in kB)
+        int maxFileSize = ((Integer)OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
+          
+        // define the required colors.
+        // currently this is hard coded here
+        
+        String colors="bgColor=#C0C0C0,outerBorderRightBottom=#333333,outerBorderLeftTop=#C0C0C0";
+        colors+=",innerBorderRightBottom=#777777,innerBorderLeftTop=#F0F0F0";  
+        colors+=",bgHeadline=#000066,colorHeadline=#FFFFFF";
+        colors+=",colorText=#000000,progessBar=#E10050";
+          
+                       
+        // get the workplace settings
+        HttpSession session = null;
+        HttpServletRequest request = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();
+        session = request.getSession(false);  
+        if (session != null) {
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute("__CmsWorkplace.WORKPLACE_SETTINGS");        
+            if (settings!=null) {
+                CmsWorkplaceMessages messages=settings.getMessages();                 
+                    
+            
+                
+                applet.append("<applet code=\"org.opencms.applet.upload.FileUploadApplet.class\" archive=\"");
+                applet.append(webapp);
+                applet.append("/skins/components/upload/applet/upload.jar\" width=\"500\" height=\"100\">\n");                
+                applet.append("<param name=\"opencms\" value=\"");
+                applet.append(scheme);
+                applet.append("://");
+                applet.append(host);
+                applet.append(":");
+                applet.append(port);
+                applet.append(getSkinUri(cms));
+                applet.append("filetypes/\">\n");
+                applet.append("<param name=\"target\" value=\"");
+                applet.append(scheme);
+                applet.append("://");
+                applet.append(host);
+                applet.append(":");
+                applet.append(port);
+                applet.append(path);
+                applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
+                applet.append("<param name=\"redirect\" value=\"");
+                applet.append(scheme);
+                applet.append("://");
+                applet.append(host);
+                applet.append(":");
+                applet.append(port);
+                applet.append(path);
+                applet.append("/system/workplace/jsp/explorer_files.html\">\n");
+                applet.append("<param name=error value=\"");
+                applet.append(scheme);
+                applet.append("://");
+                applet.append(host);
+                applet.append(":");
+                applet.append(port);
+                applet.append(path);
+                applet.append("/system/workplace/action/explorer_files_new_upload.html\">\n");
+                applet.append("<param name=\"browserCookie\" value=\"JSESSIONID=");
+                applet.append(cms.getRequestContext().getSession(true).getId());
+                applet.append("\">\n");
+                applet.append("<param name=\"filelist\" value=\"");
+                applet.append(currentFolder);
+                applet.append("\">\n");
+                applet.append("<param name=\"colors\" value=\"");
+                applet.append(colors);
+                applet.append("\">\n");                
+                applet.append("<param name=\"fileExtensions\" value=\"");
+                applet.append(fileExtensions);
+                applet.append("\">\n\n");
+                applet.append("<param name=\"maxsize\" value=\"");
+                applet.append(maxFileSize);
+                applet.append("\">\n");
+                applet.append("<param name=\"actionOutputSelect\" value=\"");
+                applet.append(messages.key("uploadapplet.action.select"));
+                applet.append("\">\n");
+                applet.append("<param name=\"actionOutputCount\"value=\"");
+                applet.append(messages.key("uploadapplet.action.count"));
+                applet.append("\">\n");
+                applet.append("<param name=\"actionOutputCreate\" value=\"");
+                applet.append(messages.key("uploadapplet.action.create"));
+                applet.append("\">\n");
+                applet.append("<param name=\"actionOutputUpload\" value=\"");
+                applet.append(messages.key("uploadapplet.action.upload"));
+                applet.append("\">\n");
+                applet.append("<param name=\"messageOutputUpload\" value=\"");
+                applet.append(messages.key("uploadapplet.message.upload"));
+                applet.append("\">\n");
+                applet.append("<param name=\"messageOutputErrorZip\" value=\"");
+                applet.append(messages.key("uploadapplet.message.error.zip"));
+                applet.append("\">\n");
+                applet.append("<param name=\"messageOutputErrorSize\" value=\"");
+                applet.append(messages.key("uploadapplet.message.error.size"));
+                applet.append("\">\n");
+                applet.append("<param name=\"messageNoPreview\" value=\"");
+                applet.append(messages.key("uploadapplet.message.nopreview"));
+                applet.append("\">\n");
+                applet.append("<param name=\"messageOutputAdding\" value=\"");
+                applet.append(messages.key("uploadapplet.message.adding"));
+                applet.append(" \">\n");
+                applet.append("<param name=\"errorTitle\" value=\"");
+                applet.append(messages.key("uploadapplet.error.title"));
+                applet.append(" \">\n");
+                applet.append("<param name=\"errorLine1\" value=\"");
+                applet.append(messages.key("uploadapplet.error.line1"));
+                applet.append(" \">\n");
+                applet.append("</applet>\n");
+            }
+        }
+        return applet.toString();
+        
+    }
+
+
+    
 }

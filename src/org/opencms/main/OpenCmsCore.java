@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/10/28 13:28:41 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -965,12 +965,18 @@ public class OpenCmsCore {
 
         // try to get the current session
         HttpSession session = req.getSession(false);
-
+        String sessionId;
         // check if there is user data already stored in the session
         String user = null;
         if (session != null) {
             // session exists, try to reuse the user from the session
             user = m_sessionStorage.getUserName(session.getId());
+            sessionId=session.getId();
+        } else {
+             sessionId=req.getParameter("JSESSIONID");
+            if (sessionId!=null) {
+                user = m_sessionStorage.getUserName(sessionId);
+            }
         }
                    
         // initialize the requested site root
@@ -978,7 +984,7 @@ public class OpenCmsCore {
                    
         if (user != null) {
             // a user name is found in the session, reuse this user
-            Integer project = m_sessionStorage.getCurrentProject(session.getId());
+            Integer project = m_sessionStorage.getCurrentProject(sessionId);
 
             // initialize site root from request
             String siteroot = null;
@@ -986,7 +992,7 @@ public class OpenCmsCore {
             if ((getSiteManager().getWorkplaceSiteMatcher().equals(site.getSiteMatcher()))) {
                 // if no dedicated workplace site is configured, 
                 // or for the dedicated workplace site, use the site root from the session attribute
-                siteroot = m_sessionStorage.getCurrentSite(session.getId());
+                siteroot = m_sessionStorage.getCurrentSite(sessionId);
             }
             if (siteroot == null) {
                 siteroot = site.getSiteRoot();
@@ -1575,7 +1581,7 @@ public class OpenCmsCore {
                 getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_exportProperties.getVfsPrefix());
                 getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_exportProperties.relativLinksInExport()?"relative":"absolute"));                
             }
-        } 
+        }        
         
         // set the property whether siblings should get published if a file gets published directly
         String directPublishSiblings = conf.getString("workplace.directpublish.siblings", "false");

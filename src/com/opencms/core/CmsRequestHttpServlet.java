@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/09/19 14:42:53 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/10/28 13:28:41 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.43 $ $Date: 2003/09/19 14:42:53 $
+ * @version $Revision: 1.44 $ $Date: 2003/10/28 13:28:41 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -595,8 +595,12 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
             // Eat the empty line
             line = in.readLine();
             if(line == null || line.length() > 0) { // line should be empty
-                throw new IOException("Malformed line after content type: " + line);
+                line = in.readLine();
+                if(line == null || line.length() > 0) { // line should be empty
+                    throw new IOException("Malformed line after content type: " + line);
+                }
             }
+            
         }
         else {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2003/10/28 13:28:41 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.130 $ $Date: 2003/10/28 11:31:27 $
+ * @version $Revision: 1.131 $ $Date: 2003/10/28 13:28:41 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -164,8 +164,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             default :
                 // TODO: define default behauvior
                 break;
+            }
         }
-    }
 
     /**
      * creates a link entry for each of the link targets in the linktable.<p>
@@ -844,7 +844,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                     offlineFileHeader.setFlags(flags);
                 }
-                
+
                 try {
                     // write the file to the backup and publishing history
                     if (backupEnabled) {
@@ -926,8 +926,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online                   
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), false);
-                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath()); 
-                    
+                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());                    
+
                     // reset the labeled link flag before writing the online file
                     int flags = offlineFileHeader.getFlags();
                     flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
@@ -1137,8 +1137,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 // create the file online              
                 newFile = (CmsFile) offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());  
-                            
+                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
                 m_driverManager.getVfsDriver().createFile(onlineProject, newFile, offlineFile.getUserCreated(), newFile.getParentStructureId(), newFile.getName());
 
                 // update the online/offline structure and resource records of the file
@@ -1345,54 +1344,54 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (!directPublishFile) {
                 report.println(report.key("report.publish_prepare_folders"), I_CmsReport.C_FORMAT_HEADLINE);
                                 
-                // read all changed/new/deleted folders
+            // read all changed/new/deleted folders
                 report.print(report.key("report.publish_read_projectfolders") + report.key("report.dots"));
-                offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
+            offlineFolders = m_driverManager.getVfsDriver().readFolders(context.currentProject().getId());
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
                 // ensure that the folders appear in the correct (DFS) tree order.
                 // second, sort out folders that will not be published
                 report.print(report.key("report.publish_filter_folders") + report.key("report.dots"));
-                sortedFolderMap = (Map) new HashMap();
-                i = offlineFolders.iterator();
-                while (i.hasNext()) {
-                    publishCurrentResource = false;
+            sortedFolderMap = (Map) new HashMap();
+            i = offlineFolders.iterator();
+            while (i.hasNext()) {
+                publishCurrentResource = false;
 
-                    currentFolder = (CmsFolder) i.next();
-                    currentResourceName = m_driverManager.readPath(context, currentFolder, true);
-                    currentFolder.setFullResourceName(currentResourceName);
-                    currentLock = m_driverManager.getLock(context, currentResourceName);
+                currentFolder = (CmsFolder) i.next();
+                currentResourceName = m_driverManager.readPath(context, currentFolder, true);
+                currentFolder.setFullResourceName(currentResourceName);
+                currentLock = m_driverManager.getLock(context, currentResourceName);
 
-                    // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
-                    publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
+                // the resource must have either a new/deleted state in the link or a new/delete state in the resource record
+                publishCurrentResource = currentFolder.getState() > I_CmsConstants.C_STATE_UNCHANGED;
 
-                    if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
-                        // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                        publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
-                    } else {
-                        // the resource must have a changed state and must be changed in the project that is currently published
-                        publishCurrentResource = publishCurrentResource && currentFolder.getProjectLastModified() == context.currentProject().getId();
+                if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
+                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                } else {
+                    // the resource must have a changed state and must be changed in the project that is currently published
+                    publishCurrentResource = publishCurrentResource && currentFolder.getProjectLastModified() == context.currentProject().getId();
 
-                        // the resource must be in one of the paths defined for the project            
-                        publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
-                    }
-
-                    // the resource must be unlocked
-                    publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
-
-                    if (publishCurrentResource) {
-                        sortedFolderMap.put(currentResourceName, currentFolder);
-                    }
+                    // the resource must be in one of the paths defined for the project            
+                    publishCurrentResource = publishCurrentResource && CmsProject.isInsideProject(projectResources, currentFolder);
                 }
 
-                sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
-                Collections.sort(sortedFolderList);
+                // the resource must be unlocked
+                publishCurrentResource = publishCurrentResource && currentLock.isNullLock();
+
+                if (publishCurrentResource) {
+                    sortedFolderMap.put(currentResourceName, currentFolder);
+                }
+            }
+
+            sortedFolderList = (List) new ArrayList(sortedFolderMap.keySet());
+            Collections.sort(sortedFolderList);
 
                 report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
                 report.println(report.key("report.publish_prepare_folders_finished"), I_CmsReport.C_FORMAT_HEADLINE);
 
-                offlineFolders.clear();
-                offlineFolders = null;
+            offlineFolders.clear();
+            offlineFolders = null;
             } else {
                 // a file gets published directly- the list of sorted/unpublished folders remains empty
                 sortedFolderList = Collections.EMPTY_LIST;
@@ -1471,7 +1470,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 }
             } else {
                 // a project gets published- add all unpublished offline file headers
-                offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
+            offlineFiles = m_driverManager.getVfsDriver().readFiles(context.currentProject().getId());
             }
             report.println(report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
 
@@ -1500,11 +1499,11 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         } else {
                         */
                             // a project gets published or a folder gets published directly
-                            if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
-                                publishCurrentResource = true;
-                            } else {
-                                publishCurrentResource = false;
-                            }                            
+                        if (delProject != null && delProject.equals("" + context.currentProject().getId())) {
+                            publishCurrentResource = true;
+                        } else {
+                            publishCurrentResource = false;
+                        }
                         //}
                         break;
 
@@ -1531,8 +1530,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 if (context.currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_DIRECT_PUBLISH && directPublishResource != null) {
                     if (directPublishResource.isFolder()) {
-                        // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
-                        publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
+                    // the resource must be a sub resource of the direct-publish-resource in case of a "direct publish"
+                    publishCurrentResource = publishCurrentResource && currentResourceName.startsWith(directPublishResource.getRootPath());
                     }
                 } else {
                     // the resource must be in one of the paths defined for the project
@@ -1701,7 +1700,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 offlineFiles.clear();
                 offlineFiles = null;
             }
-            
+
             if (siblings != null) {
                 siblings.clear();
                 siblings = null;
@@ -2142,7 +2141,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, state);
             res = stmt.executeQuery();
 
-            while (res.next()) {
+            while (res.next()) { 
                 projects.addElement(
                     new CmsProject(
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),

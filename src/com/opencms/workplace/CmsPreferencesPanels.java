@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/10/28 13:28:41 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.58 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.59 $ $Date: 2003/10/28 13:28:41 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault {
@@ -135,6 +135,9 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
 
     /** Datablock value for checkbox internal flag */
     private static final String C_LOCKDIALOG = "checklockdialog";
+
+    /** Datablock value for checkbox internal flag */
+    private static final String C_UPLOADAPPLETDIALOG = "checkuploadappeltdialog";
 
     /** Constant for filter */
     private static final String C_SPACER = "------------------------------------------------";
@@ -725,6 +728,11 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
             lockstuff = "";
         }
         startSettings.put(C_START_LOCKDIALOG, lockstuff);
+        String uploadapplet = (String)parameters.get("uploadapplet");
+        if (uploadapplet == null){
+            uploadapplet = "";
+        }  
+        startSettings.put(C_START_UPLOADAPPLET, uploadapplet);
         cms.getRequestContext().setCurrentProject(Integer.parseInt((String)parameters.get("project")));
 
         // get all access flags from the request
@@ -1089,6 +1097,16 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault {
         } else{
             xmlTemplateDocument.setData(C_LOCKDIALOG, " ");
         }
+        String appletD = (String)startSettings.get(C_START_UPLOADAPPLET);
+        
+        
+        if (appletD!=null && "on".equals(appletD)){
+            xmlTemplateDocument.setData(C_UPLOADAPPLETDIALOG, C_CHECKED);
+        } else{
+            xmlTemplateDocument.setData(C_UPLOADAPPLETDIALOG, " ");
+        }
+        
+        
 //      TODO: check if neccessary to reimplement using acl
 //             if((flags & C_PERMISSION_WRITE) > 0) {
 //                 xmlTemplateDocument.setData(C_CHECKUW, C_CHECKED);

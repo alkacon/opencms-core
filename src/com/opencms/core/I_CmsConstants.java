@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/18 13:19:47 $
-* Version: $Revision: 1.274 $
+* Date   : $Date: 2003/10/28 13:28:41 $
+* Version: $Revision: 1.275 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.274 $ $Date: 2003/09/18 13:19:47 $
+ * @version $Revision: 1.275 $ $Date: 2003/10/28 13:28:41 $
  */
 public interface I_CmsConstants {
 
@@ -692,6 +692,10 @@ public interface I_CmsConstants {
 
     /** Start preferenses lock dialog */
     String C_START_LOCKDIALOG = "StartLockDialog";
+    
+    /** Start preferenses lock dialog */
+    String C_START_UPLOADAPPLET = "StartUploadApplet";
+    
 
     /** Start preferenses AccessFlags */
     String C_START_ACCESSFLAGS = "StartAccessFlags";
