@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2001/07/10 15:44:15 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2001/07/12 09:09:52 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -45,7 +45,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2001/07/10 15:44:15 $
+ * @version $Revision: 1.45 $ $Date: 2001/07/12 09:09:52 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -132,7 +132,6 @@ public class CmsImport implements I_CmsConstants, Serializable {
         }catch(Exception e){
             //ignore the exception, the export file has no version nummber (version 0).
         }
-        System.err.println("mgm--importVersion: "+m_importVersion);
     }
 /**
  * Read infos from the properties and create a MessageDigest
@@ -183,6 +182,11 @@ private void createDigest() throws CmsException {
      * @return the new type of the resouce
      */
     private String fitFileType(String path, String name, byte[] content, String type, Hashtable properties){
+
+        // first if the type is javascript set it to plain
+        if("script".equals(type)){
+            type = C_TYPE_PLAIN_NAME;
+        }
 
         // only check the file if the version of the export is 0
         if(m_importVersion == 0){

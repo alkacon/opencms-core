@@ -1,8 +1,8 @@
 package com.opencms.file;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2001/07/10 15:44:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/07/12 09:09:52 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -41,7 +41,7 @@ import com.opencms.file.genericSql.*;
  * copied or deleted.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.1 $Date: $
+ * @version $Revision: 1.2 $Date: 2001/07/10 15:44:15 $
  *
  */
 public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {
@@ -58,11 +58,11 @@ public class CmsResourceTypeCompatiblePlain extends CmsResourceTypePlain {
 	* has not the appropriate rights to copy the file.
 	*/
 	public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
-// mgm - at work
 		cms.doCopyFile(source, destination);
         if(!keepFlags) {
             setDefaultFlags(cms, destination);
         }
+        cms.doChtype(destination, I_CmsConstants.C_TYPE_PLAIN_NAME);
 	}
 
 }

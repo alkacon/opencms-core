@@ -1,8 +1,8 @@
 package com.opencms.file;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2001/07/10 15:44:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2001/07/12 09:09:52 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -46,69 +46,110 @@ public class CmsCompatibleCheck implements I_CmsConstants{
     public CmsCompatibleCheck() {
     }
 
-/**
- * checks if the resource sticks to the rules for templates and bodys if it is in
- * the correlative path. If this method is called from the CmsImport the resource
- * does not exist in opencms therefor the content is part of the parameter.
- *
- * @param name The absolute path of the resource in OpenCms.
- * @param content The content of the resource.
- * @param type The resource type.
- * @return true if the resource is ok.
- */
-public boolean isTemplateCompatible(String name, byte[] content, String type){
-    if ( name == null){
-        return false;
-    }
-    if (name.startsWith("/content/bodys/")){
-        // this is a body file
-        if (!C_TYPE_PLAIN_NAME.equals(type)){
-            // only plain files allowed in content/bodys
+    /**
+     * checks if the resource sticks to the rules for templates and bodys if it is in
+     * the correlative path. If this method is called from the CmsImport the resource
+     * does not exist in opencms therefor the content is part of the parameter.
+     *
+     * @param name The absolute path of the resource in OpenCms.
+     * @param content The content of the resource.
+     * @param type The resource type.
+     * @return true if the resource is ok.
+     */
+    public boolean isTemplateCompatible(String name, byte[] content, String type){
+        if ( name == null){
             return false;
         }
-        // to check the rest we have to parse the content
-        try{
-            org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(
-                                            new java.io.StringReader(new String(content)));
-             for(Node n = xmlDoc.getFirstChild(); n != null; n = treeWalker(xmlDoc, n)) {
-                System.err.println("mgm--node:"+ n.getNodeName()+" type:"+n.getNodeType()+" value:"+n.getNodeValue());
-                if((n.getNodeType() > n.CDATA_SECTION_NODE) || (n.getNodeType() == n.ATTRIBUTE_NODE)){
-                    return false;
+        if (name.startsWith("/content/bodys/")){
+            // this is a body file
+            if (!C_TYPE_PLAIN_NAME.equals(type)){
+                // only plain files allowed in content/bodys
+                return false;
+            }
+            // to check the rest we have to parse the content
+            try{
+                org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(
+                                                new java.io.StringReader(new String(content)));
+                 for(Node n = xmlDoc.getFirstChild(); n != null; n = treeWalker(xmlDoc, n)) {
+                    short ntype = n.getNodeType();
+                    if(((ntype > n.CDATA_SECTION_NODE) && ntype < n.DOCUMENT_TYPE_NODE)
+                                        || (ntype == n.ATTRIBUTE_NODE)){
+                        return false;
+                    }
+                    if(n.getNodeType() == n.ELEMENT_NODE){
+                        String tagName = n.getNodeName();
+                        if(!("template".equalsIgnoreCase(tagName) || "xmltemplate".equalsIgnoreCase(tagName))){
+                            return false;
+                        }
+                    }
                 }
-                if(n.getNodeType() == n.ELEMENT_NODE){
-                    String tagName = n.getNodeName();
-                    if(!("template".equalsIgnoreCase(tagName) || "xmltemplate".equalsIgnoreCase(tagName))){
+            }catch(Exception e){
+                return false;
+            }
+
+        } else if (name.startsWith("/content/templates/")
+                    || (name.startsWith("/system/modules/") && name.indexOf("/templates/") > -1)){
+            // this is a template file
+            if (!C_TYPE_PLAIN_NAME.equals(type)){
+                // only plain templates are allowed
+                return false;
+            }
+            // to check the rest we have to parse the content
+            try{
+                org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(
+                                                new java.io.StringReader(new String(content)));
+                // we check the sub nodes from <xmltemplate>
+                // there should be the two elementdefs, one template and some empty text nodes
+                NodeList list = xmlDoc.getChildNodes();
+                list = (list.item(0)).getChildNodes();
+                int counterEldefs = 0;
+                int counterTeplate = 0;
+                for(int i=0; i<list.getLength(); i++){
+                    Node n = list.item(i);
+                    short nodeType = n.getNodeType();
+                    if(nodeType == n.ELEMENT_NODE){
+                        // allowed is the Elementdef or the template tag
+                        String nodeName = n.getNodeName();
+                        if ("elementdef".equalsIgnoreCase(nodeName)){
+                            // check the rules for the elementdefinitions
+                            if(!isElementDefOk((Element)n)){
+                                return false;
+                            }
+                            counterEldefs++;
+                        }else if("template".equalsIgnoreCase(nodeName)){
+                            // check if the template node is ok.
+                            if(!isTemplateTagOk((Element)n)){
+                                return false;
+                            }
+                            counterTeplate++;
+                        }else{
+                            //this name is not allowed
+                            return false;
+                        }
+
+                    }else if(nodeType == n.TEXT_NODE){
+                        // text node is only allowed if the value is empty
+                        String nodeValue = n.getNodeValue();
+                        if((nodeValue != null) && (nodeValue.trim().length() > 0)){
+                            return false;
+                        }
+                    }else{
+                        // this nodeType is not allowed
                         return false;
                     }
                 }
-            }
-        }catch(Exception e){
-            return false;
-        }
+                if(counterEldefs != 2 || counterTeplate != 1){
+                    // there have to be exactly two elementdefs and one template tag
+                    return false;
+                }
 
-    } else if (name.startsWith("/content/templates/")
-                || (name.startsWith("/system/modules/") && name.indexOf("/templates/") > -1)){
-        // this is a template file
-        if (!C_TYPE_PLAIN_NAME.equals(type)){
-            // only plain templates are allowed
-            return false;
-        }
-        // to check the rest we have to parse the content
-        try{
-            org.w3c.dom.Document xmlDoc = A_CmsXmlContent.getXmlParser().parse(
-                                            new java.io.StringReader(new String(content)));
-            NodeList list = xmlDoc.getChildNodes();
-            for(int i=0; i<list.getLength(); i++){
-                Node n = list.item(i);
-//mgm at work                System.err.println("mgm--t node:"+ n.getNodeName()+" type:"+n.getNodeType()+" value:"+n.getNodeValue());
+            }catch(Exception e){
+                return false;
             }
-
-        }catch(Exception e){
-            return false;
         }
+        return true;
     }
-    return true;
-}
+
     /**
      * Help method to walk through the DOM document tree.
      * First it will be looked for children of the given node.
@@ -130,6 +171,7 @@ public boolean isTemplateCompatible(String name, byte[] content, String type){
         }
         return nextnode;
     }
+
     /**
      * Help method to walk through the DOM document tree by a
      * width-first-order.
@@ -154,4 +196,67 @@ public boolean isTemplateCompatible(String name, byte[] content, String type){
         return nextnode;
     }
 
+    /**
+     * helper for checking the templates from /content/templates.
+     * This helper checks a elementdef Node if it sticks to the rules.
+     * @param el the Element to check.
+     * @return true if the elementdef is ok.
+     */
+    private boolean isElementDefOk(Element el){
+        // first the name
+        String elementName = el.getAttribute("name");
+        if(!("contenttemplate".equalsIgnoreCase(elementName)
+                    || "frametemplate".equalsIgnoreCase(elementName) )){
+            // no other elementdefinition allowed
+            return false;
+        }
+        // now the templateclass only the standard class is allowed
+        String elClass = el.getElementsByTagName("CLASS").item(0).getFirstChild().getNodeValue();
+        if(!"com.opencms.template.CmsXmlTemplate".equals(elClass)){
+            return false;
+        }
+        String elTemplate = el.getElementsByTagName("TEMPLATE").item(0).getFirstChild().getNodeValue();
+        if(elTemplate == null || elTemplate.indexOf(elementName) < 1){
+            // it must be in the path /content/"elementName"/ or in
+            // the path /system/modules/"modulename"/"elementName"/
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * helper for checking the templates from /content/templates.
+     * This helper checks a template Node if it sticks to the rules.
+     * @param el the Element to check.
+     * @return true if the template is ok.
+     */
+    private boolean isTemplateTagOk(Element el){
+
+        NodeList list = el.getChildNodes();
+        if(list.getLength() > 3){
+            // only the one template tag allowed (and the two empty text nodes)
+            return false;
+        }
+        for(int i=0; i<list.getLength(); i++){
+            Node n = list.item(i);
+            short ntype = n.getNodeType();
+            if(ntype == n.TEXT_NODE){
+                String nodeValue = n.getNodeValue();
+                if((nodeValue != null) && (nodeValue.trim().length() > 0)){
+                    return false;
+                }
+            }else if(ntype == n.ELEMENT_NODE){
+                // this should be <ELEMENT name="frametemplate"/>
+                if(! "element".equalsIgnoreCase(n.getNodeName())){
+                    return false;
+                }
+                if(!"frametemplate".equals(((Element)n).getAttribute("name"))){
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
 }
