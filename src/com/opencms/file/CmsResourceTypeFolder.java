@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/04 09:46:30 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/08/07 13:17:31 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.84 $
+ * @version $Revision: 1.85 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -560,6 +560,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         // now unlock the folder
         cms.doUnlockResource(resource);
 
+        /*
         if (forceRecursive) {
             List allSubFolders = (List)new ArrayList();
             List allSubFiles = (List)new ArrayList();
@@ -568,14 +569,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
 
             for (int i = 0; i < allSubFiles.size(); i++) {
                 CmsFile curFile = (CmsFile)allSubFiles.get(i);
-                cms.unlockResource(cms.readAbsolutePath(curFile), false);
+                cms.unlockResource(cms.readAbsolutePath(curFile,true), false);
             }
 
             for (int i = 0; i < allSubFolders.size(); i++) {
                 CmsFolder curFolder = (CmsFolder)allSubFolders.get(i);
-                cms.doUnlockResource(cms.readAbsolutePath(curFolder));
+                cms.doUnlockResource(cms.readAbsolutePath(curFolder,true));
             }
         }
+        */
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/07 12:35:04 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2003/08/07 13:17:31 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.145 $ $Date: 2003/08/07 12:35:04 $
+ * @version $Revision: 1.146 $ $Date: 2003/08/07 13:17:31 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7649,10 +7649,10 @@ public class CmsDriverManager extends Object {
      */
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockDispatcher.removeResource(this, context, resourcename, false);
-        clearResourceCache();   
-        
-        return oldLock;     
-        }
+        clearResourceCache();
+
+        return oldLock;
+    }
         
     /**
      * When a project is published this method aktualises the online link table.
