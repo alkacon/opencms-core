@@ -4153,7 +4153,7 @@
             <properties/>
         </file>
         <file>
-            <destination>system/workplace/administration/database/exportmodules</destination>
+            <destination>system/workplace/administration/database/exportmoduldata</destination>
             <type>folder</type>
             <user>Admin</user>
             <group>Administrators</group>
@@ -4177,8 +4177,8 @@
             </properties>
         </file>
         <file>
-            <source>system/workplace/administration/database/exportmodules/administration_content_moduledata_export</source>
-            <destination>system/workplace/administration/database/exportmodules/administration_content_moduledata_export</destination>
+            <source>system/workplace/administration/database/exportmoduldata/administration_content_moduledata_export</source>
+            <destination>system/workplace/administration/database/exportmoduldata/administration_content_moduledata_export</destination>
             <type>plain</type>
             <user>Admin</user>
             <group>Users</group>
@@ -4186,8 +4186,8 @@
             <properties/>
         </file>
         <file>
-            <source>system/workplace/administration/database/exportmodules/index.html</source>
-            <destination>system/workplace/administration/database/exportmodules/index.html</destination>
+            <source>system/workplace/administration/database/exportmoduldata/index.html</source>
+            <destination>system/workplace/administration/database/exportmoduldata/index.html</destination>
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
