@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/15 19:29:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2001/05/16 08:14:48 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.27 $ $Date: 2001/05/15 19:29:04 $ *
+ * @version $Revision: 1.28 $ $Date: 2001/05/16 08:14:48 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1192,7 +1192,9 @@ private CmsException getCmsException(String errorIn, Exception exc) {
 	try {
 		exceptionNumber = Integer.parseInt(exceptionMessage.substring(4, 9));
 	} catch(StringIndexOutOfBoundsException iobexc) {
-		System.err.println("Error in getCmsException() " + exceptionMessage);
+		if(A_OpenCms.isLogging() && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING) {
+			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_DEBUG, "Error in getCmsException() " + exceptionMessage);
+		}
 	} catch(Exception otherExc) {
 		cmsException = new CmsException(errorIn + exceptionMessage, CmsException.C_UNKNOWN_EXCEPTION);
 	}
