@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/27 13:42:44 $
- * Version: $Revision: 1.261 $
+ * Date   : $Date: 2001/07/30 14:09:01 $
+ * Version: $Revision: 1.262 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.261 $ $Date: 2001/07/27 13:42:44 $
+ * @version $Revision: 1.262 $ $Date: 2001/07/30 14:09:01 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -576,7 +576,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
             return(false);
         } else {
             //check if the project that has locked the resource is the current project
-            if(resource.getLockedInProject() != currentProject.getId()){
+            if((resource.getLockedInProject() != currentProject.getId())){
                 return (false);
             }
         }
@@ -1376,7 +1376,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
 
         CmsFolder cmsFolder = readFolder(currentUser,currentProject, foldername);
         if( accessCreate(currentUser, currentProject, (CmsResource)cmsFolder) ) {
-            if(accessWrite(currentUser, currentProject, source)){
+            if(( accessOther(currentUser, currentProject, file, C_ACCESS_PUBLIC_WRITE) ||
+                accessOwner(currentUser, currentProject, file, C_ACCESS_OWNER_WRITE) ||
+                accessGroup(currentUser, currentProject, file, C_ACCESS_GROUP_WRITE) )){
                 // write-acces  was granted - copy the file and the metainfos
                 m_dbAccess.copyFile(currentProject, onlineProject(currentUser, currentProject),
                               currentUser.getId(),source,cmsFolder.getResourceId(), foldername + filename);
@@ -1433,7 +1435,9 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // write-acces  was granted - copy the folder and the properties
             CmsFolder folder=readFolder(currentUser,currentProject,source);
             // check write access to the folder that has to be copied
-            if(accessWrite(currentUser, currentProject, (CmsResource) folder)){
+            if(( accessOther(currentUser, currentProject, (CmsResource)folder, C_ACCESS_PUBLIC_WRITE) ||
+                accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_WRITE) ||
+                accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_WRITE) )){
                 m_dbAccess.createFolder(currentUser,currentProject,onlineProject(currentUser, currentProject),folder,cmsFolder.getResourceId(),destination);
 
                 // copy the properties
