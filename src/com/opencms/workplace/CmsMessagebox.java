@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMessagebox.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,8 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;MESSAGEBOX&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:01 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:28 $
  */
 public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -75,13 +76,12 @@ public class CmsMessagebox extends A_CmsWpElement implements I_CmsWpElement, I_C
         String messageButton2= n.getAttribute(C_MESSAGE_BUTTON2);
         String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
         String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
-
         
         CmsXmlWpBoxDefFile boxdef = getBoxDefinitions(cms);
         
         // get the data from the language file
         messageTitle = lang.getLanguageValue(messageTitle);
-        messageMessage1= lang.getLanguageValue(messageMessage1);
+		messageMessage1= lang.getLanguageValue(messageMessage1);
         messageMessage2= lang.getLanguageValue(messageMessage2);
         messageButton1= lang.getLanguageValue(messageButton1);
         messageButton2= lang.getLanguageValue(messageButton2);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/16 09:44:01 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,10 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2000/02/16 09:44:01 $ 
+ * @author Michaela Schleich
+ *  
+ * @version $Revision: 1.45 $ $Date: 2000/02/16 18:06:27 $ 
+ * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1634,11 +1637,6 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	/**
 	 * exports database (files, groups, users) into a specified file
 	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
 	 * @param exportFile the name (absolute Path) for the XML file
 	 * @param exportPath the name (absolute Path) for the folder to export
 	 * @param exportType what to export:
@@ -1646,41 +1644,24 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 *			C_EXPORTONLYUSERS  exports only users and groups
 	 *			C_EXPORTONLYFILES  exports only files
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
 	 */
-	public boolean exportDb(String exportFile, String exportPath, int exportType) 
+	public void exportDb(String exportFile, String exportPath, int exportType) 
 		throws Exception {
 		
-		boolean admin=false;
-		
-		admin=c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
-
-		return admin;
+		c_rb.exportDb(m_context.currentUser(), m_context.currentProject(), exportFile, exportPath, exportType);
 	}
 	
 	/**
 	 * imports a (files, groups, users) XML file into database
 	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
-	 * @param currentUser user who requestd themethod
-	 * @param currentProject current project of the user
 	 * @param importPath the name (absolute Path) of folder in which should be imported
 	 * @param importFile the name (absolute Path) of the XML import file
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
 	 */
-	public boolean importDb(String importPath, String importFile)
+	public void importDb(String importFile, String importPath)
 		throws Exception {
 		
-		boolean admin=false;
-		
-		admin=c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importPath, importFile);
-		
-		return admin;
+		c_rb.importDb(m_context.currentUser(), m_context.currentProject(), importFile, importPath);
 	}
 
 	 /**

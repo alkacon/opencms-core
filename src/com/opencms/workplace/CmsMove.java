@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
  * Date   : $Date: 2000/02/16 18:06:28 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,26 +38,28 @@ import javax.servlet.http.*;
 import java.util.*;
 
 /**
- * Template class for displaying the copy file screen of the OpenCms workplace.<P>
+ * Template class for displaying the move file screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:28 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.1 $ $Date: 2000/02/16 18:06:28 $
  */
-public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
+public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
            
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
-     * Gets the content of the copy template and processed the data input.
+     * Gets the content of the move template and processed the data input.
      * @param cms The CmsObject.
-     * @param templateFile The copy template file
+     * @param templateFile The move template file
      * @param elementName not used
      * @param parameters Parameters of the request and the template.
      * @param templateSelector Selector of the template tag to be displayed.
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
+
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
@@ -75,28 +77,25 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
         
         // read all request parameters
-        String newFile=(String)parameters.get("newfile");
         String newFolder=(String)parameters.get("newfolder");
         String flags=(String)parameters.get("flags");
         
         CmsFile file=(CmsFile)cms.readFileHeader(filename);
-  
-        //check if the newfile parameter was included in the request
-        // if not, the copy page is shown for the first time
-        if (newFile == null) {
-            session.putValue(C_PARA_NAME,file.getName());
-        } else {
-             // copy the file and set the access flags if nescessary
-             cms.copyFile(file.getAbsolutePath(),newFolder+newFile);
+
+		 //check if the newFolder parameter was included in the request
+         //if not, the move page is shown for the first time
+         if (newFolder != null) {
+             // moves the file and set the access flags if nescessary
+			 cms.moveFile(file.getAbsolutePath(),newFolder+file.getName());
              if (flags.equals("false")) {
                  // set access flags of the new file to the default flags
-                 CmsFile newfile=cms.readFile(newFolder,newFile);
-                 // TODO: use the default flags in the user preferences when they are implemented             
+				 CmsFile newfile=cms.readFile(newFolder,file.getName());
+                 
+				 // TODO: use the default flags in the user preferences when they are implemented             
                  newfile.setAccessFlags(C_ACCESS_DEFAULT_FLAGS);  
                  cms.writeFile(newfile);
-             }
-			 session.removeValue(C_PARA_FILE);
-			 session.removeValue(C_PARA_NAME);
+			   }
+				 
              // TODO: Error handling
              try {
                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
@@ -104,7 +103,8 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                   throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
             } 
         }
-         
+
+ 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         xmlTemplateDocument.setXmlData("OWNER",cms.readOwner(file).getName());
         xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
@@ -113,24 +113,10 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);   
     }
-    
-     /**
-     * Pre-Sets the value of the copy field.
-     * This method is directly called by the content definiton.
-     * @param Cms The CmsObject.
-     * @param lang The language file.
-     * @return Value that is pre-set into the copy field.
-     * @exception CmsExeption if something goes wrong.
-     */
-    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang)
-        throws CmsException {
-        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
-        String name=(String)session.getValue(C_PARA_NAME);
-        return name;
-    }
+ 
   
      /**
-     * Gets all folders to copy the selected file to.
+     * Gets all folders to move the selected file to.
      * <P>
      * The given vectors <code>names</code> and <code>values</code> will 
      * be filled with the appropriate information to be used for building
@@ -165,13 +151,6 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         values.addElement("/");
         getTree(cms,rootFolder,names,values);
    
-        // now search for the current folder
-         String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
-         for (int i=0;i<values.size();i++) {
-             if (((String)values.elementAt(i)).equals(currentFilelist)) {
-                 selected=new Integer(i);
-             }
-         }
         return selected;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/16 09:44:01 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,9 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2000/02/16 09:44:01 $ 
+ * @author Michaela Schleich
+ * 
+ * @version $Revision: 1.44 $ $Date: 2000/02/16 18:06:27 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1315,9 +1317,6 @@ public abstract class A_CmsObject {
 	/**
 	 * exports database (files, groups, users) into a specified file
 	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
 	 * @param exportFile the name (absolute Path) for the XML file
 	 * @param exportPath the name (absolute Path) for the folder to export
 	 * @param exportType what to export:
@@ -1325,25 +1324,22 @@ public abstract class A_CmsObject {
 	 *			C_EXPORTONLYUSERS  exports only users and groups
 	 *			C_EXPORTONLYFILES  exports only files
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+ 	 * @exception throws Exception
+	 * 
 	 */
-	abstract public boolean exportDb(String exportFile, String exportPath, int exportType) 
+	abstract public void exportDb(String exportFile, String exportPath, int exportType) 
 		throws Exception;
 	
 	/**
 	 * imports a (files, groups, users) XML file into database
 	 * 
-	 * <B>Security:</B>
-	 * only Administrators can do this;
-	 * 
 	 * @param importPath the name (absolute Path) of folder in which should be imported
 	 * @param importFile the name (absolute Path) of the XML import file
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+	 * @exception throws Exception
+	 * 
 	 */
-	abstract public boolean importDb(String importPath, String importFile)
+	abstract public void importDb(String importFile, String importPath)
 		throws Exception;
 
 	 /**

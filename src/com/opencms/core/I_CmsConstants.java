@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/02/16 10:44:16 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,9 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2000/02/16 10:44:16 $
+ * @author Michaela Schleich
+ * 
+ * @version $Revision: 1.36 $ $Date: 2000/02/16 18:06:27 $
  */
 public interface I_CmsConstants
 {
@@ -585,6 +587,12 @@ public interface I_CmsConstants
 	final static int C_EXPORTONLYUSERS=1;
 	/**Export type value - exports only resources */
 	final static int C_EXPORTONLYFILES=2;
+	
+	/**Are files imported - NO */
+	final static int C_NO_FILES_IMPORTED=0;
+	/**Are files imported - yes */
+	final static int C_FILES_IMPORTED=1;
+	
 	/** 
 	 * root element in the XML file (the document node)
 	 * needed, to insert other elements
@@ -600,18 +608,6 @@ public interface I_CmsConstants
 	final static String C_TFTYPE = "TYPE";
 	/** XML tag to defines the resource typename */
 	final static String C_TFTYPENAME = "TYPENAME";
-	
-	//final static String C_TFFLAG = "FLAG";
-	//final static String C_TFUSER = "USER";
-	//final static String C_TFGROUP = "GROUP";
-	//final static String C_TFACCESSFLAG = "ACCESSFLAG";
-	//final static String C_TFSTATE = "STATE";
-	//final static String C_TFLOCKED = "LOCKED";
-	//final static String C_TFLAUNCHER = "LAUNCHER";	
-	//final static String C_TFLAUNCHERCLASS = "LAUNCHERCLASS";	
-	//final static String C_TFCREATED = "CFREATED";	
-	//final static String C_TFMODIFIED = "MODIFIED";	
-	//final static String C_TFSIZE = "SIZE";
 	
 	/** XML tag to defines the resource metainfo */
 	final static String C_TFMETAINFO = "METAINFO";

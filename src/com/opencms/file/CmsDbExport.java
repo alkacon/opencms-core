@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExport.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,37 +41,26 @@ import com.opencms.template.*;
  * Exports Groups, Users and Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
  */
 
 class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 	
 	/** ResourceBroker to access all methods and objects */
-	private I_CmsResourceBroker RB = null;
+	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser user = null;
+	private A_CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject project = null;
+	private A_CmsProject m_project = null;
 	
 	/** need to convert into XML format */
-	private I_CmsXmlParser parser = null;
+	private I_CmsXmlParser m_parser = null;
 	/** need to initiate an XML object */
-	private Document docXml = null;
+	private Document m_docXml = null;
 	/** first element of an XML object(document node) need to insert other elements*/
-	private Element firstElement = null;
-	/** new XML element which is inserted in the XML first element */
-	private Element newElement = null;
-	/** need to navigate in the XML tree */
-	private Element grandparentElement = null;
-	/** need to navigate in the XML tree */
-	private Element sectionElement = null;
-	/** need to navigate in the XML tree */
-	private Element parentElement = null;
-	/** need to at values in the XML elements */
-	private Node newNode = null;
 	
 	/** which folder to export	 */
-	private String exportFolder=null;
+	private String m_exportFolder=null;
 	/** 
 	 * what to export
 	 * 
@@ -92,8 +81,8 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 	 * Constructor, creates a new CmsDbExport object.
 	 * 
      * @param eRB current ResourceBroker
-	 * @param luser current user logged in
-	 * @param lproject current project
+	 * @param luser current m_user logged in
+	 * @param lproject current m_project
 	 * @param filename current file, to which the export XML is written
 	 * @param sourcefolder folder, which has to be exported
 	 * 
@@ -103,11 +92,11 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 	 */
 	CmsDbExport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String filename, String exportFolder, int exportType)
 		throws IOException, Exception {
-		RB=eRB;
-		user=luser;
-		project=lproject;
+		m_RB=eRB;
+		m_user=luser;
+		m_project=lproject;
 		this.exportType=exportType;
-		this.exportFolder=exportFolder;
+		this.m_exportFolder=exportFolder;
 	
 		init(filename);
 	}
@@ -131,8 +120,8 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 		fXmlStream = new FileOutputStream(fXml);
 		
 		// creats a new XML object		
-		parser = A_CmsXmlContent.getXmlParser();
-		docXml = parser.createEmptyDocument(C_FELEMENT);	
+		m_parser = A_CmsXmlContent.getXmlParser();
+		m_docXml = m_parser.createEmptyDocument(C_FELEMENT);	
 	}
 
 
@@ -153,26 +142,26 @@ class CmsDbExport implements I_CmsConstants, I_CmsDbExport {
 			
 			switch (exportType) {
 			case C_EXPORTUSERSFILES: {
-						CmsDbExportUsers usersExport=new CmsDbExportUsers(RB, user, project, docXml);
-						docXml=usersExport.export();
-						CmsDbExportFile fileExport=new CmsDbExportFile(RB, user, project, docXml, exportFolder);
-						docXml=fileExport.export();
+						CmsDbExportUsers usersExport=new CmsDbExportUsers(m_RB, m_user, m_project, m_docXml);
+						m_docXml=usersExport.export();
+						CmsDbExportFile fileExport=new CmsDbExportFile(m_RB, m_user, m_project, m_docXml, m_exportFolder);
+						m_docXml=fileExport.export();
 						break;
 					}
 			case C_EXPORTONLYUSERS: {
-						CmsDbExportUsers usersExport=new CmsDbExportUsers(RB, user, project, docXml);
-						docXml=usersExport.export();
+						CmsDbExportUsers usersExport=new CmsDbExportUsers(m_RB, m_user, m_project, m_docXml);
+						m_docXml=usersExport.export();
 						break;
 					}
 			case C_EXPORTONLYFILES: {
-						CmsDbExportFile fileExport=new CmsDbExportFile(RB, user, project, docXml, exportFolder);
-						docXml=fileExport.export();
+						CmsDbExportFile fileExport=new CmsDbExportFile(m_RB, m_user, m_project, m_docXml, m_exportFolder);
+						m_docXml=fileExport.export();
 						break;
 					}
 			}
 			
 			//writes the XML object to an output stream			 
-			parser.getXmlText(docXml, fXmlStream);
+			m_parser.getXmlText(m_docXml, fXmlStream);
 			
 			//writes the output strem to the file		
 			fXmlStream.close();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/16 10:47:57 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.61 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,9 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.60 $ $Date: 2000/02/16 10:47:57 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.61 $ $Date: 2000/02/16 18:06:27 $
+ * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -3264,25 +3266,17 @@ System.err.println(">>> readFile(2) error for\n" +
 	 *			C_EXPORTONLYUSERS  exports only users and groups
 	 *			C_EXPORTONLYFILES  exports only files
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+	 * @exception throws Exception
+	 * 
 	 */
-	public boolean exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType) {
-		boolean admin=false;
-		try {
-			admin = this.isAdmin(currentUser, currentProject);
+	public void exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType)
+		throws Exception {
+			boolean admin=false;
+			admin=this.isAdmin(currentUser, currentProject);
 			if (admin) {
 				CmsDbExport export= new CmsDbExport(this, currentUser, currentProject, exportFile,  exportPath, exportType);
 				export.export();	
 			}
-		}
-		catch (CmsException e) {
-		 	// nothing
-		}
-		catch (Exception e) {
-		 	// nothing
-		}
-		return admin;
 	}
 	
 	/**
@@ -3296,25 +3290,22 @@ System.err.println(">>> readFile(2) error for\n" +
 	 * @param importPath the name (absolute Path) of folder in which should be imported
 	 * @param importFile the name (absolute Path) of the XML import file
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+	 * @exception throws Exception
+	 * 
 	 */
-	public boolean importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importPath, String importFile) {
+	public void importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath)
+	throws Exception {
 		boolean admin=false;
-		try {
+		int filesimported = 0;
 			admin = this.isAdmin(currentUser, currentProject);
 			if (admin) {
 				CmsDbImport cmsImport= new CmsDbImport(this, currentUser, currentProject, importPath, importFile);
 				Vector errLogImport= cmsImport.xmlImport();
+				
+				if(cmsImport.getFilesImported()==C_FILES_IMPORTED) {
+					this.fileSystemChanged(currentProject.getName(), importPath);
+				}
 			}
-		}
-		catch (CmsException e) {
-		 	// nothing
-		}
-		catch (Exception e) {
-		 	// nothing
-		}
-		return admin;
 	}
 	
 	

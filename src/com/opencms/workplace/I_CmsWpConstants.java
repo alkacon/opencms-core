@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/02/16 15:32:12 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.39 $ $Date: 2000/02/16 15:32:12 $
+ * @version $Revision: 1.40 $ $Date: 2000/02/16 18:06:28 $
  */
 public interface I_CmsWpConstants {
 
@@ -367,6 +367,9 @@ public interface I_CmsWpConstants {
   
     /** Link on button2 of the messagebox */
     public static final String C_MESSAGE_LINK2 = "link2";
+	
+	/** Link on button2 of the messagebox */
+    public static final String C_MESSAGE_FILENAME = "filename";
     
     // Parameters for select boxes
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsDbImport.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,18 +44,29 @@ import com.opencms.template.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.2 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/16 18:06:28 $
  */
 interface I_CmsDbImport {
 
- /**
- * xmlImport
- * initialize the database import
- * 
- * @return a vector with error messages
- * 
- */
+	/**
+	 * xmlImport
+	 * initialize the database import
+	 * 
+	 * @return a vector with error messages
+	 * 
+	 */
 	public Vector xmlImport()
 			throws CmsException, Exception;
+	
+	/**
+	 * xmlImport
+	 * to signalize if files are importetd or not
+	 * 
+	 * @return an int:
+	 *		C_NO_FILES_IMPORTED if no resources are imported;
+	 *		C_FILES_IMPORTED if resources are imported;
+	 * 
+	 */
+	public int getFilesImported();
 		
 }

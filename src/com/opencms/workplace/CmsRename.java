@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:28 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -83,6 +83,8 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
             session.putValue("name",file.getName());
         } else {
              cms.renameFile(file.getAbsolutePath(),newFile);
+			 session.removeValue(C_PARA_FILE);
+			 session.removeValue(C_PARA_NAME);
              try {
                 cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
             } catch (Exception e) {
@@ -94,6 +96,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         xmlTemplateDocument.setXmlData("OWNER",cms.readOwner(file).getName());
         xmlTemplateDocument.setXmlData("GROUP",cms.readGroup(file).getName());
+		xmlTemplateDocument.setXmlData("FILENAME",file.getName());
         
         // process the selected template 
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);

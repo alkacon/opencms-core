@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImport.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,68 +41,70 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
  */
 class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	
 	/** ResourceBroker to access all methods and objects */
-	private I_CmsResourceBroker RB = null;
+	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser user = null;
+	private A_CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject project = null;
+	private A_CmsProject m_project = null;
 	
 	/** to get the the XML object from the inputfile */
-	private I_CmsXmlParser parser = null;
+	private I_CmsXmlParser m_parser = null;
 	/** to create the XML object */
-	private Document docXml = null;
+	private Document m_docXml = null;
 	/** to get the entries in the XML object */
-	private Element firstElement = null;
+	private Element m_firstElement = null;
 	/** to get navigate in the XML object */
-	private NodeList sectionElements = null;
+	private NodeList m_sectionElements = null;
 	
 	//to update db
 	/** the path to import the resources */
-	private String importpath=null;
+	private String m_importpath=null;
 	/** to get the group name and store in the db*/
-	private String s_gName= null;
+	private String m_gName= null;
 	/** to get the group description and store in the db*/
-	private String s_gDesc= null;
+	private String m_gDesc= null;
 	/** to get the group flag and store in the db*/
-	private String s_gFlag= null;
+	private String m_gFlag= null;
 	/** to get the parent group name and store in the db*/
-	private String s_gParent= null;
+	private String m_gParent= null;
 	
 	/** to get the user큦 login and store in the db*/
-	private String s_uLogin = null;
+	private String m_uLogin = null;
 	/** to store the user큦 password in the db default "Kennwort" */
-	private String s_uPasswd = null;
+	private String m_uPasswd = null;
 	/** to get the user큦 lastname and store in the db*/
-	private String s_uName = new String();
+	private String m_uName = new String();
 	/** to get the user큦 firstname and store in the db*/
-	private String s_uFirstname = new String();
+	private String m_uFirstname = new String();
 	/** to get the user큦 email and store in the db*/
-	private String s_uEmail = new String();
+	private String m_uEmail = new String();
 	/** to get the user큦 description and store in the db*/
-	private String s_uDesc = null;
+	private String m_uDesc = null;
 	/** to get the user큦 default gorup and store in the db*/
-	private String s_uDGroup = null;
+	private String m_uDGroup = null;
 	/** is the user disabled or not and store the info in the db*/
-	private String s_uDis = null;
+	private String m_uDis = null;
 	/** to get the user큦 flag and store in the db*/
-	private String s_uFlag = null;
+	private String m_uFlag = null;
 	/** to get the user큦 group(s) and store in the db*/
-	private String s_uGroup = null;
+	private String m_uGroup = null;
 
 	/** to store the exception msg  */
-	private Vector errMsg=new Vector();
+	private Vector m_errMsg=new Vector();
+	/** to signalise if files imported or not  */
+	private int m_files_exported = C_NO_FILES_IMPORTED;
 	
 	/** for the input XML file */
-	private File fXml = null;
+	private File m_fXml = null;
 	/** for the input file reader */
-	private FileReader fXmlReader = null;
+	private FileReader m_fXmlReader = null;
 	/** for the input stream */
-	private BufferedReader fXmlStream = null;
+	private BufferedReader m_fXmlStream = null;
 	
 	
 	/**
@@ -118,13 +120,13 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 	 * @exception throws Exception
 	 * 
 	 */
-	CmsDbImport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String path, String filename)
+	CmsDbImport(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String filename, String path)
 		throws IOException, Exception {
 		
-		RB=eRB;
-		user=luser;
-		project=lproject;
-		importpath=path;
+		m_RB=eRB;
+		m_user=luser;
+		m_project=lproject;
+		m_importpath=path;
 	
 		init(filename);
 	}
@@ -143,13 +145,13 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 		throws IOException, Exception {											  
 		
 		// creats an output stream		
-		fXml = new File(filename);
-		fXmlReader= new FileReader(fXml);
-		fXmlStream = new BufferedReader(fXmlReader);
+		m_fXml = new File(filename);
+		m_fXmlReader= new FileReader(m_fXml);
+		m_fXmlStream = new BufferedReader(m_fXmlReader);
 		
 		// creats a new XML object		
-		parser = A_CmsXmlContent.getXmlParser();
-		docXml = parser.parse(fXmlStream);
+		m_parser = A_CmsXmlContent.getXmlParser();
+		m_docXml = m_parser.parse(m_fXmlStream);
 	}
 
 	/**
@@ -166,30 +168,47 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			throws CmsException, Exception {
 			
 			//get the documents node, first element in the XML object
-			firstElement = docXml.getDocumentElement();
-			sectionElements=firstElement.getChildNodes();
+			m_firstElement = m_docXml.getDocumentElement();
+			m_sectionElements=m_firstElement.getChildNodes();
 			
-			int nll=sectionElements.getLength();
+			m_files_exported = C_NO_FILES_IMPORTED;
+			
+			int nll=m_sectionElements.getLength();
 			int i, htype;
 			for(i=0; i<nll; i++){
-				if((sectionElements.item(i).getNodeName()).equals(C_TGROUPS)) {
+				if((m_sectionElements.item(i).getNodeName()).equals(C_TGROUPS)) {
 					//read all groups from the XML object
-					groupImport(sectionElements.item(i));
+					groupImport(m_sectionElements.item(i));
 				}
 				//read all users from the XML object und update user and users and groupusers
-				if((sectionElements.item(i).getNodeName()).equals(C_TUSERS)) {
-					userImport(sectionElements.item(i));
+				if((m_sectionElements.item(i).getNodeName()).equals(C_TUSERS)) {
+					userImport(m_sectionElements.item(i));
 				}
-				if((sectionElements.item(i).getNodeName()).equals(C_TFILES)) {
-					CmsDbImportFiles cmsImport= new CmsDbImportFiles(RB, user, project, importpath, sectionElements.item(i), errMsg);
-					errMsg=cmsImport.xmlImport();
+				if((m_sectionElements.item(i).getNodeName()).equals(C_TFILES)) {
+					CmsDbImportFiles cmsImport= new CmsDbImportFiles(m_RB, m_user, m_project, m_importpath, m_sectionElements.item(i), m_errMsg);
+					m_errMsg=cmsImport.xmlImport();
+					m_files_exported = C_FILES_IMPORTED;
 				}
 			}
 				
 			//colse the input file
-			fXmlStream.close();
-			return errMsg;
+			m_fXmlStream.close();
+			return m_errMsg;
 		}
+	
+	
+	/**
+	 * xmlImport
+	 * to signalize if files are importetd or not
+	 * 
+	 * @return an int:
+	 *		C_NO_FILES_IMPORTED if no resources are imported;
+	 *		C_FILES_IMPORTED if resources are imported;
+	 * 
+	 */
+	public int getFilesImported() {
+		return m_files_exported;	
+	}
 	
 		
 	/**
@@ -259,23 +278,23 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			
 			for(i=0; i<nll; i++) {
 				if((parentElements.item(i).getNodeName()).equals(C_TGNAME) && (parentElements.item(i).hasChildNodes())) {
-					s_gName=parentElements.item(i).getFirstChild().getNodeValue();
+					m_gName=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TGPARENTGROUP)&&(parentElements.item(i).hasChildNodes())) {
-					s_gParent=parentElements.item(i).getFirstChild().getNodeValue();
+					m_gParent=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TGDESC) && (parentElements.item(i).hasChildNodes())) {
-					s_gDesc=parentElements.item(i).getFirstChild().getNodeValue();
+					m_gDesc=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TGFLAG) && (parentElements.item(i).hasChildNodes())) {
-					s_gFlag=parentElements.item(i).getFirstChild().getNodeValue();
+					m_gFlag=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 			}
 			// end for
 			try {
-				A_CmsGroup group = RB.addGroup(user, project, s_gName, s_gDesc, Integer.parseInt(s_gFlag), s_gParent);
+				A_CmsGroup group = m_RB.addGroup(m_user, m_project, m_gName, m_gDesc, Integer.parseInt(m_gFlag), m_gParent);
 			}catch (CmsException e){
-					errMsg.addElement(e.getMessage());			
+					m_errMsg.addElement(e.getMessage());			
 			}
 		}
 		// end updateDbGroups
@@ -300,41 +319,41 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			int i, htype;
 			for(i=0; i<nll; i++) {
 				if((parentElements.item(i).getNodeName()).equals(C_TULOGIN) && (parentElements.item(i).hasChildNodes())) {
-					s_uLogin=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uLogin=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUPASSWD)&&(parentElements.item(i).hasChildNodes())) {
-					s_uPasswd=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uPasswd=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUNAME) && (parentElements.item(i).hasChildNodes())) {
-					s_uName=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uName=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUFIRSTNAME) && (parentElements.item(i).hasChildNodes())) {
-					s_uFirstname=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uFirstname=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUDESC) && (parentElements.item(i).hasChildNodes())) {
-					s_uDesc=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uDesc=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUEMAIL) && (parentElements.item(i).hasChildNodes())) {
-					s_uEmail=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uEmail=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUDGROUP) && (parentElements.item(i).hasChildNodes())) {
-					s_uDGroup=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uDGroup=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUDISABLED) && (parentElements.item(i).hasChildNodes())) {
-					s_uDis=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uDis=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUFLAG) && (parentElements.item(i).hasChildNodes())) {
-					s_uFlag=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uFlag=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				//additional Info
 				if((parentElements.item(i).getNodeName()).equals(C_TUNAME) && (parentElements.item(i).hasChildNodes())) {
-					s_uName=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uName=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUFIRSTNAME) && (parentElements.item(i).hasChildNodes())) {
-					s_uFirstname=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uFirstname=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUEMAIL) && (parentElements.item(i).hasChildNodes())) {
-					s_uEmail=parentElements.item(i).getFirstChild().getNodeValue();
+					m_uEmail=parentElements.item(i).getFirstChild().getNodeValue();
 				}
 				if((parentElements.item(i).getNodeName()).equals(C_TUADDINFO) && (parentElements.item(i).hasChildNodes())) {
 					NodeList childElements=parentElements.item(i).getChildNodes();
@@ -354,13 +373,13 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 			}
 			// end for
 			try {
-				A_CmsUser newUser = RB.addUser(user, project, s_uLogin, s_uPasswd, s_uDGroup, s_uDesc, h_addInfo, Integer.parseInt(s_uFlag));
-				newUser.setEmail(s_uEmail);
-				newUser.setFirstname(s_uFirstname);
-				newUser.setLastname(s_uName);
-				RB.writeUser(user, project, newUser);
+				A_CmsUser newUser = m_RB.addUser(m_user, m_project, m_uLogin, m_uPasswd, m_uDGroup, m_uDesc, h_addInfo, Integer.parseInt(m_uFlag));
+				newUser.setEmail(m_uEmail);
+				newUser.setFirstname(m_uFirstname);
+				newUser.setLastname(m_uName);
+				m_RB.writeUser(m_user, m_project, newUser);
 			}catch (CmsException e){
-				errMsg.addElement(e.getMessage());			
+				m_errMsg.addElement(e.getMessage());			
 			}
 			
 			// add user to group
@@ -373,10 +392,10 @@ class CmsDbImport implements I_CmsConstants, I_CmsDbImport {
 					for(j=0; j<cnll; j++) {
 						if((childElements.item(j).getNodeName()).equals(C_TUGROUP) && (childElements.item(j).hasChildNodes())) {
 							try {
-								s_uGroup=(childElements.item(j).getFirstChild().getNodeValue());
-								RB.addUserToGroup(user, project, s_uLogin, s_uGroup);
+								m_uGroup=(childElements.item(j).getFirstChild().getNodeValue());
+								m_RB.addUserToGroup(m_user, m_project, m_uLogin, m_uGroup);
 							}catch (CmsException e){
-								errMsg.addElement(e.getMessage());
+								m_errMsg.addElement(e.getMessage());
 							}
 						}
 					}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,45 +41,45 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/16 18:06:27 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
 	
 	/** ResourceBroker to access all methods and objects */
-	private I_CmsResourceBroker RB = null;
+	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser user = null;
+	private A_CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject project = null;
+	private A_CmsProject m_project = null;
 	
 	/** to get the entries in the XML object */
-	private Node firstNode = null;
+	private Node m_firstNode = null;
 	/** to navigate in the XML object	 */
-	private NodeList sectionElements = null;
+	private NodeList m_sectionElements = null;
 	/** to navigate in the XML object	 */
-	private NodeList resourceElements = null;
+	private NodeList m_resourceElements = null;
 	
 	/** to update and the db and creates the folder and files - resource name */
-	private String s_fName=null;
+	private String m_fName=null;
 	/** to update and the db and creates the folder and files - resource typename */
-	private String s_fTypename=new String();
+	private String m_fTypename=new String();
 	/** to update and the db and creates the folder and files - file content */
-	private String s_fContent=null;
+	private String m_fContent=null;
 
 	/** the folder in which to import the new resources	 */
-	private String importPath=null;
+	private String m_importPath=null;
 	
 	/** vector to return the error messages */
-	private Vector errMsg=new Vector();
+	private Vector m_errMsg=new Vector();
 	
 	
 	/**
 	 * Constructor, creates a new CmsDbImport object.
 	 *
 	 * @param eRB current ResourceBroker
-	 * @param luser current user logged in
-	 * @param lproject current project
+	 * @param luser current m_user logged in
+	 * @param lproject current m_project
 	 * @param path in which folder (absolute path) to import
 	 * @param fileNode contains all resources, which should be imported
  	 * @param errLog contains error messages, which occour on create files and write files
@@ -90,14 +90,14 @@ class CmsDbImportFiles implements I_CmsConstants {
 	 */
 	CmsDbImportFiles(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, String path, Node fileNode , Vector errLog)
 		throws IOException, Exception {
-		RB=eRB;
-		user=luser;
-		project=lproject;
-		importPath=path;
+		m_RB=eRB;
+		m_user=luser;
+		m_project=lproject;
+		m_importPath=path;
 		
-		firstNode=fileNode;
+		m_firstNode=fileNode;
 		
-		errMsg=errLog;
+		m_errMsg=errLog;
 	}
 
 
@@ -105,7 +105,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 	 * xmlImport
 	 * imports the exported resources in the db
 	 *
-	 * @return errMsg vector with all error messages
+	 * @return m_errMsg vector with all error messages
 	 * 
 	 * @exception throws IOException
 	 * @exception throws Exception
@@ -115,18 +115,18 @@ class CmsDbImportFiles implements I_CmsConstants {
 			throws CmsException, Exception {
 			
 			//get all file nodes
-			sectionElements=firstNode.getChildNodes();
+			m_sectionElements=m_firstNode.getChildNodes();
 			
-			int nll=sectionElements.getLength();
+			int nll=m_sectionElements.getLength();
 			int i;
 
 			for(i=0; i<nll; i++){
-				if((sectionElements.item(i).getNodeName()).equals(C_TFILEOBJ)) {
-					resourceElements = sectionElements.item(i).getChildNodes();
+				if((m_sectionElements.item(i).getNodeName()).equals(C_TFILEOBJ)) {
+					m_resourceElements = m_sectionElements.item(i).getChildNodes();
 					readResource();
 				}
 			}
-			return errMsg;
+			return m_errMsg;
 	}
 	// end xmlImport
 	
@@ -141,69 +141,63 @@ class CmsDbImportFiles implements I_CmsConstants {
 		byte[] fContent=new byte[1];
 	
 		
-		int nll=resourceElements.getLength();
+		int nll=m_resourceElements.getLength();
 		int i;
 		for(i=0; i<nll; i++) {
-			String help=resourceElements.item(i).getNodeName();
+			String help=m_resourceElements.item(i).getNodeName();
 			
 				if(help.equals(C_TFNAME)){
-					s_fName=resourceElements.item(i).getFirstChild().getNodeValue();
+					m_fName=m_resourceElements.item(i).getFirstChild().getNodeValue();
 				}
 				if(help.equals(C_TFTYPENAME)){
-					s_fTypename=resourceElements.item(i).getFirstChild().getNodeValue();
+					m_fTypename=m_resourceElements.item(i).getFirstChild().getNodeValue();
 				}
 				
 				// Metadefinitions
 				
-				if( (help.equals(C_TFMETAINFO)) && (resourceElements.item(i).hasChildNodes()) ){
-					h_fMeta=writeMetaDef(resourceElements.item(i).getChildNodes(), s_fTypename);
+				if( (help.equals(C_TFMETAINFO)) && (m_resourceElements.item(i).hasChildNodes()) ){
+					h_fMeta=writeMetaDef(m_resourceElements.item(i).getChildNodes(), m_fTypename);
 				}
 				
 				// if resource is a file
-				if( (help.equals(C_FCONTENT)) && ( !(s_fTypename.equals(C_TYPE_FOLDER_NAME)) ) && (resourceElements.item(i).hasChildNodes()) ){
-					s_fContent=resourceElements.item(i).getFirstChild().getNodeValue();
-					fContent=readContent(s_fContent);
+				if( (help.equals(C_FCONTENT)) && ( !(m_fTypename.equals(C_TYPE_FOLDER_NAME)) ) && (m_resourceElements.item(i).hasChildNodes()) ){
+					m_fContent=m_resourceElements.item(i).getFirstChild().getNodeValue();
+					fContent=readContent(m_fContent);
 				}
 		}
 		//end for
 		
-		if( s_fTypename.equals(C_TYPE_FOLDER_NAME) ) {
-			if( (!(s_fName.equals("/"))) ) {
-				s_fName=s_fName.substring(1,(s_fName.length()-1));
+		if( m_fTypename.equals(C_TYPE_FOLDER_NAME) ) {
+			if( (!(m_fName.equals("/"))) ) {
+				m_fName=m_fName.substring(1,(m_fName.length()-1));
 			}else {
-				s_fName=s_fName.substring(0,(s_fName.length()-1));
+				m_fName=m_fName.substring(0,(m_fName.length()-1));
 			}
 		}
 		
 		
-		System.out.println(s_fName);
-		
-		if(s_fTypename.equals(C_TYPE_FOLDER_NAME)){
+		if(m_fTypename.equals(C_TYPE_FOLDER_NAME)){
 			try {
-				if( !(s_fName.equals("")) ) {
-					//System.out.println(importPath+" "+s_fName);
-					CmsFolder newFolder = RB.createFolder(user,project,importPath, s_fName, h_fMeta);
+				if( !(m_fName.equals("")) ) {
+					CmsFolder newFolder = m_RB.createFolder(m_user,m_project,m_importPath, m_fName, h_fMeta);
 				}
 			} catch (CmsException e) {
-				//System.out.println(e);
-				errMsg.addElement(e.getMessage());
+				m_errMsg.addElement(e.getMessage());
 			}
 			
 
 		} else {
 			String picimportPath=null;
-			if(importPath.equals("/")) {
-				picimportPath= s_fName.substring(0,s_fName.lastIndexOf("/")+1);
+			if(m_importPath.equals("/")) {
+				picimportPath= m_fName.substring(0,m_fName.lastIndexOf("/")+1);
 			}else {
-				picimportPath= importPath+s_fName.substring(1,s_fName.lastIndexOf("/")+1);
+				picimportPath= m_importPath+m_fName.substring(1,m_fName.lastIndexOf("/")+1);
 			}
-			s_fName=s_fName.substring((s_fName.lastIndexOf("/")+1),s_fName.length());
-			//System.out.println(s_fName);
+			m_fName=m_fName.substring((m_fName.lastIndexOf("/")+1),m_fName.length());
 			try {
-				System.out.println(picimportPath+" "+s_fName);
-				CmsFile newFile = RB.createFile(user, project, picimportPath ,s_fName, fContent, s_fTypename, h_fMeta);
+				CmsFile newFile = m_RB.createFile(m_user, m_project, picimportPath ,m_fName, fContent, m_fTypename, h_fMeta);
 			} catch (CmsException e) {
-				
+				m_errMsg.addElement(e.getMessage());	
 			}
 		}
 		
@@ -245,10 +239,9 @@ class CmsDbImportFiles implements I_CmsConstants {
 				s_value=meta.item(i).getFirstChild().getNodeValue();
 				h_meta.put(s_key,s_value);
 				try {
-					A_CmsMetadefinition newMetaDef = RB.createMetadefinition(user,project, s_key, s_rtype, 0);
+					A_CmsMetadefinition newMetaDef = m_RB.createMetadefinition(m_user,m_project, s_key, s_rtype, 0);
 				} catch (CmsException e) {
-					//System.out.println(e);
-					errMsg.addElement(e.getMessage());
+					m_errMsg.addElement(e.getMessage());
 				}
 			}
 			
@@ -283,20 +276,13 @@ class CmsDbImportFiles implements I_CmsConstants {
 			 code= decodeHex(sh0);
 			 erg= (erg+code)-128;
 			 v_erg.addElement(Integer.toString(erg));
-			 //System.out.print(sh1);
-			 //System.out.print(sh0);
-			 //System.out.println("erg"+erg+" "+Integer.toString(erg));
 		}
 
 		sl=v_erg.size();
 		
 		for(i=0; i<sl; i++) {
 			fContent[i]=(byte)Integer.parseInt( v_erg.elementAt(i).toString());	
-			//System.out.println(fContent[i]);
-			//System.out.println(fContent[i]);
 		}
-	
-		//System.out.println("in content");
 		return fContent;
 		
 	}

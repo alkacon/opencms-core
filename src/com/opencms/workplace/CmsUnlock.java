@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/16 18:06:28 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -78,7 +78,8 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
         if (unlock != null) {
             if (unlock.equals("true")) {            
-                   cms.unlockResource(filename);   
+                   cms.unlockResource(filename);
+				   session.removeValue(C_PARA_FILE);
             }
              // TODO: ErrorHandling
              // return to filelist

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbExportFile.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/16 18:06:27 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,39 +40,35 @@ import com.opencms.template.*;
  * Exports Files from database into XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.3 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/16 18:06:27 $
  */
 
 class CmsDbExportFile implements I_CmsConstants {
 
 	/** ResourceBroker to access all methods and objects */
-	private I_CmsResourceBroker RB = null;
+	private I_CmsResourceBroker m_RB = null;
 	/** User to access all resourcbroker methods and objects */
-	private A_CmsUser user = null;
+	private A_CmsUser m_user = null;
 	/** Project to access all resourcbroker methods and objects */
-	private A_CmsProject project = null;
+	private A_CmsProject m_project = null;
 
-	/** need to convert into XML format */
-	private I_CmsXmlParser parser = null;
 	/** need to initiate an XML object */
-	private Document docXml = null;
+	private Document m_docXml = null;
 	/** first element of an XML object(document node) need to insert other elements*/
-	private Element firstElement = null;
+	private Element m_firstElement = null;
 	/** new XML element which is inserted in the XML first element */
-	private Element newElement = null;
+	private Element m_newElement = null;
 	/** need to navigate in the XML tree */
-	private Element grandparentElement = null;
+	private Element m_sectionElement = null;
 	/** need to navigate in the XML tree */
-	private Element sectionElement = null;
-	/** need to navigate in the XML tree */
-	private Element parentElement = null;
+	private Element m_parentElement = null;
 	/** need to at values in the XML elements */
-	private Node newNode = null;
+	private Node m_newNode = null;
 	
 	/** which folder to export absolute path*/
-	private String resourcepath = null;
+	private String m_resourcepath = null;
 	/** which name to write in the XML file only relativ path */
-	private String startFolder;
+	private String m_startFolder;
 	// private String date;
 	
 	
@@ -80,8 +76,8 @@ class CmsDbExportFile implements I_CmsConstants {
 	 * Constructor, creates a new CmsDBExportFile object.
 	 * 
 	 * @param eRB current ResourceBroker
-	 * @param luser current user logged in
-	 * @param lproject current project
+	 * @param luser current m_user logged in
+	 * @param lproject current m_project
 	 * @param docXML XML object
 	 * @param lpath, which resource (folder, files and subfolder) are to export,
 	 *                   String with full path eg "/workplace/system/pic/"
@@ -90,19 +86,19 @@ class CmsDbExportFile implements I_CmsConstants {
 	 * 
 	 */
 	
-	CmsDbExportFile(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, Document docXml, String lpath)
+	CmsDbExportFile(I_CmsResourceBroker eRB, A_CmsUser luser, A_CmsProject lproject, Document m_docXml, String lpath)
 		throws Exception {
-		RB=eRB;
-		user=luser;
-		project=lproject;
-		this.docXml=docXml;
+		m_RB=eRB;
+		m_user=luser;
+		m_project=lproject;
+		this.m_docXml=m_docXml;
 		
-		resourcepath=lpath;
-		if (resourcepath.equals("/")==false) {
-			CmsFolder folder = RB.readFolder(user, project, resourcepath, "");
-			startFolder=folder.getName();
+		m_resourcepath=lpath;
+		if (m_resourcepath.equals("/")==false) {
+			CmsFolder folder = m_RB.readFolder(m_user, m_project, m_resourcepath, "");
+			m_startFolder="/"+folder.getName();
 		} else {
-			startFolder="/";
+			m_startFolder="/";
 		}
 				 
 	}
@@ -121,15 +117,15 @@ class CmsDbExportFile implements I_CmsConstants {
 		throws CmsException, Exception {
 			
 		// get the documents node, first element in the XML object
-		firstElement = docXml.getDocumentElement();
-		newElement= docXml.createElement(C_TFILES);
-		firstElement.appendChild(newElement);
-		firstElement=newElement;
+		m_firstElement = m_docXml.getDocumentElement();
+		m_newElement= m_docXml.createElement(C_TFILES);
+		m_firstElement.appendChild(m_newElement);
+		m_firstElement=m_newElement;
 		
 		// add all fils to the XML object
-		fileExport(resourcepath, startFolder);
+		fileExport(m_resourcepath, m_startFolder);
 					
-		return docXml;
+		return m_docXml;
 	}
 	// end export()
 	
@@ -137,37 +133,37 @@ class CmsDbExportFile implements I_CmsConstants {
 	/**
 	 * exports all files
 	 * 
-	 * @param resourcepath which folder is to export absolute path
+	 * @param m_resourcepath which folder is to export absolute path
 	 * @param parentName which folder is to export the relative name
 	 * 
 	 * @exception throws CmsException
 	 * @exception throws Exception
 	 * 
 	 */
-	private void fileExport(String resourcepath, String parentName)
+	private void fileExport(String m_resourcepath, String parentName)
 		throws CmsException, Exception {
 	
-		newElement= docXml.createElement(C_TFILEOBJ);
-		firstElement.appendChild(newElement);
-		sectionElement=newElement;
+		m_newElement= m_docXml.createElement(C_TFILEOBJ);
+		m_firstElement.appendChild(m_newElement);
+		m_sectionElement=m_newElement;
 		
 		if(parentName.equals("/")==false) {
 				parentName = parentName+"/";
 			}
 		
-		generateFolderEntry(resourcepath, sectionElement, parentName);
+		generateFolderEntry(m_resourcepath, m_sectionElement, parentName);
 		
-		Vector filesinfolder = RB.getFilesInFolder(user, project, resourcepath);
+		Vector filesinfolder = m_RB.getFilesInFolder(m_user, m_project, m_resourcepath);
 		Enumeration fifenum=filesinfolder.elements();
 		while (fifenum.hasMoreElements()) {
 			CmsFile fif=(CmsFile)fifenum.nextElement();
-			newElement= docXml.createElement(C_TFILEOBJ);
-			firstElement.appendChild(newElement);
-			sectionElement=newElement;
-			generateFileEntry(fif, sectionElement, parentName);
+			m_newElement= m_docXml.createElement(C_TFILEOBJ);
+			m_firstElement.appendChild(m_newElement);
+			m_sectionElement=m_newElement;
+			generateFileEntry(fif, m_sectionElement, parentName);
 		}
 		
-		Vector subfolders = RB.getSubFolders(user, project, resourcepath);
+		Vector subfolders = m_RB.getSubFolders(m_user, m_project, m_resourcepath);
 		Enumeration sfenum=subfolders.elements();
 		while (sfenum.hasMoreElements()) {
 			CmsFolder sf=(CmsFolder)sfenum.nextElement();
@@ -192,28 +188,28 @@ class CmsDbExportFile implements I_CmsConstants {
 	private void generateFolderEntry(String path, Element parent, String parentName)
 		throws CmsException {
 		
-		CmsFolder folder = RB.readFolder(user, project, path, "");
+		CmsFolder folder = m_RB.readFolder(m_user, m_project, path, "");
 			
-			newElement= docXml.createElement(C_TFNAME);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(parentName);
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFNAME);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(parentName);
+			m_newElement.appendChild(m_newNode);
 			
-			newElement= docXml.createElement(C_TFTYPE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(folder.getType()));
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFTYPE);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(String.valueOf(folder.getType()));
+			m_newElement.appendChild(m_newNode);
 			
-			A_CmsResourceType typeHelp=RB.getResourceType(user, project, folder.getType());
-			newElement= docXml.createElement(C_TFTYPENAME);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(typeHelp.getResourceName());
-			newElement.appendChild(newNode);
+			A_CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, folder.getType());
+			m_newElement= m_docXml.createElement(C_TFTYPENAME);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
+			m_newElement.appendChild(m_newNode);
 		
 			/** read and write metainfo */
-			newElement=docXml.createElement(C_TFMETAINFO);
-			parent.appendChild(newElement);
-			generateMetaInfo(folder.getAbsolutePath(), newElement, typeHelp.getResourceName());
+			m_newElement=m_docXml.createElement(C_TFMETAINFO);
+			parent.appendChild(m_newElement);
+			generateMetaInfo(folder.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
 			
 	}
 	// end generateFolderEntry()
@@ -233,29 +229,29 @@ class CmsDbExportFile implements I_CmsConstants {
 	private void generateFileEntry(CmsFile fif, Element parent, String parentName)
 		throws CmsException, NumberFormatException {
 		
-			newElement= docXml.createElement(C_TFNAME);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(parentName+fif.getName());
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFNAME);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(parentName+fif.getName());
+			m_newElement.appendChild(m_newNode);
 
-			newElement= docXml.createElement(C_TFTYPE);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(fif.getType()));
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFTYPE);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(String.valueOf(fif.getType()));
+			m_newElement.appendChild(m_newNode);
 			
-			A_CmsResourceType typeHelp=RB.getResourceType(user, project, fif.getType());
-			newElement= docXml.createElement(C_TFTYPENAME);
-			parent.appendChild(newElement);
-			newNode = docXml.createTextNode(typeHelp.getResourceName());
-			newElement.appendChild(newNode);
+			A_CmsResourceType typeHelp=m_RB.getResourceType(m_user, m_project, fif.getType());
+			m_newElement= m_docXml.createElement(C_TFTYPENAME);
+			parent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(typeHelp.getResourceName());
+			m_newElement.appendChild(m_newNode);
 			
 			// read and write metainfo
-			newElement=docXml.createElement(C_TFMETAINFO);
-			parent.appendChild(newElement);
-			generateMetaInfo(fif.getAbsolutePath(), newElement, typeHelp.getResourceName());
+			m_newElement=m_docXml.createElement(C_TFMETAINFO);
+			parent.appendChild(m_newElement);
+			generateMetaInfo(fif.getAbsolutePath(), m_newElement, typeHelp.getResourceName());
 			
 			// reads and writes the file content
-			CmsFile file= RB.readFile(user, project, fif.getAbsolutePath());
+			CmsFile file= m_RB.readFile(m_user, m_project, fif.getAbsolutePath());
 			byte[] fcontent = file.getContents();
 			int value;
 			int i=0;
@@ -273,10 +269,10 @@ class CmsDbExportFile implements I_CmsConstants {
 				content.append(shelp);
 			}
 			
-			newElement=docXml.createElement(C_FCONTENT);
-			parent.appendChild(newElement);
-			newNode=docXml.createTextNode(new String(content));
-			newElement.appendChild(newNode);
+			m_newElement=m_docXml.createElement(C_FCONTENT);
+			parent.appendChild(m_newElement);
+			m_newNode=m_docXml.createTextNode(new String(content));
+			m_newElement.appendChild(m_newNode);
 			
 	}
 	// end generateFileEntry
@@ -291,7 +287,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	private String getGroupName(int groupId)
 		throws CmsException {
 		
-			Vector groups=RB.getGroups(user,project);
+			Vector groups=m_RB.getGroups(m_user,m_project);
 				if(groupId!=(-1)) {
 					Enumeration genum=groups.elements();
 					while (genum.hasMoreElements()) {
@@ -305,11 +301,11 @@ class CmsDbExportFile implements I_CmsConstants {
 	}
 
 	/**
-	 * method to get user name for folder or file
+	 * method to get m_user name for folder or file
 	 * 
-	 * @param user id DB id for the group
+	 * @param m_user id DB id for the group
 	 * 
-	 * @returns string with user name
+	 * @returns string with m_user name
 	 * 
 	 * @exception throws CmsException
 	 * 
@@ -317,7 +313,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	private String getUserName(int userId)
 		throws CmsException {
 		
-			Vector users=RB.getUsers(user,project);
+			Vector users=m_RB.getUsers(m_user,m_project);
 				if(userId!=(-1)) {
 					Enumeration uenum=users.elements();
 					while (uenum.hasMoreElements()) {
@@ -333,7 +329,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	/**
 	 * method to format long in to String with datevalue
 	 * 
-	 * @param user id DB id for the group
+	 * @param m_user id DB id for the group
 	 * 
 	 * @returns string with formated date "fullyear-month-day hour:minutes:seconds"
 	 */
@@ -391,7 +387,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	/**
 	 * method to read and write metainfo to XML object
 	 * 
-	 * @param user id DB id for the group
+	 * @param m_user id DB id for the group
 	 *
 	 * @returns string with formated date "fullyear-month-day hour:minutes:seconds"
 	 * 
@@ -399,8 +395,7 @@ class CmsDbExportFile implements I_CmsConstants {
 	private void generateMetaInfo(String path, Element metaparent, String rtype)
 		throws CmsException {
 		
-		
-		Hashtable metadef=RB.readAllMetainformations(user, project, path);
+		Hashtable metadef=m_RB.readAllMetainformations(m_user, m_project, path);
 		Enumeration metadefenum= metadef.elements();
 		Enumeration metadefkey= metadef.keys();
 		while (metadefenum.hasMoreElements()) {
@@ -408,22 +403,22 @@ class CmsDbExportFile implements I_CmsConstants {
 			String metainfo= (String)metadefenum.nextElement();
 			String metakey= (String)metadefkey.nextElement();
 			
-			newElement= docXml.createElement(C_TFMETANAME);
-			metaparent.appendChild(newElement);
-			newNode = docXml.createTextNode(metakey);
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFMETANAME);
+			metaparent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(metakey);
+			m_newElement.appendChild(m_newNode);
 			
-			A_CmsMetadefinition mtype= RB.readMetadefinition(user, project, metakey, rtype);
+			A_CmsMetadefinition mtype= m_RB.readMetadefinition(m_user, m_project, metakey, rtype);
 			
-			newElement= docXml.createElement(C_TFMETATYPE);
-			metaparent.appendChild(newElement);
-			newNode = docXml.createTextNode(String.valueOf(mtype.getType()));
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFMETATYPE);
+			metaparent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(String.valueOf(mtype.getType()));
+			m_newElement.appendChild(m_newNode);
 			
-			newElement= docXml.createElement(C_TFMETAVALUE);
-			metaparent.appendChild(newElement);
-			newNode = docXml.createTextNode(metainfo);
-			newElement.appendChild(newNode);
+			m_newElement= m_docXml.createElement(C_TFMETAVALUE);
+			metaparent.appendChild(m_newElement);
+			m_newNode = m_docXml.createTextNode(metainfo);
+			m_newElement.appendChild(m_newNode);
 		}
 		
 	}

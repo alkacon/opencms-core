@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/16 09:44:01 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/02/16 18:06:28 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,9 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.39 $ $Date: 2000/02/16 09:44:01 $
+ * @author Michaela Schleich
+ * @version $Revision: 1.40 $ $Date: 2000/02/16 18:06:28 $
+ * 
  */
 interface I_CmsResourceBroker {
 
@@ -1750,10 +1752,11 @@ interface I_CmsResourceBroker {
 	 *			C_EXPORTONLYUSERS  exports only users and groups
 	 *			C_EXPORTONLYFILES  exports only files
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+	 * @exception throws exception
+	 * 
 	 */
-	public boolean exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType);
+	public void exportDb(A_CmsUser currentUser,  A_CmsProject currentProject, String exportFile, String exportPath, int exportType)
+		throws Exception;
 	
 	/**
 	 * imports a (files, groups, users) XML file into database
@@ -1766,10 +1769,11 @@ interface I_CmsResourceBroker {
 	 * @param importPath the name (absolute Path) of folder in which should be imported
 	 * @param importFile the name (absolute Path) of the XML import file
 	 * 
-	 * @return wether the user has access, to do this or not
-	 *         if he has access, the export will be executed.
+	 * @exception throws Exception
+	 * 
 	 */
-	public boolean importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importPath, String importFile);
+	public void importDb(A_CmsUser currentUser,  A_CmsProject currentProject, String importFile, String importPath)
+		throws Exception;
 
 	 /**
 	  * Set a Parameter for a task.
