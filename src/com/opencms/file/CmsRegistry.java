@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2001/07/16 14:10:18 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2001/07/16 15:30:37 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2001/07/16 14:10:18 $
+ * @version $Revision: 1.34 $ $Date: 2001/07/16 15:30:37 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1820,6 +1820,17 @@ public void setModuleParameterdef(String modulename, Vector names, Vector descri
 
 		// save the registry
 		saveRegistry();
+
+		// try to invoke the event-method for setting parameters on this class.
+		Class eventClass = getModuleMaintenanceEventClass(modulename);
+		try {
+			Class declaration[] = {CmsObject.class};
+			Object arguments[] = {m_cms};
+			Method eventMethod = eventClass.getMethod(C_UPDATE_PARAMETER_EVENT_METHOD_NAME, declaration);
+			eventMethod.invoke(null, arguments);
+		} catch(Exception exc) {
+			// ignore the exception.
+		}
 	} catch (Exception exc) {
 		// ignore the exception - reg is not welformed
 	}
