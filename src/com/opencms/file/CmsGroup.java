@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/09/12 10:01:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 
@@ -83,7 +83,9 @@ public class CmsGroup implements I_CmsPrincipal {
     }
     
     /**
-     * @see java.lang.Object#clone()
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
      */
     public Object clone() {
         return new CmsGroup(

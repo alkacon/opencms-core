@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsPageLoader.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.1
  */
 public class CmsPageLoader implements I_CmsResourceLoader {   
@@ -64,7 +64,7 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     public static final int C_RESOURCE_LOADER_ID = 8;
 
     /**
-     * @see com.opencms.flex.I_CmsResourceLoader#destroy()
+     * @see org.opencms.loader.I_CmsResourceLoader#destroy()
      */
     public void destroy() {
         // NOOP
@@ -132,16 +132,16 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#init(com.opencms.core.A_OpenCms, source.org.apache.java.util.Configurations)
+     * @see org.opencms.loader.I_CmsResourceLoader#init(source.org.apache.java.util.Configurations)
      */
     public void init(Configurations conf) {
         if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
             OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
         }  
     }
-
+    
     /**
-     * @see com.opencms.flex.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {        
         CmsFile templateFile = null;
@@ -158,7 +158,7 @@ public class CmsPageLoader implements I_CmsResourceLoader {
     }
 
     /**
-     * @see com.opencms.flex.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
+     * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
         throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  

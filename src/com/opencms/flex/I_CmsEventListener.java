@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/09/08 09:27:04 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,12 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
- * @see com.opencms.core.A_OpenCms#addCmsEventListener(I_CmsEventListener)
+ * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener)
+ * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener, int[])
  */
 public interface I_CmsEventListener {
     
@@ -82,7 +83,7 @@ public interface I_CmsEventListener {
     /**
      * Event "a project was published".<p>
      * 
-     * @see com.opencms.file.CmsObject#publishProject(int, I_CmsReport)
+     * @see com.opencms.file.CmsObject#publishProject()
      */    
     int EVENT_PUBLISH_PROJECT = 2;
     
@@ -94,7 +95,7 @@ public interface I_CmsEventListener {
      * <li>key "resource": the published CmsResource</li>
      * </ul>
      * 
-     * @see com.opencms.file.CmsObject#publishResource(String, boolean)
+     * @see com.opencms.file.CmsObject#publishResource(String)
      */    
     int EVENT_PUBLISH_RESOURCE = 3;    
 

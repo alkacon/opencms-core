@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/11 16:56:43 $
- * Version: $Revision: 1.208 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.209 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.208 $ $Date: 2003/09/11 16:56:43 $
+ * @version $Revision: 1.209 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1594,7 +1594,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * @see createGroup
+     * @see #createGroup(CmsRequestContext, CmsUUID, String, String, int, String)
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent) throws CmsException {
 
@@ -1602,7 +1602,7 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * @see createGroup
+     * @see #createGroup(CmsRequestContext, CmsUUID, String, String, int, String)
      */
     public CmsGroup createGroup(CmsRequestContext context, String id, String name, String description, int flags, String parent) throws CmsException {
 
@@ -2738,7 +2738,7 @@ public class CmsDriverManager extends Object {
      * 
      * @param context
      * @param resourcename
-     * @return
+     * @return a list of all soft links pointing to the content of a resource
      * @throws CmsException
      */
     public List getAllVfsSoftLinks(CmsRequestContext context, String resourcename) throws CmsException {        
@@ -8561,7 +8561,7 @@ public class CmsDriverManager extends Object {
     } 
     
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsRequestContext, String)
+     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)
      */
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
         if (!resource.hasFullResourceName()) {
@@ -8577,14 +8577,14 @@ public class CmsDriverManager extends Object {
     }
     
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsRequestContext, String)
+     * @see org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)
      */
     public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.getLock(this, context, resourcename);
     } 
     
     /**
-     * @see org.opencms.lock.CmsLockDispatcher#isLocked(CmsRequestContext, String)
+     * @see org.opencms.lock.CmsLockDispatcher#isLocked(CmsDriverManager, CmsRequestContext, String)
      */
     public boolean isLocked(CmsRequestContext context, String resourcename) throws CmsException {
         return m_lockDispatcher.isLocked(this, context, resourcename);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2003/08/20 16:51:16 $ 
+ * @version $Revision: 1.6 $ $Date: 2003/09/12 10:01:54 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -53,12 +53,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     /**
      * Initializes the SQL manager.<p>
      * 
-     * To obtain JDBC connections from different pools, further 
-     * {online|offline|backup} pool Urls have to be specified.
-     * 
-     * @see setOfflinePoolUrl(String)
-     * @see setOnlinePoolUrl(String)
-     * @see setBackupPoolUrl(String)
+     * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
      */  
     public CmsSqlManager() {
         super();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/12 10:01:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Vector;
  * An access control list contains the permission sets of all principals for a distinct resource
  * that are calculated on the permissions given by various access control entries.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.6 $ $Date: 2003/09/12 10:01:53 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlList {
@@ -62,7 +62,9 @@ public class CmsAccessControlList {
     }
 
     /**
-     * @see java.lang.Object#clone()
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
      */
     public Object clone() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsPublishedResources.java,v $
- * Date   : $Date: 2003/09/01 09:09:17 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsPublishedResources implements Cloneable, Serializable {
 
@@ -80,7 +80,9 @@ public class CmsPublishedResources implements Cloneable, Serializable {
     }
     
     /**
-     * @see java.lang.Object#clone()
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
      */
     public Object clone() {
         return new CmsPublishedResources(

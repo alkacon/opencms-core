@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPropertydefinition.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.file;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsPropertydefinition implements Cloneable, Comparable {
 
@@ -64,8 +64,10 @@ public class CmsPropertydefinition implements Cloneable, Comparable {
     }
     
     /**
-     * @see java.lang.Object#clone()
-     */    
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
+     */   
     public Object clone() {
         return new CmsPropertydefinition(m_id, m_name, m_resourceType);
     }

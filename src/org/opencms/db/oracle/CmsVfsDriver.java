@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.9 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -92,36 +92,6 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFileContent(int, int)
-     */
-    public byte[] readFileContent(int projectId, int fileId) throws CmsException {
-        //System.out.println("PL/SQL: readFileContent");
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        ResultSet res = null;
-        byte[] returnValue = null;
-        try {
-            // read fileContent from database
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_FILE_READ");
-            stmt.setInt(1, fileId);
-            // res = stmt.executeQuery();
-            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            if (res.next()) {
-                returnValue = m_sqlManager.getBytes(res, m_sqlManager.get("C_RESOURCES_FILE_CONTENT"));
-            } else {
-                throw new CmsException("[" + this.getClass().getName() + ".readFileContent/1]" + fileId, CmsException.C_NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return returnValue;
     }
 
     /**

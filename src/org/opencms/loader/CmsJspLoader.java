@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -145,7 +145,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * created by the loader manager upon startup of OpenCms.<p>
      * 
      * @see org.opencms.loader.CmsLoaderManager
-     * @see #setOpenCms(A_OpenCms openCms)
      */
     public CmsJspLoader() {
         // NOOP
@@ -651,8 +650,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @return the contents of the loaded template
      * 
      * @throws CmsException In case the Loader can not process the requested resource
-     * 
-     * @see CmsJspTemplate
      */
     public byte[] loadTemplate(CmsObject cms, CmsFile file) 
     throws CmsException {

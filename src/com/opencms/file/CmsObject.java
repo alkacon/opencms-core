@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/10 15:23:04 $
-* Version: $Revision: 1.401 $
+* Date   : $Date: 2003/09/12 10:01:53 $
+* Version: $Revision: 1.402 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.401 $
+ * @version $Revision: 1.402 $
  */
 public class CmsObject {
 
@@ -2599,20 +2599,20 @@ public class CmsObject {
     }
 
     /**
-     * Lookup and reads the user or group with the given UUID.
+     * Lookup and reads the user or group with the given UUID.<p>
      *   
      * @param principalId
-     * @return
+     * @return the user or group with the given UUID
      */
     public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
         return m_driverManager.lookupPrincipal(principalId);
     }
 
     /**
-     * Lookup and reads the user or group with the given name.
+     * Lookup and reads the user or group with the given name.<p>
      * 
      * @param principalName
-     * @return
+     * @return the user or group with the given name
      * @throws CmsException	if something goes wrong
      */
     public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {

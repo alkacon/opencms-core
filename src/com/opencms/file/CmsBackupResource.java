@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
- * Date   : $Date: 2003/09/08 09:08:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsBackupResource extends CmsFile implements Cloneable, Serializable, Comparable {
 
@@ -157,12 +157,11 @@ public class CmsBackupResource extends CmsFile implements Cloneable, Serializabl
         m_lastModifiedByName = userLastModifiedName;
     }
 
-    /** 
-    * Clones this CmsBackupResource.<p>
-    * 
-    * @return the cloned CmsBackupResource
-    * @see java.lang.Object#clone()
-    */
+    /**
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
+     */
    public Object clone() {
        byte[] newContent = new byte[ this.getContents().length ];
        System.arraycopy(getContents(), 0, newContent, 0, getContents().length);

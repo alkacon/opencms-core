@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyDialogSelector.java,v $
- * Date   : $Date: 2003/08/19 12:04:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,18 +36,18 @@ import com.opencms.workplace.I_CmsWpConstants;
 import org.opencms.main.OpenCms;
 
 /**
- * Selects the property dialog which should be displayed by OpenCms .<p>
+ * Selects the property dialog which should be displayed by OpenCms.<p>
  * 
- * You can define the class of your property handler in the OpenCms registry.xml
- * @see org.opencms.workplace.I_CmsPropertyDialogSelector 
- * 
+ * You can define the class of your property handler in the OpenCms registry.xml. 
  * The following files use this class:
  * <ul>
  * <li>/jsp/dialogs/property_html
  * </ul>
  *
+ * @see org.opencms.workplace.I_CmsPropertyDialogHandler
+ * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */

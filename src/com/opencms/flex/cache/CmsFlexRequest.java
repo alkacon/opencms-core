@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/12 10:01:55 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -193,7 +193,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * not neccesarily the name the resource requested by the user.
      * 
      * @return the name of the resource currently processed
-     * @see #getCmsRequestedResource()
      */    
     public String getElementUri() {
         return m_resource;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/09/01 16:44:53 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.40 $ $Date: 2003/09/01 16:44:53 $
+ * @version $Revision: 1.41 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -336,9 +336,9 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Proves if a resource is locked.<p>
      * 
-     * Use {@link org.opencms.lock.CmsLockDispatcher#getLock(CmsRequestContext, String)} 
+     * Use {@link org.opencms.lock.CmsLockDispatcher#getLock(CmsDriverManager, CmsRequestContext, String)} 
      * to obtain a CmsLock object for the specified resource to get further information 
-     * about how the resource is locked.
+     * about how the resource is locked.<p>
      * 
      * @param driverManager the driver manager
      * @param context the current request context

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/09/11 14:29:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,13 +55,11 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
 public class CmsAdminHistoryClear extends CmsDialog {
-    
-    public static final int DEBUG = 0;
     
     public static final int ACTION_SAVE_EDIT = 300;
     
@@ -310,7 +308,7 @@ public class CmsAdminHistoryClear extends CmsDialog {
             timeStamp = System.currentTimeMillis() + 86400000;
         }
         
-        if (DEBUG > 0) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
+        if (DEBUG) System.err.println("Versions: "+versions+"\nDate: "+timeStamp);
         
         // delete the backup files
         getCms().deleteBackups(timeStamp, versions);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/11 16:56:43 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.121 $ $Date: 2003/09/11 16:56:43 $
+ * @version $Revision: 1.122 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -221,7 +221,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createCmsFileFromResultSet(java.sql.ResultSet, int)
+     * @see org.opencms.db.I_CmsVfsDriver#createCmsResourceFromResultSet(ResultSet, int)
      */
     public CmsFile createCmsFileFromResultSet(ResultSet res, int projectId) throws SQLException, CmsException {
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_STRUCTURE_ID")));
@@ -1218,7 +1218,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#resetProjectId(com.opencms.file.CmsProject, java.util.List)
+     * @see org.opencms.db.I_CmsVfsDriver#resetProjectId(CmsProject, CmsResource)
      */
     public void resetProjectId(CmsProject currentProject, CmsResource currentResource) throws CmsException {
         Connection conn = null;
@@ -1455,7 +1455,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }    
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#getVfsLinksForResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#getAllVfsLinks(CmsProject, CmsResource)
      */
     public List getAllVfsLinks(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
@@ -1485,7 +1485,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#getAllSoftVfsLinks(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#getAllVfsSoftLinks(CmsProject, CmsResource)
      */
     // TODO: neccessary / should be renamed
     public List getAllVfsSoftLinks(CmsProject currentProject, CmsResource resource) throws CmsException {
@@ -2526,7 +2526,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readProjectResource(com.opencms.file.CmsProject)
+     * @see org.opencms.db.I_CmsVfsDriver#readProjectResources(com.opencms.file.CmsProject)
      */
     public List readProjectResources(CmsProject project) throws CmsException {
         PreparedStatement stmt = null;
@@ -2833,7 +2833,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#removeFile(int, com.opencms.flex.util.CmsUUID)
+     * @see org.opencms.db.I_CmsVfsDriver#removeFile(com.opencms.file.CmsProject, com.opencms.file.CmsResource)
      */
     public void removeFile(CmsProject currentProject, CmsResource resource) throws CmsException {
         PreparedStatement stmt = null;
@@ -3656,9 +3656,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         }
     }
     
-
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#publishResource(com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#publishResource(com.opencms.file.CmsResource, com.opencms.file.CmsResource)
      */
     public void publishResource(CmsResource onlineResource, CmsResource offlineResource) throws CmsException {
         Connection conn = null;
@@ -3778,7 +3777,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#moveResourcemoveFile(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#moveResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, com.opencms.file.CmsResource, java.lang.String)
      */
     public void moveResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsResource destinationFolder, String resourceName) throws CmsException {
         Connection conn = null;
@@ -3811,7 +3810,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#getSubResources(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#getSubResources(com.opencms.file.CmsProject, com.opencms.file.CmsFolder, boolean)
      */
     public List getSubResources(CmsProject currentProject, CmsFolder parentFolder, boolean getSubFolders) throws CmsException {
         Connection conn = null;
@@ -3931,7 +3930,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
     
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Map, byte[])
+     * @see org.opencms.db.I_CmsVfsDriver#replaceResource(com.opencms.file.CmsUser, com.opencms.file.CmsProject, com.opencms.file.CmsResource, byte[], int, int)
      */
     public void replaceResource(CmsUser currentUser, CmsProject currentProject, CmsResource res, byte[] resContent, int newResType, int loaderId) throws CmsException {
         Connection conn = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/10 07:35:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2003/09/10 07:35:54 $
+ * @version $Revision: 1.13 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -113,9 +113,8 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         return new org.opencms.db.oracle.CmsSqlManager();
     }
 
-
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(java.util.List)
+     * @see org.opencms.db.I_CmsBackupDriver#deleteBackups(java.util.List, int)
      */
     public void deleteBackups(List existingBackups, int maxVersions) throws CmsException {        
         PreparedStatement stmt1 = null;
@@ -172,7 +171,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int)
+     * @see org.opencms.db.I_CmsBackupDriver#writeBackupFileContent(com.opencms.flex.util.CmsUUID, com.opencms.flex.util.CmsUUID, byte[], int, int)
      */
     public void writeBackupFileContent(
         CmsUUID backupId,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/20 16:51:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Iterator;
  * MySQL implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/08/20 16:51:16 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {        
@@ -144,7 +144,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFile(int, java.lang.String, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#readFile(int, boolean, CmsUUID)
      */
     public CmsFile readFile(int projectId, CmsUUID structureId, boolean includeDeleted) throws CmsException {
         CmsFile file = null;

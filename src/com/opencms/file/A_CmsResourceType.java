@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -81,7 +81,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
+     * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
      */
     public void copyResource(CmsObject cms, String resourcename, String destination, boolean keeppermissions, boolean lockCopy, int copyMode) throws CmsException {
         cms.doCopyFile(resourcename, destination, lockCopy, copyMode);
@@ -95,7 +95,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#moveToLoastAndFound(com.opencms.file.CmsObject, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#copyToLostAndFound(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
     public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) throws CmsException {
         return cms.doCopyToLostAndFound(resourcename, copyResource);
@@ -109,7 +109,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String, int)
      */
     public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
         cms.doDeleteFile(resourcename, deleteOption);
@@ -123,7 +123,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean)
+     * @see com.opencms.file.I_CmsResourceType#touch(com.opencms.file.CmsObject, java.lang.String, long, boolean, com.opencms.flex.util.CmsUUID)
      */
     public void touch(CmsObject cms, String resourcename, long timestamp, boolean recursive, CmsUUID user) throws CmsException {
         cms.doTouch(resourcename, timestamp, user);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/08/15 17:38:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class OpenCmsServlet extends HttpServlet {
     
@@ -128,6 +128,8 @@ public class OpenCmsServlet extends HttpServlet {
     }
 
     /**
+     * OpenCms servlet main request handling method.<p>
+     * 
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -140,6 +142,9 @@ public class OpenCmsServlet extends HttpServlet {
     }
 
     /**
+     * OpenCms servlet request handling method, 
+     * will just call {@link #doGet(HttpServletRequest, HttpServletResponse)}.<p>
+     * 
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doPost (HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {            

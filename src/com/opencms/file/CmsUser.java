@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsUser.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -210,7 +210,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * @see java.lang.Object#clone()
+     * Returns a clone of this Objects instance.<p>
+     * 
+     * @return a clone of this instance
      */
     public Object clone() {
         CmsUser user = new CmsUser(m_id, new String(m_name), new String(m_password), new String(m_recoveryPassword), new String(m_description), new String(m_firstname), new String(m_lastname), new String(m_email), m_lastlogin, m_flags, getAdditionalInfo(), m_defaultGroup, new String(m_address), new String(m_section), m_type);

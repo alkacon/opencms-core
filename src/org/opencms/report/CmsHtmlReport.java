@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/09/11 10:03:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsHtmlReport implements I_CmsReport {
     
@@ -171,7 +171,7 @@ public class CmsHtmlReport implements I_CmsReport {
     }    
 
     /**
-     * @see com.opencms.report.I_CmsReport#getReportUpdate()
+     * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
     public synchronized String getReportUpdate() {
         StringBuffer result = new StringBuffer();
@@ -196,21 +196,21 @@ public class CmsHtmlReport implements I_CmsReport {
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#key(java.lang.String)
+     * @see org.opencms.report.I_CmsReport#key(java.lang.String)
      */
     public String key(String keyName) {
         return m_messages.key(keyName);
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#print(java.lang.String)
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String)
      */
     public synchronized void print(String value) {
         this.print(value, C_FORMAT_DEFAULT);
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#print(java.lang.String, int)
+     * @see org.opencms.report.I_CmsReport#print(java.lang.String, int)
      */
     public synchronized void print(String value, int format) {
         value = convertChars(value);
@@ -251,35 +251,35 @@ public class CmsHtmlReport implements I_CmsReport {
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#println()
+     * @see org.opencms.report.I_CmsReport#println()
      */
     public synchronized void println() {
         this.print(C_LINEBREAK);
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
+     * @see org.opencms.report.I_CmsReport#println(com.opencms.linkmanagement.CmsPageLinks)
      */
     public synchronized void println(CmsPageLinks value) {
         m_content.add(value);
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.String)
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String)
      */
     public synchronized void println(String value) {
         this.print(value + C_LINEBREAK, C_FORMAT_DEFAULT);
     }
     
     /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.String, int)
+     * @see org.opencms.report.I_CmsReport#println(java.lang.String, int)
      */
     public synchronized void println(String value, int format) {
         this.print(value + C_LINEBREAK, format);        
     }
 
     /**
-     * @see com.opencms.report.I_CmsReport#println(java.lang.Throwable)
+     * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */
     public synchronized void println(Throwable t) {
         m_content.add(t);

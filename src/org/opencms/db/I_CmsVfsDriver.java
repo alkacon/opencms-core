@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/11 12:22:26 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2003/09/11 12:22:26 $
+ * @version $Revision: 1.52 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -817,7 +817,7 @@ public interface I_CmsVfsDriver {
     /**
      * Reads the file headers of all locked resources.<p>
      * 
-     * @return
+     * @return the file headers of all locked resources
      * @throws CmsException if something goes wrong
      */
     List readLockedFileHeaders() throws CmsException;

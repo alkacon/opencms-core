@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/source/org/apache/java/io/Attic/LogWriter.java,v $
-* Date   : $Date: 2003/07/23 09:59:04 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/09/12 10:01:55 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import source.org.apache.java.util.*;
  *
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
  * @author <a href="mailto:vt@freehold.crocodile.org">Vadim Tkachenko</a>
- * @version $Revision: 1.10 $ $Date: 2003/07/23 09:59:04 $
+ * @version $Revision: 1.11 $ $Date: 2003/09/12 10:01:55 $
  */
 
 public class LogWriter implements I_Logger {
@@ -166,7 +166,7 @@ public class LogWriter implements I_Logger {
      * Maximum age of a queued log record, in milliseconds.
      * <p>
      * 
-     * When the {@link #logDaemon log daemon} detects the record older than
+     * When the log daemon detects the record older than
      * this, it flushes the queue, just to make the observer happy, even if
      * that is a single message in the queue.
      *

@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/package.html,v $
- Date   : $Date: 2003/08/10 11:49:48 $
- Version: $Revision: 1.7 $
+ Date   : $Date: 2003/09/12 10:01:54 $
+ Version: $Revision: 1.8 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ and then dispatch to the standard JSP engine.<p>
 
 Here is a top-level description of how this works:
 <ol>
-<li>OpenCms gets the request through the {@link com.opencms.core.OpenCmsHttpServlet}
+<li>OpenCms gets the request through the {@link org.opencms.main.OpenCmsServlet}
 <li>The requested resource is identified as a JSP page (resource type {@link com.opencms.file.CmsResourceTypeJsp})
 <li>The JSP loader is started up with the laucher manager {@link org.opencms.loader.CmsLoaderManager}
 <li>The JSP loader implements an additional interface: {@link org.opencms.loader.I_CmsResourceLoader}
@@ -64,7 +64,7 @@ in the default configuration to the directories <code>{WEBAPP-PATH}/opencms/WEB-
 <code>{WEBAPP-PATH}/opencms/WEB-INF/jsp/offline</code> (depending if the request was for the online or the offline
 version of the page). The directory used can be configured in <code>opencms.properties</code>.
 <li>After the page is written to the "real" FS, the loader dispatches to the standard JSP mechanism with a simple
-<code>include()</code> call, this happens in {@link com.opencms.flex.CmsJspLoader#service(CmsObject cms, CmsResource file, CmsFlexRequest req, CmsFlexResponse res)}.
+<code>include()</code> call.
 <li>The standard JSP mechanim will handle the JSP and deliver the output through the wrapped request / response
 back to OpenCms.
 <li>OpenCms will then deliver the contents back to the user.
@@ -77,7 +77,7 @@ but has since then grown to include other methods and functionality.<p>
 
 <!-- Put @see and @since tags down here. -->
 
-@see com.opencms.core.OpenCmsHttpServlet
+@see org.opencms.main.OpenCmsServlet
 @see org.opencms.loader.CmsLoaderManager
 @see com.opencms.file.CmsObject
 @see com.opencms.file.CmsResourceTypeJsp

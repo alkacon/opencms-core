@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/08/25 10:28:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/12 10:01:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the generic (ANSI-SQL) driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/08/25 10:28:42 $
+ * @version $Revision: 1.15 $ $Date: 2003/09/12 10:01:54 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -99,9 +99,9 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
      * To obtain JDBC connections from different pools, further 
      * {online|offline|backup} pool Urls have to be specified.
      * 
-     * @see setOfflinePoolUrl(String)
-     * @see setOnlinePoolUrl(String)
-     * @see setBackupPoolUrl(String)
+     * @see #setOfflinePoolUrl(String)
+     * @see #setOnlinePoolUrl(String)
+     * @see #setBackupPoolUrl(String)
      */    
     public CmsSqlManager() {
         m_offlinePoolUrl = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2003/08/01 09:55:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/09/12 10:01:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * All resource types are created by the factory getResourceType() in CmsObject.
  *
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
@@ -139,7 +139,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String)
+     * @see com.opencms.file.I_CmsResourceType#deleteResource(com.opencms.file.CmsObject, java.lang.String, int)
      */
     public void deleteResource(CmsObject cms, String resourcename, int deleteOption) throws CmsException {
         super.deleteResource(cms, resourcename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
@@ -153,7 +153,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
+     * @see com.opencms.file.I_CmsResourceType#copyResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
      */
     public void copyResource(CmsObject cms, String theSourceResourceName, String theDestinationResourceName, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
         super.copyResource(cms, theSourceResourceName, theDestinationResourceName, keepFlags, lockCopy, copyMode);

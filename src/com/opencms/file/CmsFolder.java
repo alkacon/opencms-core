@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2003/09/12 10:01:53 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -128,10 +128,9 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     }
     
     /**
-     * Clones this CmsFolder.<p>
+     * Returns a clone of this Objects instance.<p>
      * 
-     * @return the cloned CmsFolder
-     * @see java.lang.Object#clone()     
+     * @return a clone of this instance
      */
     public Object clone() {
         return new CmsFolder(
