@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/21 15:11:42 $
- * Version: $Revision: 1.358 $
+ * Date   : $Date: 2004/05/24 12:38:48 $
+ * Version: $Revision: 1.359 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.358 $ $Date: 2004/05/21 15:11:42 $
+ * @version $Revision: 1.359 $ $Date: 2004/05/24 12:38:48 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -871,7 +871,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful
      */
     public void changeLock(CmsRequestContext context, String resourcename) throws CmsException {
-        CmsResource resource = readFileHeader(context, resourcename);
+        CmsResource resource = readFileHeader(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsLock oldLock = getLock(context, resourcename);
         CmsLock exclusiveLock = null;
 
@@ -1015,13 +1015,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsResourceNotFoundException {
         
-        // TODO: add the logic for the isVisible flag here
-        
+        // check if the resource is valid according to the current filter
+        // if not, throw a CmsResourceNotFoundException
         if (!filter.isValid(context, resource)) {
             throw new CmsResourceNotFoundException("[" + this.getClass().getName() + "] not found " + resource.getName()); 
         }
         
+        // modify the permission set, if the view permisisons must be validated 
+        if ((requiredPermissions.getPermissions() & I_CmsConstants.C_ACCESS_VISIBLE) > 0) {
+            // the visible permissison is part of the permissions to check
+            // so test if the current filter disables it
+            if (!filter.includeVisiblePermission()) {
+                int allowed =  requiredPermissions.getAllowedPermissions();
+                int denied =  requiredPermissions.getDeniedPermissions();
+                allowed |= I_CmsConstants.C_ACCESS_VISIBLE;
+                requiredPermissions.setPermissions(allowed, denied);
+            }            
+        }
         
+        // finally check the access premissions
         if (!hasPermissions(context, resource, requiredPermissions, false)) {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
@@ -1301,7 +1313,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
 
             // create the file
-            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()));
+            newResource = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), destinationFileName, flags, destinationFolder, sourceFile.getContents(), getResourceType(sourceFile.getType()), sourceFile.getDateReleased(), sourceFile.getDateExpired());
             newResource.setFullResourceName(destination);
 
             // copy the properties
@@ -1711,7 +1723,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
         // create and return the file.
-        CmsFile newFile = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, parentFolder, contents, getResourceType(type));
+        CmsFile newFile = m_vfsDriver.createFile(context.currentUser(), context.currentProject(), resourceName, 0, parentFolder, contents, getResourceType(type), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT);
         newFile.setFullResourceName(newFileName);
 
         // write the metainfos
@@ -1835,7 +1847,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
         // construct a dummy that is written to the db
-        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, targetResource.getLinkCount() + 1, 0);
+        linkResource = new CmsResource(new CmsUUID(), targetResource.getResourceId(), parentFolder.getStructureId(), CmsUUID.getNullUUID(), resourceName, targetResource.getType(), targetResource.getFlags(), context.currentProject().getId(), org.opencms.main.I_CmsConstants.C_STATE_NEW, targetResource.getLoaderId(), System.currentTimeMillis(), context.currentUser().getId(), System.currentTimeMillis(), context.currentUser().getId(), targetResource.getDateReleased(), targetResource.getDateExpired(), targetResource.getLinkCount() + 1, 0);
 
         // check if the resource has to be labeled now
         if (labelResource(context, targetResource, siblingName, 1)) {
@@ -4860,7 +4872,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             deleteFolder(context, sourceName);
         }
         // read the moved file
-        CmsResource destination = readFileHeader(context, destinationName);
+        CmsResource destination = readFileHeader(context, destinationName, CmsResourceFilter.IGNORE_EXPIRATION);
         // since the resource was copied as link, we have to update the date/user lastmodified
         // its sufficient to use source instead of dest, since there is only one resource
         destination.setDateLastModified(System.currentTimeMillis());
@@ -7353,7 +7365,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      */
     public void touch(CmsRequestContext context, String resourceName, long timestamp, CmsUUID user) throws CmsException {
-        CmsResource resource = readFileHeader(context, resourceName);
+        CmsResource resource = readFileHeader(context, resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         touchResource(context, resource, timestamp, user);
     }
 

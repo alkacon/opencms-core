@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2004/05/19 16:20:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/24 12:38:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.main.I_CmsConstants;
 
 /**
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsResourceFilter {
     
@@ -84,6 +84,19 @@ public class CmsResourceFilter {
      */
     public static CmsResourceFilter ONLY_VISIBLE = new CmsResourceFilter(true, true, true);
       
+    /** 
+     * Filter to display resources ignoring the release and expiration dates.<p>
+     * 
+     * This filter uses the following rules:
+     * <ul>
+     * <li>Resources marked as deleted will be ignored.</li>
+     * <li>Relase date and expiration date of the resources will be ignored.</li>
+     * <li>The visibility permission of the resources will be ignored.</li>
+     * </ul> 
+     */
+    public static CmsResourceFilter IGNORE_EXPIRATION = new CmsResourceFilter(false, true, false);
+    
+    
     /**
      * Creates a new CmsResourceFilter.<p>
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/21 15:12:44 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2004/05/24 12:38:48 $
+ * Version: $Revision: 1.174 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.173 $ $Date: 2004/05/21 15:12:44 $
+ * @version $Revision: 1.174 $ $Date: 2004/05/24 12:38:48 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -210,9 +210,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String, int, org.opencms.file.CmsFolder, byte[], org.opencms.file.I_CmsResourceType)
+     * @see org.opencms.db.I_CmsVfsDriver#createFile(org.opencms.file.CmsUser, org.opencms.file.CmsProject, java.lang.String, int, org.opencms.file.CmsFolder, byte[], org.opencms.file.I_CmsResourceType, long, long)
      */
-    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException {
+    public CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType, long dateReleased, long dateExpired) throws CmsException {
 
         CmsFile newFile = new CmsFile(
             new CmsUUID(), 
@@ -229,8 +229,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             user.getId(), 
             0, 
             user.getId(), 
-            CmsResource.DATE_RELEASED_DEFAULT, 
-            CmsResource.DATE_EXPIRED_DEFAULT, 
+            dateReleased, 
+            dateExpired, 
             1, 
             contents.length,
             contents);

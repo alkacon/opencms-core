@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/05/24 12:38:48 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsObject {
 
@@ -276,7 +276,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
-        CmsResource res = readFileHeader(resourceName);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
@@ -303,7 +303,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.ALL);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
@@ -330,7 +330,7 @@ public class CmsObject {
      */
     public void changeLockedInProject(int projectId, String resourcename) throws CmsException {
         // must include files marked as deleted when publishing
-        getResourceType(readFileHeader(resourcename, CmsResourceFilter.ALL).getType()).changeLockedInProject(this, projectId, resourcename);
+        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).changeLockedInProject(this, projectId, resourcename);
     }
 
     /**
@@ -378,7 +378,7 @@ public class CmsObject {
      * @throws CmsException if operation was not successful.
      */
     public void chtype(String filename, int newType) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).chtype(this, filename, newType);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).chtype(this, filename, newType);
     }
 
     /**
@@ -421,7 +421,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
+        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResource(this, source, destination, false, true, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -443,7 +443,7 @@ public class CmsObject {
      * has not the appropriate rights to copy the file.
      */
     public void copyResource(String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-        getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
+        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResource(this, source, destination, keepFlags, lockCopy, copyMode);
     }
 
     /**
@@ -456,7 +456,7 @@ public class CmsObject {
          * @throws CmsException if operation was not successful.
      */
     public void copyResourceToProject(String resource) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).copyResourceToProject(this, resource);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyResourceToProject(this, resource);
     }
 
     /**
@@ -917,7 +917,7 @@ public class CmsObject {
      * @see org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS
      */
     public void deleteResource(String filename, int deleteOption) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).deleteResource(this, filename, deleteOption);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).deleteResource(this, filename, deleteOption);
     }
 
     /**
@@ -1414,7 +1414,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public List getAllVfsLinks(String resourcename) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, CmsResourceFilter.DEFAULT);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), true, CmsResourceFilter.ALL);
     }
 
     /**
@@ -1426,7 +1426,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong 
      */
     public List getAllVfsSoftLinks(String resourcename) throws CmsException {       
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, CmsResourceFilter.DEFAULT);
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), false, CmsResourceFilter.ALL);
     } 
 
     /**
@@ -1472,7 +1472,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
-        CmsResource res = readFileHeader(resourceName);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
     }
 
@@ -1496,7 +1496,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.ALL);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
     }
 
@@ -1786,7 +1786,7 @@ public class CmsObject {
      */
     public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
         // reading permissions is allowed even if the resource is marked as deleted
-        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.ALL);
+        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         CmsUser user = m_context.currentUser();
 
         return m_driverManager.getPermissions(m_context, resource, user);
@@ -2263,7 +2263,7 @@ public class CmsObject {
      * It will also be thrown, if there is a existing lock and force was set to false.
      */
     public void lockResource(String resource, boolean force, int mode) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).lockResource(this, resource, force, mode);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).lockResource(this, resource, force, mode);
     }
     
     /**
@@ -2378,7 +2378,7 @@ public class CmsObject {
      * or if the file couldn't be moved.
      */
     public void moveResource(String source, String destination) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).moveResource(this, source, destination);
+        getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).moveResource(this, source, destination);
     }
 
 
@@ -2391,7 +2391,7 @@ public class CmsObject {
      * or if the file couldn't be moved.
      */
     public String copyToLostAndFound(String source) throws CmsException {
-        return getResourceType(readFileHeader(source, CmsResourceFilter.ALL).getType()).copyToLostAndFound(this, source, true);
+        return getResourceType(readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION).getType()).copyToLostAndFound(this, source, true);
     }
 
     /**
@@ -3357,7 +3357,7 @@ public class CmsObject {
      * to rename the file, or if the file couldn't be renamed.
      */
     public void renameResource(String oldname, String newname) throws CmsException {
-        getResourceType(readFileHeader(oldname, CmsResourceFilter.ALL).getType()).renameResource(this, oldname, newname);
+        getResourceType(readFileHeader(oldname, CmsResourceFilter.IGNORE_EXPIRATION).getType()).renameResource(this, oldname, newname);
     }
 
     /**
@@ -3384,7 +3384,7 @@ public class CmsObject {
             resProps.putAll(properties);
         }
 
-        getResourceType(readFileHeader(resourcename, CmsResourceFilter.ALL).getType()).replaceResource(this, resourcename, resProps, content, type);
+        getResourceType(readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).replaceResource(this, resourcename, resProps, content, type);
     }
 
     /**
@@ -3396,7 +3396,7 @@ public class CmsObject {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(int tagId, String filename) throws CmsException {
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).restoreResource(this, tagId, filename);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).restoreResource(this, tagId, filename);
     }
 
     /**
@@ -3409,7 +3409,7 @@ public class CmsObject {
      */
     public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
 
-        CmsResource res = readFileHeader(resourceName);
+        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
         I_CmsPrincipal principal = null;
 
         if ("group".equals(principalType.toLowerCase())) {
@@ -3559,7 +3559,7 @@ public class CmsObject {
      * @throws CmsException if something goes wrong
      */
     public void touch(String resourceName, long timestamp, boolean touchRecursive, CmsUUID user) throws CmsException {
-        getResourceType(readFileHeader(resourceName, CmsResourceFilter.ALL).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
+        getResourceType(readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION).getType()).touch(this, resourceName, timestamp, touchRecursive, user);
     }
 
     /**
@@ -3584,7 +3584,7 @@ public class CmsObject {
      */
     public void undeleteResource(String filename) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undeleteResource(this, filename);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).undeleteResource(this, filename);
     }
 
     /**
@@ -3597,7 +3597,7 @@ public class CmsObject {
      */
     public void undoChanges(String filename, boolean recursive) throws CmsException {
         //read the file header including deleted
-        getResourceType(readFileHeader(filename, CmsResourceFilter.ALL).getType()).undoChanges(this, filename, recursive);
+        getResourceType(readFileHeader(filename, CmsResourceFilter.IGNORE_EXPIRATION).getType()).undoChanges(this, filename, recursive);
     }
 
     /**
@@ -3619,7 +3619,7 @@ public class CmsObject {
      * @throws CmsException if the user has no write permission for the resource
      */
     public void unlockResource(String resource, boolean forceRecursive) throws CmsException {
-        getResourceType(readFileHeader(resource, CmsResourceFilter.ALL).getType()).unlockResource(this, resource, forceRecursive);
+        getResourceType(readFileHeader(resource, CmsResourceFilter.IGNORE_EXPIRATION).getType()).unlockResource(this, resource, forceRecursive);
     }
 
     /**

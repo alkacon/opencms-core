@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/21 15:12:02 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2004/05/24 12:38:48 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.73 $ $Date: 2004/05/21 15:12:02 $
+ * @version $Revision: 1.74 $ $Date: 2004/05/24 12:38:48 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -123,10 +123,12 @@ public interface I_CmsVfsDriver {
      * @param parentFolder the parent folder of the resource
      * @param contents the contents of the new file
      * @param resourceType the resourceType of the new file
+     * @param dateReleased the release date of the new file
+     * @param dateExpired the expiration date of the new file
      * @return file the created file.
      * @throws CmsException if operation was not successful
      */
-    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType) throws CmsException;
+    CmsFile createFile(CmsUser user, CmsProject project, String filename, int flags, CmsFolder parentFolder, byte[] contents, I_CmsResourceType resourceType, long dateReleased, long dateExpired) throws CmsException;
 
     /**
      * Creates a BLOB in the database for the content of a file.<p>
