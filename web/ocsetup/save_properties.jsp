@@ -14,14 +14,14 @@
 	String nextPage = "run_import.jsp";
 	
 	/* true if properties are initialized */
-	boolean setupOk = (Bean.getProperties()!=null);
+	boolean setupOk = Bean.checkProperties();
 	
 	/* true if there are errors */
 	boolean error = false;
 	
 	Vector errors = new Vector();
 
-	if(setupOk && (setupOk = Bean.checkProperties()))	{	
+	if(setupOk)	{
 		/* Save Properties to file "opencms.properties" */
 		CmsSetupUtils Utils = new CmsSetupUtils(Bean.getBasePath());
 		Utils.saveProperties(Bean.getProperties(),"opencms.properties",true);

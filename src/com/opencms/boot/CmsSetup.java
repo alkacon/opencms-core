@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/03/25 09:15:02 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/03/25 10:14:54 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -117,11 +117,18 @@ public class CmsSetup {
      * @return boolean true if all properties are set correctly
      */
     public boolean checkProperties() {
+
+        // check if properties available
+        if (getProperties() == null) {
+            return false;
+        }
+
         // currently, we check only the ethernet address
-        // in order to generate a random address, if not available
+        // in order to generate a random address, if not available                   
         if ("".equals(getEthernetAddress())) {
             setEthernetAddress(CmsUUID.getDummyEthernetAddress());
         }
+ 
         return true;
     }
 
@@ -766,8 +773,7 @@ public class CmsSetup {
 	}
 
     /** Set the fictional mac ethernet address */
-    public void setEthernetAddress( String ethernetAddress ){
-System.err.println("MAC: " + ethernetAddress);
+    public void setEthernetAddress(String ethernetAddress) {
         setExtProperty("server.ethernet.address", ethernetAddress);
     }
     
