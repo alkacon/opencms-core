@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/10 13:15:36 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/10 14:34:27 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -49,8 +49,8 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // if not, the unlock page is shown for the first time
         filename=(String)session.getValue(C_PARA_FILE);
         if (unlock != null) {
-            if (unlock.equals("true")) {
-                   cms.unlockResource(filename);
+            if (unlock.equals("true")) {            
+                   cms.unlockResource(filename);   
             }
              // TODO: ErrorHandling
              // return to filelist

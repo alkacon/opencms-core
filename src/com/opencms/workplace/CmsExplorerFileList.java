@@ -15,11 +15,26 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/08 13:21:04 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/10 14:34:27 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
 
+      /**
+     * Indicates if the results of this class are cacheable.
+     * <P>
+     * Complex classes that are able top include other subtemplates
+     * have to check the cacheability of their subclasses here!
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param templateFile Filename of the template file 
+     * @param parameters Hashtable with all template class parameters.
+     * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     */
+    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
+        return false;
+    }
+    
     /**
    * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
    * Gets the content of the file list template and processe the data input.

@@ -249,10 +249,8 @@ function doAction(action) {
 		{
 			location.href='explorer_files_move.html';
 			break;
-		}
-		case 6:
-		{
-			location.href='explorer_files_rename.html';
+		} case DO_RENAME: {
+			location.href='rename.html?file='+ kontextparam;
 			break;
 		}
 		case 7:
@@ -291,7 +289,7 @@ function doAction(action) {
 			location.href='explorer_files_metashow.html';
 			break;
 		} case DO_EDIT: {
-			top.location.href='Editor.html?file='+ kontextparam;
+			top.location.href='texteditor.html?file='+ kontextparam;
 			break;
 		} case DO_HTMLEDIT: {
 			top.location.href='htmleditor.html?file='+ kontextparam;
