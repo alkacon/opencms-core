@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/06/05 19:02:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,13 +59,18 @@ package com.opencms.flex;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
  * @see com.opencms.core.A_OpenCms#addCmsEventListener(I_CmsEventListener)
  */
 public interface I_CmsEventListener {
+    
+    /**
+     * Marker for "all events".<p>
+     */
+    Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
     
     /** 
      * Event "user has logged in".<p>

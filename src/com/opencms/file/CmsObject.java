@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/15 17:02:39 $
-* Version: $Revision: 1.378 $
+* Date   : $Date: 2003/08/15 17:38:04 $
+* Version: $Revision: 1.379 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.core.CmsExportResponse;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
+import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
@@ -77,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.378 $
+ * @version $Revision: 1.379 $
  */
 public class CmsObject {
 
@@ -2683,13 +2684,10 @@ public class CmsObject {
         Vector changedModuleMasters = null;
         boolean success = false;
         CmsPublishedResources publishedResources = null;
-        //CmsProject publishProject = null;
 
         clearcache();
 
-        publishedResources = new CmsPublishedResources();
-        //publishProject = readProject(publishProjectId);
-
+        publishedResources = new CmsPublishedResources(m_context.currentProject());
         try {
             // first we remember the new resources for the link management
             newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
@@ -2726,7 +2724,7 @@ public class CmsObject {
                 System.err.println("Vector of changed resources:");
                 if (changedResources != null) {
                     for (int i = 0; i < changedResources.size(); i++) {
-                        System.err.println("    -- " + i + " -->" + (String)changedResources.elementAt(i) + "<--");
+                        System.err.println("    -- " + i + " -->" + (String)changedResources.get(i) + "<--");
                     }
                 }
             }
@@ -2764,7 +2762,7 @@ public class CmsObject {
             }
         }
 
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_PROJECT, m_context.currentProject());
+        this.fireEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, publishedResources);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/08/14 17:43:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.db.CmsDefaultUsers;
 import org.opencms.loader.CmsLoaderManager;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.staticexport.CmsStaticExportProperties;
+import org.opencms.staticexport.CmsStaticExportManager;
 
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class OpenCms {
     
@@ -63,12 +63,22 @@ public final class OpenCms {
     }
 
     /**
-     * Add a cms event listener.<p>
+     * Add a cms event listener that listens to all events.<p>
      *
      * @param listener the listener to add
      */
     public static void addCmsEventListener(I_CmsEventListener listener) {
         OpenCmsCore.getInstance().addCmsEventListener(listener);
+    }
+    
+    /**
+     * Add a cms event listener that listens only to particular events.<p>
+     *
+     * @param listener the listener to add
+     * @param eventTypes the events to listen for
+     */
+    public static void addCmsEventListener(I_CmsEventListener listener, int[] eventTypes) {
+        OpenCmsCore.getInstance().addCmsEventListener(listener, eventTypes);
     }
 
     /**
@@ -130,6 +140,15 @@ public final class OpenCms {
      */
     public static CmsDefaultUsers getDefaultUsers() {
         return OpenCmsCore.getInstance().getDefaultUsers();
+    }
+    
+    /**
+     * Returns an initialized CmsObject with "Guest" user permissions.<p>
+     * 
+     * @return an initialized CmsObject with "Guest" user permissions
+     */    
+    public static CmsObject getGuestCmsObject() {
+        return OpenCmsCore.getInstance().getGuestCmsObject();
     }
     
     /**
@@ -228,8 +247,8 @@ public final class OpenCms {
      * 
      * @return the properties for the static export
      */
-    public static CmsStaticExportProperties getStaticExportProperties() {
-        return OpenCmsCore.getInstance().getStaticExportProperties();
+    public static CmsStaticExportManager getStaticExportManager() {
+        return OpenCmsCore.getInstance().getStaticExportManager();
     }
 
     /**
@@ -277,7 +296,7 @@ public final class OpenCms {
      * @throws CmsException in case of errors initializing the CmsObject
      */    
     public static CmsObject initGuestUser() throws CmsException {
-        return OpenCmsCore.getInstance().initGuestUser();
+        return OpenCmsCore.getInstance().getGuestCmsObject();
     }
 
 //    /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsEvent.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsEventListener
@@ -48,13 +48,13 @@ import com.opencms.file.CmsObject;
 public class CmsEvent extends java.util.EventObject {
     
     /** The CmsObject on which this event occurred */
-    private CmsObject m_cms = null;
+    private CmsObject m_cms;
 
     /** The event data associated with this event */
-    private java.util.Map m_data = null;
+    private java.util.Map m_data;
 
     /** The event type this instance represents */
-    private int m_type = -1;
+    private Integer m_type;
     
     /** Boolean whether this event should be clustered */
     private boolean m_isClusterEvent;
@@ -98,7 +98,7 @@ public class CmsEvent extends java.util.EventObject {
         super(cms);
         
         this.m_cms = cms;
-        this.m_type = type;
+        this.m_type = new Integer(type);
         this.m_data = data;
         this.m_isClusterEvent = isClusterEvent;
     }
@@ -109,7 +109,7 @@ public class CmsEvent extends java.util.EventObject {
      * @return the event data of this event
      */
     public java.util.Map getData() {
-        return (m_data);
+        return m_data;
     }
 
     /**
@@ -118,7 +118,7 @@ public class CmsEvent extends java.util.EventObject {
      * @return the CmsObject on which this event occurred
      */
     public CmsObject getCmsObject() {
-        return (m_cms);
+        return m_cms;
     }
 
     /**
@@ -134,8 +134,17 @@ public class CmsEvent extends java.util.EventObject {
      * @see I_CmsEventListener
      */
     public int getType() {
-        return (m_type);
+        return m_type.intValue();
     }
+    
+    /**
+     * Provides access to the event type as Integer.<p>
+     * 
+     * @return the event type of this event as Integer
+     */
+    public Integer getTypeInteger() {
+        return m_type;
+    }    
 
     /**
      * Return a String representation of this CmsEvent.<p>
@@ -143,7 +152,7 @@ public class CmsEvent extends java.util.EventObject {
      * @return a String representation of this event
      */
     public String toString() {
-        return ("CmsEvent['" + m_cms + "','" + m_type + "']");
+        return "CmsEvent['" + m_cms + "','" + m_type + "']";
     }
 
     /**

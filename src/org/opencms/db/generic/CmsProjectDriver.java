@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/15 16:09:41 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.55 $ $Date: 2003/08/15 16:09:41 $
+ * @version $Revision: 1.56 $ $Date: 2003/08/15 17:38:04 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1097,11 +1097,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             publishCurrentResource = publishCurrentResource && m_driverManager.isInsideProject(projectResources, currentFolder);
             
             if (publishCurrentResource && currentLock.isNullLock()) {           
-                currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
+                // currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
                 currentExportKey = checkExport(currentResourceName, exportpoints);
                 
                 report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
-                report.println(currentResourceName);
+                report.println(context.removeSiteRoot(currentResourceName));
                 
                 /*
                 if (!currentLock.isNullLock()) {
@@ -1302,11 +1302,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             
             if (publishCurrentResource) {                  
                 
-                currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFile, true));
+                // currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFile, true));
                 currentExportKey = checkExport(currentResourceName, exportpoints);
                 
                 report.print(report.key("report.publishing"), I_CmsReport.C_FORMAT_NOTE);            
-                report.println(currentResourceName);
+                report.println(context.removeSiteRoot(currentResourceName));
                 
                 if (currentLock.isNullLock()) {
                     // remove the temporary files for this resource
@@ -1553,11 +1553,11 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             //currentFolder = (CmsFolder) i.next();
             //currentResourceName = m_driverManager.readPath(context, currentFolder, true);
 
-            currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
+            // currentResourceName = context.removeSiteRoot(m_driverManager.readPath(context, currentFolder, true));
             currentExportKey = checkExport(currentResourceName, exportpoints);
 
             report.print(report.key("report.deleting"), I_CmsReport.C_FORMAT_NOTE);
-            report.println(currentResourceName);
+            report.println(context.removeSiteRoot(currentResourceName));
 
             if (currentExportKey != null) {
                 discAccess.removeResource(currentResourceName, currentExportKey);

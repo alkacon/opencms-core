@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,9 @@
 package org.opencms.staticexport;
 
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
 
-import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
 
 /**
@@ -48,7 +45,7 @@ import com.opencms.util.Utils;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsLinkManager {
 
@@ -86,7 +83,7 @@ public class CmsLinkManager {
         int pos = absoluteLink.indexOf('?');
         // check if the link has parameters, if so cut them
         if (pos >= 0) {
-            vfsName = absoluteLink.substring(0, pos-1);
+            vfsName = absoluteLink.substring(0, pos);
             parameters = absoluteLink.substring(pos);
         } else {
             vfsName = absoluteLink;
@@ -96,14 +93,27 @@ public class CmsLinkManager {
         String resultLink = null;
         boolean exportRequired = false;
         
-        if (OpenCms.getStaticExportProperties().isStaticExportEnabled() 
+        if (OpenCms.getStaticExportManager().isStaticExportEnabled() 
         && cms.getRequestContext().currentProject().isOnlineProject()) {           
             try {
                 // first check if we already have the result cached
-                resultLink = OpenCms.getStaticExportProperties().getCachedOnlineLink(vfsName);
+                resultLink = OpenCms.getStaticExportManager().getCachedOnlineLink(vfsName);
                 if (resultLink == null) {                
                     // not cached, let's look up export property in VFS
-                    exportRequired = "true".equalsIgnoreCase(cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true, "false").trim());
+                    String exportValue = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORT, true);
+                    if (exportValue == null) {
+                        // no setting found for "export" property
+                        if (OpenCms.getStaticExportManager().getExportPropertyDefault()) {
+                            // if the default is "true" we always export
+                            exportRequired = true;
+                        } else {
+                            // check if the resource is exportable by suffix
+                            exportRequired = OpenCms.getStaticExportManager().isSuffixExportable(vfsName);
+                        }                        
+                    } else {
+                        // "export" value found, if it was "true" we export
+                        exportRequired = "true".equalsIgnoreCase(exportValue.trim());
+                    }
                 }
             } catch (Throwable t) {
                 // ignore, no export required
@@ -114,43 +124,14 @@ public class CmsLinkManager {
             // link was not already found in the cache
             if (!exportRequired) {
                 // no export required
-                resultLink = OpenCms.getStaticExportProperties().getVfsPrefix() + absoluteLink;
+                resultLink = OpenCms.getStaticExportManager().getVfsPrefix() + vfsName;
             } else {
-                // result was not cached, export is required, resolve the "exportname" property
-                try {
-                    String exportname = cms.readProperty(vfsName, I_CmsConstants.C_PROPERTY_EXPORTNAME, true);
-                    if (exportname != null) {
-                        if (!exportname.endsWith("/")) {
-                            exportname = exportname + "/";
-                        }
-                        if (!exportname.startsWith("/")) {
-                            exportname = "/" + exportname;
-                        }
-                        String value;
-                        boolean cont;
-                        String resource = vfsName;
-                        do {
-                            try {
-                                value = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_EXPORTNAME, false);
-                                cont = ((value == null) && (!"/".equals(resource)));
-                            } catch (CmsSecurityException se) {
-                                // a security exception (probably no read permission) we return the current result                      
-                                cont = false;
-                            }
-                            if (cont)
-                                resource = CmsResource.getParent(resource);
-                        } while (cont);
-                        absoluteLink = exportname + vfsName.substring(resource.length());
-                    }
-                } catch (CmsException e) {
-                    // ignore exception, leave absoluteLink unmodified
-                }
-                // add export rfs prefix            
-                resultLink = OpenCms.getStaticExportProperties().getRfsPrefix() + absoluteLink;
+                // export required, get export name
+                resultLink = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
             }
             if (cms.getRequestContext().currentProject().isOnlineProject()) {
                 // cache the result for the online project
-                OpenCms.getStaticExportProperties().cacheOnlineLink(vfsName, resultLink);
+                OpenCms.getStaticExportManager().cacheOnlineLink(vfsName, resultLink);
             }
         }
         
@@ -161,5 +142,4 @@ public class CmsLinkManager {
             return resultLink;
         }
     }
-
 }

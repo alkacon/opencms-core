@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/15 17:03:10 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.161 $ $Date: 2003/08/15 17:03:10 $
+ * @version $Revision: 1.162 $ $Date: 2003/08/15 17:38:04 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3959,7 +3959,7 @@ public class CmsDriverManager extends Object {
         cacheBuffer.append("_");
         cacheBuffer.append(strongCheck);
         cacheBuffer.append("_");
-        cacheBuffer.append(resource.getResourceId().toString());
+        cacheBuffer.append(resource.getId().toString());
 
         String cacheKey = cacheBuffer.toString();
         Boolean cacheResult = (Boolean)m_permissionCache.get(cacheKey);
@@ -4826,7 +4826,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException Throws CmsException if something goes wrong.
      */
     public synchronized CmsPublishedResources publishProject(CmsObject cms, CmsRequestContext context, I_CmsReport report) throws CmsException {
-        CmsPublishedResources allChanged = new CmsPublishedResources();
+        CmsPublishedResources allChanged = new CmsPublishedResources(context.currentProject());
         Vector changedResources = new Vector();
         Vector changedModuleMasters = new Vector();
         int publishProjectId = context.currentProject().getId();

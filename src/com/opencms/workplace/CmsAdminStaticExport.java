@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2003/08/15 17:38:04 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -108,7 +108,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
                 }
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
-            xmlTemplateDocument.setData("path", OpenCms.getStaticExportProperties().getExportPath());
+            xmlTemplateDocument.setData("path", OpenCms.getStaticExportManager().getExportPath());
         }
 
         // special feature to test the regular expressions
@@ -211,7 +211,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
      */
     public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
-        return new Boolean(OpenCms.getStaticExportProperties().isStaticExportEnabled() && isProMan);
+        return new Boolean(OpenCms.getStaticExportManager().isStaticExportEnabled() && isProMan);
     }
 
     /**
@@ -231,6 +231,6 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
      */
     public Boolean isExportActiveAdmin(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
         boolean isAdmin = isAdmin(cms, lang, parameters).booleanValue();
-        return new Boolean(OpenCms.getStaticExportProperties().isStaticExportEnabled() && isAdmin);
+        return new Boolean(OpenCms.getStaticExportManager().isStaticExportEnabled() && isAdmin);
     }
 }

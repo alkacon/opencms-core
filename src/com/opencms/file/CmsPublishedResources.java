@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsPublishedResources.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/08/15 17:38:04 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,43 +27,50 @@
 */
 package com.opencms.file;
 
-import java.io.*;
-import java.util.*;
+import java.io.Serializable;
+import java.util.Vector;
 
 /**
  * Describes the results of publishing in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2003/04/01 15:20:18 $
+ * @version $Revision: 1.3 $ $Date: 2003/08/15 17:38:04 $
  */
 public class CmsPublishedResources implements Cloneable, Serializable{
 
     /**
      * The vector of changed resources in the vfs
      */
-    private Vector m_changedResources = null;
+    private Vector m_changedResources;
 
     /**
      * The vector of changed resources in the cos
      */
-    private Vector m_changedModuleMasters = null;
+    private Vector m_changedModuleMasters;
+    
+    /**
+     * The id of the project that was published  
+     */
+    private CmsProject m_project; 
+    
 
-    public CmsPublishedResources(){
+    public CmsPublishedResources(CmsProject project) {
+        m_project = project;
         m_changedResources = null;
         m_changedModuleMasters = null;
     }
 
-    public CmsPublishedResources(Vector changedResources, Vector changedModuleMasters){
+    public CmsPublishedResources(CmsProject project, Vector changedResources, Vector changedModuleMasters){
+        m_project = project;
         m_changedResources = changedResources;
         m_changedModuleMasters = changedModuleMasters;
     }
-
+    
     /**
-    * Clones the CmsPublishedResources by creating a new CmsPublishedResources.
-    * @return Cloned CmsPublishedResources.
-    */
-    public Object clone(Vector changedResources, Vector changedModuleMasters) {
-        return new CmsPublishedResources(changedResources, changedModuleMasters);
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+        return new CmsPublishedResources((CmsProject)m_project.clone(), (Vector)m_changedResources.clone(), (Vector)m_changedModuleMasters.clone());
     }
 
     /**

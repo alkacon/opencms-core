@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/08/14 15:37:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.main;
 
-import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.staticexport.CmsStaticExportData;
 
 import com.opencms.file.CmsObject;
 
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OpenCmsServlet extends HttpServlet {
     
@@ -102,13 +102,13 @@ public class OpenCmsServlet extends HttpServlet {
         }
         switch (error) {
             case 404:
-                CmsObject cms = OpenCmsCore.getInstance().initGuest(req, res);            
-                CmsStaticExportManager exportManager = new CmsStaticExportManager(req, cms);
-                if (exportManager.isStaticExportable()) {
+                CmsObject cms = OpenCmsCore.getInstance().getGuestCmsObject(req, res);            
+                CmsStaticExportData exportData = OpenCms.getStaticExportManager().getExportData(req, cms);
+                if (exportData != null) {
                     synchronized (this) {
                         try {
-                            exportManager.export(req, res);
-                        } catch (Exception e) {
+                            OpenCms.getStaticExportManager().export(req, res, cms, exportData);
+                        } catch (Throwable t) {
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
                         }
                     }

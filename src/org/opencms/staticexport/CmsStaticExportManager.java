@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/08/14 15:37:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/15 17:38:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,20 +36,30 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
 
+import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsPublishedResources;
 import com.opencms.file.CmsResource;
+import com.opencms.flex.CmsEvent;
+import com.opencms.flex.I_CmsEventListener;
+import com.opencms.flex.util.CmsLruHashMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,140 +68,151 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
-public class CmsStaticExportManager {
-    
-    /** Marker for externally redirected 404 uri's */
-    public static final String C_EXPORT_MARKER = "exporturi";
-    
-    /** Marker for error request uri attribute */
-    public static final String C_EXPORT_ATTRIBUTE_ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
-    
-    /** Marker for error status code attribute */
-    public static final String C_EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = "javax.servlet.error.status_code";
-    
-    /** Marker for error message attribute */
-    public static final String C_EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
-    
-    /** Marker for error servlet name attribute */
-    public static final String C_EXPORT_ATTRIBUTE_ERROR_SERVLET_NAME = "javax.servlet.error.servlet_name";
-    
-    /** Name for the folder default index file */
-    public static final String C_EXPORT_DEFAULT_FILE = "index.html";
+public class CmsStaticExportManager implements I_CmsEventListener {
     
     /** Cache value to indicate a true 404 error */
     private static final String C_CACHEVALUE_404 = "?404";
     
-    /** The initialized cms context */
-    private CmsObject m_cms;
+    /** Marker for error message attribute */
+    public static final String C_EXPORT_ATTRIBUTE_ERROR_MESSAGE = "javax.servlet.error.message";
     
-    /** The uri to export in the rfs */
-    private String m_rfsName;      
+    /** Marker for error request uri attribute */
+    public static final String C_EXPORT_ATTRIBUTE_ERROR_REQUEST_URI = "javax.servlet.error.request_uri";
     
-    /** The uri in the vfs */
-    private String m_vfsName;
+    /** Marker for error servlet name attribute */
+    public static final String C_EXPORT_ATTRIBUTE_ERROR_SERVLET_NAME = "javax.servlet.error.servlet_name";
     
-    /** The resource to export */
-    private CmsResource m_resource;
+    /** Marker for error status code attribute */
+    public static final String C_EXPORT_ATTRIBUTE_ERROR_STATUS_CODE = "javax.servlet.error.status_code";
+    
+    /** Name for the folder default index file */
+    public static final String C_EXPORT_DEFAULT_FILE = "index_export.html";
+    
+    /** Marker for externally redirected 404 uri's */
+    public static final String C_EXPORT_MARKER = "exporturi";
+    
+    /** Cache for the export uris */
+    private CmsLruHashMap m_cacheExportUris;
+    
+    /** Cache for the online links */
+    private CmsLruHashMap m_cacheOnlineLinks;
+    
+    /** List of all resources that have the "exportname" property set */
+    private Map m_exportnameResources;
+
+    /** Indicates if <code>true</code> is the default value for the property "export" */
+    private boolean m_exportPropertyDefault;
+
+    /** Indicates if links in the static export should be relative */
+    private boolean m_exportRelativeLinks;
+    
+    /** List of export suffixes where the "export" property default is always "true" */
+    private String[] m_exportSuffixes;
+
+    /** Prefix to use for exported files */
+    private String m_rfsPrefix;
+
+    /** Indicates if the static export is enabled or diabled */
+    private boolean m_staticExportEnabled;
+
+    /** The path to where the static export will be written */
+    private String m_staticExportPath;
+    
+    /** Prefix to use for internal OpenCms files */
+    private String m_vfsPrefix;
+
+    /**
+     * Creates a new static export property object.<p>
+     */
+    public CmsStaticExportManager() {
+        m_exportRelativeLinks = false;
+        m_staticExportEnabled = false;
+        m_exportPropertyDefault = true;
+        m_cacheOnlineLinks = new CmsLruHashMap(1024);
+        m_cacheExportUris = new CmsLruHashMap(1024);      
+        
+        // register this object as event listener
+        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT, I_CmsEventListener.EVENT_CLEAR_CACHES} );  
+    }
     
     /**
-     * Generates a new static export manager.<p>
+     * Caches a calculated export uri.<p>
      * 
-     * @param request the current request
-     * @param cms the current cms context object
+     * @param rfsName the name of the resource in the "real" file system
+     * @param vfsName the name of the resource in the VFS
      */
-    public CmsStaticExportManager(HttpServletRequest request, CmsObject cms) {        
-        if (! OpenCms.getStaticExportProperties().isStaticExportEnabled()) {
-            return;
-        }
-        
-        m_rfsName = request.getParameter(C_EXPORT_MARKER);
-        if ((m_rfsName == null)) {
-            m_rfsName = (String)request.getAttribute(C_EXPORT_ATTRIBUTE_ERROR_REQUEST_URI);
-        }
-
-        if ((m_rfsName == null) || !m_rfsName.startsWith(OpenCms.getStaticExportProperties().getRfsPrefix())) {
-            // this is not an export request, no further processing is required
-            return;            
-        }
-        
-        // cut of export prefix from name
-        m_rfsName = m_rfsName.substring(OpenCms.getStaticExportProperties().getRfsPrefix().length());
-        
-        // check if we have the result already in the cache        
-        m_vfsName = OpenCms.getStaticExportProperties().getCachedExportUri(m_rfsName);
-        
-        if (m_vfsName != null) {
-            // this export uri is already cached            
-            if (! C_CACHEVALUE_404.equals(m_vfsName)) {
-                // this uri can be exported
-                try {
-                    m_resource = cms.readFileHeader(m_vfsName);
-                } catch (CmsException e) {
-                    m_rfsName = null;
-                    return;                   
-                }
-            } else {
-                // this can not be exported
-                m_rfsName = null;
-                return;
-            }
-        } else {
-            // export uri not in cache, must look up the file in the VFS
-            boolean match = false;
-
-            try {
-                m_resource = cms.readFileHeader(m_rfsName);
-                if (m_resource.isFolder() && !m_rfsName.endsWith("/")) {
-                    m_rfsName += "/";
-                }
-                m_vfsName = m_rfsName;
-                match = true;
-            } catch (Throwable t) {
-                // resource not found
-            }
-
-            if (! match) {
-                // name of export resource could not be resolved by reading the resource directly,
-                // now try to find a match with the "exportname" folders            
-                Map exportnameFolders = OpenCms.getStaticExportProperties().getExportnames();
-                Iterator i = exportnameFolders.keySet().iterator();
-                while (i.hasNext()) {
-                    String exportName = (String)i.next();
-                    if (m_rfsName.startsWith(exportName)) {
-                        // prefix match
-                        match = true;
-                        // TODO: handle multiple matches         
-                        m_vfsName = exportnameFolders.get(exportName) + m_rfsName.substring(exportName.length());
-                        try {
-                            m_resource = cms.readFileHeader(m_vfsName);
-                            if (m_resource.isFolder()) {
-                                if (!m_rfsName.endsWith("/")) {
-                                    m_rfsName += "/";
-                                }
-                                if (!m_vfsName.endsWith("/")) {
-                                    m_vfsName += "/";
-                                }
-                            }
-                        } catch (CmsException e) {
-                            m_rfsName = null;
-                        }
-                        break;
-                    }
-                }
-            }
-            if (!match) {
-                // no match found, nothing to export
-                OpenCms.getStaticExportProperties().cacheExportUri(m_rfsName, C_CACHEVALUE_404);
-                m_rfsName = null;
-            } else {
-                OpenCms.getStaticExportProperties().cacheExportUri(m_rfsName, m_vfsName);
-            }   
-        }
-        
-        m_cms = cms;            
+    public void cacheExportUri(Object rfsName, Object vfsName) {
+        m_cacheExportUris.put(rfsName, vfsName);        
     }
+    
+    /**
+     * Caches a calculated online link.<p>
+     * 
+     * @param linkName the link
+     * @param vfsName the name of the VFS resource 
+     */
+    public void cacheOnlineLink(Object linkName, Object vfsName) {
+        m_cacheOnlineLinks.put(linkName, vfsName);
+    }
+    
+    /**
+     * Implements the CmsEvent interface,
+     * the static export properties uses the events to clear 
+     * the list of cached keys in case a project is published.<p>
+     *
+     * @param event CmsEvent that has occurred
+     */
+    public synchronized void cmsEvent(CmsEvent event) {
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+                // event data contains a list of the published resources
+                CmsPublishedResources publishedResources = (CmsPublishedResources)event.getData().get("data");
+                if (publishedResources != null) {
+                    // get list published resources
+                    Vector resources = publishedResources.getChangedResources();
+                    // get a guest user cms context
+                    CmsObject cms = OpenCms.getGuestCmsObject();
+                    // iterate list of published resources
+                    Iterator i = resources.iterator();
+                    while (i.hasNext()) {
+                        String vfsName = (String)i.next();
+                        // get the link name for the published file 
+                        String rfsName = getRfsName(cms, vfsName);                        
+                        if (rfsName.startsWith(getRfsPrefix())) {     
+                            // this file could have been exported
+                            if (CmsResource.isFolder(rfsName)) {
+                                rfsName += C_EXPORT_DEFAULT_FILE;
+                            }
+                            String exportFileName = getExportPath() + rfsName.substring(getRfsPrefix().length());
+                            File exportFile = new File(exportFileName);
+                            try {
+                                // check if export file exists, if so delete it
+                                if (exportFile.exists() && exportFile.canWrite()) {
+                                    exportFile.delete();
+                                    // write log message
+                                    if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
+                                        OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Deleted exported rfs file '" + rfsName + "'");
+                                    }
+                                }    
+                            } catch (Throwable t) {
+                                // ignore, nothing to do about this
+                            }      
+                        }
+                    } 
+                }
+                // caches must also be flushed after publish, so no break here
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                // flush all caches   
+                m_cacheOnlineLinks.clear();
+                m_cacheExportUris.clear();        
+                setExportnames();                
+                break;
+            default:
+                // no operation
+        }
+    }    
     
     /**
      * Exports the requested uri and at the same time writes the uri to the response output stream
@@ -199,154 +220,434 @@ public class CmsStaticExportManager {
      * 
      * @param req the current request
      * @param res the current response
-     * @throws Exception in case something goes wrong
+     * @throws CmsException in case of errors accessing the VFS
+     * @throws ServletException in case of errors accessing the servlet 
+     * @throws IOException in case of erros writing to the export output stream
      */
-    public synchronized void export(HttpServletRequest req, HttpServletResponse res) throws Exception {
-        
+    public synchronized void export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data) 
+    throws CmsException, IOException, ServletException {        
         CmsFile file;
-        if (m_resource.isFile()) {
-            file = m_cms.readFile(m_vfsName);
-        } else {
-            file = initResource(m_cms, m_vfsName);
-            m_vfsName = m_vfsName + file.getResourceName();
-            m_rfsName += C_EXPORT_DEFAULT_FILE;
-        } 
+        String vfsName = cms.getRequestContext().removeSiteRoot(data.getVfsName());
+        String rfsName = data.getRfsName();
+        CmsResource resource = data.getResource();
         
+        // read vfs resource
+        if (resource.isFile()) {
+            file = cms.readFile(vfsName);
+        } else {
+            file = OpenCmsCore.getInstance().initResource(cms, vfsName);
+            vfsName = vfsName + file.getResourceName();
+            rfsName += C_EXPORT_DEFAULT_FILE;
+        }
+
+        // check loader id for resource
         int loaderId = file.getLoaderId();
         I_CmsResourceLoader loader = OpenCms.getLoaderManager().getLoader(loaderId);
-        if ((loader == null) 
-            || ((loaderId != CmsDumpLoader.C_RESOURCE_LOADER_ID)
-                && (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID)
-                && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID)
-                )           
-        ) {
-            throw new CmsException("Unable to export VFS file " + m_vfsName + ", invalid loader id " + loaderId);
-        }        
-        
-        String exportFolderName = OpenCms.getStaticExportProperties().getExportPath() + CmsResource.getPath(m_rfsName).substring(1);
+        if ((loader == null) || ((loaderId != CmsDumpLoader.C_RESOURCE_LOADER_ID) && (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID) && (loaderId != CmsPageLoader.C_RESOURCE_LOADER_ID))) {
+            throw new CmsException("Unable to export VFS file " + vfsName + ", invalid loader id " + loaderId);
+        }
+
+        // make sure all required parent folder exist
+        String exportFolderName = getExportPath() + CmsResource.getPath(rfsName).substring(1);
         File exportFolder = new File(exportFolderName);
         if (!exportFolder.exists()) {
             if (!exportFolder.mkdirs()) {
-                throw new CmsException("Creation of export folder failed for RFS file " + m_rfsName);
+                throw new CmsException("Creation of export folder failed for RFS file " + rfsName);
             }
         }
-        
-        String exportFileName = OpenCms.getStaticExportProperties().getExportPath() + m_rfsName.substring(1);
+
+        // generate export file instance and output stream
+        String exportFileName = getExportPath() + rfsName.substring(1);
         File exportFile = new File(exportFileName);
         FileOutputStream exportStream;
         try {
             exportStream = new FileOutputStream(exportFile);
         } catch (Throwable t) {
-            throw new CmsException("Creation of export output stream failed for RFS file " + m_rfsName);
+            throw new CmsException("Creation of export output stream failed for RFS file " + rfsName);
         }
 
-        String mimetype = OpenCms.getMimeType(file.getResourceName(), m_cms.getRequestContext().getEncoding());
-        res.setContentType(mimetype);  
-                
-        String oldUri = m_cms.getRequestContext().getUri();
-        m_cms.getRequestContext().setUri(m_vfsName);          
-        byte[] content = loader.export(m_cms, file, req, res);    
-        m_cms.getRequestContext().setUri(oldUri);
-                
-        exportStream.write(content);
-        exportStream.close();   
-    }
-    
-    /**
-     * Returns true if the uri is static exportable.<p>
-     * 
-     * @return true if the uri is static exportable
-     */
-    public boolean isStaticExportable() {
-        return m_rfsName != null;
-    }
-    
-    /**
-     * Initializes a VFS resource, required to get the default file form a folder.<p> 
-     * 
-     * @param cms the current cms context
-     * @param resourceName the name of the resource 
-     * @return the initialized resource
-     * @throws CmsException in case something goes wrong
-     */
-    private CmsFile initResource(CmsObject cms, String resourceName) throws CmsException {
-        CmsFile file = null;
-
-        try {
-            // Try to read the requested file
-            file = cms.readFile(resourceName);
-        } catch (CmsException e) {
-            if (e.getType() == CmsException.C_NOT_FOUND) {
-                // The requested file was not found
-                // Check if a folder name was requested, and if so, try
-                // to read the default pages in that folder
-
-                try {
-                    // Try to read the requested resource name as a folder
-                    CmsFolder folder = cms.readFolder(resourceName);
-                    // If above call did not throw an exception the folder
-                    // was sucessfully read, so lets go on check for default 
-                    // pages in the folder now
-
-                    // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(CmsResource.getPath(cms.readAbsolutePath(folder)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
-                    if (defaultFileName != null) {
-                        // Property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + defaultFileName;
-
-                        try {
-                            file = cms.readFile(tmpResourceName);
-                            // No exception? So we have found the default file                         
-                            cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
-                        } catch (CmsSecurityException se) {
-                            // Maybe no access to default file?
-                            throw se;
-                        } catch (CmsException exc) {
-                            // Ignore all other exceptions
-                        }
-                    }
-                    if (file == null) {
-                        // No luck with the property, so check default files specified in opencms.properties (if required)
-                        Iterator i = OpenCms.getDefaultFilenames().iterator(); 
-                        while (i.hasNext()) {
-                            String tmpResourceName = CmsResource.getPath(cms.readAbsolutePath(folder)) + (String)i.next();
-                            try {
-                                file = cms.readFile(tmpResourceName);
-                                // No exception? So we have found the default file                         
-                                cms.getRequestContext().getRequest().setRequestedResource(tmpResourceName);
-                                // Stop looking for default files   
-                                break;
-                            } catch (CmsSecurityException se) {
-                                // Maybe no access to default file?
-                                throw se;
-                            } catch (CmsException exc) {
-                                // Ignore all other exceptions
-                            }
-                        }
-                    }
-                    if (file == null) {
-                        // No default file was found, throw original exception
-                        throw e;
-                    }
-                } catch (CmsException ex) {
-                    // Exception trying to read the folder (or it's properties)
-                    throw ex;
-                }
-
-            } else {
-                // Throw the CmsException (possible cause e.g. no access permissions)
-                throw e;
-            }
-        }
-
-        if (file != null) {
-            // test if this file is only available for internal access operations
-            if ((file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
-            }
-        }    
+        // ensure we have exactly the same setup as if called "the usual way"
+        String mimetype = OpenCms.getMimeType(file.getResourceName(), cms.getRequestContext().getEncoding());
+        res.setContentType(mimetype);        
+        String oldUri = cms.getRequestContext().getUri();
+        cms.getRequestContext().setUri(vfsName);
         
-        return file;    
+        // do the export
+        byte[] content = loader.export(cms, file, req, res);
+        
+        // restore context
+        cms.getRequestContext().setUri(oldUri);
+
+        // write export data to the output stream
+        exportStream.write(content);
+        exportStream.close();    
+        
+        // log export success 
+        if (OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_STATICEXPORT)) {
+            OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "Exported vfs file '" + vfsName + "' to rfs file '" + rfsName + "'");
+        }
     }    
     
+    /**
+     * Returns a cached vfs resource name for the given rfs name
+     * 
+     * @param rfsName the name of the ref resource to get the cached vfs resource name for
+     * @return a cached vfs resource name for the given rfs name, or null 
+     */    
+    public String getCachedExportUri(Object rfsName) {
+        return (String)m_cacheExportUris.get(rfsName);
+    }
+    
+    /**
+     * Returns a cached link for the given vfs name
+     * 
+     * @param vfsName the name of the vfs resource to get the cached link for
+     * @return a cached link for the given vfs name, or null 
+     */
+    public String getCachedOnlineLink(Object vfsName) {
+        return (String)m_cacheOnlineLinks.get(vfsName);
+    }
+    
+    /**
+     * Returns the export data for the request, if null is returned no export is required.<p>
+     * 
+     * @param request the request to check for export data
+     * @return the export data for the request, if null is returned no export is required
+     */
+    public CmsStaticExportData getExportData(HttpServletRequest request, CmsObject cms) {                
+        if (! isStaticExportEnabled()) {
+            // export is diabled
+            return null;
+        }
+
+        String rfsName;
+        String vfsName;
+        CmsResource resource = null;
+        
+        rfsName = request.getParameter(C_EXPORT_MARKER);
+        if ((rfsName == null)) {
+            rfsName = (String)request.getAttribute(C_EXPORT_ATTRIBUTE_ERROR_REQUEST_URI);
+        }
+
+        if ((rfsName == null) || !rfsName.startsWith(getRfsPrefix())) {
+            // this is not an export request, no further processing is required
+            return null;   
+        }
+        
+        cms.getRequestContext().saveSiteRoot();
+        
+        try {        
+            cms.getRequestContext().setSiteRoot("/");
+
+            // cut export prefix from name
+            rfsName = rfsName.substring(getRfsPrefix().length());
+    
+            // check if we have the result already in the cache        
+            vfsName = getCachedExportUri(rfsName);
+            
+            if (vfsName != null) {
+                // this export uri is already cached            
+                if (! C_CACHEVALUE_404.equals(vfsName)) {
+                    // this uri can be exported
+                    try {
+                        resource = cms.readFileHeader(vfsName);
+                    } catch (CmsException e) {
+                        // no export if error occured here
+                        return null;                   
+                    }
+                    // valid cache entry, return export data object
+                    return new CmsStaticExportData(vfsName, rfsName, resource); 
+                } else {
+                    // this uri can not be exported
+                    return null;
+                }
+            } else {
+                // export uri not in cache, must look up the file in the VFS
+                boolean match = false;
+    
+                try {
+                    resource = cms.readFileHeader(cms.getRequestContext().removeSiteRoot(rfsName));
+                    if (resource.isFolder() && !rfsName.endsWith("/")) {
+                        rfsName += "/";
+                    }
+                    vfsName = rfsName;
+                    match = true;
+                } catch (Throwable t) {
+                    // resource not found
+                }
+    
+                if (! match) {
+                    // name of export resource could not be resolved by reading the resource directly,
+                    // now try to find a match with the "exportname" folders            
+                    Map exportnameFolders = getExportnames();
+                    Iterator i = exportnameFolders.keySet().iterator();
+                    while (i.hasNext()) {
+                        String exportName = (String)i.next();
+                        if (rfsName.startsWith(exportName)) {
+                            // prefix match
+                            match = true;
+                            // TODO: handle multiple matches         
+                            vfsName = exportnameFolders.get(exportName) + rfsName.substring(exportName.length());
+                            try {
+                                resource = cms.readFileHeader(vfsName);
+                                if (resource.isFolder()) {
+                                    if (!rfsName.endsWith("/")) {
+                                        rfsName += "/";
+                                    }
+                                    if (!vfsName.endsWith("/")) {
+                                        vfsName += "/";
+                                    }
+                                }
+                            } catch (CmsException e) {
+                                rfsName = null;
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (!match) {
+                    // no match found, nothing to export
+                    cacheExportUri(rfsName, C_CACHEVALUE_404);
+                    return null;
+                } else {
+                    // found a resource to export
+                    cacheExportUri(rfsName, vfsName);
+                    return new CmsStaticExportData(vfsName, rfsName, resource); 
+                }   
+            }
+        } finally {
+            cms.getRequestContext().restoreSiteRoot();
+        }
+    }
+    
+    /**
+     * Returns the list of all resources that have the "exportname" property set.<p>
+     * 
+     * @return the list of all resources that have the "exportname" property set
+     */    
+    public Map getExportnames() {
+        return m_exportnameResources;
+    }
+
+    /**
+     * Returns the export path for the static export.<p>
+     * 
+     * @return the export path for the static export
+     */
+    public String getExportPath() {
+        return m_staticExportPath;
+    }
+
+    /**
+     * Returns true if the default value for the resource property "export" is true.<p>
+     * 
+     * @return true if the default value for the resource property "export" is true
+     */
+    public boolean getExportPropertyDefault() {
+        return m_exportPropertyDefault;
+    }
+    
+    /**
+     * Returns the static export rfs name for a give vfs resoure.<p>
+     * 
+     * @param cms an initialized cms context
+     * @param vfsName the name of the vfs resource
+     * @return the static export rfs name for a give vfs resoure
+     */
+    public String getRfsName(CmsObject cms, String vfsName) {
+        try {
+            // check if the resource folder (or a parent folder) has the "exportname" property set
+            String exportname = cms.readProperty(CmsResource.getPath(vfsName), I_CmsConstants.C_PROPERTY_EXPORTNAME, true);
+            if (exportname != null) {
+                // "exportname" property set
+                if (!exportname.endsWith("/")) {
+                    exportname = exportname + "/";
+                }
+                if (!exportname.startsWith("/")) {
+                    exportname = "/" + exportname;
+                }
+                String value;
+                boolean cont;
+                String resource = vfsName;
+                do {
+                    try {
+                        value = cms.readProperty(resource, I_CmsConstants.C_PROPERTY_EXPORTNAME, false);
+                        cont = ((value == null) && (!"/".equals(resource)));
+                    } catch (CmsSecurityException se) {
+                        // a security exception (probably no read permission) we return the current result                      
+                        cont = false;
+                    }
+                    if (cont) {
+                        resource = CmsResource.getParent(resource);
+                    }
+                } while (cont);
+                vfsName = exportname + vfsName.substring(resource.length());
+            } else {
+                // if "exportname" is not set we must add the site root 
+                vfsName = cms.getRequestContext().addSiteRoot(vfsName);
+            }
+        } catch (CmsException e) {
+            // ignore exception, leave vfsName unmodified
+        }
+        // add export rfs prefix and return result         
+        return OpenCms.getStaticExportManager().getRfsPrefix() + vfsName;        
+    }    
+    
+    /**
+     * Returns the prefix for exported links in the "real" file system.<p>
+     * 
+     * @return the prefix for exported links in the "real" file system
+     */ 
+    public String getRfsPrefix() {
+        return m_rfsPrefix;
+    }
+
+    /**
+     * Returns the prefix for internal links in the vfs.<p>
+     * 
+     * @return the prefix for internal links in the vfs
+     */
+    public String getVfsPrefix() {
+        return m_vfsPrefix;
+    }
+
+    /**
+     * Returns true if the static export is enabled.<p>
+     * 
+     * @return true if the static export is enabled
+     */
+    public boolean isStaticExportEnabled() {
+        return m_staticExportEnabled;
+    }
+
+    /**
+     * Returns true if the given resource name is exportable because of it's suffix.<p>
+     * 
+     * @param resourceName the name to check 
+     * @return true if the given resource name is exportable because of it's suffix
+     */
+    public boolean isSuffixExportable(String resourceName) {
+        if (resourceName == null) {
+            return false;
+        }
+        for (int i=0; i<m_exportSuffixes.length; i++) {
+            if (resourceName.endsWith(m_exportSuffixes[i])) {
+                return true;
+            }
+        }
+        return false;
+    } 
+
+    /**
+     * Returns true if the links in the static export should be relative.<p>
+     * 
+     * @return true if the links in the static export should be relative
+     */
+    public boolean relativLinksInExport() {
+        return m_exportRelativeLinks;
+    }
+    
+    /**
+     * Set the list of all resources that have the "exportname" property set.<p>
+     * 
+     * @param cms the current cms context
+     * @param resources the list of all resources that have the "exportname" property set
+     */
+    public synchronized void setExportnames() {        
+        Vector resources;
+        CmsObject cms = null;
+        try {
+            cms = OpenCms.initGuestUser();
+            resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
+        } catch (CmsException e) {
+            resources = new Vector(0);
+        }
+        
+        m_exportnameResources = new HashMap(resources.size());
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            try {
+                String foldername = cms.readAbsolutePath(res);
+                String exportname = cms.readProperty(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME);
+                if (! exportname.endsWith("/")) {
+                    exportname = exportname + "/";
+                }
+                if (! exportname.startsWith("/")) {
+                    exportname = "/" + exportname;
+                }
+                m_exportnameResources.put(exportname, foldername);
+            } catch (CmsException e) {
+                // ignore exception, folder will no be added
+            }
+        }
+        m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
+    }
+    
+    /**
+     * Sets the path where the static export is written.<p>
+     * 
+     * @param path the path where the static export is written
+     */
+    public void setExportPath(String path) {
+        m_staticExportPath = path;
+        if (! m_staticExportPath.endsWith("/")) {
+            m_staticExportPath += "/";
+        }
+    }
+    
+    /**
+     * Sets the default for the "export" resource property, 
+     * possible values are "true", "false" or "dynamic".<p>
+     *  
+     * @param value the default for the "export" resource property
+     */
+    public void setExportPropertyDefault(boolean value) {
+        m_exportPropertyDefault = value;
+    }
+    
+    /**
+     * Controls if links in exported files are relative or absolute.<p>
+     * 
+     * @param value if true, links in exported files are relative
+     */
+    public void setExportRelativeLinks(boolean value) {
+        m_exportRelativeLinks = value;
+    }
+
+    /**
+     * Sets the list of export suffices.<p>
+     * 
+     * @param exportSuffixes the list of export suffixes
+     */
+    public void setExportSuffixes(String[] exportSuffixes) {
+        m_exportSuffixes = exportSuffixes;
+    }
+
+    /**
+     * Sets the prefix for exported links in the "real" file system.<p>
+     * 
+     * @param rfsPrefix the prefix for exported links in the "real" file system
+     */
+    public void setRfsPrefix(String rfsPrefix) {
+        m_rfsPrefix = rfsPrefix;
+    }
+    
+    /**
+     * Controls if the static export is enabled or not.<p>
+     * 
+     * @param value if true, the static export is enabled
+     */
+    public void setStaticExportEnabled(boolean value) {
+        m_staticExportEnabled = value;
+    }
+
+    /**
+     * Sets the prefix for internal links in the vfs.<p>
+     * 
+     * @param vfsPrefix the prefix for internal links in the vfs
+     */
+    public void setVfsPrefix(String vfsPrefix) {
+        m_vfsPrefix = vfsPrefix;
+    }
 }
