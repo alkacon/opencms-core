@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/16 19:08:07 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/02/17 10:29:50 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/16 19:08:07 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/17 10:29:50 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -102,19 +102,37 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
                 try {
                    // create the content for the page file
+                    System.err.println("create content");
                    content=createPagefile("com.opencms.workplace.CmsXmlTemplate",
                                           templatefile,
                                           C_CONTENTTEMPLATEPATH+currentFilelist+newFile);              
                    // check if the nescessary folders for the content files are existing.
                    // if not, create the missing folders.
+                   System.err.println("check folders");
                    checkFolders(cms,currentFilelist);
                    // create the page file
+                   System.err.println("create file "+currentFilelist+newFile);
                    CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
+                   System.err.println("lock file "+file);
                    cms.lockResource(file.getAbsolutePath());
+                   System.err.println("write metainfo file "+file);
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
-                } catch (Exception e) {
-                    throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION,e);
+                   // now create the page content file
+                   System.err.println("create content "+C_CONTENTBODYPATH+currentFilelist+newFile);
+                   CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,new byte[0],"plain");
+                   // set the flags for the content file to internal use, the content 
+                   // should not be loaded 
+           /*        System.err.println("set flags");
+                   cms.lockResource(contentfile.getAbsolutePath());
+                   contentfile.setAccessFlags(contentfile.getAccessFlags()+C_ACCESS_INTERNAL_READ);
+                   System.err.println("update file "+contentfile.getAbsolutePath());
+                   cms.writeFile(contentfile);
+                   cms.unlockResource(contentfile.getAbsolutePath());
+                   System.err.println("done");*/
+                } catch (CmsException ex) {
+                    throw new CmsException("###"+ex.getMessage(),ex.getType(),ex);
                 }
+            
                 // TODO: ErrorHandling
                 
                 // now return to filelist
@@ -145,46 +163,50 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
      * @return Bytearray containgin the XML code for the pagefile.
      */
     private byte[] createPagefile(String classname, String template, String contenttemplate)
-        throws CmsException, Exception {
-        byte[] output= null;
-        I_CmsXmlParser parser = A_CmsXmlContent.getXmlParser();
-		Document docXml = parser.createEmptyDocument("page");	
+        throws CmsException{
+        byte[] xmlContent= null;
+        try {
+            I_CmsXmlParser parser = A_CmsXmlContent.getXmlParser();
+		    Document docXml = parser.createEmptyDocument("page");	
         
-        Element firstElement = docXml.getDocumentElement();
+            Element firstElement = docXml.getDocumentElement();
         
-        // add element CLASS
-        Element elClass= docXml.createElement("CLASS");
-		firstElement.appendChild(elClass);
-        Node noClass = docXml.createTextNode(classname);
-		elClass.appendChild(noClass);
+            // add element CLASS
+            Element elClass= docXml.createElement("CLASS");
+		    firstElement.appendChild(elClass);
+            Node noClass = docXml.createTextNode(classname);
+		    elClass.appendChild(noClass);
         
-        // add element MASTERTEMPLATE
-        Element elTempl= docXml.createElement("MASTERTEMPLATE");
-		firstElement.appendChild(elTempl);
-        Node noTempl = docXml.createTextNode(template);
-		elTempl.appendChild(noTempl);     
+            // add element MASTERTEMPLATE
+            Element elTempl= docXml.createElement("MASTERTEMPLATE");
+		    firstElement.appendChild(elTempl);
+            Node noTempl = docXml.createTextNode(template);
+		    elTempl.appendChild(noTempl);     
         
-        //add element ELEMENTDEF
-        Element elEldef=docXml.createElement("ELEMENTDEF");
-        elEldef.setAttribute("name","body");
-    	firstElement.appendChild(elEldef);    
+            //add element ELEMENTDEF
+            Element elEldef=docXml.createElement("ELEMENTDEF");
+            elEldef.setAttribute("name","body");
+    	    firstElement.appendChild(elEldef);    
         
-        //add eleement ELEMENTDEF.CLASS
-        Element elElClass= docXml.createElement("CLASS");
-		elEldef.appendChild(elElClass);
-        Node noElClass = docXml.createTextNode(classname);
-		elElClass.appendChild(noElClass);
+            //add eleement ELEMENTDEF.CLASS
+            Element elElClass= docXml.createElement("CLASS");
+		    elEldef.appendChild(elElClass);
+            Node noElClass = docXml.createTextNode(classname);
+		    elElClass.appendChild(noElClass);
         
-        //add eleement ELEMENTDEF.TEMPLATE
-        Element elElTempl= docXml.createElement("TEMPLATE");
-		elEldef.appendChild(elElTempl);
-        Node noElTempl = docXml.createTextNode(contenttemplate);
-		elElTempl.appendChild(noElTempl);     
+            //add eleement ELEMENTDEF.TEMPLATE
+            Element elElTempl= docXml.createElement("TEMPLATE");
+		    elEldef.appendChild(elElTempl);
+            Node noElTempl = docXml.createTextNode(contenttemplate);
+		    elElTempl.appendChild(noElTempl);     
         
-        // generate the output
-        StringWriter writer = new StringWriter();
-        parser.getXmlText(docXml,writer);
-        byte[] xmlContent = writer.toString().getBytes();
+            // generate the output
+            StringWriter writer = new StringWriter();
+            parser.getXmlText(docXml,writer);
+            xmlContent = writer.toString().getBytes();
+        } catch (Exception e) {
+            throw new CmsException(e.getMessage(),CmsException.C_UNKNOWN_EXCEPTION,e);
+        }
                
         return xmlContent;
     }
@@ -217,28 +239,33 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             return new Integer(0);           
       }
     
+      /**
+       * This method checks if all nescessary folders are exisitng in the content body
+       * folder and creates the missing ones. <br>
+       * All page contents files are stored in the content body folder in a mirrored directory
+       * structure of the OpenCms filesystem. Therefor it is nescessary to create the 
+       * missing folders when a new page document is createg.
+       * @param cms The CmsObject
+       * @param path The path in the CmsFilesystem where the new page should be created.
+       * @exception CmsException if something goes wrong.
+       */
       private void checkFolders(A_CmsObject cms, String path) 
           throws CmsException {
           String completePath=C_CONTENTBODYPATH;
           StringTokenizer t=new StringTokenizer(path,"/");
+          // check if all folders are there
           while (t.hasMoreTokens()) {
               String foldername=t.nextToken();
-              System.err.println("###"+foldername);
-              System.err.println("###"+completePath+foldername+"/"); 
-              try {
+               try {
+                // try to read the folder. if this fails, an exception is thrown  
                 CmsFolder folder= cms.readFolder(completePath+foldername+"/");
               } catch (CmsException e) {
-                  System.err.println("####ERROR"+e.toString());
-                  System.err.println("###Create folder: path "+completePath);
-                  System.err.println("###Create folder: folder"+foldername);
-                  CmsFolder folder=cms.createFolder(completePath,foldername);
-                  System.err.println("###Done");
-                                     
+                  // the folder could not be read, so create it.
+                  CmsFolder folder=cms.createFolder(completePath,foldername);                              
               }
               completePath+=foldername+"/";        
-          }
-          
-      }
+          }          
+     }
     
     
 }

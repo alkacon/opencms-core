@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/16 19:08:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/02/17 10:29:50 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/16 19:08:07 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/17 10:29:50 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -150,7 +150,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
     private final static String C_NAME_FILEFOLDER="NAME_FILEFOLDER";
     
     /** The style for unchanged files or folders */
-    private final static String C_STYLE_UNCHANGED="dateingeaendert";
+    private final static String C_STYLE_UNCHANGED="dateingeandert";
 
     /** The style for files or folders not in project*/
     private final static String C_STYLE_NOTINPROJECT="dateintprojekt";
