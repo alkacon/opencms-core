@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
- * Date   : $Date: 2001/01/03 13:09:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2001/01/03 16:50:51 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Waruschan Babachan
- * @version $Revision: 1.36 $ $Date: 2001/01/03 13:09:43 $
+ * @version $Revision: 1.37 $ $Date: 2001/01/03 16:50:51 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 															 I_CmsConstants {
@@ -282,6 +282,32 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
 		pref.put(C_USERPREF_FILELIST,new Integer(filelist));
 		return pref;
 	}
+	/**
+	 * Inserts the correct document title into the template.
+	 * This is a customized method for adding the recent version number to the title of the login screen.
+	 * <P>
+	 * This method can be called using <code>&lt;METHOD name="getTitle"&gt;</code>
+	 * in the template file.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param tagcontent Unused in this special case of a user method. Can be ignored.
+	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
+	 * @param userObj Hashtable with parameters.
+	 * @return String or byte[] with the content of this subelement.
+	 * @exception CmsException
+	 */
+	public Object getTitle(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+			throws CmsException {
+							   
+		String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
+		if(title == null) {
+			title = "";
+		}
+		title = title + " - " + C_VERSION; 
+		return title;            
+	}
+	
+		
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * 

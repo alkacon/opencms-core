@@ -916,7 +916,13 @@
 			<user>Admin</user>
 			<group>Users</group>
 			<access>79</access>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<type>0</type>
+					<value>OpenCms Login</value>
+				</property>
+			</properties>
 		</file>
 		<file>
 			<source>action/move.html</source>
