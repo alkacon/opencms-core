@@ -13,7 +13,7 @@ import java.util.*;
  *  Content definition for the workplace error element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/26 19:22:58 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/27 10:54:38 $
  */
 public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
                                                                      I_CmsWpConstants {
@@ -72,38 +72,49 @@ public class CmsXmlWpErrorDefFile extends A_CmsXmlContent implements I_CmsLogCha
      * @param reason The reason of this errorbox.
      * @param suggestion The suggestion of this errorbox.
      * @param link The reference where this errorbox forwards to.
+     * @param msgReason Fixed reason text in errorbox.
+     * @param msgButton Fixed button text.
      * @return Processed errorbox.
      * @exception CmsException
      */
     public String getErrorbox(String title, String message, String reason, 
-                           String suggestion, String link)
+                           String suggestion, String link, String msgReason,
+                           String msgButton)
         throws CmsException {
         setData(C_ERROR_TITLE, title);
         setData(C_ERROR_MESSAGE, message);
         setData(C_ERROR_REASON, reason);
         setData(C_ERROR_SUGGESTION, suggestion);
         setData(C_ERROR_LINK,link);
+        setData(C_ERROR_MSG_REASON,msgReason);
+        setData(C_ERROR_MSG_BUTTON,msgButton);
         return getProcessedDataValue(C_TAG_ERRORBOX);                
      }  
-
-     /**
-     * Gets the processed data for a password field.
-     * @param styleClass The style class of this password field.
-     * @param name The name of this password field.
-     * @param size The size of this password field
-     * @param length The input length of this password field.
-     * @return Processed password field.
+    
+      /**
+     * Gets the processed data for a errorpage.
+     * @param title The title of this errorpage.
+     * @param message The message of this errorpage.
+     * @param reason The reason of this errorpage.
+     * @param suggestion The suggestion of this errorpage.
+     * @param link The reference where this errorpage forwards to.
+     * @param msgReason Fixed reason text in errorbox.
+     * @param msgButton Fixed button text.
+     * @return Processed errorpage.
      * @exception CmsException
      */
-    public String getPassword(String styleClass, String name, String size, String length)
+    public String getErrorpage(String title, String message, String reason, 
+                           String suggestion, String link, String msgReason,
+                           String msgButton)
         throws CmsException {
-        setData(C_INPUT_CLASS, styleClass);
-        setData(C_INPUT_NAME, name);
-        setData(C_INPUT_SIZE, size);
-        setData(C_INPUT_LENGTH, length);
-        return getProcessedDataValue(C_TAG_PASSWORD);                
+        setData(C_ERROR_TITLE, title);
+        setData(C_ERROR_MESSAGE, message);
+        setData(C_ERROR_REASON, reason);
+        setData(C_ERROR_SUGGESTION, suggestion);
+        setData(C_ERROR_LINK,link);
+        setData(C_ERROR_MSG_REASON,msgReason);
+        setData(C_ERROR_MSG_BUTTON,msgButton);
+        return getProcessedDataValue(C_TAG_ERRORPAGE);                
      }  
-
-    
     
 }

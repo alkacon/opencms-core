@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/01/26 19:22:42 $
+ * @version $Revision: 1.10 $ $Date: 2000/01/27 10:54:38 $
  */
 public interface I_CmsWpConstants {
 
@@ -57,9 +57,14 @@ public interface I_CmsWpConstants {
    public static final String C_TAG_SUBMITBUTTON="submitbutton";
 
     /**
-    * Name if the errorbox tag in the button definiton template
+    * Name if the errorbox tag in the error definiton template
     */
    public static final String C_TAG_ERRORBOX="errorbox";
+
+    /**
+    * Name if the error´page tag in the error definiton template
+    */
+   public static final String C_TAG_ERRORPAGE="errorpage";
    
     // Parameters for buttons
     
@@ -122,7 +127,13 @@ public interface I_CmsWpConstants {
     public static final String C_ERROR_SUGGESTION = "suggestion";    
 
     /** Link of the error box */
-    public static final String C_ERROR_LINK = "ref";    
+    public static final String C_ERROR_LINK = "ref";
+    
+    /** Statig text in the error box */
+    public static final String C_ERROR_MSG_REASON = "msgreason";    
+   
+    /** Button label of the error box */
+    public static final String C_ERROR_MSG_BUTTON = "msgbutton";    
     
     // Constants for language file control
             

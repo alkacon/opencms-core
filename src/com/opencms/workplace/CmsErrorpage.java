@@ -11,20 +11,20 @@ import java.util.*;
 
 
 /**
- * Class for building workplace error boxes. <BR>
- * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORBOX&gt;</code>.
+ * Class for building workplace error pages. <BR>
+ * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/01/27 10:54:38 $
+ * @version $Revision: 1.1 $ $Date: 2000/01/27 10:54:38 $
  */
-public class CmsErrorbox extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
+public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
     /**
-     * Handling of the <CODE>&lt;ERRORBOX&gt;</CODE> tags.
+     * Handling of the <CODE>&lt;ERRORPAGEBOX&gt;</CODE> tags.
      * Calls the user method <code>elementTag</code> that has to be
      * defined in the XML template class. 
      * 
-     * @param XML element containing the <code>&lt;ERRORBOX&gt;</code> tag.
+     * @param XML element containing the <code>&lt;ERRORPAGE&gt;</code> tag.
      * @param callingObject Reference to the object requesting the node processing.
      * @param userObj Customizable user object that will be passed through to handling and user methods.
      * @return Result of user method <code>templateElement()</code>.
@@ -53,7 +53,7 @@ public class CmsErrorbox extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         button=lang.getLanguageValue("button.ok");
         
         // build errorbox
-        String result = errordef.getErrorbox(errorTitle,errorMessage,errorReason,
+        String result = errordef.getErrorpage(errorTitle,errorMessage,errorReason,
                                              errorSuggestion,errorLink,reason,button);
         return result; 
 

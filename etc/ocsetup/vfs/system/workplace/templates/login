@@ -65,15 +65,15 @@
 </CENTER>
 </form>
 
-<br>
-<br>
-]]><ERRORBOX title="Fehler" message="Das ist eine Errormessage" reason="Das ist der Grund für diesen Fehler" suggestion="Fragen Sie Ihren Arzt oder Apotheker" ref="login.html" /><![CDATA[
-
 </body>
 <!-- End content login -->
 </html>
+]]>
+</TEMPLATE>
 
-
+<TEMPLATE name="error">
+<![CDATA[
+]]><ERRORPAGE title="error.title.login" message="error.message.login" reason="error.reason.login" suggestion="error.suggestion.login" ref="login.html" /><![CDATA[
 ]]>
 </TEMPLATE>
 
