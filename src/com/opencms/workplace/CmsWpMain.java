@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/06/18 14:17:54 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.67 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.68 $ $Date: 2004/06/18 14:17:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -260,7 +260,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
     private void fetchProjects(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument) throws CmsException {
         // Get all project information
         CmsRequestContext reqCont = cms.getRequestContext();
-        Vector allProjects = cms.getAllAccessibleProjects();
+        Vector allProjects = new Vector(cms.getAllAccessibleProjects());
         int currentProjectId = reqCont.currentProject().getId();
 
         // Now loop through all projects and fill the result vectors

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2004/06/18 14:17:54 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.27 $ $Date: 2004/06/18 14:17:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -120,14 +120,14 @@ public class CmsAdminProjectResent extends CmsWorkplaceDefault {
         Vector list = new Vector();
         
         // get the manageable projects
-        Vector mp = cms.getAllManageableProjects();
+        Vector mp = new Vector(cms.getAllManageableProjects());
         Hashtable temp = new Hashtable();
         for(int i = 0;i < mp.size();i++) {
             temp.put("" + ((CmsProject)mp.elementAt(i)).getId(), mp.elementAt(i));
         }
         
         //
-        Vector ap = cms.getAllAccessibleProjects();
+        Vector ap = new Vector(cms.getAllAccessibleProjects());
         for(int i = 0;i < ap.size();i++) {
             if(temp.containsKey("" + ((CmsProject)ap.elementAt(i)).getId())) {
                 list.addElement(ap.elementAt(i));

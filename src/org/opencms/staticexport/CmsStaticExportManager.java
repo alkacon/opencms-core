@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +78,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -1618,19 +1626,18 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private synchronized void setExportnames() {
 
-        Vector resources;
+        List resources;
         CmsObject cms = null;
         try {
             cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
             resources = cms.getResourcesWithPropertyDefinition(I_CmsConstants.C_PROPERTY_EXPORTNAME);
         } catch (CmsException e) {
-            resources = new Vector(0);
+            resources = Collections.EMPTY_LIST;
         }
 
         m_exportnameResources = new HashMap(resources.size());
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+        for (int i = 0, n = resources.size(); i < n; i++) {
+            CmsResource res = (CmsResource)resources.get(i);
             try {
                 String foldername = cms.readAbsolutePath(res);
                 String exportname = cms.readPropertyObject(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME, false)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/13 23:32:19 $
- * Version: $Revision: 1.185 $
+ * Date   : $Date: 2004/06/18 14:17:53 $
+ * Version: $Revision: 1.186 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,10 +52,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -64,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.185 $ $Date: 2004/06/13 23:32:19 $
+ * @version $Revision: 1.186 $ $Date: 2004/06/18 14:17:53 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1039,9 +1037,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * Gets all resources that are marked as undeleted.<p>
+     * Filters all resources that are marked as undeleted.<p>
      * 
-     * @param resources Vector of resources
+     * @param resources list of resources
      * @return all resources that are markes as deleted
      */
     protected List internalFilterUndeletedResources(List resources) {
@@ -1304,12 +1302,13 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readFiles(int, int)
      */
-    public Vector readFiles(int projectId, int resourcetype) throws CmsException {
-        Vector files = new Vector();
+    public List readFiles(int projectId, int resourcetype) throws CmsException {
+        List files = new ArrayList();
         CmsFile file;
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
+        
         try {
             conn = m_sqlManager.getConnection(projectId);
             stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_FILESBYTYPE");
@@ -1318,7 +1317,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             res = stmt.executeQuery();
             while (res.next()) {
                 file = createFile(res, projectId, true);
-                files.addElement(file);
+                files.add(file);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1328,6 +1327,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
         return files;
     }
 
@@ -1623,8 +1623,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String)
      */
-    public Vector readResources(int projectId, String propertyDefName) throws CmsException {
-        Vector resources = new Vector();
+    public List readResources(int projectId, String propertyDefName) throws CmsException {
+        List resources = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1639,47 +1639,12 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
             while (res.next()) {
                 CmsResource resource = createResource(res, projectId);
-                resources.addElement(resource);
+                resources.add(resource);
             }            
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } catch (Exception exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, res);
-        }
-
-        return resources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResources(int, java.lang.String, java.lang.String, int)
-     */
-    public Vector readResources(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
-        Vector resources = new Vector();
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-        CmsResource resource = null;
-
-        try {
-            conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_WITH_PROPERTY");
-            stmt.setString(1, propertyDefinition);
-            stmt.setInt(2, resourceType);
-            stmt.setString(3, propertyValue);
-            stmt.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
-            stmt.setInt(5, CmsProperty.C_RESOURCE_RECORD_MAPPING);
-            res = stmt.executeQuery();
-
-            while (res.next()) {
-                resource = createResource(res, projectId);
-                resources.addElement(resource);
-            }            
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } catch (Exception exc) {
-            throw new CmsException("getResourcesWithProperty" + exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
@@ -1800,9 +1765,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             } else {
                 String errorResNames = "";
                 
-                Iterator i = folders.iterator();
-                while (i.hasNext()) {
-                    CmsResource errorRes = (CmsResource)i.next();
+                for (int i = 0, n = folders.size(); i < n; i++) {
+                    CmsResource errorRes = (CmsResource)folders.get(i);
                     errorResNames += "[" + errorRes.getName() + "]";
                 }
                 
@@ -1811,9 +1775,8 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } else {
             String errorResNames = "";
             
-            Iterator i = files.iterator();
-            while (i.hasNext()) {
-                CmsResource errorRes = (CmsResource)i.next();
+            for (int i = 0, n = files.size(); i < n; i++) {
+                CmsResource errorRes = (CmsResource)files.get(i);
                 errorResNames += "[" + errorRes.getName() + "]";
             }
             

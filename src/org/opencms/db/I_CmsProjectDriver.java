@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/04/02 16:59:28 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.48 $ $Date: 2004/04/02 16:59:28 $
+ * @version $Revision: 1.49 $ $Date: 2004/06/18 14:17:54 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -309,10 +309,10 @@ public interface I_CmsProjectDriver {
      * Reads log entries for a project.<p>
      *
      * @param projectid the ID of the current project
-     * @return a Vector of new TaskLog objects
+     * @return a list of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
-    Vector readProjectLogs(int projectid) throws CmsException;
+    List readProjectLogs(int projectid) throws CmsException;
 
     /**
      * Reads the project resource path for a given project and resource path,
@@ -336,13 +336,13 @@ public interface I_CmsProjectDriver {
     List readProjectResources(CmsProject project) throws CmsException;
 
     /**
-     * Returns all projects, with the overgiven state.<p>
+     * Returns all projects with the given state.<p>
      *
-     * @param state The state of the projects to read
-     * @return a Vector of projects
+     * @param state the requested project state
+     * @return a list of Cms projects
      * @throws CmsException if something goes wrong
      */
-    Vector readProjects(int state) throws CmsException;
+    List readProjects(int state) throws CmsException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -363,13 +363,13 @@ public interface I_CmsProjectDriver {
     Vector readProjectsForManagerGroup(CmsGroup group) throws CmsException;
 
     /**
-     * Returns all projects, which are owned by a user.<p>
+     * Reads all projects which are owned by a specified user.<p>
      *
-     * @param user The requesting user
-     * @return a Vector of projects
+     * @param user the user
+     * @return a alist of Cms projects
      * @throws CmsException if something goes wrong
      */
-    Vector readProjectsForUser(CmsUser user) throws CmsException;
+    List readProjectsForUser(CmsUser user) throws CmsException;
 
     /**
      * Reads all resource from the Cms, that are in one project.<BR/>

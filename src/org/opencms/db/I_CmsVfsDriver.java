@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,14 +46,13 @@ import org.opencms.util.CmsUUID;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.79 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.80 $ $Date: 2004/06/18 14:17:54 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -302,14 +301,16 @@ public interface I_CmsVfsDriver {
     List readFiles(int projectId) throws CmsException;
 
     /**
-     * Reads all files of a given resource type that are either new, changed or deleted.<p>
+     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
+     * 
+     * The files in the result list include the file content.<p>
      * 
      * @param projectId a project id for reading online or offline resources
      * @param resourcetype the resourcetype of the files
-     * @return a vector of files
+     * @return a list of Cms files
      * @throws CmsException if operation was not succesful
      */
-    Vector readFiles(int projectId, int resourcetype) throws CmsException;
+    List readFiles(int projectId, int resourcetype) throws CmsException;
 
     /**
      * Reads a folder specified by it's structure ID.<p>
@@ -424,25 +425,15 @@ public interface I_CmsVfsDriver {
 
     /**
      * Reads all resources that have set the specified property.<p>
+     * 
+     * A property definition is the "key name" of a property.<p>
      *
-     * @param projectId the id of the project to test
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return Vector with all resources
-     * @throws CmsException if operation was not succesful
+     * @param projectId the id of the project
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
      */
-    Vector readResources(int projectId, String propertyDefinition) throws CmsException;
-
-    /**
-     * Reads all resources oa a given resource type that have set the given property to the specified value.<p>
-     *
-     * @param projectId the id of the project to test
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @param propertyValue the value of the property for the resource
-     * @param resourceType the value of the resourcetype
-     * @return vector with all resources
-     * @throws CmsException if operation was not succesful
-     */
-    Vector readResources(int projectId, String propertyDefinition, String propertyValue, int resourceType) throws CmsException;
+    List readResources(int projectId, String propertyDefinition) throws CmsException;
 
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>

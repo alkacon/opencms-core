@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/14 12:19:33 $
- * Version: $Revision: 1.381 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.382 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.381 $ $Date: 2004/06/14 12:19:33 $
+ * @version $Revision: 1.382 $ $Date: 2004/06/18 14:17:54 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2926,43 +2926,49 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns all projects, which are owned by the user or which are accessible for the group of the user.<p>
+     * Returns all projects which are owned by the current user or which are 
+     * accessible for the group of the user.<p>
      *
      * All users are granted.
      *
      * @param context the current request context
-     * @return a vector of projects
+     * @return a list of Cms projects
      * @throws CmsException if something goes wrong
      */
-    public Vector getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
+    public List getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
+        CmsProject project = null;
+        
         // get all groups of the user
         Vector groups = getGroupsOfUser(context, context.currentUser().getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_projectDriver.readProjectsForUser(context.currentUser());
+        List projects = m_projectDriver.readProjectsForUser(context.currentUser());
 
         // get all projects, that the user can access with his groups.
-        for (int i = 0; i < groups.size(); i++) {
-            Vector projectsByGroup;
+        for (int i = 0, n = groups.size(); i < n; i++) {
+            List projectsByGroup = new ArrayList();
+            
             // is this the admin-group?
             if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
-                projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
+                projectsByGroup.addAll(m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.readProjectsForGroup((CmsGroup)groups.elementAt(i));
+                projectsByGroup.addAll(m_projectDriver.readProjectsForGroup((CmsGroup)groups.elementAt(i)));
             }
 
             // merge the projects to the vector
-            for (int j = 0; j < projectsByGroup.size(); j++) {
+            for (int j = 0, m = projectsByGroup.size(); j < m; j++) {
+                project = (CmsProject)projectsByGroup.get(j);
                 // add only projects, which are new
-                if (!projects.contains(projectsByGroup.elementAt(j))) {
-                    projects.addElement(projectsByGroup.elementAt(j));
+                if (!projects.contains(project)) {
+                    projects.add(project);
                 }
             }
         }
+        
         // return the vector of projects
-        return (projects);
+        return projects;
     }
 
     /**
@@ -2978,45 +2984,50 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns all projects, which are owned by the user or which are manageable for the group of the user.<p>
+     * Returns all projects which are owned by the user or which are manageable for the group of the user.<p>
      *
      * All users are granted.
      *
      * @param context the current request context
-     * @return a Vector of projects
+     * @return a list of Cms projects
      * @throws CmsException if operation was not succesful
      */
-    public Vector getAllManageableProjects(CmsRequestContext context) throws CmsException {
+    public List getAllManageableProjects(CmsRequestContext context) throws CmsException {
+        CmsProject project = null;
+        
         // get all groups of the user
         Vector groups = getGroupsOfUser(context, context.currentUser().getName());
 
         // get all projects which are owned by the user.
-        Vector projects = m_projectDriver.readProjectsForUser(context.currentUser());
+        List projects = m_projectDriver.readProjectsForUser(context.currentUser());
 
         // get all projects, that the user can manage with his groups.
-        for (int i = 0; i < groups.size(); i++) {
+        for (int i = 0, n = groups.size(); i < n; i++) {
             // get all projects, which can be managed by the current group
-            Vector projectsByGroup;
+            List projectsByGroup = new ArrayList();
+            
             // is this the admin-group?
             if (((CmsGroup)groups.elementAt(i)).getName().equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
                 // yes - all unlocked projects are accessible for him
-                projectsByGroup = m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED);
+                projectsByGroup.addAll(m_projectDriver.readProjects(I_CmsConstants.C_PROJECT_STATE_UNLOCKED));
             } else {
                 // no - get all projects, which can be accessed by the current group
-                projectsByGroup = m_projectDriver.readProjectsForManagerGroup((CmsGroup)groups.elementAt(i));
+                projectsByGroup.addAll(m_projectDriver.readProjectsForManagerGroup((CmsGroup)groups.elementAt(i)));
             }
 
             // merge the projects to the vector
-            for (int j = 0; j < projectsByGroup.size(); j++) {
+            for (int j = 0, m = projectsByGroup.size(); j < m; j++) {
                 // add only projects, which are new
-                if (!projects.contains(projectsByGroup.elementAt(j))) {
-                    projects.addElement(projectsByGroup.elementAt(j));
+                project = (CmsProject)projectsByGroup.get(j);
+                if (!projects.contains(project)) {
+                    projects.add(project);
                 }
             }
         }
+        
         // remove the online-project, it is not manageable!
-        projects.removeElement(onlineProject());
-        // return the vector of projects
+        projects.remove(onlineProject());
+        
         return projects;
     }
 
@@ -3473,35 +3484,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Returns a vector with all resources of the given type that have set the given property to the given value.<p>
-     *
-     * All users are granted.
+     * Reads all resources that have set the specified property.<p>
+     * 
+     * A property definition is the "key name" of a property.<p>
      *
      * @param context the current request context
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return Vector with all resources
-     * @throws CmsException if operation was not succesful
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
      */
-    public Vector getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
+    public List getResourcesWithPropertyDefinition(CmsRequestContext context, String propertyDefinition) throws CmsException {
         List result = setFullResourceNames(context, m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition));
-        return new Vector(result);
-    }
-
-    /**
-     * Returns a vector with all resources of the given type that have set the given property to the given value.<p>
-     *
-     * All users are granted.
-     *
-     * @param context the current request context
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @param propertyValue the value of the property for the resource
-     * @param resourceType the resource type of the resource
-     * @return vector with all resources.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful.
-     */
-    public Vector getResourcesWithPropertyDefintion(CmsRequestContext context, String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
-        return m_vfsDriver.readResources(context.currentProject().getId(), propertyDefinition, propertyValue, resourceType);
+        return result;
     }
 
     /**
@@ -5010,17 +5004,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Select all projectResources from an given project.<p>
+     * Returns a list with all project resources for a given project.<p>
      *
      * @param context the current request context
-     * @param projectId the project in which the resource is used
-     * @return vector of all resources in the project
+     * @param projectId the ID of the project
+     * @return a list of all project resources
      * @throws CmsException if operation was not succesful
      */
-    public Vector readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
+    public List readAllProjectResources(CmsRequestContext context, int projectId) throws CmsException {
         CmsProject project = m_projectDriver.readProject(projectId);
         List result = setFullResourceNames(context, m_projectDriver.readProjectResources(project));
-        return new Vector(result);
+        return result;
     }
 
     /**
@@ -5408,32 +5402,35 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // access to all subfolders was granted - return the file.
         return cmsFile;
     }
-
+    
     /**
-     * Reads all files from the Cms, that are of the given type.<p>
-     *
+     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
+     * 
+     * The files in the result list include the file content.<p>
+     * 
      * @param context the context (user/project) of this request
-     * @param projectId A project id for reading online or offline resources
-     * @param resourcetype the type of the files
-     * @return a Vector of files
-     * @throws CmsException if operation was not succesful
-     */
-    public Vector readFilesByType(CmsRequestContext context, int projectId, int resourcetype) throws CmsException {
-        Vector resources = new Vector();
-        resources = m_vfsDriver.readFiles(projectId, resourcetype);
-        Vector retValue = new Vector(resources.size());
+     * @param projectId a project id for reading online or offline resources
+     * @param resourcetype the resourcetype of the files
+     * @return a list of Cms files
+     * @throws CmsException if operation was not successful
+     */    
+    public List readFilesByType(CmsRequestContext context, int projectId, int resourcetype) throws CmsException {
+
+        List resources = m_vfsDriver.readFiles(projectId, resourcetype);
+        List result = new ArrayList(resources.size());
 
         // check if the user has view access 
-        Enumeration e = resources.elements();
-        while (e.hasMoreElements()) {
-            CmsFile res = (CmsFile)e.nextElement();
+        for (int i = 0, n = resources.size(); i < n; i++) {
+            CmsFile res = (CmsFile)resources.get(i);
+            
             if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, CmsResourceFilter.ALL)) {
                 res.setFullResourceName(readPath(context, res, CmsResourceFilter.ALL));
-                retValue.addElement(res);
                 updateContextDates(context, res);
+                result.add(res);
             }
         }
-        return retValue;
+
+        return result;
     }
 
     /**
@@ -6070,10 +6067,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * Reads log entries for a project.<p>
      *
      * @param projectId the id of the projec for tasklog to read
-     * @return a Vector of new TaskLog objects
+     * @return a list of new TaskLog objects
      * @throws CmsException if something goes wrong.
      */
-    public Vector readProjectLogs(int projectId) throws CmsException {
+    public List readProjectLogs(int projectId) throws CmsException {
         return m_projectDriver.readProjectLogs(projectId);
     }
 

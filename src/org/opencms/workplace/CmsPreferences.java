@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1.12
  */
@@ -587,7 +587,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectProject(String htmlAttributes) {
         try {
-            Vector allProjects = getCms().getAllAccessibleProjects();
+            List allProjects = getCms().getAllAccessibleProjects();
             List options = new ArrayList(allProjects.size());
             List values = new ArrayList(allProjects.size());
             int checkedIndex = 0;
@@ -595,7 +595,7 @@ public class CmsPreferences extends CmsTabDialog {
          
             startProject = getParamTabWpProject();
   
-            for (int i=0; i<allProjects.size(); i++) {
+            for (int i = 0, n = allProjects.size(); i < n; i++) {
                 CmsProject project = (CmsProject)allProjects.get(i);
                 options.add(project.getName());
                 //values.add("" + project.getId());

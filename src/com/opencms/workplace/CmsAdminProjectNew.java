@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/03/12 16:00:48 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2004/06/18 14:17:54 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,9 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsXmlTemplateFile;
 
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -54,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.94 $ $Date: 2004/03/12 16:00:48 $
+ * @version $Revision: 1.95 $ $Date: 2004/06/18 14:17:54 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -363,8 +365,8 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 } catch(CmsException e) {
                     cms.getRequestContext().restoreSiteRoot();
                     // if there are no projectresources in the project delete the project
-                    Vector projectResources = cms.readAllProjectResources(project.getId());
-                    if((projectResources == null) || (projectResources.size() == 0)){
+                    List projectResources = cms.readAllProjectResources(project.getId());
+                    if(projectResources == null || projectResources == Collections.EMPTY_LIST || projectResources.size() == 0){
                         cms.deleteProject(project.getId());
                         reqCont.setCurrentProject(cms.readProject(C_PROJECT_ONLINE_ID));
                     }
@@ -558,7 +560,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             ret = ret.substring(0,13);
         }
         try{
-            Vector allProjects = cms.getAllAccessibleProjects();
+            Vector allProjects = new Vector(cms.getAllAccessibleProjects());
             Vector theNames = new Vector();
             // count all projects starting with the same name
             int count = 0;

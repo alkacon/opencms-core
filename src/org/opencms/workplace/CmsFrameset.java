@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/17 13:33:49 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -60,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 5.1
  */
@@ -198,12 +199,12 @@ public class CmsFrameset extends CmsWorkplace {
      */
     public String getProjectSelect(String htmlAttributes, String htmlWidth) {
         // get all project information
-        Vector allProjects;
+        List allProjects;
         try {
             allProjects = getCms().getAllAccessibleProjects();
         } catch (CmsException e) {
             // should not happen
-            allProjects = new Vector();
+            allProjects = Collections.EMPTY_LIST;
         }
 
         List options = new ArrayList();
@@ -212,8 +213,7 @@ public class CmsFrameset extends CmsWorkplace {
         int maxNameLength = 0;
         
         // now loop through all projects and fill the result vectors
-        int numProjects = allProjects.size();
-        for (int i = 0; i < numProjects; i++) {
+        for (int i = 0, n = allProjects.size(); i < n; i++) {
             CmsProject loopProject = (CmsProject)allProjects.get(i);
             String loopProjectName = loopProject.getName();
             String loopProjectId = Integer.toString(loopProject.getId());

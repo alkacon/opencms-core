@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2004/06/18 14:17:54 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class CmsObject {
 
@@ -1496,12 +1496,12 @@ public class CmsObject {
     /**
      * Returns all projects which the current user can access.<p>
      *
-     * @return a Vector of objects of type <code>CmsProject</code>.
+     * @return a list of objects of type <code>CmsProject</code>.
      *
      * @throws CmsException if operation was not successful.
      */
-    public Vector getAllAccessibleProjects() throws CmsException {
-        return (m_driverManager.getAllAccessibleProjects(m_context));
+    public List getAllAccessibleProjects() throws CmsException {
+        return m_driverManager.getAllAccessibleProjects(m_context);
     }
 
     /**
@@ -1519,12 +1519,12 @@ public class CmsObject {
      * Returns all projects which are owned by the current user or which are manageable
      * for the group of the user.<p>
      *
-     * @return a Vector of objects of type <code>CmsProject</code>.
+     * @return a list of objects of type <code>CmsProject</code>.
      *
      * @throws CmsException if operation was not successful.
      */
-    public Vector getAllManageableProjects() throws CmsException {
-        return (m_driverManager.getAllManageableProjects(m_context));
+    public List getAllManageableProjects() throws CmsException {
+        return m_driverManager.getAllManageableProjects(m_context);
     }
 
     /**
@@ -1789,16 +1789,15 @@ public class CmsObject {
     }
 
     /**
-      * Returns a Vector with all resources of the given type that have set the given property.<p>
-      *
-      * <B>Security:</B>
-      * All users are granted.<p>
-      *
-      * @param propertyDefinition the name of the propertydefinition to check.
-      * @return Vector with all resources.
-      * @throws CmsException if operation was not succesful.
-      */
-    public Vector getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
+     * Reads all resources that have set the specified property.<p>
+     * 
+     * A property definition is the "key name" of a property.<p>
+     *
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
+     */
+    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
         return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
     }
 
@@ -1830,24 +1829,6 @@ public class CmsObject {
      */
     public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
         return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
-    }
-
-    /**
-      * Returns a Vector with all resources of the given type that have set the given property to the given value.<p>
-      *
-      * <B>Security:</B>
-      * All users are granted.<p>
-      *
-      * @param propertyDefinition the name of the propertydefinition to check.
-      * @param propertyValue the value of the property for the resource.
-      * @param resourceType The resource type of the resource
-      *
-      * @return Vector with all resources.
-      *
-      * @throws CmsException Throws CmsException if operation was not succesful.
-      */
-    public Vector getResourcesWithPropertyDefintion(String propertyDefinition, String propertyValue, int resourceType) throws CmsException {
-        return m_driverManager.getResourcesWithPropertyDefintion(m_context, propertyDefinition, propertyValue, resourceType);
     }
 
     /**
@@ -2480,13 +2461,13 @@ public class CmsObject {
     }
 
     /**
-     * Select all project resources from a given project.<p>
-     *
-     * @param projectId id of the project in which the resource is used
-     * @return vector of all resources belonging to the given project
+     * Returns a list with all project resources for a given project.<p>
+     * 
+     * @param projectId the ID of the project
+     * @return a list of all project resources
      * @throws CmsException if operation was not succesful
      */
-    public Vector readAllProjectResources(int projectId) throws CmsException {
+    public List readAllProjectResources(int projectId) throws CmsException {
         return m_driverManager.readAllProjectResources(m_context, projectId);
     }
 
@@ -2696,16 +2677,16 @@ public class CmsObject {
     }
 
     /**
-     * Reads all files from the Cms, that are of the given type.<BR/>
-     *
-     * @param projectId A project id for reading online or offline resources
-     * @param resourcetype The type of the files.
-     *
-     * @return A Vector of files.
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public Vector readFilesByType(int projectId, int resourcetype) throws CmsException {
+     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
+     * 
+     * The files in the result list include the file content.<p>
+     * 
+     * @param projectId a project id for reading online or offline resources
+     * @param resourcetype the resourcetype of the files
+     * @return a list of Cms files
+     * @throws CmsException if operation was not successful
+     */   
+    public List readFilesByType(int projectId, int resourcetype) throws CmsException {
         return m_driverManager.readFilesByType(m_context, projectId, resourcetype);
     }
 
@@ -2947,10 +2928,10 @@ public class CmsObject {
       * Reads log entries for a project.
       *
       * @param projectId the id of the project for which the tasklog will be read.
-      * @return a Vector of new TaskLog objects
+      * @return a list of new TaskLog objects
       * @throws CmsException if operation was not successful.
       */
-    public Vector readProjectLogs(int projectId) throws CmsException {
+    public List readProjectLogs(int projectId) throws CmsException {
         return m_driverManager.readProjectLogs(projectId);
     }
 

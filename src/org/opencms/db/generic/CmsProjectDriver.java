@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/14 12:22:28 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2004/06/18 14:17:53 $
+ * Version: $Revision: 1.170 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.169 $ $Date: 2004/06/14 12:22:28 $
+ * @version $Revision: 1.170 $ $Date: 2004/06/18 14:17:53 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1496,15 +1496,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * Reads log entries for a project.<p>
      *
      * @param projectid the project for tasklog to read
-     * @return a vector of new TaskLog objects
+     * @return a list of new TaskLog objects
      * @throws CmsException if something goes wrong
      */
-    public Vector readProjectLogs(int projectid) throws CmsException {
+    public List readProjectLogs(int projectid) throws CmsException {
         ResultSet res = null;
         Connection conn = null;
 
         CmsTaskLog tasklog = null;
-        Vector logs = new Vector();
+        List logs = new ArrayList();
         PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
@@ -1525,7 +1525,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 type = res.getInt(m_sqlManager.readQuery("C_LOG_TYPE"));
 
                 tasklog = new CmsTaskLog(id, comment, user, starttime, type);
-                logs.addElement(tasklog);
+                logs.add(tasklog);
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -1610,8 +1610,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @return a Vector of projects
      * @throws CmsException if something goes wrong
      */
-    public Vector readProjects(int state) throws CmsException {
-        Vector projects = new Vector();
+    public List readProjects(int state) throws CmsException {
+        List projects = new ArrayList();
         ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -1625,7 +1625,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
 
             while (res.next()) { 
-                projects.addElement(
+                projects.add(
                     new CmsProject(
                         res.getInt(m_sqlManager.readQuery("C_PROJECTS_PROJECT_ID")),
                         res.getString(m_sqlManager.readQuery("C_PROJECTS_PROJECT_NAME")),
@@ -1643,6 +1643,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         } finally {
             m_sqlManager.closeAll(conn, stmt, res);
         }
+        
         return (projects);
     }
 
@@ -1718,7 +1719,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      * @return a Vector of projects
      * @throws CmsException if something goes wrong
      */
-    public Vector readProjectsForUser(CmsUser user) throws CmsException {
+    public List readProjectsForUser(CmsUser user) throws CmsException {
         Vector projects = new Vector();
         ResultSet res = null;
         PreparedStatement stmt = null;
