@@ -8,6 +8,11 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.21 Bela Tegeuse - 28 June 2001
+* General Bugfixing
+* When creating or changing a resource in a folder all subfolders only need read access
+  (like UNIX)
+
 OpenCms 4.3.20 Bela Tegeuse - 25 June 2001
 ! Advanced Projectmechanism
   Now the resources for online, offline and backup are stored in several tables. 
