@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/30 07:32:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/30 13:46:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0
  */
@@ -397,6 +397,7 @@ public class CmsSecure extends CmsDialog {
                     newProp.setResourceValue(propertyValue);
                 }
             }
+            newProp.setAutoCreatePropertyDefinition(true);
             getCms().writePropertyObject(getParamResource(), newProp);
 
         } catch (CmsException e) {
