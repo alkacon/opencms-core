@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2002/09/03 11:57:00 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/10/30 10:09:44 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,17 +31,17 @@ package com.opencms.core;
 import java.io.*;
 
 /**
- * This interface defines a CmsResponse.
+ * This interface defines an OpenCms response, a generic response object that 
+ * is used by OpenCms and provides methods to send processed data back to 
+ * the requesting user.<p>
  * 
- * The CmsResponse is a genereic response object that is used in the CmsObject provinding
- * methods to send data to the response.
- * 
- * Implementations of this interface use an existing responset (e.g. HttpServletResponse) to
- * initialize a CmsResponset. 
+ * Implementations of this interface use an existing response 
+ * (e.g. HttpServletResponse) to initialize an I_CmsResponse. 
  * 
  * @author Michael Emmerich
  * @author Alexander Kandzior
- * @version $Revision: 1.14 $ $Date: 2002/09/03 11:57:00 $  
+ * 
+ * @version $Revision: 1.15 $ $Date: 2002/10/30 10:09:44 $  
  */
 public interface I_CmsResponse {
     
@@ -131,6 +131,14 @@ public interface I_CmsResponse {
      */
     public void setContentType(String type);
     
+    /**
+     * Returns the content type of the response which has previously
+     * been set using {@link #setContentType}.
+     * 
+     * @return the content type of the response.
+     */
+    public String getContentType();
+        
     /**
      * Sets a header-field in the response.
      * 

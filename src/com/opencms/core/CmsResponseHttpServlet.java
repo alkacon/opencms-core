@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2002/10/21 15:25:17 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2002/10/30 10:09:27 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,37 +34,28 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 
 /**
- * Implementation of the CmsResponse interface.
- *
- * This implementation uses a HttpServletResponse as original response to create a
- * CmsResponseHttpServlet.
+ * Implementation of the I_CmsResponse interface which wraps a HttpServletResponse
+ * and provides OpenCms with a facility to handle redirects.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2002/10/21 15:25:17 $
+ * 
+ * @version $Revision: 1.25 $ $Date: 2002/10/30 10:09:27 $
  */
-public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_CmsLogChannels {
+public class CmsResponseHttpServlet implements I_CmsResponse {
 
     private static String C_LAST_MODIFIED = "Last-Modified";
 
-    /**
-     * The original response.
-     */
+    /** The original wrapped response. */
     private HttpServletResponse m_res;
 
-    /**
-     * The original request.
-     */
+    /** The original wrapped request. */
     private HttpServletRequest m_req;
 
-    /**
-     * The clusterurl.
-     */
+    /** The clusterurl. */
     private String m_clusterurl = null;
 
-    /**
-     * The type of this CmsResponset.
-     */
-    private int m_type = C_RESPONSE_HTTP;
+    /** The type of this CmsResponset. */
+    private int m_type = I_CmsConstants.C_RESPONSE_HTTP;
 
     /** Remember, if a redirect was sent */
     private boolean m_redir = false;
@@ -72,10 +63,32 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
     /** Buffer for the output stream */
     private OutputStream m_orgOutputStream = null;
 
+    /** Flag to indicate what JSDK is available */
     private static boolean jsdk2 = checkJsdk();
 
+    /** String to save the content type */
+    private String m_contentType = null;
+    
+    /** Debug flag */
+    private static final boolean DEBUG = false;
+
+    /**
+     * Constructor, creates a new CmsResponseHttpServlet object.<p>
+     *
+     * @param req The original HttpServletRequest used to create this CmsRequest.
+     * @param res The original HttpServletResponse used to create this CmsResponse.
+     * @param clusterurl The clusterurl.
+     */
+    CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res, String clusterurl) {
+        m_res = res;
+        m_req = req;
+        m_clusterurl = clusterurl;
+    }
+    
     /**
      * Check the JSDK version available at runtime.
+     * 
+     * @return <code>true</code> if JSDK 2, <code>false</code> if JSDK 1
      */
     public static boolean checkJsdk() {
         // Look for the method "addHeader". This method only is included in JSDK 2
@@ -90,32 +103,16 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
         // If m != null, the method could be found.
         boolean result = (m != null);
 
-        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+        if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
             if(result) {
-                // We have JSKD 2
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsResponseHttpServlet] JSDK 2 detected. ");
+                // We have JSDK 2
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResponseHttpServlet] JSDK 2 detected. ");
             } else {
-                // We have JSKD 1
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsResponseHttpServlet] JSDK 1 detected. ");
+                // We have JSDK 1
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResponseHttpServlet] JSDK 1 detected. ");
             }
         }
         return result;
-    }
-
-
-    /**
-     * Constructor, creates a new CmsResponseHttpServlet object.
-     * It is nescessary to give the HttpServletRequest as well, because it is needed
-     * to transform the CmsRedirect to a real Http redirect.
-     *
-     * @param req The original HttpServletRequest used to create this CmsRequest.
-     * @param res The original HttpServletResponse used to create this CmsResponse.
-     * @param clusterurl The clusterurl.
-     */
-    CmsResponseHttpServlet(HttpServletRequest req, HttpServletResponse res, String clusterurl) {
-        m_res = res;
-        m_req = req;
-        m_clusterurl = clusterurl;
     }
 
     /**
@@ -128,10 +125,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
     }
 
     /**
-     * Returns the type of the response that was used to create the CmsResponse.
-     * The returned int must be one of the constants defined above in this interface.
+     * Returns the type of the response that was used to create the CmsResponse,
+     * which will be a C_RESPONSE_HTTP value for this wrapper implementation.
      *
-     * @return The type of the CmsResponse.
+     * @return The type of the CmsResponse which is C_RESPONSE_HTTP
      */
     public int getOriginalResponseType() {
         return m_type;
@@ -141,7 +138,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * Returns an OutputStream for writing the response data.
      *
      * @return OutputStream for writing data.
-     * @exception Throws IOException if an error occurs.
+     * @throws IOException if an error occurs
      */
     public OutputStream getOutputStream() throws IOException {
         if(m_orgOutputStream == null) {
@@ -151,7 +148,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
     }
 
     /**
-     * Check if the output stream was requested previously.
+     * Check if the output stream was written previously.
+     * 
      * @return <code>true</code> if getOutputStream() was called, <code>false</code> otherwise.
      */
     public boolean isOutputWritten() {
@@ -161,6 +159,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
     /**
      * Check if the current request was redirected. In this case, the
      * servlet must not write any bytes to the output stream.
+     * 
      * @return <code>true</code> if the request is redirected, <code>false</code> otherwise.
      */
 
@@ -175,9 +174,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      *
      * @param location The location the response is send to.
      * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
+     * @throws IOException if an error occurs
      */
     public void sendCmsRedirect(String location) throws IOException {
+        if (DEBUG) System.err.println("CmsResponse.sendCmsRedirect(" + location + ")");          
         String hostName;
         if((m_clusterurl == null) || (m_clusterurl.length() < 1)) {                      
             hostName = m_req.getScheme() + "://" + m_req.getServerName() + ":" + m_req.getServerPort();
@@ -196,8 +196,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
         try {
             m_res.sendRedirect(hostName + contextPath + servlet + location);
         } catch(IOException exc) {
-            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(C_OPENCMS_INFO, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
+            if(I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INFO)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsResponseHttpServlet] Couldn't redirect to: " + hostName + contextPath + servlet + location);
             }
         }
     }
@@ -207,9 +207,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * by a numeric value.
      *
      * @param code The error code to be set.
-     * @exception Throws IOException if an error occurs.
+     * @throws IOException if an error occurs
      */
     public void sendError(int code) throws IOException {
+        if (DEBUG) System.err.println("CmsResponse.sendError(" + code + ")");           
         m_res.sendError(code);
     }
 
@@ -219,9 +220,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      *
      * @param code The error code to be set.
      * @param msg Additional error message.
-     * @exception Throws IOException if an error occurs.
+     * @throws IOException if an error occurs
      */
     public void sendError(int code, String msg) throws IOException {
+        if (DEBUG) System.err.println("CmsResponse.sendError(" + code + "," + msg + ")");              
         m_res.sendError(code, msg);
     }
 
@@ -230,9 +232,10 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      *  If <code>location</code> has the same hostname as the host of this servlet use the cluster url.
      *
      * @param location a full url, eg. http://servername/servlets/opencms/index.html
-     * @exception Throws IOException if an error occurs.
+     * @throws IOException if an error occurs
      */
     public void sendRedirect(String location) throws IOException {
+        if (DEBUG) System.err.println("CmsResponse.sendRedirect(" + location + ")");        
         String shortLocation = location;
         String hostName = m_req.getServerName() + ":" + m_req.getServerPort();
         // remove 'http', '://', servername and '/servlets/opencms' and send CmsRedirect
@@ -268,6 +271,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * @param len Number of bytes to be returned by the response.
      */
     public void setContentLength(int len) {
+        if (DEBUG) System.err.println("CmsResponse.setContentLength(" + len + ")");
         m_res.setContentLength(len);
     }
 
@@ -276,9 +280,22 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      *
      * @param type The contnent type of the response.
      */
-    public void setContentType(String type) {
+    public void setContentType(String type) {        
+        if (DEBUG) System.err.println("CmsResponse.setContentType(" + type + ")");        
+        m_contentType = type;
         m_res.setContentType(type);
     }
+    
+    /**
+     * Returns the content type of the response which has previously
+     * been set using {@link #setContentType}.
+     * 
+     * @return the content type of the response.
+     */
+    public String getContentType() {
+        if (DEBUG) System.err.println("CmsResponse.getContentType()");        
+        return m_contentType;
+    }    
 
     /**
      * Sets a header-field in the response.
@@ -287,9 +304,8 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * @param value The value for the header.
      */
     public void setHeader(String key, String value) {
-        //if(!m_res.containsHeader(key)) {
-            m_res.setHeader(key, value);
-        //}
+        if (DEBUG) System.err.println("CmsResponse.setHeader(" + key + "," + value + ")");                
+        m_res.setHeader(key, value);
     }
 
     /**
@@ -299,13 +315,12 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * @param value The value for the header.
      */
     public void addHeader(String key, String value) {
-        //if(!m_res.containsHeader(key)) {
+        if (DEBUG) System.err.println("CmsResponse.addHeader(" + key + "," + value + ")");                
         if(jsdk2) {
             m_res.addHeader(key, value);
         } else {
             m_res.setHeader(key, value);
         }
-        //}
     }
 
     /**
@@ -314,6 +329,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * @param time The last-modified time.
      */
     public void setLastModified(long time) {
+        if (DEBUG) System.err.println("CmsResponse.setLastModified(" + time + ")");                        
         m_res.setDateHeader(C_LAST_MODIFIED, time);
     }
 
@@ -323,6 +339,7 @@ public class CmsResponseHttpServlet implements I_CmsConstants, I_CmsResponse, I_
      * @return true, if the header was set before else false.
      */
     public boolean containsHeader(String key) {
+        if (DEBUG) System.err.println("CmsResponse.containsHeader(" + key + ")");          
         return m_res.containsHeader(key);
     }
 }

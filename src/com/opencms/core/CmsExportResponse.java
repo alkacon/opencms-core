@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsExportResponse.java,v $
-* Date   : $Date: 2001/11/15 15:56:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/10/30 10:07:28 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,12 @@ package com.opencms.core;
 
 import java.io.*;
 
-
+/**
+ * Implementation of the I_CmsResponse interface which is used as response 
+ * buffer for pages during a static export.<p>
+ * 
+ * @version $Revision: 1.2 $ $Date: 2002/10/30 10:07:28 $
+ */
 public class CmsExportResponse implements I_CmsResponse {
 
     /**
@@ -93,6 +98,10 @@ public class CmsExportResponse implements I_CmsResponse {
 
     public void setContentType(String type) {
     }
+    
+    public String getContentType() {
+        return null;
+    }    
 
     public void setHeader(String key, String value) {
     }
