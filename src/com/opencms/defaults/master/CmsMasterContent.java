@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/02/14 14:32:09 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/04/15 12:07:16 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.15 $
- * $Date: 2002/02/14 14:32:09 $
+ * $Revision: 1.16 $
+ * $Date: 2002/04/15 12:07:16 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -385,7 +385,7 @@ public abstract class CmsMasterContent
      * Gets the owner of this contentdefinition.
      */
     public int getOwner() {
-        return m_dataSet.m_userId;;
+        return m_dataSet.m_userId;
     }
 
     /**
