@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/29 09:34:14 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/07/29 13:00:59 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/07/29 09:34:14 $
+ * @version $Revision: 1.22 $ $Date: 2003/07/29 13:00:59 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -120,7 +120,8 @@ public interface I_CmsVfsDriver {
     CmsResource importResource(CmsProject project, CmsUUID parentId, CmsResource newResource, byte[] filecontent, CmsUUID userId, boolean isFolder) throws CmsException;
     void deleteAllProjectResources(int projectId) throws CmsException;
     void deleteAllProperties(int projectId, CmsResource resource) throws CmsException;
-    void deleteAllProperties(int projectId, CmsUUID resourceId) throws CmsException;
+ 
+    
     
     /**
      * Tags a resource as deleted without removing it physically in the database.<p>

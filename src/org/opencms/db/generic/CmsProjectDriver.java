@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/28 16:29:42 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/07/29 13:00:59 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.33 $ $Date: 2003/07/28 16:29:42 $
+ * @version $Revision: 1.34 $ $Date: 2003/07/29 13:00:59 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1239,6 +1239,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     // copy properties
                     Map props = (Map) new HashMap();
                     try {
+                        m_driverManager.readPath(context,newFolder,true);
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFolder, newFolder.getType());
                     } catch (CmsException exc) {
@@ -1294,6 +1295,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     // copy properties
                     Map props = (Map) new HashMap();
                     try {
+                        m_driverManager.readPath(context,onlineFolder,true);
                         m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFolder);
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFolder, currentFolder.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFolder, currentFolder.getType());
@@ -1369,7 +1371,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     }
                     
                     CmsFile currentOnlineFile = m_driverManager.readFileInProject(context, onlineProject.getId(), currentFile.getId(), false);
-                    
+                    m_driverManager.readPath(context,currentOnlineFile,true);
                     if (backupEnabled) {
                         Map props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
                         m_driverManager.getBackupDriver().writeBackupResource(context.currentUser(), context.currentProject(), currentFile, props, backupVersionId, publishDate);
@@ -1454,6 +1456,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     // copy properties
                     Map props = (Map) new HashMap();
                     try {
+                        m_driverManager.readPath(context,onlineFile,true);
                         m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), onlineFile);
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), onlineFile, currentFile.getType());
@@ -1525,6 +1528,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     // copy properties
                     Map props = new HashMap();
                     try {
+                        m_driverManager.readPath(context,newFile,true);
                         props = m_driverManager.getVfsDriver().readProperties(context.currentProject().getId(), currentFile, currentFile.getType());
                         m_driverManager.getVfsDriver().writeProperties(props, onlineProject.getId(), newFile, newFile.getType());
                     } catch (CmsException exc) {
@@ -1582,6 +1586,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
             CmsResource delOnlineFolder = m_driverManager.readFolder(context, currentFolder.getId(), true);
             try {
+                m_driverManager.readPath(context,delOnlineFolder,true);
                 m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), delOnlineFolder);
                 m_driverManager.getVfsDriver().deleteAllProperties(context.currentProject().getId(), currentFolder);
             } catch (CmsException exc) {

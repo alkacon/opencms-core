@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/29 11:28:52 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2003/07/29 13:00:59 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.94 $ $Date: 2003/07/29 11:28:52 $
+ * @version $Revision: 1.95 $ $Date: 2003/07/29 13:00:59 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1331,7 +1331,7 @@ public class CmsDriverManager extends Object {
 
         //clearResourceCache(newFileName, context.currentProject(), context.currentUser());
         clearResourceCache();
-
+        readPath(context,file,true);
         // write the metainfos
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), file, file.getType());
 
@@ -1391,7 +1391,7 @@ public class CmsDriverManager extends Object {
 
         //clearResourceCache(newFolderName, context.currentProject(), context.currentUser());
         clearResourceCache();
-
+        readPath(context,newFolder,true);
         // write metainfos for the folder
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newFolder, newFolder.getType());
 
@@ -1686,7 +1686,7 @@ public class CmsDriverManager extends Object {
             throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
         }
     }
-    
+
     public CmsResource createVfsLink(CmsRequestContext context, String linkName, String targetName, Map linkProperties) throws CmsException {
         CmsResource targetResource = null;
         CmsFile linkResource = null;
@@ -1701,7 +1701,7 @@ public class CmsDriverManager extends Object {
         targetResource = this.readFileHeader(context, targetName);
         // read the parent folder
         parentFolder = this.readFolder(context, parentFolderName, false);
-        
+
         // for the parernt folder is write access required
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -1734,8 +1734,9 @@ public class CmsDriverManager extends Object {
         // write the link
         linkResource = m_vfsDriver.createFile(context.currentProject(), linkResource, context.currentUser().getId(), parentFolder.getId(), resourceName);
         // write its properties
+        readPath(context,linkResource,true);
         m_vfsDriver.writeProperties(linkProperties, context.currentProject().getId(), linkResource, linkResource.getType());
-        
+
         // if the source
         clearResourceCache();
 
@@ -1872,24 +1873,24 @@ public class CmsDriverManager extends Object {
 
         // add the resource itself to the list of all resources that get deleted/removed
         resources.add(resource);
-                
+            
         // if selected, add all links pointing to this resource to the list of resources that get deleted/removed  
         if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_VFS_LINKS) {
             resources.addAll(getAllVfsSoftLinks(context, filename));    
-        }
-        
-        // ensure that each link pointing to the resource is unlocked or locked by the current user
-        i = resources.iterator();
-        while (i.hasNext()) {
-            currentResource = (CmsResource) i.next();
-            currentLock = getLock(context, currentResource);
-
-            if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
-                // the resource is locked by a user different from the current user
-                int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
-                throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
             }
-        }
+
+        // ensure that each link pointing to the resource is unlocked or locked by the current user
+            i = resources.iterator();
+            while (i.hasNext()) {
+                currentResource = (CmsResource) i.next();
+                currentLock = getLock(context, currentResource);
+
+                if (!currentLock.equals(CmsLock.getNullLock()) && !currentLock.getUserId().equals(context.currentUser().getId())) {
+                    // the resource is locked by a user different from the current user
+                    int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
+                    throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
+                }
+            }
 
         // delete/remove all collected resources
         i = resources.iterator();
@@ -1899,31 +1900,31 @@ public class CmsDriverManager extends Object {
 
             // try to delete/remove the resource only if the user has write access to the resource
             if (hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, false)) {
-           
-                try {
-                    // try to read the corresponding online resource to decide if the resource should be either removed or deleted
-                    readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
-                    existsOnline = true;
-                } catch (CmsException exc) {
-                    existsOnline = false;
-                }
-            
-                unlockResource(context, currentResource.getFullResourceName(), true);
 
-                if (!existsOnline) {
-                    // remove the properties                
-                    deleteAllProperties(context, currentResource.getFullResourceName());
-                    // remove the access control entries
-                    m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
-                    // the resource doesnt exist online => remove the file
-                    m_vfsDriver.removeFile(context.currentProject(), currentResource);                
-                } else {
-                    // delete the access control entries
-                    deleteAllAccessControlEntries(context, currentResource);
-                    // the resource exists online => mark the file as deleted
-                    m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
-                }
+            try {
+                // try to read the corresponding online resource to decide if the resource should be either removed or deleted
+                readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
+                existsOnline = true;
+            } catch (CmsException exc) {
+                existsOnline = false;
             }
+            
+            unlockResource(context, currentResource.getFullResourceName(), true);
+
+            if (!existsOnline) {
+                // remove the properties                
+                deleteAllProperties(context, currentResource.getFullResourceName());
+                // remove the access control entries
+                m_userDriver.removeAllAccessControlEntries(context.currentProject(), currentResource.getResourceAceId());
+                // the resource doesnt exist online => remove the file
+                m_vfsDriver.removeFile(context.currentProject(), currentResource);                
+            } else {
+                // delete the access control entries
+                deleteAllAccessControlEntries(context, currentResource);
+                // the resource exists online => mark the file as deleted
+                m_vfsDriver.deleteFile(context.currentProject(), currentResource);                
+            }
+        }
         }
 
         // flush all caches
@@ -2069,7 +2070,7 @@ public class CmsDriverManager extends Object {
                 String currentResourceName = readPath(context, currentFile, true);
                 if (currentFile.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
-                    m_vfsDriver.deleteAllProperties(projectId, currentFile.getId());
+                    m_vfsDriver.deleteAllProperties(projectId, currentFile);
                     // delete the file
                     m_vfsDriver.removeFile(context.currentProject(), currentFile);
                     // remove the access control entries
@@ -2102,7 +2103,7 @@ public class CmsDriverManager extends Object {
                 CmsLock lock = getLock(context, currentFolder);
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
-                    m_vfsDriver.deleteAllProperties(projectId, currentFolder.getId());
+                    m_vfsDriver.deleteAllProperties(projectId, currentFolder);
                     // add the folder to the vector of folders that has to be deleted
                     deletedFolders.addElement(currentFolder);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {                    
@@ -2159,7 +2160,7 @@ public class CmsDriverManager extends Object {
     public void deleteProperty(CmsRequestContext context, String resource, String property) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-
+        readPath(context,res,true);
         // check if the user has write access to the resource
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -2487,18 +2488,18 @@ public class CmsDriverManager extends Object {
      * @return an ArrayList with the resource names of the fetched VFS links
      * @throws CmsException
      */
-    public List getAllVfsLinks(CmsRequestContext context, String resourcename) throws CmsException {
+    public List getAllVfsLinks(CmsRequestContext context, String resourcename) throws CmsException {        
         if (resourcename == null || "".equals(resourcename)) {
             return (List) new ArrayList(0);
         }
-
+        
         CmsResource resource = readFileHeader(context, resourcename);
         List siblings = m_vfsDriver.getAllVfsLinks(context.currentProject(), resource);
 
         for (int i = 0; i < siblings.size(); i++) {
             readPath(context, (CmsResource) siblings.get(i), false);
-        }
-
+    }
+    
         return siblings;
     }
     
@@ -4079,7 +4080,7 @@ public class CmsDriverManager extends Object {
 
          //clearResourceCache(newResourceName, context.currentProject(), context.currentUser());
          clearResourceCache();
-
+         readPath(context,newResource,true);
          // write metainfos for the folder
          m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), newResource, newResource.getType(), true);
 
@@ -6128,6 +6129,7 @@ public class CmsDriverManager extends Object {
     public Map readProperties(CmsRequestContext context, String resource, String siteRoot, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
+        readPath(context,res,true);
     
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
@@ -6186,7 +6188,8 @@ public class CmsDriverManager extends Object {
     public String readProperty(CmsRequestContext context, String resource, String siteRoot, String property, boolean search) throws CmsException {
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-    
+        readPath(context,res,true);
+        
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
     
@@ -6803,6 +6806,7 @@ public class CmsDriverManager extends Object {
         m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResContent, newResType);
 
         // write the properties
+        readPath(context,resource,true);
         m_vfsDriver.writeProperties(newResProps, context.currentProject().getId(), resource, resource.getType());
         m_propertyCache.clear();
 
@@ -7272,7 +7276,8 @@ public class CmsDriverManager extends Object {
             CmsFolder offlineFolder = readFolder(context, resourceName);
             // read the resource from the online project
             CmsFolder onlineFolder = readFolderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, resourceName);
-
+            readPath(context,onlineFolder,true);
+            
             CmsFolder restoredFolder =
                 new CmsFolder(
                     offlineFolder.getId(),
@@ -7303,6 +7308,7 @@ public class CmsDriverManager extends Object {
             // write-access  was granted - write the folder without setting state = changed
             m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, context.currentUser().getId());
             // restore the properties in the offline project
+            readPath(context,restoredFolder,true);
             m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFolder);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFolder, onlineFolder.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFolder, restoredFolder.getType());
@@ -7312,6 +7318,7 @@ public class CmsDriverManager extends Object {
             // read the file from the online project
             CmsFile onlineFile = readFileInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, offlineFile.getId(), false);
             //(context, resourceName);
+            readPath(context,onlineFile,true);
 
             CmsFile restoredFile =
                 new CmsFile(
@@ -7346,6 +7353,7 @@ public class CmsDriverManager extends Object {
             // write-acces  was granted - write the file without setting state = changed
             m_vfsDriver.writeFile(context.currentProject(), restoredFile, C_NOTHING_CHANGED);
             // restore the properties in the offline project
+            readPath(context,restoredFile,true);
             m_vfsDriver.deleteAllProperties(context.currentProject().getId(), restoredFile);
             Map propertyInfos = m_vfsDriver.readProperties(onlineProject.getId(), onlineFile, onlineFile.getType());
             m_vfsDriver.writeProperties(propertyInfos, context.currentProject().getId(), restoredFile, restoredFile.getType());
@@ -7922,7 +7930,7 @@ public class CmsDriverManager extends Object {
 
         // check if the user has write access 
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
-
+        readPath(context,res,true);
         m_vfsDriver.writeProperties(propertyinfos, context.currentProject().getId(), res, res.getType());
         m_propertyCache.clear();
 
@@ -7958,7 +7966,7 @@ public class CmsDriverManager extends Object {
 
         // read the resource
         CmsResource res = readFileHeader(context, resource);
-
+        readPath(context,res,true);
         // check the security
         checkPermissions(context, res, I_CmsConstants.C_WRITE_ACCESS);
 
@@ -8033,7 +8041,7 @@ public class CmsDriverManager extends Object {
      */
     public void writeResource(CmsRequestContext context, String resourcename, Map properties, String username, String groupname, int accessFlags, int resourceType, byte[] filecontent) throws CmsException {
         CmsResource resource = readFileHeader(context, resourcename, true);
-
+        readPath(context,resource,true);
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 

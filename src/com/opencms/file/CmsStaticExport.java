@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
- * Date   : $Date: 2003/07/23 23:26:21 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/07/29 13:00:59 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.<p>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 public class CmsStaticExport implements I_CmsConstants {
 
@@ -629,9 +629,9 @@ public class CmsStaticExport implements I_CmsConstants {
                 m_rulesForHttpsEnabledResources = new Vector();
 
                 for (int i = 0; i < resWithProp.size(); i++) {
-                    CmsResource resource = (CmsResource)resWithProp.elementAt(i);
-                    String resName = m_cms.readAbsolutePath(resource);
-                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
+                    CmsResource resource = (CmsResource)resWithProp.elementAt(i);                    
+                    String resName = m_cms.readAbsolutePath(resource);              
+                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);                      
                     resName = m_cms.getRequestContext().addSiteRoot(resName);
 
                     if (propertyValue != null) {

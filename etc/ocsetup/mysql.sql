@@ -105,25 +105,28 @@ create table CMS_BACKUP_PROPERTYDEF      (PROPERTYDEF_ID int not null,
 
 create table CMS_OFFLINE_PROPERTIES     (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
-                                         STRUCTURE_ID VARCHAR(36) NOT NULL,
+                                         RESOURCE_ID VARCHAR(36) not null,
+                                         RESOURCE_NAME TEXT not null,
                                          PROPERTY_VALUE TEXT not null,
-                                         primary key(PROPERTY_ID), 
-                                         unique(PROPERTYDEF_ID, STRUCTURE_ID));
+                                         primary key(PROPERTY_ID));
+                                         
 
 create table CMS_ONLINE_PROPERTIES      (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
-                                         STRUCTURE_ID VARCHAR(36) NOT NULL,
+                                         RESOURCE_ID VARCHAR(36) not null,
+                                         RESOURCE_NAME TEXT not null,
                                          PROPERTY_VALUE TEXT not null,
-                                         primary key(PROPERTY_ID), 
-                                         unique(PROPERTYDEF_ID, STRUCTURE_ID));
+                                         primary key(PROPERTY_ID));
+                                        
                                          
 create table CMS_BACKUP_PROPERTIES      (PROPERTY_ID int not null,
                                          PROPERTYDEF_ID int not null,
-                                         STRUCTURE_ID VARCHAR(36) NOT NULL,
+                                         RESOURCE_ID VARCHAR(36) NOT NULL,
+                                         RESOURCE_NAME TEXT NOT NULL,
                                          PROPERTY_VALUE TEXT not null,
                                          VERSION_ID int,
-                                         primary key(PROPERTY_ID), 
-                                         unique(PROPERTYDEF_ID, STRUCTURE_ID));
+                                         primary key(PROPERTY_ID)); 
+                                     
                                          
 create table CMS_OFFLINE_RESOURCES      (RESOURCE_ID VARCHAR(36) NOT NULL,
                                          RESOURCE_TYPE int not null,
@@ -137,7 +140,7 @@ create table CMS_OFFLINE_RESOURCES      (RESOURCE_ID VARCHAR(36) NOT NULL,
 										 USER_LOCK VARCHAR(36) NOT NULL,
 										 PROJECT_ID SMALLINT UNSIGNED NOT NULL,
                                          RESOURCE_STATE	SMALLINT UNSIGNED NOT NULL,
-                                         RESOURCE_SIZE int not null,
+                                         RESOURCE_SIZE int not null,                                         
                                          LINK_COUNT int not null,                                         
                                          primary key(RESOURCE_ID),
                                          key resource_fileid (FILE_ID),
@@ -743,7 +746,7 @@ CREATE TABLE CMS_OFFLINE_STRUCTURE (
 	PARENT_ID				VARCHAR(36) NOT NULL,
 	RESOURCE_ID				VARCHAR(36) NOT NULL,	
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
-	STRUCTURE_STATE			SMALLINT UNSIGNED NOT NULL,	
+	STRUCTURE_STATE			SMALLINT UNSIGNED NOT NULL,
 	PRIMARY KEY				(STRUCTURE_ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
@@ -758,7 +761,7 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 	PARENT_ID				VARCHAR(36) NOT NULL,
 	RESOURCE_ID				VARCHAR(36) NOT NULL,	
 	RESOURCE_NAME			VARCHAR(255) NOT NULL,
-	STRUCTURE_STATE 		SMALLINT UNSIGNED NOT NULL,	
+	STRUCTURE_STATE 		SMALLINT UNSIGNED NOT NULL,
 	PRIMARY KEY				(STRUCTURE_ID),
 	INDEX IDX1 				(STRUCTURE_ID, RESOURCE_NAME),
 	INDEX IDX2 				(RESOURCE_NAME, RESOURCE_ID),
@@ -769,7 +772,7 @@ CREATE TABLE CMS_ONLINE_STRUCTURE (
 );
 
 CREATE TABLE CMS_BACKUP_STRUCTURE (
-	BACKUP_ID 				VARCHAR(36)	NOT NULL,
+	BACKUP_ID VARCHAR(36) 	NOT NULL,
     VERSION_ID				INT NOT NULL,
 	STRUCTURE_ID			VARCHAR(36) NOT NULL,
 	PARENT_ID				VARCHAR(36) NOT NULL,
