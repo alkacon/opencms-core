@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2003/09/25 16:07:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/29 19:10:02 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -47,7 +48,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsLinkManager {
     
@@ -97,6 +98,31 @@ public class CmsLinkManager {
             return relativeUri;
         }
     }
+    
+    /**
+     * Normalizes a RFS path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
+     * 
+     * @param path the path to normalize
+     * @return the normalized path
+     */
+    public static String normalizeRfsPath(String path) {
+        if (path != null) {
+            path = path.replace('\\', '/');
+            String drive = "";
+            if ((path.length() > 1) && (path.charAt(1) == ':')) {
+                // windows path like C:
+                drive = path.substring(0, 2);
+                path = path.substring(2);
+            } 
+            if (path.charAt(0) == '/') {
+                // trick to resolve all ../ inside a path
+                path = "." + path;
+            }
+            path = drive + CmsLinkManager.getAbsoluteUri(path, "/");
+            path = path.replace('/', File.separatorChar);
+        }
+        return path;
+    }    
     
     /**
      * Calculates a realtive uri from "fromUri" to "toUri",

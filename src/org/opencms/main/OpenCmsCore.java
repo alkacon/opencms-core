@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/29 07:59:41 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/09/29 19:10:16 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,6 @@ import com.opencms.file.CmsResource;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -90,7 +89,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -1980,29 +1979,15 @@ public class OpenCmsCore {
      * @return the base path with resolved relative path information 
      */
     protected String setBasePath(String path) {
-        if (path != null) {
-            path = path.replace('\\', '/');
-            if (!path.endsWith("/")) {
-                path = path + "/";
-            }
-            String drive = "";
-            if ((path.length() > 1) && (path.charAt(1) == ':')) {
-                // windows path like C:
-                drive = path.substring(0, 2);
-                path = path.substring(2);
-            } 
-            if (path.charAt(0) == '/') {
-                // trick to resolve all ../ inside a path
-                path = "." + path;
-            }
-            path = drive + CmsLinkManager.getAbsoluteUri(path, "/");
-            path = path.replace('/', File.separatorChar);
-            m_basePath = path;
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_basePath);
-            }
+        path = path.replace('\\', '/');
+        if (!path.endsWith("/")) {
+            path = path + "/";
         }
-        return path;
+        m_basePath = CmsLinkManager.normalizeRfsPath(path);
+        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            getLog(CmsLog.CHANNEL_INIT).info("OpenCms: Base application path is " + m_basePath);
+        }
+        return m_basePath;
     }
     
     /**
