@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/07/02 16:05:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/07/03 10:25:28 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.15 $ $Date: 2004/07/02 16:05:08 $
+ * @version $Revision: 1.16 $ $Date: 2004/07/03 10:25:28 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -106,10 +106,10 @@ import org.apache.lucene.search.Searcher;
 public class CmsSearchIndex {
   
     /** Manual rebuild as default value. */
-    public static String C_DEFAULT_REBUILD = "manual";
+    public static final String C_DEFAULT_REBUILD = "manual";
     
     /** Automatic rebuild. */
-    public static String C_AUTO_REBUILD = "auto";    
+    public static final String C_AUTO_REBUILD = "auto";    
 
     /** The cms object. */
     private CmsObject m_cms;
@@ -135,11 +135,7 @@ public class CmsSearchIndex {
     /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
     
-    /** The site of this index. */    
-    //private String m_site;
-      
-    int warning = 0;
-    
+    /** The configures sources for this index. */ 
     private List m_sourceNames;
     
     /**
