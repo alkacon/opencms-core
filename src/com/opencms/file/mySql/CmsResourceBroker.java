@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/24 15:31:14 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/08/25 13:18:22 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/08/24 15:31:14 $
+ * @version $Revision: 1.25 $ $Date: 2000/08/25 13:18:22 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1283,6 +1283,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		CmsTemplateClassManager.clearCache();
 
 	}
+
+
+	
 	/**
 	 * Copies a file in the Cms. <br>
 	 * 
@@ -2523,6 +2526,21 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// return the resource-types.
 		return(m_resourceTypes);
 	}
+		public Hashtable getCacheInfo() {
+		Hashtable info = new Hashtable();
+		info.put("UserCache",""+m_userCache.size());
+		info.put("GroupCache",""+m_groupCache.size());
+		info.put("UserGroupCache",""+m_usergroupsCache.size());
+		info.put("ResourceCache",""+m_resourceCache.size());
+		info.put("SubResourceCache",""+m_subresCache.size());
+		info.put("ProjectCache",""+m_projectCache.size());
+		info.put("PropertyCache",""+m_propertyCache.size());
+		info.put("PropertyDefinitionCache",""+m_propertyDefCache.size());
+		info.put("PropertyDefinitionVectorCache",""+m_propertyDefVectorCache.size());
+
+		return info;
+
+		}
 	/**
 	 * Returns all child groups of a group<P/>
 	 * 
@@ -3344,7 +3362,13 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if(A_OpenCms.isLogging()) {
 			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[CmsResourceBroker] init registry.");
 		}
-		m_registry= new CmsRegistry(config.getString(C_CONFIGURATION_REGISTRY));
+
+		try {
+			m_registry= new CmsRegistry(config.getString(C_CONFIGURATION_REGISTRY));
+		}
+		catch (CmsException ex) {
+			m_registry=null;
+		}
 	}
 	/**
 	 * Determines, if the users current group is the admin-group.
