@@ -2,10 +2,6 @@
 <editor>
 	<label>editor.title.simpletext</label>
 	<resourcetypes>
-		<type>
-			<name>xmlcontent</name>
-			<ranking>0</ranking>
-		</type>		
 		<class>
 			<name>org.opencms.workplace.editors.CmsXmlContentEditorTypeMatcher</name>
 			<ranking>0</ranking>
