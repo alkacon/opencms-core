@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/01/06 09:46:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/01/14 17:09:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -122,6 +122,36 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     }
 
     /**
+     * Returns the content of the given element.<p>
+     * 
+     * @param cms the cms object
+     * @param file the file with the xml page data
+     * @param elementName the name of the element
+     * @return the content of the element in the appropriate langue or ""
+     * @throws CmsException if something goes wrong
+     */
+    public byte[] load(CmsObject cms, CmsFile file, String elementName) throws CmsException {
+        
+        byte[] result = null;
+        
+        try {
+            // get the requested page
+            CmsXmlPage page = CmsXmlPage.read(cms, file);
+            
+            // check the current locales
+            String localeProp = OpenCms.getUserDefaultLanguage();
+            
+            // get the appropriate content and convert it to bytes
+            result = page.getContent(cms, elementName, localeProp).getBytes(); 
+            
+        } catch (Exception exc) {
+            throw new CmsException("Error in CmsXmlPageLoader", exc);
+        }
+        
+        return result;
+    }
+    
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) throws ServletException, IOException {
@@ -151,5 +181,5 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
             }
             throw new ServletException("Error in CmsXmlPageLoader while processing " + absolutePath, e);       
         }
-    }    
+    }  
 }
