@@ -16,7 +16,7 @@ import com.opencms.file.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/26 18:26:54 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/26 18:48:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -35,11 +35,6 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
      * Reference to the input defintion file
      */
     protected static CmsXmlWpInputDefFile m_inputdef = null;
-    
-     /**
-     * Reference to the startup defintion file
-     */
-    protected static CmsXmlWpStartupDefFile m_startupdef = null;
     
     /**
      * Path to all worplace definition files (will be read once
@@ -96,22 +91,5 @@ public abstract class A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants
             m_inputdef = new CmsXmlWpInputDefFile(cms, m_workplaceElementPath + C_INPUTTEMPLATE);  
         }
         return m_inputdef;
-    }
-     
-     /**
-     * Reads the input field definition file.
-     * @param cms The actual cms object
-     * @return Reference to the label defintion file.
-     * @exception CmsException
-     */
-     public CmsXmlWpStartupDefFile getStartupDefinitions(A_CmsObject cms) throws CmsException {
-        if(m_startupdef == null) {
-            if(m_workplaceElementPath == null) {
-                CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-                m_workplaceElementPath = configFile.getWorkplaceElementPath();
-            }
-            m_startupdef = new CmsXmlWpStartupDefFile(cms, m_workplaceElementPath + C_STARTUPTEMPLATE);  
-        }
-        return m_startupdef;
     }
 }
