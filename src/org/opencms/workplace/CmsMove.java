@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/04/28 22:29:02 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.workplace;
 
 import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
@@ -54,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -219,55 +220,53 @@ public class CmsMove extends CmsDialog {
                 getCms().getRequestContext().setSiteRoot("/");
                 restoreSiteRoot = true;
             }
-        
-        if (target.equals(getParamResource())) {
-            throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
-        }
-        
-        // calculate the target name
-        if (! target.startsWith("/")) {
-            // target is not an absolute path, add the current parent folder
-            target = CmsResource.getParentFolder(getParamResource()) + target; 
-        }
-        try {
-            CmsResource res = getCms().readFileHeader(target);
-            if (res.isFolder()) {
-                // target folder already exists, so we add the current folder name
-                if (! target.endsWith("/")) {
-                    target += "/";
-                }
-                target = target + CmsResource.getName(getParamResource());
-                if (target.endsWith("/")) {
-                    target = target.substring(0, target.length()-1);
-                }
-            }
-        } catch (CmsException e) {
-            // target folder does not already exist, so target name is o.k.
-        }
-        
-        // set the target parameter value
-        setParamTarget(target);        
-        
-        // check if target already exists, if so, throw exception to show confirmation dialog
-        CmsResource targetRes = null;
-        try {
-            targetRes = getCms().readFileHeader(target);
-        } catch (CmsException e) { 
-            // ignore
-        }
 
-        if (targetRes != null) {
-            if (DIALOG_CONFIRMED.equals(getParamAction())) {
-                // delete existing target resource if confirmed by the user
-                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
-            } else {
-                // throw exception to indicate that the target exists
-                throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);
+            // calculate the target name
+            target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));
+    
+            if (target.equals(getParamResource())) {
+                throw new CmsException("Can't move resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
+            }           
+            
+            try {
+                CmsResource res = getCms().readFileHeader(target);
+                if (res.isFolder()) {
+                    // target folder already exists, so we add the current folder name
+                    if (! target.endsWith("/")) {
+                        target += "/";
+                    }
+                    target = target + CmsResource.getName(getParamResource());
+                    if (target.endsWith("/")) {
+                        target = target.substring(0, target.length()-1);
+                    }
+                }
+            } catch (CmsException e) {
+                // target folder does not already exist, so target name is o.k.
             }
-        } 
-                
-        // move the resource
-        getCms().moveResource(sitePrefix + getParamResource(), target);
+            
+            // set the target parameter value
+            setParamTarget(target);        
+            
+            // check if target already exists, if so, throw exception to show confirmation dialog
+            CmsResource targetRes = null;
+            try {
+                targetRes = getCms().readFileHeader(target);
+            } catch (CmsException e) { 
+                // ignore
+            }
+    
+            if (targetRes != null) {
+                if (DIALOG_CONFIRMED.equals(getParamAction())) {
+                    // delete existing target resource if confirmed by the user
+                    getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                } else {
+                    // throw exception to indicate that the target exists
+                    throw new CmsException("The target already exists", CmsException.C_FILE_EXISTS);
+                }
+            } 
+                    
+            // move the resource
+            getCms().moveResource(sitePrefix + getParamResource(), target);
         } finally {
             if (restoreSiteRoot) {
                 getCms().getRequestContext().restoreSiteRoot();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/03/16 11:19:16 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/04/28 22:29:02 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,12 +30,12 @@
  */
 package org.opencms.workplace;
 
-import org.opencms.site.CmsSiteManager;
-
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 5.1
  */
@@ -354,10 +354,13 @@ public class CmsCopy extends CmsDialog {
                 restoreSiteRoot = true;
             }
             
-            if (! target.startsWith("/")) {
-                // target is not an absolute path, add the current parent folder
-                target = CmsResource.getParentFolder(getParamResource()) + target; 
-            }
+            // calculate the target name
+            target = CmsLinkManager.getAbsoluteUri(target, CmsResource.getParentFolder(getParamResource()));
+    
+            if (target.equals(getParamResource())) {
+                throw new CmsException("Can't copy resource onto itself.", CmsException.C_FILESYSTEM_ERROR);
+            }            
+            
             try {
                 CmsResource res = getCms().readFileHeader(target);
                 if (res.isFolder()) {
