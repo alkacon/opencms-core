@@ -14,8 +14,8 @@ top.head.helpUrl=']]><LABEL value="help.explorer.new.upload"/><![CDATA[';
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 var submitted = false;
 function doSubmit() {
@@ -89,8 +89,8 @@ top.head.helpUrl=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 
@@ -271,8 +271,8 @@ function check_text_local()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
 
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 
 </HEAD>
 

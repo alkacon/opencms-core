@@ -6,8 +6,8 @@
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 <SCRIPT LANGUAGE="JavaScript">
 var submitted = false;
 function doSubmit() {
@@ -69,8 +69,8 @@ function enableContinue() {
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=]]><METHOD name="getEncoding"/><![CDATA[">
 <title>OpenCms</title>
-<link rel=stylesheet type="text/css" href="../css/format.css">
-<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+<link rel=stylesheet type="text/css" href="]]><method name="resourcesUri">format.css</method><![CDATA[">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
 </HEAD>
 <body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
 
