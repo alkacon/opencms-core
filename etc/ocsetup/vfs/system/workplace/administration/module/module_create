@@ -6,7 +6,7 @@
     <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="]]><method name="scriptsUri">opencms.js</method><![CDATA["></SCRIPT>
     <script language=JavaScript>
         <!--
-            top.help_url=']]><LABEL value="help.administration.module_management.new"/><![CDATA[';
+            top.head.helpUrl=']]><LABEL value="help.administration.module_management.new"/><![CDATA[';
         //-->
     </script>
 <head>

@@ -36,7 +36,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.database.export" /><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.database.export" /><![CDATA[';
 //-->
 </script>
 

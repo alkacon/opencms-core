@@ -6,7 +6,7 @@
 
     <script language=JavaScript>
     <!--
-    top.help_url=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
+    top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
     //-->
     </script>
 
@@ -41,7 +41,7 @@
 
     <script language=JavaScript>
     <!--
-    top.help_url=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
+    top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.lock"/><![CDATA[';
     //-->
     </script>
 

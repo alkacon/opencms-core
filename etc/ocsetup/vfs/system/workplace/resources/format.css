@@ -68,7 +68,7 @@ A:link
     FONT-SIZE: 11px;
     TEXT-DECORATION: none
 }
-A:aktive
+A:active
 {
     COLOR: black;
     FONT-FAMILY: sans-serif;
@@ -670,7 +670,7 @@ a:visited.dateintprojekt
 a:hover.dateintprojekt
 {
     BACKGROUND-COLOR: #000066;
-    COLOR: #silver;
+    COLOR: silver;
     FONT-FAMILY: sans-serif;
     FONT-SIZE: 11px;
 }
@@ -718,19 +718,9 @@ TD.inaktiv
     FONT-FAMILY: sans-serif;
     FONT-SIZE: 11px;
 }
-DIV.timer_day
-{
-    FONT-FAMILY: sans-serif;
-    FONT-SIZE: 11px;
-    LEFT: 60px;
-    TOP: 100px;
-    VISIBILITY: hidden;
-    Z-INDEX: 1;
-}
 table.toolbar {
     background-color: #C0C0C0;
 }
-
 td.tbl {
     font-family: Arial, Helvetica, sans-serif;
     padding:0;
@@ -741,14 +731,14 @@ td.tbl {
 .tbl img {
     border: 1px solid #C0C0C0;
     margin:0;
-    padding:1;
-    cursor: hand;
+    padding:1px;
+    cursor: pointer;
 }
 .tbl img.norm{
     border: 1px solid #C0C0C0;
     margin:0;
-    padding:1;
-    cursor: hand;
+    padding:1px;
+    cursor: pointer;
 }
 .tbl img.over{
     border-top: 1px solid #FFFFFF;
@@ -762,6 +752,6 @@ td.tbl {
     border-bottom: 1px solid #FFFFFF;
     border-right: 1px solid #FFFFFF;
 }
-#divCont{position:absolute; top:80; left:245; width:470; height:350; overflow:hidden; clip:rect(0,465,350,0); visibility:hidden; z-index:100}
-#divText{position:absolute; top:0; left:10; z-index:10}
-#frame{position:absolute; left:220; top:0; width:500; height:350; clip:rect(0,500,502,0); z-index:1}
+#divCont{position:absolute; top:80px; left:245px; width:470px; height:350px; overflow:hidden; clip:rect(0,465px,350px,0); visibility:hidden; z-index:100}
+#divText{position:absolute; top:0; left:10px; z-index:10}
+#frame{position:absolute; left:220px; top:0; width:500px; height:350px; clip:rect(0,500px,502px,0); z-index:1}

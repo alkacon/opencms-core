@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.new.upload"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.new.upload"/><![CDATA[';
 //-->
 </script>
 
@@ -81,7 +81,7 @@ function enableContinue() {
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
 //-->
 </script>
 
@@ -159,7 +159,7 @@ top.help_url=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
     
     <script language=JavaScript>
     <!--
-    top.help_url=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
+    top.head.helpUrl=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
     //-->
     </script>
     
@@ -241,7 +241,7 @@ top.help_url=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.new.file"/><![CDATA[';
 //-->
 </script>
 

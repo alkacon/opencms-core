@@ -10,7 +10,7 @@
 //for the filename to undelete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
-top.help_url=']]><LABEL value="help.explorer.contextmenu.undelete"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.undelete"/><![CDATA[';
 //-->
 </script>
 <BODY>

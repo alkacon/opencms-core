@@ -11,7 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
 //-->
 </script>
 
@@ -110,7 +110,7 @@ top.help_url=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
 //for the filename to delete
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 
-top.help_url=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.delete"/><![CDATA[';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

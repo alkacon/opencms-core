@@ -10,7 +10,7 @@
 <!--
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
 //-->
 </script>
 
@@ -108,7 +108,7 @@ top.help_url=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.move"/><![CDATA[';
 
 function SubmitIfCR(form, key){
   if (key == 13 || key == 65293) {

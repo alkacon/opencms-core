@@ -8,7 +8,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.static_export"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.static_export"/><![CDATA[';
 //-->
 </script>
 

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
 
 var selectedowner=null;
 
@@ -119,7 +119,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.chgrp"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

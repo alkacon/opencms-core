@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.linkgalleries.new"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.linkgalleries.new"/><![CDATA[';
 
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
@@ -122,7 +122,7 @@ var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.linkgalleries.new"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.linkgalleries.new"/><![CDATA[';
 var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
 //-->
 </script>

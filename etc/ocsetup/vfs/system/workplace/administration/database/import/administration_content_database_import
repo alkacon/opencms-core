@@ -14,7 +14,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.database.import"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.database.import"/><![CDATA[';
 //-->
 </script>
 
@@ -140,7 +140,7 @@ top.help_url=']]><LABEL value="help.administration.database.import"/><![CDATA[';
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.database.import"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.database.import"/><![CDATA[';
 //-->
 </script>
 

@@ -18,9 +18,11 @@
         window.top.foot.location.href="foot.html"
     }
     
+    var localePrefix = "../help/]]><PROCESS>LOCALE</PROCESS><![CDATA[/";
+	var helpUrl = "index.html"; 
+    
     function openHelp() {
-		var helpUrl = "../help/]]><PROCESS>LOCALE</PROCESS><![CDATA[/index.html"; 
-		openwin( helpUrl, ']]><LABEL value="button.help" /><![CDATA[', 310, 600 );    
+		openwin( localePrefix+helpUrl, ']]><LABEL value="button.help" /><![CDATA[', 600, 450 );    
     }
 
 </SCRIPT>

@@ -7,7 +7,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.htmlgalleries.new"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.htmlgalleries.new"/><![CDATA[';
 
 function check() {
     if ((!document.NEU.READ.checked)&&(document.NEU.WRITE.checked))

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.chtype"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.chtype"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 

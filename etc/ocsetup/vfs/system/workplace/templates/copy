@@ -8,7 +8,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.copy"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.copy"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -108,7 +108,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.copy"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.copy"/><![CDATA[';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

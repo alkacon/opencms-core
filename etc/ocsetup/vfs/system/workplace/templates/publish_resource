@@ -11,7 +11,7 @@
 var js_filename=': ]]><PROCESS>FILENAME</PROCESS><![CDATA[';
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
-top.help_url=']]><LABEL value="help.explorer.contextmenu.publish_directly"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.publish_directly"/><![CDATA[';
 //-->
 </script>
 
@@ -123,7 +123,7 @@ top.help_url=']]><LABEL value="help.explorer.contextmenu.publish_directly"/><![C
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer"/><![CDATA[';
 //-->
 </script>
 <head>

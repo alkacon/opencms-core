@@ -10,7 +10,7 @@
 <script language=JavaScript>
 <!--
 
-top.help_url=']]><LABEL value="help.history.management"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.history.management"/><![CDATA[';
 
     function doSubmitProperties(step){
         document.HISTPROP.step.value = step;

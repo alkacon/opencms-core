@@ -7,8 +7,8 @@ Based on previous versions of the OpenCms link dialog.
 Author : Alexander Kandzior (a.kandzior@alkacon.com)
 
 File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/Attic/edit_html_linkall,v $
-Date   : $Date: 2003/01/31 19:15:28 $
-Version: $Revision: 1.6 $
+Date   : $Date: 2003/02/10 14:56:09 $
+Version: $Revision: 1.7 $
 
 -->
 <WORKPLACE>
@@ -20,7 +20,7 @@ Version: $Revision: 1.6 $
     	    
 	    <script language=JavaScript>
 	    <!--
-	        top.help_url=']]><LABEL value="help.explorer.new.link"/><![CDATA[';
+	        top.head.helpUrl=']]><LABEL value="help.explorer.new.link"/><![CDATA[';
 	    //-->
 	    </script>    
 

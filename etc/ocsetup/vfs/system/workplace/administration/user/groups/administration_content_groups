@@ -9,7 +9,7 @@
 
 <script language="JavaScript">
 <!--
-top.help_url=']]><LABEL value="help.administration.user_groups"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.user_groups"/><![CDATA[';
 //-->
 </script>
 
@@ -108,7 +108,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <script language="JavaScript">
 <!--
-top.help_url=']]><LABEL value="help.administration.user_groups.new"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.user_groups.new"/><![CDATA[';
 
 function checkFormData()
 {
@@ -265,7 +265,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <script language="JavaScript">
 <!--
-top.help_url=']]><LABEL value="help.administration.user_groups.edit"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.user_groups.edit"/><![CDATA[';
 //-->
 </script>
 
@@ -397,7 +397,7 @@ onLoad="window.top.body.admin_head.location.href='../../../action/administration
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.user_groups"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.user_groups"/><![CDATA[';
 //-->
 </script>
 

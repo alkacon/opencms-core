@@ -128,7 +128,7 @@
 <HELP_ENABLED>
 <![CDATA[
 						<td width="8"><img src="]]><METHOD name="resourcesUri">bu_sep_vertical.gif</METHOD><![CDATA[" width="8" height="20"></td>
-						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin('../help/de/index.html', 'Hilfe', 300, 600);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>
+						<td width="26" align="center" class="tbl"><a href="#" onMouseOver="bu16.className='over';" onMouseOut="bu16.className='norm';" onMouseDown="bu16.className='push';treewin=opensmallwin('../help/]]><PROCESS>LOCALE</PROCESS><![CDATA[/]]><LABEL value="help.texteditor" /><![CDATA[', ']]><LABEL value="button.help" /><![CDATA[', 600, 450);treewin.focus();"><img name="bu16" src="]]><METHOD name="resourcesUri">bu_help.gif</METHOD><![CDATA[" width="20" height="20" alt="]]><LABEL value="button.help"/><![CDATA["></td>
 ]]>
 </HELP_ENABLED>
 

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.settings.properties"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.settings.properties"/><![CDATA[';
 
 function selectPanel(panelName,buttonName) {
     var form = document.PREFERENCES;

@@ -9,7 +9,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.module_management"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.module_management"/><![CDATA[';
 //-->
 </script>
 

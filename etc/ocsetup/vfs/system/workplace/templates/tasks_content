@@ -7,7 +7,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.tasks"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.tasks"/><![CDATA[';
 //-->
 </script>
 

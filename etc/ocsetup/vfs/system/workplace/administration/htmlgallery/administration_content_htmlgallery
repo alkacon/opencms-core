@@ -11,7 +11,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.htmlgallery"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.htmlgallery"/><![CDATA[';
 window.top.body.admin_head.location.href='administration_head_htmlgalleries1.html';
 document.location.href="]]><method name="getServletPath"/><![CDATA[system/workplace/action/explorer_files.html?mode=listonly&folder=]]><process>link_value</process><![CDATA[&flaturl=window.body.admin_head.location.href%3d\"]]><method name="getServletPath"/><![CDATA[system/workplace/administration/htmlgallery/administration_head_htmlgalleries2.html";
 //-->

@@ -9,7 +9,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.users"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.users"/><![CDATA[';
 //-->
 </script>
 
@@ -104,7 +104,7 @@ name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA[" onLoad="window.top.body.adm
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.users.edit"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.users.edit"/><![CDATA[';
 //-->
 </script>
 
@@ -294,7 +294,7 @@ name="resourcesUri">bg_weiss.gif"</METHOD><![CDATA["  bgproperties=fixed marginw
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.users.new"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.users.new"/><![CDATA[';
 
 function checkFormData(a,b)
 {
@@ -524,7 +524,7 @@ function checkForm(){
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.users"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.users"/><![CDATA[';
 //-->
 </script>
 

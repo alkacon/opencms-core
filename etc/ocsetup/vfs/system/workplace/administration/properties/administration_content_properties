@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.properties"/><![CDATA[';
 //-->
     <!-- URL for pictures -->
         var pfad="]]><METHOD name="resourcesUri"/><![CDATA[";
@@ -39,7 +39,7 @@ top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
 
 <script LANGUAGE="JavaScript">
 <!--
-top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.properties"/><![CDATA[';
 //-->
 </script>
 
@@ -138,7 +138,7 @@ top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.properties"/><![CDATA[';
 //-->
 </script>
 
@@ -224,7 +224,7 @@ top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.administration.properties"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.administration.properties"/><![CDATA[';
 //-->
 </script>
 

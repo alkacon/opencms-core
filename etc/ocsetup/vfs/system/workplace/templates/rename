@@ -5,7 +5,7 @@
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.rename"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.rename"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -96,7 +96,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer.contextmenu.rename"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer.contextmenu.rename"/><![CDATA[';
 //-->
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 </script>

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.history"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.history"/><![CDATA[';
 
 var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
@@ -99,7 +99,7 @@ var lasturl="]]><PROCESS>lasturl</PROCESS><![CDATA[";
 
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.history"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.history"/><![CDATA[';
 //-->
 </script>
 

@@ -6,7 +6,7 @@
 
 <script language=JavaScript>
 <!--
-top.help_url='ExplorerAnsicht/header.html';
+top.head.helpUrl='explorer/header/index.html';
 //-->
 </script>
 
@@ -87,7 +87,7 @@ top.help_url='ExplorerAnsicht/header.html';
 <HTML>
 <script language=JavaScript>
 <!--
-top.help_url=']]><LABEL value="help.explorer"/><![CDATA[';
+top.head.helpUrl=']]><LABEL value="help.explorer"/><![CDATA[';
 //-->
 </script>
 <head>
