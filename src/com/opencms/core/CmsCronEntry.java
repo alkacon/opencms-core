@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsCronEntry.java,v $
-* Date   : $Date: 2001/11/16 09:36:34 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2003/07/21 11:07:17 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,8 @@
 package com.opencms.core;
 
 import java.util.*;
+
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.util.*;
 
 class CmsCronEntry {
@@ -98,7 +100,7 @@ class CmsCronEntry {
 	 */
 	CmsCronEntry(String paramstring)
 		throws CmsException	{
-        paramstring = Utils.replace(paramstring, "*", C_ASTERIX + "");
+        paramstring = CmsStringSubstitution.substitute(paramstring, "*", C_ASTERIX + "");
 		try {
 			String params[] =  Utils.split(paramstring, C_SPLITSTRING);
 			m_minute =			Integer.parseInt(params[0]);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/06/13 10:04:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/21 11:07:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.file.CmsObject;
+import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.util.Utils;
 
 import java.sql.Connection;
@@ -58,7 +59,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/13 10:04:20 $
+ * @version $Revision: 1.3 $ $Date: 2003/07/21 11:07:17 $
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
@@ -204,9 +205,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         }
 
         // replace in the SQL statement the table names
-        statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
-        statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
-        statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
+        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_MASTER", moduleMaster);
+        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
+        statement = CmsStringSubstitution.substitute(statement, "$CMS_MODULE_MEDIA", media);
 
         // replace in the SQL statement further optional SQL tokens
         if (optionalSqlTokens != null) {
@@ -214,7 +215,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
             while (optionalSqlKeys.hasNext()) {
                 String currentKey = (String) optionalSqlKeys.next();
                 String currentValue = (String) optionalSqlTokens.get(currentKey);
-                statement = Utils.replace(statement, currentKey, currentValue);
+                statement = CmsStringSubstitution.substitute(statement, currentKey, currentValue);
             }
         }
         
