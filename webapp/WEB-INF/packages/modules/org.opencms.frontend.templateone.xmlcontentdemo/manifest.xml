@@ -36,6 +36,49 @@
 		<parameters>
 			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/;/system/workplace/resources/filetypes/article.gif;/xmlcontent/</param>
 		</parameters>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">12</param>
+				<param name="resource.type.name">article</param>
+				<param name="schema">/sites/default/xmlcontent/article.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">13</param>
+				<param name="resource.type.name">widgetdemo</param>
+				<param name="schema">/sites/default/xmlcontent/widgetdemo/widgetdemo.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent">
+				<param name="resource.type.id">14</param>
+				<param name="resource.type.name">bookmark</param>
+				<param name="schema">/sites/default/xmlcontent/nestedcontent/bookmark.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
 	</module>
 	<files>
 		<file>
