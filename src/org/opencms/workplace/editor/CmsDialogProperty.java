@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/20 12:37:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/01/27 14:08:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.3.0
  */
@@ -405,8 +405,11 @@ public class CmsDialogProperty extends CmsProperty {
             if ("true".equals(paramValue)) {
                 // navigation enabled, update params
                 paramValue = request.getParameter("navpos");
-                oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
-                writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue, activeProperties);
+                if (!"-1".equals(paramValue)) {
+                    // update the property only when it is different from "-1" (meaning no change)
+                    oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
+                    writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue, activeProperties);
+                }
                 paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
                 oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
                 writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue, activeProperties);
