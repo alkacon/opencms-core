@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2004/08/27 09:02:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/09/20 05:38:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,7 +44,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsProject implements Cloneable {
 
@@ -162,9 +161,9 @@ public class CmsProject implements Cloneable {
      * @return true, if the resource is "inside" the project resources
      */    
     public static boolean isInsideProject(List projectResources, String resourcename) {
-        Iterator i = projectResources.iterator();  
-        while (i.hasNext()) {
-            String projectResource = (String)i.next();
+        
+        for (int i=(projectResources.size()-1); i >= 0; i--) {
+            String projectResource = (String)projectResources.get(i);
             if (CmsResource.isFolder(projectResource)) {
                 if (resourcename.startsWith(projectResource)) {
                     // folder - check only the prefix
