@@ -29,6 +29,7 @@ import source.org.apache.java.util.*;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+import java.net.*;
 
 /**
  * This class provides several utilities and methods
@@ -88,6 +89,7 @@ public class CmsSetupUtils {
             fw.close();
         }
         catch (IOException e) {
+          e.printStackTrace();
           CmsSetup.setErrors("Could not save " + originalFile + " to " + backupFile + " \n");
           CmsSetup.setErrors(e.toString());
         }
@@ -134,6 +136,7 @@ public class CmsSetupUtils {
             fw.close();
         }
         catch (Exception e) {
+            e.printStackTrace();
             CmsSetup.setErrors("Could not save properties to " + target + " \n");
             CmsSetup.setErrors(e.toString() + "\n");
         }
@@ -342,5 +345,22 @@ public class CmsSetupUtils {
         catch (Exception e) {
             return null;
         }
+    }
+
+    public static String escape(String source) {
+        StringBuffer ret = new StringBuffer();
+
+        // URLEncode the text string. This produces a very similar encoding to JavaSscript
+
+        // encoding, except the blank which is not encoded into a %20.
+        String enc = URLEncoder.encode(source);
+        StringTokenizer t = new StringTokenizer(enc, "+");
+        while(t.hasMoreTokens()) {
+            ret.append(t.nextToken());
+            if(t.hasMoreTokens()) {
+                ret.append("%20");
+            }
+        }
+        return ret.toString();
     }
 }
