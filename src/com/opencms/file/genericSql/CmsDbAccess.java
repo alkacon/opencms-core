@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/06 16:55:17 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/06/06 17:12:46 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.12 $ $Date: 2000/06/06 16:55:17 $ * 
+ * @version $Revision: 1.13 $ $Date: 2000/06/06 17:12:46 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -369,14 +369,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	public void deleteProperty(String name)
         throws CmsException {
         
-        PreparedStatement statementPropertyDelete = null;
+        PreparedStatement statement = null;
 		try	{
-           statementPropertyDelete = m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY);
-           statementPropertyDelete.setString(1,name);
-           statementPropertyDelete.executeUpdate();   
-           m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statementPropertyDelete);   
+           statement = m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY);
+           statement.setString(1,name);
+           statement.executeUpdate();   
+           m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statement);   
 		}catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statementPropertyDelete);   
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY, statement);   
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
     }
@@ -395,7 +395,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
          throws CmsException {
          
         byte[] value;
-        PreparedStatement statementPropertyWrite=null;
+        PreparedStatement statement=null;
          try	{			
             // serialize the object
             ByteArrayOutputStream bout= new ByteArrayOutputStream();            
@@ -405,16 +405,15 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             value=bout.toByteArray();
             
             // create the object
-                statementPropertyWrite=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
-                statementPropertyWrite.setString(1,name);
-                statementPropertyWrite.setBytes(2,value);
-                statementPropertyWrite.executeUpdate();
-                m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
+                statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY);
+                statement.setString(1,name);
+                statement.setBytes(2,value);
+                statement.executeUpdate();
+                m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statement);
         } catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		} catch (IOException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,statementPropertyWrite);
             throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
         return readProperty(name);
@@ -435,14 +434,14 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         Serializable property=null;
         byte[] value;
         ResultSet res = null;
-        PreparedStatement statementPropertyRead = null;
+        PreparedStatement statement = null;
             
         // create get the property data from the database
     	try {
-          statementPropertyRead=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY);
-          statementPropertyRead.setString(1,name);
-          res = statementPropertyRead.executeQuery();
-          m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+          statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY);
+          statement.setString(1,name);
+          res = statement.executeQuery();
+          m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statement);
        		
           if(res.next()) {
 				value = res.getBytes(C_SYSTEMPROPERTY_VALUE);
@@ -451,17 +450,17 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
                 ObjectInputStream oin = new ObjectInputStream(bin);
                 property=(Serializable)oin.readObject();                
 			}	
+           res.close();
 		}
 		catch (SQLException e){
-			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}	
         catch (IOException e){
-			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
-            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+			throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
 	    catch (ClassNotFoundException e){
-			 m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_READ_KEY,statementPropertyRead);
+			
             throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}	
         return property;
@@ -481,7 +480,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
         throws CmsException {
         
         byte[] value=null;
-        PreparedStatement statementPropertyUpdate = null;
+        PreparedStatement statement = null;
         
         try	{			
             // serialize the object
@@ -491,19 +490,18 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
             oout.close();
             value=bout.toByteArray();   
             
-            statementPropertyUpdate=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY);
-            statementPropertyUpdate.setBytes(1,value);
-            statementPropertyUpdate.setString(2,name);
-		    statementPropertyUpdate.executeUpdate();
-		    m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
+            statement=m_pool.getPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY);
+            statement.setBytes(1,value);
+            statement.setString(2,name);
+		    statement.executeUpdate();
+		    m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statement);
         }
         catch (SQLException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
+			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statement);
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}
         catch (IOException e){
-			m_pool.putPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,statementPropertyUpdate);
-            throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
+	        throw new CmsException("["+this.getClass().getName()+"]"+CmsException. C_SERIALIZATION, e);			
 		}
 
           return readProperty(name);
@@ -527,7 +525,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_WRITE_KEY,C_SYSTEMPROPERTIES_WRITE);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_UPDATE_KEY,C_SYSTEMPROPERTIES_UPDATE);
 		m_pool.initPreparedStatement(C_SYSTEMPROPERTIES_DELETE_KEY,C_SYSTEMPROPERTIES_DELETE);
-		
 	}
 	
 	/**
@@ -549,7 +546,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		
         m_maxIds[C_TABLE_GROUPS] = initMaxId(C_GROUPS_MAXID_KEY);
 		m_maxIds[C_TABLE_PROJECTS] = initMaxId(C_PROJECTS_MAXID_KEY);
-		
 		m_maxIds[C_TABLE_SYSTEMPROPERTIES] = initMaxId(C_SYSTEMPROPERTIES_MAXID_KEY);
 	}
 	

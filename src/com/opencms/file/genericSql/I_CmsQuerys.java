@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/06 16:55:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/06/06 17:12:46 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $ $Date: 2000/06/06 16:55:17 $
+ * @version $Revision: 1.6 $ $Date: 2000/06/06 17:12:46 $
  */
 public interface I_CmsQuerys {
     
@@ -81,7 +81,6 @@ public interface I_CmsQuerys {
 	public static final String C_SYSTEMPROPERTIES_DELETE="DELETE FROM " + C_DATABASE_PREFIX + "SYSTEMPROPERTIES WHERE SYSTEMPROPERTY_NAME = ?";
     
 	
-
 	// Constants for Projects
 	
     public static final Integer C_PROJECTS_MAXID_KEY = new Integer(400);
