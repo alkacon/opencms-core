@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2000/03/21 16:48:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/03/22 16:59:32 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -283,6 +283,9 @@ function doEditHTML(para)
 	case 44:
         openwin('edit_html_download.html','binlist',525,550);
         break;
+    case 45:
+		DECMD_HYPERLINK_NODIALOG_onclick();
+		break;	
  	default:
 		alert("Leider kann diese Funktion nicht ausgeführt werden.");			
 	}	
@@ -501,13 +504,23 @@ function DECMD_HYPERLINK_onclick()
   EDITHTML.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
   EDITHTML.EDIT_HTML.focus();
 }
+function DECMD_HYPERLINK_NODIALOG_onclick()
+{
+  EDITHTML.EDIT_HTML.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_DONTPROMPTUSER, EDITHTML.URL.value);
+  EDITHTML.EDIT_HTML.focus();
+}
 function DECMD_IMAGE_onclick()
 {
   EDITHTML.EDIT_HTML.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
   EDITHTML.EDIT_HTML.focus();
 }
 
-
+// sends URL string from seperate browser window to a hidden field within the opener document
+function sendURLString(destFormName,destFieldName,strURL){
+	eval('top.window.opener.self.document.'+ destFormName +'.'+ destFieldName +'.value="'+strURL+'"');
+	top.window.opener.top.doEditHTML(45);
+	top.close();
+}
 
 
 

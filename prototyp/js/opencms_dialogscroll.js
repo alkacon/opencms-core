@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/opencms_dialogscroll.js,v $
- * Date   : $Date: 2000/03/21 16:48:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/22 16:59:32 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -148,31 +148,29 @@ function resized(){
 }
 
 //---------------------------------------------
-// centerLayer(staticLayer,scrollLayer)
-// Method performs horizontal adjustment of 
-// the dialog box. The alignment is "center".
+// centerLayer(layerName)
+// Method performs horizontal adjustment of one
+// specified layer. The alignment is "center".
 //
 // author: Matthias Schreiber
-// date: 20.03.2000
+// date:   20.03.2000
+// update: 22.03.2000
 //
-// @param staticLayer: Name of the static outer layer
-// @param scrollLayer: Name of the container layer for the scrolling
+// @param layerName: ID of the layer to be centered
 // 
 //---------------------------------------------
-function centerLayer(staticLayer,scrollLayer){
+
+function centerLayer(layerName){
 	totalWidth=getWindowWidth();
 	if (ie) {
-		eval('lyrWidth = document.all["'+ staticLayer +'"].offsetWidth');
-		eval('document.all["'+ staticLayer +'"].style.left=Math.round((totalWidth-lyrWidth)/2)');
-		eval('document.all["'+ scrollLayer +'"].style.left=Math.round((totalWidth-lyrWidth)/2)+15');
+		eval('lyrWidth = document.all["'+ layerName +'"].offsetWidth');
+		eval('document.all["'+ layerName +'"].style.left=Math.round((totalWidth-lyrWidth)/2)');
 	}
 	else if (ns) {
-		eval('lyrWidth = document["'+ staticLayer +'"].clip.width');
-		eval('document["'+ staticLayer +'"].left=Math.round((totalWidth-lyrWidth)/2)');
-		eval('document["'+ scrollLayer +'"].left=Math.round((totalWidth-lyrWidth)/2)+15');
+		eval('lyrWidth = document["'+ layerName +'"].clip.width');
+		eval('document["'+ layerName +'"].left=Math.round((totalWidth-lyrWidth)/2)');
 	}
 }
-
 
 //Makes the object
 function scrollInit(staticContainer,scrollContainer,scrollContent){
@@ -181,7 +179,8 @@ function scrollInit(staticContainer,scrollContainer,scrollContent){
 	oScroll.moveIt(0,0);
 	oCont.css.visibility='visible';
 	loaded=true;
-	eval('centerLayer("'+ staticContainer +'","'+ scrollContainer +'")');
+	eval('centerLayer("'+ staticContainer +'")');
+	eval('centerLayer("'+ scrollContainer +'")');
 	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
 	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
 	window.onresize=resized;

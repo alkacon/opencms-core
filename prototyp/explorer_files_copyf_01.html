@@ -6,6 +6,17 @@ function show_help()
 {
 	return '2_2_2_2_5_5_1.html';
 }
+
+function init() {
+	newObj('errormain','hidden');
+	newObj('errordetails','hidden');
+	justifyLayers('errormain','errordetails');
+	showlyr('errormain');
+	pageWidth=bw.ns4?innerWidth:document.body.offsetWidth;
+	pageHeight=bw.ns4?innerHeight:document.body.offsetHeight;
+	window.onresize=resized;
+}
+	
 //-->
 </script>
 
@@ -13,24 +24,30 @@ function show_help()
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 
 <title>OpenCms Arbeitsplatz von Alexander Kandzior</title>
+
 <link rel=stylesheet type="text/css" href="css/format.css">
+<style type="text/css">
+#errormain{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:10; }
+#errordetails{position:absolute; top:78; left:0; width:350; visibility:hidden; z-index:100}
+</style>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_choosebrowser.js"></SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="js/opencms_dialogscroll.js"></SCRIPT>
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
+<BODY onLoad="init();" bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0>
 
-<!-- Tabelle um vertikal und horizontal zu zentrieren-->
-<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
-<tr><td align=middle valign=center>
-
+<div id="errormain">
 <!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
-<form id=COPY name=COPY>
-<table cellspacing=0 cellpadding=0 border=2 width=300>
-	<tr><td>
+<form id=ERROR name=ERROR>
+<table cellspacing=0 cellpadding=0 border=2 width=350>
+	<tr><td class=dialogtxt>
 		<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
 			
 			<!-- Beginn Tabellenkopf blau-->
 			<tr> 
-           		<td colspan=2 class="head">Kopieren von bilder</td>
+           		<td colspan=2 class="head">Kopieren von Ordner "bilder"</td>
 			</tr>
 			<!-- Ende Tabellenkopf blau-->
 			<!-- Beginn Leerzeile-->
@@ -38,34 +55,49 @@ function show_help()
 			<!-- Ende Leerzeile-->
 			<tr> 
            		<td class="dialogtxt" rowspan=3 valign=top><IMG border=0 src="pics/ic_caution.gif" width=32 height=32></td>
-			<td class=dialogtxt>Ordner bilder konnte leider nicht kopiert werden.</td>
-			</tr>
-			<tr><td class=dialogtxt>Grund:<br>[Exception Message]</td></tr>
-			
-			<tr><td class=dialogtxt>Bitte versuchen Sie es sp&auml;ter erneut, oder konntaktieren Sie Ihren Systemadministrator.</td></tr>
+			<td class=dialogtxt>Ordner "bilder" konnte leider nicht kopiert werden.</td>
+			</tr>	
+			<tr><td class=dialogtxt>F&uuml;r weitere Informationen klicken Sie auf "Details anzeigen" oder kontaktieren Sie Ihren Systemadministrator.</td></tr>
 			<!-- Beginn Leerzeile-->
-			<tr> <td colspan=2 class="leerzeile">&nbsp;</td></tr>
+			<tr> <td class="leerzeile">&nbsp;</td></tr>
 			<!-- Ende Leerzeile-->
 			
 			<!-- Beginn Buttonleisete-->
 			<tr><td class=dialogtxt colspan=2>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
-					<td class=formular align=middle><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=center><INPUT class=button width = 100 type="button" value="OK" id=OK name=OK onClick="location.href='explorer_files_projekt.html'"></td>
+					<td class=formular align=center><INPUT class=button width = 100 type="button" value="Details anzeigen" id=details name=details onClick="toggleLayer('errordetails');chButtonTxt('ERROR','details','Details anzeigen','Details verbergen','errormain')"></td>
 				</tr>
 				</table>
 			</td>
 			</tr>
-			<!-- Ende Buttonleisete-->
-			
 			</table>
+			<!-- Ende Buttonleisete-->	
 	</td></tr>
 </table>
 </form>
-<A href="explorer_files_copyf.html">[Copy]</A> 
-</td></tr>
-</table>
+</div>
 
+<div id="errordetails">
+<link rel=stylesheet type="text/css" href="css/format.css">
+<form id=DETAILS name=DETAILS>
+<table cellspacing=0 cellpadding=0 border=2 width=350>
+	<tr><td class=dialogtxt>
+		<table cellspacing=1 cellpadding=5 border=0 width=100% height=100%>
+			<tr><td class=formular>Fehlermeldung:</td>
+			<tr><td align=center class=dialogtxt>
+			<textarea wrap=virtual cols=33 rows=6 style="width:330" class="textarea" onfocus="this.blur();" id=EXCEPTION name=EXCEPTION>[Exception Message] java.lang.NullPointerException at com.opencms.file.CmsInitMySql.init(Compiled Code) at com.opencms.setup.CmsShell.init(Compiled Code) at com.opencms.setup.CmsShell.main(Compiled Code)
+			</textarea>
+			</td></tr>
+		</table>
+	</td></tr>
+</table>
+</form>
+</div> 
+<!-- <A href="explorer_files_copyf.html">[Copy]</A> -->
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 </BODY>
 </html>
 
