@@ -108,11 +108,11 @@
         <td width="85%" class="formular" height="25">
             <table cellspacing=0 cellpadding=0 border=0>
                 <tr>
-                    <td class="formular" colspan="3" align="center">Owner</td>
+                    <td class="formular" colspan="3" align="center">]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.ownername" /><![CDATA[</td>
                     <td class="formular" align="center">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td class="formular" colspan="3" align="center">Group</td>
+                    <td class="formular" colspan="3" align="center">]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.group" /><![CDATA[</td>
                     <td class="formular" align="center">&nbsp;&nbsp;&nbsp;</td>
-                    <td class="formular" colspan="3" align="center">Others</td>
+                    <td class="formular" colspan="3" align="center">]]><LABEL value="com_opencms_defaults_master_CmsChannelBackoffice.label.others" /><![CDATA[</td>
                 </tr>
                 <tr>
                     <td class="formular" align="center">r</td>
