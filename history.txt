@@ -8,9 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.31 Chusuk       - xx January 2001
+OpenCms 4.5.32 Chusuk       - xx January 2001
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
+* Bugfix in subressource-cache. Now the subressource-cache is user dependend.
 
 OpenCms 4.5.31 Chusuk       - 09 January 2001
 ! Modification on Explorer-View for "Gecko" support. The "Gecko-Support" is not finished yet.

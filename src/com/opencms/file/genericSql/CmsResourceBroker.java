@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/15 13:24:02 $
-* Version: $Revision: 1.302 $
+* Date   : $Date: 2002/01/15 13:33:42 $
+* Version: $Revision: 1.303 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.302 $ $Date: 2002/01/15 13:24:02 $
+ * @version $Revision: 1.303 $ $Date: 2002/01/15 13:33:42 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3070,7 +3070,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
     Vector files;
 
     // Todo: add caching for getFilesInFolder
-    files=(Vector)m_subresCache.get("FILES"+foldername, currentProject.getId());
+    files=(Vector)m_subresCache.get(currentUser.getId()+"FILES"+foldername, currentProject.getId());
     if ((files==null) || (files.size()==0)) {
         // try to get the files in the current project
         try {
@@ -3104,7 +3104,7 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
             //if it was null, the folder was marked deleted -> no files in online project.
             files = mergeResources(files, onlineFiles);
         }
-        m_subresCache.put("FILES"+foldername, currentProject.getId(), files);
+        m_subresCache.put(currentUser.getId()+"FILES"+foldername, currentProject.getId(), files);
     }
     return files;
 }
@@ -3180,7 +3180,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
  */
 public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, String rootName) throws CmsException {
     // try to read from cache
-    Vector retValue = (Vector)m_subresCache.get("TREE"+rootName, currentProject.getId());
+    Vector retValue = (Vector)m_subresCache.get(currentUser.getId()+"TREE"+rootName, currentProject.getId());
     if (retValue == null || retValue.size() == 0){
         Vector resources = m_dbAccess.getFolderTree(currentProject.getId(), rootName);
         retValue = new Vector(resources.size());
@@ -3201,7 +3201,7 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
                 }
             }
         }
-        m_subresCache.put("TREE"+rootName, currentProject.getId(), retValue);
+        m_subresCache.put(currentUser.getId()+"TREE"+rootName, currentProject.getId(), retValue);
     }
     return retValue;
 }
@@ -3388,7 +3388,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
     } else {
         // try to read from cache
-        retValue = (Vector)m_subresCache.get("RESOURCES"+folder, currentProject.getId());
+        retValue = (Vector)m_subresCache.get(currentUser.getId()+"RESOURCES"+folder, currentProject.getId());
         if(retValue == null || retValue.size() == 0){
             resources = m_dbAccess.getResourcesInFolder(currentProject.getId(), offlineFolder);
             retValue = new Vector(resources.size());
@@ -3401,7 +3401,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     retValue.addElement(res);
                 }
             }
-            m_subresCache.put("RESOURCES"+folder, currentProject.getId(), retValue);
+            m_subresCache.put(currentUser.getId()+"RESOURCES"+folder, currentProject.getId(), retValue);
         }
     }
     return retValue;
@@ -3563,7 +3563,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         Vector folders = new Vector();
 
         // Todo: add caching for getSubFolders
-        folders=(Vector)m_subresCache.get("FOLDERS"+foldername, currentProject.getId());
+        folders=(Vector)m_subresCache.get(currentUser.getId()+"FOLDERS"+foldername, currentProject.getId());
 
         if ((folders==null) || (folders.size()==0)){
 
@@ -3588,7 +3588,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                     // no onlinefolders, ignoring them
                 }
             }
-            m_subresCache.put("FOLDERS"+foldername, currentProject.getId(), folders);
+            m_subresCache.put(currentUser.getId()+"FOLDERS"+foldername, currentProject.getId(), folders);
         }
 
         // return the folders
