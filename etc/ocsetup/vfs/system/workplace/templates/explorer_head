@@ -28,4 +28,35 @@
 </html>
 ]]>
 </TEMPLATE>
+
+<TEMPLATE name="viewfile">
+<![CDATA[
+<html>
+<head><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT>
+	<!-- URL for pictures -->
+	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></script>
+</head>
+<body bgcolor="#E0E0E0" background="/pics/bg_grau.gif"  bgproperties=fixed>
+
+<table cellspacing=0 cellpadding=0 border=0>
+]]><PROCESS>BACKBUTTON</PROCESS><![CDATA[
+</table>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<BACKBUTTON>
+<BUTTON href="javascript:updateFrame('body.explorer_content.explorer_head','explorer_head.html');updateFrame('body.explorer_content.explorer_files','explorer_files.html')" name="bt_back" action="" alt="back"/>
+</BACKBUTTON>
+
 </WORKPLACE>
+
+
+
+
