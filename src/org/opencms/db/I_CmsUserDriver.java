@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/16 07:55:39 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/16 08:35:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/09/16 07:55:39 $
+ * @version $Revision: 1.22 $ $Date: 2003/09/16 08:35:22 $
  * @since 5.1
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
@@ -140,13 +140,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      */
     void deleteGroup(String delgroup) throws CmsException;
 
-    /**
-     * Deletes a user from the database.
-     *
-     * @param userId The Id of the user to delete
-     * @throws CmsException if something goes wrong.
-     */
-    void deleteUser(CmsUUID userId) throws CmsException;
 
     /**
      * Deletes a user from the database.

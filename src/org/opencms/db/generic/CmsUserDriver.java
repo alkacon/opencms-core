@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/16 08:01:35 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/09/16 08:35:23 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.25 $ $Date: 2003/09/16 08:01:35 $
+ * @version $Revision: 1.26 $ $Date: 2003/09/16 08:35:23 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -277,25 +277,6 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_DELETEGROUP");
 
             stmt.setString(1, delgroup);
-            stmt.executeUpdate();
-        } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
-        } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#deleteUser(org.opencms.util.CmsUUID)
-     */
-    public void deleteUser(CmsUUID userId) throws CmsException {
-        Connection conn = null;
-        PreparedStatement stmt = null;
-
-        try {
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_DELETEBYID");
-            stmt.setString(1, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
