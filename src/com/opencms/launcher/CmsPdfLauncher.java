@@ -1,46 +1,43 @@
-package com.opencms.launcher;
 
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsPdfLauncher.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.4 $
- *
- * Copyright (C) 2000  The OpenCms Group 
- * 
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- * 
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsPdfLauncher.java,v $
+* Date   : $Date: 2001/01/24 09:42:27 $
+* Version: $Revision: 1.5 $
+*
+* Copyright (C) 2000  The OpenCms Group 
+* 
+* This File is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public License
+* as published by the Free Software Foundation; either version 2
+* of the License, or (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+* 
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.com
+* 
+* You should have received a copy of the GNU General Public License
+* long with this program; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+*/
+
+package com.opencms.launcher;
 
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import org.apache.fop.apps.Driver;
 import org.apache.fop.apps.Version;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
-
 import org.apache.xerces.parsers.SAXParser;
-
-
-import java.io.*; 
+import java.io.*;
 
 /**
  * OpenCms launcher class for XML templates.
@@ -62,92 +59,93 @@ import java.io.*;
  * be used to create output.
  * 
  * @author Matthias Schreiber
- * @version $Revision: 1.4 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.5 $ $Date: 2001/01/24 09:42:27 $
  */
-public class CmsPdfLauncher extends CmsXmlLauncher { 	
-		
-	/**
-	 * Creates a SAX parser, using the value of org.xml.sax.parser
-	 * defaulting to org.apache.xerces.parsers.SAXParser.
-	 *
-	 * @return the created SAX parser
-	 */
-	private static Parser createParser() {
-		
-		String parserClassName = System.getProperty("org.xml.sax.parser");
-		if (parserClassName == null) {
-			parserClassName = "org.apache.xerces.parsers.SAXParser";
-		}
-		A_OpenCms.log(C_OPENCMS_INFO, "[CmsPdfLauncher] Using SAX parser: " + parserClassName);
-		
-		try {
-			return (Parser)
-			Class.forName(parserClassName).newInstance();
-		} catch (ClassNotFoundException e) {
-			A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not find " + parserClassName);
-		} catch (InstantiationException e) {
-			A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not instantiate "
-					+ parserClassName);
-		} catch (IllegalAccessException e) {
-			A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not access " + parserClassName);
-		} catch (ClassCastException e) {
-			A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] " + parserClassName + " is not a SAX driver"); 
-		}
-		return null;
-	}
-	/**
-	 * Gets the ID that indicates the type of the launcher.
-	 * @return launcher ID
-	 */    
-	public int getLauncherId() {
-	    return C_TYPE_PDF;
-	}
-	/**
- 	 * Launches a PDF file by writing a byte array to the HttpServletResponse output stream.
- 	 * Calls the canonical root with the appropriate template class.
- 	 * 
-	 * @param cms A_CmsObject Object for accessing system resources
-	 * @param file CmsFile Object with the selected resource to be shown
-	 * @param startTemplateClass Name of the template class to start with.
-	 * @exception CmsException
-	 */	
-	protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-   
-		// get the CmsRequest 
-		I_CmsRequest req = cms.getRequestContext().getRequest();
-		byte[] templatedata = null;
-		byte[] result = null;
-		
-		// get the complete data from all templates
-		templatedata = generateOutput(cms, file, startTemplateClass, req);
-		
-		// Set PDF Version and initialize SAX Parser
-		String version = Version.getVersion();
-		Parser parser = createParser();
-		
-		InputStream in = new ByteArrayInputStream(templatedata);
-		InputSource source = new InputSource(in);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		
-		// Start the FOP PDF Renderer and try to generate PDF file.
-		try {
-			Driver driver = new Driver();
-			driver.setRenderer("org.apache.fop.render.pdf.PDFRenderer", version);
-			driver.addElementMapping("org.apache.fop.fo.StandardElementMapping");
-			driver.addElementMapping("org.apache.fop.svg.SVGElementMapping");
-			driver.setWriter(new PrintWriter(out));
-			driver.buildFOTree(parser,source);
-			driver.format();
-			driver.render();
-		} catch (Exception e) {
-			A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] PDF-Renderer Error: " + e.getMessage());
-		}
-		result = out.toByteArray();
-		
-		// Write out PDF file if available.
-		if(result != null) {
-			writeBytesToResponse(cms, result);
-		}
-	   
-	}
+public class CmsPdfLauncher extends CmsXmlLauncher {
+    
+    /**
+     * Creates a SAX parser, using the value of org.xml.sax.parser
+     * defaulting to org.apache.xerces.parsers.SAXParser.
+     *
+     * @return the created SAX parser
+     */
+    private static Parser createParser() {
+        String parserClassName = System.getProperty("org.xml.sax.parser");
+        if(parserClassName == null) {
+            parserClassName = "org.apache.xerces.parsers.SAXParser";
+        }
+        A_OpenCms.log(C_OPENCMS_INFO, "[CmsPdfLauncher] Using SAX parser: " + parserClassName);
+        try {
+            return (Parser)Class.forName(parserClassName).newInstance();
+        }
+        catch(ClassNotFoundException e) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not find " + parserClassName);
+        }
+        catch(InstantiationException e) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not instantiate " + parserClassName);
+        }
+        catch(IllegalAccessException e) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not access " + parserClassName);
+        }
+        catch(ClassCastException e) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] " + parserClassName + " is not a SAX driver");
+        }
+        return null;
+    }
+    
+    /**
+     * Gets the ID that indicates the type of the launcher.
+     * @return launcher ID
+     */
+    public int getLauncherId() {
+        return C_TYPE_PDF;
+    }
+    
+    /**
+     * Launches a PDF file by writing a byte array to the HttpServletResponse output stream.
+     * Calls the canonical root with the appropriate template class.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources
+     * @param file CmsFile Object with the selected resource to be shown
+     * @param startTemplateClass Name of the template class to start with.
+     * @exception CmsException
+     */
+    protected void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
+        
+        // get the CmsRequest 
+        I_CmsRequest req = cms.getRequestContext().getRequest();
+        byte[] templatedata = null;
+        byte[] result = null;
+        
+        // get the complete data from all templates
+        templatedata = generateOutput(cms, file, startTemplateClass, req);
+        
+        // Set PDF Version and initialize SAX Parser
+        String version = Version.getVersion();
+        Parser parser = createParser();
+        InputStream in = new ByteArrayInputStream(templatedata);
+        InputSource source = new InputSource(in);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        
+        // Start the FOP PDF Renderer and try to generate PDF file.
+        try {
+            Driver driver = new Driver();
+            driver.setRenderer("org.apache.fop.render.pdf.PDFRenderer", version);
+            driver.addElementMapping("org.apache.fop.fo.StandardElementMapping");
+            driver.addElementMapping("org.apache.fop.svg.SVGElementMapping");
+            driver.setWriter(new PrintWriter(out));
+            driver.buildFOTree(parser, source);
+            driver.format();
+            driver.render();
+        }
+        catch(Exception e) {
+            A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] PDF-Renderer Error: " + e.getMessage());
+        }
+        result = out.toByteArray();
+        
+        // Write out PDF file if available.
+        if(result != null) {
+            writeBytesToResponse(cms, result);
+        }
+    }
 }

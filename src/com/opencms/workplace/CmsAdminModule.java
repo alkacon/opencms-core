@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2001/01/16 11:25:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2001/01/24 09:43:25 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,6 +44,7 @@ import javax.servlet.http.*;
  * @author: Hanjo Riege
  */
 public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstants {
+	
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters. 
@@ -54,7 +55,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
 	 * @param elementName Element name of this template in our parent template.
 	 * @param parameters Hashtable with all template class parameters.
 	 * @param templateSelector template section that should be processed.
-	 */
+	 */	
 	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 		if(C_DEBUG && A_OpenCms.isLogging()) {
 			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
@@ -77,6 +78,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 	}
+	
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * 
@@ -90,6 +92,7 @@ public class CmsAdminModule extends CmsWorkplaceDefault implements I_CmsConstant
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		return false;
 	}
+	
 	/**
 	 * Gets the modules.
 	 * <P>
