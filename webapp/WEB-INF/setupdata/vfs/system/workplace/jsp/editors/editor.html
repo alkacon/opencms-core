@@ -15,8 +15,8 @@
 </head>
 
 <frameset rows="*,24,0" border="0" frameborder="0" framespacing="0">
-    <frame name="edit" src="editor_main.html?<%= wp.getParamsAsRequest() %>" noresize scrolling="no">
-    <frame name="foot" src="../top_foot.html" noresize scrolling="no">
-    <frame name="closeframe" src="editor_close.html" noresize scrolling="no">
+    <frame <%= wp.getFrameSource("edit", cms.link("editor_main.html?" + wp.getParamsAsRequest())) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("foot", cms.link("../top_foot.html")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("closeframe", cms.link("editor_close.html")) %> noresize scrolling="no">
 </frameset>
 </html>
