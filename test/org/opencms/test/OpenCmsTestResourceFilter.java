@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/28 08:38:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/05/28 15:04:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -55,6 +55,9 @@ public class OpenCmsTestResourceFilter {
     
     /** Defintition of a filter used for the touch method */
     public static OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
+    
+    /** Defintition of a filter used for the undoChanges method */
+    public static OpenCmsTestResourceFilter FILTER_UNDOCHANGES = getFilterUndoChanges();
     
     /** Defintition of a filter used for the writeProperty method */
     public static OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
@@ -172,6 +175,18 @@ public class OpenCmsTestResourceFilter {
         return filter; 
 
     }
+    
+    /**
+     * Creates a new filter used for the "undoChanges" method.<p>
+     * @return OpenCmsTestResourceFilter object
+     */
+    private static OpenCmsTestResourceFilter getFilterUndoChanges() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        filter.disableProjectLastModifiedTest();
+        return filter; 
+
+    }
+    
     
     /**
      * Creates a new filter used for the "touch" method.<p>

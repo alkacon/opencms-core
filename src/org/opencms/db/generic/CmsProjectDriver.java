@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/26 09:37:57 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2004/05/28 15:04:58 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.166 $ $Date: 2004/05/26 09:37:57 $
+ * @version $Revision: 1.167 $ $Date: 2004/05/28 15:04:58 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -583,7 +583,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     }
 
     /**
-     * Resets the state to UNCHANGED and the last-modified-in-project-ID to 0 for a specified resource.<p>
+     * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
      * 
      * @param context the current request context
      * @param resource the Cms resource
@@ -597,7 +597,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), resource, CmsDriverManager.C_UPDATE_ALL);
             }
 
-            //m_driverManager.getVfsDriver().writeLastModifiedProjectId(context.currentProject(), 0, resource);
+            // important: the project id must be set to the current project because of siblings 
+            // that might have not been published, otherwise the siblings would belong to a non-valid 
+            // project (e.g. with id 0) and show a grey flag
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error reseting resource state of " + resource.toString(), e);
