@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,14 @@
 
 package org.opencms.site;
 
-import com.opencms.flex.util.CmsUUID;
+import org.opencms.util.CmsUUID;
 
 /**
  * Describes a configures site in OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package com.opencms.file;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 
@@ -43,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.88 $ 
+ * @version $Revision: 1.89 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 

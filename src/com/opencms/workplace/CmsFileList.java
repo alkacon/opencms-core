@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/09/15 10:51:14 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.workplace;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.CmsException;
@@ -39,7 +40,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.file.I_CmsResourceType;
-import com.opencms.flex.util.CmsUUID;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.util.Encoder;
 
@@ -64,7 +64,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.75 $ $Date: 2003/09/12 17:38:05 $
+ * @version $Revision: 1.76 $ $Date: 2003/09/15 10:51:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 

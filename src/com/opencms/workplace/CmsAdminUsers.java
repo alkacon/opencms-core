@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
-* Date   : $Date: 2003/08/25 10:40:34 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/09/15 10:51:14 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,9 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.main.OpenCms;
+import org.opencms.security.I_CmsPasswordValidation;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
@@ -48,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.31 $ $Date: 2003/08/25 10:40:34 $
+ * @version $Revision: 1.32 $ $Date: 2003/09/15 10:51:14 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -301,7 +303,7 @@ public class CmsAdminUsers extends CmsWorkplaceDefault {
                                             CmsException.C_INVALID_PASSWORD);
                                 }
                                 // check the password
-                                Utils.validateNewPassword(cms, pwd, null);
+                                cms.validatePassword(pwd);
 
                                 Hashtable additionalInfo = new Hashtable();
 

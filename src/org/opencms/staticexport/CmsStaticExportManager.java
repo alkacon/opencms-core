@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.cache.CmsLruHashMap;
 import org.opencms.db.CmsPublishedResources;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
@@ -48,7 +49,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
-import com.opencms.flex.util.CmsLruHashMap;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -68,7 +68,7 @@ import javax.servlet.http.HttpServletResponse;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,10 @@ import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeNewPage;
 import com.opencms.file.CmsResourceTypePage;
 import com.opencms.file.CmsResourceTypePlain;
-import com.opencms.flex.util.CmsStringSubstitution;
-import com.opencms.flex.util.CmsUUID;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.util.LinkSubstitution;
@@ -496,7 +497,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                  }
                  if (channelId == null) {
                      // the channel id does not exist, so generate a new one
-                     int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
+                     int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
                      channelId = "" + newChannelId;
                  }
                  properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package com.opencms.file;
 
-import com.opencms.flex.util.CmsUUID;
+import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
 

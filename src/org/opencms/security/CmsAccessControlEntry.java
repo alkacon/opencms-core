@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,8 +30,9 @@
  */
 package org.opencms.security;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
 
 import java.util.StringTokenizer;
 
@@ -42,7 +43,7 @@ import java.util.StringTokenizer;
  * The access control entry contains two binary permission sets, the first grants permissions
  * and the second revokes permissions explicitly (second should have precedence)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.5 $ $Date: 2003/09/15 10:51:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsAccessControlEntry {

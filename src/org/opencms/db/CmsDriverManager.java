@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/09/15 09:14:19 $
- * Version: $Revision: 1.212 $
+ * Date   : $Date: 2003/09/15 10:51:13 $
+ * Version: $Revision: 1.213 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.cache.CmsLruHashMap;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsExportModuledata;
 import org.opencms.importexport.CmsImport;
@@ -39,12 +40,16 @@ import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockDispatcher;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.OpenCms;
+import org.opencms.report.I_CmsReport;
+import org.opencms.security.I_CmsPasswordValidation;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.workflow.*;
+import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workflow.CmsTaskLog;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
@@ -54,11 +59,7 @@ import com.opencms.core.exceptions.CmsResourceNotFoundException;
 import com.opencms.file.*;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
-import com.opencms.flex.util.CmsLruHashMap;
-import com.opencms.flex.util.CmsUUID;
-import org.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -82,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.212 $ $Date: 2003/09/15 09:14:19 $
+ * @version $Revision: 1.213 $ $Date: 2003/09/15 10:51:13 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -382,7 +383,7 @@ public class CmsDriverManager extends Object {
         // TODO: check if there is a better place for this
         String cosPoolUrl = configurations.getString("db.cos.pool");
         OpenCms.setRuntimeProperty("cosPoolUrl", cosPoolUrl);
-        CmsIdGenerator.setDefaultPool(cosPoolUrl);
+        CmsDbUtil.setDefaultPool(cosPoolUrl);
                 
         // return the configured driver manager
         return driverManager;
@@ -572,7 +573,7 @@ public class CmsDriverManager extends Object {
             // check the username
             validFilename(name);
             // check the password
-            Utils.validateNewPassword(cms, password, null);
+            validatePassword(password);
             if (name.length() > 0) {
                 CmsGroup defaultGroup = readGroup(context, group);
                 CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
@@ -660,7 +661,7 @@ public class CmsDriverManager extends Object {
         // check the username
         validFilename(name);
         // check the password
-        Utils.validateNewPassword(cms, password, null);
+        validatePassword(password);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
             CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
@@ -718,7 +719,7 @@ public class CmsDriverManager extends Object {
         // check the username
         validFilename(name);
         // check the password
-        Utils.validateNewPassword(cms, password, null);
+        validatePassword(password);
         if ((name.length() > 0)) {
             CmsGroup defaultGroup = readGroup(context, group);
             CmsUser newUser = m_userDriver.addUser(name, password, description, " ", " ", " ", 0, I_CmsConstants.C_FLAG_ENABLED, additionalInfos, defaultGroup, " ", " ", I_CmsConstants.C_USER_TYPE_WEBUSER);
@@ -7117,10 +7118,36 @@ public class CmsDriverManager extends Object {
         task.setState(I_CmsConstants.C_TASK_STATE_STARTED);
         task.setPercentage(0);
         task = m_workflowDriver.writeTask(task);
-        m_workflowDriver.writeSystemTaskLog(taskId, "Task was reactivated from " + context.currentUser().getFirstname() + " " + context.currentUser().getLastname() + ".");
-
+        m_workflowDriver.writeSystemTaskLog(taskId, "Task was reactivated from " + context.currentUser().getFirstname() + " " + context.currentUser().getLastname() + ".");    
     }
-
+    
+    /** The class used for password validation */        
+    private I_CmsPasswordValidation m_passwordValidationClass;
+        
+    /**
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
+     *
+     * @param password the new password that has to be checked
+     *
+     * @throws CmsSecurityException if the password is not valid
+     */
+    public void validatePassword(String password) throws CmsSecurityException {            
+        if (m_passwordValidationClass == null) {
+            synchronized (this) {
+                String className = OpenCms.getPasswordValidatingClass();   
+                try {
+                    m_passwordValidationClass = (I_CmsPasswordValidation)Class.forName(className).getConstructor(new Class[] {}).newInstance(new Class[] {});
+                } catch (Exception e) {
+                    throw new RuntimeException("Error generating password validation class instance");
+                }
+            }
+        }
+        m_passwordValidationClass.validatePassword(password);
+    }
+    
     /**
      * Sets a new password only if the user knows his recovery-password.
      *
@@ -7138,14 +7165,10 @@ public class CmsDriverManager extends Object {
      */
     public void recoverPassword(CmsObject cms, CmsRequestContext context, String username, String recoveryPassword, String newPassword) throws CmsException {
 
-        // check the password
-        Utils.validateNewPassword(cms, newPassword, null);
+        // check the new password
+        validatePassword(newPassword);
 
-        // check the length of the recovery password.
-        if (recoveryPassword.length() < I_CmsConstants.C_PASSWORD_MINIMUMSIZE) {
-            throw new CmsException("[" + getClass().getName() + "] no recovery password.");
-        }
-
+        // recover the password
         m_userDriver.recoverPassword(username, recoveryPassword, newPassword);
     }
 
@@ -7498,7 +7521,7 @@ public class CmsDriverManager extends Object {
     public void setPassword(CmsObject cms, CmsRequestContext context, String username, String newPassword) throws CmsException {
 
         // check the password
-        Utils.validateNewPassword(cms, newPassword, null);
+        validatePassword(newPassword);
 
         if (isAdmin(context)) {
             m_userDriver.setPassword(username, newPassword);
@@ -7525,7 +7548,7 @@ public class CmsDriverManager extends Object {
     public void setPassword(CmsObject cms, CmsRequestContext context, String username, String oldPassword, String newPassword) throws CmsException {
 
         // check the password
-        Utils.validateNewPassword(cms, newPassword, oldPassword);
+        validatePassword(newPassword);
 
         // read the user in order to ensure that the old password is correct
         CmsUser user = null;
@@ -7581,7 +7604,7 @@ public class CmsDriverManager extends Object {
     public void setRecoveryPassword(CmsObject cms, CmsUser currentUser, CmsProject currentProject, String username, String password, String newPassword) throws CmsException {
 
         // check the password
-        Utils.validateNewPassword(cms, newPassword, password);
+        validatePassword(newPassword);
 
         // read the user in order to ensure that the password is correct
         CmsUser user = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
- * Date   : $Date: 2003/09/02 12:19:27 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package com.opencms.boot;
 
-import com.opencms.flex.util.CmsUUID;
+import org.opencms.util.CmsUUID;
 
 import java.io.File;
 import java.util.Enumeration;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/09/15 10:51:13 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,18 +28,19 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
-import com.opencms.flex.util.CmsUUID;
 
 /**
  * An instance of this module describes a modulemedia entry in the database.
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.5 $
- * $Date: 2003/05/15 12:39:34 $
+ * $Revision: 1.6 $
+ * $Date: 2003/09/15 10:51:13 $
  */
 public class CmsMasterMedia {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsGroup.java,v $
- * Date   : $Date: 2003/09/12 10:01:53 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 package com.opencms.file;
 
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
+
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
 
 /**
  * A group in the OpenCms system.<p>
@@ -40,7 +41,7 @@ import org.opencms.security.I_CmsPrincipal;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class CmsGroup implements I_CmsPrincipal {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,9 @@ import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsStringSubstitution;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.CmsLog;
@@ -56,10 +59,7 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
-import com.opencms.flex.cache.CmsFlexCache;
-import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.flex.util.CmsStringSubstitution;
-import com.opencms.flex.util.CmsUUID;
+import org.opencms.flex.CmsFlexCache;
 import com.opencms.util.Utils;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -92,7 +92,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * @since 5.1
  */
 public class OpenCmsCore {

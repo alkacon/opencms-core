@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.boot.CmsBase;
@@ -51,7 +52,6 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
 import org.opencms.report.CmsShellReport;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2003/09/12 17:38:06 $ 
+ * @version $Revision: 1.15 $ $Date: 2003/09/15 10:51:15 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {

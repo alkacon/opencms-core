@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsSecurityException.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.4
  */
 public class CmsSecurityException extends CmsException {
@@ -58,6 +58,9 @@ public class CmsSecurityException extends CmsException {
     
     /** No permissions to change registry values */    
     public static final int C_SECURITY_NO_REGISTRY_PERMISSIONS = 304;
+       
+    /** Invalid password */    
+    public static final int C_SECURITY_INVALID_PASSWORD = 305;       
         
     /**
      * Default constructor for a CmsSecurityException.<p>
@@ -103,6 +106,8 @@ public class CmsSecurityException extends CmsException {
                 return "No permissions to perform this operation";
             case C_SECURITY_NO_REGISTRY_PERMISSIONS:
                 return "No permissions to modify the registry";
+            case C_SECURITY_INVALID_PASSWORD:
+                return "Invalid password";                
             default:
                 return super.getErrorDescription(type);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,12 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -43,8 +45,6 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsProject;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2003/08/30 11:30:08 $
+ * @version $Revision: 1.21 $ $Date: 2003/09/15 10:51:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -403,7 +403,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             res.getString(m_sqlManager.get("C_USERS_USER_FIRSTNAME")),
             res.getString(m_sqlManager.get("C_USERS_USER_LASTNAME")),
             res.getString(m_sqlManager.get("C_USERS_USER_EMAIL")),
-            SqlHelper.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
+            CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_USERS_USER_LASTLOGIN")).getTime(),
             res.getInt(m_sqlManager.get("C_USERS_USER_FLAGS")),
             info,
             createCmsGroupFromResultSet(res, hasGroupIdInResultSet),

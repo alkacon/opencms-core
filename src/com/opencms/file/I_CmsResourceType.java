@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
  
 package com.opencms.file;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.CmsException;
-import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
 

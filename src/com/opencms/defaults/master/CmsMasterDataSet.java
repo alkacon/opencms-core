@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/09/15 10:51:13 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,8 +28,9 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.Vector;
@@ -40,8 +41,8 @@ import java.util.Vector;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.7 $
- * $Date: 2003/05/15 12:39:34 $
+ * $Revision: 1.8 $
+ * $Date: 2003/09/15 10:51:13 $
  */
 public class CmsMasterDataSet implements Serializable {
 

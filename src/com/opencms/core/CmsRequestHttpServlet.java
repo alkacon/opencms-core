@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/09/15 10:51:15 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,9 +29,9 @@
 package com.opencms.core;
 
 import org.opencms.main.*;
+import org.opencms.util.CmsResourceTranslator;
 
 import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.flex.util.CmsResourceTranslator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.38 $ $Date: 2003/08/14 15:37:24 $
+ * @version $Revision: 1.39 $ $Date: 2003/09/15 10:51:15 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 

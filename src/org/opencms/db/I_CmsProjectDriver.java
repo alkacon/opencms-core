@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/12 14:46:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/09/15 10:51:13 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.*;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.core.CmsException;
@@ -41,7 +42,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.Serializable;
 import java.util.Hashtable;
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Definitions of all required project driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/09/12 14:46:21 $
+ * @version $Revision: 1.20 $ $Date: 2003/09/15 10:51:13 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {

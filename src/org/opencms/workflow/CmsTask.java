@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2003/08/30 11:30:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,15 @@
 
 package org.opencms.workflow;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
 
 /**
  * Describes an OpenCms task.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTask {
 

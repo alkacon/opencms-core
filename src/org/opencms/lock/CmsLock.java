@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/08/07 14:55:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,9 @@
 
 package org.opencms.lock;
 
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
 
 /**
  * Represents the lock state of a VFS resource.<p>
@@ -46,7 +47,7 @@ import com.opencms.flex.util.CmsUUID;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/08/07 14:55:28 $
+ * @version $Revision: 1.12 $ $Date: 2003/09/15 10:51:15 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher

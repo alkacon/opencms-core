@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,12 @@ package org.opencms.db.oracle;
 
 import oracle.jdbc.driver.OracleResultSet;
 
+import org.opencms.db.CmsDbUtil;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsBackupProject;
 import com.opencms.file.CmsBackupResource;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -55,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/15 10:51:14 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {   
@@ -87,9 +88,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                         new CmsUUID(res.getString("USER_ID")),
                         new CmsUUID(res.getString("GROUP_ID")),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        SqlHelper.getTimestamp(res, "PROJECT_CREATEDATE"),
+                        CmsDbUtil.getTimestamp(res, "PROJECT_CREATEDATE"),
                         res.getInt("PROJECT_TYPE"),
-                        SqlHelper.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                         res.getString("PROJECT_PUBLISHED_BY_NAME"),
                         res.getString("USER_NAME"),

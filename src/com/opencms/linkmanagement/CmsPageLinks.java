@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/CmsPageLinks.java,v $
-* Date   : $Date: 2003/05/15 12:39:35 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/09/15 10:51:15 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,7 +27,7 @@
 */
 package com.opencms.linkmanagement;
 
-import com.opencms.flex.util.CmsUUID;
+import org.opencms.util.CmsUUID;
 
 import java.util.Vector;
 

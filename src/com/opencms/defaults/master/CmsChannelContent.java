@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/09/12 17:38:06 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/09/15 10:51:13 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master;
 
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -42,7 +43,6 @@ import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
-import com.opencms.flex.util.CmsUUID;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.54 $
- * $Date: 2003/09/12 17:38:06 $
+ * $Revision: 1.55 $
+ * $Date: 2003/09/15 10:51:13 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -828,7 +828,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
+        int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }

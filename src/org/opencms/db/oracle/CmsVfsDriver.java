@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,11 @@
 
 package org.opencms.db.oracle;
 
+import org.opencms.util.CmsUUID;
+
 import oracle.jdbc.driver.OracleResultSet;
 
 import com.opencms.core.CmsException;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -50,7 +51,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * Oracle/OCI implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/09/12 10:01:54 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/15 10:51:14 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/15 09:14:19 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@
 package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -45,8 +47,6 @@ import com.opencms.file.CmsProject;
 import com.opencms.file.CmsPropertydefinition;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Connection;
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.44 $ $Date: 2003/09/15 09:14:19 $
+ * @version $Revision: 1.45 $ $Date: 2003/09/15 10:51:14 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -100,8 +100,8 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int state = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int loaderId = res.getInt(m_sqlManager.get("C_RESOURCES_LOADER_ID"));
-        long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
-        long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
+        long dateCreated = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
+        long dateLastModified = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_USER_LASTMODIFIED")));
         String userLastModifiedName = res.getString(m_sqlManager.get("C_RESOURCES_LASTMODIFIED_BY_NAME"));
@@ -215,9 +215,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         new CmsUUID(res.getString("USER_ID")),
                         new CmsUUID(res.getString("GROUP_ID")),
                         new CmsUUID(res.getString("MANAGERGROUP_ID")),
-                        SqlHelper.getTimestamp(res, "PROJECT_CREATEDATE"),
+                        CmsDbUtil.getTimestamp(res, "PROJECT_CREATEDATE"),
                         res.getInt("PROJECT_TYPE"),
-                        SqlHelper.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                         res.getString("PROJECT_PUBLISHED_BY_NAME"),
                         res.getString("USER_NAME"),
@@ -536,9 +536,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_USER_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
-                        SqlHelper.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE")),
-                        SqlHelper.getTimestamp(res, "PROJECT_PUBLISHDATE"),
+                        CmsDbUtil.getTimestamp(res, "PROJECT_PUBLISHDATE"),
                         new CmsUUID(res.getString("PROJECT_PUBLISHED_BY")),
                         res.getString("PROJECT_PUBLISHED_BY_NAME"),
                         res.getString("USER_NAME"),

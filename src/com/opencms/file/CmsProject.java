@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,10 @@
 
 package com.opencms.file;
 
+import org.opencms.db.CmsDbUtil;
+import org.opencms.util.CmsUUID;
+
 import com.opencms.core.I_CmsConstants;
-import com.opencms.flex.util.CmsUUID;
-import com.opencms.util.SqlHelper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +48,7 @@ import java.util.List;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class CmsProject implements Cloneable {
 
@@ -142,7 +143,7 @@ public class CmsProject implements Cloneable {
             new CmsUUID(res.getString(sqlManager.get("C_PROJECTS_GROUP_ID"))),
             new CmsUUID(res.getString(sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
             res.getInt(sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-            SqlHelper.getTimestamp(res, sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
+            CmsDbUtil.getTimestamp(res, sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
             res.getInt(sqlManager.get("C_PROJECTS_PROJECT_TYPE"))
         );
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,8 @@
 
 package com.opencms.boot;
 
-import com.opencms.flex.util.CmsStringSubstitution;
+import org.opencms.util.CmsStringSubstitution;
+
 import com.opencms.util.Encoder;
 
 import java.io.File;
@@ -53,7 +54,7 @@ import source.org.apache.java.util.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class CmsSetupUtils {
 

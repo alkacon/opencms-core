@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2003/09/05 16:05:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/15 10:51:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.main;
 
 import org.opencms.report.A_CmsReportThread;
+import org.opencms.util.CmsUUID;
 
-import com.opencms.flex.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 5.1.10
  */
 public class CmsThreadStore extends Thread {

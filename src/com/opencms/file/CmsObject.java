@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/09/12 17:38:05 $
-* Version: $Revision: 1.404 $
+* Date   : $Date: 2003/09/15 10:51:14 $
+* Version: $Revision: 1.405 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,6 +39,8 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.synchronize.CmsSynchronize;
+import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
@@ -52,8 +54,6 @@ import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
-import com.opencms.flex.util.CmsResourceTranslator;
-import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
 import com.opencms.linkmanagement.LinkChecker;
 import org.opencms.report.CmsShellReport;
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.404 $
+ * @version $Revision: 1.405 $
  */
 public class CmsObject {
 
@@ -641,7 +641,7 @@ public class CmsObject {
         try {
             setContextToCos();
             Hashtable properties = new Hashtable();
-            int newChannelId = org.opencms.db.CmsIdGenerator.nextId(I_CmsConstants.C_TABLE_CHANNELID);
+            int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
             properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId + "");
             return (CmsFolder)createResource(parentChannel, newChannelName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, properties);
         } finally {
@@ -4362,5 +4362,19 @@ public class CmsObject {
     public CmsResource recoverResource(String resourcename) throws CmsException {
         return m_driverManager.recoverResource(m_context, m_context.addSiteRoot(resourcename));        
     }
+    
+    /**
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
+     *
+     * @param password the new password that has to be checked
+     *
+     * @throws CmsSecurityException if the password is not valid
+     */    
+    public void validatePassword(String password) throws CmsSecurityException {
+        m_driverManager.validatePassword(password);
+    }           
 
 }

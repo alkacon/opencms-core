@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/09/12 17:38:06 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2003/09/15 10:51:14 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,10 @@
 
 package com.opencms.defaults.master.genericsql;
 
-import org.opencms.db.CmsIdGenerator;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -43,7 +44,6 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Constructor;
@@ -1156,7 +1156,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_media_offline");
             for (int i = 0; i < mediaToAdd.size(); i++) {
                 CmsMasterMedia media = (CmsMasterMedia)mediaToAdd.get(i);
-                media.setId(CmsIdGenerator.nextId(m_poolUrl, "CMS_MODULE_MEDIA"));
+                media.setId(CmsDbUtil.nextId(m_poolUrl, "CMS_MODULE_MEDIA"));
                 media.setMasterId(masterId);
                 sqlFillValues(stmt, media);
                 stmt.executeUpdate();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/09/04 12:50:16 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/09/15 10:51:14 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 package com.opencms.util;
 
 import org.opencms.main.OpenCms;
+import org.opencms.security.*;
 
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
@@ -318,37 +319,6 @@ public final class Utils {
                     data.setElementAt(data.elementAt(j + 1), j);
                     data.setElementAt(a, j + 1);
                 }
-            }
-        }
-    }
-
-    /**
-     * This method checks if a new password sticks to the rules for
-     * new passwords, which are defined by a Class configured in 
-     * in the opencms.properties.<p>
-     * 
-     * If this class throws no exception the password is ok. The default class
-     * only checks for the min 4 characters rule.<p>
-     *
-     * @param cms the current cms context
-     * @param password the new password that has to be checked
-     * @param oldPassword the old password or null if not needed
-     *
-     * @throws CmsException if the password is not valid
-     */
-    public static void validateNewPassword(CmsObject cms, String password, String oldPassword) throws CmsException {
-
-        // first get the class from the properties
-        String className = OpenCms.getPasswordValidatingClass();
-        try {
-            I_PasswordValidation pwClass = (I_PasswordValidation)Class.forName(className).getConstructor(new Class[] {}).newInstance(new Class[] {});
-            pwClass.checkNewPassword(cms, password, oldPassword);
-        } catch (Exception e) {
-            if (e instanceof CmsException) {
-                throw (CmsException)e;
-            } else {
-                throw new CmsException("could not validate password with class:"+className,
-                            CmsException.C_UNKNOWN_EXCEPTION, e);
             }
         }
     }

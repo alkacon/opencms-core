@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/02 12:15:38 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.flex.jsp;
 
+import org.opencms.jsp.*;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPointerLoader;
@@ -46,7 +47,7 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsJspTemplate;
-import com.opencms.flex.cache.CmsFlexController;
+import org.opencms.flex.CmsFlexController;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.template.CmsXmlTemplate;
 import com.opencms.util.Utils;
@@ -81,7 +82,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.0 beta 2
  */

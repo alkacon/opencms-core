@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/12 17:38:06 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2003/09/15 10:51:14 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,13 @@ package org.opencms.db.generic;
 
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsExportPointDriver;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsProjectDriver;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 
@@ -54,9 +56,7 @@ import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
-import com.opencms.flex.util.CmsUUID;
 import com.opencms.linkmanagement.CmsPageLinks;
-import com.opencms.util.SqlHelper;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.91 $ $Date: 2003/09/12 17:38:06 $
+ * @version $Revision: 1.92 $ $Date: 2003/09/15 10:51:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -890,7 +890,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-                        SqlHelper.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE"))));
             }
         } catch (SQLException exc) {
@@ -1696,7 +1696,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_GROUP_ID"))),
                         new CmsUUID(res.getString(m_sqlManager.get("C_PROJECTS_MANAGERGROUP_ID"))),
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_FLAGS")),
-                        SqlHelper.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
+                        CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_PROJECTS_PROJECT_CREATEDATE")),
                         res.getInt(m_sqlManager.get("C_PROJECTS_PROJECT_TYPE")));
             } else {
                 // project not found!
@@ -1738,7 +1738,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             while (res.next()) {
                 comment = res.getString(m_sqlManager.get("C_LOG_COMMENT"));
                 id = res.getInt(m_sqlManager.get("C_LOG_ID"));
-                starttime = SqlHelper.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
+                starttime = CmsDbUtil.getTimestamp(res, m_sqlManager.get("C_LOG_STARTTIME"));
                 user = new CmsUUID(res.getString(m_sqlManager.get("C_LOG_USER")));
                 type = res.getInt(m_sqlManager.get("C_LOG_TYPE"));
 

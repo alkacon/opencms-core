@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/09/08 09:08:09 $
-* Version: $Revision: 1.270 $
+* Date   : $Date: 2003/09/15 10:51:15 $
+* Version: $Revision: 1.271 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.270 $ $Date: 2003/09/08 09:08:09 $
+ * @version $Revision: 1.271 $ $Date: 2003/09/15 10:51:15 $
  */
 public interface I_CmsConstants {
 
@@ -48,11 +48,6 @@ public interface I_CmsConstants {
      * The copyright message for OpenCms.
      */
     String C_COPYRIGHT[] = {"", "Copyright (c) 2002-2003 Alkacon Software", "Copyright (c) 2000-2002 The OpenCms Group", "OpenCms comes with ABSOLUTELY NO WARRANTY", "This is free software, and you are welcome to", "redistribute it under certain conditions.", "Please see the GNU Lesser General Public Licence for", "further details.", "" };
-
-    /**
-     * The minimum-size of a passwordstring.
-     */
-    int C_PASSWORD_MINIMUMSIZE = 4;
 
     /**
      * The maximum length of a resource name (incl. path).

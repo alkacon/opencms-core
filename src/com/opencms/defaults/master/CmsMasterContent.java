@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/09/08 09:08:08 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/09/15 10:51:13 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.defaults.master;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
@@ -39,7 +40,6 @@ import com.opencms.defaults.master.genericsql.CmsDbAccess;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
-import com.opencms.flex.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.StringTokenizer;
@@ -53,8 +53,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.43 $
- * $Date: 2003/09/08 09:08:08 $
+ * $Revision: 1.44 $
+ * $Date: 2003/09/15 10:51:13 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
