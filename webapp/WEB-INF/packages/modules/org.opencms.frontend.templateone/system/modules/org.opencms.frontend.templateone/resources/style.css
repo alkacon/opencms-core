@@ -175,11 +175,9 @@ span.imagelink {
 /* top navigation row */
 div.navtop {
 	width: <%= tabWidth %>px;
-	background-color: <%= headNavBg %>;
-	vertical-align: middle;
-	text-align: left;
-	height: 18px;
 	margin: 0 auto;
+	background-color: <%= headNavBg %>;
+	text-align: left;
 	text-indent: 5px;
 	<%
 	if (showMainBorder) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2004/12/17 09:00:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/21 09:42:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package org.opencms.frontend.templateone;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
@@ -67,12 +68,14 @@ import javax.servlet.jsp.PageContext;
  * request parameters.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
     
     /** Request parameter name for the head navigation start folder.<p> */
     public static final String C_PARAM_HEADNAV_FOLDER = "headnavfolder";
+    /** Request parameter name for the head navigation flag to use images on 1st level.<p> */
+    public static final String C_PARAM_HEADNAV_IMAGES = "headnavimages";
     /** Request parameter name for the current locale.<p> */
     public static final String C_PARAM_LOCALE = "locale";
     /** Request parameter name for the left navigation editable include element uri.<p> */
@@ -107,6 +110,8 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     private boolean m_navLeftShowTree;
     /** Stores the substituted path to the modules resources.<p> */
     private String m_resPath;
+    /** Flag that determines if the head navigation 1st row should use images instead of text links. */
+    private boolean m_showHeadNavImages;
     /** Flag to determine if the DHTML menus (2nd level) of the head navigation should be shown.<p> */
     private boolean m_showMenus;
     /** Stores the path to the start folder for navigation and search.<p> */
@@ -217,14 +222,16 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      * @return the html for the head navigation row
      */
     public String buildNavigationHead(String homeLabel, String styleLink, String styleSeparator) {
-        StringBuffer result = new StringBuffer(1024);
-            // only create navigation if the template is configured to show it
-            result.append("<div class=\"bordermain ");
-            result.append(styleLink);
-            result.append("\">\n");
-            result.append("\t<!-- Beginn der Top-Navigation -->\n");
-            
-            List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());   
+        
+        boolean firstItem = true;
+        StringBuffer result = new StringBuffer(1024);       
+        result.append("<div class=\"bordermain ");
+        result.append(styleLink);
+        result.append("\">\n");
+        result.append("\t<!-- Start Topnavigation -->\n");
+        
+        List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
+        if (! showHeadNavImages()) {
             // create the "home" link at first position
             homeLabel = homeLabel.toUpperCase();
             result.append("<a class=\"");
@@ -236,20 +243,58 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             result.append("\">");
             result.append(homeLabel);
             result.append("</a>\n");
-            
-            int count = -1;
-            String showItemProperty;
-            for (int i=0; i<navElements.size(); i++) {
-                CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
-                showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), getHeadNavItemDefaultStringValue());
-                boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
-                if (nav.isFolderLink() && showItem) {
-                    // create an entry for every folder
-                    count++;
-                    String navText = nav.getNavText().toUpperCase();
-                    result.append("<span class=\"");
-                    result.append(styleSeparator);
-                    result.append("\">|</span>\n");
+            firstItem = false;
+        } else {
+            // create a table to allow vertical alignment of images
+            result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
+        }
+        
+        int count = -1;
+        String showItemProperty;
+        for (int i=0; i<navElements.size(); i++) {
+            CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
+            showItemProperty = property(C_PROPERTY_HEADNAV_USE, nav.getResourceName(), "true");
+            boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
+            if (nav.isFolderLink() && showItem) {
+                // create an entry for every folder
+                count++;
+                String navText = CmsEncoder.escapeXml(nav.getNavText().toUpperCase());
+                if (showHeadNavImages()) {
+                    // build row with images
+                    if (! firstItem) {
+                        result.append("<td style= \"vertical-align: middle\">");
+                        result.append("<span class=\"");
+                        result.append(styleSeparator);
+                        result.append("\">|</span>");
+                        result.append("</td>\n");
+                    }
+                    result.append("<td style= \"vertical-align: middle\">");
+                    result.append("<a");
+                    if (showMenus()) {
+                        result.append(" onmouseover=\"showMenu(");
+                        result.append(count);
+                        result.append(");\"");
+                    }
+                    result.append(" title=\"");
+                    result.append(navText);
+                    result.append("\" href=\"");
+                    result.append(link(nav.getResourceName()));
+                    result.append("\">");
+                    result.append("<img id=\"xbparent");
+                    result.append(count);
+                    result.append("\" src=\"");
+                    result.append(link(nav.getNavImage()));
+                    result.append("\" border=\"0\" alt=\"");
+                    result.append(navText);
+                    result.append("\">");
+                    result.append("</a></td>\n");  
+                } else { 
+                    // build row with text links
+                    if (! firstItem) {
+                        result.append("<span class=\"");
+                        result.append(styleSeparator);
+                        result.append("\">|</span>\n");
+                    }
                     result.append("<a id=\"xbparent");
                     result.append(count);
                     result.append("\"");
@@ -266,11 +311,19 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     result.append(link(nav.getResourceName()));
                     result.append("\">");
                     result.append(navText);
-                    result.append("</a>\n");        
+                    result.append("</a>\n");  
                 }
+                firstItem = false;
             }
-            result.append("\t<!-- Ende der Top-Navigation -->\n");
-            result.append("</div>\n");
+        }
+        
+        if (showHeadNavImages()) {
+            // close table
+            result.append("</tr></table>");
+        }
+        
+        result.append("\t<!-- End Topnavigation -->\n");
+        result.append("</div>\n");
         return result.toString();
     }
     
@@ -353,7 +406,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         StringBuffer result = new StringBuffer(2048);
         if (showNavLeftTree()) {
             // create navigation tree
-            result.append("<!-- Start Navigation links -->\n");
+            result.append("<!-- Start navigation left -->\n");
             result.append("\t<div style=\"line-height: 1px; font-size: 1px; display: block; height: 4px;\">&nbsp;</div>\n");
         
             // get start and end level of the displayed tree
@@ -388,9 +441,14 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 String styleClass = "navleft";
                 if (uri.equals(resName) || (nav.isFolderLink() && isDefaultFile(resName, uri))) {
                     styleClass += "active";
-                } else if (level == 1 && showNavLeftSelected()) {
-                    // do not show element, does not belong to selected area
-                    showElement = false;
+                }
+                
+                // check if current element is shown when left navigation follows head menu
+                if (showNavLeftSelected()) {
+                    if (level <= 1 && ! uri.startsWith(resName)) {
+                        // do not show element, does not belong to selected area
+                        showElement = false;
+                    }
                 } 
                 
                 if (showElement) {
@@ -412,6 +470,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                             result.append("<ul class=\"navleft\">\n");
                         }
                     } else {
+                        // initial list creation
                         result.append("<ul class=\"navleft\">\n");    
                     }         
                     
@@ -435,7 +494,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                 // close the remaining lists
                 result.append("</li></ul>\n");
             }       
-            result.append("<!-- Ende Navigation links -->");
+            result.append("<!-- End navigation left -->");
         }
         return result.toString();
     }
@@ -521,6 +580,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             m_locale = property(I_CmsConstants.C_PROPERTY_LOCALE, "search", "en").toLowerCase();    
         }
         m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
+        m_showHeadNavImages = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_IMAGES)).booleanValue();
         m_headNavItemDefaultValue = true;
         m_navLeftElementUri = req.getParameter(C_PARAM_NAVLEFT_ELEMENTURI);
         m_navLeftShowSelected = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
@@ -564,6 +624,16 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     public void setHeadNavItemDefaultValue(boolean defaultValue) {
         
         m_headNavItemDefaultValue = defaultValue;
+    }
+    
+    /**
+     * Returns if the head navigation should use images for the 1st navigation level.<p>
+     * 
+     * @return true if the head navigation should use images for the 1st navigation level, otherwise false
+     */
+    public boolean showHeadNavImages() {
+        
+        return m_showHeadNavImages;
     }
     
     /**

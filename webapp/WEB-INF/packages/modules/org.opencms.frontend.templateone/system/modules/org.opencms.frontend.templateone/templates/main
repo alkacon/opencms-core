@@ -178,7 +178,6 @@ if (cms.template("head")) {
 }
 
 if (cms.template("content")) {
-	cms.includeOldElements("body","body2");
 	cms.includeElements();	
 }
 

@@ -281,15 +281,29 @@ xbPositionableElement.prototype._updatePosition = function ()
   }
   
   this.styleObj.left = x + this.offsetX;
-  this.styleObj.top  = y + this.offsetY;
+  this.styleObj.top  = calculateOffsetY(document.getElementById(this.refElement), y, this.offsetY);
+
 };
 
 // ------------------------------------------- Additional functions
 
+function calculateOffsetY(element, y, offsetY) {
+	if (typeof(element.height) != "number") {
+	// no image element, add given offset
+  	return y + offsetY;
+  } else {
+  	// image element, do not use given offset
+  	return y;
+  }
+};
+
 function getElementPos( element, offsetPos ) {
     var pos = 0;
-    
-    while (element!=null) {
+    if (typeof(element.height) == "number" && offsetPos == "Top") {
+    	// image element, add element height
+    	pos += element.height;
+    }
+    while (element != null) {
         pos += element[ "offset" + offsetPos ];
         element = element.offsetParent;
     }

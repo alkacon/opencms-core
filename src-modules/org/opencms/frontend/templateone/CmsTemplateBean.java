@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/01/18 13:07:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/01/21 09:42:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
     
@@ -656,53 +656,6 @@ public class CmsTemplateBean extends CmsJspActionElement {
     }
     
     /**
-     * Includes the old page elements if they are present.<p>
-     * 
-     * @param body1 the name of the old body element one
-     * @param body2 the name of the old body element two
-     * @throws IOException if writing the output fails
-     * @throws JspException if including an element fails
-     */
-    public void includeOldElements(String body1, String body2) throws IOException, JspException {
-        if (template(body1 + "," + body2, false)) {
-            
-            // create start part (common layout only)
-            JspWriter out = getJspContext().getOut();
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "start", getLayout()));  
-            String width;          
-            if (template(body1, true)) {
-                // body 1 is present, check for presence of body 2 to determine cell width
-                if (template(body2, true)) {
-                    // body 2 is present, use small cell for body 1
-                    width = "355";
-                } else {
-                    // body 2 is not present, use large cell for body 1
-                    width = "530";
-                }
-                String bodyStart = getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "body_start", getLayout());
-                bodyStart = CmsStringUtil.substitute(bodyStart, "${width}", width);
-                out.print(bodyStart);
-                // include editable body 1
-                include(null, body1, true);
-                out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "body_end", getLayout()));
-            }
-            if (template(body2, true)) {
-                // body 2 is present, show it
-                width = "145";
-                String bodyStart = getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "body_start", getLayout());
-                bodyStart = CmsStringUtil.substitute(bodyStart, "${width}", width);
-                out.print(bodyStart);
-                // include editable body 2
-                include(null, body2, true);
-                out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "body_end", getLayout()));
-            }
-            
-            // create end part (common layout only)
-            out.print(getTemplateParts().includePart(C_FOLDER_ELEMENTS + "elements_old.jsp", "end", getLayout()));
-        }  
-    }
-    
-    /**
      * Includes page elements useable on popup pages ("popuphead", "popupfoot").<p>
      * 
      * @param element the element to display from the target
@@ -791,6 +744,7 @@ public class CmsTemplateBean extends CmsJspActionElement {
         getProperties().put(CmsTemplateNavigation.C_PARAM_RESPATH, getResourcePath());
         getProperties().put(CmsTemplateNavigation.C_PARAM_STARTFOLDER, getStartFolder());
         getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
+        getProperties().put(CmsTemplateNavigation.C_PARAM_HEADNAV_IMAGES, getConfigurationValue("headnav.images", "false"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", "true"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_NAVLEFT_SHOWSELECTED, getConfigurationValue("navleft.showselected", "false"));
         getProperties().put(CmsTemplateNavigation.C_PARAM_NAVLEFT_SHOWTREE, "" + showLeftNavigation());
