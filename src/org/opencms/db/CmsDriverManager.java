@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2003/07/24 15:56:43 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.86 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.87 $ $Date: 2003/07/24 15:56:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4393,23 +4393,27 @@ public class CmsDriverManager extends Object {
      * and force was set to false.
      */
     public void lockResource(CmsRequestContext context, String resourcename, boolean forceLock) throws CmsException {
-        CmsResource resource = readFileHeader(context, resourcename);
+        CmsResource resource = null;         
+        
+        resource = readFileHeader(context, resourcename);
         
         if (forceLock || resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            // unlock any possible direct locked sub resources
             unlockResource(context, resourcename, true);
+            // unlock any possible direct locked sub resources first
         } 
 
         if (!forceLock) {
             // check if the user has write access to the resource
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);            
         }
-
+        
+        // lock the resource physically in the database
         resource.setLocked(context.currentUser().getId());
         resource.setLockedInProject(context.currentProject().getId());
         m_vfsDriver.updateLockstate(resource, context.currentProject().getId());
 
-        m_lockDispatcher.addResource(resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId(), CmsLock.C_HIERARCHY_DIRECT_LOCKED);
+        // add a direct lock for the resource in the lock dispatcher
+        m_lockDispatcher.addResource(resource.getFullResourceName(), context.currentUser().getId(), context.currentProject().getId(), CmsLock.C_TYPE_DIRECT_LOCKED);
 
         clearResourceCache();
     }
@@ -7413,42 +7417,63 @@ public class CmsDriverManager extends Object {
     public void unlockResource(CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
         String currentResourceName = null;       
         CmsResource currentResource = null;
-        List resources = null;
+        List resourceNames = null;
+        Iterator i = null;
+        CmsLock currentLock = null;
+        CmsUUID currentLockUserId = null;
         
-        if (forceUnlock) {
-            // get a list of direct locked sub resources, which get unlocked
-            // if a lock on a folder is stolen...
-            resources = m_lockDispatcher.getDirectLockedSubResources(resourcename);
-        } else {
-            resources = (List) new ArrayList();
+        
+        currentLock = m_lockDispatcher.getLock(context, resourcename);
+        
+        // check a few abort conditions first
+        
+        if (currentLock.isNullLock() && !resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            // its a file which isnt locked anyway...
+            return;
         }
         
-        // add the resource itself to the list of all resource that get now unlocked
-        resources.add(resourcename);
+        if (!forceUnlock && currentLock.getType() == CmsLock.C_TYPE_INDIRECT_LOCKED) {
+            throw new CmsLockException("Unlocking resources in locked folders is not allowed!", CmsLockException.C_RESOURCE_LOCKED_INDIRECT);
+        }           
+        
+        // build a list with resources names that get unlocked    
+        
+        if (forceUnlock && resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+            // get a list of all direct locked sub resources in case the resource name represents a folder
+            resourceNames = m_lockDispatcher.getLockedSubResources(resourcename);
+        } else {
+            resourceNames = (List) new ArrayList();
+        }
+        
+        // add the resource itself to the list of all resources that get now unlocked
+        resourceNames.add(resourcename);
                 
-        Iterator i = resources.iterator();
+        i = resourceNames.iterator();
         while (i.hasNext()) {
             currentResourceName = (String) i.next();
             currentResource = readFileHeader(context, currentResourceName);
 
             // unlock the resource if it is locked by the current user
-            CmsLock lock = m_lockDispatcher.getLock(context, currentResource.getFullResourceName());
-            CmsUUID lockUserId = lock.getUserId();
+            currentLock = m_lockDispatcher.getLock(context, currentResource.getFullResourceName());
+            currentLockUserId = currentLock.getUserId();
         
-            // either the unlocking has to be forced,
-            // or the user who unlocks the resource has to match the user who currently locked the resource
-            if (forceUnlock || lockUserId.equals(context.currentUser().getId())) {
-                if (!forceUnlock) {
-                    // check if the user has write access to the resource
-                    checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
-                }
-                                
-                // unlock the resource
-                currentResource.setLocked(CmsUUID.getNullUUID());
-                // update resource
-                m_vfsDriver.updateLockstate(currentResource, context.currentProject().getId());            
+            // either the unlocking has to be forced, or the user who unlocks the resource 
+            // has to match the user who currently locked the resource
+            if (forceUnlock || currentLockUserId.equals(context.currentUser().getId())) {                                
+                if (currentLock.getType() == CmsLock.C_TYPE_DIRECT_LOCKED) {
+                    if (!forceUnlock) {
+                        // check if the user has write access to the resource
+                        checkPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS);
+                    }
+                                    
+                    // unlock the resource
+                    currentResource.setLocked(CmsUUID.getNullUUID());
+                    // update resource
+                    m_vfsDriver.updateLockstate(currentResource, context.currentProject().getId());
+                }  
+                
                 // update the lock dispatcher
-                m_lockDispatcher.removeResource(lock.getResourceName());
+                m_lockDispatcher.removeResource(currentLock.getResourceName());                
             }            
         }
         

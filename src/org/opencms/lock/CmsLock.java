@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/18 14:11:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/24 15:56:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.io.Serializable;
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/24 15:56:43 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
@@ -64,19 +64,19 @@ import java.io.Serializable;
 public class CmsLock extends Object implements Serializable, Cloneable {
 
     /** The resource is directly locked */
-    public static final int C_HIERARCHY_DIRECT_LOCKED = 3;
+    public static final int C_TYPE_DIRECT_LOCKED = 2;
 
     /** The resource is indirect locked because one of it's parent folders is locked */
-    public static final int C_HIERARCHY_INDIRECT_LOCKED = 2;
+    public static final int C_TYPE_INDIRECT_LOCKED = 1;
 
     /** The resource is not locked at all */
-    public static final int C_UNLOCKED = 1;
+    public static final int C_TYPE_UNLOCKED = 0;
 
     /** The shared Null lock object */
-    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_UNLOCKED);
+    private static final CmsLock C_NULL_LOCK = new CmsLock("", CmsUUID.getNullUUID(), I_CmsConstants.C_UNKNOWN_ID, CmsLock.C_TYPE_UNLOCKED);
 
     /** Saves whether the resource is direct or indirect locked */
-    private int m_hierarchy;
+    private int m_type;
 
     /** The ID of the project where the resource is currently locked */
     private int m_projectId;
@@ -95,11 +95,11 @@ public class CmsLock extends Object implements Serializable, Cloneable {
      * @param projectId the ID of the project where the resource is locked
      * @param hierarchy flag indicating how the resource is locked
      */
-    public CmsLock(String resourceName, CmsUUID userId, int projectId, int hierarchy) {
+    public CmsLock(String resourceName, CmsUUID userId, int projectId, int type) {
         m_resourceName = resourceName;
         m_userId = userId;
         m_projectId = projectId;
-        m_hierarchy = hierarchy;
+        m_type = type;
     }
 
     /**
@@ -133,8 +133,8 @@ public class CmsLock extends Object implements Serializable, Cloneable {
     /**
      * @return
      */
-    public int getHierarchy() {
-        return m_hierarchy;
+    public int getType() {
+        return m_type;
     }
 
     /**

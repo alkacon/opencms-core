@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/24 15:56:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on a locked resource.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.4 $ $Date: 2003/07/24 15:56:43 $
  * @since 5.1.4
  */
 public class CmsLockException extends CmsException {
@@ -49,6 +49,9 @@ public class CmsLockException extends CmsException {
     
     /** The resource is locked by a user different from the current user */
     public static final int C_RESOURCE_LOCKED_BY_OTHER_USER = 201;
+    
+    /** Indirect locked resources can only be unlocked by unlocking the direct locked parent folder */
+    public static final int C_RESOURCE_LOCKED_INDIRECT = 202;
     
     /**
      * Default constructor for a CmsLockException.<p>

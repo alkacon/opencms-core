@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/23 10:25:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/24 15:56:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/07/23 10:25:55 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/24 15:56:43 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -162,7 +162,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
                 if (resourcename.startsWith(lockedPath) && lockedPath.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                     // create a new indirect lock if a locked parent folder was found
                     parentLock = (CmsLock) m_locks.get(lockedPath);
-                    lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
+                    lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_TYPE_INDIRECT_LOCKED);
                     break;
                 }
             }
@@ -196,7 +196,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             while (i.hasNext()) {
                 currentResource = (CmsResource) i.next();
                 currentPath = currentResource.getFullResourceName();
-                addResource(currentPath, currentResource.isLockedBy(), currentResource.getProjectId(), CmsLock.C_HIERARCHY_DIRECT_LOCKED);
+                addResource(currentPath, currentResource.isLockedBy(), currentResource.getProjectId(), CmsLock.C_TYPE_DIRECT_LOCKED);
                 count++;
             }
 
@@ -213,7 +213,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
     }
 
     /**
-     * Proves, if a resource is locked.<p>
+     * Proves if a resource is locked.<p>
      * 
      * Use {@link org.opencms.lock.CmsLockDispatcher#getLock(CmsRequestContext, String)} 
      * to obtain a CmsLock object for the specified resource to get further information 
@@ -232,8 +232,9 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * Removes a resource from the lock dispatcher.<p>
      * 
      * @param resourcename the full resource name including the site root
+     * @throws CmsLockException if the user tried to unlock a resource in a locked folder
      */
-    public void removeResource(String resourcename) {
+    public void removeResource(String resourcename) throws CmsLockException {
         String lockedPath = null;
         Iterator i = null;
 
@@ -262,14 +263,14 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
      * @param resourcename the full resource name including the site root
      * @return a list with resource names of direct locked sub resources
      */
-    public List getDirectLockedSubResources(String resourcename) {
-        List directLockedSubResources = (List) new ArrayList();
+    public List getLockedSubResources(String resourcename) {
+        List lockedSubResources = (List) new ArrayList();
         String lockedPath = null;
         CmsLock lock = null;
         Iterator i = null;
 
         if (!resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            return directLockedSubResources;
+            return lockedSubResources;
         }
 
         i = m_locks.keySet().iterator();
@@ -278,13 +279,13 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             lock = (CmsLock) m_locks.get(lockedPath);
 
             if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
-                if (lock.getHierarchy() == CmsLock.C_HIERARCHY_DIRECT_LOCKED) {
-                    directLockedSubResources.add(lock.getResourceName());
-                }
+                //if (lock.getHierarchy() == CmsLock.C_TYPE_DIRECT_LOCKED) {
+                    lockedSubResources.add(lock.getResourceName());
+                //}
             }
         }
 
-        return directLockedSubResources;
+        return lockedSubResources;
     }
 
     /**
@@ -327,7 +328,7 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             currentLock = (CmsLock) m_locks.get(lockedPath);
             buf.append(currentLock.getResourceName());
             buf.append(":");
-            buf.append(currentLock.getHierarchy());
+            buf.append(currentLock.getType());
             buf.append(":");
             buf.append(currentLock.getUserId());
             buf.append("\n");
