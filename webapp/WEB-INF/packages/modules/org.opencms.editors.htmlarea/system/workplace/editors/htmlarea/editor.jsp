@@ -429,7 +429,7 @@ function confirmExit() {
 
 <script type="text/javascript">
    _editor_url = "<%= wp.getSkinUri() + "editors/htmlarea/" %>";
-   _editor_lang = "en";
+   _editor_lang = "<%= wp.getLocale() %>";
 </script>
 
 <script type="text/javascript" src="<%= wp.getSkinUri() + "editors/htmlarea/" %>htmlarea.js"></script>
