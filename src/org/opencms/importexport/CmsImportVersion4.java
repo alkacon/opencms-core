@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/02/17 11:40:29 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/26 14:18:10 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsResourceTypeLink;
-import org.opencms.file.CmsResourceTypePage;
 import org.opencms.file.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -42,6 +41,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
+
+import com.opencms.legacy.CmsResourceTypePage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/26 11:35:35 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2004/02/26 14:18:10 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -202,10 +202,10 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-      * Imports the users and writes them to the cms.<p>
-      * 
-      * @throws CmsException if something goes wrong
-      */
+     * Imports the users and writes them to the cms.<p>
+     * 
+     * @throws CmsException if something goes wrong
+     */
     private void importUsers() throws CmsException {
         List userNodes;
         List groupNodes;
@@ -287,9 +287,10 @@ public class CmsImportVersion2 extends A_CmsImport {
     private void importAllResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         List fileNodes = null, acentryNodes = null;
         Element currentElement = null, currentEntry = null;
-        String source = null, destination = null, type = null, timestamp = null, uuid = null, uuidfile = null, uuidresource = null;
+        String source = null, destination = null, resourceTypeName = null, timestamp = null, uuid = null, uuidfile = null, uuidresource = null;
         long lastmodified = 0;
-        int resType;
+        int resourceTypeId = I_CmsConstants.C_UNKNOWN_ID;
+        int resourceTypeLoaderId = I_CmsConstants.C_UNKNOWN_ID;
         Map properties = null;
         boolean old_overwriteCollidingResources = false;
 
@@ -348,14 +349,22 @@ public class CmsImportVersion2 extends A_CmsImport {
                 // get all information for a file-import
                 source = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_SOURCE);
                 destination = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_DESTINATION);
-                type = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
-                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_NEWPAGE_ID;
-                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
-                    resType = C_RESOURCE_TYPE_PAGE_ID;
+                
+                resourceTypeName = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_TYPE);
+                if (C_RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
+                    resourceTypeId = C_RESOURCE_TYPE_NEWPAGE_ID;
+                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
+                } else if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
+                    // resource with a "legacy" resource type are imported using the "plain" resource
+                    // type because you cannot import a resource without having the resource type object                    
+                    //resType = C_RESOURCE_TYPE_PAGE_ID;
+                    resourceTypeId = CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
                 } else {
-                    resType = m_cms.getResourceTypeId(type);
+                    resourceTypeId = m_cms.getResourceTypeId(resourceTypeName);
+                    resourceTypeLoaderId = (m_cms.getResourceType(resourceTypeId)).getLoaderId();
                 }
+                
                 uuid = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDSTRUCTURE);
                 uuidfile = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT);
                 uuidresource = CmsImport.getChildElementTextValue(currentElement, I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE);
@@ -367,12 +376,12 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 // if the type is "script" set it to plain
-                if ("script".equals(type)) {
-                    type = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+                if ("script".equals(resourceTypeName)) {
+                    resourceTypeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
                 }
 
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
-                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
+                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(resourceTypeName)) {
                     translatedName += I_CmsConstants.C_FOLDER_SEPARATOR;
                 }
                 translatedName = m_cms.getRequestContext().getDirectoryTranslator().translateResource(translatedName);
@@ -391,10 +400,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_report.print(m_report.key("report.dots"));
 
                     // get all properties
-                    properties = getPropertiesFromXml(currentElement, resType, propertyName, propertyValue, deleteProperties);
+                    properties = getPropertiesFromXml(currentElement, resourceTypeId, propertyName, propertyValue, deleteProperties);
 
                     // import the specified file 
-                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, lastmodified, properties, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, resourceTypeId, resourceTypeName, resourceTypeLoaderId, lastmodified, properties, writtenFilenames, fileCodes);
 
                     if (res != null) {
 
@@ -447,157 +456,156 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-      * Imports a resource (file or folder) into the cms.<p>
-      * 
-      * @param source the path to the source-file
-      * @param destination the path to the destination-file in the cms
-      * @param uuid  the structure uuid of the resource
-      * @param uuidfile  the file uuid of the resource
-      * @param uuidresource  the resource uuid of the resource
-      * @param type the resource-type of the file
-      * @param lastmodified the timestamp of the file
-      * @param properties a hashtable with properties for this resource
-      * @param writtenFilenames filenames of the files and folder which have actually been successfully written
-      *       not used when null
-      * @param fileCodes code of the written files (for the registry)
-      *       not used when null
-      * @return imported resource
-      */
-     private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
+     * Imports a resource (file or folder) into the cms.<p>
+     * 
+     * @param source the path to the source-file
+     * @param destination the path to the destination-file in the cms
+     * @param uuid  the structure uuid of the resource
+     * @param uuidfile  the file uuid of the resource
+     * @param uuidresource  the resource uuid of the resource
+     * @param resourceTypeId the ID of the file's resource type
+     * @param resourceTypeName the name of the file's resource type
+     * @param resourceTypeLoaderId the ID of the file's resource type loader
+     * @param lastmodified the timestamp of the file
+     * @param properties a hashtable with properties for this resource
+     * @param writtenFilenames filenames of the files and folder which have actually been successfully written
+     *       not used when null
+     * @param fileCodes code of the written files (for the registry)
+     *       not used when null
+     * @return imported resource
+     */
+    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, int resourceTypeId, String resourceTypeName, int resourceTypeLoaderId, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
 
-         boolean success = true;
-         byte[] content = null;
-         String fullname = null;
-         CmsResource res = null;
+        boolean success = true;
+        byte[] content = null;
+        String fullname = null;
+        CmsResource res = null;
 
-         try {
-          
-             if (m_importingChannelData) {
-                 // try to read an existing channel to get the channel id
-                 String channelId = null;
-                 try {
-                     if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
-                         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
-                     }
-                     CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
-                     channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
-                 } catch (Exception e) {
-                     // ignore the exception, a new channel id will be generated
-                 }
-                 if (channelId == null) {
-                     // the channel id does not exist, so generate a new one
-                     int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
-                     channelId = "" + newChannelId;
-                 }
-                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
-             }
-
-             // get the file content
-             if (source != null) {
-                 content = getFileBytes(source);
-             }
-             
-             content = convertContent(source, destination, content, type);
-             
-             // get all required information to create a CmsResource
-             int resType=m_cms.getResourceTypeId(type);
-             int size=0;
-             if (content!=null) {
-                 size=content.length;
-             }
-             // get the required UUIDs         
-             CmsUUID curUser=m_cms.getRequestContext().currentUser().getId();            
-             CmsUUID newUuidstructure= new CmsUUID();
-             CmsUUID newUuidcontent = new CmsUUID();
-             CmsUUID newUuidresource = new CmsUUID();             
-             if (uuid!=null) {
-                 newUuidstructure = new CmsUUID(uuid);       
-             }
-             if (uuidfile!=null) {
-                 newUuidcontent = new CmsUUID(uuidfile);
-             }
-             if (uuidresource!=null) { 
-                 newUuidresource = new CmsUUID(uuidresource);               
-             }             
-                    
-             // extract the name of the resource form the destination
-             String resname=destination;
-             if (resname.endsWith("/")) {
-                 resname=resname.substring(0, resname.length()-1);            
-             } 
-             if (resname.lastIndexOf("/")>0) {
-                 resname=resname.substring(resname.lastIndexOf("/")+1, resname.length());
-             }
-                         
-             // create a new CmsResource                         
-             CmsResource resource=new CmsResource(newUuidstructure, newUuidresource,
-                                                  CmsUUID.getNullUUID(),
-                                                  newUuidcontent, resname, resType,
-                                                  new Integer(0).intValue(), m_cms.getRequestContext().currentProject().getId(),
-                                                  I_CmsConstants.C_STATE_NEW, m_cms.getResourceType(resType).getLoaderId(), lastmodified,
-                                                  curUser,
-                                                  lastmodified, curUser, size,
-                                                  1);
+        try {
             
-             if (resType==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
-                 // store links for later conversion
-                 m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
-                 m_linkStorage.put(m_importPath + destination, new String(content));
-                 m_linkPropertyStorage.put(m_importPath + destination, properties);
-                 res = resource;
-             } else {                                                     
-                                                  
-                 //  import this resource in the VFS     
-                     
-                 res = m_cms.importResource(resource, content, properties, m_importPath+destination);
-             }   
-         
-             if (res != null) {
-                 if (C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
-                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
-                 }
-                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
-             }
-            
-         } catch (Exception exc) {
-             // an error while importing the file
-             success = false;
-             m_report.println(exc);
-             try {
-                 // Sleep some time after an error so that the report output has a chance to keep up
-                 Thread.sleep(1000);
-             } catch (Exception e) {
-                 // 
-             }
-         }
+            if (m_importingChannelData) {
+                // try to read an existing channel to get the channel id
+                String channelId = null;
+                try {
+                    if ((resourceTypeName.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
+                        destination += I_CmsConstants.C_FOLDER_SEPARATOR;
+                    }
+                    CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
+                    channelId = m_cms.readProperty(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID);
+                } catch (Exception e) {
+                    // ignore the exception, a new channel id will be generated
+                }
+                if (channelId == null) {
+                    // the channel id does not exist, so generate a new one
+                    int newChannelId = org.opencms.db.CmsDbUtil.nextId(I_CmsConstants.C_TABLE_CHANNELID);
+                    channelId = "" + newChannelId;
+                }
+                properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);
+            }
 
-         byte[] digestContent = {0};
-         if (content != null) {
-             digestContent = m_digest.digest(content);
-         }
-         if (success && (fullname != null)) {
-             if (writtenFilenames != null) {
-                 writtenFilenames.addElement(fullname);
-             }
-             if (fileCodes != null) {
-                 fileCodes.addElement(new String(digestContent));
-             }
-         }
-         return res;
-     }
-     
-     /**
-      * Performs all required pre-import steps.<p>
-      * 
-      * The content is *NOT* changed in the implementation of this class.<p>
-      * 
-      * @param source the source path of the resource
-      * @param destination the destination path of the resource
-      * @param content the content of the resource
-      * @param resType the type of the resource
-      * @return the (prepared) content of the resource
-      */
-     protected byte[] convertContent(String source, String destination, byte[] content, String resType) {
+            // get the file content
+            if (source != null) {
+                content = getFileBytes(source);
+            }
+            
+            content = convertContent(source, destination, content, resourceTypeName);
+            
+            // get all required information to create a CmsResource
+            int size=0;
+            if (content!=null) {
+                size=content.length;
+            }
+            // get the required UUIDs         
+            CmsUUID curUser=m_cms.getRequestContext().currentUser().getId();            
+            CmsUUID newUuidstructure= new CmsUUID();
+            CmsUUID newUuidcontent = new CmsUUID();
+            CmsUUID newUuidresource = new CmsUUID();             
+            if (uuid!=null) {
+                newUuidstructure = new CmsUUID(uuid);       
+            }
+            if (uuidfile!=null) {
+                newUuidcontent = new CmsUUID(uuidfile);
+            }
+            if (uuidresource!=null) { 
+                newUuidresource = new CmsUUID(uuidresource);               
+            }             
+            
+            // extract the name of the resource form the destination
+            String resname=destination;
+            if (resname.endsWith("/")) {
+                resname=resname.substring(0, resname.length()-1);            
+            } 
+            if (resname.lastIndexOf("/")>0) {
+                resname=resname.substring(resname.lastIndexOf("/")+1, resname.length());
+            }
+            
+            // create a new CmsResource                         
+            CmsResource resource=new CmsResource(newUuidstructure, newUuidresource,
+                    CmsUUID.getNullUUID(),
+                    newUuidcontent, resname, resourceTypeId,
+                    new Integer(0).intValue(), m_cms.getRequestContext().currentProject().getId(),
+                    I_CmsConstants.C_STATE_NEW, resourceTypeLoaderId, lastmodified,
+                    curUser,
+                    lastmodified, curUser, size,
+                    1);
+            
+            if (resourceTypeId==CmsResourceTypeLink.C_RESOURCE_TYPE_ID) {
+                // store links for later conversion
+                m_report.print(m_report.key("report.storing_link"), I_CmsReport.C_FORMAT_NOTE);
+                m_linkStorage.put(m_importPath + destination, new String(content));
+                m_linkPropertyStorage.put(m_importPath + destination, properties);
+                res = resource;
+            } else {                                                                                                       
+                //  import this resource in the VFS                         
+                res = m_cms.importResource(resource, content, properties, m_importPath+destination);
+            }   
+            
+            if (res != null) {
+                if (C_RESOURCE_TYPE_PAGE_NAME.equals(resourceTypeName)) {
+                    m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
+                }
+                m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            }
+            
+        } catch (Exception exc) {
+            // an error while importing the file
+            success = false;
+            m_report.println(exc);
+            try {
+                // Sleep some time after an error so that the report output has a chance to keep up
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                // 
+            }
+        }
+
+        byte[] digestContent = {0};
+        if (content != null) {
+            digestContent = m_digest.digest(content);
+        }
+        if (success && (fullname != null)) {
+            if (writtenFilenames != null) {
+                writtenFilenames.addElement(fullname);
+            }
+            if (fileCodes != null) {
+                fileCodes.addElement(new String(digestContent));
+            }
+        }
+        return res;
+    }
+    
+    /**
+     * Performs all required pre-import steps.<p>
+     * 
+     * The content is *NOT* changed in the implementation of this class.<p>
+     * 
+     * @param source the source path of the resource
+     * @param destination the destination path of the resource
+     * @param content the content of the resource
+     * @param resType the type of the resource
+     * @return the (prepared) content of the resource
+     */
+    protected byte[] convertContent(String source, String destination, byte[] content, String resType) {
         // if the import is older than version 3, some additional conversions must be made
         if (getVersion() < 3) {
             if ("page".equals(resType)) {
@@ -636,11 +644,10 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_cms.createPropertydefinition(I_CmsConstants.C_PROPERTY_TEMPLATE, CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID);
         }
         // copy all propertydefinitions of the old page to the new page
-        Vector definitions = m_cms.readAllPropertydefinitions(C_RESOURCE_TYPE_PAGE_ID);
+        //Vector definitions = m_cms.readAllPropertydefinitions(C_RESOURCE_TYPE_PAGE_ID);
+        Vector definitions = m_cms.readAllPropertydefinitions(CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
 
         Iterator j = definitions.iterator();
-
-
         while (j.hasNext()) {
             CmsPropertydefinition definition = (CmsPropertydefinition)j.next();
             // check if this propertydef already exits
@@ -777,7 +784,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                     pagefile.setLoaderId(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
                 }
             }
- 
+            
             // write all changes                     
             m_cms.writeFile(pagefile);
             // add the template property to the controlfile
