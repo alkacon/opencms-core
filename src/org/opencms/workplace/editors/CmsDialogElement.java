@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElement.java,v $
- * Date   : $Date: 2004/11/15 10:18:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/15 10:50:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.util.CmsStringUtil;
  * Contains the setup information about a single dialog element.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -168,10 +168,10 @@ public class CmsDialogElement implements Comparable {
             String name1 = m_name;
             String name2 = element.m_name;
             if (name1.endsWith("[0]")) {
-                name1 = m_name.substring(0, name1.length()-3);
+                name1 = name1.substring(0, name1.length()-3);
             }
             if (name2.endsWith("[0]")) {
-                name2 = m_name.substring(0, name2.length()-3);
+                name2 = name2.substring(0, name2.length()-3);
             }            
             return name1.equals(name2);
         }
