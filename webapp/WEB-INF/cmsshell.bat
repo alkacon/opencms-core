@@ -24,7 +24,7 @@ set CLASSPATH= %CLASSPATH%;lib/commons-collections.jar
 set CLASSPATH= %CLASSPATH%;lib/ojdbc14.jar
 set CLASSPATH= %CLASSPATH%;lib/commons-logging.jar
 set CLASSPATH= %CLASSPATH%;lib/log4j-1.2.8.jar
-set CLASSPATH= %CLASSPATH%;lib/jcr.jar;lib/opencms.jar
+set CLASSPATH= %CLASSPATH%;lib/jcr.jar;lib/opencms.jar;lib/opencms-legacy.jar
 set CLASSPATH= %CLASSPATH%;lib/activation.jar
 set CLASSPATH= %CLASSPATH%;lib/jakarta-oro-2_0_6.jar
 set CLASSPATH= %CLASSPATH%;lib/ojdbc14.jar
@@ -40,6 +40,7 @@ set CLASSPATH= %CLASSPATH%;lib/lucene-1.3-final.jar
 set CLASSPATH= %CLASSPATH%;lib/poi-2.0-final-20040126.jar
 set CLASSPATH= %CLASSPATH%;lib/snowball-0.1.jar
 set CLASSPATH= %CLASSPATH%;lib/PDFBox-0.6.4.jar
+set CLASSPATH= %CLASSPATH%;lib/xercesImpl.jar;lib/xml-apis.jar
 set CLASSPATH= %CLASSPATH%;classes
 
 @rem set opencms arguments
