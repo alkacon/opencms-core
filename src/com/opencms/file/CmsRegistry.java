@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2000/08/25 08:53:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/25 14:53:35 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,7 @@ package com.opencms.file;
 
 import java.io.*;
 import java.util.*;
+import java.util.zip.*;
 import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
@@ -38,7 +39,7 @@ import com.opencms.core.*;
  * This class implements the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2000/08/25 08:53:15 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/25 14:53:35 $
  * 
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -57,6 +58,7 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 	 *  A hashtable with shortcuts into the dom-structure for each module.
 	 */
 	private Hashtable m_modules;
+
 
 /**
  * Creates a new CmsRegistry. The regFileName is the path to the registry-file in
@@ -140,6 +142,19 @@ public CmsRegistry(String regFileName) throws CmsException {
  */
 public Object clone() {
 	return null;
+}
+/**
+ *  Checks for files that already exist in the system but should be replaced by the module.
+ *
+ *  @param moduleZip The name of the zip-file to import.
+ *  @returns The complete paths to the resources that have conflicts.
+ */
+public Vector getConflictingFileNames(String moduleZip) throws CmsException {
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
+	}
+	// TODO: getConflictingFileNames
+	return new Vector();
 }
 	/**
 	 * Gets a description of this content type.
@@ -250,6 +265,35 @@ public String getModuleDocumentPath(String modulename) {
  */
 private Element getModuleElement(String name) {
 	return (Element) m_modules.get(name);
+}
+/**
+ * Reads the module-element from the manifest in the zip-file.
+ * @param string the name of the zip-file to read from.
+ * @returns the module-element or null if it dosen't exist.
+ */
+private Element getModuleElementFromImport(String filename) {
+	try {
+		// get the zip-file
+		ZipFile importZip = new ZipFile(filename);
+		// read the minifest
+		ZipEntry entry = importZip.getEntry("manifest.xml");
+		InputStream stream = importZip.getInputStream(entry);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		String content = "";
+		String buffer = "";
+		do {
+			content += buffer;
+			buffer = reader.readLine();
+		} while (buffer != null);
+		// parse the manifest
+		Document manifest = parse(content);
+		reader.close();
+		importZip.close();
+		// get the module-element
+		return (Element)(manifest.getElementsByTagName("module").item(0));
+	} catch (Exception exc) {
+		return null;
+	}
 }
 /**
  * Returns the class, that receives all maintenance-events for the module.
@@ -764,6 +808,45 @@ public int getViews(Vector views, Vector urls) {
 private boolean hasAccess() {
 	// TODO: check the access!
 	return true;
+}
+/**
+ *  Imports a module. This method is synchronized, so only one module can be imported at on time.
+ *
+ *  @param moduleZip the name of the zip-file to import from.
+ *  @param exclusion a Vector with resource-names that should be excluded from this import.
+ */
+public synchronized void importModule(String moduleZip, Vector exclusion) throws CmsException {
+	// check if the user is allowed to set parameters
+
+	if (!hasAccess()) {
+		throw new CmsException("No access to perform the action 'importModule'", CmsException.C_REGISTRY_ERROR);
+	}
+	// TODO: check the dependencies
+
+	// TODO: import the module...
+
+	// TODO: import the module data into the registry
+	Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));
+	Element newModule = getModuleElementFromImport(moduleZip);
+	// set the import-date
+	Node uploadDate = newModule.getOwnerDocument().createElement("uploaddate");
+	uploadDate.appendChild(newModule.getOwnerDocument().createTextNode(System.currentTimeMillis() + ""));
+	newModule.appendChild(uploadDate);
+
+	// TOTDO: set the import-user
+	Node uploadBy = newModule.getOwnerDocument().createElement("uploadedby");
+	uploadBy.appendChild(newModule.getOwnerDocument().createTextNode("U.Nknown"));
+	newModule.appendChild(uploadBy);
+
+	// append the module data to the registry
+	Node newNode = getXmlParser().importNode(m_xmlReg, newModule);
+	regModules.appendChild(newNode);
+	saveRegistry();
+	try {
+		init();
+	} catch (Exception exc) {
+		throw new CmsException("couldn't init registry", CmsException.C_REGISTRY_ERROR, exc);
+	}
 }
 /**
  *  Inits all member-variables for the instance.

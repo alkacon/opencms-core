@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/08/25 08:53:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/08/25 14:53:35 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/08/25 08:53:15 $
+ * @version $Revision: 1.4 $ $Date: 2000/08/25 14:53:35 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
@@ -48,6 +48,13 @@ public interface I_CmsRegistry extends Cloneable {
  * @return the cloned registry.
  */
 public Object clone();
+/**
+ *  Checks for files that already exist in the system but should be replaced by the module.
+ *
+ *  @param moduleZip The name of the zip-file to import.
+ *  @returns The complete paths to the resources that have conflicts.
+ */
+public Vector getConflictingFileNames(String moduleZip) throws CmsException;
 /**
  * This method returns the author of the module.
  *
@@ -369,6 +376,13 @@ public String[] getRepositories();
  * @return int the amount of views.
  */
 public int getViews(Vector views, Vector urls);
+/**
+ *  Imports a module. This method is synchronized, so only one module can be imported at on time.
+ *
+ *  @param moduleZip the name of the zip-file to import from.
+ *  @param exclusion a Vector with resource-names that should be excluded from this import.
+ */
+public void importModule(String moduleZip, Vector exclusion) throws CmsException;
 /**
  * Sets a parameter for a module.
  * 
