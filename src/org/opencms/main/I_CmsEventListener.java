@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2003/10/02 16:37:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/10/20 15:59:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -252,6 +252,11 @@ public interface I_CmsEventListener {
      * @see com.opencms.file.CmsObject#publishProject()
      */    
     int EVENT_CLUSTER_PUBLISH_PROJECT = 20;    
+    
+    /** 
+     * Event used by the Flex Cluster Module.<p>
+     */ 
+    int EVENT_FLEX_CLUSTER_CHECK_REGISTRY = 21;    
    
     /**
      * Acknowledge the occurrence of the specified event, implement this 
