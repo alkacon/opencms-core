@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/09/29 07:59:40 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/09/29 08:34:09 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,10 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 
+import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * Holds the functionaility to export channels and modulemasters from the cms
@@ -67,7 +69,7 @@ import org.w3c.dom.Element;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2003/09/29 07:59:40 $
+ * @version $Revision: 1.14 $ $Date: 2003/09/29 08:34:09 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -108,6 +110,9 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
     /** Holds information about contents that have already been exported */
     private Vector m_exportedMasters = new Vector();
+    
+    private Document m_docXml;
+    private Element m_mastersElement;
 
     /**
      * This constructs a new CmsExportModuledata-object which exports the channels and modulemasters.
@@ -122,7 +127,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
      */
     public CmsExportModuledata(CmsObject cms, String exportFile, String[] resourcesToExport, String[] modulesToExport, I_CmsReport report) throws CmsException {
         m_cms = cms;
-        m_exportFile = exportFile;
+        m_exportFileName = exportFile;
         m_cms = cms;
         m_report = report;
 
@@ -130,7 +135,10 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         m_exportingModuleData = true;
 
         // open the export file
-        openExportFile(null);
+        try {
+            openExportFile();
+        } catch (Throwable t) {
+        }
 
         // export the cos folders (ie. channels)               
         m_report.println(m_report.key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
@@ -139,7 +147,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         try {
             m_cms.setContextToCos();
             // export all the resources
-            exportAllResources(resourcesToExport);
+            exportAllResources(null, resourcesToExport);
 
         } catch (Exception e) {
             throw new CmsException("Error exporting COS channels", e);
@@ -182,7 +190,41 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         }
 
         // close the export file
-        closeExportFile();
+        try {
+            closeExportFile(null);
+        } catch (Throwable t) {
+        }
+    }
+
+
+    /**
+     * Adds a CDATA element to the XML document.<p>
+     * 
+     * @param docXml Document to create the new element in
+     * @param element the element to add the subelement to
+     * @param name the name of the new subelement
+     * @param value the value of the element
+     */
+    protected void addCdataElement(Document docXml, Element element, String name, String value) {
+        Element newElement = docXml.createElement(name);
+        element.appendChild(newElement);
+        CDATASection text = docXml.createCDATASection(value);
+        newElement.appendChild(text);
+    }
+    
+    /**
+     * Adds a text element to the XML document.<p>
+     * 
+     * @param docXml Document to create the new element in
+     * @param element the element to add the subelement to
+     * @param name the name of the new subelement
+     * @param value the value of the element
+     */
+    protected void addElement(Document docXml, Element element, String name, String value) {
+        Element newElement = docXml.createElement(name);
+        element.appendChild(newElement);
+        Text text = docXml.createTextNode(value);
+        newElement.appendChild(text);
     }
 
     /**

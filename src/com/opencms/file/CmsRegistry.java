@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/26 16:53:31 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2003/09/29 08:34:09 $
+ * Version: $Revision: 1.103 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,12 +35,12 @@ import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import org.opencms.report.CmsShellReport;
-import org.opencms.report.I_CmsReport;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.workplace.I_CmsWpConstants;
 
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.102 $
+ * @version $Revision: 1.103 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -753,8 +753,23 @@ public class CmsRegistry extends A_CmsXmlContent {
                 moduleCopy.removeChild(e);
             }
         }
+        
+        // generate a new XML document containing the module node
+        Document moduleDoc;
+        try {
+            moduleDoc = A_CmsXmlContent.getXmlParser().createEmptyDocument("root");
+        } catch (Throwable t) {
+            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, t);
+        }
+        moduleDoc.getFirstChild().appendChild(A_CmsXmlContent.getXmlParser().importNode(moduleDoc, moduleCopy));
+
+        // move module node to the dom4j API
+        org.dom4j.Document doc = (new org.dom4j.io.DOMReader()).read(moduleDoc);
+        org.dom4j.Element moduleElement = doc.getRootElement().element("module");
+        moduleElement.detach();
+            
         // export the module using the standard export        
-        new CmsExport(m_cms, filename, resources, false, false, moduleCopy, false, 0, report);
+        new CmsExport(m_cms, filename, resources, false, false, moduleElement, false, 0, report);
     }
 
     /**
