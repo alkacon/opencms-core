@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/01/23 10:56:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/01/23 14:01:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 5.1.12
  */
@@ -251,14 +251,19 @@ public class CmsPublishProject extends CmsReport {
             case ACTION_CONFIRMED:
             default:
                 try {
+                    CmsResource publishResource = null;
+                    
                     if ("true".equals(getParamDirectpublish())) {
+                        // get the offline resource in direct publish mode
+                        publishResource = getCms().readFileHeader(getParamResource());
                         // check if the resource is locked in direct publish mode                     
-                        org.opencms.lock.CmsLock lock = getCms().getLock(getParamResource());
+                        org.opencms.lock.CmsLock lock = getCms().getLock(publishResource);
                         if (!lock.isNullLock()) {
                             // resource is locked, so unlock it
                             getCms().unlockResource(getParamResource(), false);
                         }  
                     }
+                    
                     if (showUnlockConfirmation()) {   
                         // some resources are locked, unlock them before publishing                                 
                         if ("true".equals(getParamDirectpublish())) {
@@ -273,35 +278,26 @@ public class CmsPublishProject extends CmsReport {
                             // unlock all project resources
                             getCms().unlockProject(Integer.parseInt(getParamProjectid()));                               
                         }                         
-                    } 
+                    }
+                    
+                    // start the link validation thread before publishing
+                    CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()));
+                    setParamAction(REPORT_BEGIN);
+                    setParamThread(thread.getId().toString());
+                    
+                    // set the flag that another thread is following
+                    setParamThreadHasNext("true");
+                    // set the key name for the continue checkbox
+                    setParamReportContinueKey("label.button.continue.brokenlinks");
+                    getJsp().include(C_FILE_REPORT_OUTPUT); 
+                    
                 } catch (CmsException e) {
                     // error while unlocking resources, show error screen
                     setParamErrorstack(e.getStackTraceAsString());
                     setParamMessage(key("error.message.projectlockchange"));
                     setParamReasonSuggestion(key("error.reason.projectlockchange") + "<br>\n" + key("error.suggestion.projectlockchange"));
                     getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-                }                    
-                
-                // create a list with the offline resource in direct publish mode
-                CmsResource publishResource = null;
-                if ("true".equals(getParamDirectpublish())) {
-                    try {
-                        publishResource = getCms().readFileHeader(getParamResource());
-                    } catch (CmsException e) {
-                        // ignore this exception
-                    }
-                }
-                
-                // start the link validation thread before publishing
-                CmsHtmlLinkValidatorThread thread = new CmsHtmlLinkValidatorThread(getCms(), publishResource, "true".equals(getParamPublishsiblings()));
-                setParamAction(REPORT_BEGIN);
-                setParamThread(thread.getId().toString());
-                // set the flag that another thread is following
-                setParamThreadHasNext("true");
-                // set the key name for the continue checkbox
-                setParamReportContinueKey("label.button.continue.brokenlinks");
-                getJsp().include(C_FILE_REPORT_OUTPUT);  
-                break;
+                }                         
         }
     }
         
