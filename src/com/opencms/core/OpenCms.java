@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/08/08 13:35:44 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2001/08/15 13:50:03 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,10 +51,15 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.61 $ $Date: 2001/08/08 13:35:44 $
+ * @version $Revision: 1.62 $ $Date: 2001/08/15 13:50:03 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
+
+    /**
+     * Define the default file.encoding that should be used by OpenCms
+     */
+    private static String C_PREFERED_FILE_ENCODING = "ISO8859_1";
 
     /**
      * Definition of the index page
@@ -149,6 +154,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
             }
+
+            // Check the file.encoding
+            checkFileEncoding();
         }
         catch(Exception e) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -197,6 +205,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         CmsObject cms = new CmsObject();
         cms.init(c_rb);
         cms.destroy();
+        checkFileEncoding();
     }
 
     /**
@@ -431,4 +440,18 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
     public static I_CmsRegistry getRegistry() throws CmsException {
         return c_rb.getRegistry(null, null, null);
     }
+
+    /**
+     * Method that checks the system-property file.encoding.
+     * If it is not the prefered encoding opencms logs a warning.
+     */
+    private void checkFileEncoding() {
+       if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            if(!System.getProperty("file.encoding").equals(C_PREFERED_FILE_ENCODING)) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] You are not using the prefered file.encoding. It should be " + C_PREFERED_FILE_ENCODING + " but it is " + System.getProperty("file.encoding"));
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] You may get in trouble with user passwords if you change the encoding later on");
+            }
+        }
+    }
+
 }
