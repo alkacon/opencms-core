@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/05/22 14:54:18 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2001/05/28 15:01:52 $
+ * Version: $Revision: 1.144 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.143 $ $Date: 2001/05/22 14:54:18 $
+ * @version $Revision: 1.144 $ $Date: 2001/05/28 15:01:52 $
  *
  */
 
@@ -1695,7 +1695,7 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
 	 *
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public void publishProject(CmsUser currentUser, CmsProject currentProject,
+	public Vector publishProject(CmsUser currentUser, CmsProject currentProject,
 								 int id)
 		throws CmsException;
 	/**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/05/15 14:01:40 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/05/28 15:01:55 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -66,6 +66,11 @@ public class CmsElementCache {
 
     public CmsElementLocator getElementLocator() {
         return m_elementLocator;
+    }
+
+    public void cleanupCache(Vector changedResources){
+        m_uriLocator.deleteUris(changedResources);
+        m_elementLocator.deleteElementsByTemplateNames(changedResources);
     }
 
     public byte[] callCanonicalRoot(CmsObject cms, Hashtable parameters) throws CmsException {

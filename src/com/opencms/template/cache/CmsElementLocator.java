@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/05/28 08:51:27 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/05/28 15:01:55 $
+* Version: $Revision: 1.10 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -97,5 +97,15 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
             }
         }
         return result;
+    }
+
+    /**
+     * deletes all elements in the cache that depend on one of the invalid Templates.
+     * @param invalidTemplates A vector with the ablolute path of the templates (String)
+     */
+    public void deleteElementsByTemplateNames(Vector invalidTemplates){
+        for(int i=0; i < invalidTemplates.size(); i++){
+            m_elements.deleteElementsByTemplate((String)invalidTemplates.elementAt(i)) ;
+        }
     }
 }

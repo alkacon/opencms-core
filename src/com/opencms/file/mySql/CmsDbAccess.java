@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2001/05/28 15:01:54 $
+ * Version: $Revision: 1.52 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.51 $ $Date: 2001/05/17 14:10:31 $ *
+ * @version $Revision: 1.52 $ $Date: 2001/05/28 15:01:54 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -505,10 +505,11 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
  *
  * @param project The project to be published.
  * @param onlineProject The online project of the OpenCms.
+ * @return a vector of changed or deleted resources.
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
 
-public void publishProject(CmsUser user, int projectId, CmsProject onlineProject) throws CmsException
+public Vector publishProject(CmsUser user, int projectId, CmsProject onlineProject) throws CmsException
 {
 	CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
 	CmsFolder currentFolder = null;
@@ -994,6 +995,9 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 		removeFolderForPublish(onlineProject, currentFolder.getAbsolutePath());
 	} // end of for
 	//clearFilesTable();
+
+    // mgm TODO: get a real Vector
+    return null;
 }
 /**
  * Reads a file from the Cms.<BR/>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUriLocator.java,v $
-* Date   : $Date: 2001/05/28 08:51:27 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/05/28 15:01:55 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -73,5 +73,15 @@ public class CmsUriLocator {
      */
     public CmsUri get(CmsUriDescriptor desc) {
         return (CmsUri) m_uris.get(desc);
+    }
+
+    /**
+     * Deletes all invalid uris from cache.
+     * @param invalidUris A Vector with the names of the uris (String) to be deleted from cache.
+     */
+    public void deleteUris(Vector invalidUris){
+        for (int i = 0; i < invalidUris.size(); i++){
+            m_uris.deleteUri((String)invalidUris.elementAt(i));
+        }
     }
 }

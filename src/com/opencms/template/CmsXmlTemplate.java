@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/05/22 14:54:20 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2001/05/28 15:01:55 $
+* Version: $Revision: 1.63 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.62 $ $Date: 2001/05/22 14:54:20 $
+ * @version $Revision: 1.63 $ $Date: 2001/05/28 15:01:55 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -777,7 +777,7 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
 
         // First build our own cache directives.
         CmsCacheDirectives result = new CmsCacheDirectives(true);
-        //result.setCacheUri(true);
+        result.setCacheUri(true);
         Vector para = new Vector();
         para.add("cmsframe");
         result.setCacheParameters(para);

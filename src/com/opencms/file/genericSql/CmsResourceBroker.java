@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/05/22 14:54:19 $
- * Version: $Revision: 1.241 $
+ * Date   : $Date: 2001/05/28 15:01:53 $
+ * Version: $Revision: 1.242 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.241 $ $Date: 2001/05/22 14:54:19 $
+ * @version $Revision: 1.242 $ $Date: 2001/05/28 15:01:53 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4137,10 +4137,10 @@ public void setCmsObjectForStaticExport(CmsObject cms){
  *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
-public void publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
+public Vector publishProject(CmsUser currentUser, CmsProject currentProject, int id) throws CmsException {
 
     CmsProject publishProject = readProject(currentUser, currentProject, id);
-
+    Vector changedResources = null;
     // check the security
     if ((isAdmin(currentUser, currentProject) || isManagerOfProject(currentUser, publishProject)) && (publishProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
         // check, if we update class-files with this publishing
@@ -4154,7 +4154,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
             shouldReload = shouldReloadClasses(id, classFiles);
         }
 
-        m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
+        changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject));
         m_subresCache.clear();
         // inform about the file-system-change
         fileSystemChanged(true);
@@ -4193,6 +4193,7 @@ public void publishProject(CmsUser currentUser, CmsProject currentProject, int i
     } else {
         throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
     }
+    return changedResources;
 }
 
     /**

@@ -1,8 +1,8 @@
 package com.opencms.template.cache;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsLruCache.java,v $
- * Date   : $Date: 2001/05/28 08:51:27 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2001/05/28 15:01:55 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ package com.opencms.template.cache;
 public class CmsLruCache {
 
     // enables the login. Just for debugging.
-    private static final boolean C_DEBUG = true;
+    private static final boolean C_DEBUG = false;
 
     // the array to store everthing
     private CacheItem[] m_cache;
@@ -210,7 +210,7 @@ public class CmsLruCache {
      */
     private void removeFromTable(CacheItem oldItem){
         if(C_DEBUG){
-            System.err.println("--removing from cache: "+(String)oldItem.key);
+            System.err.println(" --remove from chaincache: "+oldItem.key);
         }
         int hashIndex = ((oldItem.key).hashCode() & 0x7FFFFFFF) % m_maxSize;
         CacheItem item = m_cache[hashIndex];
@@ -234,6 +234,9 @@ public class CmsLruCache {
      */
     private void removeItem(CacheItem item){
 
+        if(C_DEBUG){
+            System.err.println("--remove item from cache: "+item.key);
+        }
         //first remove it from the hashtable
         removeFromTable(item);
         // now from the sequence chain

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/05/22 14:54:18 $
- * Version: $Revision: 1.157 $
+ * Date   : $Date: 2001/05/28 15:01:52 $
+ * Version: $Revision: 1.158 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.157 $ $Date: 2001/05/22 14:54:18 $
+ * @version $Revision: 1.158 $ $Date: 2001/05/28 15:01:52 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1422,7 +1422,8 @@ public CmsProject onlineProject() throws CmsException {
 public void publishProject(int id) throws CmsException {
     clearcache();
 //    setCmsObjectForStaticExport(id);
-    m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
+    Vector changedResources = m_rb.publishProject(m_context.currentUser(), m_context.currentProject(), id);
+    getRequestContext().getElementCache().cleanupCache(changedResources);
     clearcache();
 }
 /**

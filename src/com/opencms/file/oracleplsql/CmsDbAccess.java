@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2001/05/28 15:01:55 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.29 $ $Date: 2001/05/17 14:10:31 $ *
+ * @version $Revision: 1.30 $ $Date: 2001/05/28 15:01:55 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1770,7 +1770,7 @@ public Vector lockResource(CmsUser currentUser, CmsProject currentProject, Strin
  *
  * @exception CmsException Throws CmsException if something goes wrong.
  */
-public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject) throws CmsException {
+public Vector publishProject(CmsUser currentUser, int id, CmsProject onlineProject) throws CmsException {
 	//System.out.println("PL/SQL: publishProject");
 	com.opencms.file.oracleplsql.CmsQueries cq = (com.opencms.file.oracleplsql.CmsQueries) m_cq;
 	CmsAccessFilesystem discAccess = new CmsAccessFilesystem(m_exportpointStorage);
@@ -1780,6 +1780,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 	ResultSet res2 = null;
 	ResultSet res3 = null;
 	ResultSet res4 = null;
+    Vector changedResources = new Vector();
 	try {
 		// create the statement
 		con = DriverManager.getConnection(m_poolName);
@@ -1804,6 +1805,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 		// for changed/new folder
 		res2 = (ResultSet) statement.getObject(5);
 		while (res2.next()) {
+            changedResources.add(res2.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res2.getString("RESOURCE_NAME"));
 			if (exportKey != null) {
 				discAccess.createFolder(res2.getString("RESOURCE_NAME"), exportKey);
@@ -1812,6 +1814,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 		// for deleted files
 		res3 = (ResultSet) statement.getObject(6);
 		while (res3.next()) {
+            changedResources.add(res3.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res3.getString("RESOURCE_NAME"));
 			if (exportKey != null) {
 				discAccess.removeResource(res3.getString("RESOURCE_NAME"), exportKey);
@@ -1820,6 +1823,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 		// for changed/new files
 		res4 = (ResultSet) statement.getObject(7);
 		while (res4.next()) {
+            changedResources.add(res4.getString("RESOURCE_NAME"));
 			String exportKey = checkExport(res4.getString("RESOURCE_NAME"));
 			if (exportKey != null) {
 				discAccess.writeFile(res4.getString("RESOURCE_NAME"), exportKey, readFileContent(res4.getInt("FILE_ID")));
@@ -1868,6 +1872,7 @@ public void publishProject(CmsUser currentUser, int id, CmsProject onlineProject
 			}
 		}
 	}
+        return changedResources;
 }
 /**
  * Reads a file from the Cms.<BR/>
