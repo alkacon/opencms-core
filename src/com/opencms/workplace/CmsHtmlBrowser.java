@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2004/01/07 16:44:15 $
+* Version: $Revision: 1.8.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,11 +50,11 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.8 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.8.2.1 $ $Date: 2004/01/07 16:44:15 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsHtmlBrowser extends CmsWorkplaceDefault {
+public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -198,51 +198,10 @@ public class CmsHtmlBrowser extends CmsWorkplaceDefault {
      * @return Index of the selected Gallery
      * @throws CmsException
      */
-
     public Integer getHtmlGalleryNames(CmsObject cms, CmsXmlLanguageFile lang,
             Vector names, Vector values, Hashtable parameters) throws CmsException {
-        int ret = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-
-        // which folder is the gallery?
-        String chosenFolder = (String)parameters.get(C_PARA_FOLDER);
-        if(chosenFolder == null) {
-            chosenFolder = (String)session.getValue(C_PARA_FOLDER);
-        }
-        if(chosenFolder == null) {
-            chosenFolder = "";
-        }
-        Vector folders = cms.getSubFolders(getConfigFile(cms).getHtmlGalleryPath());
-        int numFolders = folders.size();
-        for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.elementAt(i);
-            String name = currFolder.getName();
-            if(chosenFolder.equals(currFolder.getAbsolutePath())) {
-                ret = i;
-            }
-            values.addElement(currFolder.getAbsolutePath());
-            names.addElement(name);
-        }
-        return new Integer(ret);
-    }
-
-    /**
-     * Checks, if the given filename matches the filter.
-     * @param filename filename to be checked.
-     * @param filter filter to be checked.
-     * @return <code>true</code> if the filename matches the filter, <code>false</code> otherwise.
-     */
-
-    private boolean inFilter(String name, String filter) {
-        String compareName = name.toLowerCase();
-        String compareFilter = filter.toLowerCase();
-        if("".equals(compareFilter) || (compareName.indexOf(compareFilter) != -1)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
+        return getGalleryNames(cms, getConfigFile(cms).getHtmlGalleryPath(), lang, names, values, parameters);
+    }    
 
     /**
      * Indicates if the results of this class are cacheable.

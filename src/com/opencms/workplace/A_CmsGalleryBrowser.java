@@ -1,7 +1,7 @@
 /*
  * File : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsGalleryBrowser.java,v $ 
- * Date : $Date: 2004/01/07 16:42:09 $ 
- * Version: $Revision: 1.1 $
+ * Date : $Date: 2004/01/07 16:44:15 $ 
+ * Version: $Revision: 1.1.2.1 $
  * 
  * This library is part of OpenCms - the Open Source Content Mananagement
  * System
@@ -32,12 +32,13 @@
 package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
+import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -50,7 +51,7 @@ import java.util.Vector;
  * browser class.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2004/01/07 16:42:09 $
+ * @version $Revision: 1.1.2.1 $ $Date: 2004/01/07 16:44:15 $
  */
 public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
 
@@ -90,14 +91,14 @@ public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
             CmsResource currFolder = (CmsResource) folders.get(i);
             ident = "";
             String name = currFolder.getName();
-            if (chosenFolder.equals(currFolder.getRootPath())) {
+            if (chosenFolder.equals(currFolder.getAbsolutePath())) {
                 ret = i;
             }
-            StringTokenizer tokenizer = new StringTokenizer(currFolder.getRootPath(), "/");
+            StringTokenizer tokenizer = new StringTokenizer(currFolder.getAbsolutePath(), "/");
             for (int j = 0; j < (tokenizer.countTokens() - 4); j++) {
                 ident = ident + "-";
             }
-            values.addElement(currFolder.getRootPath());
+            values.addElement(currFolder.getAbsolutePath());
             names.addElement(ident + name);
         }
         return new Integer(ret);
@@ -119,7 +120,7 @@ public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
             if (this.checkAccess(cms, currFolder)) {
                 folders.add(tempFolders.get(i));
             }
-            getGallerySubFolders(cms, folders, currFolder.getRootPath());
+            this.getGallerySubFolders(cms, folders, currFolder.getAbsolutePath());
         }
         return folders;
     }
@@ -132,8 +133,23 @@ public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
      * @return true if a resource should be displayed in the gallery selection
      * @throws CmsException if something goes wrong.
      */
-    protected boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {        
-        return cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
+    protected boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
+        boolean access = false;
+        if (res.getState() == C_STATE_DELETED) {
+            return false;
+        }
+        int accessflags = res.getAccessFlags();
+
+        // First check if the user may have access by one of his groups.
+        boolean groupAccess = false;
+        Enumeration allGroups = cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()).elements();
+        while ((!groupAccess) && allGroups.hasMoreElements()) {
+            groupAccess = cms.readGroup(res).equals((CmsGroup) allGroups.nextElement());
+        }
+        if (((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) || (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) || (groupAccess && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0) || (cms.getRequestContext().isAdmin())) {
+            access = true;
+        }
+        return access;
     }
     
     /**
