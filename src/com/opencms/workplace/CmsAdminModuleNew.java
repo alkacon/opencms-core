@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/02/21 15:18:23 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/02/28 13:03:49 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -305,7 +305,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
         Vector projectFiles = new Vector();
         projectFiles.add("/");
         if (importNewModule) {
-            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, zipName, conflictFiles, projectFiles);
+            A_CmsReportThread doTheImport = new CmsAdminModuleImportThread(cms, reg, moduleName, zipName, conflictFiles, projectFiles);
             doTheImport.start();
             session.putValue(C_MODULE_THREAD, doTheImport);
         } else {

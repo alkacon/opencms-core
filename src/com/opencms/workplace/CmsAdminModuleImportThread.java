@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleImportThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/02/28 13:03:49 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,13 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.0 rc 1
  */
 public class CmsAdminModuleImportThread extends A_CmsReportThread {
 
     private String m_moduleName;
+    private String m_zipName;
     private Vector m_conflictFiles;
     private Vector m_projectFiles;
     private I_CmsRegistry m_registry;
@@ -70,10 +71,11 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
      * @param conflictFiles vector of conflict files 
      * @param projectFiles vector of project files
      */
-    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, Vector conflictFiles, Vector projectFiles) {
+    public CmsAdminModuleImportThread(CmsObject cms, I_CmsRegistry reg, String moduleName, String zipName, Vector conflictFiles, Vector projectFiles) {
         m_cms = cms;
         m_cms.getRequestContext().setUpdateSessionEnabled(false);
         m_moduleName = moduleName;
+        m_zipName = zipName;
         m_registry = reg;
         m_conflictFiles = conflictFiles;
         m_projectFiles = projectFiles;
@@ -105,7 +107,7 @@ public class CmsAdminModuleImportThread extends A_CmsReportThread {
                 m_cms.copyResourceToProject((String)m_projectFiles.elementAt(i));
             }                        
             // import the module
-            m_registry.importModule(m_moduleName, m_conflictFiles, m_report);   
+            m_registry.importModule(m_zipName, m_conflictFiles, m_report);   
 
             m_report.println(m_report.key("report.publish_project_begin"), I_CmsReport.C_FORMAT_HEADLINE);            
             // now unlock and publish the project
