@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2001/04/06 15:08:36 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2001/04/09 10:27:21 $
+* Version: $Revision: 1.22 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2001/04/06 15:08:36 $
+ * @version $Revision: 1.22 $ $Date: 2001/04/09 10:27:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -108,6 +108,10 @@ public class CmsEditor extends CmsWorkplaceDefault {
         boolean exitRequested = ((action != null) && (C_EDIT_ACTION_EXIT.equals(action)
                 || C_EDIT_ACTION_SAVEEXIT.equals(action)));
 
+        // flag for extended features in the editor, e.g. list of external links
+        I_CmsRegistry registry = cms.getRegistry();
+        boolean extendedNavigation = "on".equals(registry.getSystemValue("extendedNavigation"));
+
         // For further processing we possibly need the encoder
         Encoder enc = new Encoder();
 
@@ -154,6 +158,15 @@ public class CmsEditor extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms,
                 templateFile, elementName, parameters, templateSelector);
         String sectionName = getBrowserSpecificSection(cms, xmlTemplateDocument);
+
+        // show the button for the link list ?
+        if (templateFile.equalsIgnoreCase(xmlTemplateDocument.C_TEMPLATEPATH+"edit_html_main")) {
+            if (extendedNavigation){
+                xmlTemplateDocument.setData("linklist", xmlTemplateDocument.getProcessedDataValue("linklist_enabled", this));
+            } else {
+                xmlTemplateDocument.setData("linklist", xmlTemplateDocument.getProcessedDataValue("linklist_disabled", this));
+            }
+        }
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
