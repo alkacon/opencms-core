@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/04 15:10:41 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2003/09/09 14:27:37 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.85 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -810,41 +810,44 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public String toString() {
         StringBuffer result = new StringBuffer();
+        
         result.append("[");
         result.append(this.getClass().getName());
-        result.append("]");
-        result.append(" name:");
+        result.append(", name: ");
         result.append(m_name);
-        result.append(" structure id");
+        result.append(", structure-ID: ");
         result.append(m_structureId);
-        result.append(" resource id:");
+        result.append(", resource-ID: ");
         result.append(m_resourceId);
-        result.append(" parent id:");
+        result.append(", parent-ID: ");
         result.append(m_parentId);
-        result.append(" content id:");
-        result.append(m_contentId);
-        result.append(" type:");
+        result.append(", content-ID: ");
+        result.append(m_contentId);               
+        result.append(", type: ");
         result.append(m_type);
-        result.append(" flags:");
+        result.append(", flags: ");
         result.append(m_flags);  
-        result.append(" project:");
+        result.append(", project: ");
         result.append(m_projectId);
-        result.append(" state:");
+        result.append(", state: ");
         result.append(m_state);        
-        result.append(" loader id:");
+        result.append(", loader-ID: ");
         result.append(m_loaderId);
-        result.append(" date created:");
+        result.append(", date created: ");
         result.append(new java.util.Date(m_dateCreated));
-        result.append(" user created:");
+        result.append(", user created: ");
         result.append(m_userCreated);
-        result.append(" date lastmodified:");
+        result.append(", date lastmodified: ");
         result.append(new java.util.Date(m_dateLastModified));
-        result.append(" user lastmodified:");
+        result.append(", user lastmodified: ");
         result.append(m_userLastModified);
-        result.append(" length:");
+        result.append(", size: ");
         result.append(m_length);        
-        result.append(" link count:");
+        result.append(" link count: ");
         result.append(m_linkCount);
+        result.append("]");
+        
         return result.toString();
     }
+    
 }
