@@ -46,10 +46,12 @@
         	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
     		<property name="@{dependency}.output.classes" location="${opencms.output}/build/classes-@{dependency}" />
     	    <property name="@{dependency}.output.jar" location="${opencms.output}/build/jars-@{dependency}" />
-    	  	
+            <property file="${@{dependency}.input}/module.properties" prefix="@{dependency}" />
+    	    <property name="@{dependency}.output.zip" location="${module.output.zip}/@{dependency}_${@{dependency}.module.version}.zip" />
+
         	<condition property="@{dependency}.available">
         		<and>		
-        			<available file="${@{dependency}.output.jar}/@{dependency}.jar" />
+        			<available file="${@{dependency}.output.zip}" />
            		</and>
         	</condition>
     	  </sequential>
