@@ -106,7 +106,7 @@
             <type>XMLTemplate</type>
             <user>Admin</user>
             <group>Users</group>
-            <access>15</access>
+            <access>7</access>
             <properties/>
         </file>
         <file>
