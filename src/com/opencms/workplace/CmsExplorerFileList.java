@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerFileList.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/16 09:15:18 $
  */
 public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -116,7 +116,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
          // get the current folder to be displayed as maximum folder in the tree.
          currentFolder=(String)session.getValue(C_PARA_FOLDER);
             if (currentFolder == null) {
-                 currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
+                 currentFolder=cms.rootFolder().getAbsolutePath();
             }
             
             
@@ -130,7 +130,7 @@ public class CmsExplorerFileList extends CmsWorkplaceDefault implements I_CmsWpC
         // get the current folder to be displayed as maximum folder in the tree.
             currentFilelist=(String)session.getValue(C_PARA_FILELIST);
             if (currentFilelist==null) {
-                currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
+                currentFilelist=cms.rootFolder().getAbsolutePath();
             }     
 
         // get all files and folders of the current folder

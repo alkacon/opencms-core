@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/16 09:15:18 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -250,7 +250,7 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	
 	/**
 	 * Deletes the file.
-	 * 
+	 *  
      * @param project The project in which the resource will be used.
 	 * @param filename The complete path of the file.
 	 * 
@@ -261,6 +261,20 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          getFilesystem(filename).deleteFile(project,filename);
      }
 	
+      /**
+      * Deletes a file.
+      * In difference to the deleteFile method the given file is physically deleted and
+      * not only marked as deleted.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param filename The complete path of the file.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFile(A_CmsProject project, String filename) 
+        throws CmsException{
+        getFilesystem(filename).removeFile(project,filename);
+     }
+     
 	 /**
 	 * Copies the file.
 	 * 
@@ -339,7 +353,6 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 	 */
 	 public CmsFolder readFolder(A_CmsProject project, String foldername)
          throws CmsException {
-         //System.err.println("###read folder "+foldername);
          return getFilesystem(foldername).readFolder(project,foldername);
       }
 	
@@ -376,6 +389,19 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
          getFilesystem(foldername).deleteFolder(project,foldername,force);
      }
 	
+      /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFolder(A_CmsProject project, String foldername) 
+        throws CmsException{
+             getFilesystem(foldername).removeFolder(project,foldername);
+     }
+     
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsAccessFile.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/16 09:15:18 $
  */
 interface I_CmsAccessFile {
 
@@ -199,6 +199,18 @@ interface I_CmsAccessFile {
 	 */	
 	 public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException;
+     
+      /**
+      * Deletes a file.
+      * In difference to the deleteFile method the given file is physically deleted and
+      * not only marked as deleted.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param filename The complete path of the file.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFile(A_CmsProject project, String filename) 
+        throws CmsException;
 	
 	/**
 	 * Copies the file.
@@ -288,6 +300,17 @@ interface I_CmsAccessFile {
 	 public void deleteFolder(A_CmsProject project, String foldername, boolean force)
 		throws CmsException;
 
+      /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFolder(A_CmsProject project, String foldername) 
+        throws CmsException;
+     
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFile.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/16 09:15:18 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -285,7 +285,7 @@ import com.opencms.core.*;
 	/**
 	 * Deletes a file in the Cms.<br>
 	 *
-     * A file can only be deleteed in an offline project. 
+     * A file can only be deleted in an offline project. 
      * A file is deleted by setting its state to DELETED (3). <br> 
      * 
 	 * 
@@ -305,6 +305,30 @@ import com.opencms.core.*;
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException{
         m_accessFile.deleteFile(project,filename);
+     }
+    
+     /**
+	 * Removes a file in the Cms.<br>
+	 *
+     * In difference to the deleteFile method, the given file is physically removed <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void removeFile(A_CmsProject project, String filename)
+		throws CmsException{
+        m_accessFile.removeFile(project,filename);
      }
 	
 
@@ -460,6 +484,31 @@ import com.opencms.core.*;
         m_accessFile.deleteFolder(project,foldername,force);
      }
 	
+      /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+     * In difference to the deleteFile method, the given file is physically removed <br> 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path of the folder.
+	 * @param force If force is set to true, all sub-resources will be deleted.
+	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void removeFolder(A_CmsProject project, String foldername)
+		throws CmsException {
+        m_accessFile.removeFolder(project,foldername);
+     }
 
    	/**
 	 * Returns a Vector with all subfolders.<br>

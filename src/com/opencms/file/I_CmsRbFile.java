@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRbFile.java,v $
- * Date   : $Date: 2000/02/15 17:44:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/15 17:44:00 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/16 09:15:18 $
  */
  interface I_CmsRbFile {
 	
@@ -278,7 +278,28 @@ import com.opencms.core.*;
 	public void deleteFile(A_CmsProject project, String filename)
 		throws CmsException;
 	
-
+    /**
+	 * Removes a file in the Cms.<br>
+	 *
+     * In difference to the deleteFile method, the given file is physically removed <br> 
+     * 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param filename The complete path of the file.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void removeFile(A_CmsProject project, String filename)
+		throws CmsException;
+    
 	/**
 	 * Copies a file in the Cms. <br>
 	 * 
@@ -421,6 +442,32 @@ import com.opencms.core.*;
 	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
 		throws CmsException;
 		
+     /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+     * In difference to the deleteFile method, the given file is physically removed <br> 
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete path of the folder.
+	 * @param force If force is set to true, all sub-resources will be deleted.
+	 * If force is set to false, the folder will be deleted only if it is empty.
+	 * This parameter is not used yet as only empty folders can be deleted!
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void removeFolder(A_CmsProject project, String foldername)
+		throws CmsException ;
+
+    
+    
 	/**
 	 * Returns a Vector with all subfolders.<br>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.11 $ $Date: 2000/02/16 09:15:18 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -172,7 +172,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
                     xmlTemplateDocument.setXmlData(C_STARTUP,xmlTemplateDocument.getProcessedXmlDataValue(C_STARTUP_FOLDER,this));
                     currentFilelist=(String)session.getValue(C_PARA_FILELIST);
                     if (currentFilelist == null) {
-                         currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
+                         currentFilelist=cms.rootFolder().getAbsolutePath();
                     }
                     session.putValue(C_PARA_PREVIOUSLIST,currentFilelist);   
                     session.putValue(C_PARA_FILELIST,url);
@@ -206,7 +206,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
             currentFilelist=(String)session.getValue(C_PARA_FILELIST);
             // if no filelist parameter was given, use the current folder
             if (currentFilelist==null) {
-                currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
+                currentFilelist=cms.rootFolder().getAbsolutePath();
             } 
             if (!currentFilelist.equals("/")) {
                // cut off last "/"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2000/02/16 09:15:18 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.27 $ $Date: 2000/02/16 09:15:18 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -855,6 +855,35 @@ import com.opencms.util.*;
             throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
          }        
      }
+     
+       
+     /**
+      * Deletes a file in the database. 
+      * This method is used to physically remove a file form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param filename The complete path of the file.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFile(A_CmsProject project, String filename) 
+        throws CmsException{
+            try { 
+            // delete the file header
+            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+            statementResourceDelete.setString(1,absoluteName(filename));
+            statementResourceDelete.setInt(2,project.getId());
+            statementResourceDelete.executeUpdate(); 
+            
+            // delete the file content
+            PreparedStatement statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
+            statementFileDelete.setString(1,absoluteName(filename));
+            statementFileDelete.setInt(2,project.getId());
+            statementFileDelete.executeUpdate();               
+            } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }         
+     }
+     
 	
 	 /**
 	 * Copies the file.
@@ -1126,6 +1155,27 @@ import com.opencms.util.*;
          }
      }
 	
+      /**
+      * Deletes a folder in the database. 
+      * This method is used to physically remove a folder form the database.
+      * 
+      * @param project The project in which the resource will be used.
+	  * @param foldername The complete path of the folder.
+      * @exception CmsException Throws CmsException if operation was not succesful
+      */
+     public void removeFolder(A_CmsProject project, String foldername) 
+        throws CmsException{
+            try { 
+              // delete the folder
+              PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
+              statementResourceDelete.setString(1,absoluteName(foldername));
+              statementResourceDelete.setInt(2,project.getId());
+              statementResourceDelete.executeUpdate();               
+             } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }         
+     }
+     
 	/**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
@@ -1290,12 +1340,12 @@ import com.opencms.util.*;
              if ((file.getState()== C_STATE_CHANGED) || 
                  (file.getState() == C_STATE_NEW)) {
                  // delete an exitsing old file in the online project
-                 deleteFile(file);
+                 removeFile(onlineProject,file.getAbsolutePath());
                  // write the new file
                  createFile(onlineProject,onlineProject,file,file.getAbsolutePath());
                  resources.addElement(file.getAbsolutePath()); 
              } else if (file.getState() == C_STATE_DELETED) {
-                  deleteFile(file);
+                  removeFile(onlineProject,file.getAbsolutePath());
                   resources.addElement(file.getAbsolutePath()); 
              }
              
@@ -1330,12 +1380,12 @@ import com.opencms.util.*;
                         (folder.getState() == C_STATE_NEW) ||
                         (folder.getState() == C_STATE_UNCHANGED )){
                         // delete an exitsing old folder in the online project
-                        deleteFolder(folder);
+                        removeFolder(onlineProject,folder.getAbsolutePath());
                         // write the new folder
                         createFolder(onlineProject,folder,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                     } else if (folder.getState() == C_STATE_DELETED) {
-                        deleteFolder(folder);
+                        removeFolder(onlineProject,folder.getAbsolutePath());
                         resources.addElement(folder.getAbsolutePath()); 
                 }
             }
@@ -1400,56 +1450,7 @@ import com.opencms.util.*;
 		}
         return file;
        }
-    
-     
-     /**
-      * Deletes a file in the database. 
-      * This method is used to physically remove a file form the database, therefore it
-      * can only be accessed from within the access module.
-      * 
-      * @param file The file to be deleted.
-      * @exception CmsException Throws CmsException if operation was not succesful
-      */
-     private void deleteFile(CmsFile file) 
-        throws CmsException{
-            try { 
-            // delete the file header
-            PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
-            statementResourceDelete.setString(1,absoluteName(file.getAbsolutePath()));
-            statementResourceDelete.setInt(2,file.getProjectId());
-            statementResourceDelete.executeUpdate(); 
-            
-            // delete the file content
-            PreparedStatement statementFileDelete=m_Con.prepareStatement(C_FILE_DELETE);
-            statementFileDelete.setString(1,absoluteName(file.getAbsolutePath()));
-            statementFileDelete.setInt(2,file.getProjectId());
-            statementFileDelete.executeUpdate();               
-            } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }         
-     }
-     
-      /**
-      * Deletes a folder in the database. 
-      * This method is used to physically remove a folder form the database, therefore it
-      * can only be accessed from within the access module.
-      * 
-      * @param folder The folder to be deleted.
-      * @exception CmsException Throws CmsException if operation was not succesful
-      */
-     private void deleteFolder(CmsFolder folder) 
-        throws CmsException{
-            try { 
-              // delete the folder
-              PreparedStatement statementResourceDelete=m_Con.prepareStatement(C_RESOURCE_DELETE);
-              statementResourceDelete.setString(1,absoluteName(folder.getAbsolutePath()));
-              statementResourceDelete.setInt(2,folder.getProjectId());
-              statementResourceDelete.executeUpdate();               
-             } catch (SQLException e){
-            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);			
-         }         
-     }
-    
+           
      /**
      * Connects to the property database.
      * 
