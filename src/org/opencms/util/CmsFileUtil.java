@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/01/07 08:47:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/20 13:03:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -169,19 +169,21 @@ public final class CmsFileUtil {
     }
     
     /**
-     * Returns a list of all filtered resources of the RFS in a subtree.<p>
+     * Returns a list of all filtered files in the RFS.<p>
      * 
      * If the <code>name</code> is not a folder the folder that contains the
      * given file will be used instead.<p>
      * 
-     * Despite the filter may not accept folders, every subfolder is traversed.<p>
+     * Despite the filter may not accept folders, every subfolder is traversed
+     * if the <code>includeSubtree</code> parameter is set.<p>
      * 
      * @param name a folder or file name
      * @param filter a filter
+     * @param includeSubtree if to include subfolders
      * 
      * @return a list of filtered <code>{@link File}</code> objects
      */
-    public static List getSubtree(String name, FileFilter filter) {
+    public static List getFiles(String name, FileFilter filter, boolean includeSubtree) {
         List ret = new ArrayList();
         
         File file = new File(name);
@@ -197,8 +199,8 @@ public final class CmsFileUtil {
             if (filter.accept(f)) {
                 ret.add(f);
             }
-            if (f.isDirectory()) {
-                ret.addAll(getSubtree(f.getAbsolutePath(), filter));
+            if (includeSubtree && f.isDirectory()) {
+                ret.addAll(getFiles(f.getAbsolutePath(), filter, true));
             }
         }
         
