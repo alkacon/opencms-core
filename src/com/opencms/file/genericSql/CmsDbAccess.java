@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/10/09 13:12:46 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2000/10/09 18:08:22 $
+ * Version: $Revision: 1.156 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.155 $ $Date: 2000/10/09 13:12:46 $ * 
+ * @version $Revision: 1.156 $ $Date: 2000/10/09 18:08:22 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -720,7 +720,8 @@ public CmsCountry createCountry(String name, String shortName, int priority) thr
 		   // Test if the file is already there and marked as deleted.
 		   // If so, delete it
 		  try {
-			  if (readFileHeader(project.getId(),filename).getState() == C_STATE_DELETED)
+ 		  	CmsResource resource = readFileHeader(project.getId(),filename);
+				if ((resource != null) && (resource.getState() == C_STATE_DELETED))
 			  {
 				  removeFile(project.getId(),filename);
 				  state=C_STATE_CHANGED;
@@ -827,7 +828,8 @@ public CmsCountry createCountry(String name, String shortName, int priority) thr
 		   // Test if the file is already there and marked as deleted.
 		   // If so, delete it
 			try {
-			  if (readFileHeader(project.getId(),filename).getState() == C_STATE_DELETED)
+ 		  	CmsResource resource = readFileHeader(project.getId(),filename);
+				if ((resource != null) && (resource.getState() == C_STATE_DELETED))
 			  {
 				  removeFile(project.getId(),filename);
 				  state=C_STATE_CHANGED;
@@ -4500,7 +4502,7 @@ public void publishProject(CmsUser user, int projectId, CmsProject onlineProject
 						{
 							discAccess.writeFile(currentFile.getAbsolutePath(), exportKey, readFileContent(currentFile.getFileId()));
 						}
-						CmsFile onlineFile = onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
+						CmsFile onlineFile = readFileHeader(onlineProject.getId(), currentFile.getAbsolutePath());
 						if (onlineFile == null)
 						{
 							// get parentId for onlineFolder either from folderIdIndex or from the database
