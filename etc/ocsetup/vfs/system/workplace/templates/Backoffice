@@ -619,6 +619,44 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
     </form>]]>
 </singleSelectbox>
 
+<noSelectbox><![CDATA[
+	<td nowrap valign="center">           
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+     </td>
+	<td nowrap valign="center">
+        <input type=hidden name="selectbox"/> ]]>
+        <PROCESS>filtername</PROCESS><![CDATA[
+    </td>
+    ]]>
+</noSelectbox>
+
+<noSelectboxWithParam><![CDATA[
+	<form name=swl valign=top method="get">
+        <td nowrap valign="center">           
+        	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
+     	</td>
+		<td nowrap valign="center">
+	        <input type=hidden name="setaction" value="filterchange">
+       	 	<input type=hidden name="selectbox"/> ]]>
+        	<PROCESS>filtername</PROCESS><![CDATA[
+   		 </td>
+        <td nowrap valign="center">        
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterparameterlabel</PROCESS><![CDATA[:&nbsp;&nbsp;&nbsp;</b>
+		</td>
+		<td nowrap valign="center">
+   				<input type=hidden name="setaction" value="setaction">
+                <input type=text name="filterparameter" id="filterparameter" value="]]><PROCESS>filterparameter</PROCESS><![CDATA[">
+		</td>
+		<td>	
+				&nbsp;&nbsp
+				<a href="javascript:window.document.swl.submit()" onMouseDown="ChPush('ic_admin_enter')" onMouseUp="ChOn('ic_admin_enter')" onMouseOver="ChOn('ic_admin_enter')" onMouseOut="ChOff('ic_admin_enter')">
+				<img align="center" name="ic_admin_enter" src="]]><method name="picsUrl">ic_admin_enter_off.gif</method><![CDATA[" alt="]]><LABEL value="button.reload"/><![CDATA[" border=0 width=32 heigth=32>
+				</a>
+                  
+        </td>
+        </form>]]>
+</noSelectboxWithParam>
+
 <selectboxWithParam><![CDATA[
 	<form name=swl valign=top method="get">
         <td nowrap valign="center">                          

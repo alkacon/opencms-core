@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/08/06 08:32:31 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2001/08/07 07:04:01 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -614,10 +614,26 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             // redisplay after edit or something like this ...
             template.setData("filterparameter", (String)session.getValue(sessionFilterParam));
         }
-        template.setData("insertFilter", template.getProcessedDataValue("selectboxWithParam", this, parameters));
+        // check if there is only one filtermethod, do not show the selectbox then
+        if (filterMethods.size()<2) {
+          // replace the selectbox with a simple text output
+          CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
+          template.setData("filtername",defaultFilter.getFilterName());
+          template.setData("insertFilter", template.getProcessedDataValue("noSelectboxWithParam", this, parameters));
+        } else {
+          template.setData("insertFilter", template.getProcessedDataValue("selectboxWithParam", this, parameters));
+          }
         template.setData("setfocus", template.getDataValue("focus"));
     }else{
-        template.setData("insertFilter", template.getProcessedDataValue("singleSelectbox", this, parameters));
+        // check if there is only one filtermethod, do not show the selectbox then
+        if (filterMethods.size()<2) {
+          // replace the selectbox with a simple text output
+          CmsFilterMethod defaultFilter = (CmsFilterMethod) filterMethods.firstElement();
+          template.setData("filtername",defaultFilter.getFilterName());
+          template.setData("insertFilter", template.getProcessedDataValue("noSelectbox", this, parameters));
+        } else {
+          template.setData("insertFilter", template.getProcessedDataValue("singleSelectbox", this, parameters));
+        }
     }
 
     //if getCreateUrl equals null, the "create new entry" button
