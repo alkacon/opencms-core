@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
-* Date   : $Date: 2003/08/01 13:57:22 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * Describes a file in the Cms.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.33 $ $Date: 2003/08/10 11:49:48 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -57,7 +57,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     * @param resourceFlags the flags of this resource
     * @param projectId the project id this resource belongs to.
     * @param state the state of this resource
-    * @param launcherType the launcher that is used to process this recource
+    * @param loaderId the loader that is used to process this recource
     * @param dateCreated the creation date of this resource
     * @param createdByUser the id of the user who created this resource
     * @param dateLastModified the date of the last modification of the resource
@@ -76,7 +76,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         int resourceFlags,
         int projectId,
         int state,
-        int launcherType,
+        int loaderId,
         long dateCreated,
         CmsUUID createdByUser,
         long dateLastModified,
@@ -96,7 +96,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resourceFlags, 
             projectId, 
             state, 
-            launcherType, 
+            loaderId, 
             dateCreated, 
             createdByUser, 
             dateLastModified, 

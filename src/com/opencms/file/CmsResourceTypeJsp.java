@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2003/07/18 19:03:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  * file properties are attached to new JSPs.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -68,7 +68,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     }
 
     /**
-     * @see com.opencms.file.I_CmsResourceType#getLauncherType()
+     * @see com.opencms.file.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
         return CmsJspLoader.C_RESOURCE_LOADER_ID;       

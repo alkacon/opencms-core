@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/package.html,v $
- Date   : $Date: 2003/07/18 12:44:46 $
- Version: $Revision: 1.6 $
+ Date   : $Date: 2003/08/10 11:49:48 $
+ Version: $Revision: 1.7 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ Here is a top-level description of how this works:
 <ol>
 <li>OpenCms gets the request through the {@link com.opencms.core.OpenCmsHttpServlet}
 <li>The requested resource is identified as a JSP page (resource type {@link com.opencms.file.CmsResourceTypeJsp})
-<li>The JSP launcher is started up with the laucher manager {@link org.opencms.loader.CmsLoaderManager}
-<li>The JSP launcher implements an additional interface: {@link org.opencms.loader.I_CmsResourceLoader}
+<li>The JSP loader is started up with the laucher manager {@link org.opencms.loader.CmsLoaderManager}
+<li>The JSP loader implements an additional interface: {@link org.opencms.loader.I_CmsResourceLoader}
 <li>A resource loader is a new interface that was introduced with the FLEX release. The main
 difference is that the original request / response is wrapped using a Servlet standard
 {@link javax.servlet.http.HttpServletRequestWrapper} / {@link javax.servlet.http.HttpServletResponseWrapper}.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,13 +41,10 @@ import java.util.Hashtable;
 
 /**
  * Represents an "empty" page or screen that should be filled with
- * the content of a master template.
- * <P>
- * Every launcher uses this canonical root the invoke the output
- * generation of the master template class to be used.
+ * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.37 $ $Date: 2003/08/10 11:49:48 $
  */
 public class CmsRootTemplate {
 

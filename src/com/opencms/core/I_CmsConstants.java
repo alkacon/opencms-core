@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/08 12:50:40 $
-* Version: $Revision: 1.258 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.259 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.258 $ $Date: 2003/08/08 12:50:40 $
+ * @version $Revision: 1.259 $ $Date: 2003/08/10 11:49:48 $
  */
 public interface I_CmsConstants {
 
@@ -326,7 +326,7 @@ public interface I_CmsConstants {
     int C_ACCESS_PUBLIC_VISIBLE = 256;
 
     /**
-     * This is an internal resource, it can't be launched directly.
+     * This is an internal resource, it can't be accessed directly.
      */
     int C_ACCESS_INTERNAL_READ = 512;
 
@@ -1002,7 +1002,7 @@ public interface I_CmsConstants {
     /**
      * A tag in the manifest-file.
      */
-    String C_EXPORT_TAG_LAUNCHER_START_CLASS = "startclass";
+    String C_EXPORT_TAG_LOADER_START_CLASS = "startclass";
 
     /**
      * A tag in the manifest-file.
@@ -1233,16 +1233,6 @@ public interface I_CmsConstants {
      * The name of the synchronizationresource-tag in registry.
      */
     String C_SYNCHRONISATION_RESOURCETAG = "res";
-
-    /**
-     * The name of the known launchers tag in registry.
-     */
-    String C_REGISTRY_KNOWNLAUNCHERS = "launchers";
-
-    /**
-     * The name of the launcher tag in registry.
-     */
-    String C_REGISTRY_LAUNCHER = "launcher";
 
     /**
      * The name of the exportpoint source tag in registry.

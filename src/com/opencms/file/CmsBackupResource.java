@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsBackupResource.java,v $
-* Date   : $Date: 2003/08/01 13:57:22 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * Describes a backup resource in the Cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/08/01 13:57:22 $
+ * @version $Revision: 1.18 $ $Date: 2003/08/10 11:49:48 $
  */
 public class CmsBackupResource extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -90,7 +90,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
       * @param accessFlags The access flags of this resource.
       * @param state The state of this resource.
       * @param lockedBy The user id of the user who has locked this resource.
-      * @param launcherType The launcher that is require to process this recource.
+      * @param loaderId The loader that is require to process this recource.
       * @param dateCreated The creation date of this resource.
       * @param dateLastModified The date of the last modification of the resource.
       * @param fileContent Then content of the file.
@@ -103,7 +103,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
                               CmsUUID fileId, String resourceName, int resourceType,
                               int resourceFlags, CmsUUID userId, String userName, CmsUUID groupId,
                               String groupName, int projectId, int state,
-                              int launcherType, long dateCreated,
+                              int loaderId, long dateCreated,
                               long dateLastModified,
                               CmsUUID resourceLastModifiedByUserId, String lastModifiedByName, 
                               byte[] fileContent,int size){
@@ -112,7 +112,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
         super(structureId, resourceId, parentId,
               fileId,resourceName,resourceType,
               resourceFlags,
-              projectId,state,launcherType,
+              projectId,state,loaderId,
               dateCreated,resourceLastModifiedByUserId /* !!! */,
               dateLastModified, resourceLastModifiedByUserId,
               size,0);
@@ -140,7 +140,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
     * @param rescourceFlags The flags of thei resource.
     * @param projectId The project id this resource belongs to.
     * @param state The state of this resource.
-    * @param launcherType The launcher that is require to process this recource.
+    * @param loaderId The loader that is require to process this recource.
     * @param dateCreated The creation date of this resource.
     * @param dateLastModified The date of the last modification of the resource.
     * @param fileContent Then content of the file.
@@ -151,7 +151,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
   public CmsBackupResource(int versionId, CmsUUID structureId, CmsUUID resourceId, CmsUUID parentId,
                            CmsUUID fileId, String resourceName, int resourceType,
                            int resourceFlags, int projectId, int state,
-                           int launcherType, long dateCreated,
+                           int loaderId, long dateCreated,
                            CmsUUID resourceCreatedByUserId, String createdByName, long dateLastModified,
                            CmsUUID resourceLastModifiedByUserId, String lastModifiedByName, byte[] fileContent,
                            int size){
@@ -160,7 +160,7 @@ public class CmsBackupResource extends CmsResource implements Cloneable, Seriali
      super(structureId, resourceId, parentId,
            fileId,resourceName,resourceType,
            resourceFlags,
-           projectId,state,launcherType,
+           projectId,state,loaderId,
            dateCreated,resourceCreatedByUserId,
            dateLastModified, resourceLastModifiedByUserId, 
            size,0);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2003/07/21 14:22:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,13 +55,6 @@ import source.org.apache.java.util.Configurations;
  * The I_CmsResourceLoader operates with Request and Response in 
  * much the same way as a standard Java web application.<p>
  * 
- * The I_CmsResourceLoader is closely related to the {@link com.opencms.launcher.I_CmsLauncher}
- * interface. In essence, both interfaces serve the same purpose. 
- * However, the I_ResourceLoader is much closer related to the standard 
- * Java Servlet API then the I_CmsLauncher, which makes it easier to 
- * understand for the novice OpenCms programmer. That way, a programmer
- * will hopefully need less time to get productive with OpenCms.<p>
- * 
  * This interface uses a standard servlet
  * {@link javax.servlet.http.HttpServletRequestWrapper} / {@link javax.servlet.http.HttpServletResponseWrapper}
  * that provide access to a special implementation of the {@link javax.servlet.RequestDispatcher}.
@@ -71,7 +64,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since FLEX alpha 1
  * 
  * @see com.opencms.flex.cache.CmsFlexRequest
@@ -117,8 +110,7 @@ public interface I_CmsResourceLoader {
     /**
      * Basic top-page processing method for a I_CmsResourceLoader,
      * this method is called if the page is called as a sub-element 
-     * on a page not already loded with a I_CmsResourceLoader,
-     * which most often would be an I_CmsLauncher then.<p>
+     * on a page not already loded with a I_CmsResourceLoader.<p>
      *
      * @param cms the initialized CmsObject which provides user permissions
      * @param file the requested OpenCms VFS resource
@@ -134,7 +126,7 @@ public interface I_CmsResourceLoader {
     throws ServletException, IOException;
     
     /**
-     * Exports the contents of the requested file and it's subfiles.<p>
+     * Exports the contents of the requested file and it's sub-elements.<p>
      * 
      * @param cms the initialized CmsObject which provides user permissions
      * @param file the requested OpenCms VFS resource
@@ -143,6 +135,23 @@ public interface I_CmsResourceLoader {
     void export(CmsObject cms, CmsFile file) 
     throws CmsException;
     
+    /**
+     * Exports the contents of the requested file and it's sub-elements.<p>
+     *
+     * @param cms the initialized CmsObject which provides user permissions
+     * @param file the requested OpenCms VFS resource
+     * @param req the original servlet request
+     * @param res the original servlet response
+     * 
+     * @return the contents of the exported resource which should be written to the export file stream
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * @throws CmsException might be thrown if errors during the static export occur 
+     */    
+    byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException, CmsException;
+        
     /**
      * Does the job of including the requested resource, 
      * this method is called directly if the element is 

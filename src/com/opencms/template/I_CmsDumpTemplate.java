@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/07/31 15:50:16 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,13 +37,13 @@ package com.opencms.template;
  * template class interface to the special behaviour
  * of dump template classes may be defined here.
  * <P>
- * Primarily, this interface is important for the launcher, 
+ * Primarily, this interface is important for the loader, 
  * NOT for the template engine.
- * The CmsDumpLauncher can launch all templates that
+ * The CmsDumpLoader can load all templates that
  * implement the I_CmsDumpTemplate interface. 
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/07/31 15:50:16 $
+ * @version $Revision: 1.6 $ $Date: 2003/08/10 11:49:48 $
  */
 public interface I_CmsDumpTemplate extends I_CmsTemplate {
     

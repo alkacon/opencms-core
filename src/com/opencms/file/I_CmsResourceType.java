@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import java.util.Map;
 public interface I_CmsResourceType {
     
      /**
-      * Returns the launcher type id needed for this resource type.<p>
+      * Returns the loader type id needed for this resource type.<p>
       *
-      * @return the launcher type id for this resource type
+      * @return the loader type id for this resource type
       */
      int getLoaderId();
 

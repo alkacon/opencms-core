@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsMountPoint.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.flex.util.CmsUUID;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/10 11:49:48 $
  */
 
 public class CmsMountPoint {
@@ -112,16 +112,16 @@ public class CmsMountPoint {
     private int m_accessFlags = I_CmsConstants.C_UNKNOWN_ID;
 
      /**
-     * The default launcher id for all resources of this mountpoint.
+     * The default loader id for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private int m_launcherId = I_CmsConstants.C_UNKNOWN_ID;
+    private int m_loaderId = I_CmsConstants.C_UNKNOWN_ID;
 
      /**
-     * The default launcher class name for all resources of this mountpoint.
+     * The default loader class name for all resources of this mountpoint.
      * Only used if for mountpoints of the type C_MOUTNTPOINT_FILESYSTEM.
      */
-    private String m_launcherClass=null;
+    private String m_loaderClass = null;
     
 
     
@@ -140,7 +140,7 @@ public class CmsMountPoint {
     public CmsMountPoint(String mountpoint, String mountpath, String name,
                          CmsUser user, CmsGroup group, CmsProject project,
                          int type, int flags, int accessFlags,
-                         int launcherId, String launcherClass) {
+                         int loaderId, String loaderClass) {
         m_mountpoint = mountpoint;
         m_mountpath = mountpath;
         m_system=name;
@@ -151,8 +151,8 @@ public class CmsMountPoint {
         m_mountpointType = I_CmsConstants.C_MOUNTPOINT_FILESYSTEM;
         m_flags=flags;
         m_accessFlags=accessFlags;
-        m_launcherId=launcherId;
-        m_launcherClass=launcherClass;
+        m_loaderId=loaderId;
+        m_loaderClass=loaderClass;
     }
      /**
      * Constructs a new CmsMountPoint. 
@@ -223,24 +223,24 @@ public class CmsMountPoint {
       return m_groupId;
     }
      /**
-     * Returns the default launcher class name of a CmsMountPoint Object.
+     * Returns the default loader class name of a CmsMountPoint Object.
      * A value is only returned for mountpoints of thetype C_MOUNTPOUINT_FILESYSTEM.
      * 
-     * @return The default launcher class name that is returned for all files at this mount point
+     * @return The default loader class name that is returned for all files at this mount point
      * or C_UNKNOWN_ID.
      */
-    public String getLauncherClass() {
-      return m_launcherClass;
+    public String getLoaderClass() {
+      return m_loaderClass;
     }
      /**
-     * Returns the default launcher id of a CmsMountPoint Object.
+     * Returns the default loader id of a CmsMountPoint Object.
      * A value is only returned for mountpoints of thetype C_MOUNTPOUINT_FILESYSTEM.
      * 
-     * @return The default launcher id that is returned for all files at this mount point
+     * @return The default loader id that is returned for all files at this mount point
      * or C_UNKNOWN_ID.
      */
-    public int getLauncherId() {
-      return m_launcherId;
+    public int getLoaderId() {
+      return m_loaderId;
     }
     /**
      * Returns the mountpath of a CmsMountPoint Object.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.flex.I_CmsEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
@@ -60,9 +61,12 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  */
 public abstract class A_OpenCms {
+
+    /** The default mimetype */
+    protected static final String C_DEFAULT_MIMETYPE = "text/html";
 
     /** Static version name to use if version.properties can not be read */
     private static final String C_DEFAULT_VERSION_NAME = "Salusa Secundus";
@@ -90,6 +94,9 @@ public abstract class A_OpenCms {
 
     /** The filename of the log file */
     private static String m_logfile;
+    
+    /** The OpenCms map of configured mime types */
+    private static Map m_mimeTypes;
 
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */
     private static String m_openCmsContext = null;
@@ -199,6 +206,37 @@ public abstract class A_OpenCms {
      */
     public static String getLogFileName() {
         return m_logfile;
+    }
+    
+    /**
+     * Returns the mime type for a specified file.<p>
+     * 
+     * @param filename the file name to check the mime type for
+     * @param encoding default encoding in case of mime types is of type "text"
+     * @return the mime type for a specified file
+     */
+    public static String getMimeType(String filename, String encoding) {        
+        String mimetype = null;
+        int lastDot = filename.lastIndexOf(".");
+        // check if there was a file extension
+        if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
+            String ext = filename.substring(lastDot + 1);
+            mimetype = (String)m_mimeTypes.get(ext);
+            // was there a mimetype fo this extension?
+            if (mimetype == null) {
+                mimetype = C_DEFAULT_MIMETYPE;
+            }
+        } else {
+            mimetype = C_DEFAULT_MIMETYPE;
+        }
+        mimetype = mimetype.toLowerCase();
+        if ((encoding != null)         
+        && mimetype.startsWith("text")
+        && (mimetype.indexOf("charset") == -1)) {
+            mimetype += "; charset=" + encoding;
+        }
+        
+        return mimetype;                
     }
 
     /**
@@ -497,6 +535,16 @@ public abstract class A_OpenCms {
      */
     protected void setLoaderManager(CmsLoaderManager loaderManager) {
         m_loaderManager = loaderManager;
+    }
+    
+    /**
+     * Initilizes the map of available mime types.<p>
+     * 
+     * @param types the map of available mime types
+     */
+    protected void setMimeTypes(Hashtable types) {
+        m_mimeTypes = new HashMap(types.size());
+        m_mimeTypes.putAll(types);
     }
 
     /**

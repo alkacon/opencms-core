@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,45 +73,38 @@ import javax.servlet.http.HttpServletResponse;
 import source.org.apache.java.util.Configurations;
 
 /**
- * Implementation of the {@link I_CmsResourceLoader} and 
- * the {@link com.opencms.launcher.I_CmsLauncher} interface for 
+ * Implementation of the {@link I_CmsResourceLoader} for 
  * XMLTemplates.<p>
- * 
- * This implementation can deliver XMLTemplates directly since it extends
- * the {@link com.opencms.launcher.CmsXmlLauncher}. It is also usable to include 
- * XMLTemplates as sub-elements on a JSP page since it implements the
- * {@link I_CmsResourceLoader} interface. 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
- * @since FLEX alpha 1
+ * @version $Revision: 1.15 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
-    /** The id of this loader */
-    public static final int C_RESOURCE_LOADER_ID = 3;
-    
     /** Magic elemet replace name */
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
+    
+    /** The id of this loader */
+    public static final int C_RESOURCE_LOADER_ID = 3;
 
-    /** Value of the filesystem counter, when the last template clear cache was done */
-    private static long m_lastFsCounterTemplate = 0;
+    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
+    private static final int DEBUG = 0;
+
+    /** The element cache used for the online project */
+    private static CmsElementCache m_elementCache;
 
     /** Value of the filesystem counter, when the last XML file clear cache was done */
     private static long m_lastFsCounterFile = 0;
 
+    /** Value of the filesystem counter, when the last template clear cache was done */
+    private static long m_lastFsCounterTemplate = 0;
+
     /** The template cache that holds all cached templates */
     protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
-
-    /** The element cache used for the online project */
-    private static CmsElementCache m_elementCache;
     
     /** The variant dependencies for the element cache */
     private static Hashtable m_variantDeps;
-
-    /** Flag for debugging output. Set to 9 for maximum verbosity. */ 
-    private static final int DEBUG = 0;
         
     /**
      * The constructor of the class is empty and does nothing.
@@ -121,11 +114,92 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
+     * Compatibility method to ensure the legacy cache command line parameters
+     * are still supported.<p>
+     * 
+     * @param cms an initialized CmsObject
+     * @param clearFiles if true, A_CmsXmlContent cache is cleared
+     * @param clearTemplates if true, internal template cache is cleared
      */
-    public int getLoaderId() {
-        return C_RESOURCE_LOADER_ID;
-    }      
+    private static void clearLoaderCache(CmsObject cms, boolean clearFiles, boolean clearTemplates) {
+        long currentFsCounter = cms.getFileSystemChanges();
+        if (clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
+            A_CmsXmlContent.clearFileCache();
+            m_lastFsCounterFile = currentFsCounter;
+        }
+        if (clearTemplates || (currentFsCounter > m_lastFsCounterTemplate)) {
+            m_templateCache.clearCache();
+            m_lastFsCounterTemplate = currentFsCounter;
+        }        
+    }
+
+    /**
+     * Returns the element cache that belongs to the given cms context,
+     * or null if the element cache is not initialized.<p>
+     * 
+     * @param cms the opencms context
+     * @return the element cache that belongs to the given cms context
+     */        
+    public static final CmsElementCache getElementCache(CmsObject cms) {
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            return m_elementCache;
+        } else {        
+            return null;
+        }        
+    }
+
+    /**
+     * Returns the variant dependencies of the online element cache.<p>
+     * 
+     * @return the variant dependencies of the online element cache
+     */
+    public static final CmsElementCache getOnlineElementCache() {
+        return m_elementCache;
+    }
+    
+    /**
+     * Returns the hashtable with the variant dependencies used for the elementcache.<p>
+     * 
+     * @return the hashtable with the variant dependencies used for the elementcache
+     */
+    public static final Hashtable getVariantDependencies() {
+        return m_variantDeps;
+    }    
+    
+    /**
+     * Returns true if the element cache is enabled for the given cms context.<p>
+     * 
+     * @param cms the opencms context
+     * @return true if the element cache is enabled for the given cms context
+     */
+    public static final boolean isElementCacheEnabled(CmsObject cms) {
+        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();            
+    }    
+
+    /**
+     * Utility method used by the loader implementation to give control
+     * to the CanonicalRoot.<p>
+     * 
+     * The CanonicalRoot will call the master template and return a byte array of the
+     * generated output.<p>
+     *
+     * @param cms the cms context object
+     * @param templateClass to generate the output of the master template
+     * @param masterTemplate masterTemplate for the output
+     * @param parameters contains all parameters for the template class
+     * @return the generated output or null if there were errors
+     * @throws CmsException if something goes wrong
+     */
+    private byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
+        try {
+            com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
+            return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
+        } catch (Exception e) {
+            // no document we could show...
+            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getResourceName() + ". ");
+        }
+        return null;
+    }
         
     /** 
      * Destroy this ResourceLoder, this is a NOOP so far.  
@@ -135,183 +209,19 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for XMLTemplates"</code>.<p>
-     * 
-     * @return a describing String for the ResourceLoader 
-     */
-    public String getResourceLoaderInfo() {
-        return "The OpenCms default resource loader for XMLTemplates";
-    }   
-    
-    /** 
-     * Initialize the ResourceLoader.<p>
-     * 
-     * @param openCms the initialized OpenCms object
-     * @param conf the OpenCms configuration 
-     */
-    public void init(A_OpenCms openCms, Configurations conf) {
-        // Check, if the element cache should be enabled
-        boolean enableElementCache = conf.getBoolean("elementcache.enabled", false);
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
-        if (enableElementCache) {
-            try {
-                m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
-            } catch (Exception e) {
-                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : non-critical error " + e.toString());
-            }
-            m_variantDeps = new Hashtable();
-            m_elementCache.getElementLocator().setExternDependencies(m_variantDeps);
-        } else {
-            m_elementCache = null;
-        }
-        
-        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
-        }             
-    }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
-    throws ServletException, IOException {   
-        try { 
-            processXmlTemplate(cms, file);
-        } catch (CmsException e) {
-            throw new ServletException(e.getMessage(), e);
-        }
-    }
-    
-    /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
     public void export(CmsObject cms, CmsFile file) throws CmsException {
         processXmlTemplate(cms, file);    
     }
-    
+
     /**
-     * Processes the XmlTemplates and writes the result to 
-     * the apropriate output stream, which is obtained from the request 
-     * context of the cms object.<p>
-     *
-     * @param cms the cms context object
-     * @param file the selected resource to be shown
-     * @throws CmsException if something goes wrong
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    private void processXmlTemplate(CmsObject cms, CmsFile file) throws CmsException {
-
-        // first some debugging output.
-        if ((DEBUG > 0) && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getResourceName());
-        }
-
-        // check all values to be valid
-        String errorMessage = null;
-        if (file == null) {
-            errorMessage = "Got \"null\" CmsFile object. :-(";
-        }
-        if (cms == null) {
-            errorMessage = "Actual cms object missing";
-        }
-        if (errorMessage != null) {
-            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-            } 
-            throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
-        }
-
-        // Check the clearcache parameter
-        String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
-        
-        // Clear launcher caches if this is required
-        clearLauncherCache(cms, 
-            ((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))),
-            ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
-        
-        // get the CmsRequest
-        I_CmsRequest req = cms.getRequestContext().getRequest();
-        byte[] result = null;
-        result = generateOutput(cms, file, req);
-        if (result != null) {
-            writeBytesToResponse(cms, result);
-        }
-    }    
-        
-    /**
-     * Does the job of including an XMLTemplate 
-     * as a sub-element of a JSP or other resource loaders.<p>
-     * 
-     * @param cms used to access the OpenCms VFS
-     * @param file the reqested JSP file resource in the VFS
-     * @param req the current request
-     * @param res the current response
-     * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
-     * 
-     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
-     */    
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
-    throws ServletException, IOException {
-        long timer1;
-        if (DEBUG > 0) {
-            timer1 = System.currentTimeMillis();        
-            System.err.println("============ CmsXmlTemplateLoader loading: " + cms.readAbsolutePath(file));            
-            System.err.println("CmsXmlTemplateLoader.service() cms uri is: " + cms.getRequestContext().getUri());            
-        }
-        // save the original context settings
-        String rnc = cms.getRequestContext().getEncoding().trim();
-        String oldUri = cms.getRequestContext().getUri();
-        I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
-        HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
-        try {                        
-            // get the CmsRequest
-            byte[] result = null;
-            com.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
-            // care about encoding issues
-            String dnc = A_OpenCms.getDefaultEncoding().trim();
-            String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
-            // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
-            cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
-            cms_req.setOriginalRequest(req);
-            cms.getRequestContext().setEncoding(enc);      
-            if (DEBUG > 1) {
-                System.err.println("CmsXmlTemplateLoader.service(): Encodig set to " + cms.getRequestContext().getEncoding());
-                System.err.println("CmsXmlTemplateLoader.service(): Uri set to " + cms.getRequestContext().getUri());
-            }
-            // process the included XMLTemplate
-            result = generateOutput(cms, fx, cms_req);                                    
-            // append the result to the output stream
-            if (result != null) {
-                // Encoding project:
-                // The byte array must internally be encoded in the OpenCms
-                // default encoding. It will be converted to the requested encoding 
-                // on the most top-level JSP element
-                result = Encoder.changeEncoding(result, enc, dnc);
-                if (DEBUG > 1) System.err.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);                             
-                res.getOutputStream().write(result);
-            }        
-        }  catch (Exception e) {
-            if (DEBUG > 0) e.printStackTrace(System.err);
-            throw new ServletException("Error in CmsXmlTemplateLoader while processing " + cms.readAbsolutePath(file), e);       
-        } finally {
-            // restore the context settings
-            cms_req.setOriginalRequest(originalreq);
-            cms.getRequestContext().setEncoding(rnc);
-            cms.getRequestContext().setUri(oldUri);
-            if (DEBUG > 1) {
-                System.err.println("CmsXmlTemplateLoader.service(): Encodig reset to " + cms.getRequestContext().getEncoding());
-                System.err.println("CmsXmlTemplateLoader.service(): Uri reset to " + cms.getRequestContext().getUri());
-            }
-        }
-        if (DEBUG > 0) {
-            long timer2 = System.currentTimeMillis() - timer1;        
-            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
-        }
-    } 
+    public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+        // TODO: Auto-generated method stub
+        return null;
+    }        
     
     /**
      * Starts generating the output.
@@ -552,101 +462,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
                 output = callCanonicalRoot(cms, tmpl, masterTemplate, newParameters);
             } catch (CmsException e) {
                 if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlLauncher] There were exceptions while generating output for " + cms.readAbsolutePath(file));
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlLauncher] Clearing template file cache for this file.");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlLoader] There were exceptions while generating output for " + cms.readAbsolutePath(file));
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[CmsXmlLoader] Clearing template file cache for this file.");
                 }
                 doc.removeFromFileCache();
                 throw e;
             }
         }
         return output;
-    }
-
-    /**
-     * Returns the element cache that belongs to the given cms context,
-     * or null if the element cache is not initialized.<p>
-     * 
-     * @param cms the opencms context
-     * @return the element cache that belongs to the given cms context
-     */        
-    public static final CmsElementCache getElementCache(CmsObject cms) {
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            return m_elementCache;
-        } else {        
-            return null;
-        }        
-    }
-    
-    /**
-     * Returns true if the element cache is enabled for the given cms context.<p>
-     * 
-     * @param cms the opencms context
-     * @return true if the element cache is enabled for the given cms context
-     */
-    public static final boolean isElementCacheEnabled(CmsObject cms) {
-        return (m_elementCache != null) && cms.getRequestContext().currentProject().isOnlineProject();            
-    }    
-
-    /**
-     * Returns the variant dependencies of the online element cache.<p>
-     * 
-     * @return the variant dependencies of the online element cache
-     */
-    public static final CmsElementCache getOnlineElementCache() {
-        return m_elementCache;
-    }
-    
-    /**
-     * Returns the hashtable with the variant dependencies used for the elementcache.<p>
-     * 
-     * @return the hashtable with the variant dependencies used for the elementcache
-     */
-    public static final Hashtable getVariantDependencies() {
-        return m_variantDeps;
-    }    
-    
-    /**
-     * Internal utility method for checking and loading a given template file.
-     * @param cms CmsObject for accessing system resources.
-     * @param templateName Name of the requestet template file.
-     * @param doc CmsXmlControlFile object containig the parsed body file.
-     * @return CmsFile object of the requested template file.
-     * @throws CmsException if something goes wrong
-     */
-    private CmsFile loadMasterTemplateFile(CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) throws CmsException {
-        CmsFile masterTemplate = null;
-        try {
-            masterTemplate = cms.readFile(templateName);
-        } catch (Exception e) {
-            handleException(cms, e, "Cannot load master template " + templateName + ". ");
-            doc.removeFromFileCache();
-        }
-        return masterTemplate;
-    }
-
-    /**
-     * Utility method used by the launcher implementation to give control
-     * to the CanonicalRoot.<p>
-     * 
-     * The CanonicalRoot will call the master template and return a byte array of the
-     * generated output.<p>
-     *
-     * @param cms the cms context object
-     * @param templateClass to generate the output of the master template
-     * @param masterTemplate masterTemplate for the output
-     * @param parameters contains all parameters for the template class
-     * @return the generated output or null if there were errors
-     * @throws CmsException if something goes wrong
-     */
-    private byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
-        try {
-            com.opencms.template.CmsRootTemplate root = (CmsRootTemplate)CmsTemplateClassManager.getClassInstance(cms, "com.opencms.template.CmsRootTemplate");
-            return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
-        } catch (Exception e) {
-            // no document we could show...
-            handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getResourceName() + ". ");
-        }
-        return null;
     }
 
     /**
@@ -659,6 +482,23 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         String name = getClass().getName();
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
+     */
+    public int getLoaderId() {
+        return C_RESOURCE_LOADER_ID;
+    }      
+    
+    /**
+     * Return a String describing the ResourceLoader,
+     * which is <code>"The OpenCms default resource loader for XMLTemplates"</code>.<p>
+     * 
+     * @return a describing String for the ResourceLoader 
+     */
+    public String getResourceLoaderInfo() {
+        return "The OpenCms default resource loader for XMLTemplates";
+    }   
 
     /**
      * Calls the CmsClassManager to get an instance of the given template class.<p>
@@ -732,30 +572,191 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             if (e instanceof CmsException) {
                 throw (CmsException)e;
             } else {
-                throw new CmsException(errorText, CmsException.C_LAUNCH_ERROR, e);
+                throw new CmsException(errorText, CmsException.C_LOADER_ERROR, e);
             }
         }
     }
     
-    /**
-     * Compatibility method to ensure the legacy cache command line parameters
-     * are still supported.<p>
+    /** 
+     * Initialize the ResourceLoader.<p>
      * 
-     * @param cms an initialized CmsObject
-     * @param clearFiles if true, A_CmsXmlContent cache is cleared
-     * @param clearTemplates if true, internal template cache is cleared
+     * @param openCms the initialized OpenCms object
+     * @param conf the OpenCms configuration 
      */
-    private static void clearLauncherCache(CmsObject cms, boolean clearFiles, boolean clearTemplates) {
-        long currentFsCounter = cms.getFileSystemChanges();
-        if (clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
-            A_CmsXmlContent.clearFileCache();
-            m_lastFsCounterFile = currentFsCounter;
+    public void init(A_OpenCms openCms, Configurations conf) {
+        // Check, if the element cache should be enabled
+        boolean enableElementCache = conf.getBoolean("elementcache.enabled", false);
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : " + (enableElementCache ? "enabled" : "disabled"));
+        if (enableElementCache) {
+            try {
+                m_elementCache = new CmsElementCache(conf.getInteger("elementcache.uri", 10000), conf.getInteger("elementcache.elements", 50000), conf.getInteger("elementcache.variants", 100));
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT))
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Element cache        : non-critical error " + e.toString());
+            }
+            m_variantDeps = new Hashtable();
+            m_elementCache.getElementLocator().setExternDependencies(m_variantDeps);
+        } else {
+            m_elementCache = null;
         }
-        if (clearTemplates || (currentFsCounter > m_lastFsCounterTemplate)) {
-            m_templateCache.clearCache();
-            m_lastFsCounterTemplate = currentFsCounter;
-        }        
+        
+        if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) { 
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, ". Loader init          : " + this.getClass().getName() + " initialized!");
+        }             
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#load(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public void load(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) 
+    throws ServletException, IOException {   
+        try { 
+            processXmlTemplate(cms, file);
+        } catch (CmsException e) {
+            throw new ServletException(e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * Internal utility method for checking and loading a given template file.
+     * @param cms CmsObject for accessing system resources.
+     * @param templateName Name of the requestet template file.
+     * @param doc CmsXmlControlFile object containig the parsed body file.
+     * @return CmsFile object of the requested template file.
+     * @throws CmsException if something goes wrong
+     */
+    private CmsFile loadMasterTemplateFile(CmsObject cms, String templateName, com.opencms.template.CmsXmlControlFile doc) throws CmsException {
+        CmsFile masterTemplate = null;
+        try {
+            masterTemplate = cms.readFile(templateName);
+        } catch (Exception e) {
+            handleException(cms, e, "Cannot load master template " + templateName + ". ");
+            doc.removeFromFileCache();
+        }
+        return masterTemplate;
+    }
+    
+    /**
+     * Processes the XmlTemplates and writes the result to 
+     * the apropriate output stream, which is obtained from the request 
+     * context of the cms object.<p>
+     *
+     * @param cms the cms context object
+     * @param file the selected resource to be shown
+     * @throws CmsException if something goes wrong
+     */
+    private void processXmlTemplate(CmsObject cms, CmsFile file) throws CmsException {
+
+        // first some debugging output.
+        if ((DEBUG > 0) && I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + "Loader started for " + file.getResourceName());
+        }
+
+        // check all values to be valid
+        String errorMessage = null;
+        if (file == null) {
+            errorMessage = "Got \"null\" CmsFile object. :-(";
+        }
+        if (cms == null) {
+            errorMessage = "Actual cms object missing";
+        }
+        if (errorMessage != null) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, getClassName() + errorMessage);
+            } 
+            throw new CmsException(errorMessage, CmsException.C_LOADER_ERROR);
+        }
+
+        // Check the clearcache parameter
+        String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
+        
+        // Clear loader caches if this is required
+        clearLoaderCache(cms, 
+            ((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))),
+            ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
+        
+        // get the CmsRequest
+        I_CmsRequest req = cms.getRequestContext().getRequest();
+        byte[] result = null;
+        result = generateOutput(cms, file, req);
+        if (result != null) {
+            writeBytesToResponse(cms, result);
+        }
+    }    
+        
+    /**
+     * Does the job of including an XMLTemplate 
+     * as a sub-element of a JSP or other resource loaders.<p>
+     * 
+     * @param cms used to access the OpenCms VFS
+     * @param file the reqested JSP file resource in the VFS
+     * @param req the current request
+     * @param res the current response
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * 
+     * @see com.opencms.flex.cache.CmsFlexRequestDispatcher
+     */    
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
+    throws ServletException, IOException {
+        long timer1;
+        if (DEBUG > 0) {
+            timer1 = System.currentTimeMillis();        
+            System.err.println("============ CmsXmlTemplateLoader loading: " + cms.readAbsolutePath(file));            
+            System.err.println("CmsXmlTemplateLoader.service() cms uri is: " + cms.getRequestContext().getUri());            
+        }
+        // save the original context settings
+        String rnc = cms.getRequestContext().getEncoding().trim();
+        String oldUri = cms.getRequestContext().getUri();
+        I_CmsRequest cms_req = cms.getRequestContext().getRequest();        
+        HttpServletRequest originalreq = (HttpServletRequest)cms_req.getOriginalRequest();
+        try {                        
+            // get the CmsRequest
+            byte[] result = null;
+            com.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
+            // care about encoding issues
+            String dnc = A_OpenCms.getDefaultEncoding().trim();
+            String enc = cms.readProperty(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true, dnc).trim();
+            // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
+            cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
+            cms_req.setOriginalRequest(req);
+            cms.getRequestContext().setEncoding(enc);      
+            if (DEBUG > 1) {
+                System.err.println("CmsXmlTemplateLoader.service(): Encodig set to " + cms.getRequestContext().getEncoding());
+                System.err.println("CmsXmlTemplateLoader.service(): Uri set to " + cms.getRequestContext().getUri());
+            }
+            // process the included XMLTemplate
+            result = generateOutput(cms, fx, cms_req);                                    
+            // append the result to the output stream
+            if (result != null) {
+                // Encoding project:
+                // The byte array must internally be encoded in the OpenCms
+                // default encoding. It will be converted to the requested encoding 
+                // on the most top-level JSP element
+                result = Encoder.changeEncoding(result, enc, dnc);
+                if (DEBUG > 1) System.err.println("CmsXmlTemplateLoader.service(): encoding=" + enc + " requestEncoding=" + rnc + " defaultEncoding=" + dnc);                             
+                res.getOutputStream().write(result);
+            }        
+        }  catch (Exception e) {
+            if (DEBUG > 0) e.printStackTrace(System.err);
+            throw new ServletException("Error in CmsXmlTemplateLoader while processing " + cms.readAbsolutePath(file), e);       
+        } finally {
+            // restore the context settings
+            cms_req.setOriginalRequest(originalreq);
+            cms.getRequestContext().setEncoding(rnc);
+            cms.getRequestContext().setUri(oldUri);
+            if (DEBUG > 1) {
+                System.err.println("CmsXmlTemplateLoader.service(): Encodig reset to " + cms.getRequestContext().getEncoding());
+                System.err.println("CmsXmlTemplateLoader.service(): Uri reset to " + cms.getRequestContext().getUri());
+            }
+        }
+        if (DEBUG > 0) {
+            long timer2 = System.currentTimeMillis() - timer1;        
+            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
+        }
+    } 
 
     /**
      * Writes a given byte array to the HttpServletRespose output stream.<p>
@@ -786,5 +787,5 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             String errorMessage = "Cannot write output to HTTP response stream";
             handleException(cms, e, errorMessage);
         }
-    }        
+    }
 }

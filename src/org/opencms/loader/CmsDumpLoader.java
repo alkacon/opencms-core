@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -73,13 +73,6 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public CmsDumpLoader() {
         // NOOP
     }
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
-     */
-    public int getLoaderId() {
-        return C_RESOURCE_LOADER_ID;
-    }            
         
     /** 
      * Destroy this ResourceLoder, this is a NOOP so far.<p>
@@ -87,6 +80,36 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void destroy() {
         // NOOP
     }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
+     */
+    public void export(CmsObject cms, CmsFile file) throws CmsException {
+        try {    
+            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
+            responsestream.write(file.getContents());
+            responsestream.close();
+        } catch (Throwable t) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            }         
+        }        
+    }
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+        service(cms, file, req, res);  
+        return file.getContents();
+    }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
+     */
+    public int getLoaderId() {
+        return C_RESOURCE_LOADER_ID;
+    }            
     
     /**
      * Return a String describing the ResourceLoader,
@@ -118,32 +141,25 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     throws ServletException, IOException {                   
         service(cms, file, req, res);        
     }   
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
-     */
-    public void export(CmsObject cms, CmsFile file) throws CmsException {
-        try {    
-            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            responsestream.write(file.getContents());
-            responsestream.close();
-        } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
-            }         
-        }        
-    }
         
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */
     public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
     throws ServletException, IOException {
-        try {
-            res.getOutputStream().write(cms.readFile(cms.readAbsolutePath(file)).getContents());
-        }  catch (CmsException e) {
-            if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
-            throw new ServletException("Error in CmsDumpLoader while processing " + cms.readAbsolutePath(file), e);    
+        byte[] content = null;
+        if (file instanceof CmsFile) {
+            content = ((CmsFile)file).getContents();
+        } else {
+            String filename = cms.readAbsolutePath(file);
+            try {                
+                content = cms.readFile(filename).getContents();
+            }  catch (CmsException e) {
+                if (DEBUG > 0) System.err.println(com.opencms.util.Utils.getStackTrace(e));
+                throw new ServletException("Error in CmsDumpLoader while processing " + filename, e);    
+            }
         }
+        res.getOutputStream().write(content);
     }
+
  }

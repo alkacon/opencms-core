@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2003/08/03 15:11:59 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,14 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  */
 public class CmsException extends Exception {
 
     /** Error code for bad name exception */
     public static final int C_BAD_NAME = 3;
 
-    /** Error code for launcher errors */
+    /** Error code for ClassLoader errors */
     public static final int C_CLASSLOADER_ERROR = 29;
 
     /** Default prefix for a CmsException message */
@@ -87,7 +87,7 @@ public class CmsException extends Exception {
             "XML tag missing",
             "Wrong XML template class",
             "No XML template class",
-            "Error while launching template class",
+            "Error while loading template class",
             "OpenCms class loader error",
             "New password is too short",
             "(code 31: unused)",
@@ -128,8 +128,8 @@ public class CmsException extends Exception {
     /** Error code for error"Password too short" */
     public static final int C_INVALID_PASSWORD = 30;
 
-    /** Error code for launcher errors */
-    public static final int C_LAUNCH_ERROR = 28;
+    /** Error code for loader errors */
+    public static final int C_LOADER_ERROR = 28;
 
     /** 
      * Error code for access denied exception for vfs resources

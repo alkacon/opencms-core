@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.87 $ $Date: 2003/08/08 12:50:40 $
+ * @version $Revision: 1.88 $ $Date: 2003/08/10 11:49:48 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -191,8 +191,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        // CmsUUID lockedBy = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_LOCKED_BY")));
-        int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
+        int loaderId = res.getInt(m_sqlManager.get("C_RESOURCES_LOADER_ID"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
@@ -207,14 +206,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             content = new byte[0];
         }
 
-        //if (!lockedBy.equals(CmsUUID.getNullUUID())) {
-            // resource is locked
         resProjectId = lockedInProject;
-        //} else {
-            // resource is not locked
-        //    resProjectId = projectId;
-        //    lockedInProject = projectId;
-        //}
 
         if (org.opencms.db.generic.CmsProjectDriver.C_USE_TARGET_DATE && resourceType == org.opencms.db.generic.CmsProjectDriver.C_RESTYPE_LINK_ID && resourceFlags > 0) {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
@@ -222,7 +214,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         int newState = (structureState > resourceState) ? structureState : resourceState;
 
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resProjectId, newState, loaderId, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
     }
 
     /**
@@ -238,7 +230,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
+        int loaderId = res.getInt(m_sqlManager.get("C_RESOURCES_LOADER_ID"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
@@ -251,18 +243,9 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             dateLastModified = fetchDateFromResource(projectId, resourceFlags, dateLastModified);
         }
         
-        /*
-        if (!lockedBy.equals(CmsUUID.getNullUUID())) {
-            // resource is locked
-        } else {
-            // resource is not locked
-            resProjectId = projectId;
-            lockedInProject = projectId;
-        }        
-        */
         int newState = (structureState > resourceState) ? structureState : resourceState;
         
-        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
+        return new CmsFile(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, projectId, newState, loaderId, dateCreated, userCreated, dateLastModified, userLastModified, content, resourceSize, linkCount);
     }
 
     /**
@@ -318,7 +301,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.get("C_RESOURCES_FILE_ID")));
         int resourceState = res.getInt(m_sqlManager.get("C_RESOURCES_STATE"));
         int structureState = res.getInt(m_sqlManager.get("C_RESOURCES_STRUCTURE_STATE"));
-        int launcherType = res.getInt(m_sqlManager.get("C_RESOURCES_LAUNCHER_TYPE"));
+        int loaderId = res.getInt(m_sqlManager.get("C_RESOURCES_LOADER_ID"));
         long dateCreated = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_CREATED")).getTime();
         long dateLastModified = SqlHelper.getTimestamp(res, m_sqlManager.get("C_RESOURCES_DATE_LASTMODIFIED")).getTime();
         int resourceSize = res.getInt(m_sqlManager.get("C_RESOURCES_SIZE"));
@@ -332,7 +315,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         int newState = (structureState > resourceState) ? structureState : resourceState;
                      
-        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, newState, launcherType, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, linkCount);
+        CmsResource newResource = new CmsResource(structureId, resourceId, parentId, fileId, resourceName, resourceType, resourceFlags, resourceProjectId, newState, loaderId, dateCreated, userCreated, dateLastModified, userLastModified, resourceSize, linkCount);
         
         return newResource;
     }

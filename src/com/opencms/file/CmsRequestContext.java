@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/08/01 15:42:18 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  */
 public class CmsRequestContext {
 
@@ -711,8 +711,7 @@ public class CmsRequestContext {
      * a cascade of included XMLTemplates are combined with JSP or other
      * Templates that use the ResourceLoader interface.
      * You need to fake the URI because the ElementCache always
-     * uses cms.getRequestContext().getUri() even if you called
-     * CmsXmlLauncher.generateOutput() with a differnt file name.
+     * uses cms.getRequestContext().getUri().
      *
      * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css
      * @since 5.0 beta 1

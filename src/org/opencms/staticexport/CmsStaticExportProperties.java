@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportProperties.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsStaticExportProperties {
 
@@ -197,6 +197,9 @@ public class CmsStaticExportProperties {
      */
     public void setExportPath(String path) {
         m_staticExportPath = path;
+        if (! m_staticExportPath.endsWith("/")) {
+            m_staticExportPath += "/";
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/I_CmsXmlTemplate.java,v $
-* Date   : $Date: 2003/01/20 23:59:21 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,17 +40,15 @@ import java.util.*;
  * template class interface to the special behaviour
  * of XML template classes may be defined here.
  * <P>
- * Primarily, this interface is important for the launcher, 
- * NOT for the template engine.
- * The CmsXmlLauncher can launch all templates that
- * implement the I_CmsXmlTemplate interface. 
- * <P>
+ * Primarily, this interface is important for the loader, 
+ * NOT for the template engine.<p>
+ * 
  * For subtemplates, the I_CmsTemplate interface is
  * all that must be implemented, so you can load all kind
  * of templates (eg. type I_CmsDumpTemplate) as subtemplate.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2003/01/20 23:59:21 $
+ * @version $Revision: 1.10 $ $Date: 2003/08/10 11:49:48 $
  */
 public interface I_CmsXmlTemplate extends I_CmsTemplate {
     

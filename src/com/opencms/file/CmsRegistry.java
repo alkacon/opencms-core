@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/08/07 09:04:32 $
-* Version: $Revision: 1.84 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.85 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,14 +62,13 @@ import org.w3c.dom.NodeList;
  * Implements the registry for OpenCms.<p>
  * 
  * The OpenCms registry contains information about the installed modules in the system,
- * as well as the launcher mappings, the mail server settings for the task management,
+ * the mail server settings for the task management,
  * the workplace views and some other items.<p>
  *
- * @author Andreas Schouten
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.84 $ $Date: 2003/08/07 09:04:32 $
+ * @version $Revision: 1.85 $ $Date: 2003/08/10 11:49:48 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
 

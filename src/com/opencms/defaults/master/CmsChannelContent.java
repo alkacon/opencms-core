@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/08/07 18:47:27 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.51 $
- * $Date: 2003/08/07 18:47:27 $
+ * $Revision: 1.52 $
+ * $Date: 2003/08/10 11:49:48 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsExtendedContentDefinition{
 
@@ -204,14 +204,8 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
         m_channelname = "";
         m_parentchannel = "";
-        // m_GroupId = m_cms.getRequestContext().currentGroup().getId();
-        // m_UserId = m_cms.getRequestContext().currentUser().getId();
         m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
-        // int resourceId, int parentId, int fileId, String resourceName, int resourceType,
-        // int resourceFlags, int user, int group, int projectId, int accessFlags, int state,
-        // int lockedBy, int launcherType, String launcherClassname, long dateCreated,
-        // long dateLastModified, int resourceLastModifiedBy,int size, int lockedInProject
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
                                      CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
                                      0,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2003/08/08 12:21:06 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,6 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -75,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * Any request to an OpenCms resource will be processed by this class first.
  * The class will try to map the request to a VFS (Virtual File System) resource,
  * i.e. an URI. If the resource is found, it will be read anf forwarded to
- * to a launcher, which is performs the output of the requested resource.<p>
+ * to a resource loader, which is performs the output of the requested resource.<p>
  *
  * The OpenCms class is independent of access module to the OpenCms 
  * (e.g. Servlet, Command Shell), therefore this class is <b>not</b> responsible 
@@ -93,12 +92,9 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.160 $
+ * @version $Revision: 1.161 $
  */
 public final class OpenCms extends A_OpenCms {
-
-    /** The default mimetype */
-    private static final String C_DEFAULT_MIMETYPE = "text/html";
 
     /** The name of the class used to validate a new password */
     private static String c_passwordValidatingClass = "";
@@ -117,9 +113,6 @@ public final class OpenCms extends A_OpenCms {
 
     /** Flag to indicate if the startup classes have already been initialized */
     private boolean m_startupClassesInitialized = false;
-
-    /** Hashtable with all available Mimetypes */
-    private Hashtable m_mt = new Hashtable();
 
     /**  The cron scheduler to schedule the cronjobs */
     private CmsCronScheduler m_scheduler;
@@ -224,9 +217,10 @@ public final class OpenCms extends A_OpenCms {
 
         try {
             // initalize the Hashtable with all available mimetypes
-            m_mt = m_driverManager.readMimeTypes();
+            Hashtable mimeTypes = m_driverManager.readMimeTypes();
+            setMimeTypes(mimeTypes);
             if (I_CmsLogChannels.C_LOGGING && isLogging(I_CmsLogChannels.C_OPENCMS_INIT)) {
-                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
+                log(I_CmsLogChannels.C_OPENCMS_INIT, ". Found mime types     : " + mimeTypes.size() + " entrys");
             }
 
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
@@ -858,23 +852,7 @@ public final class OpenCms extends A_OpenCms {
      * @param file The requested document
      */
     void setResponse(CmsObject cms, CmsFile file) {
-        String mimetype = null;
-        int lastDot = file.getResourceName().lastIndexOf(".");
-        // check if there was a file extension
-        if ((lastDot > 0) && (lastDot < (file.getResourceName().length() - 1))) {
-            String ext = file.getResourceName().substring(lastDot + 1);
-            mimetype = (String)m_mt.get(ext);
-            // was there a mimetype fo this extension?
-            if (mimetype == null) {
-                mimetype = C_DEFAULT_MIMETYPE;
-            }
-        } else {
-            mimetype = C_DEFAULT_MIMETYPE;
-        }
-        mimetype = mimetype.toLowerCase();
-        if (mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {
-            mimetype += "; charset=" + cms.getRequestContext().getEncoding();
-        }
+        String mimetype = getMimeType(file.getResourceName(), cms.getRequestContext().getEncoding());
         cms.getRequestContext().getResponse().setContentType(mimetype);
     }
 

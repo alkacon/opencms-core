@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -127,8 +127,7 @@ public class CmsElementXml extends A_CmsElement {
             // We have to generate it by calling the "classic" getContent() method on the template
             // class.
 
-            // Get template class.
-            // In classic mode, this is donw by the launcher.
+            // get template class
             I_CmsTemplate templateClass = null;
             try {
                 templateClass = getTemplateClass(cms, m_className);

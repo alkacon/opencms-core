@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2003/07/31 13:19:37 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2003/07/31 13:19:37 $
+ * @version $Revision: 1.35 $ $Date: 2003/08/10 11:49:48 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
@@ -292,12 +292,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
      * @throws CmsException
      */
     public String getTemplateClass() throws CmsException {
-        String result = getDataValue("class");
-
-        // checking the value is not required here.
-
-        // the launcher takes another class if no classname was found here
-        return result;
+        return getDataValue("class");
     }
 
     /**

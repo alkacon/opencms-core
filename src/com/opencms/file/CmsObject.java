@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/08 12:50:39 $
-* Version: $Revision: 1.369 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.370 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.369 $
+ * @version $Revision: 1.370 $
  */
 public class CmsObject {
 
@@ -1305,7 +1305,6 @@ public class CmsObject {
      * @param properties A Hashtable of propertyinfos, that should be set for this folder
      * The keys for this Hashtable are the names for propertydefinitions, the values are
      * the values for the propertyinfos
-     * @param launcherType The launcher type of the new resource
      * @param accessFlags The accessFlags of the new resource
      * @param lastmodified the last modification date of the resource
      * @param filecontent The content of the resource if it is of type file 

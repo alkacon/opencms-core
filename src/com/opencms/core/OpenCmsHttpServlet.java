@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,10 +71,10 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * <li>The requested document is loaded into OpenCms and depending on its type 
  * (and the users persmissions to display or modify it), 
- * it is send to one of the OpenCms launchers do be processed.</li>
+ * it is send to one of the OpenCms loaders do be processed.</li>
  * 
  * <li>
- * The loaded launcher will then decide what to do with the contents of the 
+ * The loader will then decide what to do with the contents of the 
  * requested document. In case of an XMLTemplate the template mechanism will 
  * be started, in case of a JSP the JSP handling mechanism is invoked, 
  * in case of an image (or other static file) this will simply be returned etc.
@@ -83,7 +83,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 public class OpenCmsHttpServlet extends HttpServlet {
     

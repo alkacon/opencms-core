@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExport.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * to the filesystem.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsStaticExport {
 
@@ -184,6 +184,9 @@ public class CmsStaticExport {
          * CmsProjectDirver.readExportLinkHeader()
          * CmsProjectDriver.writeExportLink()
          */
+         
+        boolean dummy = true;
+        if (dummy) return;
 
         m_cms = cms;
         m_startpoints = startpoints;

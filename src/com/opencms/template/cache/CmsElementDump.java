@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2003/08/04 12:22:38 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/08/10 11:49:48 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -82,8 +82,7 @@ public class CmsElementDump extends A_CmsElement {
     public byte[] getContent(CmsElementCache elementCache, CmsObject cms, CmsElementDefinitionCollection elDefs, String elementName, Hashtable parameters, String methodParameter) throws CmsException  {
         byte[] result = null;
 
-        // Get template class.
-        // In classic mode, this is donw by the launcher.
+        // get template class
         I_CmsTemplate templateClass = getTemplateClass(cms, m_className);
 
         // Collect cache directives from subtemplates

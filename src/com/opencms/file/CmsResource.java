@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/08/01 13:57:22 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -122,7 +122,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param resourceFlags the flags of the resource
      * @param projectId the project id this resource belongs to
      * @param state the state of this resource
-     * @param launcherType the launcher that is require to process this recource     
+     * @param loaderId the loader that is require to process this recource     
      * @param dateCreated the creation date of this resource
      * @param createdByUser the user who created this resource
      * @param dateLastModified the date of the last modification of the resource
@@ -140,7 +140,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         int resourceFlags, 
         int projectId, 
         int state, 
-        int launcherType, 
+        int loaderId, 
         long dateCreated, 
         CmsUUID createdByUser, 
         long dateLastModified, 
@@ -156,7 +156,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_resourceType = resourceType;
         m_resourceFlags = resourceFlags;
         m_projectId = projectId;
-        m_loaderId = launcherType;
+        m_loaderId = loaderId;
         m_state = state;
         m_dateCreated = dateCreated;
         m_createdByUser = createdByUser;

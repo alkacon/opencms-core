@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,15 +51,12 @@ import source.org.apache.java.util.Configurations;
 
 
 /**
- * Loader "pointers" to resources in the VFS or to external resources.<p>
+ * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
-    
-    /** The id of this loader */
-    public static final int C_RESOURCE_LOADER_ID = 4;    
     
     /**
      * The html-code for returning the export file for external links
@@ -67,11 +64,47 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     private static String C_EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="+'"'+"refresh"+'"'+" content="+'"'+"0; url=";
     private static String C_EXPORT_SUFFIX = '"'+">\n</head>\n<body></body>\n</html>";
     
+    /** The id of this loader */
+    public static final int C_RESOURCE_LOADER_ID = 4;    
+    
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsPointerLoader() {
         // NOOP
+    }
+        
+    /** 
+     * Destroy this ResourceLoder, this is a NOOP so far.<p>
+     */
+    public void destroy() {
+        // NOOP
+    }
+    
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
+     */
+    public void export(CmsObject cms, CmsFile file) throws CmsException {
+        try {
+            String pointer = new String(file.getContents());        
+            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
+            responsestream.write(C_EXPORT_PREFIX.getBytes());
+            responsestream.write(pointer.getBytes());
+            responsestream.write(C_EXPORT_SUFFIX.getBytes());
+            responsestream.close();
+        } catch (Throwable t) {
+            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
+            }        
+        }        
+    }    
+
+    /**
+     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+     */
+    public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+        // TODO: Auto-generated method stub
+        return null;
     }
     
     /**
@@ -80,13 +113,6 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public int getLoaderId() {
         return C_RESOURCE_LOADER_ID;
     }            
-        
-    /** 
-     * Destroy this ResourceLoder, this is a NOOP so far.<p>
-     */
-    public void destroy() {
-        // NOOP
-    }
     
     /**
      * Return a String describing the ResourceLoader,
@@ -127,24 +153,6 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
             res.sendRedirect(pointer);
         }
     }   
-    
-    /**
-     * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
-     */
-    public void export(CmsObject cms, CmsFile file) throws CmsException {
-        try {
-            String pointer = new String(file.getContents());        
-            OutputStream responsestream = cms.getRequestContext().getResponse().getOutputStream();
-            responsestream.write(C_EXPORT_PREFIX.getBytes());
-            responsestream.write(pointer.getBytes());
-            responsestream.write(C_EXPORT_SUFFIX.getBytes());
-            responsestream.close();
-        } catch (Throwable t) {
-            if (I_CmsLogChannels.C_LOGGING && A_OpenCms.isLogging(I_CmsLogChannels.C_OPENCMS_CRITICAL)) { 
-                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, this.getClass().getName() + " Error during statoc export of " + cms.readAbsolutePath(file) + ": " + t.getMessage());
-            }        
-        }        
-    }    
     
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)

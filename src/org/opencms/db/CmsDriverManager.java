@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2003/08/10 11:49:48 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.148 $ $Date: 2003/08/08 12:50:40 $
+ * @version $Revision: 1.149 $ $Date: 2003/08/10 11:49:48 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -3488,43 +3488,42 @@ public class CmsDriverManager extends Object {
      * @throws CmsException if operation was not successful
      */
     public Vector getResourcesInFolder(CmsRequestContext context, String folder) throws CmsException {
-        CmsFolder offlineFolder = null;
+        CmsFolder folderRes = null;
         Vector resources = new Vector();
         Vector retValue = new Vector();
 
         try {
-            offlineFolder = readFolder(context, folder);
-            if (offlineFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
-                offlineFolder = null;
+            folderRes = readFolder(context, folder);
+            if (folderRes.getState() == I_CmsConstants.C_STATE_DELETED) {
+                folderRes = null;
             }
         } catch (CmsException exc) {
             // ignore the exception - folder was not found in this project
         }
 
-        if (offlineFolder == null) {
+        if (folderRes == null) {
             // the folder is not existent
             throw new CmsException("[" + this.getClass().getName() + "] " + folder, CmsException.C_NOT_FOUND);
         } else {
             // try to read from cache
-            String cacheKey = getCacheKey(context.currentUser().getName() + "_resources", context.currentUser(), context.currentProject(), offlineFolder.getFullResourceName());
+            String cacheKey = getCacheKey(context.currentUser().getName() + "_resources", context.currentUser(), context.currentProject(), folderRes.getFullResourceName());
             retValue = (Vector) m_resourceListCache.get(cacheKey);
 
             if (retValue == null || retValue.size() == 0) {
-                resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), offlineFolder);
+                resources = m_vfsDriver.getResourcesInFolder(context.currentProject().getId(), folderRes);
                 retValue = new Vector(resources.size());
 
                 //make sure that we have access to all these.
-                for (Enumeration e = resources.elements(); e.hasMoreElements();) {
+                for (Enumeration e = resources.elements(); e.hasMoreElements(); ) {
                     CmsResource res = (CmsResource) e.nextElement();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
+                        if (res.isFolder() && !res.getResourceName().endsWith("/")) {
+                            res.setFullResourceName(folderRes.getFullResourceName() + res.getResourceName() + "/");
+                        } else { 
+                            res.setFullResourceName(folderRes.getFullResourceName() + res.getResourceName());
+                        }
                         retValue.addElement(res);
                     }
-//                    lock = getLock(context, offlineFolder);
-//
-//                    if (!lock.isNullLock()) {
-//                        res.setLocked(lock.getUserId());
-//                        res.setLockedInProject(lock.getProjectId());
-//                    }
                 }
 
                 m_resourceListCache.put(cacheKey, retValue);
@@ -3730,20 +3729,20 @@ public class CmsDriverManager extends Object {
 
         try {
             // validate the parent folder name
-            if (!parentFolderName.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-                parentFolderName += I_CmsConstants.C_FOLDER_SEPARATOR;
+            if (!parentFolderName.endsWith("/")) {
+                parentFolderName += "/";
             }
 
             // read the parent folder  
             parentFolder = readFolder(context, parentFolderName, includeDeleted);
             checkPermissions(context, parentFolder, I_CmsConstants.C_READ_ACCESS);
         } catch (CmsException e) {
-            return (List) new ArrayList(0);
+            return new ArrayList(0);
         }
 
         if ((parentFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
             // the parent folder was found, but it is deleted -> sub resources are not available
-            return (List) new ArrayList(0);
+            return new ArrayList(0);
         }
 
         if (subResources != null && subResources.size() > 0) {
@@ -3760,6 +3759,12 @@ public class CmsDriverManager extends Object {
                 subResources.remove(i--);
             } else if (!hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
                 subResources.remove(i--);
+            } else {
+                if (currentResource.isFolder() && !currentResource.getResourceName().endsWith("/")) {
+                    currentResource.setFullResourceName(parentFolderName + currentResource.getResourceName() + "/");
+                } else {
+                    currentResource.setFullResourceName(parentFolderName + currentResource.getResourceName());
+                }
             }
         }
 
@@ -4050,7 +4055,6 @@ public class CmsDriverManager extends Object {
       * @param propertyinfos a Hashtable of propertyinfos, that should be set for this folder
       * The keys for this Hashtable are the names for propertydefinitions, the values are
       * the values for the propertyinfos
-      * @param launcherType the launcher type of the new resource
       * @param ownername the name of the owner of the new resource
       * @param groupname the name of the group of the new resource
       * @param accessFlags the accessFlags of the new resource
@@ -4096,14 +4100,10 @@ public class CmsDriverManager extends Object {
              filecontent = new byte[0];
          }
 
+         // set the parent id
          resource.setParentId(parentFolder.getId());
 
-         //String launcherClassname=getResourceType(resource.getType()).getResourceTypeName();       
-
-         // TODO VFS links: refactor all upper methods to support the VFS link type param
-         //CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-         
-         // create the folder.
+         // create the folder
          CmsResource newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), resource, filecontent, context.currentUser().getId(), resource.isFolder());
 
          //clearResourceCache(newResourceName, context.currentProject(), context.currentUser());
@@ -5336,6 +5336,9 @@ public class CmsDriverManager extends Object {
 
         // check if the user has read access to the file
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
+        
+        // set full resource name
+        resource.setFullResourceName(filename);
 
         // access was granted - return the file-header.
         return resource;
@@ -5373,6 +5376,8 @@ public class CmsDriverManager extends Object {
 
         for (int i = 0; i < pathProjectId.length; i++) {
             if (pathProjectId[i] == resource.getProjectId()) {
+                // set full resource name
+                resource.setFullResourceName(filename);
                 return resource;
             }
         }
@@ -5400,6 +5405,7 @@ public class CmsDriverManager extends Object {
         // check the security
         for (int i = 0; i < resources.size(); i++) {
             if (hasPermissions(context, (CmsResource) resources.elementAt(i), I_CmsConstants.C_READ_OR_VIEW_ACCESS, false)) {
+                // TODO: Add full resourcen name here
                 retValue.addElement(resources.elementAt(i));
             }
         }
@@ -5521,8 +5527,8 @@ public class CmsDriverManager extends Object {
             return null;
         }
 
-        if (!foldername.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if (!foldername.endsWith("/")) {
+            foldername += "/";
         }
 
         List path = readPath(context, foldername, includeDeleted);
@@ -5535,6 +5541,9 @@ public class CmsDriverManager extends Object {
         if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
             throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         }
+        
+        // now set the full resource name
+        cmsFolder.setFullResourceName(foldername);
 
         return cmsFolder;
     }
@@ -5564,8 +5573,8 @@ public class CmsDriverManager extends Object {
             return null;
         }
 
-        if (!foldername.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
-            foldername += I_CmsConstants.C_FOLDER_SEPARATOR;
+        if (!foldername.endsWith("/")) {
+            foldername += "/";
         }
 
         List path = readPathInProject(context, projectId, foldername, false);
@@ -5574,6 +5583,7 @@ public class CmsDriverManager extends Object {
 
         for (int i = 0; i < pathProjectId.length; i++) {
             if (pathProjectId[i] == cmsFolder.getProjectId()) {
+                cmsFolder.setFullResourceName(foldername);
                 return cmsFolder;
             }
         }
