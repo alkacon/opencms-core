@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/04 16:13:57 $
- * Version: $Revision: 1.370 $
+ * Date   : $Date: 2004/06/05 10:11:46 $
+ * Version: $Revision: 1.371 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,10 +57,7 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workplace.CmsWorkplaceManager;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -73,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.370 $ $Date: 2004/06/04 16:13:57 $
+ * @version $Revision: 1.371 $ $Date: 2004/06/05 10:11:46 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -195,167 +192,103 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
     }
 
-    /**
-     * Key for all properties
-     */
-    public static final String C_CACHE_ALL_PROPERTIES = "__CACHE_ALL_PROPERTIES__";
+    /** Cache key for all properties */
+    public static final String C_CACHE_ALL_PROPERTIES = "_CAP_";
 
-    /**
-     * Key for null value
-     */
-    public static final String C_CACHE_NULL_PROPERTY_VALUE = "__CACHE_NULL_PROPERTY_VALUE__";
+    /** Cache key for null value */
+    public static final String C_CACHE_NULL_PROPERTY_VALUE = "_NPV_";
 
-    /**
-     * Key for indicating no changes
-     */
+    /** Key for indicating no changes */
     public static final int C_NOTHING_CHANGED = 0;
     
-    /**
-     * Key to indicate complete update
-     */
+    /** Key to indicate complete update */
     public static final int C_UPDATE_ALL = 3;
     
-    /**
-     * Key to indicate update of resource record
-     */
+    /** Key to indicate update of resource record */
     public static final int C_UPDATE_RESOURCE = 4;
     
-    /**
-     * Key to indicate update of resource state
-     */
+    /** Key to indicate update of resource state */
     public static final int C_UPDATE_RESOURCE_STATE = 1;
     
-    /**
-     * Key to indicate update of struicture record
-     */
+    /** Key to indicate update of structure record */
     public static final int C_UPDATE_STRUCTURE = 5;
     
-    /**
-     * Key to indicate update of structure state
-     */
+    /** Key to indicate update of structure state */
     public static final int C_UPDATE_STRUCTURE_STATE = 2;
 
-    /**
-     * Separator for user cache
-     */
-    private static final String C_USER_CACHE_SEP = "\u0000";
+    /** Separator for user cache */
+    private static final char C_USER_CACHE_SEP = '\u0000';
         
-    /**
-     * Cache for access control lists
-     */
+    /** Indicates that allowed permissions */
+    private static final Integer PERM_ALLOWED = new Integer(0);
+    
+    /** Indicates denies permissions */
+    private static final Integer PERM_DENIED = new Integer(1);
+    
+    /** Indicates a resource was filtered during permission check */
+    private static final Integer PERM_FILTERED = new Integer(2);    
+    
+    /** Cache for access control lists */
     private Map m_accessControlListCache;
 
-    /** 
-     * The backup driver
-     */
+    /** The backup driver */
     private I_CmsBackupDriver m_backupDriver;
 
-    /**
-     * The configuration of the property-file.
-     */
+    /** The configuration of the property-file */
     private ExtendedProperties m_configuration;
-
-    /**
-     * Constant to count the file-system changes if Folders are involved.
-     */
-    private long m_fileSystemFolderChanges;
     
-    /**
-     * Cache for groups
-     */
+    /** Cache for groups */
     private Map m_groupCache;
 
-    /**
-     * The portnumber the workplace access is limited to.
-     */
-    private int m_limitedWorkplacePort = -1;
-
-    /**
-     * The lock manager
-     */
+    /** The lock manager */
     private CmsLockManager m_lockManager = OpenCms.getLockManager();
 
-    /** 
-     * The class used for password validation 
-     */
+    /** The class used for password validation */
     private I_CmsPasswordValidation m_passwordValidationClass;
 
-    /** 
-     * The class used for cache key generation 
-     */
+    /** The class used for cache key generation */
     private I_CmsCacheKey m_keyGenerator;
         
-    /**
-     * Cache for permission checks
-     */
+    /** Cache for permission checks */
     private Map m_permissionCache;
     
-    /**
-     * Cache for offline projects
-     */
+    /** Cache for offline projects */
     private Map m_projectCache;
 
-    /** 
-     * The project driver 
-     */
+    /** The project driver */
     private I_CmsProjectDriver m_projectDriver;
     
-    /**
-     * Cache for properties
-     */
+    /** Cache for properties */
     private Map m_propertyCache;
-    
-    /**
-     * Comment for <code>m_refresh</code>
-     */
-    private String m_refresh;
 
-    /**
-    * The Registry
-    */
+    /** The Registry */
     private CmsRegistry m_registry;
     
-    /**
-     * Cache for resources
-     */
+    /** Cache for resources */
     private Map m_resourceCache;
     
-    /**
-     * Cache for resource lists
-     */
+    /** Cache for resource lists */
     private Map m_resourceListCache;
 
-    /**
-     * Hashtable with resource-types.
-     */
-    private I_CmsResourceType[] m_resourceTypes = null;
+    /** Hashtable with resource-types */
+    private I_CmsResourceType[] m_resourceTypes;
     
-    /**
-     * Cache for user data
-     */
+    /** Cache for user data */
     private Map m_userCache;
 
     /** The user driver. */
     private I_CmsUserDriver m_userDriver;
     
-    /**
-     * Cache for user groups
-     */
+    /** Cache for user groups */
     private Map m_userGroupsCache;
 
-    /** 
-     * The VFS driver 
-     */
+    /** The VFS driver */
     private I_CmsVfsDriver m_vfsDriver;
 
-    /** 
-     * The workflow driver
-     */
+    /** The workflow driver */
     private I_CmsWorkflowDriver m_workflowDriver;
     
-    /**
-     * The HTML link validator
-     */
+    /** The HTML link validator */
     private CmsHtmlLinkValidator m_htmlLinkValidator;
 
     /**
@@ -1014,33 +947,18 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsResourceNotFoundException if the required resource is not readable
      */
     public void checkPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, CmsResourceFilter filter) throws CmsException, CmsSecurityException, CmsResourceNotFoundException {
-                
-        int warning = 0;
+               
+        // get the permissions
+        int permissions = hasPermissions(context, resource, requiredPermissions, filter, false).intValue();
         
-        // check if the resource is valid according to the current filter
-        // if not, throw a CmsResourceNotFoundException
-        if (!filter.isValid(context, resource)) {
-            throw new CmsResourceNotFoundException("[" + this.getClass().getName() + "] not found " + resource.getName()); 
+        // check if the result is > 0
+        // important: constants are not used for permormance reasons
+        switch (permissions) {
+            case 2:
+                throw new CmsResourceNotFoundException("[" + this.getClass().getName() + "] not found " + resource.getName());
+            case 1:
+                throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        
-        // modify the permission set, if the view permisisons must be validated 
-        if ((requiredPermissions.getPermissions() & I_CmsConstants.C_ACCESS_VISIBLE) > 0) {
-            // the visible permissison is part of the permissions to check
-            // so test if the current filter disables it
-            if (!filter.includeVisiblePermission()) {
-                int allowed =  requiredPermissions.getAllowedPermissions();
-                int denied =  requiredPermissions.getDeniedPermissions();
-                allowed |= I_CmsConstants.C_ACCESS_VISIBLE;
-                requiredPermissions.setPermissions(allowed, denied);
-            }            
-        }
-        
-        // finally check the access premissions
-        if (!hasPermissions(context, resource, requiredPermissions, false)) {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
-        }
-        
-  
     }
 
     /**
@@ -2362,7 +2280,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             currentResource = (CmsResource)i.next();
 
             // try to delete/remove the resource only if the user has write access to the resource            
-            if (hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, false)) {
+            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL, false)) {
 
                 try {
                     // try to read the corresponding online resource to decide if the resource should be either removed or deleted
@@ -2846,16 +2764,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             CmsResource res = (CmsResource)i.next();
             // ckeck if the parent id of the resource is within the folder tree            
             if (storage.contains(res.getParentStructureId())) {
-                //this resource is inside the folder tree.
-                // now check if it is not marked as deleted
-                if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
-                    // check the read access
-                    if (hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, false)) {
-                        // this is a valid resouce, add it to the result list
-                        res.setFullResourceName(readPath(context, res, CmsResourceFilter.DEFAULT));
-                        result.add(res);
-                        updateContextDates(context, res);
-                    }
+                //this resource is inside the folder tree
+                if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, CmsResourceFilter.IGNORE_EXPIRATION, false)) {
+                    // this is a valid resouce, add it to the result list
+                    res.setFullResourceName(readPath(context, res, CmsResourceFilter.DEFAULT));
+                    result.add(res);
+                    updateContextDates(context, res);
                 }
             }
         }
@@ -3301,19 +3215,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * This method can be called, to determine if the file-system was changed
-     * in the past. A module can compare its previosly stored number with this
-     * returned number. If they differ, a change was made.<p>
-     *
-     * All users are granted.
-     *
-     * @return the number of file-system-changes.
-     */
-    public long getFileSystemFolderChanges() {
-        return m_fileSystemFolderChanges;
-    }
-
-    /**
      * Creates Set containing all CmsUUIDs of the subfolders of a given folder.<p>
      * 
      * This HashSet can be used to test if a resource is inside a subtree of the given folder.
@@ -3402,18 +3303,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         }
         
         return allGroups;
-    }
-    
-    /**
-     * This is the port the workplace access is limited to. With the opencms.properties
-     * the access to the workplace can be limited to a user defined port. With this
-     * feature a firewall can block all outside requests to this port with the result
-     * the workplace is only available in the local net segment.<p>
-     * 
-     * @return the portnumber or -1 if no port is set
-     */
-    public int getLimitedWorkplacePort() {
-        return m_limitedWorkplacePort;
     }
 
     /**
@@ -3584,7 +3473,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     int warning = 0;
                     // this must use the new filter methods / options 
                     
-                    if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
+                    if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, filter, false)) {
                         if (res.isFolder() && !CmsResource.isFolder(res.getName())) {
                             res.setFullResourceName(folderRes.getRootPath() + res.getName().concat("/"));
                         } else {
@@ -3816,20 +3705,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         subResources = m_vfsDriver.readChildResources(context.currentProject(), parentFolder, getSubFolders);
         for (int i = 0; i < subResources.size(); i++) {
             currentResource = (CmsResource)subResources.get(i);
-          
-            // check the permissions
-            
-            boolean permissions = false;
-            try {
-                permissions = hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, false);
-            } catch (CmsResourceNotFoundException e) {
-                // do nothing, skip a resource which is not in the visble timeframe       
-            }
 
-            
-            if (!filter.isValid(context, currentResource)) {
-                subResources.remove(i--);
-            } else if (!permissions) {
+            if (PERM_ALLOWED != hasPermissions(context, currentResource, I_CmsConstants.C_READ_OR_VIEW_ACCESS, filter, false)) {
                 subResources.remove(i--);
             } else {
                 if (currentResource.isFolder() && !CmsResource.isFolder(currentResource.getName())) {
@@ -3838,7 +3715,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getName());
                 }
                 updateContextDates(context, currentResource);
-            }
+            }                
         }
 
         // cache the sub resources
@@ -3891,7 +3768,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     * @return the user cache key
     */
     private String getUserCacheKey(String username, int type) {
-        return username + C_USER_CACHE_SEP + CmsUser.isSystemUser(type);
+        StringBuffer result = new StringBuffer(32);
+        result.append(username);
+        result.append(C_USER_CACHE_SEP);
+        result.append(CmsUser.isSystemUser(type));
+        return result.toString();
     }
 
     /**
@@ -4054,7 +3935,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         while (e.hasMoreElements()) {
             CmsResource res = (CmsResource)e.nextElement();
             if (!context.removeSiteRoot(readPath(context, res, CmsResourceFilter.DEFAULT)).equals(lastcheck)) {
-                if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
+                if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, CmsResourceFilter.DEFAULT, false)) {
                     visibleResources.addElement(res);
                     lastcheck = context.removeSiteRoot(readPath(context, res, CmsResourceFilter.DEFAULT));
                 }
@@ -4072,27 +3953,54 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public final I_CmsWorkflowDriver getWorkflowDriver() {
         return m_workflowDriver;
     }
-
+    
     /**
      * Performs a non-blocking permission check on a resource.<p>
      *
      * @param context the current request context
      * @param resource the resource on which permissions are required
      * @param requiredPermissions the set of permissions required to access the resource
+     * @param filter the resourc filter to use
      * @param strongCheck if set to true, all required permission have to be granted, otherwise only one
-     * @return true if the user has sufficient permissions on the resource
+     * @return PERM_ALLOWED if the user has sufficient permissions on the resource
      * @throws CmsException if something goes wrong
      */
-    public boolean hasPermissions(CmsRequestContext context, CmsResource resource, CmsPermissionSet requiredPermissions, boolean strongCheck) throws CmsException {
+    public Integer hasPermissions(
+        CmsRequestContext context, 
+        CmsResource resource, 
+        CmsPermissionSet requiredPermissions, 
+        CmsResourceFilter filter, 
+        boolean strongCheck
+    ) throws CmsException {
         
-        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(new Boolean(strongCheck).toString(), context, resource, requiredPermissions);
-        Boolean cacheResult = (Boolean)m_permissionCache.get(cacheKey);
-        if (cacheResult != null) {
-            return cacheResult.booleanValue();
+        // first check the filter
+        if (filter != CmsResourceFilter.ALL) {        
+            // check if the resource is valid according to the current filter
+            // if not, throw a CmsResourceNotFoundException
+            if (!filter.isValid(context, resource)) {
+                return PERM_FILTERED;
+            }
+            
+            // modify the permission set, if the view permisisons must be validated 
+            if ((requiredPermissions.getPermissions() & I_CmsConstants.C_ACCESS_VISIBLE) > 0) {
+                // the visible permissison is part of the permissions to check
+                // so test if the current filter disables it
+                if (!filter.includeVisiblePermission()) {
+                    requiredPermissions.setPermissions(
+                        requiredPermissions.getAllowedPermissions() | I_CmsConstants.C_ACCESS_VISIBLE, 
+                        requiredPermissions.getDeniedPermissions());
+                }            
+            }    
         }
 
-        CmsLock lock = getLock(context, resource);
-        CmsPermissionSet permissions = null;
+        // checking the filter is less cost intensive then checking the cache,
+        // this is why filter results are not cached
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(String.valueOf(strongCheck), context, resource, requiredPermissions);
+        Integer cacheResult = (Integer)m_permissionCache.get(cacheKey);
+        if (cacheResult != null) {
+            return cacheResult;
+        }
+        
         int denied = 0;
 
         // if this is the onlineproject, write is rejected 
@@ -4109,9 +4017,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             denied |= I_CmsConstants.C_PERMISSION_WRITE;
         }
 
-        int warning = 0;
         // this means a resource MUST NOT be locked to a user,
         // everyone can write as long as the resource is not locked to someone else 
+        CmsLock lock = getLock(context, resource);
         if (!lock.isNullLock()) {
             // if the resource is locked by another user, write is rejected
             // read must still be possible, since the explorer file list needs some properties
@@ -4120,6 +4028,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             }
         }
 
+        CmsPermissionSet permissions;        
         if (isAdmin) {
             // if the current user is administrator, anything is allowed
             permissions = new CmsPermissionSet(~0);
@@ -4131,15 +4040,23 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         permissions.denyPermissions(denied);
 
-        boolean result;
+        Integer result;
         if (strongCheck) {
-            result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions();
+            if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) == requiredPermissions.getPermissions()) {
+                result = PERM_ALLOWED;
+            } else {
+                result = PERM_DENIED;
+            }
         } else {
-            result = (requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0;
+            if ((requiredPermissions.getPermissions() & (permissions.getPermissions())) > 0) {
+                result = PERM_ALLOWED;
+            } else {
+                result = PERM_DENIED;
+            }
         }
-        m_permissionCache.put(cacheKey, new Boolean(result));
+        m_permissionCache.put(cacheKey, result);
         
-        if (!result && OpenCms.getLog(this).isDebugEnabled()) {
+        if ((result != PERM_ALLOWED) && OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug(
                 "Access to resource " + resource.getRootPath() + " "
                 + "not permitted for user " + context.currentUser().getName() + ", "
@@ -4292,9 +4209,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      */
     public void init(ExtendedProperties config, I_CmsVfsDriver vfsDriver, I_CmsUserDriver userDriver, I_CmsProjectDriver projectDriver, I_CmsWorkflowDriver workflowDriver, I_CmsBackupDriver backupDriver) throws CmsException, Exception {
 
-        // store the limited workplace port
-        m_limitedWorkplacePort = config.getInteger("workplace.limited.port", -1);
-
         // initialize the access-module.
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Driver manager init  : phase 4 - connecting to the database");
@@ -4366,8 +4280,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         if (OpenCms.getMemoryMonitor().enabled()) { 
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_permissionCache", hashMap);
         }
-
-        m_refresh = config.getString(I_CmsConstants.C_CONFIGURATION_CACHE + ".refresh", "");
 
         // initialize the registry
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -4702,7 +4614,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // update the resource cache
         clearResourceCache();
         
-        // cw/060104 we must also clear the permission cache
+        // we must also clear the permission cache
         m_permissionCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap("resource", resource)));
@@ -5037,7 +4949,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         if (publishList.isDirectPublish()) {
             directPublishResource = readFileHeader(context, publishList.getDirectPublishResourceName(), CmsResourceFilter.ALL);
             // or he has the explicit permission to direct publish a resource
-            hasPublishPermissions |= hasPermissions(context, directPublishResource, I_CmsConstants.C_DIRECT_PUBLISH, false);
+            hasPublishPermissions |= (PERM_ALLOWED == hasPermissions(context, directPublishResource, I_CmsConstants.C_DIRECT_PUBLISH, CmsResourceFilter.ALL, false));
         }
         
         // and the current project must be different from the online project
@@ -5138,21 +5050,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
                     }
 
-                }
-
-                // finally set the refresh signal to another server if necessary
-                if (m_refresh.length() > 0) {
-                    try {
-                        URL url = new URL(m_refresh);
-                        URLConnection con = url.openConnection();
-                        con.connect();
-                        InputStream in = con.getInputStream();
-                        in.close();
-                        //System.err.println(in.toString());
-                    } catch (Exception ex) {
-                        throw new CmsException(0, ex);
-                    }
-                }               
+                }              
             }
         } else if (publishProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             throw new CmsSecurityException("[" + getClass().getName() + "] could not publish project " + publishProjectId, CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
@@ -5673,7 +5571,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Enumeration e = resources.elements();
         while (e.hasMoreElements()) {
             CmsFile res = (CmsFile)e.nextElement();
-            if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
+            if (PERM_ALLOWED == hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, CmsResourceFilter.ALL, false)) {
                 res.setFullResourceName(readPath(context, res, CmsResourceFilter.ALL));
                 retValue.addElement(res);
                 updateContextDates(context, res);
@@ -6334,11 +6232,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @param context the current request context
      * @param projectId the project ID
-     * @param filter specifies which resources inside the project should be read, {all|new|changed|deleted|locked}
+     * @param criteria specifies which resources inside the project should be read, {all|new|changed|deleted|locked}
      * @return a Vector with the selected resources
      * @throws CmsException if something goes wrong
      */
-    public Vector readProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
+    public Vector readProjectView(CmsRequestContext context, int projectId, String criteria) throws CmsException {
         Vector retValue = new Vector();
         List resources = null;
         CmsResource currentResource = null;
@@ -6346,13 +6244,13 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // first get the correct status mode
         int state=-1;
-        if (filter.equals("new")) {
+        if (criteria.equals("new")) {
             state=I_CmsConstants.C_STATE_NEW;
-        } else if (filter.equals("changed")) {
+        } else if (criteria.equals("changed")) {
             state=I_CmsConstants.C_STATE_CHANGED;
-        } else if (filter.equals("deleted")) {
+        } else if (criteria.equals("deleted")) {
             state=I_CmsConstants.C_STATE_DELETED;
-        } else if (filter.equals("all")) {
+        } else if (criteria.equals("all")) {
             state=I_CmsConstants.C_STATE_UNCHANGED;
         } else {
             // this method was called with an unknown filter key
@@ -6365,7 +6263,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         
         // if the "lock" filter was selected, we must handle the DB access different since
         // lock information aren ot sotred in the DB anymore
-        if (filter.equals("locked")) {
+        if (criteria.equals("locked")) {
             resources=m_vfsDriver.readResources(projectId, state, I_CmsConstants.C_READMODE_IGNORESTATE);              
         } else {
         
@@ -6384,8 +6282,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             currentResource = (CmsResource)i.next();          
-            if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {                
-                if (filter.equals("locked")) {                    
+            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, CmsResourceFilter.ALL, false)) {                
+                if (criteria.equals("locked")) {                    
                     currentLock = getLock(context, currentResource);
                     if (!currentLock.isNullLock()) {
                         retValue.addElement(currentResource);
@@ -6419,24 +6317,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Reads all project resources that belong to a given view. <p>
+     * Reads all project resources that belong to a given view criteria. <p>
      * 
-     * A view can be "new", "changed" and "deleted" and contains those resources in the project whose
-     * state is equal to the selevted view.
+     * A view criteria can be "new", "changed" and "deleted" and the result 
+     * contains those resources in the project whose
+     * state is equal to the selected value.
      * 
      * @param context the current request context
      * @param projectId the preoject to read from
-     * @param filter the view filter, can be "new", "changed" or "deleted"
-     * @return vector of CmsResources 
+     * @param criteria the view criteria, can be "new", "changed" or "deleted"
+     * @return all project resources that belong to the given view criteria
      * @throws CmsException if something goes wrong
      */
-    public Vector readPublishProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
+    public Vector readPublishProjectView(CmsRequestContext context, int projectId, String criteria) throws CmsException {
         Vector retValue = new Vector();
-        List resources = m_projectDriver.readProjectView(projectId, filter);
+        List resources = m_projectDriver.readProjectView(projectId, criteria);
         boolean onlyLocked = false;
 
         // check if only locked resources should be displayed
-        if ("locked".equalsIgnoreCase(filter)) {
+        if ("locked".equalsIgnoreCase(criteria)) {
             onlyLocked = true;
         }
 
@@ -6444,7 +6343,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource currentResource = (CmsResource)i.next();
-            if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
+            if (PERM_ALLOWED == hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, CmsResourceFilter.ALL, false)) {
                 if (onlyLocked) {
                     // check if resource is locked
                     CmsLock lock = getLock(context, currentResource);
@@ -7577,7 +7476,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     public CmsLock unlockResource(CmsRequestContext context, String resourcename) throws CmsException {
         CmsLock oldLock = m_lockManager.removeResource(this, context, resourcename, false);
         clearResourceCache();
-        // cw/060104 we must also clear the permission cache
+        // we must also clear the permission cache
         m_permissionCache.clear();
 
         CmsResource resource = readFileHeader(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
