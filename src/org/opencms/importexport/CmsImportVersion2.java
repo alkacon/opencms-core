@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/08/15 07:41:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/15 08:36:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         m_importingChannelData = false;
         m_folderStorage = new LinkedList();
         m_pageStorage = new ArrayList();
-    
+        m_importedPages = new Vector();   
         
         
         try {
