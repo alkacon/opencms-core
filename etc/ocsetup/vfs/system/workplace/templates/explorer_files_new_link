@@ -7,7 +7,7 @@
 <!--
 function show_help()
 {
-	return '2_2_2_2_3_3.html';
+	return '2_2_2_2_3_6.html';
 }
 //-->
 </script>
@@ -42,6 +42,7 @@ function show_help()
 	</tr>
 	<tr>
 		<td colspan=2 class=leerzeile>&nbsp;</td>
+	</tr>
 	<tr>
 		<td colspan=2 class=formular>
 			<table cellspacing=0 cellpadding=5 width=100%>
@@ -67,5 +68,74 @@ function show_help()
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="change">
+<![CDATA[
+<HTML>
+<script language=JavaScript>
+<!--
+function show_help()
+{
+	return '2_2_2_2_3_7.html';
+}
+
+var lasturl=']]><PROCESS>lasturl</PROCESS><![CDATA[';
+//-->
+</script>
+
+<head>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
+</HEAD>
+
+<body bgcolor="#ffffff" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA["  bgproperties=fixed marginwidth=0 marginheight=0 leftmargin=0 topmargin=0>
+
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=center valign=middle>
+
+<form name=NEU>  
+<table border=2 cellspacing=0 cellpadding=0 width=500px>
+<tr><td>
+	<table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+	<tr><td colspan=2 class=head>]]><LABEL value="title.changelink" /><![CDATA[</td></tr>
+	<tr><td colspan=2 class=leerzeile>&nbsp;</td></tr>
+	<tr> 
+		<td class=formular width=10%>]]><LABEL value="input.name"/><![CDATA[:</td>
+		<td class=dialogtxt width=40%>]]><PROCESS>LINKNAME</PROCESS><![CDATA[</td> 
+
+	</tr>
+	<tr>
+			<td class=formular>]]><LABEL value="input.link" /><![CDATA[:</td>
+			<td class=dialogtxt><input name="NEULINK" class="textfeld2" size="40" maxlength="100" value="]]><PROCESS>LINKVALUE</PROCESS><![CDATA["> </td>
+			
+	</tr>
+	<tr>
+		<td colspan=2 class=leerzeile>&nbsp;</td>
+	</tr>
+	<tr>
+		<td colspan=2 class=formular>
+			<table cellspacing=0 cellpadding=5 width=100%>
+			<tr>  
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id="OK" name="OK" onClick="location='explorer_files_new_link.html?step=1&newlink=false&link=' + document.NEU.NEULINK.value + '&file=]]><PROCESS>LINK</PROCESS><![CDATA[';"></td>
+				<td class=formular align=middle width=20%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" id=CANCEL_FOLDER name=CANCEL_FOLDER onClick="location=lasturl;"></td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</td>
+</tr>
+</table>
+</form>
+
+</td></tr>
+</table>
+
+</body>
+</HTML>
+]]>
+</TEMPLATE>
 
 </WORKPLACE>

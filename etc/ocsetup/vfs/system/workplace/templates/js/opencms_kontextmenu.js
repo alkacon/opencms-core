@@ -48,6 +48,7 @@ var DO_EDITDOC=20;
 var DO_ATE=21;
 var DO_MAILEDIT=22;
 var DO_NEWSEDIT=23;
+var	DO_LINKEDIT=24;
 
 var DO_COPYF=30;
 var DO_MOVEF=31;
@@ -261,6 +262,12 @@ function doAction(action) {
 		{
 		    // News Editor
 		    top.body.location.href='news_edit.html?action=edit&lasturl=' + simpleEscape(top.body.location.href) + '&file='+ kontextparam + '&initial=true';
+			break;
+		}
+		
+		case 24:
+		{ 
+			location.href='explorer_files_new_link.html?file='+ kontextparam + '&newlink=false&lasturl=' + encLasturl;
 			break;
 		}
 		

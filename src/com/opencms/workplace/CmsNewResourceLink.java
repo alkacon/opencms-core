@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
- * Date   : $Date: 2000/05/18 13:39:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/05/19 11:26:31 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/05/18 13:39:47 $
+ * @version $Revision: 1.4 $ $Date: 2000/05/19 11:26:31 $
  */
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -79,59 +79,100 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         // the template to be displayed
         String template=null;
         String filename=null;
-        String title=null;
+        // String title=null;
         String link=null;
         String foldername=null;
         String type=null;
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
-  
+		CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+		
+		// get the document to display
+        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
+    
+		getLastUrl(cms, parameters);
+		
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
-            // remove all session values
-            session.removeValue(C_PARA_FILE);
+            // remove all session values 
+            session.removeValue(C_PARA_FILE); 
             session.removeValue(C_PARA_LINK);    
         }
+			
+		link=cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
+        if (link!= null) {
+            session.putValue(C_PARA_LINK,link);
+        }
+		
+		
         // get the parameters
+		String notChange=(String)parameters.get("newlink");
+		String linkName=null;
+		CmsFile editFile = null;
+		String content = null;
+		String step=cms.getRequestContext().getRequest().getParameter("step");
+       	if (notChange!=null && notChange.equals("false")&& step==null)	{ 
+			
+			linkName =(String)parameters.get("file");
+			editFile = cms.readFile(linkName);
+			content = new String(editFile.getContents()); 
+			xmlTemplateDocument.setXmlData("LINKNAME", editFile.getName()); 
+			xmlTemplateDocument.setXmlData("LINK", editFile.getAbsolutePath());
+			xmlTemplateDocument.setXmlData("LINKVALUE", content);  
+			template="change"; 
+		}	
         filename=cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
         if (filename!= null) {
-            session.putValue(C_PARA_FILE,filename);
+            session.putValue(C_PARA_FILE,filename); 
         }
 
         link=cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
         if (link!= null) {
             session.putValue(C_PARA_LINK,link);
         }
-
+		
         // get the current phase of this wizard
-        String step=cms.getRequestContext().getRequest().getParameter("step");
        
         if (step != null) {
             // step 1 - show the final selection screen
             if (step.equals("1")) {
                 // step 1 - create the link
-                // get folder- and filename
-                foldername=(String)session.getValue(C_PARA_FILELIST);
-                title=(String)session.getValue(C_PARA_TITLE);
+	            // get folder- and filename
+		        foldername=(String)session.getValue(C_PARA_FILELIST);
                 if (foldername==null) {
                    foldername=cms.rootFolder().getAbsolutePath();
                 }   
                 filename=(String)session.getValue(C_PARA_FILE);
-                link=(String)session.getValue(C_PARA_LINK);
-                type="link";
-                // create the new file
-                            
-                cms.createFile(foldername,filename,link.getBytes(),type); 
-          
+                link=(String)session.getValue(C_PARA_LINK); 
+				String title= lang.getLanguageValue("explorer.linkto") + " " + link;
+				type="link";
+				if (notChange!=null && notChange.equals("false")){
+					// change old file
+					linkName =(String)parameters.get("file");
+					editFile = cms.readFile(linkName);
+					editFile.setContents(link.getBytes());
+					cms.writeFile(editFile);    
+					cms.writeProperty(linkName,C_PROPERTY_TITLE, title);   
+				} else{
+					// create the new file
+					cms.createFile(foldername,filename,link.getBytes(),type);  
+					cms.lockResource(foldername+filename);
+					cms.writeProperty(foldername+filename,C_PROPERTY_TITLE, title);    
+				}   
                 // remove values from session
-                session.removeValue(C_PARA_FILE);
-                session.removeValue(C_PARA_TITLE);     
+                session.removeValue(C_PARA_FILE);   
                 session.removeValue(C_PARA_LINK);  
                 // TODO: ErrorHandling
                 
-                // now return to filelist
+                // now return to appropriate filelist
                 try {
-                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+					String lastUrl = (String) session.getValue("lasturl");
+					String redirectUrl;
+					if (lastUrl != null) {
+						((HttpServletResponse) cms.getRequestContext().getResponse().getOriginalResponse()).sendRedirect(lastUrl);	
+					} else {
+						cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);	
+					} 
                 } catch (Exception e) {
                       throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
                 }
@@ -140,14 +181,15 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         } else {
             session.removeValue(C_PARA_FILE);
         }
-
-        // get the document to display
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
-        
-              
+		String cancelUrl;
+		cancelUrl= (String) session.getValue("lasturl");
+		if (cancelUrl== null) {
+			cancelUrl = C_WP_EXPLORER_FILELIST;
+		}
+		xmlTemplateDocument.setXmlData("lasturl", cancelUrl); 
+ 
         // process the selected template 
-        return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
-    
+        return startProcessing(cms,xmlTemplateDocument,elementName,parameters,template);  
     }
          
     /**

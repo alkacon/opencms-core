@@ -285,6 +285,7 @@
 			</context>
 		</editor>
 		<explorer>
+			<linkto>link to</linkto>
 			<state0>unchanged</state0>
 			<state1>changed</state1>
 			<state2>new</state2>
@@ -766,6 +767,7 @@ A new task was reactivated for you or your role.</content>
 			<access>Permissions</access>
 			<admindatatypes>Resource type management</admindatatypes>
 			<adminproperties>Property management</adminproperties>
+			<changelink>Change Link</changelink>
 			<changed>Date Changed</changed>
 			<chgrp>Change Group of</chgrp>
 			<chmod>Change Permissions of</chmod>

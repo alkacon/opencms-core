@@ -151,7 +151,7 @@
 <contextmenue name="linklockuser">
 	<contextentry name="explorer.context.unlock" href="javascript:doAction(DO_UNLOCK)"/>
 	<contextspacer/>
-	<contextentry name="explorer.context.editlink" href="javascript:doAction(DO_EDIT)"/>
+	<contextentry name="explorer.context.editlink" href="javascript:doAction(DO_LINKEDIT)"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.copy" href="javascript:doAction(DO_COPY)"/>
 	<contextentry name="explorer.context.rename" href="javascript:doAction(DO_RENAME)"/>
