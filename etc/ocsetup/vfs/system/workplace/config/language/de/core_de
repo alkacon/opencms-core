@@ -408,6 +408,7 @@
 			<columns>Spalten</columns>
 			<copyto>Kopieren nach</copyto>
 			<currentgroup>Aktuelle Gruppe</currentgroup>
+			<default_body>Kopiere body von</default_body>
 			<defaulttasks>Voreinstellung bei Aufgabenerstellung</defaulttasks>
 			<defaultgroup>Starte mit Gruppe</defaultgroup>
 			<description>Beschreibung</description>

@@ -409,6 +409,7 @@
 			<columns>Columns</columns>
 			<copyto>Copy to</copyto>
 			<currentgroup>Current Group</currentgroup>
+			<default_body>Copy body from</default_body>
 			<defaulttasks>Defaults for new Tasks:</defaulttasks>
 			<defaultgroup>start with group</defaultgroup>
 			<description>Description</description>
