@@ -2,8 +2,8 @@
 <export>
     <info>
         <creator>Admin</creator>
-        <opencms_version>andsch_2002-06-25-09-19version.name=Ecaz ??</opencms_version>
-        <createdate>28.06.2002 14:18</createdate>
+        <opencms_version>hanrie_2001-11-02-17-17 Chusuk</opencms_version>
+        <createdate>01.07.2002 14:46</createdate>
         <project>Online</project>
         <export_version>1</export_version>
     </info>
@@ -22,6 +22,8 @@
         <maintenance_class/>
         <parameters/>
         <repository/>
+        <uploaddate>07.01.2002</uploaddate>
+        <uploadedby>Admin</uploadedby>
     </module>
     <files>
         <file>
@@ -30,7 +32,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>127</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/classes</destination>
@@ -39,6 +47,11 @@
             <group>Administrators</group>
             <access>95</access>
             <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
                 <property>
                     <name>export</name>
                     <type>0</type>
@@ -52,7 +65,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/classes/com/opencms</destination>
@@ -60,7 +79,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/classes/com/opencms/modules</destination>
@@ -68,7 +93,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/classes/com/opencms/modules/cluster</destination>
@@ -76,11 +107,50 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/classes/com/opencms/modules/cluster/comm</destination>
             <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/classes/com/opencms/modules/cluster/comm/CmsCommand.class</source>
+            <destination>system/classes/com/opencms/modules/cluster/comm/CmsCommand.class</destination>
+            <type>binary</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/classes/com/opencms/modules/cluster/comm/CmsCommandContainer.class</source>
+            <destination>system/classes/com/opencms/modules/cluster/comm/CmsCommandContainer.class</destination>
+            <type>binary</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/classes/com/opencms/modules/cluster/comm/CmsCommReceiver.class</source>
+            <destination>system/classes/com/opencms/modules/cluster/comm/CmsCommReceiver.class</destination>
+            <type>binary</type>
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
@@ -94,6 +164,11 @@
             <access>95</access>
             <properties>
                 <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+                <property>
                     <name>export</name>
                     <type>0</type>
                     <value><![CDATA[false]]></value>
@@ -106,7 +181,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules</destination>
@@ -114,7 +195,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>95</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm</destination>
@@ -122,7 +209,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <source>system/modules/com.opencms.modules.cluster.comm/receiver</source>
@@ -132,6 +225,11 @@
             <group>Administrators</group>
             <access>383</access>
             <properties>
+                <property>
+                    <name>module</name>
+                    <type>4</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
                 <property>
                     <name>Title</name>
                     <type>4</type>
@@ -155,7 +253,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/default_bodies</destination>
@@ -163,7 +267,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/doc</destination>
@@ -171,7 +281,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/elements</destination>
@@ -179,7 +295,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/frametemplates</destination>
@@ -187,7 +309,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/language</destination>
@@ -195,7 +323,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/language/de</destination>
@@ -203,7 +337,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/language/uk</destination>
@@ -211,7 +351,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
         <file>
             <destination>system/modules/com.opencms.modules.cluster.comm/templates</destination>
@@ -219,7 +365,13 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>383</access>
-            <properties/>
+            <properties>
+                <property>
+                    <name>module</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.modules.cluster.comm_1]]></value>
+                </property>
+            </properties>
         </file>
     </files>
 </export>

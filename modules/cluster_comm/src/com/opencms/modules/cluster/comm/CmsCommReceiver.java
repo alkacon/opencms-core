@@ -22,8 +22,11 @@ public class CmsCommReceiver extends CmsXmlTemplate {
                 // invoke the methods specified
                 invokeMethods(cms, container);
             } catch(Exception exc) {
-                // DEBUG ONLY:
-                exc.printStackTrace();
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(A_OpenCms.C_MODULE_DEBUG,
+                        " module com.opencms.modules.cluster.comm cant invoce methods."
+                        +exc.getMessage());
+                }
                 throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
             }
 
@@ -45,7 +48,16 @@ public class CmsCommReceiver extends CmsXmlTemplate {
         throws CmsException, InvocationTargetException, IllegalAccessException , NoSuchMethodException {
         ArrayList commands = container.getCommands();
         for(int i = 0; i < commands.size(); i++) {
-            invokeMethod(cms, (CmsCommand) commands.get(i));
+            try{
+                invokeMethod(cms, (CmsCommand) commands.get(i));
+            }catch(Exception e){
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(A_OpenCms.C_MODULE_DEBUG,
+                        " module com.opencms.modules.cluster.comm cant invoke methode "
+                        + ((CmsCommand) commands.get(i)).getMethodName()
+                        +e.getMessage());
+                }
+            }
         }
     }
 
@@ -58,7 +70,7 @@ public class CmsCommReceiver extends CmsXmlTemplate {
         }
 
         Method toInvoke = cms.getClass().getMethod(command.getMethodName(), classes);
-        System.err.println(toInvoke.invoke(cms, parameters));
+        toInvoke.invoke(cms, parameters);
     }
 
     /**
