@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/01/22 15:57:45 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/01/22 16:23:22 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -749,17 +749,21 @@ public class CmsImportVersion2 extends A_CmsImport {
             int i;
             
             // get the class of the body template
-            for (i = 0; i < nodes.getLength() && !"CLASS".equals(nodes.item(i).getNodeName()); i++);
-            if (i < nodes.getLength()) {
-                bodyclass = nodes.item(i).getFirstChild().getNodeValue();
+            for (i = 0; i < nodes.getLength(); i++) {
+                if ("CLASS".equals(nodes.item(i).getNodeName())) {
+                    bodyclass = nodes.item(i).getFirstChild().getNodeValue();
+                    break;
+                }
             }
             
             // get the name of the body template
-            for (i = 0; i < nodes.getLength() && !"TEMPLATE".equals(nodes.item(i).getNodeName()); i++);
-            if (i < nodes.getLength()) {
-                bodyname = nodes.item(i).getFirstChild().getNodeValue();
-                if (!bodyname.startsWith("/")) {
-                    bodyname = CmsResource.getFolderPath(resname) + bodyname;
+            for (i = 0; i < nodes.getLength(); i++) {
+                if ("TEMPLATE".equals(nodes.item(i).getNodeName())) {
+                    bodyname = nodes.item(i).getFirstChild().getNodeValue();
+                    if (!bodyname.startsWith("/")) {
+                        bodyname = CmsResource.getFolderPath(resname) + bodyname;
+                    }
+                    break;
                 }
             }
             
