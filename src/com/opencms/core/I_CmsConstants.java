@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/05/21 16:08:28 $
-* Version: $Revision: 1.223 $
+* Date   : $Date: 2003/06/02 10:57:37 $
+* Version: $Revision: 1.224 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ package com.opencms.core;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.223 $ $Date: 2003/05/21 16:08:28 $
+ * @version $Revision: 1.224 $ $Date: 2003/06/02 10:57:37 $
  */
 public interface I_CmsConstants {
 
@@ -447,6 +447,11 @@ public interface I_CmsConstants {
     final static int C_ACCESS_DEFAULT_FLAGS = C_ACCESS_OWNER_READ + C_ACCESS_OWNER_WRITE + C_ACCESS_OWNER_VISIBLE
             + C_ACCESS_GROUP_READ + C_ACCESS_GROUP_WRITE + C_ACCESS_GROUP_VISIBLE + C_ACCESS_PUBLIC_READ + C_ACCESS_PUBLIC_VISIBLE;
 
+	/**
+	 * Flag to indicate that an access control entry is currently deleted
+	 */
+	final static int C_ACCESSFLAGS_DELETED = 1;
+	
     /**
      * Is set, if the resource is unchanged in this project.
      */

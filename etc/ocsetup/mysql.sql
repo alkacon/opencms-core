@@ -759,3 +759,12 @@ create table CMS_WEBUSERS
    LOCKSTATE                INT,
    primary key (USER_ID)
 );
+
+create table CMS_ACCESSCONTROL
+(	RESOURCE_ID				VARCHAR(36) NOT NULL,
+	PRINCIPAL_ID			VARCHAR(36) NOT NULL,
+	ACCESS_ALLOWED			int,
+	ACCESS_DENIED			int,
+	ACCESS_FLAGS			int,
+	primary key				(RESOURCE_ID, PRINCIPAL_ID)
+);

@@ -739,6 +739,14 @@ create table CMS_WEBUSERS
    primary key (USER_ID)
 );
 
+CREATE TABLE CMS_ACCESSCONTROL
+(  RESOURCE_ID              VARCHAR2(36) not null,
+   PRINCIPAL_ID             VARCHAR2(36) not null,
+   ACCESS_ALLOWED           INT,
+   ACCESS_DENIED            INT,
+   ACCESS_FLAGS             INT,
+   primary key              (RESOURCE_ID, PRINCIPAL_ID));
+
 CREATE INDEX SESSIONS_LASTUSED ON
     CMS_SESSIONS(SESSION_LASTUSED);
 
