@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/08/07 14:55:28 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2003/08/11 10:10:51 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.32 $ $Date: 2003/08/07 14:55:28 $
+ * @version $Revision: 1.33 $ $Date: 2003/08/11 10:10:51 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -445,7 +445,7 @@ public final class CmsLockDispatcher extends Object {
     }
     
     /**
-     * Returnes the number of exclusive locked resources.<p>
+     * Returns the number of exclusive locked resources.<p>
      * 
      * @return the number of exclusive locked resources
      */
