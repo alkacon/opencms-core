@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleTemplate.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/03/24 09:39:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/27 13:19:30 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -39,11 +39,12 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/03/24 09:39:14 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/03/27 13:19:30 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsExampleTemplate extends CmsXmlTemplate {
 	
+	public static final String C_FRAME_SELECTOR = "cmsframe";
 	
 	/**
      * Indicates if the results of this class are cacheable.
@@ -58,7 +59,6 @@ public class CmsExampleTemplate extends CmsXmlTemplate {
     public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }   
-	
 	
 	/**
      * Gets the content of a defined section in a given template file and its 
@@ -80,18 +80,9 @@ public class CmsExampleTemplate extends CmsXmlTemplate {
                              templateSelector) throws CmsException {
 		// CententDefinition		
 		CmsXmlTemplateFile datablock=(CmsXmlTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-		if (parameters.get("type")!=null) {
-			if (parameters.get("type").equals("plain")) {
-				return startProcessing(cms, datablock, elementName, parameters, parameters.get("type").toString());	
-			} else {
-				if (parameters.get("name")!=null) {
-					return startProcessing(cms, datablock, elementName, parameters, parameters.get("name").toString());
-				}
-			}
-		}
-		return startProcessing(cms, datablock, elementName, parameters, null);
+		String frame = (String)parameters.get(C_FRAME_SELECTOR);
+		return startProcessing(cms, datablock, elementName, parameters, frame);
 	}
-	
 	
 	/** 
      * @param cms A_CmsObject Object for accessing system resources.
@@ -101,19 +92,15 @@ public class CmsExampleTemplate extends CmsXmlTemplate {
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getFramePage(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getPageName(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		StringBuffer result = new StringBuffer();
-		String href=cms.getRequestContext().getUri();
-		int start=href.indexOf("?");
-		if (start==-1) {
-			href=href.substring(href.lastIndexOf("/")+1);
-		} else {
-			String tmpstr=href.substring(0,start);
-			href=href.substring(tmpstr.lastIndexOf("/")+1);
-		}
-		result.append(href);
-		return result.toString().getBytes();
+
+		// Stringverarbeitung!
+		
+		String uri=cms.getRequestContext().getUri();		
+		CmsFile file=cms.readFile(uri);
+		String filename=file.getName();
+		
+		return filename.getBytes();
 	}
-	
 }

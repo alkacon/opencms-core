@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/Attic/CmsExampleNavigation.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/03/24 09:39:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/27 13:19:17 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -37,7 +37,7 @@ import java.io.*;
 /**
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/03/24 09:39:14 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/03/27 13:19:17 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstants {
@@ -58,22 +58,6 @@ public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstan
     }   
 	
 	
-	/**
-     * Reads in the template file and starts the XML parser for the expected
-     * content type <class>CmsExampleNavigationFile</code>
-     * 
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param templateFile Filename of the template file.
-     * @param elementName Element name of this template in our parent template.
-     * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector template section that should be processed.
-     */
-    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
-        CmsExampleNavigationFile xmlTemplateDocument = new CmsExampleNavigationFile(cms, templateFile);
-        return xmlTemplateDocument;
-    }     
-	
-	
 	/** 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
@@ -84,23 +68,34 @@ public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstan
      */
     public Object getNav(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		// Reference to our own document.
-        CmsExampleNavigationFile xmlTemplateDocument = (CmsExampleNavigationFile)doc;     
 				
-		String type=((Hashtable)userObject).get("type").toString();
+		CmsXmlTemplateFile xmlDataBlock=(CmsXmlTemplateFile)doc;		
+		String frame="";
+		if ((((Hashtable)userObject).get("cmsframe"))!=null) {
+			frame=(((Hashtable)userObject).get("cmsframe")).toString();
+		}
 			
-		String[] linkFile = {"Neuigkeit1.html",
-							 "Neuigkeit2.html",
-							 "welcome.html"
+		String[] linkFile = {"neuigkeit1.html",
+							 "neuigkeit2.html",
+							 "index.html"
 							};
-		String[] linkText = { "Neuigkeiten1",
-							  "Neuigkeiten2",
+		String[] linkText = { "Topthemen",
+							  "Themen des Tages",
 							  "Startseite"
 							};
 		
         StringBuffer result = new StringBuffer();
+
 		for (int i=0;i<3;i++) {
-			result.append(xmlTemplateDocument.getLink(type,linkFile[i], linkText[i]));
+			if (frame.equals("plain")) {
+				xmlDataBlock.setData("linkTarget", xmlDataBlock.getDataValue("target.plain"));
+			} else {
+				xmlDataBlock.setData("linkTarget", xmlDataBlock.getDataValue("target.frame"));
+			}
+			xmlDataBlock.setData("linkUri", linkFile[i]);
+			xmlDataBlock.setData("linkName", linkText[i]);
+			result.append(xmlDataBlock.getProcessedDataValue("link") + "\n");
+
 		}		
 		return result.toString().getBytes();
 	}
@@ -113,14 +108,20 @@ public class CmsExampleNavigation extends CmsXmlTemplate implements I_CmsConstan
      * @return byte[] with the content of this subelement.
      * @exception CmsException
      */
-    public Object getTarget(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
+    public Object getHead(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
             throws CmsException {
-		// Reference to our own document.
-        CmsExampleNavigationFile xmlTemplateDocument = (CmsExampleNavigationFile)doc;     
-				
-		String type=((Hashtable)userObject).get("type").toString();
+		
+		CmsXmlTemplateFile xmlDataBlock=(CmsXmlTemplateFile)doc;
+		String frame="";
+		if ((((Hashtable)userObject).get("cmsframe"))!=null) {
+			frame=(((Hashtable)userObject).get("cmsframe")).toString();
+		}
 		StringBuffer result = new StringBuffer();
-		result.append(xmlTemplateDocument.getTarget(type));
+		if (frame.equals("plain")) {
+			result.append(xmlDataBlock.getDataValue("target.plain"));
+			return result.toString().getBytes();
+		}
+        result.append(xmlDataBlock.getDataValue("target.frame"));
 		return result.toString().getBytes();
 	}
 		
