@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/01/11 19:07:50 $
+ * @version $Revision: 1.17 $ $Date: 2000/01/12 12:33:33 $
  */
 interface I_CmsResourceBroker {
 
@@ -892,6 +892,112 @@ interface I_CmsResourceBroker {
 								  String folder, String newFolderName, 
 								  Hashtable metainfos)
 		throws CmsException;
+	
+     /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+	 * Only folders in an offline Project can be deleted. A folder is deleted by 
+	 * setting its state to DELETED (3). <br>
+	 *  
+	 * In its current implmentation, this method can ONLY delete empty folders.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername The complete path of the folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String foldername)
+		throws CmsException;
+								
+   	/**
+	 * Returns a Vector with all subfolders.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfolders A Vector with all subfolders for the given folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getSubFolders(A_CmsUser currentUser, A_CmsProject currentProject,
+								String foldername)
+		throws CmsException;
+							   
+	/**
+	 * Locks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be locked. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The complete path to the resource to lock.
+	 * @param force If force is true, a existing locking will be oberwritten.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	public void lockResource(A_CmsUser currentUser, A_CmsProject currentProject,
+                             String resourcename, boolean force)
+		throws CmsException;
+	
+	/**
+	 * Unlocks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be unlock. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * Only the user who locked a resource can unlock it.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user had locked the resource before</li>
+	 * </ul>
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param resourcename The complete path to the resource to lock.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void unlockResource(A_CmsUser currentUser,A_CmsProject currentProject,
+                               String resourcename)
+        throws CmsException;
 	
 	/**
 	 * Returns a Vector with all I_CmsResourceTypes.

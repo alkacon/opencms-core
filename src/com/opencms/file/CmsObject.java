@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.16 $ $Date: 2000/01/11 19:07:50 $ 
+ * @version $Revision: 1.17 $ $Date: 2000/01/12 12:33:33 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -627,16 +627,15 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * delted, too.
 	 * 
 	 * @param foldername The complete path of the folder.
-	 * @param force If force is set to true, all sub-resources will be deleted.
-	 * If force is set to false, the folder will be deleted only if it is empty.
 	 * 
 	 * @exception CmsException will be thrown, if the folder couldn't be deleted. 
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	public void deleteFolder(String foldername, boolean force)
+	public void deleteFolder(String foldername)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.deleteFolder(m_context.currentUser(), m_context.getCurrentProject(), 
+						  foldername );
 	}
 	
 	/**
@@ -697,8 +696,10 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public Vector getSubFolders(String foldername)
 		throws CmsException { 
-		return null; // TODO: implement this! 
+		return( c_rb.getSubFolders(m_context.currentUser(), 
+								   m_context.getCurrentProject(), foldername ) );
 	}	
+	
 	/**
 	 * Returns a Vector with all subfiles.<BR/>
 	 * 
@@ -791,15 +792,34 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * resource.
 	 * 
 	 * @param resource The complete path to the resource to lock.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	public void lockResource(String resource)
+		throws CmsException { 
+		// try to lock the resource, prevent from overwriting an existing lock
+		lockResource(resource, false);
+	}
+	
+	/**
+	 * Locks a resource<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource.
+	 * 
+	 * @param resource The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void lockFile(String resource, boolean force)
+	public void lockResource(String resource, boolean force)
 		throws CmsException { 
-		return ; // TODO: implement this! 
+		c_rb.lockResource(m_context.currentUser(), 
+					  m_context.getCurrentProject(), resource, force );
 	}
 	
 	/**
@@ -813,27 +833,10 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	public void unlockFile(String resource)
+	public void unlockResource(String resource)
 		throws CmsException { 
-		return ; // TODO: implement this! 
-	}
-
-	/**
-	 * Tests, if a resource was locked<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return true, if the resource is locked else it returns false.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	public boolean isLocked(String resource)
-		throws CmsException { 
-		return false; // TODO: implement this! 
+		c_rb.unlockResource(m_context.currentUser(), 
+					  m_context.getCurrentProject(), resource);
 	}
 	
 	/**
@@ -850,10 +853,10 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 * for this resource. 
 	 */
 	public A_CmsUser lockedBy(String resource)
-		throws CmsException { 
+		throws CmsException {
 		return null; // TODO: implement this! 
 	}
-	
+
 	/**
 	 * Returns a Metainformation of a file or folder.
 	 * 

@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.8 $ $Date: 2000/01/11 19:07:50 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/12 12:33:33 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -92,7 +92,7 @@ public class CmsShell implements I_CmsConstants {
 				call(input);
 			}
 		}catch(Exception exc){
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 	
@@ -125,7 +125,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			getClass().getMethod(toCall, paramClasses).invoke(this,params);
 		} catch(Exception exc) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -179,7 +179,7 @@ public class CmsShell implements I_CmsConstants {
 			m_cms.loginUser(username, password);
 			whoami();
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 			System.out.println("Login failed!");
 		}
 	}
@@ -194,7 +194,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsUser)users.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -208,7 +208,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -219,7 +219,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.getRequestContext().isAdmin() );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.getRequestContext().isProjectLeader() );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -246,7 +246,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 	
@@ -265,7 +265,7 @@ public class CmsShell implements I_CmsConstants {
 											  description, new Hashtable(), 
 											  C_FLAG_ENABLED) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -285,7 +285,7 @@ public class CmsShell implements I_CmsConstants {
 											  description, new Hashtable(), 
 											  Integer.parseInt(flags)) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -298,7 +298,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteUser( name );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -323,7 +323,7 @@ public class CmsShell implements I_CmsConstants {
 			m_cms.writeUser(user);		
 
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -339,7 +339,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.addGroup( name, description, Integer.parseInt(flags), parent );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}	
 
@@ -353,7 +353,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.addGroup( name, description, C_FLAG_ENABLED, null );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}	
 
@@ -368,7 +368,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readGroup( groupname ) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}	
 
@@ -384,7 +384,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsUser)users.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -399,7 +399,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.userInGroup( username, groupname ) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -424,7 +424,7 @@ public class CmsShell implements I_CmsConstants {
 			m_cms.writeGroup(group);		
 
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -437,7 +437,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteGroup( delgroup );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -451,7 +451,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.addUserToGroup( username, groupname );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -465,7 +465,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.removeUserFromGroup( username, groupname );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -481,7 +481,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsGroup)groups.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 	
@@ -495,7 +495,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.setPassword( username, newPassword );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -513,7 +513,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.addMountPoint( mountpoint, driver, connect, name );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -529,7 +529,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readMountPoint( mountpoint ) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -548,7 +548,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println(mountPoints.get(keys.nextElement()));
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -562,7 +562,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteMountPoint(mountpoint);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 	
@@ -577,7 +577,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.createProject(name, description, groupname, C_FLAG_ENABLED);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -590,7 +590,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readProject(name) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -601,7 +601,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.onlineProject() );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -614,7 +614,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.accessProject(projectname) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -627,7 +627,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readUser(username) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -643,7 +643,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsProject)projects.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 	
@@ -656,7 +656,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readFolder(folder, "") );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -671,7 +671,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.createFolder(folder, newFolderName) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -687,7 +687,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println(resourceTypes.get(keys.nextElement()));
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 	
@@ -700,7 +700,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.getResourceType(resourceType) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -718,7 +718,7 @@ public class CmsShell implements I_CmsConstants {
 													  Integer.parseInt(launcherType), 
 													  launcherClass) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -735,7 +735,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -754,7 +754,7 @@ public class CmsShell implements I_CmsConstants {
 			System.out.println( m_cms.createMetadefinition(name, resourcetype, 
 														   Integer.parseInt(type)) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -773,7 +773,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println( (A_CmsMetadefinition)metadefs.elementAt(i) );
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -787,7 +787,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readMetadefinition(name, resourcetype) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -809,7 +809,7 @@ public class CmsShell implements I_CmsConstants {
 			metadef.setMetadefType(Integer.parseInt(type));			
 			System.out.println( m_cms.writeMetadefinition(metadef) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -823,7 +823,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteMetadefinition(name, resourcetype);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -837,7 +837,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.readMetainformation(name, meta) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 		
@@ -852,7 +852,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.writeMetainformation(name, meta, value);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -874,7 +874,7 @@ public class CmsShell implements I_CmsConstants {
 				System.out.println(metainfos.get(key));
 			}
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}		
 	}
 
@@ -888,7 +888,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteAllMetainformations(resource);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -902,7 +902,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.deleteMetainformation(resourcename, meta);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -913,7 +913,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.anonymousUser() );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -938,7 +938,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.getRequestContext().setUserCurrentGroup(groupname);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -958,7 +958,7 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			System.out.println( m_cms.getRequestContext().setCurrentProject(projectname) );
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
 		}
 	}
 
@@ -980,7 +980,68 @@ public class CmsShell implements I_CmsConstants {
 		try {
 			m_cms.copyResourceToProject(resource);
 		} catch( Exception exc ) {
-			System.err.println(exc + "\n"  + exc.getMessage());
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Deletes the folder.
+	 * 
+	 * @param foldername The complete path of the folder.
+	 */	
+	 public void deleteFolder(String foldername) {
+		try {
+			m_cms.deleteFolder(foldername);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	 }
+
+	/**
+	 * Returns a Vector with all subfolders.<BR/>
+	 * 
+	 * @param foldername the complete path to the folder.
+	 */
+	public void getSubFolders(String foldername)
+		throws CmsException { 
+		try {
+			Vector folders = m_cms.getSubFolders(foldername);
+			for( int i = 0; i < folders.size(); i++ ) {
+				System.out.println( (CmsFolder)folders.elementAt(i) );
+			}
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}	
+
+	/**
+	 * Locks a resource<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource.
+	 * 
+	 * @param resource The complete path to the resource to lock.
+	 */
+	public void lockResource(String resource) {
+		try {
+			m_cms.lockResource(resource);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+	
+	/**
+	 * Unlocks a resource<BR/>
+	 * 
+	 * A user can unlock a resource, so other users may lock this file.
+	 * 
+	 * @param resource The complete path to the resource to lock.
+	 */
+	public void unlockResource(String resource) {
+		try {
+			m_cms.unlockResource(resource);
+		} catch( Exception exc ) {
+			System.err.println(exc);
 		}
 	}
 }

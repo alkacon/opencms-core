@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/11 19:07:50 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/12 12:33:33 $
  */
  class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
 	
@@ -416,7 +416,7 @@ import com.opencms.core.*;
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write this resource and all subresources</li>
-	 * <li>the resource is locked by the callingUser</li>
+	 * <li>the resource is not locked</li>
 	 * </ul>
 	 * 
 	 * @param project The project in which the resource will be used.
@@ -696,9 +696,7 @@ import com.opencms.core.*;
 	 * <B>Security:</B>
 	 * Access is granted, if:
 	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is not locked by another user</li>
+	 * <li>the user had locked the resource before</li>
 	 * </ul>
 	 * 
 	 * @param user The user who wants to lock the file.

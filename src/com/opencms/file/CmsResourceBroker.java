@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.17 $ $Date: 2000/01/11 19:07:50 $
+ * @version $Revision: 1.18 $ $Date: 2000/01/12 12:33:33 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1467,14 +1467,32 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		if( (!currentProject.equals( online ) ) &&
 			 (currentProject.getOwnerId() == currentUser.getId() ) ) {
 			// is offlineproject and is owner
+			
+			// read the online-resource
+			A_CmsResource onlineRes = m_fileRb.readFileHeader(online, resource);
+			// copy it to the offlineproject
 			m_fileRb.copyResourceToProject(currentProject, online, resource);
+			// read the offline-resource
+			A_CmsResource offlineRes = m_fileRb.readFileHeader(currentProject, resource);
+			// copy the metainfos			
+			m_metadefRb.writeMetainformations(offlineRes,
+				m_metadefRb.readAllMetainformations(onlineRes));
 			
 			// walk rekursively throug all parents and copy them, too
-			resource = getParentOfResource(resource);
+			resource = onlineRes.getParent();
 			try {
 				while(resource != null) {
+					// read the online-resource
+					onlineRes = m_fileRb.readFileHeader(online, resource);
+					// copy it to the offlineproject
 					m_fileRb.copyResourceToProject(currentProject, online, resource);				
-					resource = getParentOfResource(resource);
+					// read the offline-resource
+					offlineRes = m_fileRb.readFileHeader(currentProject, resource);
+					// copy the metainfos			
+					m_metadefRb.writeMetainformations(offlineRes,
+						m_metadefRb.readAllMetainformations(onlineRes));
+					// get the parent
+					resource = onlineRes.getParent();
 				}
 			} catch (CmsException exc) {
 				// if the subfolder exists already - all is ok
@@ -1592,7 +1610,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		validFilename(newFolderName);
 		
 		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
-												  folder);
+													folder);
 		if( accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
 				
 			// write-acces  was granted - create and return the folder.
@@ -1605,6 +1623,164 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 
+     /**
+	 * Deletes a folder in the Cms.<br>
+	 * 
+	 * Only folders in an offline Project can be deleted. A folder is deleted by 
+	 * setting its state to DELETED (3). <br>
+	 *  
+	 * In its current implmentation, this method can ONLY delete empty folders.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read and write this resource and all subresources</li>
+	 * <li>the resource is not locked</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername The complete path of the folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void deleteFolder(A_CmsUser currentUser, A_CmsProject currentProject,
+							 String foldername)
+		throws CmsException {
+		// TODO: delete the metainfos!
+		
+		// read the folder, that shold be deleted
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  foldername);
+		// check, if the user may delete the resource
+		if( (!cmsFolder.isLocked()) &&
+			accessCreate(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// write-acces  was granted - delete the folder.
+			m_fileRb.deleteFolder(currentProject, foldername, false);
+		
+		} else {
+			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
+		}
+     }
+	
+   	/**
+	 * Returns a Vector with all subfolders.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can read this resource</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfolders A Vector with all subfolders for the given folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public Vector getSubFolders(A_CmsUser currentUser, A_CmsProject currentProject,
+								String foldername)
+		throws CmsException{
+		
+		CmsFolder cmsFolder = m_fileRb.readFolder(currentProject, 
+												  foldername);
+
+		if( accessRead(currentUser, currentProject, (A_CmsResource)cmsFolder) ) {
+				
+			// acces to all subfolders was granted - return the sub-folders.
+			return(m_fileRb.getSubFolders(currentProject, foldername) );
+		} else {
+			throw new CmsException(foldername, CmsException.C_NO_ACCESS);
+		}
+	}
+	
+	/**
+	 * Locks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be locked. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource. <br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is not locked by another user</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The complete path to the resource to lock.
+	 * @param force If force is true, a existing locking will be oberwritten.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	public void lockResource(A_CmsUser currentUser, A_CmsProject currentProject,
+                             String resourcename, boolean force)
+		throws CmsException {
+		
+		// read the resource, that shold be locked
+		A_CmsResource cmsResource = m_fileRb.readFileHeader(currentProject, 
+															resourcename);
+		// check, if the user may lock the resource
+		if( accessCreate(currentUser, currentProject, cmsResource) ) {
+				
+			// write-acces  was granted - lock the folder.
+			m_fileRb.lockResource(currentUser, currentProject, 
+								  onlineProject(currentUser, currentProject), 
+								  resourcename, force);
+		} else {
+			throw new CmsException(resourcename, CmsException.C_NO_ACCESS);
+		}
+	}
+
+	/**
+	 * Unlocks a resource.<br>
+	 * 
+	 * Only a resource in an offline project can be unlock. The state of the resource
+	 * is set to CHANGED (1).
+	 * If the content of this resource is not exisiting in the offline project already,
+	 * it is read from the online project and written into the offline project.
+	 * Only the user who locked a resource can unlock it.
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user had locked the resource before</li>
+	 * </ul>
+	 * 
+	 * @param user The user who wants to lock the file.
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resourcename The complete path to the resource to lock.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	public void unlockResource(A_CmsUser currentUser,
+                               A_CmsProject currentProject,
+                               String resourcename)
+        throws CmsException {
+		
+		// unlock the resource.
+		m_fileRb.unlockResource(currentUser, currentProject, 
+								onlineProject(currentUser, currentProject), 
+								resourcename);		
+	}
+		
 	/**
 	 * Checks, if the user may read this resource.
 	 * 
@@ -1658,11 +1834,10 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		throws CmsException	{
 		
 		// check, if this is the onlineproject
-		// TODO: this should be uncommented - the online-project is not for creating!
-/*		if(onlineProject(currentUser, currentProject).equals(currentProject)){
+		if(onlineProject(currentUser, currentProject).equals(currentProject)){
 			// the online-project is not writeable!
 			return(false);
-		} */
+		}
 		
 		// check the access to the project
 		if( ! accessProject(currentUser, currentProject, currentProject.getName()) ) {
@@ -1806,22 +1981,4 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			}
 		}
 	}
-	
-	/**
-	 * Returns the absolute path of the parent.<BR/>
-	 * Example: /system/def has the parent /system/<BR/>
-	 * / has no parent
-	 * 
-	 * @return the parent absolute path, or null if this is the root-resource.
-	 */
-     private String getParentOfResource(String resource){
-         String parent=null;
-         // check if this is the root resource
-         if (!resource.equals(C_ROOT)) {
-                parent=resource.substring(0,resource.length()-1);
-                parent=parent.substring(0,parent.lastIndexOf("/")+1);         
-         }
-         return parent;
-     }
-	
 }

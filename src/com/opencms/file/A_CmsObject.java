@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.20 $ $Date: 2000/01/11 19:07:50 $ 
+ * @version $Revision: 1.21 $ $Date: 2000/01/12 12:33:33 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -535,15 +535,13 @@ public abstract class A_CmsObject {
 	 * delted, too.
 	 * 
 	 * @param foldername The complete path of the folder.
-	 * @param force If force is set to true, all sub-resources will be deleted.
-	 * If force is set to false, the folder will be deleted only if it is empty.
 	 * 
 	 * @exception CmsException will be thrown, if the folder couldn't be deleted. 
 	 * The CmsException will also be thrown, if the user has not the rights 
 	 * for this resource.
 	 */	
-	abstract public void deleteFolder(String foldername, boolean force)
-		throws CmsException;
+	abstract public void deleteFolder(String foldername)
+		throws CmsException ;
 	
 	/**
 	 * Copies a folder.
@@ -680,13 +678,28 @@ public abstract class A_CmsObject {
 	 * resource.
 	 * 
 	 * @param resource The complete path to the resource to lock.
+	 * 
+	 * @exception CmsException will be thrown, if the user has not the rights 
+	 * for this resource. It will also be thrown, if there is a existing lock
+	 * and force was set to false.
+	 */
+	abstract public void lockResource(String resource)
+		throws CmsException;
+	
+	/**
+	 * Locks a resource<BR/>
+	 * 
+	 * A user can lock a resource, so he is the only one who can write this 
+	 * resource.
+	 * 
+	 * @param resource The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract public void lockFile(String resource, boolean force)
+	abstract public void lockResource(String resource, boolean force)
 		throws CmsException;
 	
 	/**
@@ -700,25 +713,9 @@ public abstract class A_CmsObject {
 	 * for this resource. It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	abstract public void unlockFile(String resource)
+	abstract public void unlockResource(String resource)
 		throws CmsException;
 
-	/**
-	 * Tests, if a resource was locked<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return true, if the resource is locked else it returns false.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	abstract public boolean isLocked(String resource)
-		throws CmsException;
-	
 	/**
 	 * Returns the user, who had locked the resource.<BR/>
 	 * 
