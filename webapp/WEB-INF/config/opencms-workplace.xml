@@ -316,7 +316,7 @@
 						<entry key="explorer.context.copytoproject" uri="copy_to_project.html" isxml="true" rules="d a dddd dddd dddd" order="50"/>
 						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
 						<separator order="70"/>
-						<entry key="explorer.context.editlink" uri="explorer_files_new_externallink.html?newlink=false" isxml="true" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.editlink" uri="commons/editpointer.jsp" rules="d d iiii aaai dddd" order="80"/>
 						<separator order="100"/>
 						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
