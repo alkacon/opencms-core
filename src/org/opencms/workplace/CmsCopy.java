@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/07/06 13:47:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/06 21:42:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -162,14 +162,20 @@ public class CmsCopy extends CmsDialog {
                 getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "wait.jsp");
             }    
         } catch (CmsException e) {
+            // prepare common message part
+            String message = "<p>\n" 
+                + key("source") + ": " + getParamFile() + "<br>\n" 
+                + key("target") + ": " + getParamTarget() + "\n</p>\n";
+            // check if this exception requires a confirmation or error screen
             if ((e.getType() == CmsException.C_FILE_EXISTS) 
             && !(CmsResource.isFolder(getParamFile()))) {
                 // file copy but file already exists, show confirmation dialog
-                setParamMessage(getParamTarget() + "<br>" + key("confirm.message." + getParamDialogtype()));
+                setParamMessage(message + key("confirm.message." + getParamDialogtype()));
                 getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "confirmation.jsp");        
             } else {                
                 // error during copy, show error dialog
                 setParamErrorstack(e.getStackTraceAsString());
+                setParamMessage(message + key("error.message." + getParamDialogtype()));
                 getJsp().include(CmsWorkplaceAction.C_JSP_WORKPLACE_COMMONS_PATH + "error.html");
             }
         }
@@ -183,33 +189,39 @@ public class CmsCopy extends CmsDialog {
      */
     private boolean performCopyOperation() throws CmsException {
 
-        boolean isFolder = CmsResource.isFolder(getParamFile());
-        if (isFolder && ! DIALOG_WAIT.equals(getParamAction())) {
+        // on folder copy display "please wait" screen, not for simple file copy
+        if (CmsResource.isFolder(getParamFile()) && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
         }
 
+        // calculate the target name
         String target = getParamTarget();
         if (target == null) target = "";
-        if ((! isFolder) && CmsResource.isFolder(target)) {
-            // if the target name is a folder, add the current file name
-            target = target + CmsResource.getName(getParamFile());
-        }
+
         if (! target.startsWith("/")) {
-            // target is not an absolute path, add the current folder
-            if (isFolder) {
-                target = CmsResource.getParent(getParamFile()) + target; 
-            } else {
-                target = CmsResource.getPath(getParamFile()) + target; 
-            }
+            // target is not an absolute path, add the current parent folder
+            target = CmsResource.getParent(getParamFile()) + target; 
         }
-        setParamTarget(target);
+        try {
+            CmsResource res = getCms().readFileHeader(target);
+            if (res.isFolder()) {
+                // target folder already exists, so we add the current folder name
+                if (! target.endsWith("/")) target += "/";
+                target = target + CmsResource.getName(getParamFile());
+            }
+        } catch (CmsException e) {
+            // target folder does not already exist, so target name is o.k.
+        }
+        
+        // set the target parameter value
+        setParamTarget(target);        
         
         // delete existing target resource if confirmed by the user
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
             getCms().deleteResource(target);
-        }
-            
+        }            
+        
         // copy the resource       
         getCms().copyResource(getParamFile(), target, "true".equals(getParamKeeprights()));
         return true;
