@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2002/05/13 14:49:31 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/05/14 13:38:03 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.38 $ $Date: 2002/05/13 14:49:31 $
+ * @version $Revision: 1.39 $ $Date: 2002/05/14 13:38:03 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -97,6 +97,7 @@ public class CmsXmlNav extends A_CmsNavBase {
             template.setData("navcount", new Integer(i+1).toString());
             template.setData("navlevel", new Integer(extractLevel(cms,navLink[i])).toString());
             // check whether it is a folder or file
+            String link="";
             if (navLink[i].endsWith("/")) {
                 // read the property of folder to find the link file.
                 String navIndex=cms.readProperty(navLink[i],C_PROPERTY_NAVINDEX);
@@ -106,6 +107,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 }
                 try {
                     cms.readFile(navLink[i] + navIndex);
+                    link=navLink[i] + navIndex;
                     template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i] + navIndex));
                 } catch (CmsException e) {
                     template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
@@ -113,13 +115,15 @@ public class CmsXmlNav extends A_CmsNavBase {
             } else {
                 try {
                     cms.readFile(navLink[i]);
+                    link=navLink[i];
                     template.setData("navlink", ls.getLinkSubstitution(cms, navLink[i]));
                 } catch (CmsException e) {
                     template.setData("navlink", ls.getLinkSubstitution(cms, requestedUri));
                 }
             }
             // Check if nav is current nav
-            if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+            //if (navLink[i].equals(currentFolder) || navLink[i].equals(requestedUri)) {
+            if (link.equals(requestedUri)) {
                 result.append(template.getProcessedDataValue("navcurrent", this, userObject));
             } else {
                 result.append(template.getProcessedDataValue("naventry", this, userObject));
@@ -161,14 +165,15 @@ public class CmsXmlNav extends A_CmsNavBase {
                 // this part is to set the level starting from specified level given as tagcontent
                 // there it must be make a difference between extracted level and the given level
                 int extractedLevel=extractLevel(cms,navLink[i]);
-                int rightLevel=extractedLevel;
+                template.setData("navlevel", new Integer(extractedLevel).toString());
+                /*int rightLevel=extractedLevel;
                 if (level!=0) {
                     rightLevel=(extractedLevel-level);
                     if (rightLevel>=0) {
                         rightLevel++;
                     }
                 }
-                template.setData("navlevel", new Integer(rightLevel).toString());
+                template.setData("navlevel", new Integer(rightLevel).toString());*/
                 String link="";
                 // check whether the link is folder
                 if (navLink[i].endsWith("/")) {
@@ -271,14 +276,15 @@ public class CmsXmlNav extends A_CmsNavBase {
                 // this part is to set the level starting from specified level given as tagcontent
                 // there it must be make a difference between extracted level and the given level
                 int extractedLevel=extractLevel(cms,navLink[i]);
-                int rightLevel=extractedLevel;
+                template.setData("navlevel", new Integer(extractedLevel).toString());
+                /*int rightLevel=extractedLevel;
                 if (level!=0) {
                     rightLevel=(extractedLevel-level);
                     if (rightLevel>=0) {
                         rightLevel++;
                     }
                 }
-                template.setData("navlevel", new Integer(rightLevel).toString());
+                template.setData("navlevel", new Integer(rightLevel).toString());*/
                 String link="";
                 // Check whether the link is a folder
                 if (navLink[i].endsWith("/")) {
@@ -347,19 +353,38 @@ public class CmsXmlNav extends A_CmsNavBase {
      *
      * @param cms CmsObject Object for accessing system resources.
      * @param level The level of folder.
+     * @param exact this parameter determines wheater exact level of folder must be exctracted.
      * @return String that contains the path of folder determind by level.
      */
-    protected String extractFolder(CmsObject cms, int level)
+    protected String extractFolder(CmsObject cms, int level, String exact)
         throws CmsException {
 
+        // get uri and requested uri
+        String navIndex=C_NAVINDEX;
+        try {
+            navIndex=cms.readProperty(cms.getRequestContext().currentFolder().getAbsolutePath(),C_PROPERTY_NAVINDEX);
+            navIndex=((navIndex==null || (navIndex!=null && navIndex.equals("")))?C_NAVINDEX:navIndex);
+        } catch (Exception err) {
+            navIndex=C_NAVINDEX;
+        }
+        String uri=cms.getRequestContext().currentFolder().getAbsolutePath()+navIndex;
+        String requestedUri=cms.getRequestContext().getUri();
+        // get count of folder
         String currentFolder="/";
         StringTokenizer st = new StringTokenizer(cms.getRequestContext().currentFolder().getAbsolutePath(),"/");
-        int count=st.countTokens();
+        int count=st.countTokens()+1;
         // if the level is negative then take the folder starting from
         // current folder otherwise take the folder starting from root
         if (level<0) {
             level=(-1)*level;
             level=count-level;
+        }
+        // increment count to get real level
+        if (exact.equals("true") && (level<=0 || level>count || (level==count && requestedUri.equals(uri)))) {
+            return "";
+        }
+        if (level==count && requestedUri.equals(uri)) {
+            level--;
         }
         while (st.hasMoreTokens()) {
             if (level>1) {
@@ -380,7 +405,9 @@ public class CmsXmlNav extends A_CmsNavBase {
     protected int extractLevel(CmsObject cms, String folder)
         throws CmsException {
         StringTokenizer st = new StringTokenizer(folder,"/");
-        return (st.countTokens());
+        int count=st.countTokens();
+        count=(count==0?1:count);
+        return count;
     }
     /**
      * Extracts the navbar.
@@ -456,27 +483,32 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getFolderParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
 
-        int level=0;
+        int level=1;
         // tagcontent determines the folder starting from parent folder.
         // if tagcontent is null, zero or negative, then the navigation of current
         // folder must be showed.
+        String exact="false";
+        // tagcontent determines the folder starting from root folder.
+        // if tagcontent is null, then the navigation of root folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent);
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
         }
-        String currentFolder="";
-        if (level<=0) {
-            currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-        } else {
-            // level is converted to negative number, so I can use the method
-            // "extractFolder" for positive and negative numbers. Negative number
-            // determines the parent folder level starting from current folder and
-            // positive number determines the level starting ftom root folder.
-            currentFolder=extractFolder(cms,((-1)*level));
-        }
+        String currentFolder=extractFolder(cms,((-1)*level),exact);
+        if (currentFolder.equals(""))
+            return "".getBytes();
         String parentFolder=cms.getRequestContext().getRequest().getServletUrl() + currentFolder;
         return parentFolder.getBytes();
     }
@@ -493,22 +525,29 @@ public class CmsXmlNav extends A_CmsNavBase {
     public Object getFolderRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
             throws CmsException {
 
-        int level=0;
+        int level=1;
+        String exact="false";
         // tagcontent determines the folder starting from root folder.
         // if tagcontent is null, then the navigation of root folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent);
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
         }
-        String currentFolder="";
-        if (level<=0) {
-            currentFolder=cms.rootFolder().getAbsolutePath();
-        } else {
-            currentFolder=extractFolder(cms,level);
-        }
+        String currentFolder=extractFolder(cms,level,exact);
+        if (currentFolder.equals(""))
+            return "".getBytes();
         String rootFolder=cms.getRequestContext().getRequest().getServletUrl() + currentFolder;
         return rootFolder.getBytes();
     }
@@ -570,25 +609,33 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("naventry")) {
             return "".getBytes();
         }
-        int level=0;
+        int level=1;
         int[] count={0};
+        String exact="false";
         // if level is zero or null or negative then all folders recursive must
         // be showed starting from root folder unless all folders stating from
         // specified level of parent folder.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent);
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
         }
         // extract the folder
-        String folder="";
-        if (level<=0) {
-            folder=cms.rootFolder().getAbsolutePath();
-        } else {
-            folder=extractFolder(cms,level);
-        }
+        String folder=extractFolder(cms,level,exact);
+        if (folder.equals(""))
+            return "".getBytes();
+        //}
         // get uri, current folder, servletpath
         String requestedUri = cms.getRequestContext().getUri();
         String currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
@@ -641,27 +688,34 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("naventry")) {
             return "".getBytes();
         }
-        int level=0;
+        int level=1;
+        String exact="";
         // tagcontent determines the folder starting from parent folder.
         // if tagcontent is null, zero or negative, then the navigation of current
         // folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent);
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
         }
-        String currentFolder="";
-        if (level<=0) {
-            currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-        } else {
-            // level is converted to negative number, so I can use the method
-            // "extractFolder" for positive and negative numbers. Negative number
-            // determines the parent folder level starting from current folder and
-            // positive number determines the level starting ftom root folder.
-            currentFolder=extractFolder(cms,((-1)*level));
-        }
+        // level is converted to negative number, so I can use the method
+        // "extractFolder" for positive and negative numbers. Negative number
+        // determines the parent folder level starting from current folder and
+        // positive number determines the level starting ftom root folder.
+        String currentFolder=extractFolder(cms,((-1)*level),exact);
+        if (currentFolder.equals(""))
+            return "".getBytes();
         // register this folder for changes
         Vector vfsDeps = new Vector();
         vfsDeps.add(cms.readFolder(currentFolder));
@@ -701,22 +755,29 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("naventry")) {
             return "".getBytes();
         }
-        int level=0;
+        int level=1;
+        String exact="false";
         // tagcontent determines the folder starting from root folder.
         // if tagcontent is null, then the navigation of root folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent);
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
         }
-        String currentFolder="";
-        if (level<=0) {
-            currentFolder=cms.rootFolder().getAbsolutePath();
-        } else {
-            currentFolder=extractFolder(cms,level);
-        }
+        String currentFolder=extractFolder(cms,level,exact);
+        if (currentFolder.equals(""))
+            return "".getBytes();
         // register this folder for changes
         Vector vfsDeps = new Vector();
         vfsDeps.add(cms.readFolder(currentFolder));
@@ -755,36 +816,55 @@ public class CmsXmlNav extends A_CmsNavBase {
         if (!template.hasData("naventry")) {
             return "".getBytes();
         }
-        int level=0;
+        int level=1;
         int depth=0;
         int[] count={0};
+        String exact="false";
         // if there is not any depth then it must not be tested in a if condition
         boolean depthIsNull=true;
         // if level is zero or null or negative then all folders recursive must
         // be showed starting from root folder unless all folders stating from
         // specified level of parent folder.
         if (!tagcontent.equals("")) {
-            try {
-                // comma shows that there is two parameters: level,depth
-                // otherwise there is one parameter: level
-                if (tagcontent.indexOf(",")!=-1) {
-                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
-                    depth=Integer.parseInt(tagcontent.substring(tagcontent.indexOf(",")+1));
-                } else {
-                    level=Integer.parseInt(tagcontent);
+            StringTokenizer st = new StringTokenizer(tagcontent,",");
+            String token1="",token2="",token3="";
+            if (st.hasMoreTokens())
+                token1=st.nextToken();
+            if (st.hasMoreTokens())
+                token2=st.nextToken();
+            if (st.hasMoreTokens())
+                token3=st.nextToken();
+            // now assign tokens to real values
+            if (!token3.equals(""))
+                exact=token3.toLowerCase();
+            if (!token2.equals("")) {
+                try {
+                    depth=Integer.parseInt(token2);
+                } catch(NumberFormatException e) {
+                    depth=0;
+                    exact=token2.toLowerCase();
+                    if (!exact.equals("true")) {
+                        exact="false";
+                    }
                 }
-            } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+            }
+            if (!token1.equals("")) {
+                try {
+                    level=Integer.parseInt(token1);
+                } catch(NumberFormatException e) {
+                    level=1;
+                    exact=token1.toLowerCase();
+                    if (!exact.equals("true")) {
+                        exact="false";
+                    }
+                }
             }
         }
         // if level is not entered or it is less than zero then folder is the root folder
         // otherwise the folder must be extracted accordeing to the entered level.
-        String folder="";
-        if (level<=0) {
-            folder=cms.rootFolder().getAbsolutePath();
-        } else {
-            folder=extractFolder(cms,level);
-        }
+        String folder=extractFolder(cms,level,exact);
+        if (folder.equals(""))
+            return "".getBytes();
         if (depth>0) {
             depthIsNull=false;
         }
@@ -822,7 +902,6 @@ public class CmsXmlNav extends A_CmsNavBase {
             template.setData("navend", "");
         }
         result=buildNavTree(cms,template,userObject,resources,requestedUri,currentFolder,servletPath,level,depth,depthIsNull,count);
-
         return result.getBytes();
     }
 
@@ -866,26 +945,35 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getPropertyParent(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
-        int level=0;
+        int level=1;
         String property="";
         // tagcontent determines the parent folder starting from current folder and
         // the property definition name sparated by a comma.
+        String exact="false";
+        // tagcontent determines the folder starting from root folder.
+        // if tagcontent is null, then the navigation of root folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
-            String currentFolder="";
-            if (level<=0) {
-                currentFolder=cms.getRequestContext().currentFolder().getAbsolutePath();
-            } else {
-                // level is converted to negative number, so I can use the method
-                // "extractFolder" for positive and negative numbers. Negative number
-                // determines the parent folder level starting from current folder and
-                // positive number determines the level starting ftom root folder.
-                currentFolder=extractFolder(cms,((-1)*level));
-            }
+            // level is converted to negative number, so I can use the method
+            // "extractFolder" for positive and negative numbers. Negative number
+            // determines the parent folder level starting from current folder and
+            // positive number determines the level starting ftom root folder.
+            String currentFolder=extractFolder(cms,((-1)*level),exact);
+            if (currentFolder.equals(""))
+                return "".getBytes();
             property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
             property=(property!=null?property:"");
             // register this folder for changes
@@ -909,22 +997,29 @@ public class CmsXmlNav extends A_CmsNavBase {
      */
     public Object getPropertyRoot(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
         throws CmsException {
-        int level=0;
+        int level=1;
         String property="";
-        // tagcontent determines the folder starting from root folder and
-        // the property definition name sparated by a comma.
+        String exact="false";
+        // tagcontent determines the folder starting from root folder.
+        // if tagcontent is null, then the navigation of root folder must be showed.
         if (!tagcontent.equals("")) {
             try {
-                level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                if (tagcontent.indexOf(",")!=-1) {
+                    level=Integer.parseInt(tagcontent.substring(0,tagcontent.indexOf(",")));
+                    exact=tagcontent.substring(tagcontent.indexOf(",")+1).toLowerCase();
+                } else {
+                    level=Integer.parseInt(tagcontent);
+                }
             } catch(NumberFormatException e) {
-                throw new CmsException(e.getMessage());
+                level=1;
+                exact=tagcontent.toLowerCase();
+                if (!exact.equals("true")) {
+                    exact="false";
+                }
             }
-            String currentFolder="";
-            if (level<=0) {
-                currentFolder=currentFolder=cms.rootFolder().getAbsolutePath();
-            } else {
-                currentFolder=extractFolder(cms,level);
-            }
+            String currentFolder=extractFolder(cms,level,exact);
+            if (currentFolder.equals(""))
+                return "".getBytes();
             property=cms.readProperty(currentFolder, tagcontent.substring(tagcontent.indexOf(",")+1));
             property=(property!=null?property:"");
             // register this folder for changes
