@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.23 $ $Date: 2000/01/14 10:59:14 $
+ * @version $Revision: 1.24 $ $Date: 2000/01/14 11:44:08 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -454,10 +454,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public String readMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessRead(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 		
 		return( m_metadefRb.readMetainformation(res, meta) );
 	}	
@@ -480,10 +484,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									 String resource, String meta, String value)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 		
 		m_metadefRb.writeMetainformation(res, meta, value);
 	}
@@ -505,10 +513,13 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, Hashtable metainfos)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 		
 		m_metadefRb.writeMetainformations(res, metainfos);
 	}
@@ -517,7 +528,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Returns a list of all Metainformations of a file or folder.
 	 * 
 	 * <B>Security</B>
-	 * Only the user is granted, who has the right to view the resource.
+	 * Only the user is granted, who has the right to read the resource.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -531,10 +542,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Hashtable readAllMetainformations(A_CmsUser currentUser, A_CmsProject currentProject, 
 											 String resource)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessRead(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 		
 		return( m_metadefRb.readAllMetainformations(res) );
 	}
@@ -556,10 +571,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 										  A_CmsProject currentProject, 
 										  String resource)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 		
 		// are there some mandatory metadefs?
 		if( m_metadefRb.readAllMetadefinitions(res.getType(), 
@@ -589,10 +608,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void deleteMetainformation(A_CmsUser currentUser, A_CmsProject currentProject, 
 									  String resource, String meta)
 		throws CmsException {
-		// TODO: check the security
-		// TODO: read the resource realy!
-		// A fake resource is created to check metainfo-handling
-		A_CmsResource res = new CmsResource(resource, 0, 0, 0, 0, 0, 0, 0, 0, 0, "", 0, 0, 0);
+		
+		// read the resource
+		A_CmsResource res = m_fileRb.readFileHeader(currentProject, resource);
+		
+		// check the security
+		if( ! accessWrite(currentUser, currentProject, res) ) {
+			 throw new CmsException(resource, CmsException.C_NO_ACCESS);
+		}
 
 		// read the metadefinition
 		A_CmsMetadefinition metadef = m_metadefRb.readMetadefinition(meta, res.getType());
@@ -1145,7 +1168,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		if( isAdmin(currentUser, currentProject) ) {
 			
-			// TODO: check, if the mountpoint is valid (exists the folder?)
+			// read the folder, to check if it exists.
+			// if it dosen't exist a exception will be thrown
+			readFolder(currentUser, currentProject, mountpoint, "");
 			
 			// create the new mountpoint			
 			A_CmsMountPoint newMountPoint = new CmsMountPoint(mountpoint, driver,
@@ -1198,21 +1223,23 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		
 		if( isAdmin(currentUser, currentProject) ) {
 			
-			// TODO: check, if the mountpoint is valid (exists the folder?)
+			// read the folder, to check if it exists.
+			// if it dosen't exist a exception will be thrown
+			readFolder(currentUser, currentProject, mountpoint, "");
+			
+			// read the resource-type for this mountpoint.			
+			A_CmsResourceType resType = 
+				getResourceType(currentUser, currentProject, type);
 			
 			// create the new mountpoint
-			
-			// TODO: implement this
-			A_CmsMountPoint newMountPoint = null;
-/*			A_CmsMountPoint newMountPoint = 
-				new CmsMountPoint(mountpoint, mountpath,
-								  name, 
+			A_CmsMountPoint newMountPoint = 
+				new CmsMountPoint(mountpoint, mountpath, name, 
 								  readUser(currentUser, currentProject, user), 
 								  readGroup(currentUser, currentProject, group), 
 								  onlineProject(currentUser, currentProject), 
-								  null,
-								  accessFlags);
-*/			
+								  resType.getResourceType(), 0, accessFlags,
+								  resType.getLauncherType(), resType.getLauncherClass());
+			
 			// read all mountpoints from propertys
 			Hashtable mountpoints = (Hashtable) 
 									 m_propertyRb.readProperty(C_PROPERTY_MOUNTPOINT);
@@ -2487,8 +2514,6 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 								A_CmsResource resource, int flags)
 		throws CmsException {
 
-		// TODO: implement this! read group by id is missing here!
-		
 		// is the user in the group for the resource?
 		if(userInGroup(currentUser, currentProject, currentUser.getName(), 
 					   readGroup(currentUser, currentProject, 
