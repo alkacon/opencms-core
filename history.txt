@@ -8,6 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.40 Bela Tegeuse - XX August 2001
+* switched off all javascript errors in the workplace main window to prevent the system
+  from sending annoying and unimportend messeges.
+
 OpenCms 4.3.40 Bela Tegeuse - 02 August 2001
 - Update of generic backoffice.
 
