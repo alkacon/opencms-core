@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/06/26 07:22:16 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2000/06/26 13:04:13 $
+ * Version: $Revision: 1.92 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.91 $ $Date: 2000/06/26 07:22:16 $ 
+ * @version $Revision: 1.92 $ $Date: 2000/06/26 13:04:13 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1416,6 +1416,30 @@ public class CmsObject implements I_CmsConstants {
 		// return the user-name
 		return(newUser.getName());
 	}
+    
+     /**
+	 * Logs a user into the Cms, if the password is correct.
+	 * 
+	 * @param username The name of the user to be returned.
+	 * @param password The password of the user to be returned.
+	 * @return the name of the logged in user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public String loginWebUser(String username, String password) 
+		throws CmsException { 
+		// login the user
+		CmsUser newUser = c_rb.loginWebUser(m_context.currentUser(), 
+										   m_context.currentProject(),
+										   username, password);
+		// init the new user
+		init(m_context.getRequest(), m_context.getResponse(), newUser.getName(), 
+			 newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
+		// return the user-name
+		return(newUser.getName());
+	}
+    
+    
 	
 	/** 
 	 * Sets the password for a user.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/26 07:22:16 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2000/06/26 13:04:13 $
+ * Version: $Revision: 1.88 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.87 $ $Date: 2000/06/26 07:22:16 $
+ * @version $Revision: 1.88 $ $Date: 2000/06/26 13:04:13 $
  * 
  */
 public interface I_CmsResourceBroker {
@@ -686,6 +686,24 @@ public interface I_CmsResourceBroker {
 							   String username, String password) 
 		throws CmsException;
 
+    /**
+	 * Logs a user into the Cms, if the password is correct.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user to be returned.
+	 * @param password The password of the user to be returned.
+	 * @return the logged in user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, 
+							    String username, String password) 
+		throws CmsException;
+
     	
 	/**
 	 * Reads the agent of a task from the OpenCms.
@@ -979,7 +997,25 @@ public interface I_CmsResourceBroker {
 							  String username, String password)
 		throws CmsException;
 
-
+    /**
+	 * Returns a user object if the password for the user is correct.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The username of the user that is to be read.
+	 * @param password The password of the user that is to be read.
+	 * @return User
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */		
+	public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username, String password)
+		throws CmsException;
+    
+    
 	/**
 	 * Returns a list of groups of a user.<P/>
 	 * 

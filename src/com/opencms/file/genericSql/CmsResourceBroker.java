@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/26 07:22:17 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2000/06/26 13:04:14 $
+ * Version: $Revision: 1.74 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2000/06/26 07:22:17 $
+ * @version $Revision: 1.74 $ $Date: 2000/06/26 13:04:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1478,6 +1478,42 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
     }
 
+     /**
+	 * Logs a user into the Cms, if the password is correct.
+	 * 
+	 * <B>Security</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The name of the user to be returned.
+	 * @param password The password of the user to be returned.
+	 * @return the logged in user.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful
+	 */
+	public CmsUser loginWebUser(CmsUser currentUser, CmsProject currentProject, 
+							   String username, String password) 
+        throws CmsException {
+   		CmsUser newUser = readWebUser(currentUser, currentProject, username, password);
+		
+		// is the user enabled?
+		if( newUser.getFlags() == C_FLAG_ENABLED ) {
+			// Yes - log him in!
+			// first write the lastlogin-time.
+			newUser.setLastlogin(new Date().getTime());
+			// write the user back to the cms.
+			m_dbAccess.writeUser(newUser);
+            // update cache
+            m_userCache.put(newUser.getName(),newUser);
+			return(newUser);
+		} else {
+			// No Access!
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
+				CmsException.C_NO_ACCESS );
+		}
+    }
+    
     	
 	/**
 	 * Reads the agent of a task from the OpenCms.
@@ -1882,6 +1918,31 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
  		return user;
     }
 
+    /**
+	 * Returns a user object if the password for the user is correct.<P/>
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param username The username of the user that is to be read.
+	 * @param password The password of the user that is to be read.
+	 * @return User
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 */		
+	public CmsUser readWebUser(CmsUser currentUser, CmsProject currentProject, 
+							  String username, String password)
+        throws CmsException {
+		
+        CmsUser user=m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
+        // store user in cache
+        if (user==null) {
+             m_userCache.put(username,user);
+        }
+ 		return user;
+    }
 
 	/**
 	 * Returns a list of groups of a user.<P/>

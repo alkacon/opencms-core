@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/25 15:54:22 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2000/06/26 13:04:13 $
+ * Version: $Revision: 1.79 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.78 $ $Date: 2000/06/25 15:54:22 $ * 
+ * @version $Revision: 1.79 $ $Date: 2000/06/26 13:04:13 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -2629,12 +2629,16 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 		offlineFiles = readFiles(projectId);
 		for (int i = 0; i < offlineFiles.size(); i++){
 			currentFile = ((CmsFile)offlineFiles.elementAt(i));
+            
+            System.err.println(currentFile);
+            System.err.println(currentFile.getLength());
+            
      		if (currentFile.getName().startsWith(C_TEMP_PREFIX)) {
                  removeFile(projectId,currentFile.getAbsolutePath());
                 
             // C_STATE_DELETE
             }else if (currentFile.getState() == C_STATE_DELETED){
-            
+                System.err.println("*deleted*");
    				// delete in filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
@@ -2658,7 +2662,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 				}	
 			// C_STATE_CHANGED	
 			}else if ( currentFile.getState() == C_STATE_CHANGED){
-			
+			   System.err.println("*changed*");
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
@@ -2699,7 +2703,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 					statement.setString(10,currentFile.getLauncherClassname());
 					statement.setTimestamp(11,new Timestamp(System.currentTimeMillis()));
 					statement.setInt(12,currentFile.getResourceLastModifiedBy());
-					statement.setInt(13,currentFile.getContents().length);
+					statement.setInt(13,currentFile.getLength());
 					statement.setInt(14,currentFile.getFileId());
 					statement.setInt(15,onlineFile.getResourceId());
 					
@@ -2725,7 +2729,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
 
 			// C_STATE_NEW
 			}else if (currentFile.getState() == C_STATE_NEW){
-			
+			    System.err.println("*new*");
 				// export to filesystem if necessary
 				String exportKey = checkExport(currentFile.getAbsolutePath());
 				if (exportKey != null){
@@ -3587,6 +3591,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                                int parentId, String filename, boolean copy)
 
          throws CmsException {
+         
+         System.err.println("CREATE NEW FILE");
+         System.err.println(file);
+         System.err.println(file.getLength());
+         
           int state=0;         
           if (project.equals(onlineProject)) {
              state= file.getState();
@@ -3649,7 +3658,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
                 statementResourceWrite.setString(14,file.getLauncherClassname());
                 statementResourceWrite.setTimestamp(15,new Timestamp(file.getDateCreated()));
                 statementResourceWrite.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
-                statementResourceWrite.setInt(17,file.getContents().length);
+                statementResourceWrite.setInt(17,file.getLength());
                 statementResourceWrite.setInt(18,userId);
                 statementResourceWrite.executeUpdate();
                 
