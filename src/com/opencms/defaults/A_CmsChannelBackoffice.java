@@ -109,14 +109,10 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
         //media_position
         String media_position = null;
         int media_positionInt=0;
-        //try to get the medias from session
-        try{
-                media_position=(String)session.getValue("media_position");
-                media_positionInt=Integer.parseInt(media_position)-1;
-        }catch(Exception e){
-                media_positionInt=0;
-        }
+        //content of the select box
         String selectBoxContent="";
+        //flag
+        boolean flag=false;
         try{
             //get the content
             selectBoxContent=selectBoxContent(cms);
@@ -129,8 +125,23 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             if(s!=null && !s.equals("")){
                 int z=s.indexOf(":");
                 values.add(s.substring(0,z));
-                names.add(s.substring(z+1));
+                String name=s.substring(z+1);
+                names.add(name);
+                //if there is a 0 as position don't
+                if(name.equals("0")){
+                  flag=true;
+                }
             }
+        }
+        //try to get the medias from session
+        try{
+                media_position=(String)session.getValue("media_position");
+                media_positionInt=Integer.parseInt(media_position);
+                if(!flag){
+                    media_positionInt=Integer.parseInt(media_position)-1;
+                }
+        }catch(Exception e){
+                media_positionInt=0;
         }
         return new Integer(media_positionInt);
     }
@@ -158,7 +169,6 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             CmsMasterContent masterCD = (CmsMasterContent)session.getValue(getContentDefinitionClass().getName());
             //get the parameter
             Hashtable parameters = (Hashtable)userObject;
-
             // get the action
             String media_action = (String) parameters.get("media_action");
             media_action=(media_action!=null?media_action.trim():"");
@@ -167,8 +177,8 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             media_name=(media_name!=null?media_name.trim():"");
             // get the alt_text
             String media_title = (String) parameters.get("media_alt_text");
-            // media_title = com.opencms.util.Encoder.unescape(media_title);
             media_title=(media_title!=null?media_title.trim():"");
+            media_title = com.opencms.util.Encoder.unescape(media_title);
             // get the pos
             String pos = (String) parameters.get("pos");
             pos=(pos!=null?pos.trim():"");
@@ -309,7 +319,9 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                 //fill the template
                 templateFile.setData("media_name",selectedmediaCD.getName());
                 templateFile.setData("posEdit",pos);
-                templateFile.setData("media_alt_text", com.opencms.util.Encoder.escape(selectedmediaCD.getTitle()));
+                String title=selectedmediaCD.getTitle();
+                title=com.opencms.util.Encoder.unescape(title);
+                templateFile.setData("media_alt_text", title);
                 templateFile.setData("media_file",templateFile.getProcessedDataValue("media_edit",this));
             }else{
                 //put the media_position in session
@@ -319,16 +331,39 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
             }
             //fill the list
             if(media!=null){
+                //content of the position select box
+                String selectBoxContent="";
+                try{
+                    //get the content
+                    selectBoxContent=selectBoxContent(cms);
+                }catch(Exception e){
+                }
                 for(int i=0;i<media.size();i++){
                     mediaCD= (CmsMasterMedia)media.elementAt(i);
                     templateFile.setData("pos",""+i);
                     templateFile.setData("media_row_name",mediaCD.getName());
                     templateFile.setData("media_title",mediaCD.getTitle());
-                    templateFile.setData("media_position",""+mediaCD.getPosition());
+                    //get the name to the value
+                    String mediapos=""+mediaCD.getPosition();
+                    StringTokenizer t = new StringTokenizer(selectBoxContent,";");
+                    while(t.hasMoreElements()){
+                        String s=t.nextToken();
+                        if(s!=null && !s.equals("")){
+                            int z=s.indexOf(":");
+                            String value=s.substring(0,z);
+                            String name=s.substring(z+1);
+                            if(mediapos.equals(name)){
+                                mediapos=value;
+                            }
+                        }
+                    }
+                    templateFile.setData("media_position",""+mediapos);
                     templateFile.setData("media_size",""+mediaCD.getSize());
                     templateFile.setData("media_type",""+mediaCD.getType());
                     //set String
                     row+=templateFile.getProcessedDataValue("media_row",this);
+                    //set back
+                    mediapos="";
                 }
                 templateFile.setData("media_line",row);
             }
