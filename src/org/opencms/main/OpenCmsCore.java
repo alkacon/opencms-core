@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/04/10 23:11:46 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2004/04/28 22:28:16 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
@@ -102,7 +103,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.113 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -901,6 +902,9 @@ public final class OpenCmsCore {
             locale = Locale.ENGLISH;
             encoding = getSystemInfo().getDefaultEncoding();
         }
+        
+        // decode the requested resource, always using UTF-8
+        requestedResource = CmsEncoder.decode(requestedResource);
         
         // now create the context and init the CmsObject
         CmsRequestContext context = new CmsRequestContext(user, project, requestedResource, currentSite, locale, encoding, remoteAddr, m_directoryTranslator, m_fileTranslator);

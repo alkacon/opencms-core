@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2004/04/07 08:17:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/04/28 22:28:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.12
  */
@@ -409,7 +409,7 @@ public abstract class CmsTabDialog extends CmsDialog {
                 result.append("<input type=\"hidden\" name=\"");
                 result.append(param);
                 result.append("\" value=\"");
-                result.append(CmsEncoder.encode(value.toString()));
+                result.append(CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()));
                 result.append("\">\n");
             }
         }        

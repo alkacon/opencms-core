@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2004/04/28 22:30:58 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.68 $
+ * @version $Revision: 1.69 $
  * 
  * @since 5.1
  */
@@ -906,7 +906,7 @@ public abstract class CmsWorkplace {
                 value = null;
             }
             if (value != null) {
-                value = CmsEncoder.decode(value);
+                value = CmsEncoder.decode(value, getCms().getRequestContext().getEncoding());
             }
             try {
                 if (DEBUG && (value != null)) {
@@ -1026,7 +1026,7 @@ public abstract class CmsWorkplace {
             result.append(param);
             result.append("\" value=\"");
             // TODO: Encoding issue if encoding is done with JavaScript on page
-            result.append(CmsEncoder.encode(value.toString()));
+            result.append(CmsEncoder.encode(value.toString(), getCms().getRequestContext().getEncoding()));
             result.append("\">\n");
         }        
         return result.toString();
