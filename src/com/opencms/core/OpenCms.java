@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/06/05 13:37:50 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/06/05 13:48:04 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.24 $ $Date: 2000/06/05 13:37:50 $  
+* @version $Revision: 1.25 $ $Date: 2000/06/05 13:48:04 $  
 * 
 * */
 
@@ -109,7 +109,9 @@ class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels
 			if(A_OpenCms.isLogging()) {
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] initializing the cms-object and the main resource-broker");
 			}
-            cms.init(((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect));
+
+			// TODO: 41 use the new RB-Manager to init
+            // cms.init(((A_CmsInit) Class.forName(classname).newInstance() ).init(driver, connect));
 			printCopyrightInformation(cms);
             // initalize the Hashtable with all available mimetypes
 			if(A_OpenCms.isLogging()) {
