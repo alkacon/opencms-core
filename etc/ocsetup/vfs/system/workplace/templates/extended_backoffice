@@ -1194,7 +1194,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>]]><PROCESS>filterlabel</PROCESS><![CDATA[:</b>&nbsp;&nbsp;&nbsp;
      </td>
 	<td nowrap valign="center">
-        <input type=hidden name="selectbox"/> ]]>
+        <input type=hidden name="selectbox"value="0"> ]]>
         <PROCESS>filtername</PROCESS><![CDATA[
     </td>
     ]]>
@@ -1207,7 +1207,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
      	</td>
 		<td nowrap valign="center">
 	        <input type=hidden name="setaction" value="filterchange">
-       	 	<input type=hidden name="selectbox"/> ]]>
+       	 	<input type=hidden name="selectbox" value="0"> ]]>
         	<PROCESS>filtername</PROCESS><![CDATA[
    		 </td>
         <td nowrap valign="center">        
