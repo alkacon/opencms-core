@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/28 15:04:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/05/28 16:01:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -62,6 +62,12 @@ public class OpenCmsTestResourceFilter {
     /** Defintition of a filter used for the writeProperty method */
     public static OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
     
+    /** Defintition of a filter used to validate an existing sibling after a copy operation */
+    public static OpenCmsTestResourceFilter FILTER_EXISTING_SIBLING = getFilterExistingSibling();
+    
+    /** Defintition of a filter used to validate the existing and the new sibling after a copy opreation */
+    public static OpenCmsTestResourceFilter FILTER_EXISTING_AND_NEW_SIBLING = getFilterExistingAndNewSibling();     
+    
     /** Flags for validating the attributes of two CmsResources */
     private boolean m_contentId;
     private boolean m_contents;
@@ -72,7 +78,7 @@ public class OpenCmsTestResourceFilter {
     private boolean m_flags;
     private boolean m_isTouched;
     private boolean m_length;
-    private boolean m_linkCount;
+    private boolean m_siblingCount;
     private boolean m_loaderId;
     private boolean m_lockstate; 
     private boolean m_name;
@@ -98,7 +104,7 @@ public class OpenCmsTestResourceFilter {
         m_flags = true;
         m_isTouched = true;
         m_length = true;
-        m_linkCount = true;
+        m_siblingCount = true;
         m_loaderId = true;
         m_name = true;
         m_parentId = true;
@@ -202,6 +208,39 @@ public class OpenCmsTestResourceFilter {
         return filter;
     }
     
+    /**
+     * Creates a new filter used to validate the fields of a new sibling
+     * different from the existing sibling(s) from which it was created.<p>
+     * 
+     * @return OpenCmsTestResourceFilter filter
+     */
+    private static final OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        filter.disableStateTest();
+        filter.disableStructureIdTest();
+        filter.disableNameTest();
+        filter.disableLockTest();
+
+        return filter;        
+    }
+    
+    /**
+     * Creates a new filter used to validate the modified fields of an
+     * existing resource from which a new sibling was created.<p>
+     * 
+     * @return OpenCmsTestResourceFilter filter
+     */
+    private static final OpenCmsTestResourceFilter getFilterExistingSibling() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+
+        filter.disableProjectLastModifiedTest();
+        filter.disableSiblingCountTest();
+        filter.disableLockTest();
+
+        return filter;        
+    }
+    
     
     /**
      * Disables the Content Id test.<p>
@@ -260,10 +299,10 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Disables the link count test.<p>
+     * Disables the sibling count test.<p>
      */
-    public void disableLinkCountTest() {
-        m_linkCount = false;
+    public void disableSiblingCountTest() {
+        m_siblingCount = false;
     }
     
     /**
@@ -430,12 +469,12 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Returns true if the link count test is enabled..<p>
+     * Returns true if the sibling count test is enabled..<p>
      *
      * @return true or false
      */
-    public boolean testLinkCount() {
-        return m_linkCount;
+    public boolean testSiblingCount() {
+        return m_siblingCount;
     }
     
     /**

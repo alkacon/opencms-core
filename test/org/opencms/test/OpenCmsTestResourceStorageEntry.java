@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2004/05/28 08:38:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/28 16:01:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OpenCmsTestResourceStorageEntry {
     
@@ -76,7 +76,7 @@ public class OpenCmsTestResourceStorageEntry {
     protected int m_length;
 
     /** The number of links that point to this resource */
-    private int m_linkCount;
+    private int m_siblingCount;
 
     /** The id of the loader which is used to process this resource */
     private int m_loaderId;
@@ -139,7 +139,7 @@ public class OpenCmsTestResourceStorageEntry {
         m_flags = res.getFlags();
         m_isTouched = res.isTouched();
         m_length = res.getLength();
-        m_linkCount = res.getLinkCount();
+        m_siblingCount = res.getLinkCount();
         m_loaderId = res.getLoaderId();
         m_name = res.getName();
         m_parentId = res.getParentStructureId();
@@ -237,8 +237,8 @@ public class OpenCmsTestResourceStorageEntry {
      * 
      * @return the number of links
      */
-    public int getLinkCount() {
-        return m_linkCount;
+    public int getSiblingCount() {
+        return m_siblingCount;
     }
     
     /**
