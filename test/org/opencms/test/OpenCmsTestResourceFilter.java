@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/05/26 11:30:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/05/26 14:58:36 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,13 @@
  
 package org.opencms.test;
 
+import org.opencms.file.CmsProperty;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -42,16 +47,19 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class OpenCmsTestResourceFilter {
 
 
     /** Defintition of a equal filter */
-    public static OpenCmsTestResourceFilter FILER_EQUAL = new OpenCmsTestResourceFilter();
+    public static OpenCmsTestResourceFilter FILTER_EQUAL = new OpenCmsTestResourceFilter();
     
-    /** Defintition of a filter used for the tough method */
-    public static OpenCmsTestResourceFilter FILER_TOUCH = getFilterTouch();
+    /** Defintition of a filter used for the touch method */
+    public static OpenCmsTestResourceFilter FILTER_TOUCH = getFilterTouch();
+    
+    /** Defintition of a filter used for the writeProperty method */
+    public static OpenCmsTestResourceFilter FILTER_WRITEPROPERTY = getFilterWriteProperty();
     
     /** Flags for validating the attributes of two CmsResources */
     private boolean m_contentId;
@@ -106,7 +114,7 @@ public class OpenCmsTestResourceFilter {
     }
     
     /**
-     * Creates a new filter usef for the "touch" method.<p>
+     * Creates a new filter used for the "touch" method.<p>
      * @return OpenCmsTestResourceFilter object
      */
     private static OpenCmsTestResourceFilter getFilterTouch() {
@@ -115,22 +123,58 @@ public class OpenCmsTestResourceFilter {
         filter.disableStateTest();
         filter.disableDateLastModifiedTest();
         filter.disableUserLastModifiedTest();
+        return filter; 
+
+    }
+    
+    /**
+     * Creates a new filter used for the "touch" method.<p>
+     * @return OpenCmsTestResourceFilter object
+     */
+    private static OpenCmsTestResourceFilter getFilterWriteProperty() {
+        OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
+        filter.disableProjectLastModifiedTest();
+        filter.disableStateTest();
+        filter.disableDateLastModifiedTest();
+        filter.disableUserLastModifiedTest();
+        filter.disablePropertiesTest();
         return filter;
     }
     
     /**
-     * Compares two lists of properties and returns those that do not match.<p>
+     * Compares two lists of properties and returns those 
+     * that are included only in the source but not in the targer list.<p>
      * 
-     * @param storedProperties the properties of the stored resource
-     * @param properties the properties of the resource to compare
+     * @param source the source properties
+     * @param target the target properties
      * @return list of not matching properties
-     */
-    public List compareProperties(List storedProperties, List properties) {
-        List unmatchedProperties = new ArrayList();
+     */    
+    public List compareProperties(List source, List target) {
         
-        
-        return unmatchedProperties;
-    }
+		List result = new ArrayList();
+		List targetClone = new ArrayList(target);
+		Iterator i = source.iterator();
+		while (i.hasNext()) {
+			boolean found = false;
+			CmsProperty sourceProperty = (CmsProperty) i.next();
+			Iterator j = targetClone.iterator();
+			CmsProperty targetProperty = null;
+			while (j.hasNext()) {
+				targetProperty = (CmsProperty) j.next();
+				if (sourceProperty.isIdentical(targetProperty)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				result.add(sourceProperty);
+			} else {
+				targetClone.remove(targetProperty);
+			}
+		}
+		return result;
+	}            
+    
     
 	/**
 	 * Disables the Content Id test.<p>
@@ -483,6 +527,25 @@ public class OpenCmsTestResourceFilter {
 	public boolean testUserLastModified() {
 		return m_userLastModified;
 	}
+    
+    /**
+     * Converts a list of CmsProperty objects to a map of CmsPropery objects. The property
+     * keys are used as keys for the map.<p>
+     * 
+     * This method is used for easier comparison of two property lists.
+     * 
+     * @param list a list of CmsProperty objects
+     * @return map of CmsProperty objects
+     */
+    private HashMap getProperyMapFromPropertyList(List list) {
+        Map propertyMap = new HashMap();
+        Iterator i = list.iterator();
+        while (i.hasNext()) {
+            CmsProperty property = (CmsProperty)i.next();
+            propertyMap.put(property.getKey(), property);
+        }      
+        return new HashMap(propertyMap);        
+    }
     
     
 }

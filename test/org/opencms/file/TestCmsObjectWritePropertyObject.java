@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectTouch.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsObjectWritePropertyObject.java,v $
  * Date   : $Date: 2004/05/26 14:58:36 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class TestCmsObjectTouch extends OpenCmsTestCase {
+public class TestCmsObjectWritePropertyObject extends OpenCmsTestCase {
         
     
     /**
@@ -49,7 +49,7 @@ public class TestCmsObjectTouch extends OpenCmsTestCase {
      * 
      * @param arg0 JUnit parameters
      */    
-    public TestCmsObjectTouch(String arg0) {
+    public TestCmsObjectWritePropertyObject(String arg0) {
         super(arg0);
     }
     
@@ -72,16 +72,19 @@ public class TestCmsObjectTouch extends OpenCmsTestCase {
  
         // do the touch operation
         long timestamp = System.currentTimeMillis();
-        cms.touch(resource1, timestamp, false);
+        
+        CmsProperty property1 = new CmsProperty("Title","OpenCms",null);
+        
+        cms.writePropertyObject(resource1, property1);
        
         // now evaluate the result
-        assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
         // project must be current project
         assertProject(cms, resource1, cms.getRequestContext().currentProject());
         // state must be "changed"
         assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
-        // date last modified must be the date set in the tough operation
-        assertDateLastModified(cms, resource1, timestamp);
+        // date last modified must be after the test timestamp
+        assertDateLastModifiedAfter(cms, resource1, timestamp);
         // the user last modified must be the current user
         assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/26 11:30:15 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/26 14:58:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.5
  */
@@ -118,6 +118,27 @@ public class OpenCmsTestCase extends TestCase {
             
             if (res.getDateLastModified() != dateLastModified) {
                 fail("[DateLastModified "+dateLastModified + " <-> "+res.getDateLastModified() +"]");
+            }
+            
+        } catch (CmsException e) {
+            fail("cannot read resource "+resourceName+" "+e);     
+        }
+    }
+    
+    /**
+     * Tests if the the current date last modified of a resource is later then a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateLastModified the last modification date
+     */
+    protected void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            
+            if (res.getDateLastModified() < dateLastModified) {
+                fail("[DateLastModified "+dateLastModified + " > "+res.getDateLastModified() +"]");
             }
             
         } catch (CmsException e) {
@@ -239,7 +260,15 @@ public class OpenCmsTestCase extends TestCase {
             if (filter.testProperties()) {
                 List storedProperties = storedResource.getProperties();
                 List properties = cms.readPropertyObjects(resourceName, false);
-                List unmatchedProperties = filter.compareProperties(storedProperties, properties);
+                List unmatchedProperties;
+                unmatchedProperties = filter.compareProperties(storedProperties, properties);
+                if (unmatchedProperties.size() >0 ) {
+                    noMatches += "[Properies missing "+unmatchedProperties.toString()+"]";   
+                }
+                unmatchedProperties = filter.compareProperties(properties, storedProperties);
+                if (unmatchedProperties.size() >0 ) {
+                    noMatches += "[Properies additional "+unmatchedProperties.toString()+"]";   
+                }                
             }  
             // compare the resource id if nescessary
             if (filter.testResourceId()) {
