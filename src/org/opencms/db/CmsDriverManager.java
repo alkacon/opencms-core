@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/26 15:36:12 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/06/30 13:32:05 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
+ * @version $Revision: 1.14 $ $Date: 2003/06/30 13:32:05 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -108,7 +108,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
+	 * @version $Revision: 1.14 $ $Date: 2003/06/30 13:32:05 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -206,7 +206,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.13 $ $Date: 2003/06/26 15:36:12 $
+	 * @version $Revision: 1.14 $ $Date: 2003/06/30 13:32:05 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -4388,72 +4388,59 @@ public Vector getFolderTree(CmsUser currentUser, CmsProject currentProject, Stri
         }
         return(merged);
     }
+    
     /**
-     * Moves the file.
+     * Moves a file in the VFS.<p>
      *
      * This operation includes a copy and a delete operation. These operations
-     * are done with their security-checks.
+     * are done with their security-checks.<p>
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param source The complete m_path of the sourcefile.
-     * @param destination The complete m_path of the destinationfile.
+     * @param currentUser the current user
+     * @param currentProject he  project of the current user
+     * @param source the complete path of the source file in the VFS
+     * @param destination the complete path of the destination file in the VFS
      *
-     * @throws CmsException will be thrown, if the file couldn't be moved.
-     * The CmsException will also be thrown, if the user has not the rights
-     * for this resource.
+     * @throws CmsException will be thrown if the file couldn't be moved 
+     *      or if the user dosen't have the required permissions
      */
     public void moveFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
-
         // read the file to check access
         CmsResource file = readFileHeader(currentUser,currentProject, source);
 
 		// check if the user has write access to the folder
 		getVfsAccessGuard(currentUser, currentProject).check(file, C_WRITE_ACCESS);
 
-            // first copy the file, this may ends with an exception
-            copyFile(currentUser, currentProject, source, destination);
+        // first copy the file, this may ends with an exception
+        copyFile(currentUser, currentProject, source, destination);
 
-            // then delete the source-file, this may end with an exception
-            // => the file was only copied, not moved!
-            deleteFile(currentUser, currentProject, source);
-            // inform about the file-system-change
-            fileSystemChanged(file.isFolder());
+        // then delete the source-file, this may end with an exception
+        deleteFile(currentUser, currentProject, source);
+        
+        // inform about the file system change
+        fileSystemChanged(file.isFolder());
+    }
+    
+    /**
+     * Returns the online project object.<p>
+     *
+     * @param currentUser the current user
+     * @param currentProject the project of the current user
+     * @return the online project object
+     * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use readProject(I_CmsConstants.C_PROJECT_ONLINE_ID) instead
+     */
+    public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
+        // try to get the online project from cache
+        if(m_onlineProjectCache == null) {
+            synchronized (this) {
+                // store the project in the cache
+                m_onlineProjectCache = readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            }
         }
-    
-/**
- * Returns the onlineproject.  All anonymous
- * (CmsUser callingUser, or guest) users will see the resources of this project.
- *
- * <B>Security:</B>
- * All users are granted.
- *
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @return the onlineproject object.
- * @throws CmsException Throws CmsException if something goes wrong.
- * @deprecated use readProject(I_CmsConstants.C_PROJECT_ONLINE_ID) instead
- */
-public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
-//    CmsProject project = null;
-//
-//    // try to get the online project for this offline project from cache
-//    if(m_onlineProjectCache != null){
-//        project = (CmsProject) m_onlineProjectCache.clone();
-//    }
-//    if (project == null) {
-//        // the project was not in the cache
-//        // lookup the currentProject in the CMS_SITE_PROJECT table, and in the same call return it.
-//        project = m_projectDriver.getOnlineProject();
-//        // store the project into the cache
-//        if(project != null){
-//            m_onlineProjectCache = (CmsProject)project.clone();
-//        }
-//    }
-//    return project;
-    
-    return readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
-}
+        // m_onlineProjectCache must never be null here
+        return (CmsProject)m_onlineProjectCache.clone();
+    }
 
 /**
  * Creates a static export of a Cmsresource in the filesystem
@@ -6323,7 +6310,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String userName)
         throws CmsException {
 
-        CmsUser user = null, test = null;
+        CmsUser user = null;
         // try to read the user from cache
         user = (CmsUser)m_userCache.get(new CacheId(userName + C_USER_TYPE_SYSTEMUSER));
         if(user == null){
