@@ -11,6 +11,7 @@
 -->
 <!ELEMENT workplace (
 	defaultlocale,
+	localizedfolders,
 	dialoghandlers, 
 	editorhandler, 
 	editoraction, 
@@ -30,6 +31,14 @@
 # is invalid. User can change this setting individually with the preference dialog.
 -->
 <!ELEMENT defaultlocale (#PCDATA)>
+
+<!--
+# The worplace localized folders control if the workplace locale handler is used
+# for a configured folder.
+-->
+<!ELEMENT localizedfolders (resource*)>
+<!ELEMENT resource EMPTY>
+<!ATTLIST resource uri CDATA #REQUIRED>
 
 <!--
 # The worklace dialog handlers allow extending / changing the default
@@ -116,8 +125,6 @@
 # contains sensitive data.
 -->
 <!ELEMENT labeledfolders (resource*)>
-<!ELEMENT resource EMPTY>
-<!ATTLIST resource uri CDATA #REQUIRED>
 
 <!--
 # Settings for the new resource dialog and the contextmenus in the explorer view.

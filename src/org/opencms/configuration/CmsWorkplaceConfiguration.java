@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2004/08/19 11:26:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/09/21 16:21:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,102 @@ import org.dom4j.Element;
  */
 public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
+    /** The node name of the buttonstyle node. */
+    public static final String N_BUTTONSTYLE = "buttonstyle";
+    
+    /** The node name of the dialogs defaultsettings node. */
+    public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
+    
+    /** The node name of the directedit style node. */
+    public static final String N_DIRECTEDITSTYLE = "directeditstyle";
+    
+    /** The node name of the directpublish node. */
+    public static final String N_DIRECTPUBLISH = "directpublish";
+    
+    /** The node name of the editor node. */
+    public static final String N_EDITOR = "editor";    
+    
+    /** The node name of the editors general options node. */
+    public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
+    
+    /** The node name of the editors preferred editors node. */
+    public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
+    
+    /** The node name of the file entries node. */
+    public static final String N_ENTRIES = "entries";
+
+    /** The node name of the explorer displayoptions node. */
+    public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
+    
+    /** The node name of the explorer generaloptions node. */
+    public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
+
+    /** The node name of the file copy node. */
+    public static final String N_FILECOPY = "filecopy";
+    
+    /** The node name of the file deletion node. */
+    public static final String N_FILEDELETION = "filedeletion";
+    
+    /** The node name of the start folder node. */
+    public static final String N_FOLDER = "folder";
+    
+    /** The node name of the folder copy node. */
+    public static final String N_FOLDERCOPY = "foldercopy";
+    
+    /** The node name of the inform role members node. */
+    public static final String N_INFORMROLEMEMBERS = "informrolemembers";    
+    
+    /** The node name of the locale node. */
+    public static final String N_LOCALE = "locale";
+    
+    /** The node name of the message-accepted node. */
+    public static final String N_MESSAGEACCEPTED = "message-accepted";    
+    
+    /** The node name of the message-completed node. */
+    public static final String N_MESSAGECOMPLETED = "message-completed";    
+    
+    /** The node name of the message-forwarded node. */
+    public static final String N_MESSAGEFORWARDED = "message-forwarded";
+    
+    /** The node name of the project node. */
+    public static final String N_PROJECT = "project";
+
+    /** The node name of the report type node. */
+    public static final String N_REPORTTYPE = "reporttype";
+    
+    /** The node name of the restrict explorer view node. */
+    public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
+    
+    /** The node name of the file copy node. */
+    public static final String N_SHOWLOCK = "showlock";
+    
+    /** The node name of the showprojects node. */
+    public static final String N_SHOWPROJECTS = "showprojects"; 
+    
+    /** The node name of the start site node. */
+    public static final String N_SITE = "site";
+   
+    /** The node name of the startupfilter node. */
+    public static final String N_STARTUPFILTER = "startupfilter";    
+    
+    /** The node name of the uploadapplet node. */
+    public static final String N_UPLOADAPPLET = "uploadapplet";
+
+    /** The node name of the workflow default settings node. */
+    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
+    
+    /** The node name of the workflow general options node. */
+    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
+    
+    /** The node name of the workplace general options node. */
+    public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
+
+    /** The node name of the workplace startup settings node. */
+    public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
+    
+    /** The node name of the view node. */
+    public static final String N_WORKPLACEVIEW = "workplaceview";
+    
     /** The "isxml" attribute. */
     protected static final String A_ISXML = "isxml";
     
@@ -71,16 +167,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The "target" attribute. */
     protected static final String A_TARGET = "target";
-
     
     /** The "value" attribute. */
     protected static final String A_VALUE = "value";    
-    
-    /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
-    
-    /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";          
     
     /** The name of the access control node. */
     protected static final String N_ACCESSCONTROL = "accesscontrol";
@@ -90,9 +179,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the autolock node. */
     protected static final String N_AUTOLOCK = "autolock";
-    
-    /** The node name of the buttonstyle node. */
-    public static final String N_BUTTONSTYLE = "buttonstyle";
     
     /** The name of the context menu node. */
     protected static final String N_CONTEXTMENU = "contextmenu";
@@ -124,29 +210,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The main workplace handler node name. */
     protected static final String N_DIALOGHANDLERS = "dialoghandlers";
     
-    /** The node name of the dialogs defaultsettings node. */
-    public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
-    
     /** The node name of the dialogs preferences node. */
     protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
-    
-    /** The node name of the directedit style node. */
-    public static final String N_DIRECTEDITSTYLE = "directeditstyle";
-    
-    /** The node name of the directpublish node. */
-    public static final String N_DIRECTPUBLISH = "directpublish";
     
     /** The name of the edit options node. */
     protected static final String N_EDITOPTIONS = "editoptions";
     
-    /** The node name of the editor node. */
-    public static final String N_EDITOR = "editor";    
-    
     /** The name of the editor action node. */
     protected static final String N_EDITORACTION = "editoraction";
-    
-    /** The node name of the editors general options node. */
-    public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
     
     /** The name of the editor handler node. */
     protected static final String N_EDITORHANDLER = "editorhandler";
@@ -154,26 +225,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the editors preferences node. */
     protected static final String N_EDITORPREFERENCES = "editors-preferences";
     
-    /** The node name of the editors preferred editors node. */
-    public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
-    
     /** The name of the "enable advanced property tabs" node. */
     protected static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
     
     /** The name of the "user management enabled" node. */
     protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
     
-    /** The node name of the file entries node. */
-    public static final String N_ENTRIES = "entries";
-    
     /** The name of the entry node. */
     protected static final String N_ENTRY = "entry";
-
-    /** The node name of the explorer displayoptions node. */
-    public static final String N_EXPLORERDISPLAYOPTIONS = "explorer-displayoptions";
-    
-    /** The node name of the explorer generaloptions node. */
-    public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
    
     /** The node name of the explorer preferences node. */
     protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
@@ -183,27 +242,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The name of the explorer types node. */
     protected static final String N_EXPLORERTYPES = "explorertypes";
-
-    /** The node name of the file copy node. */
-    public static final String N_FILECOPY = "filecopy";
-    
-    /** The node name of the file deletion node. */
-    public static final String N_FILEDELETION = "filedeletion";
-    
-    /** The node name of the start folder node. */
-    public static final String N_FOLDER = "folder";
-    
-    /** The node name of the folder copy node. */
-    public static final String N_FOLDERCOPY = "foldercopy";
-    
-    /** The node name of the inform role members node. */
-    public static final String N_INFORMROLEMEMBERS = "informrolemembers";    
     
     /** The name of the "labeled folders" node. */
     protected static final String N_LABELEDFOLDERS = "labeledfolders";    
     
-    /** The node name of the locale node. */
-    public static final String N_LOCALE = "locale";
+    /** The name of the "localized folders" node. */
+    protected static final String N_LOCALIZEDFOLDERS = "localizedfolders";
     
     /** The node name of the lockedby column node. */
     protected static final String N_LOCKEDBY = "show-lockedby";
@@ -211,47 +255,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the "max file upload size" node. */
     protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
     
-    /** The node name of the message-accepted node. */
-    public static final String N_MESSAGEACCEPTED = "message-accepted";    
-    
-    /** The node name of the message-completed node. */
-    public static final String N_MESSAGECOMPLETED = "message-completed";    
-    
-    /** The node name of the message-forwarded node. */
-    public static final String N_MESSAGEFORWARDED = "message-forwarded";
-    
     /** The name of the new resource node. */
     protected static final String N_NEWRESOURCE = "newresource";
     
     /** The node name of the permissions column node. */
     protected static final String N_PERMISSIONS = "show-permissions";
     
-    /** The node name of the project node. */
-    public static final String N_PROJECT = "project";
-
-    /** The node name of the report type node. */
-    public static final String N_REPORTTYPE = "reporttype";
-    
-    /** The node name of the restrict explorer view node. */
-    public static final String N_RESTRICTEXPLORERVIEW = "restrictexplorerview";
-    
     /** The name of the separator node. */
     protected static final String N_SEPARATOR = "separator";
     
-    /** The node name of the file copy node. */
-    public static final String N_SHOWLOCK = "showlock";
-    
-    /** The node name of the showprojects node. */
-    public static final String N_SHOWPROJECTS = "showprojects"; 
-    
-    /** The node name of the start site node. */
-    public static final String N_SITE = "site";
-    
     /** The node name of the size column node. */
     protected static final String N_SIZE = "show-size";
-   
-    /** The node name of the startupfilter node. */
-    public static final String N_STARTUPFILTER = "startupfilter";    
     
     /** The node name of the state column node. */
     protected static final String N_STATE = "show-state";
@@ -262,9 +276,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the type column node. */
     protected static final String N_TYPE = "show-type";
     
-    /** The node name of the uploadapplet node. */
-    public static final String N_UPLOADAPPLET = "uploadapplet";
-    
     /** The node name of the default preferences node. */
     protected static final String N_USER = "default-preferences";
 
@@ -273,30 +284,21 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     
     /** The node name of the user lastmodified node. */
     protected static final String N_USERLASTMODIFIED = "show-userlastmodified";
-
-    /** The node name of the workflow default settings node. */
-    public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
-    
-    /** The node name of the workflow general options node. */
-    public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
     
     /** The node name of the workflow preferences node. */
     protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
     
     /** The node name of the master workplace node. */       
     protected static final String N_WORKPLACE = "workplace";
-    
-    /** The node name of the workplace general options node. */
-    public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
 
     /** The node name of the workplace preferences node. */
     protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
-
-    /** The node name of the workplace startup settings node. */
-    public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
     
-    /** The node name of the view node. */
-    public static final String N_WORKPLACEVIEW = "workplaceview";
+    /** The name of the DTD for this configuration. */
+    private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
+    
+    /** The name of the default XML file for this configuration. */
+    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";          
     
 
     /** The configured workplace manager. */
@@ -365,6 +367,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, "addLabeledFolder", 1);        
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LABELEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
         
+        // add localized folders rule
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, "addLocalizedFolder", 1);        
+        digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+                
         // add explorer type settings
         digester.addObjectCreate("*/" + N_EXPLORERTYPE, CmsExplorerTypeSettings.class);
         digester.addSetNext("*/" + N_EXPLORERTYPE, "addExplorerTypeSetting");

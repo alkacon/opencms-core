@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/08/26 15:42:50 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/09/21 16:21:30 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.http.HttpSession;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.3.1
  */
@@ -102,6 +102,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The default property setting for setting new property values. */
     private boolean m_defaultPropertiesOnStructure;
+    
+    /** The default user seetings. */
+    private CmsDefaultUserSettings m_defaultUserSettings;
     
     /** The configured dialog handlers. */
     private Map m_dialogHandler;
@@ -139,6 +142,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** Set of installed workplace locales. */
     private Set m_locales;
     
+    /** The configured list of localized workplace folders. */
+    private List m_localizedFolders;
+    
     /** Indicates if the user managemet icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
         
@@ -147,9 +153,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     
     /** The configured workplace views. */
     private List m_views;
-    
-    /** The default user seetings. */
-    private CmsDefaultUserSettings m_defaultUserSettings;
     
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
@@ -160,6 +163,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         }
         m_locales = new HashSet();
         m_labelSiteFolders = new ArrayList();
+        m_localizedFolders = new ArrayList();
         m_autoLockResources = true;
         m_showUserGroupIcon = true;
         m_dialogHandler = new HashMap();
@@ -228,6 +232,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_labelSiteFolders.add(uri);
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Label links in folder: " + uri);
+        }              
+    }
+    
+    /**
+     * Adds a new folder to the list of localized workplace folders.<p>
+     * 
+     * @param uri a new folder to add to the list of localized workplace folders
+     */
+    public void addLocalizedFolder(String uri) {
+        
+        m_localizedFolders.add(uri);
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace localized  : " + uri);
         }              
     }
     
@@ -449,6 +466,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public Set getLocales() {
         return m_locales;        
     }
+
+    /**
+     * Returns the configured list of localized workplace folders.<p>
+     * 
+     * @return the configured list of localized workplace folders
+     */
+    public List getLocalizedFolders() {
+        
+        return m_localizedFolders;
+    }
     
     /**
      * Returns the id of the temporary file project required by the editors.<p>
@@ -577,19 +604,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default locale is '" + m_defaultLocale + "'");
         }        
     }
-    
-    /**
-     * Sets the Workplace default user settings.<p>
-     * 
-     * @param defaultUserSettings the user settings to set
-     */
-    public void setDefaultUserSettings(CmsDefaultUserSettings defaultUserSettings) {
-        m_defaultUserSettings = defaultUserSettings;
-        
-        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default user settings are " + m_defaultUserSettings);
-        }        
-    }
          
     
     
@@ -603,6 +617,19 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Properties on struct : " + (m_defaultPropertiesOnStructure?"true":"false"));
         }       
+    }
+    
+    /**
+     * Sets the Workplace default user settings.<p>
+     * 
+     * @param defaultUserSettings the user settings to set
+     */
+    public void setDefaultUserSettings(CmsDefaultUserSettings defaultUserSettings) {
+        m_defaultUserSettings = defaultUserSettings;
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Workplace init       : Default user settings are " + m_defaultUserSettings);
+        }        
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/07/24 06:01:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/09/21 16:21:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +63,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
@@ -464,13 +463,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // no match
         return null;
     }
-
+    
     /**
      * Returns the the appropriate locale/encoding for a request,
      * using the "right" locale handler for the given resource.<p>
      * 
      * Certain system folders (like the Workplace) require a special
-     * locale handler different from the condigured handler.
+     * locale handler different from the configured handler.
      * Use this method if you want to resolve locales exactly like 
      * the system does for a request.<p>
      * 
@@ -483,14 +482,19 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resource) {
 
-        CmsI18nInfo i18nInfo;
+        /** The list of configured localized workplace folders. */
+        List wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
         
-        if (resource.startsWith(I_CmsWpConstants.C_VFS_PATH_WORKPLACE)
-            || resource.startsWith(I_CmsWpConstants.C_VFS_PATH_LOGIN)) {
-            // the workplace/login folders use the workplace locale handler
-            i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
-        } else {
-            // request for resource outside of workplace, use default handler
+        CmsI18nInfo i18nInfo = null;        
+        for (int i = wpLocalizedFolders.size() - 1; i >= 0; i--) {
+            if (resource.startsWith((String)wpLocalizedFolders.get(i))) {
+                // use the workplace locale handler for this resource
+                i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
+                break;
+            }
+        }
+        if (i18nInfo == null) {
+            // use default locale handler
             i18nInfo = m_localeHandler.getI18nInfo(req, user, project, resource);
         }
         
