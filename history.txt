@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/01/21 23:20:38 $
- * Version: $Revision: 1.434 $
+ * Date   : $Date: 2003/01/23 10:46:16 $
+ * Version: $Revision: 1.435 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+* Fixed issues #43, 44 and 45 from Bugzilla
 * CmsMethodElement could produce NullPointerExceptions in rare circumstances
 * Fixed issue with text editor not displaying save/exit buttons in IE if ActiveX is not installed
 - Improved language handling in workplace.CmsNewExplorerFileList, current Workplace language now stored in session
