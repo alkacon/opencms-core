@@ -280,8 +280,11 @@ function doEditHTML(para)
     case 43:
         openwin('edit_html_piclist.html','piclist',450,550);
         break;
+	case 44:
+        openwin('edit_html_download.html','binlist',525,550);
+        break;
  	default:
-		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			
+		alert("Leider kann diese Funktion nicht ausgeführt werden.");			
 	}	
 }
 
