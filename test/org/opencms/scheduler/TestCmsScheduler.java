@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2004/07/05 15:35:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/05 15:42:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * Test cases for the OpenCms scheduler thread pool.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -181,7 +181,7 @@ public class TestCmsScheduler extends TestCase {
         
         CronTrigger trigger = new CronTrigger("cmsLaunchTrigger", Scheduler.DEFAULT_GROUP);
         
-        trigger.setCronExpression("0/4 * * * * ?");
+        trigger.setCronExpression("0/2 * * * * ?");
         
         scheduler.scheduleJob(jobDetail, trigger);
         
@@ -220,7 +220,7 @@ public class TestCmsScheduler extends TestCase {
         CmsSchedulerEntry entry = new CmsSchedulerEntry();
         entry.setUserName("Admin");
         entry.setClassName(TestScheduledJob.class.getName());
-        entry.setCronExpression("0/4 * * * * ?");
+        entry.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
         manager.addSchedulerEntry(null, entry);
@@ -270,7 +270,7 @@ public class TestCmsScheduler extends TestCase {
         entry.setUserName("Admin");
         entry.setClassName(TestScheduledJob.class.getName());
         entry.setReuseInstance(true);
-        entry.setCronExpression("0/4 * * * * ?");
+        entry.setCronExpression("0/2 * * * * ?");
         
         // add the job to the manager
         manager.addSchedulerEntry(null, entry);
