@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2004/08/19 11:26:34 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2004/08/19 12:44:29 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Vector;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.76 $ $Date: 2004/08/19 11:26:34 $
+ * @version $Revision: 1.77 $ $Date: 2004/08/19 12:44:29 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -522,7 +522,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsConstant
      * @throws CmsException if something goes wrong
      */
     public Object initTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {    
-        String skinUri = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getWebAppUrl() + "/skins/modern/";
+        String skinUri = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getWebAppUrl() + "/resources/";
         return CmsTree.initTree(cms, cms.getRequestContext().getEncoding(), skinUri);
     }
     
