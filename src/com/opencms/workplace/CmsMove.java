@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.58 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.59 $ $Date: 2003/07/16 14:30:03 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -115,7 +115,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     newFile = source.getResourceName();
                 }
             } else {
-                newFolder = source.getParent();
+                newFolder = CmsResource.getParent(cms.readAbsolutePath(source));
                 newFile = destinationName;
             }
         }

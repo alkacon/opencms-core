@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2003/07/15 12:17:05 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.15 $ $Date: 2003/07/15 12:17:05 $
+ * @version $Revision: 1.16 $ $Date: 2003/07/16 14:30:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -112,7 +112,8 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            if(foldername.startsWith(C_VFS_GALLERY_HTML) && (thefolder.getParent().equals(C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
+            String parent = CmsResource.getParent(cms.readAbsolutePath(thefolder));
+            if(foldername.startsWith(C_VFS_GALLERY_HTML) && (parent.equals(C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
             }
@@ -178,7 +179,8 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                       cms.unlockResource(cms.readAbsolutePath(folder), false);
                     }
                     catch (CmsException e) {
-                      cms.unlockResource(folder.getParent(), false);
+                      String parent = CmsResource.getParent(cms.readAbsolutePath(folder));
+                      cms.unlockResource(parent, false);
                       cms.unlockResource(cms.readAbsolutePath(folder), false);
 
                     }

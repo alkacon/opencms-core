@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
  */
 package com.opencms.report;
 
-import com.opencms.file.CmsResource;
 import com.opencms.flex.util.CmsMessages;
 import com.opencms.flex.util.CmsStringSubstitution;
 import com.opencms.linkmanagement.CmsPageLinks;
@@ -45,7 +44,7 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.0 rc 1
  */
@@ -232,7 +231,8 @@ public class CmsHtmlReport implements I_CmsReport {
         buf.append("<span style='color: #666666;'>");
         buf.append(m_messages.key("report.checking"));
         buf.append("</span>");        
-        buf.append(CmsResource.getAbsolutePath(link));
+        // TODO: Check for absolute path when link management is working again
+        buf.append(link);
         buf.append(C_LINEBREAK);
         return buf;        
     }
@@ -249,7 +249,8 @@ public class CmsHtmlReport implements I_CmsReport {
         StringBuffer buf = new StringBuffer("<span style='padding-left:40px; color: #666666;'>");
         buf.append(m_messages.key("report.broken_link_to"));
         buf.append("<span style='color: #990000;'>");
-        buf.append(CmsResource.getAbsolutePath(target));
+        // TODO: Check for absolute path when link management is working again
+        buf.append(target);
         buf.append("</span></span>");        
         buf.append(C_LINEBREAK);
         return buf;

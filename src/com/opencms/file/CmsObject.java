@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/16 13:45:49 $
-* Version: $Revision: 1.326 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.327 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,6 @@ import com.opencms.util.LinkSubstitution;
 import com.opencms.util.Utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.326 $
+ * @version $Revision: 1.327 $
  */
 public class CmsObject extends Object {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.opencms.security.I_CmsPrincipal;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -870,8 +870,9 @@ public class CmsChacc extends CmsDialog {
         // TODO: make this work and return the absolute path!
         CmsUUID resId = entry.getResource();
         try {
-            CmsFolder folder = getCms().readFolder(resId, false);           
-            return folder.getPath();
+            CmsFolder folder = getCms().readFolder(resId, false);   
+            getCms().readAbsolutePath(folder);
+            return folder.getFullResourceName();
         } catch (CmsException e) {
             // return null;
             return resId.toString();

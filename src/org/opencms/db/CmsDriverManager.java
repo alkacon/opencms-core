@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 13:45:49 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.55 $ $Date: 2003/07/16 13:45:49 $
+ * @version $Revision: 1.56 $ $Date: 2003/07/16 14:30:03 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4003,11 +4003,11 @@ public class CmsDriverManager extends Object {
         Enumeration e = allResources.elements();
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
-            CmsResource res = (CmsResource) e.nextElement();
-            if (!CmsResource.getAbsolutePath(readPath(context, res, false)).equals(lastcheck)) {
+            CmsResource res = (CmsResource)e.nextElement();
+            if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
                 if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                     visibleResources.addElement(res);
-                    lastcheck = CmsResource.getAbsolutePath(readPath(context, res, false));
+                    lastcheck = context.removeSiteRoot(readPath(context, res, false));
                 }
             }
         }
@@ -5707,7 +5707,7 @@ public class CmsDriverManager extends Object {
 
         // access was granted - return the folder.
         if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + getClass().getName() + "]" + CmsResource.getAbsolutePath(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
+            throw new CmsException("[" + getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         } else {
             return cmsFolder;
         }
@@ -5775,7 +5775,7 @@ public class CmsDriverManager extends Object {
 
         // acces to all subfolders was granted - return the folder.
         if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
-            throw new CmsException("[" + this.getClass().getName() + "]" + CmsResource.getAbsolutePath(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
+            throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         }
 
         return cmsFolder;
@@ -6739,10 +6739,10 @@ public class CmsDriverManager extends Object {
         String lastcheck = "#"; // just a char that is not valid in a filename
         while (e.hasMoreElements()) {
             CmsResource res = (CmsResource) e.nextElement();
-            if (!CmsResource.getAbsolutePath(readPath(context, res, false)).equals(lastcheck)) {
+            if (! context.removeSiteRoot(readPath(context, res, false)).equals(lastcheck)) {
                 if (hasPermissions(context, res, I_CmsConstants.C_READ_ACCESS, false)) {
                     retValue.addElement(res);
-                    lastcheck = CmsResource.getAbsolutePath(readPath(context, res, false));
+                    lastcheck = context.removeSiteRoot(readPath(context, res, false));
                 }
             }
         }

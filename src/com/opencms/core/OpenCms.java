@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/14 20:12:40 $
-* Version: $Revision: 1.134 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.135 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,14 +28,13 @@
 
 package com.opencms.core;
 
-import com.opencms.boot.CmsBase;
-import com.opencms.boot.I_CmsLogChannels;
-import com.opencms.core.exceptions.CmsCheckResourceException;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.loader.CmsJspLoader;
 
+import com.opencms.boot.CmsBase;
+import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.exceptions.CmsCheckResourceException;
 import com.opencms.file.CmsFile;
-import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -83,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.134 $ $Date: 2003/07/14 20:12:40 $
+ * @version $Revision: 1.135 $ $Date: 2003/07/16 14:30:03 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -796,16 +795,18 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 
                 try {
                     // Try to read the requested resource name as a folder
-                    CmsFolder folder = cms.readFolder(resourceName);
+                    cms.readFolder(resourceName);
                     // If above call did not throw an exception the folder
                     // was sucessfully read, so lets go on check for default 
                     // pages in the folder now
-                    
+
+                    // Ensure folder name ends with a "/"                    
+                    if (! resourceName.endsWith("/")) resourceName += "/";
                     // Check if C_PROPERTY_DEFAULT_FILE is set on folder
-                    String defaultFileName = cms.readProperty(folder.getPath(), I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
+                    String defaultFileName = cms.readProperty(resourceName, I_CmsConstants.C_PROPERTY_DEFAULT_FILE);
                     if (defaultFileName != null) {
                         // Property was set, so look up this file first
-                        String tmpResourceName = folder.getPath() + defaultFileName;
+                        String tmpResourceName = resourceName + defaultFileName;
                         try {
                             file = cms.readFile(tmpResourceName);
                             // No exception? So we have found the default file                         
@@ -820,7 +821,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
                     if (file == null) {
                         // No luck with the property, so check default files specified in opencms.properties (if required)         
                         for (int i=0; i<m_defaultFilenames.length; i++) {
-                            String tmpResourceName = folder.getPath() + m_defaultFilenames[i];
+                            String tmpResourceName = resourceName + m_defaultFilenames[i];
                             try {
                                 file = cms.readFile(tmpResourceName);
                                 // No exception? So we have found the default file                         

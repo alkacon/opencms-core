@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/16 10:11:00 $
-* Version: $Revision: 1.40 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.41 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.40 $
- * $Date: 2003/07/16 10:11:00 $
+ * $Revision: 1.41 $
+ * $Date: 2003/07/16 14:30:03 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -150,9 +150,9 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_cms.setContextToCos();
 
         try {
-            m_channel = (CmsResource) m_cms.readFolder(channelId, true);
+            m_channel = (CmsResource)m_cms.readFolder(channelId, true);            
             m_channelname = m_channel.getResourceName();
-            m_parentchannel = m_channel.getParent();
+            m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(m_channel));
             // m_GroupId = m_channel.getGroupId();
             // m_UserId = m_channel.getOwnerId();
             m_accessflags = m_channel.getAccessFlags();
@@ -178,7 +178,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
         m_cms = cms;
         m_channel = resource;
         m_channelname = resource.getResourceName();
-        m_parentchannel = resource.getParent();
+        m_parentchannel = CmsResource.getParent(cms.readAbsolutePath(resource));
         // m_GroupId = resource.getGroupId();
         // m_UserId = resource.getOwnerId();
         m_accessflags = resource.getAccessFlags();
@@ -359,7 +359,8 @@ public class CmsChannelContent extends A_CmsContentDefinition
                 if (newChannel!=null && !cms.readAbsolutePath(newChannel).equals(m_parentchannel+m_channelname+"/")){
                     // the parent and/or the channelname has changed,
                     // so move or rename the channel
-                    if(!newChannel.getParent().equals(m_parentchannel)){
+                    String parent = CmsResource.getParent(cms.readAbsolutePath(newChannel));
+                    if(! parent.equals(m_parentchannel)){
                         // move the channel to the new parent channel
                         cms.moveResource(cms.readAbsolutePath(newChannel), m_parentchannel+m_channelname);
                     } else if (!newChannel.getResourceName().equals(m_channelname)){
@@ -570,7 +571,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the channelname
      */
     public String getChannelPath() {
-        return m_channel.getParent()+m_channel.getResourceName();
+        return m_cms.readAbsolutePath(m_channel);
     }
 
     /**

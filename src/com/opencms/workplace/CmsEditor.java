@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/07/12 12:49:02 $
-* Version: $Revision: 1.46 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.47 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,12 +29,15 @@
 
 package com.opencms.workplace;
 
+import org.opencms.workplace.CmsWorkplaceAction;
+
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.template.A_CmsXmlContent;
 import com.opencms.template.CmsXmlTemplateFile;
 import com.opencms.util.Encoder;
@@ -45,15 +48,13 @@ import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.opencms.workplace.CmsWorkplaceAction;
-
 /**
  * Template class for displaying the text editor of the OpenCms workplace.<P>
  * Reads the edirtor layout from a editor template file of the content type
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.46 $ $Date: 2003/07/12 12:49:02 $
+ * @version $Revision: 1.47 $ $Date: 2003/07/16 14:30:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -225,7 +226,8 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // Announcement of path and file name in the header of the browser.
         if(checkit==true){
             xmlTemplateDocument.setData("fileName", (String) editFile.getResourceName());
-            xmlTemplateDocument.setData("pathName", (String) editFile.getPath());
+            String parent = CmsResource.getParent(cms.readAbsolutePath(editFile));
+            xmlTemplateDocument.setData("pathName", (String) parent);
         }
         String lasturlname = null;
         if(!"".equals(saveerror)){

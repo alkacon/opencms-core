@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/16 10:11:23 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.62 $ $Date: 2003/07/16 10:11:23 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/16 14:30:03 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -275,73 +275,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         if (m_structureId != null) return m_structureId.hashCode();
         return CmsUUID.getNullUUID().hashCode();
     }
-
-    /**
-     * Returns the absolute path of the provided resource,
-     * e.g. <code>/system/workplace/action/index.html</code>.<p>
-     * 
-     * Use this method with caution! The full name of a resource including the path
-     * is only available if the resource has been fetched from the database by it's 
-     * name. getFullResourceName() will return I_CmsConstants.C_FULL_RESOURCENAME_UNAVAILABLE
-     * or the full resource name including the path.<p>
-     *
-     * @param resourceName the resource name to check
-     * @return the absolute path of the provided resource
-     */
-    public static String getAbsolutePath(String resourceName) {
-        // TODO: Check this with new site management
-        if (resourceName == null) return null;
-        return resourceName.substring(resourceName.indexOf("/", resourceName.indexOf("/", 1) + 1));
-    }
-
-    /**
-     * Returns the site root name of this resource,
-     * e.g. <code>/default/vfs</code><p>
-     *
-     * @return the site root name for this resource
-     */
-    public String getRootName() {
-        // TODO: Check this with new site management
-        String fullResourceName = getFullResourceName(); 
-        int rootIndex = fullResourceName.indexOf("/", fullResourceName.indexOf("/", 1) + 1);
-        return fullResourceName.substring(0, rootIndex);
-    }
-    
-    /**
-     * Returns the folder path of this resource,
-     * if the resource is a folder, the complete path of the folder is returned 
-     * (not the parent folder path).<p>
-     *
-     * Example: Returns <code>/system/def/</code> for the
-     * resource <code>/system/def/file.html</code> and 
-     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
-     * 
-     * Does not append the repository information to the result, 
-     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
-     *
-     * @return the folder of this resource
-     */
-    public String getPath() {
-        // TODO: Check this with new site management
-        return getPath(getAbsolutePath(getFullResourceName()));
-    }
-    
-    /**
-     * Returns the absolute parent folder name of this resource.<p>
-     * 
-     * The parent resource of a file is the folder of the file.
-     * The parent resource of a folder is the parent folder.
-     * The parent resource of the root folder is <code>null</code>.<p>
-     * 
-     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
-     * 
-     * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
-     */
-    public String getParent() {
-        // TODO: Check this with new site management
-        return getParent(getAbsolutePath(getFullResourceName()));
-    }    
-
+  
     /**
      * Returns the name of this resource, e.g. <code>index.html</code>.<p>
      *

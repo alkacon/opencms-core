@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2003/07/12 12:49:02 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.*;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsFileListUsers {
      
@@ -86,7 +86,8 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         if (foldername != null) {
             try {
                 CmsFolder fold = cms.readFolder(foldername);
-                if (!(fold.getParent().equals(galleryPath))) {
+                String parent = CmsResource.getParent(cms.readAbsolutePath(fold));
+                if (!(parent.equals(galleryPath))) {
                     foldername = galleryPath;
                 }
                 if (fold.getState() == C_STATE_DELETED) {

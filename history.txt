@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.485 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.486 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,9 @@ Legend:
 - General comment
 
 OpenCms (next version) Salusa Secundus
+- Removed the methods getAbsolutePath(String resourceName),
+  getParent(), getPath() and getRootName() of the CmsResource object
+! Locks in the OpenCms VFS are now managed with CmsLock objects
 - Improved format in the registry.xml for declaring ResourceTypes and ResourceLoaders
 - Improved handling of ResourceLoaders in CmsLauncherManager
 - Improved handling of ResourceTypes in CmsObject and CmsDriverManager

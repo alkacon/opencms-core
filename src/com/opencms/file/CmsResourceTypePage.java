@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.76 $
+ * @version $Revision: 1.77 $
  * @since 5.1
  */
 public class CmsResourceTypePage implements I_CmsResourceType {
@@ -367,6 +367,7 @@ public class CmsResourceTypePage implements I_CmsResourceType {
     public void renameResource(CmsObject cms, String resourcename, String newname) throws CmsException {
         // the file that should be renamed
         CmsFile file = cms.readFile(resourcename);
+        String parent = CmsResource.getParent(resourcename);        
         // the current body path as it is saved in the XML page file
         String currentBodyPath = readBodyPath(cms, file);
 
@@ -384,12 +385,13 @@ public class CmsResourceTypePage implements I_CmsResourceType {
             cms.doRenameResource(currentBodyPath, newname);
             lastSlashIndex = currentBodyPath.lastIndexOf("/") + 1;
             defaultBodyPath = currentBodyPath.substring(0, lastSlashIndex) + newname;
-            changeContent(cms, file.getParent() + newname, defaultBodyPath);
-        }
 
+            changeContent(cms, parent + newname, defaultBodyPath);
+        }
+        
         // linkmanagement: delete the links of the old page and create them for the new one
         CmsUUID oldId = file.getFileId();
-        CmsUUID newId = cms.readFileHeader(file.getParent() + newname).getFileId();
+        CmsUUID newId = cms.readFileHeader(parent + newname).getFileId();
         cms.createLinkEntrys(newId, cms.readLinkEntrys(oldId));
         cms.deleteLinkEntrys(oldId);
     }

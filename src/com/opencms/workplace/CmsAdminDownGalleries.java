@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsImportFolder;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsResourceTypeImage;
 import com.opencms.util.Utils;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.36 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.37 $ $Date: 2003/07/16 14:30:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -124,7 +125,8 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            if(foldername.startsWith(C_VFS_GALLERY_DOWNLOAD) && (thefolder.getParent().equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_downgalleries1")) {
+            String parent = CmsResource.getParent(cms.readAbsolutePath(thefolder));
+            if(foldername.startsWith(C_VFS_GALLERY_DOWNLOAD) && (parent.equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_downgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, "/system/workplace/administration/htmlgallery/administration_head_downgalleries2", elementName, parameters, templateSelector);
             }

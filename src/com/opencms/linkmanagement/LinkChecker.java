@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/07/15 10:42:59 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2003/07/16 14:30:03 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ public class LinkChecker {
 
         // first lets get the prefix of the page name (we need it later)
         CmsResource resource = cms.readFileHeader(page);
-        String rootName = resource.getRootName();
+        String rootName = cms.getRequestContext().getSiteRoot();
         //String rootName = cms.getRootName(page);
         
         // get the pages content

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsSynchronize.java,v $
- * Date   : $Date: 2003/07/16 13:01:52 $
- * Version: $Revision: 1.11 $
- * Date   : $Date: 2003/07/16 13:01:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/07/16 14:30:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.11 $ $Date: 2003/07/16 13:01:52 $
+ * @version $Revision: 1.12 $ $Date: 2003/07/16 14:30:03 $
  */
 public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
 
@@ -488,7 +488,7 @@ public class CmsSynchronize implements I_CmsConstants, I_CmsLogChannels {
             // the parent folder could contain a translated names as well, so 
             // make a lookup in the sync list ot get its original 
             // non-translated name
-            String parent = res.getParent();
+            String parent = CmsResource.getParent(resourcename);
             CmsSynchronizeList parentSync = (CmsSynchronizeList)m_newSyncList.get(parent);
             // use the non-translated pathname
             if (parentSync != null) {
