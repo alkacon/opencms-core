@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2001/08/03 09:38:27 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/04/14 15:40:14 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -281,7 +281,12 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
      * @exception CmsException if operation was not successful.
      */
     public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
-        CmsResource res = cms.doCreateFile(folder, name, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties);
+        CmsResource res;
+        if (m_resourceTypeName == null) {
+            res = cms.doCreateFile(folder, name, contents, I_CmsConstants.C_TYPE_PLAIN_NAME, properties); 
+        } else {            
+            res = cms.doCreateFile(folder, name, contents, m_resourceTypeName, properties);
+        }
         // lock the new file
         cms.doLockResource(res.getAbsolutePath(), true);
         return res;
