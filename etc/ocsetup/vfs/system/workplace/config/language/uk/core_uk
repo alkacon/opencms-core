@@ -464,7 +464,6 @@
 		</input>		
 		
 		<label>
-		    <loading>loading...</loading>
 			<active>active</active>
 			<allfolders>Folders</allfolders>
 			<author>Author</author>
