@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.27 $ $Date: 2000/01/25 15:37:31 $
  */
 interface I_CmsResourceBroker {
 
@@ -1500,4 +1500,19 @@ interface I_CmsResourceBroker {
 											 String resourceType, int launcherType, 
 											 String launcherClass) 
 		throws CmsException;
+
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject);
 }

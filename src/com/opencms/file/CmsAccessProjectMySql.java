@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.12 $ $Date: 2000/01/25 15:37:31 $
  */
 class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 
@@ -91,6 +91,12 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 														 C_GROUP_ID + " = ? and " +
 														 C_PROJECT_FLAGS + " = " + 
 														 C_PROJECT_STATE_UNLOCKED;
+	
+	/**
+     * SQL Command for reading projects.
+     */    
+    private static final String C_PROJECT_GET_BY_FLAG = "Select * from PROJECTS where " + 
+														 C_PROJECT_FLAGS + " = ?";
 	
 	/**
      * Constructor, creartes a new CmsAccessProject object and connects it to the
@@ -283,6 +289,43 @@ class CmsAccessProjectMySql implements I_CmsAccessProject, I_CmsConstants {
 		 }
 	 }
 
+	/**
+	 * Returns all projects with the overgiven flag.
+	 * 
+	 * @param flag The flag for the project.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllProjects(int flag)
+		 throws CmsException {
+ 		 Vector projects = new Vector();
+
+		 try {
+			 ResultSet result;
+			 
+			 // create the statement
+			PreparedStatement statementGetProjectsByFlag = 
+				m_con.prepareStatement(C_PROJECT_GET_BY_FLAG);
+			
+			statementGetProjectsByFlag.setInt(1,flag);
+			result = statementGetProjectsByFlag.executeQuery();
+			 
+			 while(result.next()) {
+				 projects.addElement( new CmsProject(result.getInt(C_PROJECT_ID),
+													 result.getString(C_PROJECT_NAME),
+													 result.getString(C_PROJECT_DESCRIPTION),
+													 result.getInt(C_GLOBETASK_ID),
+													 result.getInt(C_USER_ID),
+													 result.getInt(C_GROUP_ID),
+													 result.getInt(C_PROJECT_FLAGS)));
+			 }
+			 return(projects);
+		 } catch( SQLException exc ) {
+			 throw new CmsException("[" + this.getClass().getName() + "] " + exc.getMessage(), 
+				 CmsException.C_SQL_ERROR, exc);
+		 }
+	 }
+	 
 	 /**
      * Connects to the project database.
      * 

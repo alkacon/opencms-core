@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/25 15:37:31 $
  */
 interface I_CmsRbProject {
 	
@@ -68,5 +68,15 @@ interface I_CmsRbProject {
 	 * @return a Vector of projects.
 	 */
 	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
+		 throws CmsException;
+
+	/**
+	 * Returns all projects with the overgiven flag.
+	 * 
+	 * @param flag The flag for the project.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllProjects(int flag)
 		 throws CmsException;
 }

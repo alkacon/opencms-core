@@ -16,7 +16,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.32 $ $Date: 2000/01/24 18:56:36 $ 
+ * @version $Revision: 1.33 $ $Date: 2000/01/25 15:37:31 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1141,4 +1141,13 @@ public abstract class A_CmsObject {
 	 * @return version A Version-string.
 	 */
 	abstract public String version();
+
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	abstract public long getFileSystemChanges();
 }

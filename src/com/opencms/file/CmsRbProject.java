@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/25 15:37:31 $
  */
 class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	
@@ -95,6 +95,25 @@ class CmsRbProject implements I_CmsRbProject, I_CmsConstants {
 	 */
 	 public Vector getAllAccessibleProjectsByGroup(A_CmsGroup group)
 		 throws CmsException {
-		 return( m_accessProject.getAllAccessibleProjectsByGroup(group) );
+		 // is this the admin-group?
+		 if( group.getName().equals(C_GROUP_ADMIN) ) {
+			 // yes - all unlocked projects are accessible for him
+			 return( m_accessProject.getAllProjects(C_PROJECT_STATE_UNLOCKED) );
+		 } else {
+			 // no return the accessible projects by group
+			 return( m_accessProject.getAllAccessibleProjectsByGroup(group) );
+		 }
+	 }
+
+	/**
+	 * Returns all projects with the overgiven flag.
+	 * 
+	 * @param flag The flag for the project.
+	 * 
+	 * @return a Vector of projects.
+	 */
+	 public Vector getAllProjects(int flag)
+		 throws CmsException {
+		 return( m_accessProject.getAllProjects(flag) );
 	 }
 }

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.33 $ $Date: 2000/01/24 18:56:36 $
+ * @version $Revision: 1.34 $ $Date: 2000/01/25 15:37:31 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -50,6 +50,11 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * A Hashtable with all resource-types.
 	 */
 	private Hashtable m_resourceTypes = null;
+	
+	/**
+	 * A counter for filesystem changes.
+	 */
+	private long m_fileSystemChanges = 0;
 	
 	/**
 	 * The constructor for this ResourceBroker. It gets all underlaying 
@@ -273,6 +278,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 }
 			 }
 			 			 
+			 // inform about the file-system-change
+			 fileSystemChanged(publishProject.getName(), resources);
+			 
 			 // the project-state will be set to "published"
 			 // the project must be written to the cms.
 			 publishProject.setFlags(C_PROJECT_STATE_ARCHIVE);
@@ -518,6 +526,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		m_metadefRb.writeMetainformation(res, meta, value);
+		// inform about the file-system-change
+		fileSystemChanged(currentProject.getName(), resource);
 	}
 
 	/**
@@ -547,6 +557,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 		
 		m_metadefRb.writeMetainformations(res, metainfos);
+		// inform about the file-system-change
+		fileSystemChanged(currentProject.getName(), resource);
 	}
 
 	/**
@@ -612,6 +624,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											   C_METADEF_TYPE_MANDATORY).size() == 0  ) {
 			// no - delete them all
 			m_metadefRb.deleteAllMetainformations(res);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), resource);
 		} else {
 			// yes - throw exception
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
@@ -654,6 +668,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			 (metadef.getMetadefType() != C_METADEF_TYPE_MANDATORY )  ) {
 			// no - delete the information
 			m_metadefRb.deleteMetainformation(res, meta);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), resource);
 		} else {
 			// yes - throw exception
 			 throw new CmsException("[" + this.getClass().getName() + "] " + resource, 
@@ -1559,11 +1575,18 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	public A_CmsResourceType getResourceType(A_CmsUser currentUser, 
-									 A_CmsProject currentProject,
-									 String resourceType) 
+											 A_CmsProject currentProject,
+											 String resourceType) 
 		throws CmsException {
-		return((A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).
-			get(resourceType));
+		// try to get the resource-type
+		try { 
+			return((A_CmsResourceType)getAllResourceTypes(currentUser, currentProject).
+				get(resourceType));
+		} catch(NullPointerException exc) {
+			// was not found - throw exception
+			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType, 
+				CmsException.C_NOT_FOUND);
+		}
 	}
 	
 	/**
@@ -1660,6 +1683,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			A_CmsResource onlineRes = m_fileRb.readFileHeader(online, resource);
 			// copy it to the offlineproject
 			m_fileRb.copyResourceToProject(currentProject, online, resource);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), resource);
 			// read the offline-resource
 			A_CmsResource offlineRes = m_fileRb.readFileHeader(currentProject, resource);
 			// copy the metainfos			
@@ -1674,6 +1699,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					onlineRes = m_fileRb.readFileHeader(online, resource);
 					// copy it to the offlineproject
 					m_fileRb.copyResourceToProject(currentProject, online, resource);				
+					// inform about the file-system-change
+					fileSystemChanged(currentProject.getName(), resource);
 					// read the offline-resource
 					offlineRes = m_fileRb.readFileHeader(currentProject, resource);
 					// copy the metainfos			
@@ -1851,6 +1878,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 														0);
 			// write metainfos for the folder
 			m_metadefRb.writeMetainformations((A_CmsResource) newFolder, metainfos);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), newFolder.getAbsolutePath());
 			// return the folder
 			return( newFolder );			
 		} else {
@@ -1895,6 +1924,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - delete the folder and metainfos.
 			m_metadefRb.deleteAllMetainformations((A_CmsResource) cmsFolder);
 			m_fileRb.deleteFolder(currentProject, foldername, false);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), foldername);
 		
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
@@ -2128,6 +2159,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											   getResourceType(currentUser, currentProject, type));
 			// write the metainfos
 			m_metadefRb.writeMetainformations((A_CmsResource) file, metainfos );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 			return( file );
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + folder + filename, 
@@ -2167,6 +2200,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFile(currentProject, 
 							   onlineProject(currentUser, currentProject), file );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
 				CmsException.C_NO_ACCESS);
@@ -2223,6 +2258,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - rename the file.
 			m_fileRb.renameFile(currentProject, 
 								onlineProject(currentUser, currentProject), oldname, newname );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), oldname);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
 				CmsException.C_NO_ACCESS);
@@ -2264,6 +2301,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// and the metainfos
 			m_metadefRb.deleteAllMetainformations((A_CmsResource)file);			
 			m_fileRb.deleteFile(currentProject, filename);
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), filename);
 								
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
@@ -2311,6 +2350,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 											  currentProject.getId(), 
 											  destination + file.getName(), 
 											  file.getType());			
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), destination + file.getName());
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + destination, 
 				CmsException.C_NO_ACCESS);
@@ -2342,6 +2383,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		// then delete the source-file, this may end with an exception
 		// => the file was only copied, not moved!
 		deleteFile(currentUser, currentProject, source);
+		// inform about the file-system-change
+		fileSystemChanged(currentProject.getName(), destination);
 	}
 	
     /**
@@ -2381,6 +2424,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
 			m_fileRb.chmod(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, flags );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -2429,6 +2474,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
 			m_fileRb.chown(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, owner );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -2477,6 +2524,8 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - write the file.
 			m_fileRb.chgrp(currentProject, onlineProject(currentUser, currentProject), 
 						   filename, group );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), filename);
 		} else {
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				CmsException.C_NO_ACCESS);
@@ -2571,6 +2620,25 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
      }
 	 
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * <B>Security:</B>
+	 * All users are granted.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	public long getFileSystemChanges(A_CmsUser currentUser, A_CmsProject currentProject) {
+		return(m_fileSystemChanges);
+	}
+
+	// now the private stuff
+	
 	/**
 	 * Checks, if the user may read this resource.
 	 * 
@@ -2857,6 +2925,36 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				throw new CmsException("[" + this.getClass().getName() + "] " + (String)metadefs.elementAt(i),
 					CmsException.C_MANDATORY_METAINFO);
 			}
+		}
+	}
+
+	/**
+	 * This method is called, when a resource was changed. Currently it counts the
+	 * changes.
+	 * 
+	 * @param project The project, in which the resource was changed.
+	 * @param resource The resource that was changed.
+	 */
+	private synchronized void fileSystemChanged(String project, String resource) {
+		// count only the changes - do nothing else!
+		// in the future here will maybe a event-story be added
+		m_fileSystemChanges++;
+	}
+
+	/**
+	 * This method is called, when a resource was changed. Currently it counts the
+	 * changes.
+	 * 
+	 * @param project The project, in which the resource was changed.
+	 * @param resources A Vector with resourcenames, that were changed.
+	 */
+	private synchronized void fileSystemChanged(String project, Vector resources) {
+		// count only the changes - do nothing else!
+		// in the future here will maybe a event-story be added
+		try {
+			m_fileSystemChanges += resources.size();
+		} catch(NullPointerException exc) {
+			// resources was null - nothing was changed - ignore it
 		}
 	}
 }

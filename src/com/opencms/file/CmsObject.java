@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.31 $ $Date: 2000/01/24 18:56:36 $ 
+ * @version $Revision: 1.32 $ $Date: 2000/01/25 15:37:31 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -1427,4 +1427,16 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 public String version() {
 		 return( C_VERSION );
 	 }	 
+
+	/**
+	 * This method can be called, to determine if the file-system was changed 
+	 * in the past. A module can compare its previosly stored number with this
+	 * returned number. If they differ, a change was made.
+	 * 
+	 * @return the number of file-system-changes.
+	 */
+	 public long getFileSystemChanges() {
+		return( c_rb.getFileSystemChanges(m_context.currentUser(), 
+										  m_context.currentProject()) );
+	 }
 }
