@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsSimpleNav.java,v $
- * Date   : $Date: 2000/02/19 10:15:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/20 17:57:27 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * used for the CeBIT online application form.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/02/19 10:15:18 $
+ * @version $Revision: 1.3 $ $Date: 2000/02/20 17:57:27 $
  */
 public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
     
@@ -106,6 +106,8 @@ public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
         // Reference to our own document.
         CmsSimpleNavFile xmlTemplateDocument = (CmsSimpleNavFile)doc;     
         
+        String requestedUri = cms.getRequestContext().getUri();
+        String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
         StringBuffer result = new StringBuffer();        
         Vector allFiles = cms.getFilesInFolder(C_NAVFOLDER);
         Hashtable sortedNav = new Hashtable();
@@ -139,10 +141,10 @@ public class CmsSimpleNav extends CmsXmlTemplate implements I_CmsConstants {
             String filename = (String)sortedNav.get(new Integer(i));
             if(filename != null && !"".equals(filename)) {
                 String navtext = cms.readMetainformation(filename, C_METAINFO_NAVTITLE);                 
-                if(filename.equals("/cebitlive/cebitTest.html")) {
+                if(filename.equals(requestedUri)) {
                     result.append(xmlTemplateDocument.getCurrentNavEntry(navtext));                    
                 } else {
-                    result.append(xmlTemplateDocument.getOtherNavEntry(filename, navtext));
+                    result.append(xmlTemplateDocument.getOtherNavEntry(servletPath + filename, navtext));
                 }
                 
             }            
