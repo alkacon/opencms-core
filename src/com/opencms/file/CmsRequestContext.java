@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2002/08/29 17:26:13 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/08/30 14:03:02 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import com.opencms.template.cache.*;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.49 $ $Date: 2002/08/29 17:26:13 $
+ * @version $Revision: 1.50 $ $Date: 2002/08/30 14:03:02 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -252,11 +252,33 @@ public class CmsRequestContext implements I_CmsConstants {
      * @return the path to the requested resource.
      */
     public String getUri() {
+        if (m_fakeUri != null) return m_fakeUri;
         if( m_req != null ) {
             return( m_req.getRequestedResource() );
         } else {
             return( C_ROOT );
         }
+    }
+    
+    /** A faked URI for getUri(), this is required to enable a cascade of elements that use the XMLTemplate mechanism */
+    private String m_fakeUri = null;
+    
+    /**
+     * Set the value that is returned by getUri() 
+     * to the provided String.
+     * <p>
+     * This is required in a context where 
+     * a cascade of included XMLTemplates are combined with JSP or other 
+     * Templates that use the ResourceLoader interface. 
+     * You need to fake the URI because the ElementCache always 
+     * uses cms.getRequestContext().getUri() even if you called 
+     * CmsXmlLauncher.generateOutput() with a differnt file name. 
+     * 
+     * @param value The value to set the Uri to, must be a complete OpenCms path name like /system/workplace/stlye.css     
+     * @since 5.0 beta 1
+     */
+    public void setUri(String value) {
+        m_fakeUri = value;
     }
     /**
      * Initializes this RequestContext.
