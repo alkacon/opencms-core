@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2001/09/21 06:42:38 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/09/24 13:57:16 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.17 $ $Date: 2001/09/21 06:42:38 $
+ * @version $Name:  $ $Revision: 1.18 $ $Date: 2001/09/24 13:57:16 $
  */
 
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -70,9 +70,8 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 
     private String generateIcon(CmsObject cms, CmsXmlTemplateFile templateDocument, Hashtable parameters,
             CmsXmlLanguageFile lang, String picName, String sender, String languageKey,
-                    String iconActiveMethod, String iconVisibleMethod, String accessActive, String accessVisible) throws CmsException {
+                    String iconActiveMethod, String iconVisibleMethod, String accessVisible) throws CmsException {
 
-        boolean hasAccessActive = (new Boolean(accessActive)).booleanValue();
         boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
         String iconPicPath = (String)picsUrl(cms, "", null, null);
         if(sender.startsWith("/system/modules")) {
@@ -183,7 +182,7 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
         }
         templateDocument.setData("linkName", iconLabelBuffer.toString());
         if(visible && hasAccessVisible) {
-            if(activate && hasAccessActive) {
+            if(activate) {
                 templateDocument.setData("picture", iconPicPath + picName + ".gif");
                 return templateDocument.getProcessedDataValue("defaulticon");
             }
@@ -266,14 +265,13 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
             String folderPos[] = new String[numFolders];
             String folderVisible[] = new String[numFolders];
             String folderActiv[] = new String[numFolders];
-            String accessActive[] = new String[numFolders];
             String accessVisible[] = new String[numFolders];
             for(int i = 0;i < numFolders;i++) {
                 CmsResource aktIcon = (CmsResource)iconVector.elementAt(i);
                 try {
+                    Hashtable propertyinfos = cms.readAllProperties(aktIcon.getAbsolutePath());
                     iconNames[i] = aktIcon.getAbsolutePath();
                     index[i] = i;
-                    Hashtable propertyinfos = cms.readAllProperties(iconNames[i]);
                     folderLangKeys[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVTEXT));
                     folderTitles[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_TITLE));
                     folderPos[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_NAVPOS));
@@ -282,10 +280,13 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                     }
                     folderVisible[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_VISIBLE));
                     folderActiv[i] = getStringValue((String)propertyinfos.get(C_PROPERTY_ACTIV));
-                    accessActive[i] = new Boolean(checkActive(cms, aktIcon)).toString();
                     accessVisible[i] = new Boolean(checkVisible(cms, aktIcon)).toString();
-                }
-                catch(Exception exc) {
+                } catch(CmsException e){
+                    if(e.getType() != CmsException.C_NO_ACCESS &&
+                       e.getType() != CmsException.C_ACCESS_DENIED){
+                        throw e;
+                    }
+                } catch(Exception exc) {
                     throw new CmsException("[" + this.getClass().getName() + "] "
                             + exc.getMessage(), CmsException.C_SQL_ERROR, exc);
                 }
@@ -299,9 +300,11 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
                 //while((element < numFolders) && (element < (zeile + 1) * C_ELEMENT_PER_ROW)) {
                 while((element < numFolders)) {
                     int pos = index[element];
-                    completeRow += generateIcon(cms, templateDocument, parameters, lang, folderTitles[pos],
+                    if(iconNames[element] != null){
+                        completeRow += generateIcon(cms, templateDocument, parameters, lang, folderTitles[pos],
                             iconNames[element], folderLangKeys[pos], folderActiv[pos], folderVisible[pos],
-                            accessActive[pos], accessVisible[pos]);
+                            accessVisible[pos]);
+                    }
                     element++;
                 }
                 templateDocument.setData("entrys", completeRow);
