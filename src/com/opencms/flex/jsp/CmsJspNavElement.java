@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavElement.java,v $
- * Date   : $Date: 2002/12/06 23:16:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/01/24 20:38:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * structure.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsJspNavElement implements Comparable {
     
@@ -64,6 +64,7 @@ public class CmsJspNavElement implements Comparable {
     private String m_locale;
     private String m_image;    
     private String m_info;
+    private Hashtable m_properties;
     private float m_position;
     private int m_navTreeLevel;
     private boolean m_hasNav;
@@ -92,12 +93,12 @@ public class CmsJspNavElement implements Comparable {
      * with the provided parametes.<p>
      * 
      * @param resource will be passed to <code>init</code>
-     * @param h will be passed to <code>init</code>
+     * @param properties will be passed to <code>init</code>
      * 
      * @see #init(String, Hashtable)
      */
-    public CmsJspNavElement(String resource, Hashtable h) {
-        init(resource, h, -1);
+    public CmsJspNavElement(String resource, Hashtable properties) {
+        init(resource, properties, -1);
     }
     
     /**
@@ -105,13 +106,13 @@ public class CmsJspNavElement implements Comparable {
      * with the provided parametes.<p>
      * 
      * @param resource will be passed to <code>init</code>
-     * @param h will be passed to <code>init</code>
+     * @param properties will be passed to <code>init</code>
      * @param navTreeLevel will be passed to <code>init</code>
      * 
      * @see #init(String, Hashtable, int)
      */    
-    public CmsJspNavElement(String resource, Hashtable h, int navTreeLevel) {
-        init(resource, h, navTreeLevel);
+    public CmsJspNavElement(String resource, Hashtable properties, int navTreeLevel) {
+        init(resource, properties, navTreeLevel);
     }
     
     /**
@@ -120,10 +121,10 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @param resource the name of the resource to extract the navigation 
      *     information from
-     * @param h the properties of the resource read from the vfs
+     * @param properties the properties of the resource read from the vfs
      */
-    public void init(String resource, Hashtable h) {
-        init(resource, h, -1);
+    public void init(String resource, Hashtable properties) {
+        init(resource, properties, -1);
     }
 
     /**
@@ -141,22 +142,23 @@ public class CmsJspNavElement implements Comparable {
      * 
      * @param resource the name of the resource to extract the navigation 
      *     information from
-     * @param h the properties of the resource read from the vfs
+     * @param properties the properties of the resource read from the vfs
      * @param navTreeLevel tree level of this resource, for building 
      *     navigation trees
      * 
      * @see #getNavigationForResource(CmsObject, String)
      */    
-    public void init(String resource, Hashtable h, int navTreeLevel) {
+    public void init(String resource, Hashtable properties, int navTreeLevel) {
         m_resource = resource;
-        // Get values from property hash, will be null if property is not set fot the resource
-        m_title = (String)h.get(I_CmsConstants.C_PROPERTY_TITLE);
-        m_description = (String)h.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
-        m_text = (String)h.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
-        m_locale = (String)h.get(C_PROPERTY_LOCALE);
-        m_image = (String)h.get(C_PROPERTY_NAVIMAGE);
-        m_info = (String)h.get(C_PROPERTY_NAVINFO);        
-        String pos = (String)h.get(I_CmsConstants.C_PROPERTY_NAVPOS);
+        m_properties = properties;
+        // Get values from property hash, will be null if property is not set for the resource
+        m_title = (String)m_properties.get(I_CmsConstants.C_PROPERTY_TITLE);
+        m_description = (String)m_properties.get(I_CmsConstants.C_PROPERTY_DESCRIPTION);
+        m_text = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVTEXT);
+        m_locale = (String)m_properties.get(C_PROPERTY_LOCALE);
+        m_image = (String)m_properties.get(C_PROPERTY_NAVIMAGE);
+        m_info = (String)m_properties.get(C_PROPERTY_NAVINFO);        
+        String pos = (String)m_properties.get(I_CmsConstants.C_PROPERTY_NAVPOS);
         m_position = Float.MAX_VALUE;
         m_navTreeLevel = navTreeLevel;
         try {
@@ -256,6 +258,14 @@ public class CmsJspNavElement implements Comparable {
     
     public boolean isFolderLink() {
         return m_resource.endsWith("/");
+    }
+    
+    public String getProperty(String key) {
+        return (String)m_properties.get(key);
+    }
+    
+    public Hashtable getProperties() {
+        return m_properties;
     }
     
     /**
