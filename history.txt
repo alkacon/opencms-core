@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2002/09/03 19:49:20 $
- * Version: $Revision: 1.404 $
+ * Date   : $Date: 2002/10/09 16:28:25 $
+ * Version: $Revision: 1.405 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,8 +22,12 @@ Legend:
 OpenCms 5.0 (next version)
 ! JSP now support nested includes with XMLTemplates
 ! Exception handling in JSP now directly points to the problem (even if it is in an included element)
-! Added extended handling of cms:include tag, the include target can now be set from a property 
-  or an expression in the tag's body
+! Added extended handling of cms:include tag, the include target can now be set from a property,
+  from an expression in the tag's body or from a request attribute
+! FlexCache: The cache now implements a LRU policy
+! Export: You can now set a max age for the content to export, ie. export only files that have changed
+  after a specified date
+! The <stylesheet> tag in XMLTemplates can now also be defined in the mastertemplate (in addition to the frametemplate)
 * The <stylesheet> tag in XMLTemplates (for display in WYSIWYG) can now start with a "/"
 * The locale "uk" has been renamed to "en" (rename your module directories accordingly)
 * Removed usage of deprecated methods where possible
