@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2003/12/02 16:24:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/12/03 14:00:08 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import com.opencms.workplace.CmsXmlLanguageFile;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -59,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -70,9 +72,15 @@ public class CmsPreferences extends CmsTabDialog {
     
     public static final String DIALOG_CANCEL = "cancel";
     public static final String DIALOG_RELOAD = "reload";
+    public static final String DIALOG_CHPWD = "chpwd";
     
     public static final int ACTION_CANCEL = 200;
     public static final int ACTION_RELOAD = 201;
+    public static final int ACTION_CHPWD = 202;
+    public static final int ACTION_ERROR = 203;
+    
+    private String m_paramNewPassword;
+    private String m_paramOldPassword;
 
     /** User settings object used to store the dialog field values **/
     private CmsUserSettings m_userSettings;
@@ -134,6 +142,8 @@ public class CmsPreferences extends CmsTabDialog {
             setAction(ACTION_RELOAD); 
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL); 
+        } else if (DIALOG_CHPWD.equals(getParamAction())) {
+            setAction(ACTION_CHPWD); 
         } else {
             if (!DIALOG_SWITCHTAB.equals(getParamAction())) {
                 // first call of preferences dialog, fill param values with current settings
@@ -160,6 +170,42 @@ public class CmsPreferences extends CmsTabDialog {
             }
         } catch (IOException e) {
             // do nothing
+        }
+    }
+    
+    /**
+     * Performs the change password action.<p>
+     * 
+     * @throws JspException if inclusion of error element fails
+     */
+    public void actionChangePassword() throws JspException {
+        // save initialized instance of this class in request attribute for included sub-elements
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        String oldPwd = getParamOldPassword();
+        String newPwd = getParamNewPassword();
+        // set the action parameter, reset the password parameters
+        setAction(ACTION_DEFAULT);
+        setParamOldPassword(null);
+        setParamNewPassword(null);
+        if (oldPwd != null && !"".equals(oldPwd.trim()) && newPwd != null && !"".equals(newPwd.trim())) {
+            try {
+                getCms().setPassword(getSettings().getUser().getName(), oldPwd, newPwd);
+            } catch (CmsException e) {
+                // failed setting the new password, show error dialog
+                setAction(ACTION_ERROR);
+                setParamErrorstack(e.getStackTraceAsString());
+                setParamMessage(key("error.message.chpwd"));
+                setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+            }
+        } else {
+            // form wasn't filled out correctly, show error dialog
+            CmsException e = new CmsException("The password values you entered are not valid.");
+            setAction(ACTION_ERROR);
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamMessage(key("error.message.chpwd"));
+            setParamReasonSuggestion(key("error.reason.chpwd2") + "<br>\n" + key("error.suggestion.chpwd2") + "\n");
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
         }
     }
     
@@ -353,7 +399,7 @@ public class CmsPreferences extends CmsTabDialog {
         CmsUser user = getSettings().getUser();
         CmsUserSettings settings = new CmsUserSettings(user);
         
-        result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\">\n");
+        result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
         result.append("\t<td style=\"width: 25%;\">" + key("input.user") + "</td>\n");
         result.append("\t<td style=\"width: 25%;\">" + user.getName() + "</td>\n");
@@ -387,6 +433,20 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("</table>\n");
         
         return result.toString();
+    }
+    
+    /**
+     * Returns the action for the "cancel" button of the error dialog.<p>
+     * 
+     * This overwrites the cancel method of the CmsDialog class.<p>
+     * 
+     * Always use this value, do not write anything directly in the html page.<p>
+     * 
+     * @return the default action for a "cancel" button
+     */
+    public String buttonActionCancel() {
+        String target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+        return "onClick=\"top.location.href='" + target + "';\"";
     }
     
     /**
@@ -803,6 +863,42 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTab3View(String value) {
         m_userSettings.setStartView(value);
-    }    
+    }
+    
+    /**
+     * Returns the new password value.<p>
+     * 
+     * @return the new password value
+     */
+    public String getParamNewPassword() {
+        return m_paramNewPassword;
+    }
+    
+    /**
+     * Sets the new password value.<p>
+     * 
+     * @param newPwd the new password value
+     */
+    public void setParamNewPassword(String newPwd) {
+        m_paramNewPassword = newPwd;
+    }
+    
+    /**
+     * Returns the old password value.<p>
+     * 
+     * @return the old password value
+     */
+    public String getParamOldPassword() {
+        return m_paramOldPassword;
+    }
+    
+    /**
+     * Sets the old password value.<p>
+     * 
+     * @param oldPwd the old password value
+     */
+    public void setParamOldPassword(String oldPwd) {
+        m_paramOldPassword = oldPwd;
+    }
     
 }
