@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.168 $
+* Date   : $Date: 2002/01/21 09:11:38 $
+* Version: $Revision: 1.169 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.168 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.169 $ $Date: 2002/01/21 09:11:38 $
  *
  */
 
@@ -1999,6 +1999,18 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      public CmsExportLink readExportLink(String filename)
         throws CmsException;
 
+    /**
+     * Reads a exportrequest without the dependencies from the Cms.<BR/>
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLinkHeader(String request)
+        throws CmsException;
     /**
      * Writes an exportlink to the Cms.
      *

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/01/18 13:39:32 $
-* Version: $Revision: 1.217 $
+* Date   : $Date: 2002/01/21 09:11:38 $
+* Version: $Revision: 1.218 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.217 $ $Date: 2002/01/18 13:39:32 $
+ * @version $Revision: 1.218 $ $Date: 2002/01/21 09:11:38 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2537,6 +2537,19 @@ public String readExportPath() throws CmsException {
  */
 public CmsExportLink readExportLink(String request) throws CmsException {
     return (m_rb.readExportLink(request));
+}
+/**
+ * Reads a exportrequest without the dependencies from the Cms.
+ *
+ * @param request the reourcename with  the url parameter.
+ *
+ * @return CmsExportLink the read exportrequest.
+ *
+ * @exception CmsException if the user has not the rights to read this resource,
+ * or if it couldn't be read.
+ */
+public CmsExportLink readExportLinkHeader(String request) throws CmsException {
+    return (m_rb.readExportLinkHeader(request));
 }
 /**
  * Writes an exportlink to the Cms.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2002/01/21 09:11:38 $
+* Version: $Revision: 1.76 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.75 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.76 $ $Date: 2002/01/21 09:11:38 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -332,7 +332,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
                     c_linkRulesExtern[i] = Utils.replace(c_linkRulesExtern[i], "${"+C_URL_PREFIX_SERVERNAME+"}", c_staticUrlPrefix[3]);
                 }
             }
-            c_linkRuleStart = conf.getString("exportfirstrule");
+            c_linkRuleStart = null; // temporary out of order: conf.getString("exportfirstrule");
 
             // now the startpoints for the static export
             String[] buffer = conf.getStringArray(C_STATICEXPORT_START);

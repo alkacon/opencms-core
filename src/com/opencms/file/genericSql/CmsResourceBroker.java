@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/01/18 13:40:40 $
-* Version: $Revision: 1.305 $
+* Date   : $Date: 2002/01/21 09:11:39 $
+* Version: $Revision: 1.306 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.305 $ $Date: 2002/01/18 13:40:40 $
+ * @version $Revision: 1.306 $ $Date: 2002/01/21 09:11:39 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4763,6 +4763,19 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      */
      public CmsExportLink readExportLink(String request) throws CmsException{
         return m_dbAccess.readExportLink(request);
+     }
+    /**
+     * Reads a exportrequest without the dependencies from the Cms.<BR/>
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLinkHeader(String request) throws CmsException{
+        return m_dbAccess.readExportLinkHeader(request);
      }
 
     /**

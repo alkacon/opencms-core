@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/01/21 09:11:38 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.8 $ $Date: 2002/01/18 08:29:01 $
+ * @version $Revision: 1.9 $ $Date: 2002/01/21 09:11:38 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -430,11 +430,9 @@ public class CmsStaticExport implements I_CmsConstants{
             for(int i=0; i<linksToAdd.size(); i++){
                 if(!allLinks.contains(linksToAdd.elementAt(i))){
                     if(!m_afterPublish
-                        || (m_cms.readExportLink((String)linksToAdd.elementAt(i)) == null)){
+                        || (m_cms.readExportLinkHeader((String)linksToAdd.elementAt(i)) == null)){
                             // after publish we only add this link if it is was
-                            // not exported befor. TODO: we dont need the method
-                            // readExportLink. A new method that only checks for
-                            // existence will do it.
+                            // not exported befor.
                             allLinks.add(linksToAdd.elementAt(i));
                     }
                 }
@@ -505,7 +503,7 @@ public class CmsStaticExport implements I_CmsConstants{
             try{
                 if("*dynamicRules*".equals(rules[i])){
                     // here we go trough our dynamic rules
-                    retValue = handleDynamicRules(link, C_MODUS_EXTERN);
+                    retValue = handleDynamicRules(m_cms, link, C_MODUS_EXTERN);
                 }else{
                     retValue = c_perlUtil.substitute(rules[i], link);
                 }
@@ -612,7 +610,7 @@ public class CmsStaticExport implements I_CmsConstants{
      * @param link The link that has to be replaced.
      * @param modus The modus OpenCms runs in.
      */
-    public static String handleDynamicRules(String link, int modus){
+    public static String handleDynamicRules(CmsObject cms, String link, int modus){
 
         // first get the ruleset
         Vector dynRules = null;
@@ -633,6 +631,10 @@ public class CmsStaticExport implements I_CmsConstants{
                 }
             }
         }
+        // here we can start the parameters
+        link = substituteLinkParameter(cms, link);
+        retValue = link;
+
         // now for the name replacement rules
         if(nameRules != null){
             for(int i=0; i<nameRules.size(); i++){
@@ -644,5 +646,50 @@ public class CmsStaticExport implements I_CmsConstants{
         }
         // nothing changed
         return retValue;
+    }
+
+    /**
+     * If a link has htmlparameter this methode removes them and adds an index
+     * to the link. This index is the linkId in the database where all exported
+     * links are saved. i.e. /test/index.html?para1=1&para2=2&para3=3 to
+     * /test/index_32.html (when 32 is the databaseId of this link).
+     * If the link is not in the database this methode saves it to create the id.
+     *
+     * @param link The Link to process.
+     *
+     * @return The processed link.
+     */
+    private static String substituteLinkParameter(CmsObject cms, String link){
+        // has it parameters?
+        int paraStartPos = link.indexOf('?');
+        if(paraStartPos < 0){
+            // no parameter - no service
+            return link;
+        }
+        // cut the parameters
+        String returnValue = link.substring(0,paraStartPos);
+        try{
+            // get the id from the database
+            CmsExportLink linkObject = cms.readExportLinkHeader(link);
+            if(linkObject == null){
+                // it was not written before, so we have to do it here.
+                linkObject = new CmsExportLink(link, 0, null);
+                cms.writeExportLink(linkObject);
+            }
+            int id = linkObject.getId();
+            // now we put this id at the right place in the link
+            int pointId = returnValue.lastIndexOf('.');
+            if(pointId < 0){
+                return returnValue + "_"+id;
+            }
+            returnValue = returnValue.substring(0, pointId)+"_"+id+returnValue.substring(pointId);
+
+        }catch(CmsException e){
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] cant substitute the htmlparameter for link: "+link+"  "+e.toString());
+            }
+            return link;
+        }
+        return returnValue;
     }
 }

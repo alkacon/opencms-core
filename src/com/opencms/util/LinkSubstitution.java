@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/12/20 15:29:38 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/01/21 09:11:39 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -185,7 +185,7 @@ public class LinkSubstitution {
             try{
                 if("*dynamicRules*".equals(rules[i])){
                     // here we go trough our dynamic rules
-                    retValue = CmsStaticExport.handleDynamicRules(link, modus);
+                    retValue = CmsStaticExport.handleDynamicRules(cms, link, modus);
                 }else{
                     retValue = c_perlUtil.substitute(rules[i], link);
                 }

@@ -13,6 +13,8 @@ OpenCms 4.5.33 Chusuk       - xx January 2001
   for showing preview of ressources from explorer-view.
 - Removed checkbox "Static export after publish" for new projects. The static export is executed after
   publishing if it is enabled in the properties (independent of the project).
+- Improved static export. Files are new exported if not only itself chaned but also if some subelements
+  have changed.
 * Change current project to online project after publishing a temporary project.
 
 OpenCms 4.5.32 Chusuk       - 18 January 2001

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/01/18 08:29:01 $
-* Version: $Revision: 1.233 $
+* Date   : $Date: 2002/01/21 09:11:39 $
+* Version: $Revision: 1.234 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.233 $ $Date: 2002/01/18 08:29:01 $ *
+ * @version $Revision: 1.234 $ $Date: 2002/01/21 09:11:39 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -5923,6 +5923,68 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      }
 
     /**
+     * Reads a exportrequest without the dependencies from the Cms.<BR/>
+     *
+     *
+     * @param request The request to be read.
+     *
+     * @return The exportrequest read from the Cms.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+     public CmsExportLink readExportLinkHeader(String request) throws CmsException{
+        CmsExportLink link = null;
+        PreparedStatement statement = null;
+        ResultSet res = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_EXPORT_LINK_READ"));
+            statement.setString(1, request);
+            res = statement.executeQuery();
+
+            // create new Cms exportlink object
+            if(res.next()) {
+                link = new CmsExportLink(res.getInt(m_cq.get("C_EXPORT_ID")),
+                                   res.getString(m_cq.get("C_EXPORT_LINK")),
+                                   res.getLong(m_cq.get("C_EXPORT_DATE")),
+                                   null);
+
+            }
+            return link;
+         }
+        catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        }
+        catch (Exception e) {
+            throw new CmsException("["+this.getClass().getName()+"]", e);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                 try {
+                     res.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }
+     }
+
+    /**
      * Sets one exportLink to procecced.
      *
      * @param link the cmsexportlink.
@@ -6048,6 +6110,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         int id = link.getId();
         if(id == 0){
             id = nextId(m_cq.get("C_TABLE_EXPORT_LINKS"));
+            link.setLinkId(id);
         }
         // now write it
         Connection con = null;
