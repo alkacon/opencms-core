@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectPublish.java,v $
- * Date   : $Date: 2000/04/20 08:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/05/05 09:14:01 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/04/20 08:11:54 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/05 09:14:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsLogChannels {
@@ -84,20 +84,27 @@ public class CmsAdminProjectPublish extends CmsWorkplaceDefault implements I_Cms
 													getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 		
 		int projectId = Integer.parseInt((String)parameters.get("projectid"));
-		
+		String lasturl = getLastUrl(cms, parameters);
 		A_CmsProject project = cms.readProject(projectId);
 		
 		xmlTemplateDocument.setData("projectid", projectId + "");
 		xmlTemplateDocument.setData("projectname", project.getName());
 		
 		if(parameters.get("ok") != null) {
+			// display the wait template and return 
+			templateSelector="wait";	
+		} else if (parameters.get("action")!=null) {
 			// publish the project
-			try {
-				cms.getRequestContext().setCurrentProject(cms.onlineProject().getId());
-				cms.publishProject(projectId);
+			try { 
+				cms.getRequestContext().setCurrentProject(cms.onlineProject().getId()); 
+				cms.publishProject(projectId); 
 				// publish process was successfull
 				// redirect to the project overview...
-				templateSelector = "done";
+				try {
+					((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);  
+				} catch (Exception e) {
+                    throw new CmsException("Redirect fails :"+ lasturl, CmsException.C_UNKNOWN_EXCEPTION,e);
+                } 
 			} catch (CmsException exc) {
 				// error while publishing...
 				if(A_OpenCms.isLogging()) {
