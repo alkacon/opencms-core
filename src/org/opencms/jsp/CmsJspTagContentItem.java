@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContentItem.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/09/27 17:11:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsJspTagContentItem extends BodyTagSupport { 
@@ -156,6 +156,11 @@ public class CmsJspTagContentItem extends BodyTagSupport {
         
         CmsFile contentFile;
         CmsXmlContent content;
+        
+        if ("uri".equals(filename)) {
+            filename = cms.getRequestContext().getUri();
+        }
+        
         try {
             // try to read and initialize the XML content
             contentFile = cms.readFile(filename);
