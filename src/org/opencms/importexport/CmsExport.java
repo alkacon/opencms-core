@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/11/12 18:17:34 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2004/11/12 18:41:52 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.50 $ $Date: 2004/11/12 18:17:34 $
+ * @version $Revision: 1.51 $ $Date: 2004/11/12 18:41:52 $
  */
 public class CmsExport implements Serializable {
 
@@ -851,18 +851,7 @@ public class CmsExport implements Serializable {
         getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getCms().getSitePath(file));
-        getReport().print(getReport().key("report.dots"));
-        
-        if (OpenCms.getLog(this).isInfoEnabled()) {
-            OpenCms.getLog(this).info(
-                "( " 
-                + m_exportCount
-                + " ) "
-                + m_report.key("report.exporting")
-                + source
-                + m_report.key("report.dots")
-                + m_report.key("report.ok"));
-        }      
+        getReport().print(getReport().key("report.dots"));          
         
         try {
             // store content in zip-file
@@ -886,6 +875,17 @@ public class CmsExport implements Serializable {
             if (OpenCms.getResourceManager().getResourceType(file.getTypeId()).getTypeName().equals("page")) {
                 m_exportedPageFiles.add("/" + source);
             }
+            
+            if (OpenCms.getLog(this).isInfoEnabled()) {
+                OpenCms.getLog(this).info(
+                    "( " 
+                    + m_exportCount
+                    + " ) "
+                    + m_report.key("report.exporting")
+                    + source
+                    + m_report.key("report.dots")
+                    + m_report.key("report.ok"));
+            }                
         } catch (Exception exc) {
             getReport().println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
