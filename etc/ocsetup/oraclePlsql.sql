@@ -12,6 +12,7 @@ DROP TABLE CMS_Task;
 DROP TABLE CMS_TaskLog;
 DROP TABLE CMS_TaskType;
 DROP TABLE CMS_TaskPar;
+DROP TABLE CMS_SESSIONS;
 
 CREATE TABLE CMS_SYSTEMPROPERTIES 
 (	SYSTEMPROPERTY_ID int not null,	
@@ -123,6 +124,13 @@ CREATE TABLE CMS_Task
 CREATE TABLE CMS_TaskType ( autofinish int, escalationtyperef int, htmllink varchar(254), id int NOT NULL, name varchar(50), permission varchar(50), priorityref int, roleref int, PRIMARY KEY (id) );
 CREATE TABLE CMS_TaskLog ( coment long, externalusername varchar(254), id int NOT NULL, starttime date, taskref int, userref int, type int DEFAULT '0', PRIMARY KEY (id) );
 CREATE TABLE CMS_TaskPar ( id int NOT NULL, parname varchar(50), parvalue varchar(50), ref int, PRIMARY KEY (id) );
+
+create table CMS_SESSIONS               
+(SESSION_ID varchar(255) not null,
+SESSION_LASTUSED DATE not null,
+SESSION_DATA blob not null,
+primary key(SESSION_ID));
+
 
 CREATE INDEX GROUP_PARENTID ON 
   CMS_GROUPS(PARENT_GROUP_ID);
