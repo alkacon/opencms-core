@@ -1,7 +1,7 @@
   /*
   * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-  * Date   : $Date: 2000/12/19 08:20:07 $
-  * Version: $Revision: 1.7 $
+  * Date   : $Date: 2001/01/02 13:25:40 $
+  * Version: $Revision: 1.8 $
   *
   * Copyright (C) 2000  The OpenCms Group 
   * 
@@ -26,7 +26,7 @@
   * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
  
- 
+
  /**
   *  contains information about a menuItem
   */
@@ -265,6 +265,7 @@
  
      var frameStr1 = 
          '<html>' +
+   		 "<head><script language=JavaScript> <!-- function show_help() {	return explorer_content.show_help(); } //--> </script> </head>"+
          '<frameset border=2 frameborder=yes framespacing=2 cols=20%,80%>' +
          '<frame name=explorer_tree id=explorer_tree src="about:blank">' +
          '<frame name=explorer_content id=explorer_content src="about:blank">' +
@@ -814,6 +815,7 @@
      var lockedBystring;
      var ssclass;
      var temp="<html><head>"+
+	   		 "<script language=JavaScript> <!-- function show_help() {	return '2_1_2_2.html'; } //--> </script>"+
              "<style type='text/css'>"+
              "<!"+"--"+
              "h1 { font-size:48pt; color:#FF0000; font-style:italic; } "+
@@ -831,7 +833,7 @@
  			// file new
              "td.fn{ color: #0000aa; } "+
              "a.fn{  color: #0000aa; } "+
-             "a:visited.fn{ color: #0000ff; } "+
+             "a:visited.fn{ color: #0000aa; } "+
              "a:hover.fn{ background:#000066 ; color:#FFFFFF; text-decoration: none; } "+
      
 	 		// file deleted
