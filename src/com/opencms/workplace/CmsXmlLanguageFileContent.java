@@ -225,7 +225,24 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent implements I_CmsL
         return result;
     }
 
-    /**
+     /**
+        * Method returns content encoding attached to this language.
+        * @param cms
+        * @return String
+        */
+       //Gridnine AB Aug 8, 2002
+       public String getEncoding() {
+           String result = null;
+           try {
+               result = getLanguageValue("content-encoding");
+           } catch (CmsException e) {;}
+           if ((result != null) && result.startsWith("?") && result.endsWith("?")) {
+               return null;
+           }
+           return result;
+       }
+ 
+ /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
      */

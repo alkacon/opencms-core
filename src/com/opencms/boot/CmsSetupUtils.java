@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
-* Date   : $Date: 2001/12/18 15:26:52 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.21.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.boot;
+
+import com.opencms.util.Encoder;
 
 import source.org.apache.java.util.*;
 import java.io.*;
@@ -176,28 +178,14 @@ public class CmsSetupUtils {
         }
     }
 
-
-
     /**
-     * URLEncodes a given string.
+     * URLEncodes a given string similar to JavaScript.
      * @param source string to be encoded
      */
-    public static String escape(String source) {
-        StringBuffer ret = new StringBuffer();
-
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript
-
-        // encoding, except the blank which is not encoded into a %20.
-        String enc = URLEncoder.encode(source);
-        StringTokenizer t = new StringTokenizer(enc, "+");
-        while(t.hasMoreTokens()) {
-            ret.append(t.nextToken());
-            if(t.hasMoreTokens()) {
-                ret.append("%20");
-            }
-        }
-        return ret.toString();
+        public static String escape(String source, String encoding) {
+        return Encoder.escapeWBlanks(source,encoding);
     }
+
 
     public Vector getErrors() {
         return m_errors;

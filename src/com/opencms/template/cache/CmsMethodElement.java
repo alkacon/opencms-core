@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsMethodElement.java,v $
-* Date   : $Date: 2002/04/02 09:03:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2003/01/08 11:06:26 $
+* Version: $Revision: 1.3.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -160,7 +160,13 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             if(methodResult != null){
                 if(methodResult instanceof String){
-                    result = ((String)methodResult).getBytes();
+                    //Gridnine AB Aug 7, 2002
+                    try {
+                    result = ((String)methodResult).getBytes(
+                        cms.getRequestContext().getEncoding());
+                    } catch (UnsupportedEncodingException uee) {
+                        throw new CmsException(CmsException.C_LAUNCH_ERROR, uee);
+                    }
                 }else if(methodResult instanceof byte[]){
                     result = (byte[])methodResult;
                 }else if(methodResult instanceof Integer){
@@ -168,7 +174,8 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
                 }else if(methodResult instanceof CmsProcessedString){
                     // result stays null but we have to write to the variant cache
                     variant = new CmsElementVariant();
-                    variant.add(((CmsProcessedString)methodResult).toString().getBytes());
+                    //Gridnine AB Aug 5, 2002
+                    variant.add(((CmsProcessedString)methodResult).toString());
                     addVariant(cacheKey, variant);
                 }else {
                     throwException("User method " + m_methodName + " in class " + templateClass.getClass().getName() + " returned an unsupported Object: " + methodResult.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
@@ -176,7 +183,8 @@ public class CmsMethodElement extends A_CmsElement implements com.opencms.boot.I
             }
             if((result != null)&&(cacheKey != null)&&(cd.isInternalCacheable())){
                 variant = new CmsElementVariant();
-                variant.add(result);
+                //Gridnine AB Aug 5, 2002
+                variant.add(result, cms.getRequestContext().getEncoding());
                 addVariant(cacheKey, variant);
             }
         }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2002/01/11 13:36:59 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2003/01/08 11:06:26 $
+* Version: $Revision: 1.7.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,7 +87,21 @@ public class CmsElementVariant {
      * type byte-array.
      */
     public void add(byte[] staticContent) {
-        m_content.add(staticContent);
+    	m_content.add(staticContent);
+    }
+
+    /**
+     * Adds static content to this variant.
+     * @param staticContent - part of the variant. A peace static content of
+     * type byte-array.
+     */
+    //Gridnine AB Aug 5, 2002
+    public void add(byte[] staticContent, String encoding) {
+        try {
+            m_content.add(new String(staticContent, encoding));
+        } catch (UnsupportedEncodingException uee) {
+            m_content.add(staticContent);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/I_CmsHtmlConverterInterface.java,v $
-* Date   : $Date: 2001/11/21 10:58:33 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.1.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -130,6 +130,8 @@ public interface I_CmsHtmlConverterInterface {
      * @param input InputStream with HTML code
      * @param output OutputStream with transformed code
      */
-    public void convertHTML (InputStream in, OutputStream out);
+    //Gridnine AB Aug 9, 2002
+    // byte streams are replaced with character streams to support correct encodings handling
+    public void convertHTML (Reader in, Writer out);
 
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverter.java,v $
-* Date   : $Date: 2002/06/14 12:21:04 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.6.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import java.util.*;
 import java.net.*;
 import org.w3c.tidy.Tidy;
 import org.w3c.dom.*;
-import com.opencms.htmlconverter.*;
 
 /**
  * Implementation of interface I_CmsHtmlConverterInterface:
@@ -293,19 +292,23 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
      * @param inString String with HTML code
      * @return String with transformed code
      */
+    //Gridnine AB Aug 9, 2002
+    // byte streams are replaced with character streams
     public String convertHTML (String inString) {
-        InputStream in = new ByteArrayInputStream(inString.getBytes());
-        OutputStream out = new ByteArrayOutputStream();
+        Reader in = new StringReader(inString);
+        Writer out = new StringWriter();
         this.convertHTML(in,out);
         return out.toString();
     }
 
     /**
      * Transforms HTML code into user defined output
-     * @param input InputStream with HTML code
-     * @param output OutputStream with transformed code
+     * @param input Reader with HTML code
+     * @param output Writer with transformed code
      */
-    public void convertHTML (InputStream input, OutputStream output) {
+    //Gridnine AB Aug 9, 2002
+    // byte streams are replaced with character streams to support correct encodings handling
+    public void convertHTML (Reader input, Writer output) {
         /* local variables */
         int streamInput;
         StringBuffer htmlString = new StringBuffer();
@@ -323,6 +326,11 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         m_tidy.setErrout(errorLog);
         try {
             /* write InputStream input in StringBuffer htmlString */
+            int c;
+            while ((c = input.read()) != -1) {
+                htmlString.append((char)c);
+            }
+            /*
             while ((streamInput = input.available()) > 0) {
                 byte[] b = new byte[streamInput];
                 int result = input.read(b);
@@ -331,6 +339,7 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
                 }
                 htmlString.append(new String(b));
             }
+            */
         }
         catch (IOException e) {
             System.err.println("Conversion error: " + e.toString());
@@ -340,7 +349,14 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         /* first step: replace subStrings in htmlString run #1*/
         outString = m_tools.scanContent(outString,m_configuration.getReplaceContent());
         /* convert htmlString in InputStream for parseDOM */
-        InputStream in = new ByteArrayInputStream(outString.getBytes());
+        InputStream in;
+        try {
+            in = new ByteArrayInputStream(outString.getBytes("utf-8"));
+            m_tidy.setCharEncoding(org.w3c.tidy.Configuration.UTF8);
+        } catch (UnsupportedEncodingException e) {
+            in = new ByteArrayInputStream(outString.getBytes());
+            m_tidy.setCharEncoding(org.w3c.tidy.Configuration.LATIN1);
+        }
         node = m_tidy.parseDOM(in,null);
         /* check if html code has errors */
         if (m_tidy.getParseErrors() != 0) {
@@ -352,7 +368,8 @@ public final class CmsHtmlConverter implements I_CmsHtmlConverterInterface {
         outString = m_tools.scanString(m_tempString.toString(),m_configuration.getReplaceStrings());
         outString = this.cleanOutput(outString);
         try {
-            output.write(outString.getBytes(),0,outString.length());
+            //output.write(outString.getBytes(),0,outString.length());
+            output.write(outString);
             output.close();
         }
         catch (IOException e) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2002/01/18 08:29:02 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2003/01/08 11:06:26 $
+* Version: $Revision: 1.29.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -415,7 +415,9 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
                 // If it's a link to a sub element, get this element and call its getContent() method
                 if(o instanceof String) {
                     if(resolveDebug) System.err.println("String");
-                    baos.write(((String)o).getBytes());
+                    // Gridnine AB Aug 1, 2002
+                    //baos.write(((String)o).getBytes());
+                    baos.write(((String)o).getBytes(cms.getRequestContext().getEncoding()));
                 } else if(o instanceof byte[]) {
                     if(resolveDebug) System.err.println("byte array");
                     baos.write((byte[])o);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/06/07 11:38:42 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.54.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.54 $ $Date: 2002/06/07 11:38:42 $
+ * @version $Revision: 1.54.4.1 $ $Date: 2003/01/08 11:06:25 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -409,7 +409,7 @@ public Vector getResourcesForProject() throws CmsException {
      * Gets the xml-config file from the import resource and stores it in object-member.
      * Checks whether the import is from a module file
      */
-    private void getXmlConfigFile()
+    /**private void getXmlConfigFile()
         throws CmsException {
 
         try {
@@ -420,7 +420,31 @@ public Vector getResourcesForProject() throws CmsException {
 
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-    }
+    }*/
+
+
+      private void getXmlConfigFile() throws CmsException {
+         try {
+             //Gridnine AB Sep 3, 2002
+             /*
+             BufferedReader xmlReader =getFileReader(C_EXPORT_XMLFILENAME);
+             m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
+             xmlReader.close();
+             */
+             InputStream in = new ByteArrayInputStream(getFileBytes(C_EXPORT_XMLFILENAME));
+             try {
+                 m_docXml = A_CmsXmlContent.getXmlParser().parse(in);
+             } finally {
+                 try {
+                     in.close();
+                 } catch (Exception e) {}
+             }
+          } catch(Exception exc) {
+             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+         }
+     }
+
+
 
 /**
  * Imports a resource (file or folder) into the cms.

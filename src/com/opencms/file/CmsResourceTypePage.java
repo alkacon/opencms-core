@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2002/08/02 09:43:50 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.27.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,14 +46,14 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/08/02 09:43:50 $
+ * @version $Revision: 1.27.4.1 $ $Date: 2003/01/08 11:06:25 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
      /** Definition of the class */
      private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
 
-     private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
+     private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\" encoding=\"" + I_CmsXmlParser.C_XML_ENCODING + "\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
      private static final String C_DEFAULTBODY_END = "]]></TEMPLATE>\n</XMLTEMPLATE>";
 
      /**

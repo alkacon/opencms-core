@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2002/02/06 15:01:54 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2003/01/08 11:06:25 $
+* Version: $Revision: 1.27.4.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/02/06 15:01:54 $
+ * @version $Revision: 1.27.4.1 $ $Date: 2003/01/08 11:06:25 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -153,6 +153,26 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
         String type = req.getHeader("content-type");
         if((type != null) && type.startsWith("multipart/form-data")&& (req.getContentLength() > -1)) {
             readRequest();
+        } else {
+            //Gridnine AB Aug 6, 2002
+            // Set request content encoding.
+            String encoding = req.getCharacterEncoding();
+            if (encoding == null) {
+                // First try to get current encoding from session
+                HttpSession httpSession = req.getSession(false);
+                I_CmsSession session = (httpSession != null) ?
+                    new CmsSession(httpSession) : null;
+                if (session != null) {
+                    encoding = (String)session.getValue(
+                        I_CmsConstants.C_SESSION_CONTENT_ENCODING);
+                }
+                // if encoding not found in session - use default one
+                if (encoding == null) {
+                    encoding = OpenCms.getEncoding();
+                }
+                req.setCharacterEncoding(encoding);
+            }
+            A_OpenCms.log(C_OPENCMS_DEBUG, "request character encoding - " + req.getCharacterEncoding());
         }
         if(m_req.getPathInfo().indexOf("?") != -1) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
