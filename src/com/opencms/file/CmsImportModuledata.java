@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2002/02/14 14:35:48 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/02/18 09:48:25 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
 import com.opencms.defaults.master.*;
-import com.opencms.util.*;
 import org.w3c.dom.*;
 import source.org.apache.java.util.*;
 
@@ -48,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2002/02/14 14:35:48 $
+ * @version $Revision: 1.2 $ $Date: 2002/02/18 09:48:25 $
  */
 public class CmsImportModuledata implements I_CmsConstants, Serializable {
 
@@ -95,11 +94,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     private Document m_docXml;
 
     /**
-     * Digest for taking a fingerprint of the files
-     */
-    private MessageDigest m_digest = null;
-
-    /**
      * This constructs a new CmsImportModuledata-object which imports the moduledata.
      *
      * @param importFile the file or folder to import from.
@@ -112,9 +106,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         m_importFile = importFile;
         m_importPath = importPath;
         m_cms = cms;
-
-        // create the digest
-        createDigest();
 
         // open the import resource
         getImportResource();
@@ -229,7 +220,8 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
     }
 
     /**
-     *
+     * Gets the available modules in the current system
+     * and imports the data for existing modules
      */
     public void importModuleMasters() throws CmsException{
         // get all available modules in this system
@@ -493,7 +485,7 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
         // set the publication date
         publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
         try{
-            newDataset.m_publicationDate = Utils.splitDate(publicationDate);
+            newDataset.m_publicationDate = convertDate(publicationDate);
         } catch (Exception e){
         }
         // set the purge date
@@ -700,21 +692,6 @@ public class CmsImportModuledata implements I_CmsConstants, Serializable {
             i++;
         }
         return onList;
-    }
-
-    /**
-     * Read infos from the properties and create a MessageDigest
-     * Creation date: (29.08.00 15:45:35)
-     */
-    private void createDigest() throws CmsException {
-        // Configurations config = m_cms.getConfigurations();
-        String digest = C_IMPORT_DIGEST;
-        // create the digest
-        try {
-            m_digest = MessageDigest.getInstance(digest);
-        } catch (NoSuchAlgorithmException e) {
-            throw new CmsException("Could'nt create MessageDigest with algorithm " + digest);
-        }
     }
 
     /**
