@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/08/08 14:08:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2000/08/21 08:11:27 $
+ * Version: $Revision: 1.30 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.core;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2000/08/08 14:08:20 $
+ * @version $Revision: 1.30 $ $Date: 2000/08/21 08:11:27 $
  */
 public class CmsException extends Exception {
 	
@@ -219,6 +219,11 @@ public class CmsException extends Exception {
 	 */
 	public final static int C_RB_INIT_ERROR = 33;
 	
+	/**
+	 * Definition of error code for Registry exception
+	 */
+	public final static int C_REGISTRY_ERROR = 34;
+	
 	public final static String C_EXTXT[] = {
 							"Unknown exception ",
 							"Access denied ",
@@ -254,6 +259,7 @@ public class CmsException extends Exception {
 							"Access denied to resource ",
 							"Resource deleted ",
 							"Resourcebroker-init error",
+							"Registry error",
 };
 	
 	/** 
