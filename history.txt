@@ -13,6 +13,7 @@ OpenCms 4.5.36 Chusuk - xx March 2001
 ! Added menu entry for folders, pages and links: changing the navigation informations (Navigation Text and Position)
 ! Now navigation information can be inserted when creating a link. You need to add the required propertydefinitions
   NavText and NavPos to do this.
+! Static export has new way for configuration: enabled=false_ssl uses dynamic rules for ssl but disables the export.
 * Bugfix for export and import of channels and moduledata
 * Bugfix in Oracle PL/SQL-Procedure: detects cycles in groups with parent groups
 * Bugfix in Oracle PL/SQL-Procedure: throws an exception when publishing a resource without an existing parent
