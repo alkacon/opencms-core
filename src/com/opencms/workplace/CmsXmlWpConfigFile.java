@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/04/12 14:46:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2000/04/13 21:07:15 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,13 +36,14 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import java.util.*;
+import javax.servlet.http.*;
 
 /**
  * Content definition for "/workplace/workplace.ini".
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2000/04/12 14:46:44 $
+ * @version $Revision: 1.16 $ $Date: 2000/04/13 21:07:15 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
 
@@ -189,20 +190,33 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
     
     /**
      * Gets the URL where workplace pisc reside.
+     * If the path is empty, the workplace picture path prfeixed
+     * by the servlet path will be returned
      * @return Path for the "pics" mountpoint.
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWpPictureUrl() throws CmsException {
-        return getDataValue("path.wppicsurl");
+        String s = getDataValue("path.wppicsurl");
+        if(s == null || "".equals(s)) {
+            s = ((HttpServletRequest)m_cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + getDataValue("path.wppictures");
+        }
+        return s;
+        
     }
 
     /**
      * Gets the URL where common template pics reside.
+     * If the path is empty, the workplace picture path prfeixed
+     * by the servlet path will be returned
      * @return Path for the "pics" mountpoint.
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getCommonPictureUrl() throws CmsException {
-        return getDataValue("path.commonpicsurl");
+        String s = getDataValue("path.commonpicsurl");
+        if(s == null || "".equals(s)) {
+            s = ((HttpServletRequest)m_cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath() + getDataValue("path.commonpictures");
+        }
+        return s;
     }
     
     /**
