@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/01/14 16:37:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/01/20 12:44:32 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -338,7 +338,7 @@ public class CmsLinkProcessor {
         parser.visitAllNodesWith(visitor);
         // remove the addition HTML  
         String result = visitor.getHtml();
-        if (result.length() >0 ) {
+        if (result.length() >0) {
             return result.substring(C_HTML_START.length(), result.length() - C_HTML_END.length());
         } else {
             return result;
