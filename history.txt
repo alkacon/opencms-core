@@ -8,7 +8,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.29 Chusuk       - xx December 2001
+OpenCms 4.5.29 Chusuk       - 10 December 2001
 - Changed the xmttemplate editor. If a templatefile is not found at a default location, it is usewd anyway.
 - Corrected color for "changed resources" in backoffices.
 - Changed the apperance of two selectboxes in editors.
