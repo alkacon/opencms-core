@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/03/02 18:43:55 $
-* Version: $Revision: 1.357 $
+* Date   : $Date: 2003/03/02 19:18:01 $
+* Version: $Revision: 1.358 $
 
 *
 * This library is part of OpenCms -
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.357 $ $Date: 2003/03/02 18:43:55 $
+ * @version $Revision: 1.358 $ $Date: 2003/03/02 19:18:01 $
 
  *
  */
@@ -130,16 +130,16 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
     /**
      *  Define some caches for often read resources
      */
-    protected CmsLruHashMap m_userCache = null;
-    protected CmsLruHashMap m_groupCache = null;
-    protected CmsLruHashMap m_usergroupsCache = null;
-    protected CmsLruHashMap m_projectCache = null;
-    protected CmsLruHashMap m_propertyCache = null;
-    protected CmsLruHashMap m_propertyDefCache = null;
-    protected CmsLruHashMap m_propertyDefVectorCache = null;
-    protected CmsLruHashMap m_accessCache = null;
-    protected CmsLruHashMap m_resourceCache = null;
-    protected CmsLruHashMap m_resourceListCache = null;    
+    protected Map m_userCache = null;
+    protected Map m_groupCache = null;
+    protected Map m_usergroupsCache = null;
+    protected Map m_projectCache = null;
+    protected Map m_propertyCache = null;
+    protected Map m_propertyDefCache = null;
+    protected Map m_propertyDefVectorCache = null;
+    protected Map m_accessCache = null;
+    protected Map m_resourceCache = null;
+    protected Map m_resourceListCache = null;    
     
     protected CmsProject m_onlineProjectCache = null;
     protected int m_cachelimit = 0;
@@ -4177,16 +4177,16 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
         m_dbAccess = createDbAccess(config);
 
         // initalize the caches
-        m_userCache=new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
-        m_groupCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50));
-        m_usergroupsCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50));
-        m_projectCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50));
-        m_resourceCache=new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000));
-        m_resourceListCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100));
-        m_propertyCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000));
-        m_propertyDefCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100));
-        m_propertyDefVectorCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100));
-        m_accessCache = new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000));
+        m_userCache =Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50)));
+        m_groupCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50)));
+        m_usergroupsCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50)));
+        m_projectCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".project", 50)));
+        m_resourceCache= Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".resource", 1000)));
+        m_resourceListCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".subres", 100)));
+        m_propertyCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".property", 1000)));
+        m_propertyDefCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertydef", 100)));
+        m_propertyDefVectorCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".propertyvectordef", 100)));
+        m_accessCache = Collections.synchronizedMap((Map) new CmsLruHashMap(config.getInteger(C_CONFIGURATION_CACHE + ".access", 1000)));
         m_cachelimit = config.getInteger(C_CONFIGURATION_CACHE + ".maxsize", 20000);
         m_refresh=config.getString(C_CONFIGURATION_CACHE + ".refresh", "");
 
@@ -6332,6 +6332,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
              throw new CmsException("[" + this.getClass().getName() + "] " + resource,
                 CmsException.C_NO_ACCESS);
         }
+        
+        search = search && (siteRoot != null);
         // check if we have the result already cached
         Map returnValue = null;
         String cacheKey = getCacheKey("properties_" + search, currentProject, res.getResourceName());
@@ -6374,11 +6376,8 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
             buffer.append(prefix);
             buffer.append("_");
         }
-        if (project.isOnlineProject()) {
-            buffer.append("o_");
-        } else {
-            buffer.append("x_");
-        }
+        buffer.append(project.getId());
+        buffer.append("_");
         buffer.append(resource);
         return buffer.toString();
     }
@@ -8147,7 +8146,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @param resourcename The name of the changed resource
      */
     protected void clearResourceCache(String resourcename, CmsProject currentProject){
-        m_resourceCache.remove(resourcename);
+        m_resourceCache.remove(getCacheKey(null, currentProject, resourcename));
         m_resourceListCache.clear();
     }
 
