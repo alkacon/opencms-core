@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2001/06/29 13:44:56 $
+* Version: $Revision: 1.43 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.42 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.43 $ $Date: 2001/06/29 13:44:56 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -895,14 +895,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         parsedContent = loadCachedDocument(filename);
         if(parsedContent == null) {
             String fileContent = new String(file.getContents());
-            if(fileContent == null || "".equals(fileContent)) {
-
+            if(fileContent == null || "".equals(fileContent.trim())) {
                 // The file content is empty. Possibly the file object is only
                 // a file header. Re-read the file object and try again
                 file = cms.readFile(filename);
-                fileContent = new String(file.getContents());
+                fileContent = new String(file.getContents()).trim();
             }
-            if(fileContent == null || "".equals(fileContent)) {
+            if(fileContent == null || "".equals(fileContent.trim())) {
 
                 // The file content is still emtpy.
                 // Start with an empty XML document.
