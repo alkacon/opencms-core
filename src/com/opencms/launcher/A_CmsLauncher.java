@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2001/01/24 09:42:27 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/02/06 13:57:04 $
+* Version: $Revision: 1.26 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -49,44 +49,44 @@ import javax.servlet.http.*;
  * <LI>launch() to be called by initlaunch</LI>
  * </UL>
  * <P>
- * The functionality of this class is 
+ * The functionality of this class is
  * <UL>
  * <LI>provide a global cache for template class results</LI>
  * <LI>receive the system's launcher call, do some relevant initial
  * things and call the launch() method</LI>
  * <LI>provide some utility methods</LI>
  * </UL>
- * 
+ *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/01/24 09:42:27 $
+ * @version $Revision: 1.26 $ $Date: 2001/02/06 13:57:04 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
-    
+
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
-    
+
     /** Value of the filesystem counter, when the last template clear cache was done. */
     private static long m_lastFsCounterTemplate = 0;
-    
+
     /** Value of the filesystem counter, when the last XML file clear cache was done. */
     private static long m_lastFsCounterFile = 0;
-    
+
     /** The template cache that holds all cached templates */
     protected static I_CmsTemplateCache m_templateCache = new CmsTemplateCache();
-    
+
     /**
      * Utility method used by the launcher implementation to give control
      * to the CanonicalRoot.
-     * The CanonicalRoot will call the master template and return a byte array of the 
+     * The CanonicalRoot will call the master template and return a byte array of the
      * generated output.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param templateClass Class that should generate the output of the master template.
      * @param masterTemplate CmsFile Object with masterTemplate for the output.
      * @param parameters Hashtable with all parameters for the template class.
      * @return byte array with the generated output or null if there were errors.
      * @exception CmsException
-     * 
+     *
      */
     protected byte[] callCanonicalRoot(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, Hashtable parameters) throws CmsException {
         try {
@@ -94,13 +94,13 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             return root.getMasterTemplate(cms, templateClass, masterTemplate, m_templateCache, parameters);
         }
         catch(Exception e) {
-            
+
             // There is no document we could show.
             handleException(cms, e, "Received error while calling canonical root for requested file " + masterTemplate.getName() + ". ");
         }
         return null;
     }
-    
+
     /**
      * Method for clearing this launchers template cache.
      * @author Finn Nielsen
@@ -110,7 +110,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         m_templateCache.clearCache();
         System.gc();
     }
-    
+
     /**
      * Gets the name of the class in the form "[ClassName] "
      * This can be used for error logging purposes.
@@ -120,21 +120,21 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         String name = getClass().getName();
         return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
     }
-    
+
     /** Default constructor to create a new launcher */
-    
+
     /*public A_CmsLauncher() {
     if(A_OpenCms.isLogging()) {
     A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Initialized successfully.");
     }
     }*/
-    
+
     /**
      * Gets the ID that indicates the type of the launcher.
      * @return launcher ID
      */
     public abstract int getLauncherId();
-    
+
     /**
      * Gets a reference to the global template cache
      * @return Template cache
@@ -142,7 +142,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
     public static I_CmsTemplateCache getTemplateCache() {
         return m_templateCache;
     }
-    
+
     /**
      * Calls the CmsClassManager to get an instance of the given template class.
      * The returned object is checked to be an implementing class of the interface
@@ -159,9 +159,9 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Getting start template class " + classname + ". ");
         }
         Object o = CmsTemplateClassManager.getClassInstance(cms, classname);
-        
+
         // Check, if the loaded class really is a OpenCms template class.
-        
+
         // This is done be checking the implemented interface.
         if(!(o instanceof I_CmsTemplate)) {
             String errorMessage = "Class " + classname + " is no OpenCms template class.";
@@ -176,7 +176,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         }
         return cmsTemplate;
     }
-    
+
     /**
      * Utility method to handle any occurence of an execption.
      * <P>
@@ -187,23 +187,23 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * be thrown, but a server error will be sent
      * (we want to prevent the user from seeing any exeptions).
      * Otherwise a new Exception will be thrown.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param e Exception that should be handled.
      * @param errorText Error message that should be shown.
      * @exception CmsException
      */
     public void handleException(CmsObject cms, Exception e, String errorText) throws CmsException {
-        
+
         // Print out some error messages
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorText);
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Exception: " + e);
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "--> Cannot create output for this file. Must send error. Sorry.");
         }
-        
+
         // If the user is "Guest", we send an servlet error.
-        
+
         // Otherwise we try to throw an exception.
         CmsRequestContext reqContext = cms.getRequestContext();
         if((!C_DEBUG) && cms.anonymousUser().equals(reqContext.currentUser())) {
@@ -218,7 +218,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             }
         }
     }
-    
+
     /**
      * Start method called by the OpenCms system to show a resource.
      * <P>
@@ -226,7 +226,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * and the _clearcache parameter is checked.
      * After this the abstract method launch(...) is called to
      * invoke the customized part of the launcher.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources.
      * @param file CmsFile Object with the selected resource to be shown.
      * @param startTemplateClass Name of the template class to start with.
@@ -234,13 +234,13 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @exception CmsException
      */
     public void initlaunch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException {
-        
+
         // First some debugging output.
         if(C_DEBUG && A_OpenCms.isLogging()) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Launcher started for " + file.getName());
         }
-        
-        // Check all values to be valid        
+
+        // Check all values to be valid
         String errorMessage = null;
         if(file == null) {
             errorMessage = "Got \"null\" CmsFile object. :-(";
@@ -254,8 +254,8 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
             }
             throw new CmsException(errorMessage, CmsException.C_LAUNCH_ERROR);
         }
-        
-        // Check the clearcache parameter        
+
+        // Check the clearcache parameter
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
         long currentFsCounter = cms.getFileSystemChanges();
         if((clearcache != null) && ("all".equals(clearcache) || "class".equals(clearcache))) {
@@ -271,15 +271,15 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         }
         launch(cms, file, startTemplateClass, openCms);
     }
-    
+
     /**
      * Unitary method to start generating the output.
      * Every launcher has to implement this method.
      * In it possibly the selected file will be analyzed, and the
-     * Canonical Root will be called with the appropriate 
-     * template class, template file and parameters. At least the 
+     * Canonical Root will be called with the appropriate
+     * template class, template file and parameters. At least the
      * canonical root's output must be written to the HttpServletResponse.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
      * @param file CmsFile Object with the selected resource to be shown
      * @param startTemplateClass Name of the template class to start with.
@@ -287,7 +287,7 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
      * @exception CmsException
      */
     protected abstract void launch(CmsObject cms, CmsFile file, String startTemplateClass, A_OpenCms openCms) throws CmsException;
-    
+
     /**
      * Writes a given byte array to the HttpServletRespose output stream.
      * @param result byte array that should be written.
@@ -298,9 +298,12 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
         int length;
         try {
             I_CmsResponse resp = cms.getRequestContext().getResponse();
-            if(!resp.isRedirected()) {
+            if((!cms.getRequestContext().isStreaming()) && result != null && !resp.isRedirected()) {
+                /* Only write any output to the response output stream, if
+                the current request is neither redirected nor streamed. */
                 OutputStream out = resp.getOutputStream();
                 resp.setContentLength(result.length);
+                resp.setHeader("Connection", "keep-alive");
                 out.write(result);
                 out.flush();
                 out.close();

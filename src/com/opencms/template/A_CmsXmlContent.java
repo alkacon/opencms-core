@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/01/24 09:42:39 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/02/06 13:57:27 $
+* Version: $Revision: 1.37 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -77,7 +77,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2001/01/24 09:42:39 $
+ * @version $Revision: 1.37 $ $Date: 2001/02/06 13:57:27 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
     
@@ -214,7 +214,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         catch(Exception exc2) {
             throwException("User method " + methodName + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
         }
-        if((result != null) && (!(result instanceof String || result instanceof Integer || result instanceof NodeList || result instanceof byte[]))) {
+        if((result != null) && (!(result instanceof String || result instanceof CmsProcessedString || result instanceof Integer || result instanceof NodeList || result instanceof byte[]))) {
             throwException("User method " + methodName + " in class " + callingObject.getClass().getName() + " returned an unsupported Object: " + result.getClass().getName(), CmsException.C_XML_PROCESS_ERROR);
         }
         return (result);
@@ -508,6 +508,26 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         processNode(dBlock, m_mainProcessTags, null, callingObject, userObj);
         return dBlock;
     }
+
+    /**
+     * Gets a processed datablock from the datablock hashtable.
+     * <P>
+     * The userObj Object is passed to all called user methods.
+     * By using this, the initiating class can pass customized data to its methods.
+     * 
+     * @param tag Key for the datablocks hashtable.
+     * @param callingObject Object that should be used to look up user methods.
+     * @param userObj any object that should be passed to user methods
+     * @param stream OutputStream that may be used for directly streaming the results or null. 
+     * @return Processed datablock for the given key.
+     * @exception CmsException
+     */
+    protected Element getProcessedData(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
+        Element dBlock = (Element)getData(tag).cloneNode(true);
+        processNode(dBlock, m_mainProcessTags, null, callingObject, userObj, stream);
+        return dBlock;
+    }
+
     
     /**
      * Gets the text and CDATA content of a processed datablock from the 
@@ -551,6 +571,26 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      */
     protected String getProcessedDataValue(String tag, Object callingObject, Object userObj) throws CmsException {
         Element data = getProcessedData(tag, callingObject, userObj);
+        return getTagValue(data);
+    }
+
+    /**
+     * Gets the text and CDATA content of a processed datablock from the 
+     * datablock hashtable. An eventually given output stream is user for streaming
+     * the generated result directly to the response output stream while processing.
+     * <P>
+     * The userObj Object is passed to all called user methods.
+     * By using this, the initiating class can pass customized data to its methods.
+     * 
+     * @param tag Key for the datablocks hashtable.
+     * @param callingObject Object that should be used to look up user methods.
+     * @param userObj any object that should be passed to user methods
+     * @param stream OutputStream that may be used for directly streaming the results or null. 
+     * @return Processed datablock for the given key.        
+     * @exception CmsException
+     */
+    protected String getProcessedDataValue(String tag, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
+        Element data = getProcessedData(tag, callingObject, userObj, stream);
         return getTagValue(data);
     }
     
@@ -1269,7 +1309,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         // These nodes could cause errors when serializing this document otherwise
         Node loop = parsedDoc.getDocumentElement();
         while(loop != null) {
-            Node next = treeWalker(loop);
+            Node next = treeWalker(parsedDoc.getDocumentElement(), loop);
             if(loop.getNodeType() == loop.TEXT_NODE) {
                 Node leftSibling = loop.getPreviousSibling();
                 Node rightSibling = loop.getNextSibling();
@@ -1323,7 +1363,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @exception CmsException
      */
     protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj) throws CmsException {
-        
+        processNode(n, keys, defaultMethod, callingObject, userObj, null);
+    }
+    
+    protected void processNode(Node n, Hashtable keys, Method defaultMethod, Object callingObject, Object userObj, OutputStream stream) throws CmsException {
         // Node currently processed
         Node child = null;
         
@@ -1345,6 +1388,12 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         // Object returned by the tag processing methods
         Object methodResult = null;
         
+        // Used for streaming mode. Indicates, if the replaced results for the current node are already written to the stream.
+        boolean newnodesAreAlreadyProcessed = false;
+        
+        // We should remember the starting node for walking through the tree.
+        Node startingNode = n;
+        
         // only start if there is something to process
         if(n != null && n.hasChildNodes()) {
             child = n.getFirstChild();
@@ -1352,7 +1401,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 childName = child.getNodeName().toLowerCase();
                 
                 // Get the next node in the tree first                
-                nextchild = treeWalker(child);
+                nextchild = treeWalker(startingNode, child);
                 
                 // Only look for element nodes
                 
@@ -1360,6 +1409,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 if(child.getNodeType() == Node.ELEMENT_NODE) {
                     newnodes = null;
                     callMethod = null;
+                    newnodesAreAlreadyProcessed = false;
                     if(keys.containsKey(childName)) {
                         
                         // name of this element found in keys Hashtable
@@ -1424,23 +1474,29 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                                     newnodes = stringToNodeList((String)methodResult);
                                 }
                                 else {
-                                    if(methodResult instanceof Integer) {
-                                        newnodes = stringToNodeList(((Integer)methodResult).toString());
+                                    if(methodResult instanceof CmsProcessedString) {
+                                        newnodes = stringToNodeList(((CmsProcessedString)methodResult).toString());
+                                        newnodesAreAlreadyProcessed = true;
                                     }
                                     else {
-                                        if(methodResult instanceof byte[]) {
-                                            newnodes = stringToNodeList(new String((byte[])methodResult));
+                                        if(methodResult instanceof Integer) {
+                                            newnodes = stringToNodeList(((Integer)methodResult).toString());
                                         }
                                         else {
-                                            
-                                            // Type not recognized.
-                                            if(A_OpenCms.isLogging()) {
-                                                A_OpenCms.log(C_OPENCMS_CRITICAL, "Return type of method " + callMethod.getName() + " not recognized. Cannot insert value.");
+                                            if(methodResult instanceof byte[]) {
+                                                newnodes = stringToNodeList(new String((byte[])methodResult));
                                             }
-                                            newnodes = null;
+                                            else {
+                                                
+                                                // Type not recognized.
+                                                if(A_OpenCms.isLogging()) {
+                                                    A_OpenCms.log(C_OPENCMS_CRITICAL, "Return type of method " + callMethod.getName() + " not recognized. Cannot insert value.");
+                                                }
+                                                newnodes = null;
+                                            }
                                         }
                                     }
-                                }
+                                }                                
                             }
                         }
                         
@@ -1474,7 +1530,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                                     
                                     //insert = parser.importNode(m_content, newnodes.item(j));
                                     insert = parser.importNode(child.getOwnerDocument(), newnodes.item(j));
-                                    if(j == 0) {
+                                    if(j == 0 && !newnodesAreAlreadyProcessed) {
                                         nextchild = insert;
                                     }
                                     
@@ -1483,6 +1539,13 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                                 
                                 //A_OpenCms.log(c_OPENCMS_DEBUG, "Node " + newnodes.item(j) + " added.");
                                 }
+                                
+                                if(newnodesAreAlreadyProcessed) {
+                                    // We just have inserted new nodes that were processed prviously.
+                                    // So we hav to recalculate the next child.
+                                    nextchild = treeWalkerWidth(startingNode, child);
+                                }
+                                
                             }
                             else {
                                 
@@ -1493,15 +1556,38 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                                 // in the tree since the old nextchild will be deleted                                
                                 
                                 // been deleted.
-                                nextchild = treeWalkerWidth(child);
+                                nextchild = treeWalkerWidth(startingNode, child);
                             }
                             
                             // now delete the old child and get the next one.
                             child.getParentNode().removeChild(child);
                         }
                     }
-                }
-                child = nextchild;
+                } else if(stream != null){
+                    /* We are in HTTP streaming mode.
+                    So we can put the content of the current node directly into
+                    the output stream. */
+                    String streamResults = null;
+                    if(child.getNodeType() == n.CDATA_SECTION_NODE) {
+                        streamResults = child.getNodeValue();
+                    }
+                    else {
+                        if(child.getNodeType() == n.TEXT_NODE) {
+                            String s = child.getNodeValue().trim();
+                            if(!"".equals(s)) {
+                                streamResults = child.getNodeValue();
+                            }
+                        }
+                    }
+                    if(streamResults != null) {
+                        try {
+                            stream.write(streamResults.getBytes());
+                        } catch (Exception e) {
+                            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+                        }
+                    }
+               }
+               child = nextchild;                
             }
         }
     }
@@ -1851,21 +1937,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param n Node representing the actual position in the tree
      * @return next node
      */
-    protected Node treeWalker(Node n) {
+    protected Node treeWalker(Node root, Node n) {
         Node nextnode = null;
         if(n.hasChildNodes()) {
             
             // child has child notes itself
             
             // process these first in the next loop
-            nextnode = n.getFirstChild();
+            nextnode = n.getFirstChild();            
         }
         else {
             
             // child has no subchild.
             
             // so we take the next sibling
-            nextnode = treeWalkerWidth(n);
+            nextnode = treeWalkerWidth(root, n);
         }
         return nextnode;
     }
@@ -1876,12 +1962,15 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      * @param n Node representing the actual position in the tree
      * @return next node
      */
-    protected Node treeWalkerWidth(Node n) {
+    protected Node treeWalkerWidth(Node root, Node n) {
+        if(n == root) {
+            return null;
+        }
         Node nextnode = null;
         Node parent = null;
         nextnode = n.getNextSibling();
         parent = n.getParentNode();
-        while(nextnode == null && parent != null) {
+        while(nextnode == null && parent != null && parent != root) {
             
             // child has sibling
             

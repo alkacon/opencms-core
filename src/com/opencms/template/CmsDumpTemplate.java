@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsDumpTemplate.java,v $
-* Date   : $Date: 2001/01/24 09:42:40 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/02/06 13:57:27 $
+* Version: $Revision: 1.16 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -33,8 +33,6 @@ import java.util.*;
 import com.opencms.launcher.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
 
 /**
  * Template class for dumping files to the output without further 
@@ -42,9 +40,9 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2001/01/24 09:42:40 $
+ * @version $Revision: 1.16 $ $Date: 2001/02/06 13:57:27 $
  */
-public class CmsDumpTemplate implements I_CmsDumpTemplate,I_CmsLogChannels {
+public class CmsDumpTemplate extends A_CmsTemplate implements I_CmsDumpTemplate {
     
     /** 
      * Template cache is not used here since we don't include
@@ -142,9 +140,9 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate,I_CmsLogChannels {
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
      */
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+    /*public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
-    }
+    }*/
     
     /** 
      * Any results of this class are cacheable since we don't include

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2001/01/22 16:55:05 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2001/02/06 13:55:23 $
+ * Version: $Revision: 1.33 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Anders Fugmann
  *
- * @version $Revision: 1.32 $ $Date: 2001/01/22 16:55:05 $
+ * @version $Revision: 1.33 $ $Date: 2001/02/06 13:55:23 $
  * 
  */
 public class CmsRequestContext implements I_CmsConstants {
@@ -78,6 +78,11 @@ public class CmsRequestContext implements I_CmsConstants {
 	 * The current project.
 	 */
 	private CmsProject m_currentProject;
+    
+    /**
+     * Is this response streaming?
+     */
+    private boolean m_streaming = true;
 
 /**
  * The default constructor.
@@ -191,11 +196,12 @@ public CmsFolder currentFolder() throws CmsException {
 	 * @param user the current user for this request.
 	 * @param currentGroup the current group for this request.
 	 * @param currentProjectId the id of the current project for this request.
-	 *
+     * @param streaming <code>true</code> if streaming should be enabled for this response, <code>false</code> otherwise.
+ 	 *
 	 * @exception CmsException if operation was not successful.
 	 */
 	void init(I_CmsResourceBroker rb, I_CmsRequest req, I_CmsResponse resp, 
-			  String user, String currentGroup, int currentProjectId) 
+			  String user, String currentGroup, int currentProjectId, boolean streaming) 
 		throws CmsException {
 		m_rb = rb;
 		m_req = req;
@@ -215,9 +221,10 @@ public CmsFolder currentFolder() throws CmsException {
 			m_user = null;
 		}
 
-		// set current project and group for this request
+		// set current project, group and streaming proerties for this request
 		setCurrentProject(currentProjectId);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
+        m_streaming = streaming;
 	}
 	/**
 	 * Determines if the users is in the admin-group.
@@ -279,4 +286,31 @@ public CmsFolder currentFolder() throws CmsException {
 		}
 		return( m_currentProject );
 	}
+
+	/**
+	 * Get the current mode for HTTP streaming.
+	 * 
+	 * @return <code>true</code> if template classes are allowed to stream the
+	 *    results to the response output stream theirselves, <code>false</code> otherwise.
+	 */
+    public boolean isStreaming() {
+        return m_streaming;
+    }
+
+    /**
+	 * Set the current mode for HTTP streaming.<p>
+	 * Calling this method is only allowed, if the response output stream was
+	 * not used before. Otherwise the streaming mode must not be changed.
+	 * 
+	 * @param b <code>true</code> if template classes are allowed to stream the
+	 *    results to the response's output stream theirselves, <code>false</code> otherwise.
+     * @exception CmsException if the output stream was already used previously.
+	 */
+    public void setStreaming(boolean b) throws CmsException {
+        if((m_streaming != b) && getResponse().isOutputWritten()) {
+            throw new CmsException("[CmsRequestContext] Cannot switch streaming mode, if output stream is used previously.", CmsException.C_STREAMING_ERROR); 
+        }
+        m_streaming = b;
+    }
+
 }

@@ -1,10 +1,10 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
-* Date   : $Date: 2001/02/01 21:41:43 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2001/02/06 13:54:57 $
+* Version: $Revision: 1.74 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -12,7 +12,7 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@
 *
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -39,7 +39,7 @@ import com.opencms.file.*;
 import com.opencms.util.*;
 
 /**
- * This class is the main servlet of the OpenCms system. 
+ * This class is the main servlet of the OpenCms system.
  * <p>
  * From here, all other operations are invoked.
  * It initializes the Servlet and processes all requests send to the OpenCms.
@@ -58,60 +58,60 @@ import com.opencms.util.*;
  * </li>
  * </ul>
  * <p>
- * The class overloades the standard Servlet methods doGet and doPost to process 
+ * The class overloades the standard Servlet methods doGet and doPost to process
  * Http requests.
- * 
+ *
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2001/02/01 21:41:43 $  
- * 
+ * @version $Revision: 1.74 $ $Date: 2001/02/06 13:54:57 $
+ *
  * */
 public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
-    
+
     /**
      * The name of the redirect entry in the configuration file.
      */
     static final String C_PROPERTY_REDIRECT = "redirect";
-    
+
     /**
      * The name of the redirect location entry in the configuration file.
      */
     static final String C_PROPERTY_REDIRECTLOCATION = "redirectlocation";
-    
+
     /**
      * The configuration for the OpenCms servlet.
      */
     private Configurations m_configurations;
-    
+
     /**
      * The session storage for all active users.
      */
     private CmsCoreSession m_sessionStorage;
-    
+
     /**
      * The reference to the OpenCms system.
      */
     private A_OpenCms m_opencms;
-    
+
     /**
      * Storage for redirects.
      */
     private Vector m_redirect = new Vector();
-    
+
     /**
      * Storage for redirect locations.
      */
     private Vector m_redirectlocation = new Vector();
-    
+
     /**
      * Storage for the clusterurl
      */
     private String m_clusterurl = null;
-    
+
     /**
      * The total amount of concurrent requests.
      */
     private int m_currentRequestAmount = 0;
-    
+
     /**
      * Checks if the requested resource must be redirected to the server docroot and
      * excecutes the redirect if nescessary.
@@ -120,21 +120,21 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
      */
     private void checkRelocation(CmsObject cms) throws CmsException {
         CmsRequestContext context = cms.getRequestContext();
-        
-        // check the if the current project is the online project. Only in this project,        
+
+        // check the if the current project is the online project. Only in this project,
         // a redirect is nescessary.
         if(context.currentProject().equals(cms.onlineProject())) {
             String filename = context.getUri();
-            
+
             // check all redirect locations
             for(int i = 0;i < m_redirect.size();i++) {
                 String redirect = (String)m_redirect.elementAt(i);
-                
+
                 // found a match, so redirect
                 if(filename.startsWith(redirect)) {
                     String redirectlocation = (String)m_redirectlocation.elementAt(i);
                     String doRedirect = redirectlocation + filename.substring(redirect.length());
-                    
+
                     // try to redirect
                     try {
                         ((HttpServletResponse)context.getResponse().getOriginalResponse()).sendRedirect(doRedirect);
@@ -146,7 +146,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             }
         }
     }
-    
+
     /**
      * Generates a formated exception output. <br>
      * Because the exception could be thrown while accessing the system files,
@@ -403,7 +403,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         output.append("</html>\n");
         return output.toString();
     }
-    
+
     /**
      * Destroys all running threads before closing the VM.
      */
@@ -421,23 +421,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");
         }
     }
-    
+
     /**
      * Method invoked on each HTML GET request.
      * <p>
      * (Overloaded Servlet API method, requesting a document).
      * Reads the URI received from the client and invokes the appropiate action.
-     * 
+     *
      * @param req   The clints request.
      * @param res   The servlets response.
      * @exception ServletException Thrown if request fails.
      * @exception IOException Thrown if user autherization fails.
      */
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-        
+
         // start time of this request
         long reqStartTime = System.currentTimeMillis();
-        
+
         // amount of total requests in the system
         m_currentRequestAmount++;
         if(req.getRequestURI().indexOf("system/workplace/action/login.html") > 0) {
@@ -454,8 +454,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             checkRelocation(cms);
             CmsFile file = m_opencms.initResource(cms);
             if(file != null) {
-                
-                // If the CmsFile object is null, the resource could not be found.                
+
+                // If the CmsFile object is null, the resource could not be found.
                 // Stop processing in this case to avoid NullPointerExceptions
                 m_opencms.setResponse(cms, file);
                 m_opencms.showResource(cms, file);
@@ -465,43 +465,43 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
-        
+
         // create debug informations
         m_currentRequestAmount--;
         long delta = System.currentTimeMillis() - reqStartTime;
         long total = Runtime.getRuntime().totalMemory() / 1024;
         long free = Runtime.getRuntime().freeMemory() / 1024;
-        System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
-        System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-        System.err.print("threads:" + Thread.activeCount() + " ");
-        System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        //System.err.print(new Date() + " doGet()  reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
+        //System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
+        //System.err.print("threads:" + Thread.activeCount() + " ");
+        //System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
     }
-    
+
     /**
-     * Method invoked on each HTML POST request. 
+     * Method invoked on each HTML POST request.
      * <p>
      * (Overloaded Servlet API method, posting a document)
      * The OpenCmsMultipartRequest is invoked to upload a new document into OpenCms.
-     * 
+     *
      * @param req   The clints request.
      * @param res   The servlets response.
      * @exception ServletException Thrown if request fails.
      * @exception IOException Thrown if user autherization fails.
      */
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException,IOException {
-        
+
         // start time of this request
         long reqStartTime = System.currentTimeMillis();
-        
+
         // amount of total requests in the system
         m_currentRequestAmount++;
-        
+
         //Check for content type "form/multipart" and decode it
         String type = req.getHeader("content-type");
         CmsObject cms = null;
         if((type != null) && type.startsWith("multipart/form-data")) {
-            
-        
+
+
         //  req = new CmsMultipartRequest(req);
         }
         CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req);
@@ -511,8 +511,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             checkRelocation(cms);
             CmsFile file = m_opencms.initResource(cms);
             if(file != null) {
-                
-                // If the CmsFile object is null, the resource could not be found.                
+
+                // If the CmsFile object is null, the resource could not be found.
                 // Stop processing in this case to avoid NullPointerExceptions
                 m_opencms.setResponse(cms, file);
                 m_opencms.showResource(cms, file);
@@ -522,85 +522,94 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         catch(CmsException e) {
             errorHandling(cms, cmsReq, cmsRes, e);
         }
-        
+
         // create debug informations
         m_currentRequestAmount--;
         long delta = System.currentTimeMillis() - reqStartTime;
         long total = Runtime.getRuntime().totalMemory() / 1024;
         long free = Runtime.getRuntime().freeMemory() / 1024;
-        System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
-        System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
-        System.err.print("threads:" + Thread.activeCount() + " ");
-        System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
+        //System.err.print(new Date() + " doPost() reqAm:" + m_currentRequestAmount + " users:" + m_sessionStorage.size() + " " + delta + "ms");
+        //System.err.print((" [" + total + "/" + free + "/" + (total - free) + "] "));
+        //System.err.print("threads:" + Thread.activeCount() + " ");
+        //System.err.println(cmsReq.getRequestedResource() + " " + cms.getRequestContext().currentUser().getName());
     }
-    
+
     /**
      * This method performs the error handling for the OpenCms.
      * All CmsExetions throns in the OpenCms are forwared to this method and are
      * processed here.
-     * 
+     *
      * @param cms The CmsObject
      * @param cmsReq   The clints request.
      * @param cmsRes   The servlets response.
-     * @param e The CmsException to be processed. 
+     * @param e The CmsException to be processed.
      */
     private void errorHandling(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, CmsException e) {
         int errorType = e.getType();
         HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();
         HttpServletResponse res = (HttpServletResponse)cmsRes.getOriginalResponse();
+        boolean canWrite = ((!cmsRes.isRedirected()) && (!cmsRes.isOutputWritten()));
         try {
             switch(errorType) {
-              
+
               // access denied error - display login dialog
               case CmsException.C_ACCESS_DENIED:
-                  requestAuthorization(req, res);
-                  
+                  if(canWrite) {
+                    requestAuthorization(req, res);
+                  }
+
                   // e.printStackTrace();
                   break;
-              
-              
+
+
               // file not found - display 404 error.
               case CmsException.C_NOT_FOUND:
-                  res.setContentType("text/HTML");
-                  
-                  //res.getWriter().print(createErrorBox(e));
-                  res.sendError(res.SC_NOT_FOUND);
+                  if(canWrite) {
+                    res.setContentType("text/HTML");
+
+                    //res.getWriter().print(createErrorBox(e));
+                    res.sendError(res.SC_NOT_FOUND);
+                  }
                   break;
-              
+
               case CmsException.C_SERVICE_UNAVAILABLE:
-                  res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
+                  if(canWrite) {
+                    res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
+                  }
                   break;
-              
+
               default:
-                  res.setContentType("text/HTML");
-                  
-                  //e.printStackTrace();                  
-                  // set some HTTP headers preventing proxy servers from caching the error box                
-                  res.setHeader("Cache-Control", "no-cache");
-                  res.setHeader("Pragme", "no-cache");
-                  res.getWriter().print(createErrorBox(e));
-            
+                  if(canWrite) {
+                    // send errorbox, but only if the request was not redirected
+                    res.setContentType("text/HTML");
+
+                    //e.printStackTrace();
+                    // set some HTTP headers preventing proxy servers from caching the error box
+                    res.setHeader("Cache-Control", "no-cache");
+                    res.setHeader("Pragma", "no-cache");
+                    res.getWriter().print(createErrorBox(e));
+                  }
             //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
             }
         }
         catch(IOException ex) {
-            
+
         }
     }
-    
+
     /**
      * Initialization of the OpenCms servlet.
      * Used instead of a constructor (Overloaded Servlet API method)
      * <p>
      * The connection information for the property database is read from the configuration
      * file and all resource brokers are initialized via the initalizer.
-     * 
+     *
      * @param config Configuration of OpenCms.
      * @exception ServletException Thrown when sevlet initalization fails.
      */
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        
+
         // Collect the configurations
         try {
             m_configurations = new Configurations(new ExtendedProperties(config.getInitParameter("properties")));
@@ -608,13 +617,13 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         catch(Exception e) {
             throw new ServletException(e.getMessage() + ".  Properties file is: " + config.getInitParameter("properties"));
         }
-        
+
         // Initialize the logging
         A_OpenCms.initializeServletLogging(m_configurations);
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] logging started");
         }
-        
+
         // initialize the redirect information
         int count = 0;
         String redirect;
@@ -633,14 +642,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] Clusterurl: " + m_clusterurl);
         }
         try {
-            
+
             // invoke the OpenCms
             m_opencms = new OpenCms(m_configurations);
         }
         catch(Exception exc) {
             throw new ServletException(exc.getMessage());
         }
-        
+
         //initalize the session storage
         if(A_OpenCms.isLogging()) {
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing session storage");
@@ -650,11 +659,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCmsServlet] initializing... DONE");
         }
     }
-    
+
     /**
      * This method handled the user authentification for each request sent to the
      * OpenCms. <p>
-     * 
+     *
      * User authentification is done in three steps:
      * <ul>
      * <li> Session Authentification: OpenCms stores all active sessions of authentificated
@@ -666,7 +675,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
      * <li> Default user: When both authentification methods fail, the current user is
      * set to the default (guest) user. </li>
      * </ul>
-     * 
+     *
      * @param req   The clints request.
      * @param res   The servlets response.
      * @return The CmsObject
@@ -678,22 +687,22 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         String group = null;
         Integer project = null;
         String loginParameter;
-        
+
         // get the original ServletRequest and response
         HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();
         HttpServletResponse res = (HttpServletResponse)cmsRes.getOriginalResponse();
         CmsObject cms = new CmsObject();
-        
+
         //set up the default Cms object
         try {
             m_opencms.initUser(cms, cmsReq, cmsRes, C_USER_GUEST, C_GROUP_GUEST, C_PROJECT_ONLINE_ID);
-            
-            // check if a parameter "opencms=login" was included in the request.            
+
+            // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
             loginParameter = cmsReq.getParameter("opencms");
             if(loginParameter != null) {
-                
-                // do only show the authentication box if user is not already                 
+
+                // do only show the authentication box if user is not already
                 // authenticated.
                 if(req.getHeader("Authorization") == null) {
                     if(loginParameter.equals("login")) {
@@ -701,23 +710,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                     }
                 }
             }
-            
+
             // check for the clearcache parameter
             loginParameter = cmsReq.getParameter("_clearcache");
             if(loginParameter != null) {
                 cms.clearcache();
             }
-            
+
             // get the actual session
             session = req.getSession(false);
-            
+
             // there is no session
             if((session == null)) {
-                
+
                 // was there an old session-id?
                 String oldSessionId = req.getRequestedSessionId();
                 if(oldSessionId != null) {
-                    
+
                     // yes - try to load that session
                     Hashtable sessionData = null;
                     try {
@@ -728,27 +737,27 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                             A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO, "[OpenCmsServlet] cannot restore session: " + com.opencms.util.Utils.getStackTrace(exc));
                         }
                     }
-                    
+
                     // can the session be restored?
                     if(sessionData != null) {
-                        
+
                         // create a new session first
                         session = req.getSession(true);
                         m_sessionStorage.putUser(session.getId(), sessionData);
-                        
+
                         // restore the session-data
                         session.putValue(C_SESSION_DATA, sessionData.get(C_SESSION_DATA));
                     }
                 }
             }
-            
+
             // there was a session returned, now check if this user is already authorized
             if(session != null) {
-                
+
                 // get the username
                 user = m_sessionStorage.getUserName(session.getId());
-                
-                //System.err.println("Session authentifcation "+user.toString());                
+
+                //System.err.println("Session authentifcation "+user.toString());
                 //check if a user was returned, i.e. the user is authenticated
                 if(user != null) {
                     group = m_sessionStorage.getCurrentGroup(session.getId());
@@ -757,20 +766,20 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                 }
             }
             else {
-                
-                // there was either no session returned or this session was not                 
+
+                // there was either no session returned or this session was not
                 // found in the CmsCoreSession storage
                 String auth = req.getHeader("Authorization");
-                
-                // User is authenticated, check password	
+
+                // User is authenticated, check password
                 if(auth != null) {
-                    
+
                     // only do basic authentification
                     if(auth.toUpperCase().startsWith("BASIC ")) {
-                        
+
                         // Get encoded user and password, following after "BASIC "
                         String userpassEncoded = auth.substring(6);
-                        
+
                         // Decode it, using any base 64 decoder
                         sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
                         String userstr = new String(dec.decodeBuffer(userpassEncoded));
@@ -783,23 +792,23 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                         if(st.hasMoreTokens()) {
                             password = st.nextToken();
                         }
-                        
+
                         // autheification in the DB
                         try {
                             user = cms.loginUser(username, password);
-                            
-                            // System.err.println("HTTP authentifcation "+user.toString());                            
-                            // authentification was successful create a session 
+
+                            // System.err.println("HTTP authentifcation "+user.toString());
+                            // authentification was successful create a session
                             session = req.getSession(true);
                             OpenCmsServletNotify notify = new OpenCmsServletNotify(session.getId(), m_sessionStorage);
                             session.putValue("NOTIFY", notify);
                         }
                         catch(CmsException e) {
                             if(e.getType() == CmsException.C_NO_ACCESS) {
-                                
+
                                 // authentification failed, so display a login screen
                                 requestAuthorization(req, res);
-                            
+
                             // System.err.println("HTTP authentifcation login required");
                             }
                             else {
@@ -815,11 +824,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         }
         return cms;
     }
-    
+
     /**
      * This method sends a request to the client to display a login form.
      * It is needed for HTTP-Authentification.
-     * 
+     *
      * @param req   The clints request.
      * @param res   The servlets response.
      */
@@ -827,16 +836,16 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
         res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCms\"");
         res.setStatus(401);
     }
-    
+
     /**
      * Updated the the user data stored in the CmsCoreSession after the requested document
      * is processed.<br>
-     * 
-     * This is nescessary if the user data (current group or project) was changed in 
+     *
+     * This is nescessary if the user data (current group or project) was changed in
      * the requested document. <br>
-     * 
+     *
      * The user data is only updated if the user was authenticated to the system.
-     * 
+     *
      * @param cms The actual CmsObject.
      * @param cmsReq The clints request.
      * @param cmsRes The servlets response.
@@ -844,14 +853,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
      */
     private void updateUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes) throws IOException {
         HttpSession session = null;
-        
+
         // get the original ServletRequest and response
         HttpServletRequest req = (HttpServletRequest)cmsReq.getOriginalRequest();
-        
+
         //get the session if it is there
         session = req.getSession(false);
-        
-        // if the user was authenticated via sessions, update the information in the        
+
+        // if the user was authenticated via sessions, update the information in the
         // sesssion stroage
         if((session != null)) {
             if(!cms.getRequestContext().currentUser().getName().equals(C_USER_GUEST)) {
@@ -864,19 +873,19 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                     oldData = new Hashtable();
                 }
                 sessionData.put(C_SESSION_DATA, oldData);
-                
+
                 // was there any change on current-user, current-group or current-project?
                 boolean dirty = false;
                 dirty = dirty || (!sessionData.get(C_SESSION_USERNAME).equals(m_sessionStorage.getUserName(session.getId())));
                 dirty = dirty || (!sessionData.get(C_SESSION_CURRENTGROUP).equals(m_sessionStorage.getCurrentGroup(session.getId())));
                 dirty = dirty || (!sessionData.get(C_SESSION_PROJECT).equals(m_sessionStorage.getCurrentProject(session.getId())));
-                
+
                 // update the user-data
                 m_sessionStorage.putUser(session.getId(), sessionData);
-                
+
                 // was the session changed?
                 if((session.getValue(C_SESSION_IS_DIRTY) != null) || dirty) {
-                    
+
                     // yes- store it to the database
                     session.removeValue(C_SESSION_IS_DIRTY);
                     try {
@@ -888,10 +897,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants,I_CmsL
                         }
                     }
                 }
-                
+
                 // check if the session notify is set, it is nescessary to remove the
-                
-                // session from the internal storage on its destruction.      
+
+                // session from the internal storage on its destruction.
                 OpenCmsServletNotify notify = null;
                 Object sessionValue = session.getValue("NOTIFY");
                 if(sessionValue instanceof OpenCmsServletNotify) {

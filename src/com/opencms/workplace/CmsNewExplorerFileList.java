@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/01/31 11:22:29 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/02/06 13:57:49 $
+* Version: $Revision: 1.16 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2001/01/31 11:22:29 $
+ * @version $Revision: 1.16 $ $Date: 2001/02/06 13:57:49 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -442,6 +442,22 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
             Hashtable parameters, String templateSelector) {
         return false;
+    }
+    public boolean isProxyPrivateCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+    public boolean isProxyPublicCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+    public boolean isExportable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+    public boolean isStreamable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        return false;
+    }
+    public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        CmsCacheDirectives myCd = new CmsCacheDirectives(false);
+        return myCd;
     }
     
     /** 

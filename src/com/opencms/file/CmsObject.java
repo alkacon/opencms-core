@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/01/30 14:01:53 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2001/02/06 13:55:22 $
+ * Version: $Revision: 1.151 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.150 $ $Date: 2001/01/30 14:01:53 $ 
+ * @version $Revision: 1.151 $ $Date: 2001/02/06 13:55:22 $ 
  * 
  */
 public class CmsObject implements I_CmsConstants {
@@ -1130,13 +1130,14 @@ public void init(I_CmsResourceBroker broker) throws CmsException {
  * @param user the current user for this request.
  * @param currentGroup the current group for this request.
  * @param currentProjectId the current projectId for this request.
+ * @param streaming <code>true</code> if streaming should be enabled while creating the request context, <code>false</code> otherwise.
  *
  * @exception CmsException if operation was not successful.
  */
-public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId) throws CmsException {
+public void init(I_CmsResourceBroker broker, I_CmsRequest req, I_CmsResponse resp, String user, String currentGroup, int currentProjectId, boolean streaming) throws CmsException {
 	m_rb = broker;
 	m_context = new CmsRequestContext();
-	m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId);
+	m_context.init(m_rb, req, resp, user, currentGroup, currentProjectId, streaming);
 }
 /**
  * Checks, if the users current group is the admin-group.
@@ -1222,7 +1223,7 @@ public String loginUser(String username, String password) throws CmsException {
 	// login the user
 	CmsUser newUser = m_rb.loginUser(m_context.currentUser(), m_context.currentProject(), username, password);
 	// init the new user
-	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
+	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming());
 	// return the user-name
 	return (newUser.getName());
 }
@@ -1239,7 +1240,7 @@ public String loginWebUser(String username, String password) throws CmsException
 	// login the user
 	CmsUser newUser = m_rb.loginWebUser(m_context.currentUser(), m_context.currentProject(), username, password);
 	// init the new user
-	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID);
+	init(m_rb, m_context.getRequest(), m_context.getResponse(), newUser.getName(), newUser.getDefaultGroup().getName(), C_PROJECT_ONLINE_ID, m_context.isStreaming());
 	// return the user-name
 	return (newUser.getName());
 }

@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/01/30 08:49:00 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2001/02/06 13:57:28 $
+* Version: $Revision: 1.31 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2001/01/30 08:49:00 $
+ * @version $Revision: 1.31 $ $Date: 2001/02/06 13:57:28 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
     
@@ -182,7 +182,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
                     cdatas.addElement(n.getNodeValue());
                     n.setNodeValue("");
                 }
-                n = treeWalker(n);
+                n = treeWalker(rootElem, n);
             }
         }
         StringWriter out = new StringWriter();
@@ -419,11 +419,26 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @see #getTemplateDatablockName
      */
     public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
+        OutputStream os = null;
+        if(m_cms.getRequestContext().isStreaming()) {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Entering streaming mode for file: " + getAbsoluteFilename());           
+            }
+            try {
+                os = m_cms.getRequestContext().getResponse().getOutputStream();
+            } catch (Exception e) {
+                throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
+            }
+        } else {
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_STREAMING, getClassName() + "Disabled streaming mode for file: " + getAbsoluteFilename());           
+            }
+        }
         String datablockName = this.getTemplateDatablockName(templateSelector);
         if(datablockName == null && (templateSelector.toLowerCase().equals("script"))) {
             return "";
         }
-        return getProcessedDataValue(datablockName, callingObject, parameters);
+        return getProcessedDataValue(datablockName, callingObject, parameters, os);
     }
     public String getSectionTitle(String sectionName) throws CmsException {
         String datablockName = getTemplateDatablockName(sectionName);

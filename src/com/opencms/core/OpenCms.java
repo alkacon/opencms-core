@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/01/30 14:50:10 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2001/02/06 13:54:57 $
+* Version: $Revision: 1.46 $
 *
 * Copyright (C) 2000  The OpenCms Group 
 * 
@@ -51,7 +51,7 @@ import com.opencms.launcher.*;
  *  
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.45 $ $Date: 2001/01/30 14:50:10 $  
+ * @version $Revision: 1.46 $ $Date: 2001/02/06 13:54:57 $  
  * 
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -92,6 +92,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      * Indicates, if the session-failover should be enabled or not.
      */
     private boolean m_sessionFailover = false;
+
+    /**
+     * Indicates, if the streaming should be enabled by the configurations
+     */
+    private boolean m_streaming = true;
     
     /**
      * Constructor, creates a new OpenCms object.
@@ -126,6 +131,12 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] found " 
                         + m_mt.size() + " mime-type entrys");
+            }
+            
+            // Check, if the HTTP streaming should be enabled
+            m_streaming = conf.getBoolean("httpstreaming.enabled", true);
+            if(A_OpenCms.isLogging()) {
+                A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] HTTP streaming " + (m_streaming?"en":"dis") + "abled. ");
             }
         }
         catch(Exception e) {
@@ -246,7 +257,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
      */
     public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, String user, 
             String group, int project) throws CmsException {
-        cms.init(c_rb, cmsReq, cmsRes, user, group, project);
+        cms.init(c_rb, cmsReq, cmsRes, user, group, project, m_streaming);
     }
     
     /**
