@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/02/13 17:13:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,66 +33,74 @@ package org.opencms.main;
 
 
 import org.opencms.db.CmsDriverManager;
+import org.opencms.file.CmsObject;
 import org.opencms.setup.CmsSetupUtils;
 
-import org.opencms.file.CmsObject;
-
+import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * This class is a commad line interface to OpenCms which 
- * is used for the initial setup and also can be used to directly access the
- * without the OpenCms workplace.<p>
+ * A commad line interface to OpenCms which 
+ * is used for the initial setup and also can be used to directly access the OpenCms
+ * repository without the Workplace.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.14 $ $Date: 2004/02/13 17:13:40 $
  */
 public class CmsShell {
 
-    /** Comment Char */
-    public static final String C_COMMENT_CHAR = "#";
-
-    /** If set to true, all commands are echoed */
-    static boolean m_echo = false;
-
-    /** Indicates if the 'exit' command has been called */
-    static boolean m_exitCalled = false;
-
-    /** If true, then print only the short version of the Exception in the command line */
-    static boolean m_shortException = false;
-
     /** The OpenCms context object */
-    protected CmsObject m_cms = null;
-
-    /** If set to true, the memory-logging is enabled */
-    boolean m_logMemory = false;
-
-    /** The OpenCms system object */
-    private OpenCmsCore m_openCms = null;
-    
-    /** Internal shell command object */
-    private CmsShellCommands m_shellCommands = null;
+    private CmsObject m_cms;
     
     /** Internal driver manager */
-    private CmsDriverManager m_driverManager = null;
+    private CmsDriverManager m_driverManager;
+
+    /** If set to true, all commands are echoed */
+    private boolean m_echo;
+
+    /** Indicates if the 'exit' command has been called */
+    private boolean m_exitCalled;
+
+    /** The OpenCms system object */
+    private OpenCmsCore m_openCms;
+    
+    /** Internal shell command object */
+    private CmsShellCommands m_shellCommands;
 
     /**
      * Creates a new CmsShell.<p>
      * 
+     * @param fileInput a (file) input stream from which commands are read
      * @param basePath the OpenCms base application path
      */
-    public CmsShell(String basePath) {
+    public CmsShell(String basePath, FileInputStream fileInput) {
         try {
+            if (basePath == null || "".equals(basePath)) {
+                System.err.println("No OpenCms home folder given. Trying to guess...");
+                basePath = searchBaseFolder(System.getProperty("user.dir"));
+                if (basePath == null || "".equals(basePath)) {
+                    System.err.println("-----------------------------------------------------------------------");
+                    System.err.println("OpenCms base folder could not be guessed.");
+                    System.err.println("");
+                    System.err.println("Please start the OpenCms command line interface from the directory");
+                    System.err.println("containing the \"opencms.properties\" and the \"oclib\" folder or pass the");
+                    System.err.println("OpenCms home folder as argument.");
+                    System.err.println("-----------------------------------------------------------------------");
+                    return;
+                }
+            }
             
             // first initialize runlevel 1 and set all path information
             m_openCms = OpenCmsCore.getInstance();
@@ -107,60 +115,145 @@ public class CmsShell {
 
             m_echo = false;
             m_exitCalled = false;
-            m_shortException = false;
-            m_logMemory = conf.getBoolean("log.memory", false);
                     
             m_driverManager = m_openCms.getDriverManager();
-            m_cms = m_openCms.initCmsObject(null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
-    
-        } catch (Exception exc) {
-            printException(exc);
+            m_cms = m_openCms.initCmsObject(null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);    
+            
+            commands(fileInput);            
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
         }
     }
 
     /**
-     * Prints an exception stacktrace to the command shell.<p>
-     *
-     * @param t the exception to print
-     */
-    protected static void printException(Throwable t) {
-        if (CmsShell.m_shortException) {
-            String exceptionText;
-
-            if (t instanceof CmsException) {
-                exceptionText = ((CmsException)t).getTypeText(); // this is a cms-exception: print a very short exeption-text
-            } else {
-                exceptionText = t.getMessage(); // only return the exception message
-            }
-            if ((exceptionText == null) || (exceptionText.length() == 0)) {
-                // the exception-text was empty, return the class-name of the exeption
-                exceptionText = t.getClass().getName();
-            }
-            System.out.println(exceptionText);
-        } else {
-            t.printStackTrace();
-        }
-    }
-
-    /**
-     * Prints the full name and signature of a method,
-     * used by help methods.<p>
+     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
      * 
-     * @param method the method to print the full name and signature for
+     * @param currentDir current directory
+     * @return String directory name
      */
-    protected static void printMethod(Method method) {
-        System.out.print("  " + method.getName() + " (");
-        Class[] params = method.getParameterTypes();
-        for (int i = 0; i < params.length; i++) {
-            String par = params[i].getName();
-            par = par.substring(par.lastIndexOf(".") + 1);
-            if (i == 0) {
-                System.out.print(par);
-            } else {
-                System.out.print(", " + par);
+    private static String downSearchBaseFolder(File currentDir) {
+        if (isBaseFolder(currentDir)) {
+            return currentDir.getAbsolutePath();
+        } else {
+            if (currentDir.exists() && currentDir.isDirectory()) {
+                File webinfDir = new File(currentDir, "WEB-INF");
+                if (isBaseFolder(webinfDir)) {
+                    return webinfDir.getAbsolutePath();
+                }
             }
         }
-        System.out.println(")");
+        return null;
+    }
+
+    /**
+     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
+     * 
+     * @param currentDir current directory
+     * @return boolean <code>true</code> if currentDir is the base folder
+     */
+    private static boolean isBaseFolder(File currentDir) {
+        if (currentDir.exists() && currentDir.isDirectory()) {
+            File f1 = new File(currentDir.getAbsolutePath() + File.separator + I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE.replace('/', File.separatorChar));
+            return f1.exists() && f1.isFile();
+        }
+        return false;
+    }   
+
+    /**
+     * Main program entry point when started via the command line.<p>
+     *
+     * @param args parameters passed to the application via the command line
+     */
+    public static void main(String[] args) {
+        boolean wrongUsage = false;    
+        String base = null;
+        String script = null;
+    
+        if (args.length > 2) {
+            wrongUsage = true;
+        } else {
+            for (int i = 0; i < args.length; i++) {
+                String arg = args[i];
+                if (arg.startsWith("-base=")) {
+                    base = arg.substring(6);
+                } else if (arg.startsWith("-script=")) {
+                    script = arg.substring(8);
+                } else {
+                    System.out.println("wrong usage!");
+                    wrongUsage = true;
+                }
+            }
+        }
+        if (wrongUsage) {
+            System.out.println("Usage: java " + CmsShell.class.getName() + " [-base=<basepath>] [-script=<scriptfile>]");
+        } else {
+            FileInputStream stream = null;
+            if (script != null) {
+                try {
+                    stream = new FileInputStream(script);
+                } catch (IOException exc) {
+                    System.out.println("wrong script-file " + script + " using stdin instead");
+                }
+            }
+    
+            if (stream == null) {
+                // no script-file use input-stream
+                stream = new FileInputStream(FileDescriptor.in);
+            }
+    
+            new CmsShell(base, stream);
+        }
+    }
+
+    /**
+     * Searches for the OpenCms web application base folder during startup.<p>
+     * 
+     * @param startFolder the folder where to start searching
+     * @return String the name of the folder on the local file system
+     */
+    public static String searchBaseFolder(String startFolder) {
+        File currentDir = null;
+        String base = null;
+        File father = null;
+        File grandFather = null;
+    
+        // Get a file obkect of the current folder
+        if (startFolder != null && !"".equals(startFolder)) {
+            currentDir = new File(startFolder);
+        }
+    
+        // Get father and grand father
+        if (currentDir != null && currentDir.exists()) {
+            father = currentDir.getParentFile();
+        }
+        if (father != null && father.exists()) {
+            grandFather = father.getParentFile();
+        }
+    
+        if (currentDir != null) {
+            base = downSearchBaseFolder(currentDir);
+        }
+        if (base == null && grandFather != null) {
+            base = downSearchBaseFolder(grandFather);
+        }
+        if (base == null && father != null) {
+            base = downSearchBaseFolder(father);
+        }
+        return base;
+    }
+
+    /**
+     * Entry point when started from the OpenCms setup wizard.<p>
+     *
+     * @param file filename of a file containing the setup commands (e.g. cmssetup.txt)
+     * @param base base folder for the OpenCms web application
+     */
+    public static void startSetup(String file, String base) {
+        try {
+            new CmsShell(base, new FileInputStream(new File(file)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -202,7 +295,7 @@ public class CmsShell {
             m_shellCommands.printHelpText();
         } catch (Throwable t) {
             System.err.println("Got Exception while using reflection:");
-            printException(t);
+            t.printStackTrace(System.err);            
         }
     }
 
@@ -211,14 +304,14 @@ public class CmsShell {
      * 
      * @param input a file input stream from which the commands are read
      */
-    public void commands(FileInputStream input) {
+    private void commands(FileInputStream input) {
         try {
-            this.m_shellCommands = new CmsShellCommands(m_openCms, m_cms, m_driverManager);
+            m_shellCommands = new CmsShellCommands(this, m_openCms, m_cms, m_driverManager);
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(input));
             while (!m_exitCalled) {
                 printPrompt();
                 String line = lnr.readLine();
-                if ((line != null) && line.trim().startsWith(C_COMMENT_CHAR)) {
+                if ((line != null) && line.trim().startsWith("#")) {
                     System.out.println(line);
                     continue;                    
                 }
@@ -240,9 +333,16 @@ public class CmsShell {
                 // exec the command
                 call(args);
             }
-        } catch (Exception exc) {
-            printException(exc);
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);            
         }
+    }
+
+    /**
+     * Exits this shell.<p>
+     */
+    protected void exit() {
+        m_exitCalled = true;
     }
 
     /**
@@ -250,13 +350,16 @@ public class CmsShell {
      */
     private void printPrompt() {
         System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + "}");
-
-        // print out memory-informations, if needed
-        if (m_logMemory) {
-            long total = Runtime.getRuntime().totalMemory() / 1024;
-            long free = Runtime.getRuntime().freeMemory() / 1024;
-            System.out.print(("[" + total + "/" + free + "/" + (total - free) + "]"));
-        }
         System.out.print("> ");
     }
+    
+    /**
+     * Sets the echo status.<p>
+     * 
+     * @param echo the echo status to set
+     */
+    protected void setEcho(boolean echo) {
+        m_echo = echo;
+    }
+
 }

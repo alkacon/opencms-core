@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/02/13 14:37:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 17:13:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsException extends Exception {
 
@@ -50,8 +50,6 @@ public class CmsException extends Exception {
     /** Error code for ClassLoader errors */
     public static final int C_CLASSLOADER_ERROR = 29;
 
-    /** Default prefix for a CmsException message */
-    public static final String C_CMS_EXCEPTION_PREFIX = "org.opencms.main.CmsException";
 
     /**
      * This array provides descriptions for the error codes stored as
@@ -291,7 +289,7 @@ public class CmsException extends Exception {
      * @param useRoot if true, use root case for exception display  
      */
     public CmsException(String message, int type, Throwable rootCause, boolean useRoot) {
-        super(C_CMS_EXCEPTION_PREFIX + ": " + message);
+        super(CmsException.class.getName() + ": " + message);
         this.m_message = message;
         this.m_type = type;
         this.m_rootCause = rootCause;
@@ -347,7 +345,7 @@ public class CmsException extends Exception {
      * @return the exception description message
      */
     public String getMessage() {
-        return (m_message!=null) ? getClass().getName() + ": " + m_message : getClass().getName();
+        return (m_message != null) ? getClass().getName() + ": " + m_message : getClass().getName();
     }
 
     /**
@@ -437,15 +435,6 @@ public class CmsException extends Exception {
      */
     public int getType() {
         return m_type;
-    }
-
-    /**
-     * Returns the exception type as text.
-     *
-     * @return the exception type as text
-     */
-    public String getTypeText() {
-        return C_CMS_EXCEPTION_PREFIX + ": " + getType() + " " + getErrorDescription(getType());
     }
 
     /**

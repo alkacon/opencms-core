@@ -45,4 +45,4 @@ set CLASSPATH= %CLASSPATH%;classes
 set ARGS=
 set ARGS= %ARGS% -base="%CD%"
 
-java %OPTIONS% -classpath %CLASSPATH% org.opencms.setup.CmsMain %1 %2 %3 %4 %5 %6 %7 %8 %9 %ARGS%
+java %OPTIONS% -classpath %CLASSPATH% org.opencms.main.CmsShell %1 %2 %3 %4 %5 %6 %7 %8 %9 %ARGS%

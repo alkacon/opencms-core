@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2004/02/13 17:13:40 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,12 @@ import org.opencms.cron.CmsCronScheduler;
 import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsFolder;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsLocaleManager;
@@ -49,7 +55,6 @@ import org.opencms.lock.CmsLockManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.setup.CmsMain;
 import org.opencms.setup.CmsSetupUtils;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
@@ -67,12 +72,6 @@ import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.CmsResponseHttpServlet;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsRegistry;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
 
 import java.io.IOException;
 import java.util.*;
@@ -102,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.79 $
+ * @version $Revision: 1.80 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1534,7 +1533,7 @@ public final class OpenCmsCore {
         // Check for OpenCms home (base) directory path
         String base = context.getInitParameter("opencms.home");
         if (base == null || "".equals(base)) {
-            base = CmsMain.searchBaseFolder(context.getRealPath("/"));
+            base = CmsShell.searchBaseFolder(context.getRealPath("/"));
             if (base == null || "".equals(base)) {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupThread.java,v $
- * Date   : $Date: 2004/02/03 10:59:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/13 17:13:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 package org.opencms.setup;
 
+import org.opencms.main.CmsShell;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PipedOutputStream;
@@ -39,7 +41,7 @@ import java.io.PrintStream;
  * Used for the workplace setup in the OpenCms setup wizard.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsSetupThread extends Thread {
 
@@ -50,7 +52,7 @@ public class CmsSetupThread extends Thread {
     private String m_basePath;
 
     /** Logging Thread */
-    private CmsSetupLoggingThread m_lt;
+    private CmsSetupLoggingThread m_loggingThread;
 
     /** System.out and System.err are redirected to this stream */
     private PipedOutputStream m_pipedOut;
@@ -67,7 +69,7 @@ public class CmsSetupThread extends Thread {
         
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_lt = new CmsSetupLoggingThread(m_pipedOut);
+        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut);
     }
 
     /** 
@@ -76,14 +78,14 @@ public class CmsSetupThread extends Thread {
      * @return the status of the logging thread 
      */
     public boolean finished() {
-        return m_lt.getStopThread();
+        return m_loggingThread.getStopThread();
     }
 
     /** 
      * Cleans up the logging thread.<p> 
      */
     public void reset() {
-        m_lt.reset();
+        m_loggingThread.reset();
     }
 
     /**
@@ -100,21 +102,21 @@ public class CmsSetupThread extends Thread {
             System.setErr(new PrintStream(m_pipedOut));
     
             // start the logging thread 
-            m_lt.start();
+            m_loggingThread.start();
     
             // start importing the workplace
-            CmsMain.startSetup(m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_basePath + "WEB-INF/");
+            CmsShell.startSetup(m_basePath + CmsSetupDb.C_SETUP_DATA_FOLDER + "cmssetup.txt", m_basePath + "WEB-INF/");
     
             // stop the logging thread
             try {
                 sleep(1000);
-                m_lt.stopThread();
+                m_loggingThread.stopThread();
                 m_pipedOut.close();
             } catch (InterruptedException e)  {
-                m_lt.stopThread();
+                m_loggingThread.stopThread();
                 e.printStackTrace(m_tempErr);
             } catch (IOException e)  {
-                m_lt.stopThread();
+                m_loggingThread.stopThread();
                 e.printStackTrace(m_tempErr);
             }
         } finally {
@@ -141,6 +143,6 @@ public class CmsSetupThread extends Thread {
      * Stops the logging thread.<p>
      */
     public void stopLoggingThread() {
-        m_lt.stopThread();
+        m_loggingThread.stopThread();
     }
 }

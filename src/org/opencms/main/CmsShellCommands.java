@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/13 17:13:40 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $ $Date: 2004/02/13 13:45:33 $ 
+ * @version $Revision: 1.34 $ $Date: 2004/02/13 17:13:40 $ 
  * @see org.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -92,19 +92,23 @@ class CmsShellCommands {
      */
     private CmsDriverManager m_driverManager;
     
+    /** The Cms shell.<p> */
+    private CmsShell m_shell;
+    
     /**
      * Generate a new instance of CmsShellCommands.<p>
      * 
+     * @param shell the shell that initialized this command proccessor
      * @param openCms the operatin environment 
      * @param cms an initialized OpenCms object (i.e. "operating system")
      * @param driverManager the driver manager
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
+    public CmsShellCommands(CmsShell shell, OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
+        m_shell = shell;
         m_openCms = openCms;
         m_driverManager = driverManager;
         m_cms = cms;
-        // m_cms = m_openCms.initCmsObject(null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);
 
         // print the version-string
         version();
@@ -122,7 +126,7 @@ class CmsShellCommands {
             int id = Integer.parseInt(taskId);
             m_cms.acceptTask(id);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -136,7 +140,7 @@ class CmsShellCommands {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.accessProject(projectId));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -150,7 +154,7 @@ class CmsShellCommands {
         try {
             m_cms.addFileExtension(extension, resourceType);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -164,7 +168,7 @@ class CmsShellCommands {
         try {
             m_cms.createGroup(name, description, I_CmsConstants.C_FLAG_ENABLED, null);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -180,7 +184,7 @@ class CmsShellCommands {
         try {
             m_cms.createGroup(name, description, Integer.parseInt(flags), parent);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -196,7 +200,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.addUser(name, password, group, description, new Hashtable()));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -219,7 +223,7 @@ class CmsShellCommands {
             user.setLastname(lastname);
             m_cms.writeUser(user);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -233,7 +237,7 @@ class CmsShellCommands {
         try {
             m_cms.addUserToGroup(username, groupname);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -253,7 +257,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.addWebUser(name, password, group, description, new Hashtable()));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -271,7 +275,7 @@ class CmsShellCommands {
         try {
             m_cms.chacc(resourceName, principalType, principalName, allowedPermissions, deniedPermissions, flags);
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -287,7 +291,7 @@ class CmsShellCommands {
         try {
             m_cms.chacc(resourceName, principalType, principalName, permissionString);
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -310,7 +314,7 @@ class CmsShellCommands {
             }
             System.out.println(user.toString());
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -326,7 +330,7 @@ class CmsShellCommands {
             CmsUser user = m_cms.readUser(new CmsUUID(userId));
             System.out.println(user.toString());
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -342,7 +346,7 @@ class CmsShellCommands {
         try {
             m_cms.chtype(filename, m_cms.getResourceTypeId(newType));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -356,7 +360,7 @@ class CmsShellCommands {
         try {
             m_cms.copyResource(source, destination);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -371,7 +375,7 @@ class CmsShellCommands {
             // copy the folder with keeping the flags
             m_cms.copyResource(source, destination, true, true, I_CmsConstants.C_COPY_PRESERVE_LINK);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -385,7 +389,7 @@ class CmsShellCommands {
         try {
             m_cms.copyResource(source, destination);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -400,7 +404,7 @@ class CmsShellCommands {
         try {
             m_cms.copyResourceToProject(resource);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -424,7 +428,7 @@ class CmsShellCommands {
             int intId = Integer.parseInt(id);
             System.out.println(m_cms.countLockedResources(intId));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -455,7 +459,7 @@ class CmsShellCommands {
             // copy the VFS folders to the project
             m_cms.copyResourceToProject("/");
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         } finally {
             m_cms.getRequestContext().restoreSiteRoot();
         }
@@ -472,7 +476,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createResource(folder, newFolderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -496,7 +500,7 @@ class CmsShellCommands {
             long date = Long.parseLong(createDate);
             reg.createModule(modulename, niceModulename, description, author, type, new HashMap(), date, ver);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -512,7 +516,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createProject(name, description, groupname, managergroupname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -529,7 +533,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createProject(name, description, groupname, managergroupname, Integer.parseInt(projecttype)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -543,7 +547,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -564,7 +568,7 @@ class CmsShellCommands {
             long longTimeout = Long.parseLong(timeout);
             System.out.println(m_cms.createTask(agentName, roleName, taskname, longTimeout, intPriority));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -587,7 +591,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createTask(Integer.parseInt(projectid), agentName, roleName, taskname, taskcomment, Integer.parseInt(tasktype), Long.parseLong(timeout), Integer.parseInt(priority)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -598,7 +602,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createTempfileProject());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -612,7 +616,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteAllProperties(resource);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -628,7 +632,7 @@ class CmsShellCommands {
             long maxDate = System.currentTimeMillis() - (intWeeks * oneWeek);
             m_cms.deleteBackups(maxDate, 100, new CmsShellReport());
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -641,7 +645,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     
@@ -656,7 +660,7 @@ class CmsShellCommands {
                 System.out.println(i.next());    
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     
@@ -670,7 +674,7 @@ class CmsShellCommands {
             Map drivers = m_cms.getDrivers();
             System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }    
 
@@ -683,7 +687,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteResource(foldername, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -696,7 +700,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteGroup(delgroup);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -710,7 +714,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.deleteModule(module, new Vector(), false, new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -724,7 +728,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.deleteModuleView(modulename);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -737,7 +741,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteProject(Integer.parseInt(id));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -751,7 +755,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteProperty(resourcename, property);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -765,7 +769,7 @@ class CmsShellCommands {
         try {
             m_cms.deletePropertydefinition(name, m_cms.getResourceTypeId(resourcetype));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -778,7 +782,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -791,7 +795,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteUser(name);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -804,7 +808,7 @@ class CmsShellCommands {
         try {
             m_cms.deleteWebUser(new CmsUUID(userId));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -814,15 +818,10 @@ class CmsShellCommands {
      * @param echo The echo to be written to output.
      */
     public void echo(String echo) {
-        if (echo.toLowerCase().equals("on")) {
-            CmsShell.m_echo = true;
-        } else {
-            if (echo.toLowerCase().equals("off")) {
-                CmsShell.m_echo = false;
-            } else {
-                System.out.println(echo);
-            }
+        if (echo == null) {
+            return;
         }
+        m_shell.setEcho("on".equalsIgnoreCase(echo.trim()));
     }
 
     /**
@@ -834,7 +833,7 @@ class CmsShellCommands {
         try {
             m_cms.endTask(Integer.parseInt(taskid));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -847,7 +846,7 @@ class CmsShellCommands {
         } catch (Throwable e) {
             e.printStackTrace();
         }        
-        CmsShell.m_exitCalled = true;
+        m_shell.exit();
     } 
     
     /**
@@ -862,7 +861,7 @@ class CmsShellCommands {
         try {
             m_cms.exportResources(exportFile, exportPaths, false, false);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -879,7 +878,7 @@ class CmsShellCommands {
         try {
             m_cms.exportResources(exportFile, exportPaths, false, true);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -896,7 +895,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.exportModule(modulename, resources, filename, new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -926,7 +925,7 @@ class CmsShellCommands {
         try {
             m_cms.exportResources(exportFile, exportPaths, excludeSystem, false);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -956,7 +955,7 @@ class CmsShellCommands {
         try {
             m_cms.exportResources(exportFile, exportPaths, excludeSystem, false, true);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -987,7 +986,7 @@ class CmsShellCommands {
         try {
             m_cms.exportResources(exportFile, exportPaths, excludeSystem, true);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1002,7 +1001,7 @@ class CmsShellCommands {
         try {
             m_cms.forwardTask(Integer.parseInt(taskid), newRoleName, newUserName);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1020,7 +1019,7 @@ class CmsShellCommands {
                 System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
             }
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -1034,7 +1033,7 @@ class CmsShellCommands {
                 System.out.println(projects.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1048,7 +1047,7 @@ class CmsShellCommands {
                 System.out.println(projects.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1064,7 +1063,7 @@ class CmsShellCommands {
                 System.out.println(project);
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1079,7 +1078,7 @@ class CmsShellCommands {
                 System.out.println(i.next());
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1108,7 +1107,7 @@ class CmsShellCommands {
                 System.out.println("\t" + key + ": " + info);
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1124,7 +1123,7 @@ class CmsShellCommands {
                 System.out.println(groups.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1141,7 +1140,7 @@ class CmsShellCommands {
                 System.out.println(groups.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1164,7 +1163,7 @@ class CmsShellCommands {
                 System.out.println(groups.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1180,7 +1179,7 @@ class CmsShellCommands {
                 System.out.println(files.get(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1197,7 +1196,7 @@ class CmsShellCommands {
                 System.out.println(files.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
         
@@ -1211,7 +1210,7 @@ class CmsShellCommands {
                 System.out.println(groups.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1227,7 +1226,7 @@ class CmsShellCommands {
                 System.out.println(groups.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1248,7 +1247,7 @@ class CmsShellCommands {
                 System.out.println(codes.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1279,7 +1278,7 @@ class CmsShellCommands {
                 System.out.println("\t\t" + views.elementAt(i) + " -> " + urls.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1332,7 +1331,7 @@ class CmsShellCommands {
                 System.out.println("No module with name " + name);
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1345,7 +1344,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getParent(groupname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1358,7 +1357,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getPermissions(resourceName).getPermissionString());
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -1372,7 +1371,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getPermissions(resourceName, userName).getPermissionString());
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -1388,7 +1387,7 @@ class CmsShellCommands {
                 System.out.println(res.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1407,7 +1406,7 @@ class CmsShellCommands {
                 System.out.println(resources.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1423,7 +1422,7 @@ class CmsShellCommands {
                 System.out.println(folders.get(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1440,7 +1439,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             System.out.println(reg.getSystemValue(key));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1459,7 +1458,7 @@ class CmsShellCommands {
                 System.out.println(key + "->" + res.get(key));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1473,7 +1472,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getTaskPar(Integer.parseInt(taskid), parname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1486,7 +1485,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getTaskType(taskname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1500,7 +1499,7 @@ class CmsShellCommands {
                 System.out.println(users.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1516,7 +1515,7 @@ class CmsShellCommands {
                 System.out.println(users.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1533,7 +1532,7 @@ class CmsShellCommands {
                 System.out.println(users.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1550,7 +1549,7 @@ class CmsShellCommands {
                 System.out.println(views.elementAt(i) + " -> " + urls.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1561,7 +1560,7 @@ class CmsShellCommands {
         Method meth[] = getClass().getMethods();
         for (int z = 0; z < meth.length; z++) {
             if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC)) {
-                CmsShell.printMethod(meth[z]);
+                printMethod(meth[z]);
             }
         }
     }
@@ -1579,7 +1578,7 @@ class CmsShellCommands {
             Method meth[] = getClass().getMethods();
             for (int z = 0; z < meth.length; z++) {
                 if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
-                    CmsShell.printMethod(meth[z]);
+                    printMethod(meth[z]);
                 }
             }
         }
@@ -1637,7 +1636,7 @@ class CmsShellCommands {
         try {
             m_cms.importFolder(importFile, importPath);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1655,7 +1654,7 @@ class CmsShellCommands {
                 System.out.println(conflicts.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1673,7 +1672,7 @@ class CmsShellCommands {
                 System.out.println(resources.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1689,7 +1688,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.importModule(importFile, new Vector(), new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1705,7 +1704,7 @@ class CmsShellCommands {
         try {
             exportPath = m_cms.readPackagePath();
         } catch (CmsException e) {
-            CmsShell.printException(e);
+            printException(e);
             return;
         }
         String fileName = OpenCms.getSystemInfo().getAbsolutePathRelativeToWebInf(exportPath + CmsRegistry.C_MODULE_PATH + importFile);
@@ -1733,7 +1732,7 @@ class CmsShellCommands {
             m_cms.unlockProject(id);
             m_cms.publishProject();
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1748,7 +1747,7 @@ class CmsShellCommands {
         try {
             m_cms.importResources(importFile, I_CmsConstants.C_ROOT);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1764,7 +1763,7 @@ class CmsShellCommands {
         try {
             m_cms.importResources(importFile, importPath);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1791,7 +1790,7 @@ class CmsShellCommands {
             m_cms.unlockProject(id);
             m_cms.publishProject();
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1802,7 +1801,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getRequestContext().isAdmin());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1813,7 +1812,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.getRequestContext().isProjectManager());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1830,7 +1829,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.lockedBy(resource));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1846,7 +1845,7 @@ class CmsShellCommands {
         try {
             m_cms.lockResource(resource);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1869,7 +1868,7 @@ class CmsShellCommands {
                 m_cms.lockResource(resource, false);
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1894,7 +1893,7 @@ class CmsShellCommands {
             m_cms.loginUser(username, password);
             whoami();
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
             System.out.println("Login failed!");
         }
     }
@@ -1911,7 +1910,7 @@ class CmsShellCommands {
             m_cms.loginUser(username, password, remoteAddress);
             whoami();
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
             System.out.println("Login failed!");
         }
     }
@@ -1926,7 +1925,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.loginWebUser(username, password));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1947,7 +1946,7 @@ class CmsShellCommands {
                 }
             }
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -1970,7 +1969,7 @@ class CmsShellCommands {
                 }
             }
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -1984,7 +1983,7 @@ class CmsShellCommands {
         try {
             m_cms.moveResource(source, destination);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -1998,7 +1997,7 @@ class CmsShellCommands {
         try {
             m_cms.moveResource(source, destination);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2025,7 +2024,7 @@ class CmsShellCommands {
             m_cms.unlockProject(projectId);
             m_cms.publishProject();
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2038,7 +2037,7 @@ class CmsShellCommands {
         try {
             m_cms.publishResource(resourceName);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2065,7 +2064,7 @@ class CmsShellCommands {
                 System.out.println(m_cms.readAgent(task));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2085,7 +2084,7 @@ class CmsShellCommands {
                 System.out.println(files.get(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2102,7 +2101,7 @@ class CmsShellCommands {
                 System.out.println(propertydefs.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2113,7 +2112,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readCronTable());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2127,7 +2126,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readPackagePath());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2140,7 +2139,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readFile(filename));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2154,7 +2153,7 @@ class CmsShellCommands {
             System.out.println(m_cms.readFile(filename));
             System.out.println(new String(m_cms.readFile(filename).getContents()));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2171,7 +2170,7 @@ class CmsShellCommands {
                 System.out.println(key + ": " + ext);
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2185,7 +2184,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readFileHeader(filename));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2198,7 +2197,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readFolder(folder));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2218,7 +2217,7 @@ class CmsShellCommands {
                 System.out.println(tasks.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2231,7 +2230,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readGroup(groupname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2244,7 +2243,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readGroup(new CmsUUID(groupId)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2257,7 +2256,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readGroup(m_cms.readProject(Integer.parseInt(project))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2270,7 +2269,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readGroup(m_cms.readTask(Integer.parseInt(task))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2283,7 +2282,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readManagerGroup(m_cms.readProject(Integer.parseInt(project))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2300,7 +2299,7 @@ class CmsShellCommands {
                 System.out.println(key + " : " + mimeTypes.get(key));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2313,7 +2312,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readOriginalAgent(m_cms.readTask(Integer.parseInt(task))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2326,7 +2325,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readOwner(m_cms.readProject(Integer.parseInt(project))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2339,7 +2338,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readOwner(m_cms.readTask(Integer.parseInt(task))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2353,7 +2352,7 @@ class CmsShellCommands {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.readProject(projectId).toString());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2369,7 +2368,7 @@ class CmsShellCommands {
                 System.out.println(logs.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2382,7 +2381,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readProject(m_cms.readFileHeader(res)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2395,7 +2394,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readProject(m_cms.readTask(Integer.parseInt(task))));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2416,7 +2415,7 @@ class CmsShellCommands {
                 System.out.println(properties.get(key));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2430,7 +2429,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readProperty(name, property));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2444,7 +2443,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2457,7 +2456,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readTask(Integer.parseInt(id)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2473,7 +2472,7 @@ class CmsShellCommands {
                 System.out.println(logs.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2492,7 +2491,7 @@ class CmsShellCommands {
                 System.out.println(tasks.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2512,7 +2511,7 @@ class CmsShellCommands {
                 System.out.println(tasks.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2532,7 +2531,7 @@ class CmsShellCommands {
                 System.out.println(tasks.elementAt(i));
             }
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2545,7 +2544,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readUser(username));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2559,7 +2558,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readUser(username, password));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2572,7 +2571,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readWebUser(username));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2586,7 +2585,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.readWebUser(username, password));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     /**
@@ -2598,7 +2597,7 @@ class CmsShellCommands {
         try {
             m_cms.reaktivateTask(Integer.parseInt(taskId));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2613,7 +2612,7 @@ class CmsShellCommands {
         try {
             m_cms.recoverPassword(username, recPassword, newPassword);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2627,7 +2626,7 @@ class CmsShellCommands {
         try {
             m_cms.removeUserFromGroup(username, groupname);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2641,7 +2640,7 @@ class CmsShellCommands {
         try {
             m_cms.renameResource(oldname, newname);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2655,7 +2654,7 @@ class CmsShellCommands {
         try {
             m_cms.renameResource(oldname, newname);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2669,7 +2668,7 @@ class CmsShellCommands {
         try {
             m_cms.restoreResource(Integer.parseInt(tagId), filename);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2684,7 +2683,7 @@ class CmsShellCommands {
         try {
             m_cms.rmacc(resourceName, principalType, principalName);
         } catch (Exception e) {
-            CmsShell.printException(e);
+            printException(e);
         }
     }
 
@@ -2695,7 +2694,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.rootFolder());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2711,7 +2710,7 @@ class CmsShellCommands {
             CmsCronEntry cronJob = cronTable.get(index);
             OpenCmsCore.getInstance().startScheduleJob(cronJob);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }    
     } 
         
@@ -2733,7 +2732,7 @@ class CmsShellCommands {
             int projectId = Integer.parseInt(id);
             System.out.println(m_cms.getRequestContext().setCurrentProject(projectId).toString());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2748,7 +2747,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthor(modulename, author);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2763,7 +2762,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleAuthorEmail(modulename, email);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2779,7 +2778,7 @@ class CmsShellCommands {
             long date = Long.parseLong(createdate);
             reg.setModuleCreateDate(modulname, date);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2794,7 +2793,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDescription(module, description);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2809,7 +2808,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleDocumentPath(modulename, url);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2824,7 +2823,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleMaintenanceEventClass(modulname, classname);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2839,7 +2838,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleNiceName(module, nicename);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2854,7 +2853,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleVersion(modulename, version);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2870,7 +2869,7 @@ class CmsShellCommands {
             CmsRegistry reg = m_cms.getRegistry();
             reg.setModuleView(modulename, viewname, viewurl);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2884,7 +2883,7 @@ class CmsShellCommands {
         try {
             m_cms.setName(Integer.parseInt(taskId), name);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2899,7 +2898,7 @@ class CmsShellCommands {
         try {
             m_cms.setParentGroup(groupName, parentGroupName);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2913,7 +2912,7 @@ class CmsShellCommands {
         try {
             m_cms.setPassword(username, newPassword);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2928,7 +2927,7 @@ class CmsShellCommands {
         try {
             m_cms.setPassword(username, oldPassword, newPassword);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2942,7 +2941,7 @@ class CmsShellCommands {
         try {
             m_cms.setPriority(Integer.parseInt(taskId), Integer.parseInt(priority));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2957,7 +2956,7 @@ class CmsShellCommands {
         try {
             m_cms.setRecoveryPassword(username, oldPassword, newPassword);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2981,7 +2980,7 @@ class CmsShellCommands {
         try {
             m_cms.setTaskPar(Integer.parseInt(taskid), parname, parvalue);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -2995,10 +2994,13 @@ class CmsShellCommands {
         try {
             m_cms.setTimeout(Integer.parseInt(taskId), Long.parseLong(timeout));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
+    
+    boolean m_shortException;
+    
     /**
      * Echos the input to output.
      *
@@ -3006,14 +3008,35 @@ class CmsShellCommands {
      */
     public void shortException(String param) {
         if (param.toLowerCase().equals("on")) {
-            CmsShell.m_shortException = true;
+            m_shortException = true;
         } else {
             if (param.toLowerCase().equals("off")) {
-                CmsShell.m_shortException = false;
+                m_shortException = false;
             }
         }
     }
 
+    /**
+     * Prints the full name and signature of a method,
+     * used by help methods.<p>
+     * 
+     * @param method the method to print the full name and signature for
+     */
+    protected void printMethod(Method method) {
+        System.out.print("  " + method.getName() + " (");
+        Class[] params = method.getParameterTypes();
+        for (int i = 0; i < params.length; i++) {
+            String par = params[i].getName();
+            par = par.substring(par.lastIndexOf(".") + 1);
+            if (i == 0) {
+                System.out.print(par);
+            } else {
+                System.out.print(", " + par);
+            }
+        }
+        System.out.println(")");
+    }
+    
     /**
     * Synchronize cms-resources on virtual filesystem with the server filesystem.
     *
@@ -3024,7 +3047,7 @@ class CmsShellCommands {
         try {
             m_cms.syncFolder(resourceName, new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     /**
@@ -3036,7 +3059,7 @@ class CmsShellCommands {
         try {
             m_cms.undeleteResource(resourcename);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3049,7 +3072,7 @@ class CmsShellCommands {
         try {
             m_cms.undoChanges(filename);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3062,7 +3085,7 @@ class CmsShellCommands {
         try {
             m_cms.unlockProject(Integer.parseInt(id));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3077,7 +3100,7 @@ class CmsShellCommands {
         try {
             m_cms.unlockResource(resource, false);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3088,7 +3111,7 @@ class CmsShellCommands {
         try {
             OpenCms.getSearchManager().updateIndex(new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     
@@ -3101,7 +3124,7 @@ class CmsShellCommands {
         try {
             OpenCms.getSearchManager().updateIndex(index, new CmsShellReport());
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     
@@ -3117,7 +3140,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.createResource(folder, filename, m_cms.getResourceTypeId(type), null, importFile(lokalfile)));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3131,7 +3154,7 @@ class CmsShellCommands {
         try {
             System.out.println(m_cms.userInGroup(username, groupname));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3158,7 +3181,7 @@ class CmsShellCommands {
         try {
             m_cms.writeCronTable(crontable);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3172,7 +3195,7 @@ class CmsShellCommands {
         try {
             m_cms.writePackagePath(path);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3196,7 +3219,7 @@ class CmsShellCommands {
             // write it back
             m_cms.writeGroup(group);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3211,7 +3234,7 @@ class CmsShellCommands {
         try {
             m_cms.writeProperty(name, property, value);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3225,7 +3248,7 @@ class CmsShellCommands {
         try {
             m_cms.writeTaskLog(Integer.parseInt(taskid), comment);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3240,7 +3263,7 @@ class CmsShellCommands {
         try {
             m_cms.writeTaskLog(Integer.parseInt(taskid), comment, Integer.parseInt(taskType));
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3264,7 +3287,7 @@ class CmsShellCommands {
             // write it back
             m_cms.writeUser(user);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 
@@ -3288,10 +3311,29 @@ class CmsShellCommands {
             // write it back
             m_cms.writeUser(user);
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
     
+    
+    /**
+     * Prints an exception stacktrace to the command shell.<p>
+     *
+     * @param t the exception to print
+     */
+    protected void printException(Throwable t) {
+        if (m_shortException) {
+            String exceptionText;
+            exceptionText = t.getMessage();
+            if ((exceptionText == null) || (exceptionText.length() == 0)) {
+                exceptionText = t.getClass().getName();
+            }
+            System.out.println(exceptionText);
+        } else {
+            t.printStackTrace();
+        }
+    }
+        
     /**
      * Does some performance measurements of the OpenCms core.<p>
      */
@@ -3331,7 +3373,7 @@ class CmsShellCommands {
             System.out.println("\rreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / MAX_TESTS) + " ms");
             
         } catch (Exception exc) {
-            CmsShell.printException(exc);
+            printException(exc);
         }
     }
 }
