@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/11/08 15:06:44 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/11/16 15:12:53 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.25 $ $Date: 2004/11/08 15:06:44 $
+ * @version $Revision: 1.26 $ $Date: 2004/11/16 15:12:53 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -116,8 +116,10 @@ public class CmsSearchIndex {
 
     /**
      * Initializes the search index.<p>
+     * 
+     * @throws CmsException if something goes wrong
      */
-    public void initialize() {
+    public void initialize() throws CmsException {
 
         String sourceName = null;
         CmsSearchIndexSource indexSource = null;
@@ -130,16 +132,20 @@ public class CmsSearchIndex {
 
         for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
 
-            sourceName = (String)m_sourceNames.get(i);
-            indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
-            resourceNames = indexSource.getResourcesNames();
-            searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
+            try {
+                sourceName = (String)m_sourceNames.get(i);
+                indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
+                resourceNames = indexSource.getResourcesNames();
+                searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
 
-            for (int j = 0, m = resourceNames.size(); j < m; j++) {
-
-                resourceName = (String)resourceNames.get(j);
-                m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
-            }
+                for (int j = 0, m = resourceNames.size(); j < m; j++) {
+    
+                    resourceName = (String)resourceNames.get(j);
+                    m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
+                }
+            } catch (Exception exc) {
+                throw new CmsException ("Index source association for \"" + sourceName + "\" failed", exc);
+            }    
         }
     }
     

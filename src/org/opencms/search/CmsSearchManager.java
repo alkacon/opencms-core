@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/09/22 12:08:53 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/11/16 15:13:00 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
@@ -62,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
  * Implements the general management and configuration of the search and 
  * indexing facilities in OpenCms.<p>
  * 
- * @version $Revision: 1.24 $ $Date: 2004/09/22 12:08:53 $
+ * @version $Revision: 1.25 $ $Date: 2004/11/16 15:13:00 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -851,7 +852,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
-            index.initialize();
+            try {
+                index.initialize();
+            } catch (CmsException exc) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
+                    ". Search index         : Initialization of index \"" + index.getName() + "\" failed", 
+                    exc);
+            }
         }
     }         
 }
