@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: IndexDirectory.java,v $
-    $Date: 2002/07/15 14:04:24 $
-    $Revision: 1.3 $
+    $Date: 2003/03/25 14:48:28 $
+    $Revision: 1.5 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -22,6 +22,7 @@ package com.opencms.modules.search.lucene;
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   */
 import org.apache.lucene.index.IndexWriter;
+import java.io.*;
 
 /**
  *  Class to create a new index directory.
@@ -31,7 +32,7 @@ import org.apache.lucene.index.IndexWriter;
  */
 public class IndexDirectory {
     // the debug flag
-    private final static boolean debug = false;
+    private final static boolean debug = true;
 
 
     /**
@@ -48,17 +49,21 @@ public class IndexDirectory {
      *@param  indexPath      Description of the Parameter
      *@exception  Exception  Description of the Exception
      */
-    public static void createIndexDirectory(String indexPath) throws Exception {
+    protected static void createIndexDirectory(String indexPath)  {
         IndexWriter writer = null;
+        if(debug) {
+            System.err.println("Index " + indexPath + " created");
+        }
         try {
             writer = new IndexWriter(indexPath, null, true);
-            if(debug) {
-                System.err.println("Index " + indexPath + " created");
-            }
-        } catch(Exception e) {
-            throw e;
-        } finally {
+
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        try {
             writer.close();
+        }catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

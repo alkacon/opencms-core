@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/modules/searchlucene/src/com/opencms/modules/search/lucene/Attic/CmsAdminLucene.java,v $
-* Date   : $Date: 2002/07/15 14:04:58 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2003/03/25 14:46:01 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,12 +42,13 @@ import com.opencms.workplace.*;
  * <P>
  *
  * @author g.huhn
- * @version $Revision: 1.1 $ $Date: 2002/07/15 14:04:58 $
+ * @version $Revision: 1.2 $ $Date: 2003/03/25 14:46:01 $
  */
 public class CmsAdminLucene extends com.opencms.workplace.CmsWorkplaceDefault {
 
     // the debug flag
-    private final static boolean debug = true;
+    private final static boolean debug = false;
+    private static Thread threadArray[];
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -69,13 +70,14 @@ public class CmsAdminLucene extends com.opencms.workplace.CmsWorkplaceDefault {
         // any debug action?
         String info = (String)parameters.get("info");
         if(info != null && "dep_out".equals(info)){}
+
         // get the parameter
         String action = (String)parameters.get("action");
         //get the modul-properties
         boolean active = OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
-                    "active");
+                    ControlLucene.C_ACTIVE);
         boolean indexPDFs = OpenCms.getRegistry().getModuleParameterBoolean("com.opencms.modules.search.lucene",
-                    "indexPDFs");
+                    ControlLucene.C_INDEXPDFS);
 
         if (debug) System.err.println("action="+action);
         if((action == null) || ("".equals(action))){
@@ -94,12 +96,46 @@ public class CmsAdminLucene extends com.opencms.workplace.CmsWorkplaceDefault {
             if (indexPDFs) xmlTemplateDocument.setData("pdffiles", pdf+"");
             else xmlTemplateDocument.setData("pdffiles", " - ");
             if (!active) templateSelector = "not_active";
+
+            //don't start indexing if thread ControlLucene.C_INDEXING allready exists
+            ThreadGroup top = Thread.currentThread().getThreadGroup();
+            while ( top.getParent() != null ) top = top.getParent();
+            threadArray = new Thread[ top.activeCount() ];
+            top.enumerate( threadArray );
+            for ( int i = 0; i < threadArray.length; i++ ){
+                if (threadArray[i]!=null){
+                    if (debug) System.out.println(threadArray[i].getName());
+                    if (threadArray[i].getName().equalsIgnoreCase(ControlLucene.C_INDEXING)){
+                        templateSelector = "allready_indexing";
+                    }
+                }
+            }
         }else{
             // action! index complete Project by lucene
-            ControlLucene.indexProject(cms);
+            if (action!=null && action.equalsIgnoreCase("create"))
+                    ControlLucene.indexProject(cms);
+            if (action!=null && action.equalsIgnoreCase("delete"))
+                    ControlLucene.createIndexDirectory();
+            if (action!=null && action.equalsIgnoreCase("stop")){
+                for ( int i = 0; i < threadArray.length; i++ ){
+                    if (threadArray[i]!=null){
+                        if (debug) System.out.println(threadArray[i].getName());
+                        if (threadArray[i].getName().equalsIgnoreCase(ControlLucene.C_INDEXING)){
+                            threadArray[i].interrupt();
+                            try {
+                                threadArray[i].join();
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            ControlLucene.createIndexDirectory();
+                        }
+                    }
+                }
+            }
             templateSelector = "done";
         }
-
+        if (debug) System.err.println("templateSelector="+templateSelector);
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
                 templateSelector);

@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: HtmlParser.java,v $
-    $Date: 2002/07/15 14:04:24 $
-    $Revision: 1.7 $
+    $Date: 2003/03/25 14:46:01 $
+    $Revision: 1.8 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -43,103 +43,32 @@ public class HtmlParser implements I_ContentParser {
     private String m_keywords = "";
     private String m_description = "";
     private String m_content = "";
-    private String m_completeContent = "";
+    private StringBuffer m_completeContent = null;
+    private StringBuffer m_ablage = null;
     private String m_published = "";
-
+    private String m_contentConf = "";
+    private String m_keywordConf = "";
+    private String m_descConf = "";
+    private String m_titleConf = "";
+    private String m_noindexStart = "";
+    private String m_noindexEnd = "";
+    private int m_length = 0;
     private CmsHtmlConverter conv = null;
-
-    // the Config Strings for the html-converter
-
-    // the Config Strings to replace the german Sonderzeichen.
-    private final String REPLACE_STRINGS =
-        "<replacecontent usedefaults=\"true\">" +
-            "<string content=\"&amp;#252;\" replace=\"ue\"/><string content=\"&amp;#220;\" replace=\"Ue\"/>"+
-            "<string content=\"&amp;#228;\" replace=\"ae\"/><string content=\"&amp;#196;\" replace=\"Ae\"/>"+
-            "<string content=\"&amp;#246;\" replace=\"oe\"/><string content=\"&amp;#214;\" replace=\"Oe\"/>"+
-            "<string content=\"&amp;#223;\" replace=\"ss\"/><string content=\"&amp;nbsp;\" replace=\" \"/>"+
-        "</replacecontent>"+
-        "<replacestrings usedefaults=\"false\">" +
-            "   <string content=\"&amp;auml;\" replace=\"ae\"/>        <string content=\"&amp;uuml;\" replace=\"ue\"/>" +
-            "   <string content=\"&amp;ouml;\" replace=\"oe\"/>        <string content=\"&amp;Uuml;\" replace=\"Ue\"/>" +
-            "   <string content=\"&amp;Auml;\" replace=\"Ae\"/>        <string content=\"&amp;Ouml;\" replace=\"Oe\"/>" +
-            "   <string content=\"&amp;lt;\" replace=\"<\"/>		<string content=\"&amp;gt;\" replace=\">\"/>" +
-            "   <string content=\"&amp;szlig;\" replace=\"ss\"/><string content=\"&amp;qout;\" replace=\" \"/>" +
-        "</replacestrings>";
-
-
-    // the Config Strings to get the keywords from the meta-tag
-    private final String KEYWORD_CONF = "<?xml version=\"1.0\"?>" +
-            "<ConverterConfig>" +
-            "	<defaults><xhtmloutput value=\"false\"></xhtmloutput></defaults>" +
-            "   <removetags><tag name=\"html\"/><tag name=\"head\"/></removetags>" +
-            "	<replacetags usedefaults=\"false\">" +
-            "		<tag name=\"meta\" attrib=\"name\" value=\"keywords\" replacestarttag=\" $parameter$ \" replaceendtag=\"\"" +
-            "			getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "		<tag name=\"meta\" attrib=\"name\" value=\"\" replacestarttag=\"tratra\" replaceendtag=\"\"" +
-            "			getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "		<tag name=\"meta\" attrib=\"http-equiv\" value=\"\" replacestarttag=\"tratra\" replaceendtag=\"\"" +
-            "			getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "	</replacetags>" +
-            "    <removeblocks>" +
-            "		<tag name=\"link\"/><tag name=\"script\"/><tag name=\"style\"/>" +
-            "		<tag name=\"body\"/><tag name=\"title\"/><tag name=\"base\"/>" +
-            "    </removeblocks>" +
-            "</ConverterConfig>";
-
-    // the Config Strings to get the description from the meta-tag
-    private final String DESCRIPTION_CONF = "<?xml version=\"1.0\"?>" +
-            "<ConverterConfig>" +
-            "<defaults><xhtmloutput value=\"false\"></xhtmloutput></defaults>" +
-            "<removetags><tag name=\"html\"/><tag name=\"head\"/></removetags>" +
-            "<replacetags usedefaults=\"false\">" +
-            "    <tag name=\"meta\" attrib=\"name\" value=\"description\" replacestarttag=\" $parameter$ \" replaceendtag=\"\"" +
-            "        getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "    <tag name=\"meta\" attrib=\"name\" value=\"\" replacestarttag=\"tratra\" replaceendtag=\"\"" +
-            "        getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "    <tag name=\"meta\" attrib=\"http-equiv\" value=\"\" replacestarttag=\"tratra\" replaceendtag=\"\"" +
-            "        getreplacefromattrs=\"false\"  parameter=\"content\"/>" +
-            "</replacetags>" +
-            "<removeblocks>" +
-            "    <tag name=\"link\"/><tag name=\"script\"/><tag name=\"style\"/>" +
-            "    <tag name=\"body\"/><tag name=\"title\"/><tag name=\"base\"/>" +
-            "</removeblocks>" +
-            REPLACE_STRINGS +
-            "</ConverterConfig>";
-
-    // the Config Strings to get the title from the meta-tag
-    private final String TITLE_CONF = "<?xml version=\"1.0\"?>" +
-            "<ConverterConfig>" +
-            "<defaults><xhtmloutput value=\"false\"></xhtmloutput></defaults>" +
-            "<removetags>" +
-            "    <tag name=\"html\"/><tag name=\"head\"/><tag name=\"title\"/>" +
-            "</removetags><replacetags usedefaults=\"false\"></replacetags>" +
-            "<removeblocks>" +
-            "    <tag name=\"link\"/><tag name=\"meta\"/><tag name=\"script\"/>" +
-            "    <tag name=\"style\"/><tag name=\"body\"/><tag name=\"base\"/>" +
-            "</removeblocks>" +
-            REPLACE_STRINGS +
-            "</ConverterConfig>";
-
-    // the Config Strings to get the complete content
-    private final String CONTENT_CONF =
-            "<?xml version=\"1.0\"?>" +
-            "<ConverterConfig>" +
-            "<defaults><xhtmloutput value=\"false\"></xhtmloutput>    </defaults>" +
-            "<replacetags usedefaults=\"true\">		<tag name=\"p\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>		<tag name=\"td\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"tr\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"th\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"tf\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"h1\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"h2\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"h3\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"h4\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"hr\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>" +
-            "        <tag name=\"title\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"br\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"a\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"li\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"dl\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"ul\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"input\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"center\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>        <tag name=\"link\" attrib=\"\" value=\"\" replacestarttag=\" \" replaceendtag=\" \"/>	</replacetags>" +
-            "<removetags>		<tag name=\"font\"/>        <tag name=\"frame\"/><tag name=\"frameset\"/>		<tag name=\"form\"/>		<tag name=\"table\"/>		<tag name=\"div\"/>		<tag name=\"html\"/>		<tag name=\"body\"/>" +
-            "		<tag name=\"head\"/>        <tag name=\"dd\"/>		<tag name=\"nobr\"/>		<tag name=\"meta\"/>		<tag name=\"img\"/>	<tag name=\"b\"/>        <tag name=\"i\"/>        <tag name=\"bgsound\"/>        <tag name=\"u\"/>        <tag name=\"blockquote\"/>        <tag name=\"span\"/>        <tag name=\"strong\"/>    </removetags>" +
-            "<removeblocks>        <tag name=\"script\"/>        <tag name=\"style\"/>        <tag name=\"base\"/>    </removeblocks>	" +
-            REPLACE_STRINGS +
-            "</ConverterConfig>";
 
 
     /**
      *  Constructor for the HtmlParser object
      */
     public HtmlParser() {
+        new StringBuffer();
+        m_noindexStart = ControlLucene.getNoIndexStart();
+        m_noindexEnd = ControlLucene.getNoIndexEnd();
+        m_length = m_noindexEnd.length();
         conv = new CmsHtmlConverter();
         actualDate();
+        m_ablage = new StringBuffer();
+        m_completeContent = new StringBuffer();
+        readConfigFiles();
     }
 
 
@@ -154,7 +83,7 @@ public class HtmlParser implements I_ContentParser {
 
 
     /**
-     *  Parse Content.
+     *  Parsed Content.
      *
      *@return    The description value
      */
@@ -174,7 +103,7 @@ public class HtmlParser implements I_ContentParser {
 
 
     /**
-     *  Parse Content.
+     *  Parsed keywords.
      *
      *@return    The keywords value
      */
@@ -184,7 +113,7 @@ public class HtmlParser implements I_ContentParser {
 
 
     /**
-     *  Description of the Method
+     *  Filter the complete content by this configuration string for the html-Converter
      *
      *@param  content        Description of the Parameter
      *@param  configuration  Description of the Parameter
@@ -203,20 +132,75 @@ public class HtmlParser implements I_ContentParser {
 
     /**
      *  Description of the Method
-     *
-     *@param  con  Description of the Parameter
      */
-    public void parse(InputStream con) {
-        m_completeContent = fetchHtmlContent(con);
-        m_keywords = filterContent(m_completeContent, KEYWORD_CONF);
-        m_description = filterContent(m_completeContent, DESCRIPTION_CONF);
-        m_title = filterContent(m_completeContent, TITLE_CONF);
-        m_content = filterContent(m_completeContent, CONTENT_CONF);
+    private void readConfigFiles() {
+        StringBuffer configuration = new StringBuffer("");
+        InputStreamReader reader;
+        try {
+            ClassLoader classloader = Class.forName("com.opencms.modules.search.lucene.HtmlParser").getClassLoader();
+            //content-config
+            reader = new InputStreamReader(classloader.getResourceAsStream("com/opencms/modules/search/lucene/htmlcontent.properties"));
+            int c;
+            while((c = reader.read()) != -1) {
+                configuration.append((char) c);
+            }
+            m_contentConf = configuration.toString();
+
+            //description-config
+            configuration.setLength(0);
+            reader = new InputStreamReader(classloader.getResourceAsStream("com/opencms/modules/search/lucene/htmldescription.properties"));
+            while((c = reader.read()) != -1) {
+                configuration.append((char) c);
+            }
+            m_descConf = configuration.toString();
+
+            //keyword-config
+            configuration.setLength(0);
+            reader = new InputStreamReader(classloader.getResourceAsStream("com/opencms/modules/search/lucene/htmlkeywords.properties"));
+            while((c = reader.read()) != -1) {
+                configuration.append((char) c);
+            }
+            m_keywordConf = configuration.toString();
+
+            //title-config
+            configuration.setLength(0);
+            reader = new InputStreamReader(classloader.getResourceAsStream("com/opencms/modules/search/lucene/htmltitle.properties"));
+            while((c = reader.read()) != -1) {
+                configuration.append((char) c);
+            }
+            m_titleConf = configuration.toString();
+            if(debug) {
+                System.err.println("m_contentConf=" + m_contentConf);
+                System.err.println("m_descConf=" + m_descConf);
+                System.err.println("m_keywordConf=" + m_keywordConf);
+                System.err.println("m_titleConf=" + m_titleConf);
+            }
+        } catch(Exception ex) {
+            System.err.println("Error at reading Config-file");
+            ex.printStackTrace();
+        }
     }
 
 
     /**
-     *  Description of the Method
+     *  Central method of the class to start of the parsing-procedure.
+     *
+     *@param  con  The complete content of the html-page
+     */
+    public void parse(InputStream con) {
+        m_completeContent.setLength(0);
+        m_completeContent.append(fetchHtmlContent(con));
+        removeNoindex();
+        String completeContent = m_completeContent.toString();
+        m_keywords = filterContent(completeContent, m_keywordConf);
+        m_description = filterContent(completeContent, m_descConf);
+        m_title = filterContent(completeContent, m_titleConf);
+        m_content = filterContent(completeContent, m_contentConf);
+    }
+
+
+    /**
+     *  Fetch the complete content of the page.
      *
      *@param  con  Description of the Parameter
      *@return      Description of the Return Value
@@ -229,6 +213,7 @@ public class HtmlParser implements I_ContentParser {
 
         try {
             input = new DataInputStream(con);
+
             content = new StringBuffer();
             while((line = input.readLine()) != null) {
                 content = content.append(line);
@@ -246,7 +231,7 @@ public class HtmlParser implements I_ContentParser {
 
 
     /**
-     *  Description of the Method
+     *  Get the actual date.
      */
     private void actualDate() {
         Calendar cal = GregorianCalendar.getInstance();
@@ -265,4 +250,27 @@ public class HtmlParser implements I_ContentParser {
         return m_published;
     }
 
+
+    /**
+     *  Remove all STrings between the start- and stop-String
+     */
+    private void removeNoindex() {
+        int start = 0;
+        int end = 0;
+        int i = 0;
+        while(start != -1 && end != -1) {
+            m_ablage.setLength(0);
+            start = m_completeContent.toString().indexOf(m_noindexStart);
+            end = m_completeContent.toString().indexOf(m_noindexEnd);
+            if(start != -1 && end != -1) {
+                m_ablage.append(m_completeContent.substring(0, start));
+                m_ablage.append(m_completeContent.substring(end + m_length));
+                m_completeContent.setLength(0);
+                m_completeContent.append(m_ablage);
+            }
+        }
+        if(debug) {
+            System.err.println("HtmlParser.removeNoindex.m_completeContent=" + m_completeContent);
+        }
+    }
 }

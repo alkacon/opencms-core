@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: IndexFiles.java,v $
-    $Date: 2002/07/15 14:04:17 $
-    $Revision: 1.7 $
+    $Date: 2003/03/25 14:48:28 $
+    $Revision: 1.9 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -53,17 +53,17 @@ public class IndexFiles extends Thread {
 
     private Vector m_files = null;
 
-    private int m_contentLength=0;
+    private int m_contentLength = 0;
 
     private PdfParser m_convPdf = null;
 
     private String m_contentType = "";
 
-    private long m_publishDate=0;
+    private long m_publishDate = 0;
 
     private HtmlParser m_convHtml = null;
 
-    private String m_analyzer="stopAnalyzer";
+    private String m_analyzer = "stopAnalyzer";
 
     private DateFormat m_dateformat;
 
@@ -75,7 +75,7 @@ public class IndexFiles extends Thread {
      *
      *@param  indexPath   Description of the Parameter
      *@param  files       Description of the Parameter
-     *@param  configPath  Description of the Parameter
+     *@param  analyzer    Description of the Parameter
      */
     public IndexFiles(String indexPath, Vector files, String analyzer) {
         m_convPdf = new PdfParser();
@@ -84,12 +84,12 @@ public class IndexFiles extends Thread {
         m_files = files;
         m_file = new File(m_indexPath);
         m_dateformat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        if (analyzer.equalsIgnoreCase("german") || analyzer.equalsIgnoreCase("stopanalyzer")){
-                m_analyzer=analyzer;
+        if(analyzer.equalsIgnoreCase("german") || analyzer.equalsIgnoreCase("stopanalyzer")) {
+            m_analyzer = analyzer;
         }
-        if (debug) {
-            System.err.println("IndexFiles.IndexFiles(...).files.size()="+files.size());
-            System.err.println("IndexFiles.IndexFiles(...).m_analyzer="+m_analyzer);
+        if(debug) {
+            System.err.println("IndexFiles.IndexFiles(...).files.size()=" + files.size());
+            System.err.println("IndexFiles.IndexFiles(...).m_analyzer=" + m_analyzer);
         }
     }
 
@@ -113,7 +113,7 @@ public class IndexFiles extends Thread {
      *
      *@exception  Exception  Description of the Exception
      */
-    public void createIndexFiles() throws Exception {
+    protected void createIndexFiles() throws Exception {
         IndexWriter writer = null;
         deleteIndexFiles();
         Document doc = null;
@@ -122,11 +122,9 @@ public class IndexFiles extends Thread {
         //
 
         try {
-            //GermanAnalyzer ga=new GermanAnalyzer();
-            StandardAnalyzer ga=new StandardAnalyzer();
-            if (m_analyzer.equalsIgnoreCase("stopanalyzer")){
-                writer = new IndexWriter(m_indexPath, new StopAnalyzer(), m_newIndex);
-            }else if (m_analyzer.equalsIgnoreCase("german")){
+            if(m_analyzer.equalsIgnoreCase("stopanalyzer")) {
+                writer = new IndexWriter(m_indexPath, new StandardAnalyzer(), m_newIndex);
+            } else if(m_analyzer.equalsIgnoreCase("german")) {
                 writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
             }
             String completeContent = "";
@@ -139,17 +137,22 @@ public class IndexFiles extends Thread {
             I_ContentParser parser = null;
 
             for(int i = 0; i < m_files.size(); i++) {
+                if(isInterrupted()) {
+                    break;
+                }
                 if(debug) {
                     System.err.println("Indexing file " + m_files.elementAt(i));
                 }
                 doc = new Document();
                 con = connectUrl((String) m_files.elementAt(i));
-                if (con==null) continue;
+                if(con == null) {
+                    continue;
+                }
 
                 //select the parser
-                if(m_contentType!=null && m_contentType.equals("text/html")) {
+                if(m_contentType != null && m_contentType.equals("text/html")) {
                     parser = m_convHtml;
-                } else if(m_contentType!=null && m_contentType.equals("application/pdf")) {
+                } else if(m_contentType != null && m_contentType.equals("application/pdf")) {
                     parser = m_convPdf;
                 } else {
                     continue;
@@ -158,7 +161,6 @@ public class IndexFiles extends Thread {
                 //the html-Parsing and Indexing
                 parser.parse(con);
                 completeContent = parser.getContents();
-
                 if(parser.getKeywords() != null) {
                     keywords = parser.getKeywords();
                 }
@@ -171,14 +173,16 @@ public class IndexFiles extends Thread {
                 if(parser.getContents() != null) {
                     parsedContent = parser.getContents();
                 }
-                /*if(parser.getPublished() != null) {
+                /*
+                    if(parser.getPublished() != null) {
                     published = parser.getPublished();
-                }else {*/
-                    published =DateField.timeToString(m_publishDate);
-                    //m_dateformat.format(m_publishDate);
+                    }else {
+                 */
+                published = DateField.timeToString(m_publishDate);
+                //m_dateformat.format(m_publishDate);
                 //}
                 doc.add(Field.Keyword("path", (String) m_files.elementAt(i)));
-                doc.add(Field.Keyword("length", m_contentLength+""));
+                doc.add(Field.Keyword("length", m_contentLength + ""));
                 doc.add(Field.Keyword("keywords", keywords));
                 doc.add(Field.Keyword("description", description));
                 doc.add(Field.Keyword("modified", published));
@@ -242,9 +246,9 @@ public class IndexFiles extends Thread {
         }
         if(m_optimize) {
             IndexWriter writer = null;
-            if (m_analyzer.equalsIgnoreCase("stopanalyzer")){
-                writer = new IndexWriter(m_indexPath, new StopAnalyzer(), m_newIndex);
-            }else if (m_analyzer.equalsIgnoreCase("german")){
+            if(m_analyzer.equalsIgnoreCase("stopanalyzer")) {
+                writer = new IndexWriter(m_indexPath, new StandardAnalyzer(), m_newIndex);
+            } else if(m_analyzer.equalsIgnoreCase("german")) {
                 writer = new IndexWriter(m_indexPath, new GermanAnalyzer(), m_newIndex);
             }
             writer.optimize();
@@ -254,6 +258,7 @@ public class IndexFiles extends Thread {
             writer.close();
         }
     }
+
 
     /**
      *  Description of the Method
@@ -273,20 +278,24 @@ public class IndexFiles extends Thread {
             urlCon.connect();
 
             //return, if this file does not exist
-            if ((urlCon.getHeaderField(0)).indexOf("404")!=-1){
-                if (debug) System.err.println(urlCon.getHeaderField(0));
+            if((urlCon.getHeaderField(0)).indexOf("404") != -1) {
+                if(debug) {
+                    System.err.println(urlCon.getHeaderField(0));
+                }
                 return null;
-            } else if ((urlCon.getHeaderField(0)).indexOf("500")!=-1){
-                if (debug) System.err.println(urlCon.getHeaderField(0));
+            } else if((urlCon.getHeaderField(0)).indexOf("500") != -1) {
+                if(debug) {
+                    System.err.println(urlCon.getHeaderField(0));
+                }
                 return null;
             }
 
-            m_contentLength=urlCon.getContentLength();
+            m_contentLength = urlCon.getContentLength();
             m_contentType = urlCon.getContentType();
-            m_publishDate=urlCon.getDate();
+            m_publishDate = urlCon.getDate();
 
             if(debug) {
-                System.err.println("m_contentLength="+m_contentLength);
+                System.err.println("m_contentLength=" + m_contentLength);
                 System.err.println("connectUrl.theUrl=" + theUrl);
                 System.err.println("connectUrl.getContentType()=" + m_contentType);
             }
@@ -307,7 +316,7 @@ public class IndexFiles extends Thread {
      *
      *@param  newIndex  The new newIndex value
      */
-    public void setNewIndex(boolean newIndex) {
+    protected void setNewIndex(boolean newIndex) {
         m_newIndex = newIndex;
     }
 
@@ -317,7 +326,7 @@ public class IndexFiles extends Thread {
      *
      *@return    The newIndex value
      */
-    public boolean isNewIndex() {
+    private boolean isNewIndex() {
         return m_newIndex;
     }
 
@@ -325,7 +334,7 @@ public class IndexFiles extends Thread {
     /**
      *  Description of the Method
      */
-    public void createPath() {
+    private void createPath() {
         try {
             if(!m_file.exists()) {
                 m_file.mkdirs();
