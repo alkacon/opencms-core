@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/11 18:30:52 $
-* Version: $Revision: 1.372 $
+* Date   : $Date: 2003/08/13 14:05:54 $
+* Version: $Revision: 1.373 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.372 $
+ * @version $Revision: 1.373 $
  */
 public class CmsObject {
 
@@ -1845,6 +1845,21 @@ public class CmsObject {
         return (m_driverManager.getDirectGroupsOfUser(m_context, username));
     }
 
+    /**
+     * Returns the generic driver objects.<p>
+     * 
+     * @return a mapping of class names to driver objects
+     */
+    public Map getDrivers() {
+        HashMap drivers = new HashMap();
+        drivers.put(this.m_driverManager.getVfsDriver().getClass().getName(), this.m_driverManager.getVfsDriver());
+        drivers.put(this.m_driverManager.getUserDriver().getClass().getName(), this.m_driverManager.getUserDriver());
+        drivers.put(this.m_driverManager.getProjectDriver().getClass().getName(), this.m_driverManager.getProjectDriver());
+        drivers.put(this.m_driverManager.getWorkflowDriver().getClass().getName(), this.m_driverManager.getWorkflowDriver());
+        drivers.put(this.m_driverManager.getBackupDriver().getClass().getName(), this.m_driverManager.getBackupDriver());    
+        return drivers;
+    }
+    
     /**
      * Returns a Vector with all files of a given folder.
      * (only the direct subfiles, not the files in subfolders)

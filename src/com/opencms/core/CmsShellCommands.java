@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/07 18:47:27 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2003/08/13 14:05:54 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.core;
 
+import org.opencms.db.I_CmsDriver;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
@@ -67,7 +68,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.109 $ $Date: 2003/08/07 18:47:27 $
+ * @version $Revision: 1.110 $ $Date: 2003/08/13 14:05:54 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -135,7 +136,7 @@ class CmsShellCommands {
      * @param resourceType name of a resource type, e.g. 'plain'
      * @param extension a file extension, e.g. 'html'
      */
-    public void addFileExtension(String resourceType, String extension) {
+    public void addFileExtension(String resourceType, String extension) {     
         try {
             m_cms.addFileExtension(extension, resourceType);
         } catch (Exception exc) {
@@ -1193,6 +1194,34 @@ class CmsShellCommands {
         }
     }
 
+    /**
+     * Displays the classes of the configured drivers.<p>
+     */
+    public void getDriverInfo() {
+        try {
+            Map drivers = m_cms.getDrivers();
+            for (Iterator i = drivers.keySet().iterator(); i.hasNext();) {
+                System.out.println(i.next());    
+            }
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
+    /**
+     * Displays further information of a driver class.<p>
+     * 
+     * @param driverName the driver class name
+     */
+    public void getDriverInfo(String driverName) {
+        try {
+            Map drivers = m_cms.getDrivers();
+            System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
+    }
+    
     /**
      * Returns a Vector with all subfiles.<BR/>
      *
