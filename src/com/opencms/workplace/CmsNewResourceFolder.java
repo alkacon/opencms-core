@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceFolder.java,v $
-* Date   : $Date: 2001/04/06 16:48:01 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/05/23 09:19:29 $
+* Version: $Revision: 1.24 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.23 $ $Date: 2001/04/06 16:48:01 $
+ * @version $Revision: 1.24 $ $Date: 2001/05/23 09:19:29 $
  */
 
 public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -607,9 +607,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
         // serch for error 1 (the Hauptlogo must be a OpenCms resource from type image)
         try{
             String logo = (String)properties.get("Hauptlogo_img");
-            CmsResource pic = cms.readFileHeader(logo);
-            if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
-               return 1;
+            if(logo == null || "".equals(logo)){
+                properties.remove("Hauptlogo_img");
+            }else{
+                CmsResource pic = cms.readFileHeader(logo);
+                if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                   return 1;
+                }
             }
         }catch(CmsException e){
             return 1;
@@ -618,9 +622,13 @@ public class CmsNewResourceFolder extends CmsWorkplaceDefault implements I_CmsWp
             // serch for error 1 (the Folderlogo must be a OpenCms resource from type image)
             try{
                 String logo = (String)properties.get("Verzeichnislogo_img");
-                CmsResource pic = cms.readFileHeader(logo);
-                if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
-                   return 1;
+                if(logo == null || "".equals(logo)){
+                    properties.remove("Verzeichnislogo_img");
+                }else{
+                    CmsResource pic = cms.readFileHeader(logo);
+                    if(!(cms.getResourceType(pic.getType()).getResourceName()).equals(cms.C_TYPE_IMAGE_NAME)){
+                       return 1;
+                    }
                 }
             }catch(CmsException e){
                 return 1;
