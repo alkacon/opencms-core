@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/I_CmsReport.java,v $
- * Date   : $Date: 2002/12/12 18:41:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2002/12/13 09:16:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,11 @@ import com.opencms.linkmanagement.CmsPageLinks;
  * @author Hanjo Riege
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsReport {
 
+    // some statics for the most often used locale keys
     public static final String C_DB_IMPORT_BEGIN = "report.import_db_begin";
     public static final String C_DB_IMPORT_END = "report.import_db_end";
     public static final String C_DB_EXPORT_BEGIN = "report.export_db_begin";
@@ -60,6 +61,7 @@ public interface I_CmsReport {
     public static final String C_LINK_CHECK_BEGIN = "report.check_links_begin";
     public static final String C_LINK_CHECK_END = "report.check_links_end";   
 
+    // soms statics to indicate the formatting
     public static final int C_FORMAT_DEFAULT = 0;
     public static final int C_FORMAT_WARNING = 1;
     public static final int C_FORMAT_HEADLINE = 2;
@@ -72,20 +74,28 @@ public interface I_CmsReport {
     /**
      * Adds a predefined localized seperator.<p>
      * 
+     * A separator basically is a "headline" for the report output.
+     * For each major action usually a begin and an end separator is 
+     * added to the report.<p>
+     * 
      * @param message indicates which (localized) seperator should be used
      */
     public void addSeperator(String message);
 
     /**
      * Adds a predefined localized seperator with some additional information.<p>
-     *
+     * 
+     * A separator basically is a "headline" for the report output.
+     * For each major action usually a begin and an end separator is 
+     * added to the report.<p>
+     * 
      * @param message indicates which seperator should be used
      * @param info an optional String that can contain additional information to be added
      */
     public void addSeperator(String message, String info);
 
     /**
-     * Adds the standard seperator.<p>
+     * Adds the standard seperator, which is just a line break.<p>
      */
     public void addSeperator();
 
@@ -127,6 +137,9 @@ public interface I_CmsReport {
     
     /**
      * Adds a CmsPageLinks object to the report<p>
+     * 
+     * The object will be stored and the output will later be processed
+     * in a special way.<p>
      *
      * @param value the CmsPageLinks object to add to the report
      */
@@ -135,7 +148,10 @@ public interface I_CmsReport {
     /**
      * Adds an Exception to the report, ensuring that the Exception content is
      * processed to generate a valid output esp. for HTML pages.<p>
-     *
+     * 
+     * The exception will be stored and the output will later be processed
+     * in a special way.<p>    
+     * 
      * @param e the exception to add
      */
     public void println(Throwable t);
@@ -145,7 +161,7 @@ public interface I_CmsReport {
      * the last call to this method.<p>
      * 
      * This is only required in case the output is written to a HTML page,
-     * if the shell output is used this will just return an empty String.<p>
+     * if the shell output is used, this will just return an empty String.<p>
      * 
      * @return new elements that have been added to the report and not yet processed.
      */
@@ -153,7 +169,10 @@ public interface I_CmsReport {
     
     /**
      * Returns <code>true</code> if broken links where reported, <code>false</code>
-     * otherwise.
+     * otherwise.<p>
+     * 
+     * Open links where reported if at last one link was added to the report using the 
+     * {@link #println(CmsPageLinks) } method.<p>
      * 
      * @return <code>true</code> if broken links where reported, <code>false</code>
      * otherwise
@@ -164,7 +183,7 @@ public interface I_CmsReport {
      * Gets the localized resource string for a given message key.<p>
      * 
      * The internal implementation should be passing the
-     * keyName to the class {@link com.opencms.flex.util.CmsMessages}.
+     * <code>keyName</code> to the class {@link com.opencms.flex.util.CmsMessages}.<p>
      *
      * @param keyName the key for the desired string
      * @return the resource string for the given key

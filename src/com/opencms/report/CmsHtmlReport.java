@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsHtmlReport.java,v $
- * Date   : $Date: 2002/12/12 18:41:36 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2002/12/13 09:16:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,16 +43,23 @@ import java.util.StringTokenizer;
  * in the entire OpenCms system.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.0 rc 1
  */
 public class CmsHtmlReport implements I_CmsReport {
-        
+    
+    /** Constant for a HTML linebreak with added "real" line break) */
     private static final String C_LINEBREAK = "<br>\\n";
     
+    /** Localized message access object */
     private CmsMessages m_messages;        
-        
+    
+    /**
+     * Constructs a new report using the provided locale for the output language.<p>
+     * 
+     * @param locale a 2-letter language code according to ISO 639 
+     */    
     public CmsHtmlReport(String locale) {
         m_messages = new CmsMessages(C_BUNDLE_NAME, locale);
         m_content = new ArrayList(256);
@@ -172,12 +179,19 @@ public class CmsHtmlReport implements I_CmsReport {
         m_content.add(t);
     }
 
-    private StringBuffer getCmsPageLinksElement(String name) {
-        StringBuffer buf = new StringBuffer(name);
-        buf.append(C_LINEBREAK);
-        return buf;        
-    }
-    
+    /**
+     * Output helper method to format a reported <code>Throwable</code> element.<p>
+     * 
+     * This method ensures that exception stack traces are properly escaped
+     * when they are added to the report.<p>
+     * 
+     * There is a member variable {@link #m_showExceptionStackTracke} in this
+     * class that controls if the stack track is shown or not.
+     * In a later version this might be configurable on a per-user basis.<p>
+     *      
+     * @param throwable the exception to format
+     * @return the formatted StringBuffer
+     */
     private StringBuffer getExceptionElement(Throwable throwable) {        
         StringBuffer buf = new StringBuffer();
         if (m_showExceptionStackTracke) {
@@ -200,6 +214,14 @@ public class CmsHtmlReport implements I_CmsReport {
         return buf;
     }
     
+    /**
+     * Output helper method to format a reported <code>CmsPageLinks</code> element.<p>
+     * 
+     * This method formats the link source.<p>
+     *
+     * @param name the link resource
+     * @return the formatted StringBuffer
+     */
     private StringBuffer getLinkElement(String link) {
         StringBuffer buf = new StringBuffer();
         buf.append("<span style='color: #666666;'>");
@@ -210,6 +232,14 @@ public class CmsHtmlReport implements I_CmsReport {
         return buf;        
     }
     
+    /**
+     * Output helper method to format a reported <code>CmsPageLinks</code> element.<p>
+     *
+      * This method formats the link targets.<p>
+      * 
+     * @param name the link target resource
+     * @return the formatted StringBuffer
+     */    
     private StringBuffer getLinkTargetElement(String target) {
         StringBuffer buf = new StringBuffer("<span style='padding-left:40px; color: #666666;'>");
         buf.append(m_messages.key("report.broken_link_to"));

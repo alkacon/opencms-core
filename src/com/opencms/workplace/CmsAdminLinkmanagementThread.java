@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagementThread.java,v $
- * Date   : $Date: 2002/12/12 19:06:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2002/12/13 09:16:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,7 +30,7 @@ package com.opencms.workplace;
 
 /**
  * @author Hanjo Riege
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 
 import com.opencms.core.A_OpenCms;
@@ -78,8 +78,8 @@ public class CmsAdminLinkmanagementThread extends Thread {
             }
         } finally {
             if (m_directPublishResourceName != null) {
-                // if this was a direct publish project delete it here 
-                // another project will be created for the publish
+                // if this was a direct publish project - delete it here 
+                // another project will be created for the real publish
                 // if the user selects "continue" on the workplace dialog
                 try {
                     // make sure all resources are removed from the temp project
