@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsBase.java,v $
-* Date   : $Date: 2001/12/11 09:13:05 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/06/30 22:46:38 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.File;
  * and helper functions, e.g. OpenCms logging oder OpenCms base path.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2001/12/11 09:13:05 $
+ * @version $Revision: 1.6 $ $Date: 2002/06/30 22:46:38 $
  */
 public class CmsBase implements I_CmsLogChannels {
 
@@ -90,7 +90,7 @@ public class CmsBase implements I_CmsLogChannels {
     }
 
     /** Set the base path to the given value */
-    protected static String setBasePath(String s) {
+    public static String setBasePath(String s) {
         if(s != null) {
             s = s.replace('\\', '/');
             s = s.replace('/', File.separatorChar);
