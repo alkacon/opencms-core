@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2003/09/22 10:57:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/10/09 08:12:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsLog implements Log {
 
@@ -126,7 +126,7 @@ public class CmsLog implements Log {
      * @see org.apache.commons.logging.Log#isDebugEnabled()
      */
     public boolean isDebugEnabled() {
-        return true;
+        return false;
     }
 
     /**
@@ -147,21 +147,21 @@ public class CmsLog implements Log {
      * @see org.apache.commons.logging.Log#isInfoEnabled()
      */
     public boolean isInfoEnabled() {
-        return true;
+        return false;
     }
 
     /**
      * @see org.apache.commons.logging.Log#isTraceEnabled()
      */
     public boolean isTraceEnabled() {
-        return true;
+        return false;
     }
 
     /**
      * @see org.apache.commons.logging.Log#isWarnEnabled()
      */
     public boolean isWarnEnabled() {
-        return true;
+        return false;
     }
 
     /**
