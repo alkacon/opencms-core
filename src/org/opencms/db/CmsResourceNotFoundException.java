@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/exceptions/Attic/CmsResourceInitException.java,v $
- * Date   : $Date: 2003/07/22 08:40:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsResourceNotFoundException.java,v $
+ * Date   : $Date: 2004/01/25 12:38:49 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -28,35 +28,40 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package com.opencms.core.exceptions;
+ 
+package org.opencms.db;
 
 import com.opencms.core.CmsException;
 
 /**
- * This exeption is thrown by a class which implements com.opencms.core.I_CmsResourceInit.
- * When this exeption is thrown, 
- * all other implementations of I_CmsResourceInit will not be executed.<p>
+ * Signals that an attempt to open a resource in the VFS denoted by a specified 
+ * pathname has failed. This exception is thrown by various Cms driver classes 
+ * in the org.opencms.db package and its sub-packages.
  * 
- * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.1 $ $Date: 2004/01/25 12:38:49 $
+ * @since 5.1.2
  */
-public class CmsResourceInitException extends CmsException {
+public class CmsResourceNotFoundException extends CmsException {
 
     /**
-     * Default empty constructor.
-     */
-    public CmsResourceInitException() {
-        super();   
-    }
-    
-    /**
-     * Constructor with message String.<p>
+     * Constructs a CmsResourceNotFoundException with the specified detail message.<p>
      * 
-     * @param message the detailed exception message
+     * @param message the detail message
      */
-    public CmsResourceInitException(String message) {
-        super(message, 0, null, false);
+    public CmsResourceNotFoundException(String message) {
+        super(message, CmsException.C_NOT_FOUND);
     }
-    
+
+    /**
+     * Constructs a CmsResourceNotFoundException with the specified detail message
+     * and adds the original exception as a delegated root cause.<p>
+     * 
+     * @param message the detail message
+     * @param rootCause the delegated exception
+     */
+    public CmsResourceNotFoundException(String message, Throwable rootCause) {
+        super(message, CmsException.C_NOT_FOUND, rootCause);
+    }
 
 }
