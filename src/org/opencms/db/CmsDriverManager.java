@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/10 13:18:21 $
- * Version: $Revision: 1.273 $
+ * Date   : $Date: 2003/10/10 14:19:43 $
+ * Version: $Revision: 1.274 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.273 $ $Date: 2003/10/10 13:18:21 $
+ * @version $Revision: 1.274 $ $Date: 2003/10/10 14:19:43 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2167,7 +2167,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 
                 // now we know which backup versions must be deleted, so remove them now
                 if (versionsToDelete > 0) {
-                    report.print(report.key("report.history.deleting1") + versionsToDelete + report.key("report.history.deleting2") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+                    report.print(report.key("report.history.deleting") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
                     m_backupDriver.deleteBackup(res, maxTag, versionsToDelete);           
                 } else {
                     report.print(report.key("report.history.nothing") + report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
