@@ -29,6 +29,7 @@ case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 	wp.setParamAction(CmsLock.DIALOG_CONFIRMED);
 %>
 <%= wp.htmlStart() %>
+<%= wp.bodyStart(null) %>
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
@@ -36,6 +37,7 @@ case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 <script type="text/javascript">
 	document.forms["main"].submit();
 </script>
+<%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%
 break;
