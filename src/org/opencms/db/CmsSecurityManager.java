@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2004/12/21 11:58:17 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/12/21 15:06:52 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.5.2
  */
 public final class CmsSecurityManager {
@@ -1784,28 +1784,6 @@ public final class CmsSecurityManager {
         CmsLock result = null;
         try {
             result = m_driverManager.getLock(dbc, resource);
-        } catch (Exception e) {
-            dbc.report(null, null, e);
-        } finally {
-            dbc.clear();
-        }        
-        return result;
-    }
-
-    /**
-     * Returns the lock state of a resource.<p>
-     * 
-     * @param context the current request context
-     * @param resourcename the name of the resource to return the lock state for (full path)
-     * @return the lock state of the resource 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLock(CmsRequestContext context, String resourcename) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);   
-        CmsLock result = null;
-        try {
-            result = m_driverManager.getLock(dbc, resourcename);
         } catch (Exception e) {
             dbc.report(null, null, e);
         } finally {

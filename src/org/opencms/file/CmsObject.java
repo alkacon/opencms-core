@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/21 11:34:59 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2004/12/21 15:06:52 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -1183,8 +1183,8 @@ public class CmsObject {
      * @throws CmsException if something goes wrong.
      */
     public CmsLock getLock(String resourcename) throws CmsException {
-
-        return m_securityManager.getLock(m_context, m_context.addSiteRoot(resourcename));
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        return getLock(resource);
     }
 
     /**

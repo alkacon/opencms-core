@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/12/21 11:34:59 $
- * Version: $Revision: 1.463 $
+ * Date   : $Date: 2004/12/21 15:06:52 $
+ * Version: $Revision: 1.464 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.463 $ $Date: 2004/12/21 11:34:59 $
+ * @version $Revision: 1.464 $ $Date: 2004/12/21 15:06:52 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -928,10 +928,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // save the lock of the resource's exclusive locked sibling
-        CmsLock exclusiveLock = m_lockManager.getExclusiveLockedSibling(this, dbc, resource.getRootPath());
+        CmsLock exclusiveLock = m_lockManager.getExclusiveLockedSibling(this, dbc, resource);
 
         // remove the lock
-        m_lockManager.removeResource(this, dbc, resource.getRootPath(), true);
+        m_lockManager.removeResource(this, dbc, resource, true);
 
         // clear permission cache so the change is detected
         m_securityManager.clearPermissionCache();
@@ -945,7 +945,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             m_lockManager.addResource(
                 this, 
                 dbc, 
-                exclusiveLock.getResourceName(), 
+                resource, 
                 exclusiveLock.getUserId(), 
                 exclusiveLock.getProjectId(), 
                 CmsLock.C_MODE_COMMON);
@@ -2591,7 +2591,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         int siblingMode) throws CmsException {
 
         // upgrade a potential inherited, non-shared lock into a common lock
-        CmsLock currentLock = getLock(dbc, resource.getRootPath());
+        CmsLock currentLock = getLock(dbc, resource);
         if (currentLock.getType() == CmsLock.C_TYPE_INHERITED) {
             // upgrade the lock status if required
             lockResource(dbc, resource, CmsLock.C_MODE_COMMON);
@@ -3357,23 +3357,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsLock getLock(CmsDbContext dbc, CmsResource resource)
     throws CmsException {
 
-        return getLock(dbc, resource.getRootPath());
-    }
-
-    /**
-     * Returns the lock state of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resourcename the name of the resource to return the lock state for (full path)
-     * 
-     * @return the lock state of the resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsLock getLock(CmsDbContext dbc, String resourcename)
-    throws CmsException {
-
-        return m_lockManager.getLock(this, dbc, resourcename);
+        return m_lockManager.getLock(this, dbc, resource);
     }
 
     /**
@@ -3507,7 +3491,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // and with the last change done in the current project are candidates if unlocked
             
             if (I_CmsConstants.C_STATE_UNCHANGED != directPublishResource.getState()
-                && getLock(dbc, directPublishResource.getRootPath()).isNullLock()) {
+                && getLock(dbc, directPublishResource).isNullLock()) {
                 publishList.addFolder(directPublishResource);
             }
             
@@ -3547,7 +3531,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // when publishing a file directly this file is the only candidate
             // if it is modified and unlocked
             
-            if (getLock(dbc, directPublishResource.getRootPath()).isNullLock()) {
+            if (getLock(dbc, directPublishResource).isNullLock()) {
                 publishList.addFile(directPublishResource);
             }
             
@@ -3937,17 +3921,17 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * 
      * Proves if a resource is locked.<p>
      * 
-     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, CmsDbContext, java.lang.String)
+     * @see org.opencms.lock.CmsLockManager#isLocked(org.opencms.db.CmsDriverManager, CmsDbContext, CmsResource)
      * 
      * @param dbc the current database context
-     * @param resourcename the full resource name including the site root
+     * @param resource the resource
      * 
      * @return true, if and only if the resource is currently locked
      * @throws CmsException if something goes wrong
      */
-    public boolean isLocked(CmsDbContext dbc, String resourcename) throws CmsException {
+    public boolean isLocked(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return m_lockManager.isLocked(this, dbc, resourcename);
+        return m_lockManager.isLocked(this, dbc, resource);
     }
 
     /**
@@ -4163,27 +4147,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      */
     public CmsUser lockedBy(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
-        return lockedBy(dbc, resource.getRootPath());
-    }
-
-    /**
-     * Returns the user, who had locked the resource.<p>
-     *
-     * A user can lock a resource, so he is the only one who can write this
-     * resource. This methods checks, if a resource was locked.
-     * 
-     * @param dbc the current database context
-     * @param resourcename the complete name of the resource
-     *
-     * @return the user, who had locked the resource.
-     *
-     * @throws CmsException will be thrown, if the user has not the rights for this resource.
-     */
-    public CmsUser lockedBy(CmsDbContext dbc, String resourcename)
-    throws CmsException {
-
-        return readUser(dbc, m_lockManager.getLock(this, dbc, resourcename).getUserId());
-    }
+        return readUser(dbc, m_lockManager.getLock(this, dbc, resource).getUserId());    }
 
     /**
      * Locks a resource.<p>
@@ -4214,7 +4178,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         m_lockManager.addResource(
             this,
             dbc,
-            resource.getRootPath(),
+            resource,
             dbc.currentUser().getId(),
             dbc.currentProject().getId(),
             mode);
@@ -4859,7 +4823,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         for (int j = 0; j < resources.size(); j++) {
             currentResource = (CmsResource)resources.get(j);
-            currentLock = getLock(dbc, currentResource.getRootPath());
+            currentLock = getLock(dbc, currentResource);
 
             if (currentResource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
                 if ((currentLock.isNullLock() && currentResource.getProjectLastModified() == projectId)
@@ -6933,7 +6897,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         clearResourceCache();
 
         // now update lock status
-        m_lockManager.removeResource(this, dbc, resource.getRootPath(), false);
+        m_lockManager.removeResource(this, dbc, resource, false);
 
         // we must also clear the permission cache
         m_securityManager.clearPermissionCache();
@@ -7889,7 +7853,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         for (int i = 0; i < resourceList.size(); i++) {
             CmsResource res = (CmsResource)resourceList.get(i);
             try {
-                if (!getLock(dbc, res.getRootPath()).isNullLock()) {
+                if (!getLock(dbc, res).isNullLock()) {
                     continue;
                 }
 
@@ -7936,7 +7900,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     continue;
                 }
 
-                if (!getLock(dbc, res.getRootPath()).isNullLock()) {
+                if (!getLock(dbc, res).isNullLock()) {
                     // don't add locked resources
                     continue;
                 }
