@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/01/04 09:47:49 $
- * Version: $Revision: 1.218 $
+ * Date   : $Date: 2001/01/04 12:27:14 $
+ * Version: $Revision: 1.219 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.218 $ $Date: 2001/01/04 09:47:49 $
+ * @version $Revision: 1.219 $ $Date: 2001/01/04 12:27:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -797,60 +797,56 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
 				CmsException.C_NO_ACCESS);
 		}
 	}
-	/**
-	 * Adds a user to a group.<BR/>
-	 *
-	 * Only the admin can do this.<P/>
-	 * 
-	 * <B>Security:</B>
-	 * Only users, which are in the group "administrators" are granted.
-	 * 
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param username The name of the user that is to be added to the group.
-	 * @param groupname The name of the group.
-	 * @exception CmsException Throws CmsException if operation was not succesfull.
-	 */	
-	public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, 
-							   String username, String groupname)
-		throws CmsException {
-
-/* ednfal: don't throw this exception because of problems in group administration
-there is a check in dbAccess, so the user is only added to group if he doesn't already exist
+/**
+ * Adds a user to a group.<BR/>
+ *
+ * Only the admin can do this.<P/>
+ * 
+ * <B>Security:</B>
+ * Only users, which are in the group "administrators" are granted.
+ * 
+ * @param currentUser The user who requested this method.
+ * @param currentProject The current project of the user.
+ * @param username The name of the user that is to be added to the group.
+ * @param groupname The name of the group.
+ * @exception CmsException Throws CmsException if operation was not succesfull.
+ */
+public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
+	if (!userInGroup(currentUser, currentProject, username, groupname)) {
+		// ednfal: don't throw this exception because of problems in group administration
+		//there is another check in dbAccess, so the user is only added to group if he doesn't already exist
 		// test if this user is already in the group
-		if (userInGroup(currentUser,currentProject,username,groupname)) {
-		   // user already there, throw exception
-		   throw new CmsException("[" + this.getClass().getName() + "] add " +  username+ " to " +groupname, 
-				CmsException.C_USER_EXISTS);
-		}
-*/		
+		//if (userInGroup(currentUser,currentProject,username,groupname)) {
+		// user already there, throw exception
+		//throw new CmsException("[" + this.getClass().getName() + "] add " +  username+ " to " +groupname, 
+		//CmsException.C_USER_EXISTS);
+		//}
+
 		// Check the security
-		if( isAdmin(currentUser, currentProject) ) {
+		if (isAdmin(currentUser, currentProject)) {
 			CmsUser user;
 			CmsGroup group;
-		 
-			user=readUser(currentUser,currentProject,username);
+			user = readUser(currentUser, currentProject, username);
 			//check if the user exists
 			if (user != null) {
-				group=readGroup(currentUser,currentProject,groupname);
+				group = readGroup(currentUser, currentProject, groupname);
 				//check if group exists
-				if (group != null){
+				if (group != null) {
 					//add this user to the group
-					m_dbAccess.addUserToGroup(user.getId(),group.getId());
+					m_dbAccess.addUserToGroup(user.getId(), group.getId());
 					// update the cache
 					m_usergroupsCache.clear();
 				} else {
-					throw new CmsException("["+this.getClass().getName()+"]"+groupname,CmsException.C_NO_GROUP);
+					throw new CmsException("[" + this.getClass().getName() + "]" + groupname, CmsException.C_NO_GROUP);
 				}
 			} else {
-				throw new CmsException("["+this.getClass().getName()+"]"+username,CmsException.C_NO_USER);
+				throw new CmsException("[" + this.getClass().getName() + "]" + username, CmsException.C_NO_USER);
 			}
-		   
 		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + username, 
-				CmsException.C_NO_ACCESS);
+			throw new CmsException("[" + this.getClass().getName() + "] " + username, CmsException.C_NO_ACCESS);
 		}
 	}
+}
 	 /** 
 	 * Adds a web user to the Cms. <br>
 	 * 
