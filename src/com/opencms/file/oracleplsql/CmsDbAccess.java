@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/07/09 08:11:02 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2001/07/13 10:17:03 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.34 $ $Date: 2001/07/09 08:11:02 $ *
+ * @version $Revision: 1.35 $ $Date: 2001/07/13 10:17:03 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -785,9 +785,9 @@ public CmsFile createFile(CmsUser user, CmsProject project, CmsProject onlinePro
 	} catch (CmsException e) {
 		// if the file is maked as deleted remove it!
 		if (e.getType()==CmsException.C_RESOURCE_DELETED) {
-		   //removeFile(project.getId(),filename);
-		   //state=C_STATE_CHANGED;
-           throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
+		   removeFile(project.getId(),filename);
+		   state=C_STATE_CHANGED;
+           //throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
 		}
         if (e.getType()==CmsException.C_FILE_EXISTS) {
 		   throw e;
