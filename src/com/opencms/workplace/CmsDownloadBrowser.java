@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2003/10/30 16:43:11 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2004/01/07 16:42:09 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,11 +49,11 @@ import org.opencms.main.OpenCms;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.34 $ $Date: 2003/10/30 16:43:11 $
+ * @version $Revision: 1.35 $ $Date: 2004/01/07 16:42:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
-public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFileListUsers {
+public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFileListUsers {
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -219,32 +219,10 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
         filelistTemplate.setData("title_value", title);
     }
 
-    public Integer getDownGalleryNames(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
-            Vector values, Hashtable parameters) throws CmsException {
-        int ret = -1;
-        I_CmsSession session = cms.getRequestContext().getSession(true);
-
-        // which folder is the gallery?
-        String chosenFolder = (String)parameters.get(C_PARA_FOLDER);
-        if(chosenFolder == null) {
-            chosenFolder = (String)session.getValue(C_PARA_FOLDER);
-        }
-        if(chosenFolder == null) {
-            chosenFolder = "";
-        }
-        List folders = cms.getSubFolders(getConfigFile(cms).getDownGalleryPath());
-        int numFolders = folders.size();
-        for(int i = 0;i < numFolders;i++) {
-            CmsResource currFolder = (CmsResource)folders.get(i);
-            String name = currFolder.getName();
-            if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
-                ret = i;
-            }
-            values.addElement(cms.readAbsolutePath(currFolder));
-            names.addElement(name);
-        }
-        return new Integer(ret);
-    }
+    public Integer getDownGalleryNames(CmsObject cms, CmsXmlLanguageFile lang,
+            Vector names, Vector values, Hashtable parameters) throws CmsException {
+        return getGalleryNames(cms, getConfigFile(cms).getDownGalleryPath(), lang, names, values, parameters);
+    } 
 
     /**
      * From interface <code>I_CmsFileListUsers</code>.
@@ -322,24 +300,6 @@ public class CmsDownloadBrowser extends CmsWorkplaceDefault implements I_CmsFile
             }
         }
         return filteredFiles;
-    }
-
-    /**
-     * Checks, if the given filename matches the filter.
-     * @param filename filename to be checked.
-     * @param filter filter to be checked.
-     * @return <code>true</code> if the filename matches the filter, <code>false</code> otherwise.
-     */
-
-    private boolean inFilter(String name, String filter) {
-        String compareName = name.toLowerCase();
-        String compareFilter = filter.toLowerCase();
-        if("".equals(compareFilter) || (compareName.indexOf(compareFilter) != -1)) {
-            return true;
-        }
-        else {
-            return false;
-        }
     }
 
     /**
