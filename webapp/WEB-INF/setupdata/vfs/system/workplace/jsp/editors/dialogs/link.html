@@ -38,8 +38,7 @@ function pasteLink() {
       			linktarget="_self";
   		}
 	}
-	var linkanchor = document.NEU.linkanchor.value;
-
+	
 	if (linkEditorStyleInputs) {
   		var linkstyle = document.NEU.linkstyle.value;
   		var linkstyleclass = document.NEU.linkstyleclass.value;
@@ -49,7 +48,7 @@ function pasteLink() {
   		foundLink.removeNode();
 	}
 
-	if ((linkurl.length > 0) || (linkanchor.length > 0)) {
+	if (linkurl.length > 0) {
 
   		foundRange.execCommand("CreateLink", false, "/");
 
@@ -73,12 +72,6 @@ function pasteLink() {
 	      		el.target = linktarget;
 	  	} else {
 	      		el.removeAttribute("TARGET", false);
-	  	}
-	
-	  	if (linkanchor.length > 0) {
-	      		el.name = linkanchor;
-	  	} else {
-	      		el.removeAttribute("NAME", false);
 	  	}
 
 	  	if (linkEditorStyleInputs) {
@@ -163,7 +156,6 @@ function init() {
             foundRange.select();
             foundLink = allLinks[i];
             document.forms["NEU"].elements["neulink"].value = checkContext(foundLink.getAttribute("HREF", 2), false);
-            document.forms["NEU"].elements["linkanchor"].value = foundLink.getAttribute("NAME", 2);
             if (linkEditorStyleInputs) {
                 document.forms["NEU"].elements["linkstyle"].value = foundLink.style.getAttribute("CSSTEXT", 2);
                 document.forms["NEU"].elements["linkstyleclass"].value = foundLink.getAttribute("CLASSNAME", 2);
@@ -358,13 +350,6 @@ function checkContext(linkUrl, add) {
                         <input type="text" name="neulink"  class="maxwidth" value="" onchange="checkLinkUrl();" />
                     </td>
                     <td><a href="javascript:openTreeWin('NEU', 'neulink', document);"><img src="<%= wp.getSkinUri() %>filetypes/folder.gif" border="0" alt="<%= wp.key("label.selectfolder") %>"></a></td>
-                </tr>
-            <tr>
-                    <td style="white-space: nowrap;"><%= wp.key("input.linkanchor") %>:</td>
-                    <td class="maxwidth">
-                        <input type="text" name="linkanchor" class="maxwidth" />
-                    </td>
-                    <td>&nbsp;</td>
                 </tr>
                 <script type="text/javascript">
                 <!--

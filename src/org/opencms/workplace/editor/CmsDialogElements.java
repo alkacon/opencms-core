@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/19 16:00:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/20 12:37:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -298,10 +298,11 @@ public class CmsDialogElements extends CmsDialog {
         StringBuffer retValue = new StringBuffer(512);
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"textbold\">"+key("editor.dialog.elements.pageelement")+"</td>\n");
-        retValue.append("\t<td class=\"textbold\">"+key("editor.dialog.elements.enabled")+"</td>\n");
-        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("editor.dialog.elements.deletecontent")+"</td>\n");            
+        retValue.append("\t<td class=\"textbold\" unselectable=\"on\">"+key("editor.dialog.elements.pageelement")+"</td>\n");
+        retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"+key("editor.dialog.elements.enabled")+"&nbsp;&nbsp;</td>\n");
+        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\" unselectable=\"on\">"+key("editor.dialog.elements.deletecontent")+"</td>\n");            
         retValue.append("</tr>\n");
+        retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
         
         try {
             
@@ -326,9 +327,9 @@ public class CmsDialogElements extends CmsDialog {
                 boolean isMandatory = "1".equals(currentElement[2]);
                 // build an element row
                 retValue.append("<tr>\n");
-                retValue.append("\t<td style=\"white-space: nowrap;\">" + elementNice);
+                retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + elementNice);
                 retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + elementName + "\" value=\"true\"");
+                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\"><input type=\"checkbox\" name=\"" + PREFIX_PARAM_BODY + elementName + "\" value=\"true\"");
                 if (page.isEnabled(elementName, getParamBodylanguage())) {
                     retValue.append(" checked=\"checked\"");
                 }
@@ -337,7 +338,7 @@ public class CmsDialogElements extends CmsDialog {
                 }
                 retValue.append(">");
                 retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\">");
+                retValue.append("\t<td class=\"textcenter\" unselectable=\"on\">");
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                 if (!"".equals(page.getContent(getCms(), elementName, getParamBodylanguage()))) {
                     // current element has content that can be deleted

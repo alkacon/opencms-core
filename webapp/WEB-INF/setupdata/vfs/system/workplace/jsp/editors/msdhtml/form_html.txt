@@ -22,6 +22,7 @@ if (options.showElement("button.customized")) {%>
 <%= wp.button("javascript:doEditHTML(52);", null, "bu_table_td", "button.tablecell", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:doEditHTML(50);", null, "bu_link", "button.linkto", buttonStyle) %>
+<%= wp.button("javascript:doEditHTML(53);", null, "bu_anchor", "button.anchor", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:doEditHTML(42);", null, "bu_image", "button.image", buttonStyle) %>
 <%					
@@ -39,12 +40,6 @@ if (options.showElement("gallery.html")) {%>
 }
 %>
 <%= wp.buttonBarSeparator(5, 5) %>
-<%			
-if (options.showElement("button.print")) {%>
-	<%= wp.button("javascript:doEditHTML(15);", null, "bu_print", "button.print", buttonStyle) %>
-	<%= wp.buttonBarSeparator(5, 5) %><%
-}
-%>
 <%= wp.button("javascript:doEditHTML(47);", null, "bu_details", "button.toggledetails", buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:doEditHTML(48);", null, "bu_specialchar", "button.specialchars", buttonStyle) %>

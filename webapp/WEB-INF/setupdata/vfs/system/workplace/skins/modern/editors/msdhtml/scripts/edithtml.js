@@ -417,20 +417,31 @@ function doEditHTML(para)
         DECMD_HYPERLINK_onclick();
         break;                
     case 50:
-        var winheight = (USE_LINKSTYLEINPUTS?240:190);
+        var winheight = (USE_LINKSTYLEINPUTS?220:170);
         linkEditor = EDITOR.EDIT_HTML;
         linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
         linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
-        linkwin = window.open('dialogs/link.html','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");        
+        linkwin = window.open('dialogs/link.html','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");
+        linkwin.focus();       
         break;      	         
     case 51:
         checkTableElSelection("TR");
         break;          
     case 52:
         checkTableElSelection("TD");
-        break;          
+        break; 
+    case 53:
+        var winheight = (USE_LINKSTYLEINPUTS?180:130);
+        linkEditor = EDITOR.EDIT_HTML;
+        linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
+        linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
+        linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
+        linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
+        anchorwin = window.open('dialogs/anchor.html','SetAnchor', "width=350, height=" + winheight + ", resizable=no, top=300, left=250");
+        anchorwin.focus();
+        break;      	           
     default:
         alert("Sorry, the requested function code " + para + " is not implemented.");          
     }   

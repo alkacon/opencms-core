@@ -6505,6 +6505,33 @@
 		<accesscontrol/>
 	</file>
 	<file>
+		<source>system/workplace/jsp/editors/dialogs/anchor.html</source>
+		<destination>system/workplace/jsp/editors/dialogs/anchor.html</destination>
+		<type>jsp</type>
+		<uuidresource>7c2539ee-4b2f-11d8-af0a-a2beeab26806</uuidresource>
+		<uuidcontent>7c2539ef-4b2f-11d8-af0a-a2beeab26806</uuidcontent>
+		<datelastmodified>1074596665000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074592832000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>export</name>
+				<value><![CDATA[false]]></value>
+			</property>
+			<property>
+				<name>content-encoding</name>
+				<value><![CDATA[ISO-8859-1]]></value>
+			</property>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Page anchor insertion dialog]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
+	<file>
 		<source>system/workplace/jsp/editors/dialogs/elements.html</source>
 		<destination>system/workplace/jsp/editors/dialogs/elements.html</destination>
 		<type>jsp</type>
@@ -13721,6 +13748,20 @@
 		<properties/>
 		<accesscontrol/>
 	</file>
+	<file>
+		<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_anchor.gif</source>
+		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_anchor.gif</destination>
+		<type>image</type>
+		<uuidresource>6908e545-4b35-11d8-b4c2-a2beeab26806</uuidresource>
+		<uuidcontent>6908e546-4b35-11d8-b4c2-a2beeab26806</uuidcontent>
+		<datelastmodified>1074596347000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074595377000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties/>
+		<accesscontrol/>
+	</file> 
 	<file>
 		<source>system/workplace/skins/modern/editors/msdhtml/pics/bu_bold.gif</source>
 		<destination>system/workplace/skins/modern/editors/msdhtml/pics/bu_bold.gif</destination>

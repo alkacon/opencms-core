@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/19 16:00:16 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/20 12:37:08 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.0
  */
@@ -130,6 +130,11 @@ public class CmsDialogProperty extends CmsProperty {
         
         // check if the properties are editable
         boolean editable =  isEditable();
+        // create "disabled" attribute if properties are not editable
+        String disabled = "";
+        if (!editable) {
+            disabled = " disabled=\"disabled\"";
+        }    
         
         // get all used properties for the resource
         Map activeProperties = null;
@@ -141,14 +146,15 @@ public class CmsDialogProperty extends CmsProperty {
         
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"textbold\">"+key("input.property")+"</td>\n");
-        retValue.append("\t<td class=\"textbold\">"+key("label.value")+"</td>\n");   
-        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("input.usedproperty")+"</td>\n");    
+        retValue.append("\t<td class=\"textbold\">" + key("input.property") + "</td>\n");
+        retValue.append("\t<td class=\"textbold\">" + key("label.value") + "</td>\n");   
+        retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">" + key("input.usedproperty") + "</td>\n");    
         retValue.append("</tr>\n");
+        retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
         
         // create template select box row
         retValue.append(buildTableRowStart(key("input.template")));
-        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\" style=\"width: 400px;\""));
+        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth noborder\"" + disabled));
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");       
         retValue.append("&nbsp;");
@@ -198,7 +204,7 @@ public class CmsDialogProperty extends CmsProperty {
         // create NavPos select box row
         retValue.append(buildTableRowStart(key("input.insert")));
         synchronized (this) {
-            retValue.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + "\" class=\"maxwidth\" style=\"width: 400px;\"", getSettings().getMessages()));
+            retValue.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + " class=\"maxwidth noborder\"", getSettings().getMessages()));
         }
         // get the old NavPos value and store it in hidden field
         String navPos = null;
@@ -269,7 +275,7 @@ public class CmsDialogProperty extends CmsProperty {
     private StringBuffer buildTableRowStart(String propertyName) {
         StringBuffer retValue = new StringBuffer(96);
         retValue.append("<tr>\n");
-        retValue.append("\t<td style=\"white-space: nowrap;\">" + propertyName);
+        retValue.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + propertyName);
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"maxwidth\">");
         return retValue; 
