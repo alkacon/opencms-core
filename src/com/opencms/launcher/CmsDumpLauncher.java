@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2002/10/15 12:06:22 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/10/15 13:16:32 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2002/10/15 12:06:22 $
+ * @version $Revision: 1.33 $ $Date: 2002/10/15 13:16:32 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -136,8 +136,7 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
             }
         }
 
-        // if(elementCacheEnabled) {
-         if(false) { // temporary fix for dumplauncher
+        if(elementCacheEnabled) {
             // lets check if ssl is active
             if(cms.getMode() == C_MODUS_ONLINE){
                 String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();

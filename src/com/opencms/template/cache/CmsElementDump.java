@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDump.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/10/15 13:17:27 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -116,7 +116,7 @@ public class CmsElementDump extends A_CmsElement {
                 if(cd.isInternalCacheable()) {
                     variant = new CmsElementVariant();
                     //Gridnine AB Aug 5, 2002
-                    variant.add(result, cms.getRequestContext().getEncoding());
+                    variant.add(result);
                     addVariant(cacheKey, variant);
                 }
 
