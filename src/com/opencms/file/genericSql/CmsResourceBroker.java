@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/07/20 11:52:19 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2000/07/20 15:27:06 $
+ * Version: $Revision: 1.93 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.92 $ $Date: 2000/07/20 11:52:19 $
+ * @version $Revision: 1.93 $ $Date: 2000/07/20 15:27:06 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -112,7 +112,6 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_dbAccess = new CmsDbAccess(config);		
         
         // initalize the caches
-        System.out.println("[CmsRbManager] Setting up DB-Caches");
         m_userCache=new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".user", 50));
         m_groupCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".group", 50));
         m_usergroupsCache = new CmsCache(config.getInteger(C_CONFIGURATION_CACHE + ".usergroups", 50));
