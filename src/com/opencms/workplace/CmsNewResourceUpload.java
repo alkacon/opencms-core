@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/04/10 12:23:33 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/04/17 15:14:36 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.36 $ $Date: 2003/04/10 12:23:33 $
+ * @version $Revision: 1.37 $ $Date: 2003/04/17 15:14:36 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -81,14 +81,11 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         I_CmsSession session = cms.getRequestContext().getSession(true);
         
         // get the file size upload limitation value (value is in kB)
-        int maxFileSize = ((Integer)A_OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();
-        boolean limitedFileSize = true;
-        if (maxFileSize < 1) {
-            limitedFileSize = false;
-        }
-        
-        // check if current user belongs to Admin group
-        boolean userAdmin = cms.userInGroup(cms.getRequestContext().currentUser().getName(), CmsObject.C_GROUP_ADMIN);
+        int maxFileSize = ((Integer)A_OpenCms.getRuntimeProperty("workplace.file.maxuploadsize")).intValue();                          
+        // check if current user belongs to Admin group, if so no file upload limit
+        if ((maxFileSize <= 0) || cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN)) {
+            maxFileSize = -1;
+        }        
         
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
@@ -203,9 +200,6 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
 
                 // display the select filetype screen
                 if(filename != null) {
-                    
-                    // get the file size upload limitation value in bytes
-                    int maxFileSizeBytes = maxFileSize * 1024;
 
                     // check if the file size is 0
                     if(filecontent.length == 0) {
@@ -214,7 +208,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                     }
                     
                     // check if the file size is larger than the maximum allowed upload size 
-                    else if ((limitedFileSize) && (filecontent.length > maxFileSizeBytes) && (!userAdmin)) {
+                    else if ((maxFileSize > 0) && (filecontent.length > (maxFileSize * 1024))) {
                         template = "errorfilesize";
                         xmlTemplateDocument.setData("details", filename+": "+(filecontent.length/1024)+" kb, max. "+maxFileSize+" kb.");
                     }
@@ -385,9 +379,9 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                 }
             }
         }
-        // display upload form with limitation of file size (not for Admin members)
+        // display upload form with limitation of file size
         else {
-            if (limitedFileSize && !userAdmin) {
+            if (maxFileSize > 0) {
                 xmlTemplateDocument.setData("maxfilesize", "" + maxFileSize);
                 String limitation = xmlTemplateDocument.getProcessedDataValue("filesize_limited");
                 xmlTemplateDocument.setData("limitation", limitation);
