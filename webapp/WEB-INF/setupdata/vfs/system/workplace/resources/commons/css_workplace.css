@@ -524,6 +524,13 @@ span.tabactive {
 	border: 1px solid WindowFrame;  
 }
 
+.xmlHtmlGallery {
+	width: 100%;
+	overflow: auto;
+	background-color: ThreeDFace;
+	border: 1px solid WindowFrame;
+}
+
 .help { 
 	color: InfoText; 
     position: absolute; 

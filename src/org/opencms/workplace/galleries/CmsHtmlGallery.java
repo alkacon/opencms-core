@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2004/12/10 11:42:20 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/10 15:37:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.2
  */
@@ -90,6 +93,21 @@ public class CmsHtmlGallery extends A_CmsGallery {
     public String applyButton() {
         if (MODE_VIEW.equals(getParamDialogMode())) {
             return button(null, null, "apply_in", "button.paste", 0); 
+        } else if (MODE_WIDGET.equals(getParamDialogMode())) {
+            String content = "";
+            try {
+                CmsResource res = getCms().readResource(getParamResourcePath());
+                CmsFile file = getCms().readFile(getCms().getSitePath(res));
+                content = new String(file.getContents());
+                content = CmsStringUtil.escapeJavaScript(content);
+            } catch (CmsException e) {
+                // this should never happen
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error("Error reading resource from VFS: " + getParamResourcePath());    
+                }    
+            }
+            content = CmsEncoder.escapeXml(content);
+            return button("javascript:pasteContent('" + content + "')", null, "apply", "button.paste", 0);
         } else {
             return button("javascript:pasteContent()", null, "apply", "button.paste", 0);
         }

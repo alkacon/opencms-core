@@ -53,15 +53,3 @@ function previewImage(fieldId) {
 		var treewin = window.open(contextPath + imgUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=550');
 	}
 }
-
-// closes the popup window, this method is called by the onunload event
-function closeTreeWin() {
-	if (treewin != null) {
-		// close the file selector window
-		window.treewin.close();
-		treewin = null;
-		treeForm = null;
-		treeField = null;
-		treeDoc = null;
-	}
-}

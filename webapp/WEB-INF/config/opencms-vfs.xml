@@ -94,6 +94,7 @@
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlImageGalleryWidget" alias="ImageGalleryWidget" /> 
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlDownloadGalleryWidget" alias="DownloadGalleryWidget" />
 				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlLinkGalleryWidget" alias="LinkGalleryWidget" />
+				<widget class="org.opencms.workplace.xmlwidgets.CmsXmlHtmlGalleryWidget" alias="HtmlGalleryWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.workplace.xmlwidgets.CmsXmlBooleanWidget" />

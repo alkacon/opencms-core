@@ -30,29 +30,34 @@
  */
  
 /*
- * When using this script to open the link gallery dialog, be sure to
+ * When using this script to open the html gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - linkGalleryPath = "<%= CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=linkgallery" %>";
+ * - htmlGalleryPath = "<%= CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=htmlgallery" %>";
  */
 
-var linkGalleryPath;
+var htmlGalleryPath;
 
-// opens the link gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
-function openLinkSelector(dialogMode, fieldId) {
+// opens the download gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
+function openHtmlGallery(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	var treewin = window.open(contextPath + linkGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	var treewin = window.open(contextPath + htmlGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
-// opens a preview popup window to display the currently selected link
-function previewLink(fieldId) {
-	var linkUri = document.getElementById(fieldId).value;
-	linkUri = linkUri.replace(/ /, "");
-	if ((linkUri != "") && (linkUri.charAt(0) == "/" || linkUri.indexOf("http://") == 0)) {
-		if (linkUri.charAt(0) == "/") {
-			linkUri = contextPath + linkUri;
-		}
-		var treewin = window.open(linkUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=750,height=700');
+// pastes the content from hidden field to div
+function checkHtmlContent(fieldId) {
+	var content = document.getElementById(fieldId).value;
+	var prevDiv = document.getElementById("html." + fieldId);
+	if (content == null || content == "") {
+		content = "&nbsp;";	
 	}
+	prevDiv.innerHTML = content;
 }
+
+// resets the content from hidden field and div
+function resetHtmlGallery(fieldId) {
+	document.getElementById(fieldId).value = "";
+	checkHtmlContent(fieldId);
+}
+

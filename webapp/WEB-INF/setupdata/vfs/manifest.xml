@@ -11928,6 +11928,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/erase.gif</source>
+			<destination>system/workplace/resources/buttons/erase.gif</destination>
+			<type>image</type>
+			<uuidresource>1564b9f8-4abc-11d9-8f03-e9c35273ab48</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 15:59:25 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 15:59:25 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/buttons/exit.gif</source>
 			<destination>system/workplace/resources/buttons/exit.gif</destination>
 			<type>image</type>
@@ -13382,6 +13395,24 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to edit html fields]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/htmlgallery.js</source>
+			<destination>system/workplace/resources/components/widgets/htmlgallery.js</destination>
+			<type>plain</type>
+			<uuidresource>a100bc67-4abb-11d9-8f03-e9c35273ab48</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 16:20:09 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Dec 2004 15:56:10 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open html gallery]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

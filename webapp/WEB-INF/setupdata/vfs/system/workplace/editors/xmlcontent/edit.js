@@ -168,3 +168,15 @@ function checkPreview(fieldId) {
 		document.getElementById("preview" + fieldId).className = "hide";
 	}
 }
+
+// closes the popup window, this method is called by the onunload event
+function closeTreeWin() {
+	if (treewin != null) {
+		// close the file selector window
+		window.treewin.close();
+		treewin = null;
+		treeForm = null;
+		treeField = null;
+		treeDoc = null;
+	}
+}

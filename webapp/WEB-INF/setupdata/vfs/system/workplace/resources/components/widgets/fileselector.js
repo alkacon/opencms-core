@@ -78,14 +78,3 @@ function setFormValue(filename) {
 		curForm.elements[treeField].value = filename;	
 	}
 }
-
-function closeTreeWin() {
-	if (treewin != null) {
-		// close the file selector window
-		window.treewin.close();
-		treewin = null;
-		treeForm = null;
-		treeField = null;
-		treeDoc = null;
-	}
-}
