@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms.js,v $
- * Date   : $Date: 2000/04/10 08:43:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/04/18 14:40:52 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -128,15 +128,40 @@ function ChImg(imgID,src)
 document.images[imgID].src = src;
 }
 
+//------------------------------------------------------------------------------------
+// simple encoding of a given string.
+// Any "/" character will be replaced by "%2F". This can be used for avoiding slashes 
+// in request parameters since some servlet environments have problems with such URLs.
+// a.lucas    13.04.2000
+//------------------------------------------------------------------------------------
+function simpleEscape(text) {
+	return text.replace(/\//g, "%2F");
+}
+
+//------------------------------------------------------------------------------------
+// simple encoding of a given URL.
+// Any "/" character in the parameters of the given URL will be replaced by "%2F".
+// a.lucas    18.04.2000
+//------------------------------------------------------------------------------------
+function encodeUrl(url) {
+	encodedurl = url
+	asteriskIdx = url.indexOf("?");
+	if(asteriskIdx > -1 && asteriskIdx < (url.length-1)) {
+		encodedurl = url.substring(0, asteriskIdx) + "?" + simpleEscape(url.substring(asteriskIdx + 1));
+	}
+	return encodedurl;
+}
 
 //------------------------------------------------------------------------------------
 // updates a frame
+// Any URL parameters following the requested path will be simple encoded.
 // m.schleich 01.02.2000
+// a.lucas    13.04.2000
 //------------------------------------------------------------------------------------
 function updateFrame(which, frameurl)
-{
-	eval('window.top.'+which+'.location.href="'+frameurl+'"');
-
+{	
+	encodedurl = encodeUrl(frameurl);
+	eval('window.top.'+which+'.location.href="'+encodedurl+'"');
 }
 
 //------------------------------------------------------------------------------------
@@ -161,8 +186,9 @@ function openwin(url, name, w, h) //opens a new window with parameter URL, Windo
     if (url != '#') {
 		if(w==0) w=screen.availWidth-20;
 		if(h==0) h=screen.availHeight-100;
+		encodedurl = encodeUrl(url);
 
-		workplace = window.open(url,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+		workplace = window.open(encodedurl,name, 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width='+w+',height='+h);
 		workplace.moveTo(0,0);
 		if(workplace != null)
 		   {
@@ -181,7 +207,8 @@ function openwinfull(url, name, w, h) //opens a new window with parameter URL, W
 	if(w==0) w=screen.availWidth-20;
 	if(h==0) h=screen.availHeight-100;
 
-	workplace = window.open(url,name, 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
+	encodedurl = encodeUrl(url);
+	workplace = window.open(encodedurl,name, 'toolbar=yes,location=yes,directories=no,status=yes,menubar=1,scrollbars=yes,resizable=yes,width='+w+',height='+h);
 	if(workplace != null)
 	   {
 	      if (workplace.opener == null)
@@ -207,7 +234,8 @@ var smallwindow;
 
 function opensmallwin(url, name, w, h) //opens a new window with parameter URL, Windowname (free choosable), width and height
 {
-	smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
+	encodedurl = encodeUrl(url);
+	smallwindow = window.open(encodedurl, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=yes,resizable=yes,top=150,left=660,width='+w+',height='+h);
 	if(smallwindow != null)
 	   {
 	      if (smallwindow.opener == null)

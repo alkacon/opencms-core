@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/04/17 14:35:22 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/04/18 14:39:48 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2000/04/17 14:35:22 $
+ * @version $Revision: 1.22 $ $Date: 2000/04/18 14:39:48 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -152,7 +152,37 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         HttpServletRequest orgReq = (HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest();    
         HttpSession session = orgReq.getSession(true);
         String lasturl = (String)parameters.get("lasturl");
+        StringBuffer encLasturl = new StringBuffer();
+        boolean notfirst = false;
         if(lasturl != null) {
+            int asteriskIdx = lasturl.indexOf("?");
+            if(asteriskIdx > -1 && (asteriskIdx < (lasturl.length()-1))) {
+                encLasturl.append(lasturl.substring(0, asteriskIdx + 1));       
+                String queryString = lasturl.substring(asteriskIdx + 1);
+                StringTokenizer st = new StringTokenizer(queryString, "&");
+                while(st.hasMoreTokens()) {
+                    String currToken = st.nextToken();
+                    if(currToken != null && !"".equals(currToken)) {
+                        int idx = currToken.indexOf("=");
+                        if(notfirst) {
+                            encLasturl.append("&");
+                        } else {
+                            notfirst = true;
+                        }
+                        if(idx > -1) {
+                            String key = currToken.substring(0,idx);
+                            String value = (idx < (currToken.length()-1))?currToken.substring(idx+1):"";
+                            encLasturl.append(key);
+                            encLasturl.append("=");
+                            encLasturl.append(Encoder.escape(value));
+                        } else {
+                            encLasturl.append(currToken);
+                        }
+                    }                    
+                }
+                lasturl = encLasturl.toString();
+            }
+
             session.putValue("lasturl", lasturl);                    
         } else {
             lasturl = (String)session.getValue("lasturl");

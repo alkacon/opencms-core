@@ -86,8 +86,8 @@ function mouseClicked(e)
 function showkontext(welche, parameter, id)
 {
 	// set the kontextparameter
-	//kontextparam = parameter.replace(/\//g, "%2F");
-	kontextparam = parameter;
+	kontextparam = parameter.replace(/\//g, "%2F");
+	//kontextparam = parameter;
 	
 	if(welche!='')
 	{
@@ -183,8 +183,9 @@ function checklyrheight(welche)
 // which action on layer is clicked
 function doAction(action) {
 	hidemenu(letztelyr);
-	//var encLasturl = escape(simpleEscape(location.href));
-	encLasturl = location.href;
+	var encLasturl = simpleEscape(location.href);
+	alert(encLasturl);
+	//encLasturl = location.href;
 	
 	switch(action)	{
 		case 1: {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
- * Date   : $Date: 2000/04/06 08:21:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/04/18 14:39:23 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/04/06 08:21:41 $
+ * @version $Revision: 1.14 $ $Date: 2000/04/18 14:39:23 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsPictureBrowser extends CmsWorkplaceDefault {
@@ -108,7 +108,7 @@ public class CmsPictureBrowser extends CmsWorkplaceDefault {
                         
         // Now load the template file and set the appropriate datablocks
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        xmlTemplateDocument.setXmlData(C_PARA_FOLDER, folder);
+        xmlTemplateDocument.setXmlData(C_PARA_FOLDER, Encoder.escape(folder));
         xmlTemplateDocument.setXmlData(C_PARA_PAGE, pageText);
         xmlTemplateDocument.setXmlData(C_PARA_FILTER, filter);
         xmlTemplateDocument.setXmlData(C_PARA_MAXPAGE, "" + maxpage);
