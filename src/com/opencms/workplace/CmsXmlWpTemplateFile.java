@@ -15,12 +15,14 @@ import java.util.*;
  * @author Alexander Lucas
 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/26 09:55:48 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/26 10:40:22 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
+    private Hashtable m_wpTags = new Hashtable();
+    
     /** Reference to the actual language file. */
-    CmsXmlLanguageFile m_languageFile = null;
+    private CmsXmlLanguageFile m_languageFile = null;
     
     /**
      * Default constructor.
@@ -87,12 +89,31 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
      * processNode().
      */
     private void registerMyTags() {
-        registerTag("BUTTON", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);            
-        registerTag("BUTTONSEPARATOR", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);    
-        registerTag("LABEL", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);  
-        registerTag("INPUTFIELD", CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN);    
+        registerTag("BUTTON", "com.opencms.workplace.CmsButton");
+        registerTag("BUTTONSEPARATOR", "com.opencms.workplace.CmsButtonSeparator");
+        registerTag("LABEL", "com.opencms.workplace.CmsLabel");
+        registerTag("INPUTFIELD", "com.opencms.workplace.CmsInput");
     }    
     
+    /**
+     * Special registerTag method for this content definition class.
+     * Any workplace XML tag will be registered with the superclass for handling with
+     * the method <code>handleAnyTag()</code> in this class.
+     * Then the tagname together with the name of the class for the template
+     * element (e.g. <code>CmsButton</code> or <code>CmsLabel</code>) will be put in an internal Hashtable.
+     * <P>
+     * Every workplace element class used by this method has to implement the interface
+     * <code>I_CmsWpElement</code>
+     * 
+     * @param tagname XML tag to be registered as a special workplace tag.
+     * @param elementClassName Appropriate workplace element class name for this tag.
+     * @see com.opencms.workplace.I_CmsWpElement
+     */
+    private void registerTag(String tagname, String elementClassName) {
+        super.registerTag(tagname, CmsXmlWpTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN); 
+        m_wpTags.put(tagname.toLowerCase(), elementClassName);
+    }
+        
     /**
      * Gets the expected tagname for the XML documents of this content type
      * @return Expected XML tagname.
@@ -143,17 +164,10 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         String tagname = n.getTagName().toLowerCase();
         String classname = null;
         
-        if(tagname.equals("button")) {
-            classname = "com.opencms.workplace.CmsButton";
-        } else if(tagname.equals("buttonseparator")) {
-            classname = "com.opencms.workplace.CmsButtonSeparator";
-        } else if(tagname.equals("label")) {
-            classname = "com.opencms.workplace.CmsLabel";
-        } else if(tagname.equals("inputfield")) {
-            classname = "com.opencms.workplace.CmsInput";
-        } else {
+        classname = (String)m_wpTags.get(tagname);
+        if(classname == null || "".equals(classname)) {
             throwException("Don't know which class handles " + tagname + " tags.");            
-        }        
+        }            
     
         Object loadedClass = CmsTemplateClassManager.getClassInstance(m_cms, classname);
         if(!(loadedClass instanceof I_CmsWpElement)) {
