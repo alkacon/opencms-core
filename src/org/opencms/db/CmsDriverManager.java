@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/12 08:06:20 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2003/08/13 15:56:46 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.153 $ $Date: 2003/08/12 08:06:20 $
+ * @version $Revision: 1.154 $ $Date: 2003/08/13 15:56:46 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1917,8 +1917,12 @@ public class CmsDriverManager extends Object {
 
                 try {
                     // try to read the corresponding online resource to decide if the resource should be either removed or deleted
-                    readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
-                    existsOnline = true;
+                    CmsResource onlineFile =readFileHeaderInProject(context, I_CmsConstants.C_PROJECT_ONLINE_ID, currentResource.getFullResourceName(), false);
+                    if (onlineFile.getResourceId().equals(resource.getResourceId())) {
+                        existsOnline = true;
+                    } else {
+                        existsOnline = false;
+                    }
                 } catch (CmsException exc) {
                     existsOnline = false;
                 }
@@ -4650,7 +4654,8 @@ public class CmsDriverManager extends Object {
             }
             destination=des;                     
             // copy the exsisting resource to the lost and foud folder
-            copyFile(context, resourcename, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_LINK);           
+            moveResource(context,resourcename,destination) ;
+            //copyFile(context, resourcename, destination, false, false, I_CmsConstants.C_COPY_AS_LINK);           
           } catch (CmsException e2) {
             throw e2;           
         } finally {
@@ -7076,17 +7081,20 @@ public class CmsDriverManager extends Object {
     public CmsResource replaceResource(CmsRequestContext context, String resourceName, int newResourceType, Map newResourceProperties, byte[] newResourceContent) throws CmsException {
         CmsResource resource = null;
 
+        // clear the cache
+         clearResourceCache();
+
         // read the existing resource
         resource = readFileHeader(context, resourceName, false);
-
+        
         // check if the user has write access 
         checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS);
 
         // replace the existing with the new file content
-        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResourceContent, newResourceType);    
+        m_vfsDriver.replaceResource(context.currentUser(), context.currentProject(), resource, newResourceContent, newResourceType, getResourceType(newResourceType).getLoaderId());    
 
         // write the properties
-        m_vfsDriver.writeProperties(newResourceProperties, context.currentProject().getId(), resource, resource.getType());
+        m_vfsDriver.writeProperties(newResourceProperties, context.currentProject().getId(), resource, newResourceType);
         m_propertyCache.clear();
         
         // update the resource state
@@ -7702,30 +7710,6 @@ public class CmsDriverManager extends Object {
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         m_projectDriver.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
     }
-
-    /**
-     * Updates the resource description and file content of a given resource. <p>
-     * 
-     * The stucture id of the resouce is not modified. Therefore, the structure entry of the resource
-     * points to a different resource description and content after calling this method.
-     * 
-     * @param context the current request context
-     * @param resource the resource with the updated information
-     * @param content the new resource content
-     * @param properties the new resource properties
-     * @param destination the complete pathe of the resource
-     * @throws CmsException if something goes wrong.
-     */
-     public void updateResource(CmsRequestContext context, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
-         // first remove all old properties
-         deleteAllProperties(context, destination);
-         CmsResource oldResource=readFileHeader(context, destination);
-         m_vfsDriver.updateResource(context.currentProject(), oldResource, resource, content);
-         clearResourceCache();       
-         writeProperties(context, destination, properties);
-         
-     }
-
 
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/13 14:05:54 $
-* Version: $Revision: 1.373 $
+* Date   : $Date: 2003/08/13 15:56:46 $
+* Version: $Revision: 1.374 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.373 $
+ * @version $Revision: 1.374 $
  */
 public class CmsObject {
 
@@ -4082,24 +4082,6 @@ public class CmsObject {
      */
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         m_driverManager.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
-    }
-
-
-
-   /**
-    * Updates the resource description and file content of a given resource. <p>
-    * 
-    * The stucture id of the resouce is not modified. Therefore, the structure entry of the resource
-    * points to a different resource description and content after calling this method.
-    * 
-    * @param resource the resource with the updated information
-    * @param content the new resource content
-    * @param properties the new resource properties
-    * @param destination the complete pathe of the resource
-    * @throws CmsException if something goes wrong.
-    */
-    public void updateResource(CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
-        m_driverManager.updateResource(m_context, resource, content, properties, addSiteRoot(destination));
     }
 
 
