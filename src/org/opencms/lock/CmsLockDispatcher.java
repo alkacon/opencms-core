@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/28 15:04:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/28 16:06:00 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.core.A_OpenCms;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsObject;
+import com.opencms.file.CmsProject;
 import com.opencms.file.CmsRequestContext;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.CmsEvent;
@@ -62,7 +63,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2003/07/28 15:04:52 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/28 16:06:00 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -209,7 +210,22 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
         }
 
         return null;
-    }    
+    }   
+    
+    public int countExclusiveLocks(CmsProject project) {
+        Iterator i = m_exclusiveLocks.values().iterator();
+        CmsLock lock = null;
+        int count = 0;
+
+        while (i.hasNext()) {
+            lock = (CmsLock) i.next();
+            if (lock.getProjectId() == project.getId()) {
+                count++;
+            }
+        }
+
+        return count;
+    }
 
     /**
      * Initializes the the lock dispatcher by reading all directly locked resources from the database.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/28 15:03:23 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/07/28 16:06:00 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.89 $ $Date: 2003/07/28 15:03:23 $
+ * @version $Revision: 1.90 $ $Date: 2003/07/28 16:06:00 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1240,7 +1240,8 @@ public class CmsDriverManager extends Object {
         if (isAdmin(context) || isManagerOfProject(context) || (project.getFlags() == I_CmsConstants.C_PROJECT_STATE_UNLOCKED)) {
 
             // count locks
-            return m_vfsDriver.countLockedResources(project);
+            //return m_vfsDriver.countLockedResources(project);
+            return m_lockDispatcher.countExclusiveLocks(project);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + id, CmsException.C_NO_ACCESS);
         }

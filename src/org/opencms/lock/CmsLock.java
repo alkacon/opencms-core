@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2003/07/28 15:04:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/28 16:06:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,21 +42,13 @@ import java.io.Serializable;
  * The lock state is combination of how, by whom and in which project
  * a resource is currently locked.<p>
  * 
- * A resource is <b>direct</b> locked, if a user invoked the lock
- * action in the context menu of a resource. The lock state of this
- * resource is saved in the database.<p>
- * 
- * A resource is <b>indirect</b> locked, if one of it's parent
- * folders is locked. The lock state of this resource is not saved 
- * in the database.<p>
- * 
  * Using old-style methods on CmsResource objects to prove the lock
  * state of a resource may result to incorrect lock states. Use 
  * {@link com.opencms.file.CmsObject#getLock(String)} to obtain a
  * CmsLock object that represents the current lock state of a resource.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/07/28 15:04:52 $
+ * @version $Revision: 1.7 $ $Date: 2003/07/28 16:06:00 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLockDispatcher
