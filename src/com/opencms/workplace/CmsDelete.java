@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/21 16:14:00 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
-  * @version $Revision: 1.9 $ $Date: 2000/02/29 16:44:47 $
+  * @version $Revision: 1.10 $ $Date: 2000/03/21 16:14:00 $
  */
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -91,22 +91,35 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
 
+        if (file.isFile()) {
+            template="file";
+        } else {
+            template="folder";
+        }
+
         //check if the name parameter was included in the request
         // if not, the delete page is shown for the first time
     
         if (delete != null) {
-			//check if the file type name is page
-			//if so delete the file body and content
-			// else delete only file
-			if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				String bodyPath=getBodyPath(cms, file);
-				int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				if (hbodyPath.equals(bodyPath)){
-					cms.deleteFile(hbodyPath);
-				}
-			}
-            cms.deleteFile(filename);
+            
+            // check if the resource is a file or a folder
+            if (file.isFile()) {            
+			    //check if the file type name is page
+			    //if so delete the file body and content
+			    // else delete only file
+			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				    String bodyPath=getBodyPath(cms, file);
+				    int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				    if (hbodyPath.equals(bodyPath)){
+					    cms.deleteFile(hbodyPath);
+				    }
+			    }
+                cms.deleteFile(filename);
+            } else {               
+                cms.deleteFolder(filename);
+            }
+            
             session.removeValue(C_PARA_FILE);
             
             // TODO: Error handling
