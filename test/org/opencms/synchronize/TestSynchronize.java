@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2004/08/10 15:42:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/24 20:20:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.6
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestSynchronize extends OpenCmsTestCase {
 
@@ -116,7 +116,7 @@ public class TestSynchronize extends OpenCmsTestCase {
 
             // save what gets synchronized
             CmsSynchronizeSettings syncSettings = OpenCms.getSystemInfo().getSynchronizeSettings();
-            syncSettings.setDestinationPathInRfs(getTestDataPath() + "sync/");
+            syncSettings.setDestinationPathInRfs(getTestDataPath("") + "sync" + File.separator);
             syncSettings.setSourcePathInVfs(source);
 
             echo("Synchronizing "
@@ -171,7 +171,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             
             // remove the test data
             echo("Purging directory " + OpenCms.getSystemInfo().getSynchronizeSettings().getDestinationPathInRfs());
-            CmsFileUtil.purgeDirectory(new File(getTestDataPath() + "sync/"));
+            CmsFileUtil.purgeDirectory(new File(getTestDataPath("sync")));
         }
 
     }

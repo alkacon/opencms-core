@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2004/10/14 15:05:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/10/24 20:20:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
@@ -95,7 +95,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.C_PARAM_XHTML);        
         
         // read a file and convert it
-        File inputfile = new File (getTestDataPath() + "test2.html");
+        File inputfile = new File (getTestDataPath("test2.html"));
         try {
             byte[] htmlInput = converter.getFileBytes(inputfile);
             String inputContent = new String(htmlInput, converter.m_encoding);

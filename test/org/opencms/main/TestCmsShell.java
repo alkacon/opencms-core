@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsShell.java,v $
- * Date   : $Date: 2004/08/03 07:19:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/24 20:20:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.io.FileInputStream;
  * Test cases for the OpenCms shell.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0
  */
@@ -96,7 +96,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         
         // create a shell instance
         CmsShell shell = new CmsShell(
-            getTestDataPath() + "WEB-INF" + File.separator,
+            getTestDataPath("WEB-INF" + File.separator),
             "${user}@${project}>", 
             null);
         
@@ -105,12 +105,12 @@ public class TestCmsShell extends OpenCmsTestCase {
         FileInputStream stream;
         
         // start the shell with the base script
-        script = new File(getTestDataPath() + "scripts/script_base.txt");
+        script = new File(getTestDataPath("scripts/script_base.txt"));
         stream = new FileInputStream(script);        
         shell.start(stream);
         
         // add the default folders by script
-        script = new File(getTestDataPath() + "scripts/script_default_folders.txt");
+        script = new File(getTestDataPath("scripts/script_default_folders.txt"));
         stream = new FileInputStream(script);        
         shell.start(stream); 
         
@@ -123,12 +123,12 @@ public class TestCmsShell extends OpenCmsTestCase {
         importResources(cms, "simpletest", "/sites/default/");
         
         // publish the current project by script
-        script = new File(getTestDataPath() + "scripts/script_publish.txt");
+        script = new File(getTestDataPath("scripts/script_publish.txt"));
         stream = new FileInputStream(script);        
         shell.start(stream);                
         
         // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath() + "WEB-INF/config/backup/");
+        File configBackupDir = new File(getTestDataPath("WEB-INF/config/backup/"));
         
         // exit the shell
         shell.exit();
