@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/03/01 12:22:06 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/03/04 11:35:00 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.I_CmsDriver;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -66,7 +67,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -747,6 +748,19 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsGroup readManagerGroup(int project) throws Exception {
         return m_cms.readManagerGroup(m_cms.readProject(project));
+    }
+    
+    /**
+     * Returns the selected files contentsls as a String.<p>
+     * 
+     * @param filename the file to read the contents from
+     * @throws CmsException if something goes wrong
+     * @return the selected files contents
+     */
+    public String readFileContent(String filename) throws CmsException {
+        filename = CmsLinkManager.getAbsoluteUri(filename, CmsResource.getFolderPath(m_cms.getRequestContext().getUri()));
+        CmsFile file = m_cms.readFile(filename);
+        return new String(file.getContents());
     }
 
     /**
