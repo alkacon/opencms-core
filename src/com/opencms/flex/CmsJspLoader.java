@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/Attic/CmsJspLoader.java,v $
-* Date   : $Date: 2003/01/31 17:00:10 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2003/02/09 16:53:17 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -801,9 +801,9 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                 contents = req.getCmsObject().readFile(file.getAbsolutePath()).getContents();
                 // Encoding project:
                 // Check the JSP "content-encoding" property
-                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true);
+                jspEncoding = cms.readProperty(file.getAbsolutePath(), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, false);
                 if (jspEncoding == null) jspEncoding = C_DEFAULT_JSP_ENCODING;
-                jspEncoding = jspEncoding.trim().toLowerCase();
+                jspEncoding = jspEncoding.trim().toUpperCase();
             } catch (CmsException e) {
                 throw new ServletException("JspLoader: Could not read contents for file '" + file.getAbsolutePath() + "'", e);
             }
@@ -885,7 +885,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                         p0 = i2 + t7;
                         i1 = page.indexOf(C_DIRECTIVE_START, p0);
                     }
-                }
+                }                  
                 if (i2 > 0) {
                     buf.append(page.substring(p0, page.length()));
                     // Encoding project:
@@ -898,7 +898,7 @@ public class CmsJspLoader implements I_CmsLauncher, I_CmsResourceLoader {
                     // Encoding project:
                     // Contents of original file where not modified,
                     // just translate to the required JSP encoding (if necessary)
-                    contents = Encoder.changeEncoding(contents, A_OpenCms.getDefaultEncoding(), jspEncoding);                    
+                    contents = Encoder.changeEncoding(contents, A_OpenCms.getDefaultEncoding(), jspEncoding);   
                 }                                         
                 fs.write(contents);                
                 fs.close();
