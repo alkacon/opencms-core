@@ -6,8 +6,8 @@
     addMenuEntry(resource_id, "language_key(explorer.context.unlock)", "unlock.html?initial=true", "''","0000022200000");
 
 	addMenuEntry(resource_id, "-", " ", "''","0222022202220");
-	addMenuEntry(resource_id, "language_key(explorer.context.pageedit)", "edit_page.html?init=true", "_top","0222022201110");
-	addMenuEntry(resource_id, "language_key(explorer.context.editcontrolfile)", "edit_text.html?init=true", "_top","0222022201110");
+	addMenuEntry(resource_id, "language_key(explorer.context.pageedit)", "edit_page.html?init=true", "_top","0111022201110");
+	addMenuEntry(resource_id, "language_key(explorer.context.editcontrolfile)", "edit_text.html?init=true", "_top","0111022201110");
 
 	addMenuEntry(resource_id, "-", " ", "''","0222022202220");
 	addMenuEntry(resource_id, "language_key(explorer.context.copy)", "copy.html?initial=true", "''","0222022202220");
@@ -17,7 +17,7 @@
 	addMenuEntry(resource_id, "language_key(explorer.context.undelete)", "undelete.html?initial=true", "''","0000200000000");
 
 	addMenuEntry(resource_id, "-", " ", "_top","0022202220222");
-	addMenuEntry(resource_id, "language_key(explorer.context.publish)", "publish_resource.html?initial=true", "''","0022200000000");
+	addMenuEntry(resource_id, "language_key(explorer.context.publish)", "publish_resource.html?initial=true", "''","0022201110111");
 	addMenuEntry(resource_id, "language_key(explorer.context.undochanges)", "undochanges.html?initial=true", "''","0011102110111");
 
 	addMenuEntry(resource_id, "-", " ", "''","0222022202220");
@@ -28,7 +28,10 @@
 	addMenuEntry(resource_id, "-", " ", "''","0222222222222");
 	addMenuEntry(resource_id, "language_key(explorer.context.history)", "history.html?initial=true", "''","2222222222222");
 	addMenuEntry(resource_id, "language_key(explorer.context.property)", "property.html?initial=true", "''","2222022202220");
-    
+
+	addMenuEntry(resource_id, "-", " ", "_top","2222022202220");
+	addMenuEntry(resource_id, "language_key(explorer.context.copytoproject)", "copy_to_project.html?initial=true", "''","2222022202220");
+	    
 	addMenuEntry(resource_id, "-", " ", "_top","3000000000000");
 	addMenuEntry(resource_id, "language_key(explorer.context.project)", "resource_to_project.html?initial=true", "''","3000000000000");
     
