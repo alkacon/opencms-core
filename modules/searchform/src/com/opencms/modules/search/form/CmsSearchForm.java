@@ -4,25 +4,23 @@ package com.opencms.modules.search.form;
  * Creation date: (25.10.00 17:45:54)
  * @author: Markus Fabritius
  **/
- 
+
 import java.io.*;
 import com.opencms.template.*;
 import com.opencms.file.*;
 import com.opencms.core.*;
 
 import java.net.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 import java.util.*;
 import java.lang.reflect.*;
 
- 
+
 public class CmsSearchForm extends com.opencms.defaults.CmsXmlFormTemplate {
-	
+
 /**
  * Gets the content of a defined section in a given template file and its subtemplates
- * with the given parameters. 
- * 
+ * with the given parameters.
+ *
  * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
  * @param cms CmsObject Object for accessing system resources.
  * @param templateFile Filename of the template file.
@@ -42,18 +40,18 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	String contentDefName = "", areaRestrict = "", singleRestrict = "", localRestrict = "";
 	String configuration, noContentDef, noServer, noMatch, noWord, syntaxError, buildQuery;
 	String list = "", navigate = "", buildquery = "";
-	String server = ((HttpServletRequest) cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+	String server = cms.getRequestContext().getRequest().getServletUrl();
 	String uri = cms.getRequestContext().getUri();
 	Vector getResult = new Vector();
 	Object cd = null;
 
 	// get exist session or create a new session if no session exist
 	I_CmsSession session = cms.getRequestContext().getSession(true);
-	// get template	
+	// get template
 	CmsXmlTemplateFile templateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-	// get session parameter 
+	// get session parameter
 	String sessionCheck = (String) parameters.get("newsearch");
-	// check if the site is use the first time and delete the session variable 
+	// check if the site is use the first time and delete the session variable
 	if (sessionCheck == null) {
 		session.removeValue("searchengineSort");
 		session.removeValue("searchengineMethod");
@@ -139,7 +137,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 				}
 			} else {
 				// a button was pressed	go on
-				// get the parameter from the request  
+				// get the parameter from the request
 				String word = (String) parameters.get("words");
 				String method = (String) parameters.get("method");
 				String format = (String) parameters.get("format");
@@ -151,7 +149,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 					format = "long";
 				if (sort == null)
 					sort = "score";
-				// check which kind of restriction is set, the priority of singleRestrict is higher than areaRestrict 
+				// check which kind of restriction is set, the priority of singleRestrict is higher than areaRestrict
 				if (noSingleRestrict == true || singleRestrict == null || singleRestrict.equals("")) {
 					if (areaRestrict.equals("") || areaRestrict == null)
 						localRestrict = "restricttoall";
@@ -194,7 +192,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 						} else {
 							// output of the result
 							templateSelector = "Result";
-							// get sequential numbering 
+							// get sequential numbering
 							cd = c.newInstance();
 							cd = (I_CmsSearchEngine) getResult.elementAt(0);
 							pageset = ((I_CmsSearchEngine) cd).getPages();
@@ -284,19 +282,28 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 	}
 	return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
 }
+
 /**
- * Creation date: (13.11.00 11:49:30)
- * @return boolean
+ * gets the caching information from the current template class.
+ *
+ * @param cms CmsObject Object for accessing system resources
+ * @param templateFile Filename of the template file
+ * @param elementName Element name of this template in our parent template.
+ * @param parameters Hashtable with all template class parameters.
+ * @param templateSelector template section that should be processed.
+ * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
  */
-public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-	return false;
+public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+     // First build our own cache directives.
+     return new CmsCacheDirectives(false);
 }
+
 /**
  * Used for dynamically generating the selectbox for selecting
  * the format method of the search engine (for example long, short).
- * This method use reflection to get dynamically the value for the selectbox 
+ * This method use reflection to get dynamically the value for the selectbox
  * from the Content Definition which is used.
- * 
+ *
  * Called while generating the template content from CmsXmlFormTemplateFile.
  * @param cms A_CmsObject for accessing system resources.
  * @param names Vector that will be filled with radio button descriptions.
@@ -317,8 +324,8 @@ public Integer selectFormat(CmsObject cms, Vector values, Vector names, Hashtabl
 	}
 	try {
 		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class});
-		result = (Vector) m.invoke(null, new Object[] {"format"});
+		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
+		result = (Vector) m.invoke(null, new Object[] {"format", cms});
 	} catch (ClassNotFoundException e) {
 		System.err.println(e.toString());
 	} catch (ClassCastException e) {
@@ -347,9 +354,9 @@ public Integer selectFormat(CmsObject cms, Vector values, Vector names, Hashtabl
 /**
  * Used for dynamically generating the selectbox for selecting
  * the method of the search engine (for example and, or, boolean).
- * This method use reflection to get dynamically the value for the selectbox 
+ * This method use reflection to get dynamically the value for the selectbox
  * from the Content Definition which is used.
- * 
+ *
  * Called while generating the template content from CmsXmlFormTemplateFile.
  * @param cms A_CmsObject for accessing system resources.
  * @param names Vector that will be filled with radio button descriptions.
@@ -370,8 +377,8 @@ public Integer selectMethod(CmsObject cms, Vector values, Vector names, Hashtabl
 	}
 	try {
 		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class});
-		result = (Vector) m.invoke(null, new Object[] {"method"});
+		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
+		result = (Vector) m.invoke(null, new Object[] {"method", cms});
 	} catch (ClassNotFoundException e) {
 		System.err.println(e.toString());
 	} catch (ClassCastException e) {
@@ -400,7 +407,7 @@ public Integer selectMethod(CmsObject cms, Vector values, Vector names, Hashtabl
 /**
  * Used selectbox for restrict the search if requiered. The paramters are set in the
  * process Tag <area restrict> in the Template.
- * 
+ *
  * Called while generating the template content from CmsXmlFormTemplateFile.
  * @param cms A_CmsObject for accessing system resources.
  * @param names Vector that will be filled with radio button descriptions.
@@ -441,9 +448,9 @@ public Integer selectRestrict(CmsObject cms, Vector values, Vector names, Hashta
 /**
 * Used for dynamically generating the selectbox for selecting
 * the sort method of the search engine (for example title, time, score).
-* This method use reflection to get dynamically the value for the selectbox 
+* This method use reflection to get dynamically the value for the selectbox
 * from the Content Definition which is used.
-* 
+*
 * Called while generating the template content from CmsXmlFormTemplateFile.
 * @param cms A_CmsObject for accessing system resources.
 * @param names Vector that will be filled with radio button descriptions.
@@ -464,8 +471,8 @@ public Integer selectSort(CmsObject cms, Vector values, Vector names, Hashtable 
 	}
 	try {
 		Class c = Class.forName((String) parameters.get("searchengineContentDefinition"));
-		Method m = c.getMethod("setParameter", new Class[] {String.class});
-		result = (Vector) m.invoke(null, new Object[] {"sort"});
+		Method m = c.getMethod("setParameter", new Class[] {String.class, CmsObject.class});
+		result = (Vector) m.invoke(null, new Object[] {"sort", cms});
 	} catch (ClassNotFoundException e) {
 		System.err.println(e.toString());
 	} catch (ClassCastException e) {

@@ -2,9 +2,9 @@ package com.opencms.modules.search.htdig;
 
 /**
  * This is the class for the searchengine Ht//dig. To work correct it is nessary to modify the result Templates
- * of Htdig. Look at the Dokumentation of the Module. The class passes the retrieval query to Ht://Dig 
- * and analyses the result and sent it back to the called program. This is the Content Definition.  
- * 
+ * of Htdig. Look at the Dokumentation of the Module. The class passes the retrieval query to Ht://Dig
+ * and analyses the result and sent it back to the called program. This is the Content Definition.
+ *
  * Creation date: (17.11.00 10:22:45)
  * @author: Markus Fabritius
  */
@@ -14,10 +14,8 @@ import com.opencms.core.*;
 
 import java.io.*;
 import java.net.*;
-import javax.servlet.*;
-import javax.servlet.http.*;
 import java.util.*;
- 
+
 public class CmsHtdig extends com.opencms.defaults.CmsXmlFormTemplate implements com.opencms.core.I_CmsConstants, com.opencms.modules.search.form.I_CmsSearchEngine {
 
 private String m_query;
@@ -34,6 +32,8 @@ private int m_matches;
 private int m_firstdisplay;
 private int m_lastdisplay;
 private int m_urlpage;
+
+private static final String C_PARAM_MODULE_NAME = "com.opencms.modules.search.htdig.CmsHtdig";
 
 private static final String C_PARAM_F_SHORT = "short";
 private static final String C_PARAM_F_LONG = "long";
@@ -52,7 +52,7 @@ private static final String C_PARAM_S_REV_TITLE = "revtitle";
 private static final int C_PARAM_ADD = 5;
 private static final int C_PARAM_BODY_SIZE = 5;
 /**
- * These empty Constructorfor needs the method setParameter. 
+ * These empty Constructorfor needs the method setParameter.
  *
  * Creation date: (05.12.00 15:36:31)
  */
@@ -64,7 +64,7 @@ public CmsHtdig() {}
  * @param r_pages int set the variable m_pages with number of all pages for the match.
  * @param r_first int set the variable m_firstdisplay with with the first number of the current page.
  * @param r_last int set the variable m_lastdisplay with with the last number of the current page.
- * @param r_match int set the variable m_matches specification of all obtained hits. 
+ * @param r_match int set the variable m_matches specification of all obtained hits.
  * Creation date: (17.11.00 10:25:31)
  */
 public CmsHtdig(String word, int pages, int first, int last, int match) {
@@ -77,11 +77,11 @@ public CmsHtdig(String word, int pages, int first, int last, int match) {
 /**
  * The Constructor used for the content definition (body).
  *
- * @param url String Object set the variable m_url with the url for the hit.  
- * @param title String Object set the variable m_title with the titel the hit.  
- * @param excerpt String Object set the variable m_excerpt with a small excerpt of the hit.  
- * @param size int set the variable m_size with the size of the file.  
- * @param percent int set the variable m_percent gives the wight of the hit.  
+ * @param url String Object set the variable m_url with the url for the hit.
+ * @param title String Object set the variable m_title with the titel the hit.
+ * @param excerpt String Object set the variable m_excerpt with a small excerpt of the hit.
+ * @param size int set the variable m_size with the size of the file.
+ * @param percent int set the variable m_percent gives the wight of the hit.
  * Creation date: (17.11.00 10:25:31)
  */
 public CmsHtdig(String url, String title, String excerpt, int size, int percent) {
@@ -99,14 +99,14 @@ public String getExcerpt() {
 	return m_excerpt;
 	}
 /**
- * Get method for first number of the current page. 
+ * Get method for first number of the current page.
  * Creation date: (17.11.00 10:25:31)
  */
 public int getFirstDisplay() {
 	return m_firstdisplay;
 	}
 /**
- * Get method for last number of the current page. 
+ * Get method for last number of the current page.
  * Creation date: (17.11.00 10:25:31)
  */
 public int getLastDisplay() {
@@ -204,13 +204,13 @@ public static Vector read(String word, String method, String sort, String page, 
 	if (conf.equals("contentDefinitionSearchengineConfiguration"))
 		conf = "htdig";
 
-	// check for first time to start the page 
+	// check for first time to start the page
 	if (page == null)
 		query = "restrict=" + restrict + "&config=" + conf + "&method=" + method + "&format=long&sort=" + sort + "&matchesperpage=" + setMatch + "&words=" + word;
 	else
 		query = "restrict=" + restrict + "&config=" + conf + "&method=" + method + "&format=long&sort=" + sort + "&matchesperpage=" + setMatch + "&words=" + word + "&page=" + page;
 	try {
-		// Url connection to the search program htsearch  
+		// Url connection to the search program htsearch
 		URL url = new URL(setServerpath);
 		URLConnection connection = url.openConnection();
 		connection.setDoOutput(true);
@@ -267,36 +267,116 @@ public static Vector read(String word, String method, String sort, String page, 
  * @param selection String Object indicates which selectbox should be filled.
  * Creation date: (27.11.00 10:55:32)
  */
-public static Vector setParameter(String selection) throws Exception {
+public static Vector setParameter(String selection, CmsObject cms) throws Exception {
 	Vector parameter = new Vector();
-	if (selection.equals("method")) {
-		parameter.addElement(C_PARAM_M_AND);
-		parameter.addElement("All");
-		parameter.addElement(C_PARAM_M_OR);
-		parameter.addElement("Any");
-		parameter.addElement(C_PARAM_M_BOOLEAN);
-		parameter.addElement("Boolean");
-	} else
+	String [] temp = new String [6];
+        int i = 0;
+        String moduleName = C_PARAM_MODULE_NAME;
+        String select_method = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "method");
+        String select_format = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "format");
+        String select_sort = cms.getRegistry().getModuleParameter(moduleName.substring(0, moduleName.lastIndexOf(".")), "sort");
+        if (selection.equals("method")) {
+                if((select_method != "") && (select_method != null)){
+                  StringTokenizer st = new StringTokenizer(select_method, ";");
+                  try{
+                    while(st.hasMoreTokens() && i<3){
+                      temp[i] = st.nextToken();
+                      i++;
+                    }
+                    parameter.addElement(C_PARAM_M_AND);
+		    parameter.addElement(temp[0]);
+		    parameter.addElement(C_PARAM_M_OR);
+		    parameter.addElement(temp[1]);
+		    parameter.addElement(C_PARAM_M_BOOLEAN);
+		    parameter.addElement(temp[2]);
+                  }catch (Exception e){
+                    System.err.println(e.toString());
+                  }
+                }else {
+                  parameter.addElement(C_PARAM_M_AND);
+		  parameter.addElement("All");
+		  parameter.addElement(C_PARAM_M_OR);
+		  parameter.addElement("Any");
+		  parameter.addElement(C_PARAM_M_BOOLEAN);
+		  parameter.addElement("Boolean");
+	        }
+        } else
 		if (selection.equals("format")) {
-			parameter.addElement(C_PARAM_F_LONG);
-			parameter.addElement("Long");
-			parameter.addElement(C_PARAM_F_SHORT);
-			parameter.addElement("Short");
-		} else
+		  if((select_format != "") && (select_format != null)){
+                  StringTokenizer st = new StringTokenizer(select_format, ";");
+                  try{
+                    while(st.hasMoreTokens() && i<2){
+                      temp[i] = st.nextToken();
+                      i++;
+                    }
+                    parameter.addElement(C_PARAM_F_LONG);
+		    parameter.addElement(temp[0]);
+		    parameter.addElement(C_PARAM_F_SHORT);
+		    parameter.addElement(temp[1]);
+		  }catch (Exception e){
+                    System.err.println(e.toString());
+                  }
+                  }else {
+                  parameter.addElement(C_PARAM_F_LONG);
+		  parameter.addElement("Long");
+		  parameter.addElement(C_PARAM_F_SHORT);
+		  parameter.addElement("Short");
+		}
+                } else
 			if (selection.equals("sort")) {
-				parameter.addElement(C_PARAM_S_SCORE);
+			  if((select_sort != "") && (select_sort != null)){
+                            StringTokenizer st = new StringTokenizer(select_sort,";");
+                            try{
+                              while(st.hasMoreTokens() && i<6){
+                                  temp[i] = st.nextToken();
+                                  i++;
+                              }
+                              parameter.addElement(C_PARAM_S_SCORE);
+		              parameter.addElement(temp[0]);
+		              parameter.addElement(C_PARAM_S_DATE);
+		              parameter.addElement(temp[1]);
+		              parameter.addElement(C_PARAM_S_TITLE);
+		              parameter.addElement(temp[2]);
+                              parameter.addElement(C_PARAM_S_REV_SCORE);
+		              parameter.addElement(temp[3]);
+                              parameter.addElement(C_PARAM_S_REV_DATE);
+		              parameter.addElement(temp[4]);
+                              parameter.addElement(C_PARAM_S_REV_TITLE);
+		              parameter.addElement(temp[5]);
+                            }catch (Exception e){
+                                System.err.println(e.toString());
+                            }
+                          }else {
+                                parameter.addElement(C_PARAM_S_SCORE);
 				parameter.addElement("Score");
 				parameter.addElement(C_PARAM_S_DATE);
-				parameter.addElement("Date");
+				parameter.addElement("Time");
 				parameter.addElement(C_PARAM_S_TITLE);
 				parameter.addElement("Title");
 				parameter.addElement(C_PARAM_S_REV_SCORE);
 				parameter.addElement("Reverse Score");
 				parameter.addElement(C_PARAM_S_REV_DATE);
-				parameter.addElement("Reverse Date");
+				parameter.addElement("Reverse Time");
 				parameter.addElement(C_PARAM_S_REV_TITLE);
 				parameter.addElement("Reverse Title");
 			}
+                        }
 	return parameter;
 }
+
+/**
+ * gets the caching information from the current template class.
+ *
+ * @param cms CmsObject Object for accessing system resources
+ * @param templateFile Filename of the template file
+ * @param elementName Element name of this template in our parent template.
+ * @param parameters Hashtable with all template class parameters.
+ * @param templateSelector template section that should be processed.
+ * @return <EM>true</EM> if this class may stream it's results, <EM>false</EM> otherwise.
+ */
+public CmsCacheDirectives getCacheDirectives(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+     // First build our own cache directives.
+     return new CmsCacheDirectives(false);
+}
+
 }
