@@ -78,7 +78,7 @@
                                         <table border="0" width="100%">
                                         <tr>
                                             <td class=formular>
-                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked" disabled>
+                                                <input type="checkbox" name="moduletype" id="moduletype" ]]><PROCESS>moduletype</PROCESS><![CDATA[ value="checked">
                                                 ]]><LABEL value="module.lable.moduletype"/><![CDATA[
                                             </td>
                                             <td class=formular>
