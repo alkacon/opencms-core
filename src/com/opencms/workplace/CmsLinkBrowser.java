@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLinkBrowser.java,v $
-* Date   : $Date: 2004/03/19 13:52:51 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.24 $ $Date: 2004/03/19 13:52:51 $
+ * @version $Revision: 1.25 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -80,7 +80,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
 
         // test whether the links folder exists at all
         try {
-            cms.readFileHeader(C_VFS_GALLERY_EXTERNALLINKS);
+            cms.readResource(C_VFS_GALLERY_EXTERNALLINKS);
         } catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
             templateSelector = "error";
@@ -105,7 +105,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
+                    folder = cms.getSitePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 } else {
 
@@ -171,7 +171,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         for(int i = 0;i < allLinks.size();i++) {
             CmsFile file = (CmsFile)allLinks.get(i);
             String filename = file.getName();
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
             boolean filenameFilter = inFilter(filename, filter);
             boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
             if((filenameFilter || titleFilter)) {
@@ -214,10 +214,10 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
         for(int i = 0;i < numFolders;i++) {
             CmsResource currFolder = (CmsResource)folders.get(i);
             String name = currFolder.getName();
-            if(chosenFolder.equals(cms.readAbsolutePath(currFolder))) {
+            if(chosenFolder.equals(cms.getSitePath(currFolder))) {
                 ret = i;
             }
-            values.addElement(cms.readAbsolutePath(currFolder));
+            values.addElement(cms.getSitePath(currFolder));
             names.addElement(name);
         }
         return new Integer(ret);
@@ -303,9 +303,9 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
 
         // Generate the link list for all links on the selected page
         for(int i = from;i < to;i++) {
-            CmsFile file = cms.readFile(cms.readAbsolutePath((CmsFile)filteredLinks.elementAt(i)));
+            CmsFile file = cms.readFile(cms.getSitePath((CmsFile)filteredLinks.elementAt(i)));
             String filename = file.getName();
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
             // without its postfix
@@ -321,7 +321,7 @@ public class CmsLinkBrowser extends CmsWorkplaceDefault {
 
             // Set all datablocks for the current picture list entry
             xmlTemplateDocument.setData("linksource", linkUrl + file.getName());
-            xmlTemplateDocument.setData("filename", cms.readAbsolutePath(file));
+            xmlTemplateDocument.setData("filename", cms.getSitePath(file));
             xmlTemplateDocument.setData("title", title);
             xmlTemplateDocument.setData("linktext", filename);
             xmlTemplateDocument.setData("url", new String(file.getContents()));

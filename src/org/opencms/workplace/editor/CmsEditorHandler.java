@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/06/21 11:45:59 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.3.1
  */
@@ -86,7 +86,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         } else {
             try {
                 // get the resource type id of the edited resource
-                CmsResource res = jsp.getCmsObject().readFileHeader(resource, CmsResourceFilter.ALL);
+                CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
                 resTypeId = res.getTypeId();
             } catch (CmsException e) {
                 // resource could not be read, show error dialog
@@ -118,7 +118,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         
         try {
             // check the presence of the editor
-            jsp.getCmsObject().readFileHeader(editorUri);
+            jsp.getCmsObject().readResource(editorUri);
         } catch (Throwable t) {
             // preferred or selected editor not found, try default editor
             editorUri = OpenCms.getWorkplaceManager().getWorkplaceEditorManager().getDefaultEditorUri(jsp.getRequestContext(), resourceType, userAgent);

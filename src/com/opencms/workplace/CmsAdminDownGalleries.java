@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.52 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.53 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -133,7 +133,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(thefolder));
+            String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_DOWNLOAD) && (parent.equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_downgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_downgalleries2", elementName, parameters, templateSelector);
@@ -172,7 +172,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 // get the path from the workplace.ini
                 String superfolder = getConfigFile(cms).getDownGalleryPath();
                 CmsFolder folder = (CmsFolder)cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-                cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
                 // TODO: check how to set the appropriate access using acl 
                 /*
                 cms.chgrp(cms.readAbsolutePath(folder), group);
@@ -208,7 +208,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                 }
                cms.chmod(cms.readAbsolutePath(folder), flag);
                */
-               cms.unlockResource(cms.readAbsolutePath(folder));
+               cms.unlockResource(cms.getSitePath(folder));
             }
             catch(CmsException ex) {
                 xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/06/25 16:35:08 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 5.3.0
  */
@@ -153,7 +153,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     
         try {
             
-            CmsResource resource = cmsObject.readFileHeader(filename, CmsResourceFilter.ALL);
+            CmsResource resource = cmsObject.readResource(filename, CmsResourceFilter.ALL);
             int currentProject = cmsObject.getRequestContext().currentProject().getId();
             CmsUUID userId = cmsObject.getRequestContext().currentUser().getId();
             CmsLock lock = cmsObject.getLock(filename);
@@ -187,7 +187,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
                 CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
                 if (page == null) {
                     // make sure a page is only read once (not every time for each element)
-                    page = CmsXmlPage.unmarshal(cmsObject, cmsObject.readFile(filename));
+                    page = CmsXmlPage.unmarshal(cmsObject, cmsObject.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION));
                     req.setAttribute(filename, page);
                 }
                 List locales = page.getLocales();

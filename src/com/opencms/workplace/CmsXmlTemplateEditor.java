@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.139 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.140 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -66,7 +67,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.139 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.140 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -76,11 +77,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                    int tempProject, int curProject) throws CmsException {
         // set current project to tempfileproject
         cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
-        CmsFile tempFile = cms.readFile(temporaryFilename);
+        CmsFile tempFile = cms.readFile(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
         Map minfos = cms.readProperties(temporaryFilename);
         // set current project
         cms.getRequestContext().setCurrentProject(cms.readProject(curProject));
-        CmsFile orgFile = cms.readFile(originalFilename);
+        CmsFile orgFile = cms.readFile(originalFilename, CmsResourceFilter.IGNORE_EXPIRATION);
         orgFile.setContents(tempFile.getContents());
         cms.writeFile(orgFile);
         Iterator keys = minfos.keySet().iterator();
@@ -94,13 +95,13 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
     }
 
     protected String createTemporaryFile(CmsObject cms, CmsResource file, int tempProject, int curProject) throws CmsException {
-        String temporaryFilename = CmsResource.getFolderPath(cms.readAbsolutePath(file)) + C_TEMP_PREFIX + file.getName();
+        String temporaryFilename = CmsResource.getFolderPath(cms.getSitePath(file)) + C_TEMP_PREFIX + file.getName();
         boolean ok = true;
         
         cms.getRequestContext().setCurrentProject(cms.readProject(tempProject));
         
         try {
-            cms.copyResource(cms.readAbsolutePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
+            cms.copyResource(cms.getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             // cms.chmod(temporaryFilename, 91);
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
@@ -125,7 +126,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
             extendedTempFile = temporaryFilename + loop;
             
             try {
-                cms.copyResource(cms.readAbsolutePath(file), extendedTempFile);
+                cms.copyResource(cms.getSitePath(file), extendedTempFile);
                 // cms.chmod(extendedTempFile, 91);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
@@ -369,7 +370,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         // If there is no content parameter this seems to be
         // a new request of the page editor.
         // So we have to read all files and set some initial values.
-        parameters.put("root.pagetype", OpenCms.getResourceManager().getResourceType(cms.readFileHeader(file).getTypeId()).getTypeName());
+        parameters.put("root.pagetype", OpenCms.getResourceManager().getResourceType(cms.readResource(file).getTypeId()).getTypeName());
         parameters.put("filename_for_relative_template", file);
         
         // Simple page support
@@ -377,7 +378,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
         boolean isSimplePage = (templateProp != null);
 
         // Check, if the selected page file is locked
-        CmsResource pageFileResource = cms.readFileHeader(file);
+        CmsResource pageFileResource = cms.readResource(file);
         CmsLock lock = cms.getLock(file);
         if(lock.isNullLock()) {
             cms.lockResource(file);
@@ -401,7 +402,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault {
                 }
                 if(originalControlFile.isElementTemplateDefined(C_BODY_ELEMENT)) {
                     bodyElementFilename = originalControlFile.getElementTemplate(C_BODY_ELEMENT);
-                    bodyElementFilename = originalControlFile.validateBodyPath(cms, bodyElementFilename, cms.readFileHeader(file));
+                    bodyElementFilename = originalControlFile.validateBodyPath(cms, bodyElementFilename, cms.readResource(file));
                 }
                 if((bodyElementClassName == null) || (bodyElementFilename == null)) {
                     // Either the template class or the template file

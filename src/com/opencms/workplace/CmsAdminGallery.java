@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2004/02/22 13:52:26 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_CmsFileListUsers {
      
@@ -92,7 +92,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         if (foldername != null) {
             try {
                 CmsFolder fold = cms.readFolder(foldername);
-                String parent = CmsResource.getParentFolder(cms.readAbsolutePath(fold));
+                String parent = CmsResource.getParentFolder(cms.getSitePath(fold));
                 if (!(parent.equals(galleryPath))) {
                     foldername = galleryPath;
                 }
@@ -284,7 +284,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,          
             CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + getGalleryIconPath(cms) );
         filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
-        filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.readAbsolutePath(res),
+        filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.getSitePath(res),
                 C_PROPERTY_TITLE));
     }    
                     

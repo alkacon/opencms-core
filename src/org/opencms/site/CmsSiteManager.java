@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -97,7 +97,7 @@ public final class CmsSiteManager implements Cloneable {
             CmsSite site = parseSite(siteRoots[i]); 
             if (site != null) {       
                 try {
-                    cms.readFileHeader(site.getSiteRoot());
+                    cms.readResource(site.getSiteRoot());
                 } catch (Throwable t) {
                     if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                         OpenCms.getLog(CmsLog.CHANNEL_INIT).warn("Root folder for site " + site + " does not exist (ignoring this site entry)");
@@ -116,7 +116,7 @@ public final class CmsSiteManager implements Cloneable {
         } else {            
             m_defaultSite = new CmsSite(siteDefault, CmsSiteMatcher.C_DEFAULT_MATCHER);
             try {
-                cms.readFileHeader(m_defaultSite.getSiteRoot());
+                cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
                 if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
                     OpenCms.getLog(CmsLog.CHANNEL_INIT).warn("Root folder for default site " + m_defaultSite + " does not exist (setting default site root to '/')");
@@ -186,7 +186,7 @@ public final class CmsSiteManager implements Cloneable {
             while (i.hasNext()) {
                 String folder = (String)i.next();
                 try {
-                    CmsResource res = cms.readFileHeader(folder);
+                    CmsResource res = cms.readResource(folder);
                     if (!workplaceMode || cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS)) {
                         String title = cms.readPropertyObject(folder, I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                         if (title == null) {

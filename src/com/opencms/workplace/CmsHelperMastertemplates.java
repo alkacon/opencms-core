@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2004/06/15 10:19:21 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.27 $ $Date: 2004/06/15 10:19:21 $
+ * @version $Revision: 1.28 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsHelperMastertemplates {
@@ -107,7 +107,7 @@ public class CmsHelperMastertemplates {
         modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             List moduleTemplateFiles = (List) new ArrayList();
-            String folder = cms.readAbsolutePath((CmsFolder)modules.get(i));
+            String folder = cms.getSitePath((CmsFolder)modules.get(i));
             moduleTemplateFiles = cms.getFilesInFolder(folder + subFolder);
             for(int j = 0;j < moduleTemplateFiles.size();j++) {
                 files.add(moduleTemplateFiles.get(j));
@@ -119,12 +119,12 @@ public class CmsHelperMastertemplates {
         while(en.hasNext()) {
             CmsFile file = (CmsFile)en.next();
             if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
-                String nicename = cms.readProperty(cms.readAbsolutePath(file), I_CmsConstants.C_PROPERTY_TITLE);
+                String nicename = cms.readProperty(cms.getSitePath(file), I_CmsConstants.C_PROPERTY_TITLE);
                 if(nicename == null) {
                     nicename = file.getName();
                 }
                 names.addElement(nicename);
-                values.addElement(cms.readAbsolutePath(file));
+                values.addElement(cms.getSitePath(file));
             }
         }
         

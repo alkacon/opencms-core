@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.75 $
+ * @version $Revision: 1.76 $
  * 
  * @since 5.1
  */
@@ -179,7 +179,7 @@ public class CmsExplorer extends CmsWorkplace {
      */
     private boolean resourceExists(CmsObject cms, String resource) {
         try {
-            cms.readFileHeader(resource, CmsResourceFilter.ALL);
+            cms.readResource(resource, CmsResourceFilter.ALL);
             return true;            
         } catch (Exception e) {
             return false;
@@ -214,7 +214,7 @@ public class CmsExplorer extends CmsWorkplace {
         String currentFolder = getSettings().getExplorerResource();
         boolean found = true;
         try {
-            currentResource = getCms().readFileHeader(currentFolder, CmsResourceFilter.ALL);
+            currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // file was not readable
             found = false;
@@ -229,7 +229,7 @@ public class CmsExplorer extends CmsWorkplace {
             currentFolder = "/";
             showVfsLinks = false;
             try {
-                currentResource = getCms().readFileHeader(currentFolder, CmsResourceFilter.ALL);
+                currentResource = getCms().readResource(currentFolder, CmsResourceFilter.ALL);
             } catch (CmsException e) {
                 // should not happen
             }            
@@ -283,7 +283,7 @@ public class CmsExplorer extends CmsWorkplace {
         boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
         if (writeAccess && (! showVfsLinks)) {        
             try {
-                CmsFolder test = getCms().readFolder(currentFolder);
+                CmsFolder test = getCms().readFolder(currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                 writeAccess = getCms().isInsideCurrentProject(test);
             } catch (CmsException e) {
                 writeAccess = false;
@@ -371,7 +371,7 @@ public class CmsExplorer extends CmsWorkplace {
         for (int i = startat; i < stopat; i++) {
             CmsResource res = (CmsResource)resources.get(i);
             CmsLock lock = null;
-            String path = getCms().readAbsolutePath(res);
+            String path = getCms().getSitePath(res);
             
             try {
                 lock = getCms().getLock(res);
@@ -405,7 +405,7 @@ public class CmsExplorer extends CmsWorkplace {
             if (showTitle) {
                 String title = "";
                 try {
-                    title = getCms().readPropertyObject(getCms().readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                    title = getCms().readPropertyObject(getCms().getSitePath(res), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 } catch (CmsException e) {
                    
                     // ignore
@@ -550,7 +550,7 @@ public class CmsExplorer extends CmsWorkplace {
             if (showPermissions) {
                 content.append("\"");  
                 try {            
-                    content.append(getCms().getPermissions(getCms().readAbsolutePath(res)).getPermissionString());
+                    content.append(getCms().getPermissions(getCms().getSitePath(res)).getPermissionString());
                 } catch (CmsException e) {
                    content.append(e.getMessage());
                 }
@@ -641,7 +641,7 @@ public class CmsExplorer extends CmsWorkplace {
             folder = getSettings().getUserSettings().getStartFolder();    
         }
         try {
-            getCms().readFolder(folder);
+            getCms().readFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
             return folder;
         } catch (CmsException e) {
             return "/";    

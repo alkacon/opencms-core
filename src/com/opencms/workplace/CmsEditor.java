@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -56,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.67 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.68 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -253,7 +254,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // Announcement of path and file name in the header of the browser.
         if(checkit==true){
             xmlTemplateDocument.setData("fileName", editFile.getName());
-            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(editFile));
+            String parent = CmsResource.getParentFolder(cms.getSitePath(editFile));
             xmlTemplateDocument.setData("pathName", parent);
         }
         String lasturlname = null;
@@ -326,7 +327,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
     protected CmsFile readFile(CmsObject cms, String filename) throws CmsException {
         CmsFile result = null;
         try {
-            result = cms.readFile(filename);
+            result = cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         }
         catch(Exception e) {
 

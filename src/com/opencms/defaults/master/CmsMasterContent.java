@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2004/06/06 08:58:42 $
-* Version: $Revision: 1.57 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.58 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.57 $
- * $Date: 2004/06/06 08:58:42 $
+ * $Revision: 1.58 $
+ * $Date: 2004/06/28 07:44:02 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -919,7 +919,7 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
                 if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {            
-                    String folder = cms.readAbsolutePath(resource);
+                    String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0) {
                         allChannels.add(folder);
@@ -966,7 +966,7 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
                 if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
-                    String folder = cms.readAbsolutePath(resource);
+                    String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0 && hasWriteAccess(cms, resource)) {
                         allChannels.add(folder.substring(offset));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/13 23:43:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.EntityResolver;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
     
@@ -214,7 +214,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         
         byte[] content = file.getContents();
 
-        String fileName = cms.readAbsolutePath(file);
+        String fileName = cms.getSitePath(file);
         boolean allowRelative = false;
         try {
             allowRelative = Boolean.valueOf(cms.readPropertyObject(fileName, C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
@@ -548,7 +548,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         
             data.setContent(null);
             if (!m_allowRelativeLinks && m_file != null) {
-                String relativeRoot = CmsResource.getParentFolder(cms.readAbsolutePath(m_file));
+                String relativeRoot = CmsResource.getParentFolder(cms.getSitePath(m_file));
                 data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), relativeRoot));
             } else {
                 data.addCDATA(linkReplacer.replaceLinks(cms, content, getEncoding(), null));

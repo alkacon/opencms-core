@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/06/25 16:35:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.3.3
  */
@@ -138,7 +138,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                 
                 // check if the link target is a file or a folder
                 boolean isFolder = false;               
-                CmsResource targetRes = getCms().readFileHeader(targetName);
+                CmsResource targetRes = getCms().readResource(targetName);
                 isFolder = targetRes.isFolder();                 
                 
                 if (isFolder) {                  

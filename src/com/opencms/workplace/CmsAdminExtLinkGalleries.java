@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.33 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -120,7 +120,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
         
         // Check if we must redirect to head_2
         try {
-            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(thefolder));
+            String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_EXTERNALLINKS) && (parent.equals(C_VFS_GALLERY_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
@@ -148,7 +148,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     // create the folder
                     CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
-                        cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
                     }
                     // TODO: check how to set the appropriate access using acl
                     /*
@@ -185,7 +185,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                     }
                     cms.chmod(cms.readAbsolutePath(folder), flag);
                     */
-                    cms.unlockResource(cms.readAbsolutePath(folder));
+                    cms.unlockResource(cms.getSitePath(folder));
                 }
                 catch(CmsException ex) {
                     xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));
@@ -234,7 +234,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         // get folder- and filename
                         foldername = (String)session.getValue(C_PARA_FOLDER);
                         if(foldername == null) {
-                            foldername = cms.readAbsolutePath(cms.rootFolder());
+                            foldername = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
                         }
                         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
                         String firstTitlePart = lang.getLanguageValue("explorer.linkto") + " " + link;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2004/05/13 13:58:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -365,7 +365,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     public Object workplaceUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
         try {
-            cms.readFileHeader(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            cms.readResource(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
             return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
         } catch (CmsSecurityException se) {
             return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import org.apache.lucene.search.Searcher;
  * 
  * <p>Certainly, you can specify more than one folder or channel to index.</p>
  *   
- * @version $Revision: 1.13 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.14 $ $Date: 2004/06/28 07:47:33 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -604,7 +604,7 @@ public class CmsSearchIndex {
                     if (channel != null) {
                         resource = CmsCosIndexer.readResource(m_cms, doc); 
                     } else {
-                        CmsResource res = m_cms.readFileHeader(path);
+                        CmsResource res = m_cms.readResource(path);
                         if (m_cms.hasPermissions(res, I_CmsConstants.C_READ_ACCESS)) {
                             resource = new CmsVfsIndexResource(res);
                         }

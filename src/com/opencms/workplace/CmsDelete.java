@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2004/02/26 11:35:35 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.61 $ $Date: 2004/02/26 11:35:35 $
+ * @version $Revision: 1.62 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault {
@@ -95,7 +95,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
         String action = (String)parameters.get("action");
-        CmsResource file = cms.readFileHeader(filename);
+        CmsResource file = cms.readResource(filename);
         if(file.isFile()) {
             template = "file";
         }
@@ -116,7 +116,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
 
                     // its a file, so delete it
                     try{
-                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                        cms.deleteResource(cms.getSitePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);
                     }catch(CmsException e){
@@ -144,7 +144,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
                 else {
                     // its a folder
                     try{
-                        cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
+                        cms.deleteResource(cms.getSitePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_SIBLINGS);
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
                         session.removeValue(C_PARA_RESOURCE);
@@ -162,7 +162,7 @@ public class CmsDelete extends CmsWorkplaceDefault {
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndelete.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -144,7 +144,7 @@ public class CmsUndelete extends CmsDialog {
         // on folder deletion display "please wait" screen, not for simple file touching
         if (! DIALOG_WAIT.equals(getParamAction())) {
             try {
-                CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+                CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 // return false, this will trigger the "please wait" screen
                 if (resource.isFolder()) {
                     return false;

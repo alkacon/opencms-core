@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/06/21 09:53:08 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     
@@ -256,7 +256,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         String uri = cms.getRequestContext().getUri();
 
         // collect xml template information
-        String absolutePath = cms.readAbsolutePath(file);
+        String absolutePath = cms.getSitePath(file);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("absolutePath=" + absolutePath);
         }
@@ -354,7 +354,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             } catch (Exception e) {
                 // there was an error while parsing the document.
                 // No chance to go on here.
-                handleException(cms, e, "There was an error while parsing XML page file " + cms.readAbsolutePath(file));
+                handleException(cms, e, "There was an error while parsing XML page file " + cms.getSitePath(file));
                 return "".getBytes();
             }
 
@@ -376,7 +376,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             }
             templateName = doc.getMasterTemplate();
             if (templateName != null && !"".equals(templateName)) {
-                templateName = CmsLinkManager.getAbsoluteUri(templateName, cms.readAbsolutePath(file));
+                templateName = CmsLinkManager.getAbsoluteUri(templateName, cms.getSitePath(file));
             }
 
             // Previously, the template class was loaded here.
@@ -493,7 +493,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
                 CmsFile masterTemplate = loadMasterTemplateFile(cms, templateName, doc);
                 I_CmsTemplate tmpl = getTemplateClass(templateClass);               
                 if (!(tmpl instanceof I_CmsXmlTemplate)) {
-                    String errorMessage = "Error in " + cms.readAbsolutePath(file) + ": " + templateClass + " is not a XML template class.";
+                    String errorMessage = "Error in " + cms.getSitePath(file) + ": " + templateClass + " is not a XML template class.";
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error(errorMessage);
                     } 
@@ -743,7 +743,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         long timer1;
         if (DEBUG > 0) {
             timer1 = System.currentTimeMillis();        
-            System.err.println("============ CmsXmlTemplateLoader loading: " + cms.readAbsolutePath(file));            
+            System.err.println("============ CmsXmlTemplateLoader loading: " + cms.getSitePath(file));            
             System.err.println("CmsXmlTemplateLoader.service() cms uri is: " + cms.getRequestContext().getUri());            
         }
         // save the original context settings
@@ -757,12 +757,11 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         try {                        
             // get the CmsRequest
             byte[] result = null;
-            org.opencms.file.CmsFile fx = cms.readFile(cms.readAbsolutePath(file));            
+            org.opencms.file.CmsFile fx = cms.readFile(cms.getSitePath(file));            
             // care about encoding issues
             String dnc = OpenCms.getSystemInfo().getDefaultEncoding().trim();
-            String enc = cms.readPropertyObject(cms.readAbsolutePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(dnc).trim();
-            // fake the called URI (otherwise XMLTemplate / ElementCache would not work)
-            // cms.getRequestContext().setUri(cms.readAbsolutePath(fx));            
+            String enc = cms.readPropertyObject(cms.getSitePath(fx), I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, true).getValue(dnc).trim();
+            // fake the called URI (otherwise XMLTemplate / ElementCache would not work)            
             cms_req.setOriginalRequest((HttpServletRequest)req);
             cms.getRequestContext().setEncoding(enc);      
             if (DEBUG > 1) {
@@ -791,7 +790,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         
         if (DEBUG > 0) {
             long timer2 = System.currentTimeMillis() - timer1;        
-            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.readAbsolutePath(file) + ": " + timer2 + "ms");            
+            System.err.println("============ CmsXmlTemplateLoader time delivering XmlTemplate for " + cms.getSitePath(file) + ": " + timer2 + "ms");            
         }
     } 
 
@@ -831,7 +830,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     public byte[] dump(CmsObject cms, CmsResource file, String element, Locale locale, HttpServletRequest req, HttpServletResponse res) 
     throws CmsException {
         initLegacyRequest(cms, req, res);        
-        String absolutePath = cms.readAbsolutePath(file);
+        String absolutePath = cms.getSitePath(file);
         // this will work for the "default" template class com.opencms.template.CmsXmlTemplate only
         CmsXmlTemplate template = new CmsXmlTemplate();
         // get the appropriate content and convert it to bytes
@@ -887,7 +886,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
         boolean isPageTarget;
         try {            
             // check if the target does exist in the OpenCms VFS
-            CmsResource targetResource = controller.getCmsObject().readFileHeader(target);
+            CmsResource targetResource = controller.getCmsObject().readResource(target);
             isPageTarget = ((CmsResourceTypePage.C_RESOURCE_TYPE_ID == targetResource.getTypeId()));
         } catch (CmsException e) {
             controller.setThrowable(e, target);

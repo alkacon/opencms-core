@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -61,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.1
  */
@@ -262,7 +263,7 @@ public class CmsFrameset extends CmsWorkplace {
             
             boolean visible = true;
             try {
-                getCms().readFileHeader(viewUri);
+                getCms().readResource(viewUri);
             } catch (CmsException e) {
                 visible = false;
             }
@@ -360,7 +361,7 @@ public class CmsFrameset extends CmsWorkplace {
      */    
     public boolean isHelpEnabled() {
         try {
-            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/");
+            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/", CmsResourceFilter.IGNORE_EXPIRATION);
             return true;
         } catch (CmsException e) {
             return false;

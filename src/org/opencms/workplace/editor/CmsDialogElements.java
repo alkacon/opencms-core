@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editor;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.3.0
  */
@@ -214,7 +215,7 @@ public class CmsDialogElements extends CmsDialog {
         CmsXmlPage page = null;        
         try {
             // read the xmlpage file
-            CmsFile pageFile = cms.readFile(xmlPageUri);
+            CmsFile pageFile = cms.readFile(xmlPageUri, CmsResourceFilter.IGNORE_EXPIRATION);
             page = CmsXmlPage.unmarshal(cms, pageFile);
         } catch (CmsException e) {
             OpenCms.getLog(CmsDialogElements.class).warn("Could not read xmlPage from uri '" + xmlPageUri + "'", e);
@@ -228,7 +229,7 @@ public class CmsDialogElements extends CmsDialog {
      */
     public void actionDeleteElementContent() {
         try {
-            CmsFile file = getCms().readFile(this.getParamTempfile());
+            CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
             // set the content of the element to an empty String
             page.setContent(getCms(), getParamDeleteElement(), getElementLocale(), "");
@@ -246,7 +247,7 @@ public class CmsDialogElements extends CmsDialog {
     public void actionUpdateElements() {
         try {
             List elementList = computeElements();
-            CmsFile file = getCms().readFile(this.getParamTempfile());
+            CmsFile file = getCms().readFile(getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
             boolean foundMandatory = false;
             m_changeElement = "";
@@ -327,7 +328,7 @@ public class CmsDialogElements extends CmsDialog {
             List elementList = computeElements();
             
             // get all present bodies from the temporary file
-            CmsFile file = getCms().readFile(this.getParamTempfile());
+            CmsFile file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.IGNORE_EXPIRATION);
             CmsXmlPage page = CmsXmlPage.unmarshal(getCms(), file);
             
             // show all possible elements

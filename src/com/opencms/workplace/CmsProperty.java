@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import com.opencms.legacy.CmsXmlTemplateLoader;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.54 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.55 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsProperty extends CmsWorkplaceDefault {
 
@@ -129,7 +129,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
         propertydef = (String)session.getValue(C_PARA_PROPERTYDEF);
-        CmsResource file = cms.readFileHeader(filename);
+        CmsResource file = cms.readResource(filename);
         String edit = (String)parameters.get("EDIT");
         String delete = (String)parameters.get("DELETE");
         String newproperty = (String)parameters.get("NEWPROPERTY");
@@ -265,7 +265,7 @@ public class CmsProperty extends CmsWorkplaceDefault {
         }
 
         // set the required datablocks
-        String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+        String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
         if(title == null) {
             title = "";
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2004/06/25 16:40:20 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  * </ol>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class CmsFlexRequestDispatcher implements RequestDispatcher {
     
@@ -149,7 +149,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         if ((m_extTarget == null) && (controller != null)) {
             // check if the file exists in the VFS, if not set external target
             try {
-                resource = cms.readFileHeader(m_vfsTarget);
+                resource = cms.readResource(m_vfsTarget);
             } catch (CmsVfsResourceNotFoundException e) {
                 // file not found in VFS, treat it as external file
                 m_extTarget = m_vfsTarget;
@@ -271,7 +271,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                             
                 try {
                     if (resource == null) {
-                        resource = cms.readFileHeader(m_vfsTarget);
+                        resource = cms.readResource(m_vfsTarget);
                     }
                     int type = resource.getLoaderId();
                     if (DEBUG > 0) {

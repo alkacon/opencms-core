@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/06/25 16:34:41 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.125 $
+ * @version $Revision: 1.126 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -301,16 +301,16 @@ public final class OpenCmsCore {
 
         try {
             // try to read the requested resource
-            resource = cms.readFileHeader(resourceName);
+            resource = cms.readResource(resourceName);
             // resource exists, lets check if we have a file or a folder
             if (resource.isFolder()) {
                 // the resource is a folder, check if C_PROPERTY_DEFAULT_FILE is set on folder
                 try {                
-                    String defaultFileName = cms.readPropertyObject(CmsResource.getFolderPath(cms.readAbsolutePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
+                    String defaultFileName = cms.readPropertyObject(CmsResource.getFolderPath(cms.getSitePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
                     if (defaultFileName != null) {
                         // property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(resource)) + defaultFileName;
-                        resource = cms.readFileHeader(tmpResourceName);
+                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
+                        resource = cms.readResource(tmpResourceName);
                         // no exception? so we have found the default file                         
                         cms.getRequestContext().setUri(tmpResourceName);
                     } 
@@ -323,9 +323,9 @@ public final class OpenCmsCore {
                 if (resource.isFolder()) {
                     // resource is (still) a folder, check default files specified in configuration
                     for (int i = 0; i < m_defaultFilenames.length; i++) {
-                        String tmpResourceName = CmsResource.getFolderPath(cms.readAbsolutePath(resource)) + m_defaultFilenames[i];
+                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + m_defaultFilenames[i];
                         try {      
-                            resource = cms.readFileHeader(tmpResourceName);
+                            resource = cms.readResource(tmpResourceName);
                             // no exception? So we have found the default file                         
                             cms.getRequestContext().setUri(tmpResourceName);
                             // stop looking for default files   

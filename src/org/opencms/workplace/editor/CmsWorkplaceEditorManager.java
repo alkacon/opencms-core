@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2004/06/25 16:35:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 
@@ -59,7 +60,7 @@ import java.util.TreeMap;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.1
  */
@@ -101,7 +102,7 @@ public class CmsWorkplaceEditorManager {
             }
             CmsFile configFile = null;
             try {
-                configFile = cms.readFile(folderName + C_EDITOR_CONFIGURATION_FILENAME);
+                configFile = cms.readFile(folderName + C_EDITOR_CONFIGURATION_FILENAME, CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // no configuration file present, ignore this folder
                 continue;

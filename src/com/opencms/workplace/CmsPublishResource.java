@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.41 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.42 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.41 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.42 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault {
@@ -223,7 +223,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
             
             if("ok".equals(action)) {
                 file = readResource(cms, filename);                                     
-                A_CmsReportThread doPublish = new CmsPublishThread(cms, cms.readAbsolutePath(file), false, null);
+                A_CmsReportThread doPublish = new CmsPublishThread(cms, cms.getSitePath(file), false, null);
                 doPublish.start();
                 session.putValue(C_PUBLISH_THREAD, doPublish);
                 // indicate that changes in the user project etc. must be ignored here
@@ -278,7 +278,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault {
         if(resourceName.endsWith("/")){
             resource = cms.readFolder(resourceName, CmsResourceFilter.ALL);
         } else {
-            resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
         }        
         return resource;
     }

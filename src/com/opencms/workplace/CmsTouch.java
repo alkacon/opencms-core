@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault {
 
@@ -125,7 +125,7 @@ public final class CmsTouch extends CmsWorkplaceDefault {
 		}
 
 		// create a valid Cms resource for the given resource name
-		m_Resource = cms.readFileHeader(m_ResourceName);
+		m_Resource = cms.readResource(m_ResourceName);
 
 		// check whether the all sub resources should be touched recusively
 		String dummy = (String) theParameters.get(I_CmsWpConstants.C_PARA_FLAGS);
@@ -154,7 +154,7 @@ public final class CmsTouch extends CmsWorkplaceDefault {
 		}
 
 		// read the title of the resource
-		String resourceTitle = cms.readProperty(cms.readAbsolutePath(m_Resource), I_CmsConstants.C_PROPERTY_TITLE);
+		String resourceTitle = cms.readProperty(cms.getSitePath(m_Resource), I_CmsConstants.C_PROPERTY_TITLE);
 		if (resourceTitle == null) {
 			resourceTitle = "";
 		}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/06/21 10:01:23 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.1.12
  */
@@ -315,7 +315,7 @@ public abstract class CmsEditor extends CmsDialog {
      */
     public boolean isHelpEnabled() {
         try {
-            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/");
+            getCms().readFolder(I_CmsWpConstants.C_VFS_PATH_HELP + getLocale() + "/", CmsResourceFilter.IGNORE_EXPIRATION);
             return true;
         } catch (CmsException e) {
             // help folder is not available
@@ -421,17 +421,17 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String createTempFile() throws CmsException {
         // read the selected file
-        CmsResource file = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+        CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         
         // Create the filename of the temporary file
-        String temporaryFilename = CmsResource.getFolderPath(getCms().readAbsolutePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();
+        String temporaryFilename = CmsResource.getFolderPath(getCms().getSitePath(file)) + I_CmsConstants.C_TEMP_PREFIX + file.getName();
         boolean ok = true;
         
         // switch to the temporary file project
         switchToTempProject();
         
         try {
-            getCms().copyResource(getCms().readAbsolutePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
+            getCms().copyResource(getCms().getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
             getCms().touch(temporaryFilename, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);            
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
@@ -457,7 +457,7 @@ public abstract class CmsEditor extends CmsDialog {
             extendedTempFile = temporaryFilename + loop;
     
             try {
-                getCms().copyResource(getCms().readAbsolutePath(file), extendedTempFile);
+                getCms().copyResource(getCms().getSitePath(file), extendedTempFile);
             } catch (CmsException e) {
                 if ((e.getType() != CmsException.C_FILE_EXISTS) && (e.getType() != CmsException.C_SQL_ERROR)) {
                     switchToCurrentProject();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -111,7 +111,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
         // add the group flag to the acl
-        CmsResource res = cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsResource res = cms.readResource(resource1, CmsResourceFilter.ALL);
  
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), group.getId(), 
@@ -150,7 +150,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
         // add the group flag to the acl
-        CmsResource res = cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsResource res = cms.readResource(resource1, CmsResourceFilter.ALL);
  
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), group.getId(), 
@@ -171,7 +171,7 @@ public class TestChacc extends OpenCmsTestCase {
         
         while (j.hasNext()) {
             CmsResource subRes = (CmsResource)j.next();
-            String subResName = cms.readAbsolutePath(subRes);
+            String subResName = cms.getSitePath(subRes);
             // now evaluate the result
             tc.assertFilter(cms, subResName, OpenCmsTestResourceFilter.FILTER_CHACC);
             // test the ace of the new permission
@@ -211,7 +211,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
         // test the ace of the new permission
         // add the user flag to the acl
-        CmsResource res = cms.readFileHeader(resource1, CmsResourceFilter.ALL);
+        CmsResource res = cms.readResource(resource1, CmsResourceFilter.ALL);
  
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), user.getId(), 

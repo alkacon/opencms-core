@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndochanges.java,v $
-* Date   : $Date: 2004/06/07 12:44:05 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.23 $ $Date: 2004/06/07 12:44:05 $
+ * @version $Revision: 1.24 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsUndochanges extends CmsWorkplaceDefault {
@@ -97,7 +97,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault {
         if(filename.endsWith("/")){
             file = cms.readFolder(filename);
         } else {
-            file = cms.readFileHeader(filename);
+            file = cms.readResource(filename);
         }
         //check if the name parameter was included in the request
         // if not, the undoChanges page is shown for the first time
@@ -105,7 +105,7 @@ public class CmsUndochanges extends CmsWorkplaceDefault {
             if(action != null) {
                 // undo changes of the resource
                 try{
-                    cms.undoChanges(cms.readAbsolutePath(file), true);
+                    cms.undoChanges(cms.getSitePath(file), true);
                     session.removeValue(C_PARA_RESOURCE);
                     //template = "done";
                     // return to filelist

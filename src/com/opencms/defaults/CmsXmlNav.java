@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
-* Date   : $Date: 2004/05/19 16:20:54 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/06/28 07:42:59 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * @author Alexander Kandzior
  * @author Waruschan Babachan
  * @author Thomas Weckert
- * @version $Revision: 1.59 $ $Date: 2004/05/19 16:20:54 $
+ * @version $Revision: 1.60 $ $Date: 2004/06/28 07:42:59 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 
@@ -451,7 +451,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         // the maximum position found
         for (int i=0; i<size; i++) {
             CmsResource currentResource = (CmsResource)resources.get(i);
-            String path = cms.readAbsolutePath(currentResource);
+            String path = cms.getSitePath(currentResource);
             String pos = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVPOS);
             String text = cms.readProperty(path, I_CmsConstants.C_PROPERTY_NAVTEXT);
             // Only list folders in the nav bar if they are not deleted!
@@ -1379,7 +1379,7 @@ public class CmsXmlNav extends A_CmsNavBase {
         property=(property!=null?property:"");
         // register this folder for changes
         Vector vfsDeps = new Vector();
-        vfsDeps.add(cms.readFileHeader(requestedUri));
+        vfsDeps.add(cms.readResource(requestedUri));
         registerVariantDeps(cms, doc.getAbsoluteFilename(), null, null,
                         (Hashtable)userObject, vfsDeps, null, null);
         return (property.getBytes());
@@ -1446,7 +1446,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 break;
         
             case 0 :
-                currentFolder = cms.readAbsolutePath(cms.rootFolder());
+                currentFolder = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
                 break;
         
             default :
@@ -1800,7 +1800,7 @@ public class CmsXmlNav extends A_CmsNavBase {
                 boolean resourceExists = false;
 
                 try {
-                    CmsResource dummy = cms.readFileHeader(sReturnPath);
+                    CmsResource dummy = cms.readResource(sReturnPath);
 
                     if (dummy != null) {
                         // the resource exists

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadFileheader.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestReadFileheader extends OpenCmsTestCase {
   
@@ -108,7 +108,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
         
         // now try to access the resource
         try {
-            cms.readFileHeader(resource1, filter);
+            cms.readResource(resource1, filter);
             if (!filter.includeDeleted()) {
                 // the file could be read, despite the release date set in the future
                 fail("Resource "+ resource1+ " could be read before release date");
@@ -144,7 +144,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
         
         // now try to access the resource
         try {
-            cms.readFileHeader(resource1, filter);
+            cms.readResource(resource1, filter);
             if (!filter.includeDeleted()) {
                 // the file could be read, despite the expiration date was set to the past
                 fail("Resource "+ resource1+ " could be read after the expiration date");
@@ -182,7 +182,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
         
         // now try to access the resource
         try {
-            cms.readFileHeader(resource1, filter);            
+            cms.readResource(resource1, filter);            
         } catch (CmsException e) {
                 fail("Resource "+ resource1+ " could not be read");
         }      

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/06/25 16:33:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
@@ -82,7 +82,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             0,
             new byte[0]);
         if (resource.hasFullResourceName()) {
-            setFullResourceName(resource.getRootPath());
+            setRootPath(resource.getRootPath());
         }
         if (resource instanceof CmsFile) {
             // the resource already was a file, keep contents that might have been read already
@@ -245,8 +245,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             }
         }
         // resource is no file, or contents are not available
-        String filename = cms.readAbsolutePath(resource);
+        String filename = cms.getSitePath(resource);
         // read and return the file
-        return cms.readFile(filename);
+        return cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsDelete.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -176,7 +176,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             if (performDeleteOperation(isFolder))  {
                 // if no exception is caused and "true" is returned delete operation was successful

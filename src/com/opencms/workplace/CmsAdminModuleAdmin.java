@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRegistry;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
@@ -90,7 +91,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         }
         table.put(C_VIEW, check);
         try {
-            cms.readFolder(C_VFS_PATH_MODULES + module + "/administration/");
+            cms.readFolder(C_VFS_PATH_MODULES + module + "/administration/", CmsResourceFilter.IGNORE_EXPIRATION);
             check = "checked";
         }catch(Exception exc) {
             check = "";

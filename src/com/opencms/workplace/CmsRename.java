@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2004/02/22 13:52:26 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.60 $ $Date: 2004/02/22 13:52:26 $
+ * @version $Revision: 1.61 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault {
@@ -107,7 +107,7 @@ public class CmsRename extends CmsWorkplaceDefault {
 
         //newFile=(String)session.getValue(C_PARA_NAME);
         String action = (String)parameters.get("action");
-        CmsResource file = cms.readFileHeader(filename);
+        CmsResource file = cms.readResource(filename);
         if(file.isFile()) {
             template = "file";
         }
@@ -137,7 +137,7 @@ public class CmsRename extends CmsWorkplaceDefault {
 
                     // this is a file, so rename it
                     try {
-                        cms.renameResource(cms.readAbsolutePath(file), newFile);
+                        cms.renameResource(cms.getSitePath(file), newFile);
                     }
                     catch(CmsException ex) {
 
@@ -171,7 +171,7 @@ public class CmsRename extends CmsWorkplaceDefault {
 
                     // this is a folder
                     try {
-                        cms.renameResource(cms.readAbsolutePath(file), newFile);
+                        cms.renameResource(cms.getSitePath(file), newFile);
                     } catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
@@ -193,7 +193,7 @@ public class CmsRename extends CmsWorkplaceDefault {
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }

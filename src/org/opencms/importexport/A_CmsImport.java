@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2004/06/25 16:34:23 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -204,7 +204,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             m_cms.getRequestContext().saveSiteRoot();
             try {
                 m_cms.getRequestContext().setSiteRoot("/");
-                m_cms.readFileHeader(translatedName);
+                m_cms.readResource(translatedName);
                 resourceNotImmutable = false;
                 if (DEBUG > 0) {
                     System.err.println("Import: Immutable flag set for resource");
@@ -244,7 +244,7 @@ public abstract class A_CmsImport implements I_CmsImport {
             if (link.startsWith("/")) {
                 // check if the pointer target is existing
                 try {
-                    CmsResource target = m_cms.readFileHeader(link);
+                    CmsResource target = m_cms.readResource(link);
 
                     // create a new sibling as CmsResource                         
                     CmsResource resource = new CmsResource(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/25 16:34:23 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -319,7 +319,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.setContextToCos();
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         }
 
         if (excludeList == null) {
@@ -516,10 +516,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                     if ((resourceTypeName.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
                         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
-                    CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
+                    CmsResource channel = m_cms.readResource(I_CmsConstants.C_ROOT + destination);
                     
                     
-                    channelId = m_cms.readPropertyObject(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
+                    channelId = m_cms.readPropertyObject(m_cms.getSitePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
                                         
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
@@ -741,7 +741,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     private void mergePageFile(String resourcename) throws Exception {
         
         // get the header file
-        CmsFile pagefile = m_cms.readFile(resourcename);
+        CmsFile pagefile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         Document contentXml = CmsImport.getXmlDocument(pagefile.getContents());
         
         // get the <masterTemplate> node to check the content.
@@ -816,7 +816,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             List properties = m_cms.readPropertyObjects(resourcename, false);
             
             // now get the content of the bodyfile and insert it into the control file                   
-            CmsFile bodyfile = m_cms.readFile(bodyname);
+            CmsFile bodyfile = m_cms.readFile(bodyname, CmsResourceFilter.IGNORE_EXPIRATION);
             
             //get the encoding
             String encoding = null;                    

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -147,7 +147,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res);
+            String resName = cms.getSitePath(res);
             TestProperty.writeProperty(tc, cms, resName, property1);
         }
         
@@ -167,7 +167,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         Iterator j = subresources.iterator();
         while (j.hasNext()) {
             CmsResource res = (CmsResource)j.next();
-            String resName = cms.readAbsolutePath(res);
+            String resName = cms.getSitePath(res);
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_WRITEPROPERTY);
             // project must be current project
             tc.assertProject(cms, resName, cms.getRequestContext().currentProject());
@@ -206,7 +206,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res);
+            String resName = cms.getSitePath(res);
             TestProperty.writeProperty(tc, cms, resName, property1);
         }
         
@@ -226,7 +226,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         Iterator j = subresources.iterator();
         while (j.hasNext()) {
             CmsResource res = (CmsResource)j.next();
-            String resName = cms.readAbsolutePath(res);
+            String resName = cms.getSitePath(res);
                         
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);

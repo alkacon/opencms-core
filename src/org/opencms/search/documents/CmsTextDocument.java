@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsTextDocument.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.search.CmsIndexResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -45,7 +46,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * containing plain text data.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.5 $ $Date: 2004/06/28 07:47:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsTextDocument extends CmsVfsDocument {
@@ -71,7 +72,7 @@ public class CmsTextDocument extends CmsVfsDocument {
         String rawContent = null;
         
         try {        
-            CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
+            CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
             rawContent = new String(file.getContents());
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);

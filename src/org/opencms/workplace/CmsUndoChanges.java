@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 5.1
  */
@@ -111,7 +111,7 @@ public class CmsUndoChanges extends CmsDialog {
         }
         
         try {
-            setCurrentResource(getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL));
+            setCurrentResource(getCms().readResource(getParamResource(), CmsResourceFilter.ALL));
         } catch (CmsException e) {
             // empty
         }
@@ -152,7 +152,7 @@ public class CmsUndoChanges extends CmsDialog {
     private boolean performUndoChangesOperation() throws CmsException {     
          
         // on undo changes display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+        CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;
@@ -176,7 +176,7 @@ public class CmsUndoChanges extends CmsDialog {
         
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             return "";
         }    

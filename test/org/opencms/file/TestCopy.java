@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -150,7 +150,7 @@ public class TestCopy extends OpenCmsTestCase {
         i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+            String resName = cms.getSitePath(res);
             assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
         }     
         
@@ -167,7 +167,7 @@ public class TestCopy extends OpenCmsTestCase {
         i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+            String resName = cms.getSitePath(res);
             
             // project must be current project
             assertProject(cms, resName, cms.getRequestContext().currentProject());

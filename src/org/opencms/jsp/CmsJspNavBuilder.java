@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +46,7 @@ import java.util.List;
  * {@link org.opencms.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @see org.opencms.jsp.CmsJspNavElement
  * 
@@ -171,7 +172,7 @@ public class CmsJspNavBuilder {
         
         for (int i=0; i<resources.size(); i++) {
             CmsResource r = (CmsResource)resources.get(i);
-            CmsJspNavElement element = getNavigationForResource(cms, cms.readAbsolutePath(r));
+            CmsJspNavElement element = getNavigationForResource(cms, cms.getSitePath(r));
             if ((element != null) && element.isInNavigation()) {
                 result.add(element);
             }
@@ -545,7 +546,7 @@ public class CmsJspNavBuilder {
         List subChannels = new ArrayList();
         cms.getRequestContext().saveSiteRoot();
         try {
-            cms.setContextToCos();
+            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
             subChannels = cms.getSubFolders(channel);
         } catch (Exception e) {
             System.err.println("Exception: " + e);
@@ -619,8 +620,8 @@ public class CmsJspNavBuilder {
             m_res = res;
             try {
                 cms.getRequestContext().saveSiteRoot();
-                cms.setContextToCos();
-                m_title = cms.readPropertyObject(cms.readAbsolutePath(res), org.opencms.main.I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
+                m_title = cms.readPropertyObject(cms.getSitePath(res), org.opencms.main.I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 cms.getRequestContext().restoreSiteRoot();
             } catch (Exception e) {
                 m_title = "";

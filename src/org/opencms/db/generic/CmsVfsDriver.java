@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/25 16:33:07 $
- * Version: $Revision: 1.188 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.189 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.188 $ $Date: 2004/06/25 16:33:07 $
+ * @version $Revision: 1.189 $ $Date: 2004/06/28 07:47:32 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -317,7 +317,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         CmsUUID newStructureId = resource.getStructureId();
         try {
             res = readFileHeader(project.getId(), resource.getParentStructureId(), resourcename, true);
-            res.setFullResourceName(resource.getRootPath());
+            res.setRootPath(resource.getRootPath());
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now
                 // but we have to reuse its id in order to avoid orphanes in the online project
@@ -2073,7 +2073,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                 resource.getName(), 
                 true);
             
-            res.setFullResourceName(resource.getRootPath());
+            res.setRootPath(resource.getRootPath());
             
             if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now

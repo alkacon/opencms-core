@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2004/06/14 14:25:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsRequestContext {
 
@@ -335,10 +335,13 @@ public class CmsRequestContext {
     
     /**
      * Removes the current site root prefix from the absolute path in the resource name,
-     * i.e. adjusts the resource name for the current site root.<p> 
+     * that is adjusts the resource name for the current site root.<p> 
      * 
      * @param resourcename the resource name
+     * 
      * @return the resource name adjusted for the current site root
+     * 
+     * @see #getSitePath(CmsResource)
      */   
     public String removeSiteRoot(String resourcename) {
         String siteRoot = getAdjustedSiteRoot(resourcename);
@@ -346,6 +349,27 @@ public class CmsRequestContext {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;
+    }
+    
+    /**
+     * Adjusts the absolute resource root path for the current site.<p> 
+     * 
+     * The full root path of a resource is always available using
+     * {@link CmsResource#getRootPath()}. From this name this method cuts 
+     * of the current site root using 
+     * {@link CmsRequestContext#removeSiteRoot(String)}.<p>
+     * 
+     * @param resource the resource to get the adjusted site root path for
+     * 
+     * @return the absolute resource path adjusted for the current site
+     * 
+     * @see #removeSiteRoot(String)
+     * @see CmsResource#getRootPath()
+     * @see CmsObject#getSitePath(CmsResource)
+     */
+    public String getSitePath(CmsResource resource) {
+        
+        return removeSiteRoot(resource.getRootPath());
     }
     
     /**

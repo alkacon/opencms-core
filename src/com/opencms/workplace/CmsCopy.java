@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
@@ -50,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.73 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.74 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault {
@@ -98,7 +99,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
             session.putValue(C_PARA_RESOURCE, filename);
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
-        CmsResource file = cms.readFileHeader(filename);
+        CmsResource file = cms.readResource(filename);
 
         // read all request parameters
         String newFolder = new String();
@@ -114,7 +115,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
                     newFile = file.getName();
                 }
             } else {
-                newFolder = CmsResource.getParentFolder(cms.readAbsolutePath(file));
+                newFolder = CmsResource.getParentFolder(cms.getSitePath(file));
                 newFile = wholePath;
             }
         }
@@ -163,7 +164,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
             else {
 
                 try {
-                    cms.copyResource(cms.readAbsolutePath(file), newFolder +newFile, C_COPY_PRESERVE_SIBLING);
+                    cms.copyResource(cms.getSitePath(file), newFolder +newFile, C_COPY_PRESERVE_SIBLING);
                 }
                 catch(CmsException ex) {
                     // something went wrong, so remove all session parameters
@@ -207,7 +208,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
         }
 
         // set the required datablocks
-        String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+        String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
         if(title == null) {
             title = "";
         }
@@ -251,7 +252,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
         // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get current and root folder
-        CmsFolder rootFolder = cms.rootFolder();
+        CmsFolder rootFolder = cms.readFolder(I_CmsConstants.C_ROOT);
 
         //add the root folder
         names.addElement(lang.getLanguageValue("title.rootfolder"));
@@ -303,7 +304,7 @@ public class CmsCopy extends CmsWorkplaceDefault {
 
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values)
             throws CmsException {
-        List folders = cms.getSubFolders(cms.readAbsolutePath(root));
+        List folders = cms.getSubFolders(cms.getSitePath(root));
         //CmsProject currentProject = cms.getRequestContext().currentProject();
         Iterator enu = folders.iterator();
         while(enu.hasNext()) {
@@ -312,10 +313,10 @@ public class CmsCopy extends CmsWorkplaceDefault {
             // check if the current folder is part of the current project
             //if(folder.inProject(currentProject)) {
             if (cms.isInsideCurrentProject(folder)) {
-                String name = cms.readAbsolutePath(folder);
+                String name = cms.getSitePath(folder);
                 name = name.substring(1, name.length() - 1);
                 names.addElement(name);
-                values.addElement(cms.readAbsolutePath(folder));
+                values.addElement(cms.getSitePath(folder));
             }
             getTree(cms, folder, names, values);
         }

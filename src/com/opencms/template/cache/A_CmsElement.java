@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2004/02/19 11:46:11 $
-* Version: $Revision: 1.59 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.60 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -258,7 +258,7 @@ public abstract class A_CmsElement {
             }else{
                 try{
                     if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
-                        CmsResource templ = cms.readFileHeader(m_templateName);
+                        CmsResource templ = cms.readResource(m_templateName);
                         int accessflags = templ.getFlags() ;
                         if(!((accessflags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0)){
                             // internal flag not set

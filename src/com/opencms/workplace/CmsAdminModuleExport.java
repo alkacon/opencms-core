@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2004/02/25 14:12:43 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -183,7 +183,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault {
 						if (DEBUG > 0) {
 							System.err.println("reading file header of: " + res);
 						}
-						cms.readFileHeader(res);       
+						cms.readResource(res);       
                         resListCopy.add(res);                 
 					}
 				}

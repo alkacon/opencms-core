@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/06/25 16:37:26 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.3.5
  */
@@ -639,7 +639,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertDateLastModified(CmsObject cms, String resourceName, long dateLastModified) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateLastModified() != dateLastModified) {
                 fail("[DateLastModified " + dateLastModified + " <-> " + res.getDateLastModified() + "]");
@@ -660,7 +660,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertDateCreated(CmsObject cms, String resourceName, long dateCreated) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateCreated() != dateCreated) {
                 fail("[DateCreated " + dateCreated + " <-> " + res.getDateCreated() + "]");
@@ -710,7 +710,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertDateLastModifiedAfter(CmsObject cms, String resourceName, long dateLastModified) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateLastModified() < dateLastModified) {
                 fail("[DateLastModified " + dateLastModified + " > "+res.getDateLastModified() + "]");
@@ -731,7 +731,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertDateCreatedAfter(CmsObject cms, String resourceName, long dateCreated) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getDateCreated() < dateCreated) {
                 fail("[DateCreated " + dateCreated + " > "+res.getDateCreated() + "]");
@@ -987,7 +987,7 @@ public class OpenCmsTestCase extends TestCase {
             OpenCmsTestResourceStorageEntry storedResource = m_currentResourceStrorage.get(resourceName);
 
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             // compare the current resource with the stored resource
             assertFilter(cms, storedResource, res, filter);
@@ -1006,8 +1006,8 @@ public class OpenCmsTestCase extends TestCase {
      */
     public void assertFilter(CmsObject cms, String resourceName1, String resourceName2, OpenCmsTestResourceFilter filter) {
         try {
-            CmsResource res1 = cms.readFileHeader(resourceName1, CmsResourceFilter.ALL);
-            CmsResource res2 = cms.readFileHeader(resourceName2, CmsResourceFilter.ALL);
+            CmsResource res1 = cms.readResource(resourceName1, CmsResourceFilter.ALL);
+            CmsResource res2 = cms.readResource(resourceName2, CmsResourceFilter.ALL);
             
             // a dummy storage entry gets created here to share existing code
             OpenCmsTestResourceStorageEntry dummy = new OpenCmsTestResourceStorageEntry(cms, resourceName2, res2);
@@ -1033,7 +1033,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertLock(CmsObject cms, String resourceName, int lockType) {
         try {
             // get the actual resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock = cms.getLock(res);
             
             if (lockType == CmsLock.C_TYPE_UNLOCKED && !lock.isNullLock()) {
@@ -1055,7 +1055,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertLock(CmsObject cms, String resourceName) {
         try {
             // get the actual resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             CmsLock lock = cms.getLock(res);
             
             if (lock.isNullLock() || !lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
@@ -1080,7 +1080,7 @@ public class OpenCmsTestCase extends TestCase {
 
         try {
             // get the actual resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             // the current resource has a red flag if it's state is changed/new/deleted
             hasRedFlag = (res.getState() != I_CmsConstants.C_STATE_UNCHANGED);
@@ -1111,7 +1111,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertProject(CmsObject cms, String resourceName, CmsProject project) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getProjectLastModified() != project.getId()) {
                 fail("[ProjectLastModified " + project.getId() + " <-> " + res.getProjectLastModified() + "]");
@@ -1477,7 +1477,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertSiblingCountIncremented(CmsObject cms, String resourceName, int increment) {
         try {
             // get the current resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);            
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);            
             // get the previous resource from resource storage
             OpenCmsTestResourceStorageEntry entry = m_currentResourceStrorage.get(resourceName);
             
@@ -1500,7 +1500,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertSiblingCount(CmsObject cms, String resourceName, int count) {
         try {
             // get the current resource from the VFS
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             if (res.getSiblingCount() != count) {
                 fail("[SiblingCount " + res.getSiblingCount() + " <-> " + count + "]");
             }
@@ -1520,7 +1520,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertState(CmsObject cms, String resourceName, int state) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (res.getState() != state) {
                 fail("[State " + state + " <-> " + res.getState() + "]");
@@ -1541,7 +1541,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertUserLastModified(CmsObject cms, String resourceName, CmsUser user) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (!res.getUserLastModified().equals(user.getId())) {
                 fail("[UserLastModified (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserLastModified() + "]");
@@ -1562,7 +1562,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertUserCreated(CmsObject cms, String resourceName, CmsUser user) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
             
             if (!res.getUserCreated().equals(user.getId())) {
                 fail("[UserLastCreated (" + user.getName() + ") " + user.getId() + " <-> " + res.getUserCreated() + "]");
@@ -1582,7 +1582,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertIsFolder(CmsObject cms, String resourceName) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (!res.isFolder()) {
                 fail("[Not a folder: " + resourceName +  "]");
@@ -1605,7 +1605,7 @@ public class OpenCmsTestCase extends TestCase {
     public void assertResourceType(CmsObject cms, String resourceName, int resourceType) {
         try {
             // get the actual resource from the vfs
-            CmsResource res = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (res.getTypeId() != resourceType) {
                 fail("[ResourceType " + res.getTypeId() + " != " + resourceType +  "]");
@@ -1674,7 +1674,7 @@ public class OpenCmsTestCase extends TestCase {
         String resName = "";
         
         try {            
-            CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
+            CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
             // test if the name belongs to a file or folder
             if (resource.isFile()) {
                 m_currentResourceStrorage.add(cms, resourceName, resource);
@@ -1687,7 +1687,7 @@ public class OpenCmsTestCase extends TestCase {
                 Iterator i = resources.iterator();
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource) i.next();
-                    resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+                    resName = cms.getSitePath(res);
                     m_currentResourceStrorage.add(cms, resName, res);
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/06/25 16:33:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,11 @@
 
 package org.opencms.file;
 
-import java.io.Serializable;
-
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+
+import java.io.Serializable;
 
 /**
  * Base class for all OpenCms resources.<p>
@@ -45,21 +44,27 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
-    
-    /** The default release date of a resource (which is: always released). */
-    public static long DATE_RELEASED_DEFAULT;
-    
+
     /** The default expiration date of a resource (which is: never expires). */
     public static long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
-    
+
+    /** The default release date of a resource (which is: always released). */
+    public static long DATE_RELEASED_DEFAULT;
+
+    /** The size of the content. */
+    protected int m_length;
+
     /** The id of the content database record. */
     private CmsUUID m_contentId;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
+
+    /** The expiration date of this resource. */
+    private long m_dateExpired;
 
     /** The date of the last modification of this resource. */
     private long m_dateLastModified;
@@ -67,27 +72,18 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The release date of this resource. */
     private long m_dateReleased;
 
-    /** The expiration date of this resource. */
-    private long m_dateExpired;  
-    
     /** The flags of this resource ( not used yet; the access flags are stored in m_accessFlags). */
     private int m_flags;
 
     /** Boolean flag whether the timestamp of this resource was modified by a touch command. */
     private boolean m_isTouched;
 
-    /** The size of the content. */
-    protected int m_length;
-
-    /** The number of links that point to this resource. */
-    private int m_siblingCount;
-
     /** The id of the loader which is used to process this resource. */
     private int m_loaderId;
-    
+
     /** The name of this resource. */
     private String m_name;
-    
+
     /** The id of the parent's strcuture database record. */
     private CmsUUID m_parentId;
 
@@ -100,6 +96,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** The name of a resource with it's full path from the root folder including the current site root. */
     private String m_rootPath;
 
+    /** The number of links that point to this resource. */
+    private int m_siblingCount;
+
     /** The state of this resource. */
     private int m_state;
 
@@ -108,10 +107,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The resource type id of this resource. */
     private int m_typeId;
-    
+
     /** The id of the user who created this resource. */
     private CmsUUID m_userCreated;
-    
+
     /** The id of the user who modified this resource last. */
     private CmsUUID m_userLastModified;
 
@@ -138,25 +137,25 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param size the size of the file content of this resource
      */
     public CmsResource(
-        CmsUUID structureId, 
-        CmsUUID resourceId, 
-        CmsUUID parentId, 
-        CmsUUID contentId, 
-        String name, 
-        int type, 
-        int flags, 
-        int projectId, 
-        int state, 
-        int loaderId, 
-        long dateCreated, 
-        CmsUUID userCreated, 
-        long dateLastModified, 
-        CmsUUID userLastModified, 
-        long dateReleased, 
+        CmsUUID structureId,
+        CmsUUID resourceId,
+        CmsUUID parentId,
+        CmsUUID contentId,
+        String name,
+        int type,
+        int flags,
+        int projectId,
+        int state,
+        int loaderId,
+        long dateCreated,
+        CmsUUID userCreated,
+        long dateLastModified,
+        CmsUUID userLastModified,
+        long dateReleased,
         long dateExpired,
         int linkCount,
-        int size        
-    ) {
+        int size) {
+
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
@@ -176,7 +175,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateReleased = dateReleased;
         m_dateExpired = dateExpired;
         m_isTouched = false;
-        m_rootPath = null;  
+        m_rootPath = null;
     }
 
     /**
@@ -196,6 +195,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the folder of the given resource
      */
     public static String getFolderPath(String resource) {
+
         return resource.substring(0, resource.lastIndexOf('/') + 1);
     }
 
@@ -212,6 +212,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of a resource without the path information
      */
     public static String getName(String resource) {
+
         if (I_CmsConstants.C_ROOT.equals(resource)) {
             return I_CmsConstants.C_ROOT;
         }
@@ -234,6 +235,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
     public static String getParentFolder(String resource) {
+
         if (I_CmsConstants.C_ROOT.equals(resource)) {
             return null;
         }
@@ -254,6 +256,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the directory level of a resource
      */
     public static int getPathLevel(String resource) {
+
         int level = -1;
         int pos = 0;
         while (resource.indexOf('/', pos) >= 0) {
@@ -274,6 +277,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of a parent folder of the given resource 
      */
     public static String getPathPart(String resource, int level) {
+
         resource = getFolderPath(resource);
         String result = null;
         int pos = 0, count = 0;
@@ -308,7 +312,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the resource name is a folder name, i.e. ends with a "/"
      */
     public static boolean isFolder(String resource) {
-        return ((resource != null) && (resource.charAt(resource.length()-1) == '/'));
+
+        return ((resource != null) && (resource.charAt(resource.length() - 1) == '/'));
     }
 
     /**
@@ -317,32 +322,33 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return a clone of this instance
      */
     public Object clone() {
+
         return new CmsResource(
-            m_structureId, 
-            m_resourceId, 
-            m_parentId, 
-            m_contentId, 
-            m_name, 
+            m_structureId,
+            m_resourceId,
+            m_parentId,
+            m_contentId,
+            m_name,
             m_typeId,
-            m_flags, 
-            m_projectLastModified, 
-            m_state, 
-            m_loaderId, 
-            m_dateCreated, 
-            m_userCreated, 
-            m_dateLastModified, 
-            m_userLastModified, 
-            m_dateReleased, 
+            m_flags,
+            m_projectLastModified,
+            m_state,
+            m_loaderId,
+            m_dateCreated,
+            m_userCreated,
+            m_dateLastModified,
+            m_userLastModified,
+            m_dateReleased,
             m_dateExpired,
             m_siblingCount,
-            m_length
-        );
+            m_length);
     }
 
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     public int compareTo(Object o) {
+
         if ((o == null) || (!(o instanceof CmsResource))) {
             return 0;
         }
@@ -357,69 +363,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
+
         if (obj instanceof CmsResource) {
             return ((CmsResource)obj).getStructureId().equals(getStructureId());
-            }
+        }
         return false;
-    }
-
-    /**
-     * Same as calling {@link #getPath()}, only for backward compatibility,
-     * deprecated, will be removed in the next version.<p>
-     * 
-     * @return same result as calling getPath()
-     * @see #getPath()
-     * @deprecated use getPath(), this method will be removed in the next version
-     */
-    public String getAbsolutePath() {
-        return getPath();
-    }
-
-    /**
-     * Used to return the access flags of this resource,
-     * deprecated, will now always throw a <code>RuntimeException</code>.<p>
-     *
-     * @return will throw a RuntimeException
-     * @deprecated the access flags are not part of the resource in the revised resource model
-     */
-    public int getAccessFlags() {
-        throw new RuntimeException("getAccessFlags() not longer supported on CmsResource");
-    }
-    
-    /**
-     * Returns the date of the creation of this resource.<p>
-     *
-     * @return the date of the creation of this resource
-     */
-    public long getDateCreated() {
-        return m_dateCreated;
-    }
-    
-    /**
-     * Returns the expiration date this resource.<p>
-     *
-     * @return the expiration date of this resource
-     */
-    public long getDateExpired() {
-        return m_dateExpired;
-    }
-    
-    /**
-     * Returns the date of the last modification of this resource.<p>
-     *
-     * @return the date of the last modification of this resource
-     */
-    public long getDateLastModified() {
-        return m_dateLastModified;
-    }
-    
-    /**
-     * Returns the release date this resource.<p>
-     *
-     * @return the release date of this resource
-     */
-    public long getDateReleased() {
-        return m_dateReleased;
     }
 
     /**
@@ -428,7 +376,48 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the id of the content database entry
      */
     public CmsUUID getContentId() {
+
         return m_contentId;
+    }
+
+    /**
+     * Returns the date of the creation of this resource.<p>
+     *
+     * @return the date of the creation of this resource
+     */
+    public long getDateCreated() {
+
+        return m_dateCreated;
+    }
+
+    /**
+     * Returns the expiration date this resource.<p>
+     *
+     * @return the expiration date of this resource
+     */
+    public long getDateExpired() {
+
+        return m_dateExpired;
+    }
+
+    /**
+     * Returns the date of the last modification of this resource.<p>
+     *
+     * @return the date of the last modification of this resource
+     */
+    public long getDateLastModified() {
+
+        return m_dateLastModified;
+    }
+
+    /**
+     * Returns the release date this resource.<p>
+     *
+     * @return the release date of this resource
+     */
+    public long getDateReleased() {
+
+        return m_dateReleased;
     }
 
     /**
@@ -437,50 +426,28 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the flags of this resource
      */
     public int getFlags() {
+
         return m_flags;
     }
-    
+
     /**
      * Gets the length of the content (i.e. the file size).<p>
      *
      * @return the length of the content
      */
     public int getLength() {
+
         return m_length;
     }
 
-    /**
-     * Returns the number of siblings of the resource.<p>
-     * 
-     * @return the number of siblings
-     */
-    public int getSiblingCount() {
-        return m_siblingCount;
-    }
-    
     /**
      * Gets the loader id of this resource.<p>
      *
      * @return the loader type id of this resource
      */
     public int getLoaderId() {
-        return m_loaderId;
-    }
 
-    /**
-     * Used to returns the id of the project if the resource is locked in the database,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * Don't use this method to detect the lock state of a resource. 
-     * Use {@link org.opencms.file.CmsObject#getLock(CmsResource)} instead.
-     *
-     * @return will throw a RuntimeException
-     * @deprecated the lock state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#getLock(CmsResource)
-     * @see org.opencms.lock.CmsLock#getProjectId()
-     */
-    public int getLockedInProject() {
-        throw new RuntimeException("getLockedInProject() not longer supported on CmsResource");
+        return m_loaderId;
     }
 
     /**
@@ -489,6 +456,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the name of this resource
      */
     public String getName() {
+
         return m_name;
     }
 
@@ -498,19 +466,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the structure record id of the parent of this resource
      */
     public CmsUUID getParentStructureId() {
+
         return m_parentId;
     }
-    
-    /**
-     * Returns the name of this resource including the full path in the current site,
-     * but without the current site root.<p>
-     *
-     * @return the name of this resource including the full path in the current site
-     */
-    public String getPath() {
-        // TODO: Must be implemented
-        return null;
-    }    
 
     /**
      * Returns the id of the project where the resource has been last modified.<p>
@@ -518,6 +476,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the id of the project where the resource has been last modified
      */
     public int getProjectLastModified() {
+
         return m_projectLastModified;
     }
 
@@ -527,22 +486,44 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the id of the resource database entry
      */
     public CmsUUID getResourceId() {
+
         return m_resourceId;
     }
 
     /**
-     * Returns the name of a resource with it's full path from the root folder including the current site root, 
-     * e.g. <code>/default/vfs/system/workplace/action/index.html</code>.<p>
+     * Returns the name of a resource with it's full path from the root folder 
+     * including the current site root, 
+     * for example <code>/sites/default/myfolder/index.html</code>.<p>
      *
-     * @return the name of a resource with it's full path from the root folder including the current site root
+     * In a presentation level application usually the current site root must be
+     * cut of from the root path. Use {@link CmsObject#getSitePath(CmsResource)} 
+     * to get the "absolute" path of a resource in the current site.<p>
+     *
+     * @return the name of a resource with it's full path from the root folder 
+     *      including the current site root
+     * 
+     * @see CmsObject#getSitePath(CmsResource)
+     * @see CmsRequestContext#getSitePath(CmsResource)
+     * @see CmsRequestContext#removeSiteRoot(String) 
      */
     public String getRootPath() {
+
         if (m_rootPath == null) {
             throw new RuntimeException("Full resource name not set for CmsResource " + getName());
         }
         return m_rootPath;
     }
-    
+
+    /**
+     * Returns the number of siblings of the resource.<p>
+     * 
+     * @return the number of siblings
+     */
+    public int getSiblingCount() {
+
+        return m_siblingCount;
+    }
+
     /**
      * Returns the state of this resource.<p>
      *
@@ -551,6 +532,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the state of this resource
      */
     public int getState() {
+
         return m_state;
     }
 
@@ -560,15 +542,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the id of the structure record of this resource
      */
     public CmsUUID getStructureId() {
+
         return m_structureId;
     }
-    
+
     /**
      * Returns the resource type id for this resource.<p>
      *
      * @return the resource type id of this resource.
      */
     public int getTypeId() {
+
         return m_typeId;
     }
 
@@ -578,15 +562,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return the user id
      */
     public CmsUUID getUserCreated() {
+
         return m_userCreated;
     }
-    
+
     /**
      * Returns the user id of the user who made the last change on this resource.<p>
      *
      * @return the user id of the user who made the last change<p>
      */
     public CmsUUID getUserLastModified() {
+
         return m_userLastModified;
     }
 
@@ -597,6 +583,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the current state of this resource contains the full resource path
      */
     public boolean hasFullResourceName() {
+
         return m_rootPath != null;
     }
 
@@ -604,6 +591,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
+
         if (m_structureId != null) {
             return m_structureId.hashCode();
         }
@@ -612,25 +600,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Used to check if this resource is inside the specified project,
-     * deprecated, will now always throw a <code>RuntimeException</code>.<p>
-     * 
-     * @param project the specified project
-     * @return false
-     * @deprecated the project state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#isInsideCurrentProject(CmsResource)
-     */
-    public boolean inProject(CmsProject project) {
-        OpenCms.getLog(this).warn("Deprecated method called: inProject(" + project + ")");
-        throw new RuntimeException("inProject() not longer supported on CmsResource");
-    }
-    
-    /**
      * Determines if this resource is a file.<p>
      *
      * @return true if this resource is a file, false otherwise
      */
     public boolean isFile() {
+
         return getTypeId() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
 
@@ -640,9 +615,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if this is is a folder
      */
     public boolean isFolder() {
+
         return getTypeId() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID;
     }
-    
+
     /**
      * Checks if the resource is internal.<p>
      * 
@@ -651,9 +627,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if the resource is internal, otherwise false
      */
     public boolean isInternal() {
+
         return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_INTERNAL) > 0);
     }
-    
+
     /**
      * Checks if the link has to be labeled with a special icon in the explorer view.<p>
      *
@@ -662,39 +639,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return true if a link to the resource has to be labeled, otherwise false
      */
     public boolean isLabeled() {
+
         return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_LABELLINK) > 0);
-    }
-
-    /**
-     * Used to check if this resource is currently directly locked in the database,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * Don't use this method to detect the lock state of a resource. 
-     * Use {@link org.opencms.file.CmsObject#getLock(CmsResource)} instead.
-     *
-     * @return will throw a RuntimeException
-     * @deprecated the lock state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#getLock(CmsResource)
-     * @see org.opencms.lock.CmsLock#isNullLock()
-     */
-    public boolean isLocked() {
-        throw new RuntimeException("isLocked() not longer supported on CmsResource");
-    }
-
-    /**
-     * Used to return the id of the user if the resource is directly locked in the database,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * Don't use this method to detect the lock state of a resource. 
-     * Use {@link org.opencms.file.CmsObject#getLock(CmsResource)} instead.
-     *
-     * @return will throw a RuntimeException
-     * @deprecated the lock state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#getLock(CmsResource)
-     * @see org.opencms.lock.CmsLock#getUserId()
-     */
-    public CmsUUID isLockedBy() {
-        throw new RuntimeException("isLockedBy() not longer supported on CmsResource");
     }
 
     /**
@@ -703,18 +649,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @return boolean true if this resource was touched
      */
     public boolean isTouched() {
-        return m_isTouched;
-    }
 
-    /**
-     * Sets the access flags of this resource.<p>
-     *
-     * @deprecated the access flags are not longer maintained on the resource in the revised OpenCms ACL model
-     * @param flags the access flags to set
-     */
-    public void setAccessFlags(int flags) {
-        OpenCms.getLog(this).warn("Deprecated method called: setAccessFlags(" + flags + ")");
-        throw new RuntimeException("setAccessFlags() not longer supported on CmsResource");
+        return m_isTouched;
     }
 
     /**
@@ -723,17 +659,18 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param time the date to set
      */
     public void setDateExpired(long time) {
+
         m_isTouched = true;
         m_dateExpired = time;
     }
-    
-    
+
     /**
      * Sets the date of the last modification of this resource.<p>
      * 
      * @param time the date to set
      */
     public void setDateLastModified(long time) {
+
         m_isTouched = true;
         m_dateLastModified = time;
     }
@@ -744,76 +681,49 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param time the date to set
      */
     public void setDateReleased(long time) {
+
         m_isTouched = true;
         m_dateReleased = time;
     }
-    
-    
+
     /**
-    * Sets the flags of this resource.<p>
-    *
-    * @param flags int value with flag values to set
-    */
+     * Sets the flags of this resource.<p>
+     *
+     * @param flags int value with flag values to set
+     */
     public void setFlags(int flags) {
+
         m_flags = flags;
     }
 
     /**
-     * Sets the resource name including the path.<p>
+     * Sets the resource name including the full root path.<p>
      * 
-     * @param fullResourceName the resource name including the path
+     * @param rootPath the resource name including the full root path to set
+     * 
+     * @see #getRootPath()
+     * @see CmsObject#getSitePath(CmsResource)
+     * @see CmsRequestContext#getSitePath(CmsResource)
+     * @see CmsRequestContext#removeSiteRoot(String)
      */
-    public void setFullResourceName(String fullResourceName) {
-        
-        if (isFolder() && !CmsResource.isFolder(fullResourceName)) {
+    public void setRootPath(String rootPath) {
+
+        if (isFolder() && !CmsResource.isFolder(rootPath)) {
             // ensure a folder always ends with a /
-            m_rootPath = fullResourceName.concat("/");
+            m_rootPath = rootPath.concat("/");
         } else {
-            m_rootPath = fullResourceName;
+            m_rootPath = rootPath;
         }
     }
 
     /**
-    * Sets the loader id of this resource.<p>
-    *
-    * @param loaderId the loader id of this resource
-    */
+     * Sets the loader id of this resource.<p>
+     *
+     * @param loaderId the loader id of this resource
+     */
     public void setLoaderId(int loaderId) {
-        m_loaderId = loaderId;
-    }
-    
-    /**
-     * Used to set the the user id that locked this resource,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * Don't use this method to detect the lock state of a resource. 
-     * Use {@link org.opencms.file.CmsObject#getLock(CmsResource)} instead.
-     *
-     * @param user the user id to set
-     * @deprecated the lock state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#getLock(CmsResource)
-     * @see org.opencms.lock.CmsLock#getUserId()
-     */
-    public void setLocked(CmsUUID user) {
-        OpenCms.getLog(this).warn("Deprecated method called: setLocked(" + user + ")");        
-        throw new RuntimeException("setLocked() not longer supported on CmsResource");
-    }
 
-    /**
-     * Used to set the project id in which this resource is locked,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * Don't use this method to detect the lock state of a resource. 
-     * Use {@link org.opencms.file.CmsObject#getLock(CmsResource)} instead.
-     *
-     * @param projectId a project id
-     * @deprecated the lock state is not part of the resource in the revised resource model
-     * @see org.opencms.file.CmsObject#getLock(CmsResource)
-     * @see org.opencms.lock.CmsLock#getProjectId()
-     */
-    public void setLockedInProject(int projectId) {
-        OpenCms.getLog(this).warn("Deprecated method called: setLockedInProject(" + projectId + ")");                
-        throw new RuntimeException("setLockedInProject() not longer supported on CmsResource");
+        m_loaderId = loaderId;
     }
 
     /**
@@ -822,31 +732,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param parent the id of the parent resource
      */
     public void setParentId(CmsUUID parent) {
+
         m_parentId = parent;
     }
 
-    /**
-     * Used to sets the id of the project where the resource has been last modified,
-     * deprecated, will now always throw a <code>RuntimeException</code><p>
-     * 
-     * It is unsafe to set the project state explicit, the project state is saved 
-     * implicit when the resource get modified. Thus, this value is never written 
-     * to the database.
-     *
-     * @param projectId the id of the project where the resource has been last modified
-     * @deprecated the project state is not part of the resource in the revised resource model
-     */
-    public void setProjectId(int projectId) {
-        OpenCms.getLog(this).warn("Deprecated method called: setProjectId(" + projectId + ")");                        
-        throw new RuntimeException("setProjectId() not longer supported on CmsResource");
-    }
-    
     /**
      * Sets the state of this resource.<p>
      *
      * @param state the state to set
      */
     public void setState(int state) {
+
         m_state = state;
     }
 
@@ -856,15 +752,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param type the type to set
      */
     public void setType(int type) {
+
         m_typeId = type;
     }
-    
+
     /**
      * Sets the user id of the user who changed this resource.<p>
      *
      * @param resourceLastModifiedByUserId the user id of the user who changed the resource
      */
     public void setUserLastModified(CmsUUID resourceLastModifiedByUserId) {
+
         m_userLastModified = resourceLastModifiedByUserId;
     }
 
@@ -872,29 +770,30 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see java.lang.Object#toString()
      */
     public String toString() {
+
         StringBuffer result = new StringBuffer();
-        
+
         result.append("[");
         result.append(this.getClass().getName());
         result.append(", name: ");
         result.append(m_name);
-        result.append(", structure-ID: ");
+        result.append(", structure id ");
         result.append(m_structureId);
-        result.append(", resource-ID: ");
+        result.append(", resource id: ");
         result.append(m_resourceId);
-        result.append(", parent-ID: ");
+        result.append(", parent id: ");
         result.append(m_parentId);
-        result.append(", content-ID: ");
-        result.append(m_contentId);               
-        result.append(", type-ID: ");
+        result.append(", content id: ");
+        result.append(m_contentId);
+        result.append(", type id: ");
         result.append(m_typeId);
         result.append(", flags: ");
-        result.append(m_flags);  
+        result.append(m_flags);
         result.append(", project: ");
         result.append(m_projectLastModified);
         result.append(", state: ");
-        result.append(m_state);        
-        result.append(", loader-ID: ");
+        result.append(m_state);
+        result.append(", loader id: ");
         result.append(m_loaderId);
         result.append(", date created: ");
         result.append(new java.util.Date(m_dateCreated));
@@ -902,15 +801,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_userCreated);
         result.append(", date lastmodified: ");
         result.append(new java.util.Date(m_dateLastModified));
-        result.append(", user lastmodified: ");
+        result.append(", user lastmodified: ");        
         result.append(m_userLastModified);
+        result.append(", date released: ");
+        result.append(new java.util.Date(m_dateReleased));        
+        result.append(", date expired: ");
+        result.append(new java.util.Date(m_dateExpired));        
         result.append(", size: ");
-        result.append(m_length);        
-        result.append(" link count: ");
+        result.append(m_length);
+        result.append(" sibling count: ");
         result.append(m_siblingCount);
         result.append("]");
-        
+
         return result.toString();
     }
-    
+
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPictureBrowser.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.62 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.63 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -82,7 +82,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
 
         // test whether the pics folder exists at all
         try {
-            cms.readFileHeader(getConfigFile(cms).getPicGalleryPath());
+            cms.readResource(getConfigFile(cms).getPicGalleryPath());
         }
         catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
@@ -109,7 +109,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
+                    folder = cms.getSitePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -129,7 +129,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
                     if (deleteResource != null && !"".equals(deleteResource)) {
                         try {
                             // lock and delete the resource
-                            CmsResource res = cms.readFileHeader(deleteResource);
+                            CmsResource res = cms.readResource(deleteResource);
                             if (cms.getLock(res).isNullLock()) {
                                 cms.lockResource(deleteResource);
                             }
@@ -197,7 +197,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
             CmsFile file = (CmsFile)allPics.get(i);
             if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String filename = file.getName();
-                String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+                String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);
                 boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
                 if((filenameFilter || titleFilter) && isImage(filename)) {
@@ -308,7 +308,7 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
         for(int i = from;i < to;i++) {
             CmsFile file = (CmsFile)filteredPics.elementAt(i);
             String filename = file.getName();
-            String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
 
             // If no "Title" property is given, the title will be set to the filename
             // without its postfix
@@ -334,12 +334,12 @@ public class CmsPictureBrowser extends A_CmsGalleryBrowser {
 
             // Set all datablocks for the current picture list entry
             xmlTemplateDocument.setData("picsource", picsUrl + file.getName());
-            xmlTemplateDocument.setData("filepath", cms.readAbsolutePath(file));
+            xmlTemplateDocument.setData("filepath", cms.getSitePath(file));
             xmlTemplateDocument.setData("title", CmsEncoder.escapeXml(title));
             xmlTemplateDocument.setData("filename", filename);
             xmlTemplateDocument.setData("size", file.getLength() + " Byte");
             xmlTemplateDocument.setData("type", type);
-            if ((cms.getPermissions(cms.readAbsolutePath(file)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
+            if ((cms.getPermissions(cms.getSitePath(file)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
                 xmlTemplateDocument.setData("delete", xmlTemplateDocument.getProcessedDataValue("deleteentry", this));
             } else {
                 xmlTemplateDocument.setData("delete", "&nbsp;");

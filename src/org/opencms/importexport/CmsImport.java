@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/06/14 14:25:58 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2004/06/28 07:47:33 $
+* Version: $Revision: 1.21 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
@@ -71,7 +72,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.20 $ $Date: 2004/06/14 14:25:58 $
+ * @version $Revision: 1.21 $ $Date: 2004/06/28 07:47:33 $
  */
 public class CmsImport implements Serializable {
     
@@ -288,7 +289,7 @@ public class CmsImport implements Serializable {
                     // only consider files
                     boolean exists = true;
                     try {
-                        CmsResource res = m_cms.readFileHeader(m_importPath + destination);
+                        CmsResource res = m_cms.readResource(m_importPath + destination);
                         if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
                             exists = false;
                         }
@@ -394,7 +395,7 @@ public class CmsImport implements Serializable {
         try {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().saveSiteRoot();
-                m_cms.setContextToCos();
+                m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
             }
 
             // get all file-nodes
@@ -412,7 +413,7 @@ public class CmsImport implements Serializable {
                     // add the resource, if it dosen't already exist
                     if ((!resources.contains(resource)) && (!resource.equals(m_importPath))) {
                         try {
-                            m_cms.readFolder(resource);
+                            m_cms.readFolder(resource, CmsResourceFilter.IGNORE_EXPIRATION);
                             // this resource exists in the current project -> add it
                             resources.addElement(resource);
                         } catch (CmsException exc) {

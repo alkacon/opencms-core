@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/21 09:58:42 $
- * Version: $Revision: 1.34 $
- * Date   : $Date: 2004/06/21 09:58:42 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.34 $ $Date: 2004/06/21 09:58:42 $
+ * @version $Revision: 1.35 $ $Date: 2004/06/28 07:47:33 $
  */
 public class CmsSynchronize {
 
@@ -195,7 +195,7 @@ public class CmsSynchronize {
                     }
                     // recurse into the subfolders. This must be done before 
                     // the folder might be deleted!
-                    syncVfsFs(m_cms.readAbsolutePath(res));
+                    syncVfsFs(m_cms.getSitePath(res));
                     if (action == C_DELETE_VFS) {
                         deleteFromVfs(res);
                     }
@@ -291,7 +291,7 @@ public class CmsSynchronize {
         File fsFile = getFileInFs(folder);
         // first of all, test if this folder existis in the VFS. If not, create it
         try {
-            m_cms.readFolder(translate(folder));
+            m_cms.readFolder(translate(folder), CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // the folder could not be read, so create it
             m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);  
@@ -315,8 +315,8 @@ public class CmsSynchronize {
                 }
             }
             // we have to read the new resource again, to get the correct timestamp
-            newFolder = m_cms.readFolder(foldername);
-            String resourcename = m_cms.readAbsolutePath(newFolder);
+            newFolder = m_cms.readFolder(foldername, CmsResourceFilter.IGNORE_EXPIRATION);
+            String resourcename = m_cms.getSitePath(newFolder);
             // add the folder to the sync list
             CmsSynchronizeList sync = new CmsSynchronizeList(folder, resourcename, newFolder.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(resourcename, sync);
@@ -362,7 +362,7 @@ public class CmsSynchronize {
         int action = 0;
         File fsFile;
         //data from sync list
-        String resourcename = m_cms.readAbsolutePath(res);
+        String resourcename = m_cms.getSitePath(res);
    
         if (m_syncList.containsKey(translate(resourcename))) {
             // this resource was already used in a previous syncprocess
@@ -415,7 +415,7 @@ public class CmsSynchronize {
      */
     private void skipResource(CmsResource res) {
         // add the file to the new sync list...
-        String resname = m_cms.readAbsolutePath(res);
+        String resname = m_cms.getSitePath(res);
         CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resname));
         m_newSyncList.put(translate(resname), syncList);
         // .. and remove it from the old one
@@ -456,7 +456,7 @@ public class CmsSynchronize {
             int resType = m_cms.getDefaultTypeForName(resName).getTypeId();
             CmsFile newFile = (CmsFile)m_cms.createResource(translate(folder) + filename, resType, content, null);
             
-            m_report.print(m_cms.readAbsolutePath(newFile));
+            m_report.print(m_cms.getSitePath(newFile));
             m_report.print(m_report.key("report.dots")); 
      
             // now check if there is some external method to be called which
@@ -470,8 +470,8 @@ public class CmsSynchronize {
                 }
             }
             // we have to read the new resource again, to get the correct timestamp
-            m_cms.touch(m_cms.readAbsolutePath(newFile), fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
-            CmsResource newRes = m_cms.readFileHeader(m_cms.readAbsolutePath(newFile));
+            m_cms.touch(m_cms.getSitePath(newFile), fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+            CmsResource newRes = m_cms.readResource(m_cms.getSitePath(newFile));
             // add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(resName, translate(resName), newRes.getDateLastModified(), fsFile.lastModified());
             m_newSyncList.put(translate(resName), syncList);
@@ -499,14 +499,14 @@ public class CmsSynchronize {
         // to get the name of the file in the FS, we must look it up in the
         // sync list. This is nescessary, since the VFS could use a tranlated
         // filename.
-        CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(m_cms.readAbsolutePath(res)));
+        CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(m_cms.getSitePath(res)));
         // if no entry in the sync list was found, its a new resource and we 
         // can use the name of the VFS resource.
         if (sync != null) {
             resourcename = sync.getResName();
         } else {
             // otherwise use the original non-translated name
-            resourcename = m_cms.readAbsolutePath(res);
+            resourcename = m_cms.getSitePath(res);
 
             // the parent folder could contain a translated names as well, so 
             // make a lookup in the sync list ot get its original 
@@ -530,7 +530,7 @@ public class CmsSynchronize {
                 m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);
                 if (res.isFile()) {
                     m_report.print(m_report.key("report.sync_exporting_file"), I_CmsReport.C_FORMAT_NOTE);     
-                    m_report.print(m_cms.readAbsolutePath(res));               
+                    m_report.print(m_cms.getSitePath(res));               
                     m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
                     m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));
                     m_report.print(m_report.key("report.dots"));                
@@ -539,7 +539,7 @@ public class CmsSynchronize {
                         createNewLocalFile(fsFile);
                     }
                     // write the file content to the FS
-                    vfsFile = m_cms.readFile(m_cms.readAbsolutePath(res));
+                    vfsFile = m_cms.readFile(m_cms.getSitePath(res), CmsResourceFilter.IGNORE_EXPIRATION);
                     writeFileByte(vfsFile.getContents(), fsFile);
                     // now check if there is some external method to be called 
                     // which should modify the exported resource in the FS
@@ -557,7 +557,7 @@ public class CmsSynchronize {
                     fsFile.setLastModified(res.getDateLastModified());
                 } else {
                     m_report.print(m_report.key("report.sync_exporting_folder"), I_CmsReport.C_FORMAT_NOTE);     
-                    m_report.print(m_cms.readAbsolutePath(res));               
+                    m_report.print(m_cms.getSitePath(res));               
                     m_report.print(m_report.key("report.sync_to_file_system_as"), I_CmsReport.C_FORMAT_NOTE);                    
                     m_report.print(fsFile.getAbsolutePath().replace('\\', '/'));   
                     m_report.print(m_report.key("report.dots"));                                                          
@@ -591,7 +591,7 @@ public class CmsSynchronize {
         // to get the name of the file in the FS, we must look it up in the
         // sync list. This is nescessary, since the VFS could use a tranlated
         // filename.
-        String resourcename = m_cms.readAbsolutePath(res);
+        String resourcename = m_cms.getSitePath(res);
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
         File fsFile = getFileInFs(sync.getResName());
         try {
@@ -603,7 +603,7 @@ public class CmsSynchronize {
             // lock the file in the VFS, so that it can be updated
             m_cms.lockResource(resourcename);
             // read the file in the VFS
-            vfsFile = m_cms.readFile(resourcename);
+            vfsFile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
             // import the content from the FS
             vfsFile.setContents(getFileBytes(fsFile));
             m_cms.writeFile(vfsFile);
@@ -625,7 +625,7 @@ public class CmsSynchronize {
             //m_cms.unlockResource(resourcename, false);
             //read the resource again, nescessary to get the actual timestamps
             m_cms.touch(resourcename, fsFile.lastModified(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);            
-            res = m_cms.readFileHeader(resourcename);
+            res = m_cms.readResource(resourcename);
             
             //add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(sync.getResName(), translate(resourcename), res.getDateLastModified(), fsFile.lastModified());
@@ -662,7 +662,7 @@ public class CmsSynchronize {
      */
     private void deleteFromVfs(CmsResource res) throws CmsException {
 
-        String resourcename = m_cms.readAbsolutePath(res);
+        String resourcename = m_cms.getSitePath(res);
 
         try {
             m_report.print("( "+ m_count++ +" ) ", I_CmsReport.C_FORMAT_NOTE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestPermissions extends OpenCmsTestCase {
   
@@ -95,7 +95,7 @@ public class TestPermissions extends OpenCmsTestCase {
         echo("Testing visible permissions on a file");
         
         String resource = "index.html";
-        CmsResource res = cms.readFileHeader(resource);
+        CmsResource res = cms.readResource(resource);
         
         cms.lockResource(resource);
         // modify the resource permissions for the tests

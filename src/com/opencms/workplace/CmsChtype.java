@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/06/25 16:32:34 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.39 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -100,7 +100,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
             session.putValue(C_PARA_RESOURCE, filename);
         }
         filename = (String)session.getValue(C_PARA_RESOURCE);
-        CmsFile file = (CmsFile)cms.readFileHeader(filename);
+        CmsFile file = (CmsFile)cms.readResource(filename);
 
         // check if the newtype parameter is available. This parameter is set when
         // the new file type is selected
@@ -119,7 +119,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
             }
             
             // change the file type
-            cms.chtype(cms.readAbsolutePath(file), type);
+            cms.chtype(cms.getSitePath(file), type);
             session.removeValue(C_PARA_RESOURCE);
 
             // return to filelist

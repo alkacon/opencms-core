@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/25 16:33:32 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  */
 public class CmsObject {
 
@@ -118,7 +118,7 @@ public class CmsObject {
      */
     public void changeLastModifiedProjectId(String resourcename) throws CmsException {
 
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
         ).changeLastModifiedProjectId(
@@ -143,7 +143,7 @@ public class CmsObject {
      */
     public void chtype(String resourcename, int type) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).chtype(
@@ -167,7 +167,7 @@ public class CmsObject {
      */
     public void chflags(String resourcename, int flags) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).chflags(
@@ -221,7 +221,7 @@ public class CmsObject {
      */
     public void copyResource(String source, String destination, int siblingMode) throws CmsException {
         
-        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).copyResource(
@@ -246,7 +246,7 @@ public class CmsObject {
      */
     public void copyResourceToProject(String resourcename) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
          ).copyResourceToProject(
@@ -316,7 +316,7 @@ public class CmsObject {
      */
     public void deleteResource(String resourcename, int siblingMode) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).deleteResource(
@@ -411,7 +411,7 @@ public class CmsObject {
      */    
     public void lockResource(String resourcename, int mode) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).lockResource(
@@ -438,7 +438,7 @@ public class CmsObject {
      */
     public void moveResource(String source, String destination) throws CmsException {
         
-        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).moveResource(
@@ -501,7 +501,7 @@ public class CmsObject {
      */
     public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
 
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).replaceResource(
@@ -523,7 +523,7 @@ public class CmsObject {
      */
     public void restoreResourceBackup(String resourcename, int tag) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).restoreResourceBackup(
@@ -550,7 +550,7 @@ public class CmsObject {
      */
     public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).touch(
@@ -591,7 +591,7 @@ public class CmsObject {
      */
     public void undoChanges(String resourcename, boolean recursive) throws CmsException {
 
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(
             resource.getTypeId()
         ).undoChanges(
@@ -610,7 +610,7 @@ public class CmsObject {
      */    
     public void unlockResource(String resourcename) throws CmsException {
 
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).unlockResource(
@@ -646,49 +646,6 @@ public class CmsObject {
     }    
     
     /**
-     * Convenience method to add the site root from the current users 
-     * request context to a resource name.<p>
-     *
-     * @param resourcename the resource name
-     * @return the resource name with the site root added
-     * 
-     * @see CmsRequestContext#addSiteRoot(String)
-     */
-    private String addSiteRoot(String resourcename) {
-        
-        return m_context.addSiteRoot(resourcename);
-    }    
-
-    /**
-     * Convenience method to return the initialized resource type 
-     * instance for the given id.<p>
-     * 
-     * @param resourceType the id of the resource type to get
-     * @return the initialized resource type instance for the given id
-     * @throws CmsException if something goes wrong
-     * 
-     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
-     */
-    private I_CmsResourceType getResourceType(int resourceType) throws CmsException {
-        
-        return OpenCms.getResourceManager().getResourceType(resourceType);
-    }
-
-    /**
-     * Convenience method to remove the site root from the current users 
-     * request context from a resource name.<p>
-     *
-     * @param resourcename the resource name
-     * @return the resource name with the site root removed
-     * 
-     * @see CmsRequestContext#removeSiteRoot(String)
-     */
-    private String removeSiteRoot(String resourcename) {
-        
-        return m_context.removeSiteRoot(resourcename);
-    }
-    
-    /**
      * Creates a new sibling of the source resource.<p>
      * 
      * @param source the name of the resource to create a sibling for with complete path
@@ -699,7 +656,7 @@ public class CmsObject {
      */
     public void createSibling(String source, String destination, List properties) throws CmsException {
         
-        CmsResource resource = readFileHeader(source, CmsResourceFilter.IGNORE_EXPIRATION);        
+        CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);        
         getResourceType(
             resource.getTypeId()
         ).createSibling(
@@ -722,7 +679,7 @@ public class CmsObject {
      */
     public void changeLock(String resourcename) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).changeLock(
@@ -741,7 +698,7 @@ public class CmsObject {
      */   
     public void writePropertyObject(String resourcename, CmsProperty property) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).writePropertyObject(
@@ -765,7 +722,7 @@ public class CmsObject {
      */   
     public void writePropertyObjects(String resourcename, List properties) throws CmsException {
         
-        CmsResource resource = readFileHeader(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(
             resource.getTypeId()
         ).writePropertyObjects(
@@ -794,7 +751,7 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readFileHeader(resourcename, filter), 
+            readResource(resourcename, filter), 
             filter, 
             true, 
             true);
@@ -838,7 +795,7 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readFileHeader(resourcename, filter), 
+            readResource(resourcename, filter), 
             filter, 
             false, 
             true);
@@ -881,15 +838,574 @@ public class CmsObject {
         
         return m_driverManager.readChildResources(
             m_context, 
-            readFileHeader(resourcename, filter), 
+            readResource(resourcename, filter), 
             filter, 
             true, 
-            false);
+            false);    
     }    
 
+    /**
+     * Initializes this CmsObject with the provided user context and database connection.<p>
+     * 
+     * This initializing procedure is a system interal task. 
+     * It's not considered to be used as API method and should never be directly 
+     * called. Reason is that otherwise OpenCms security can potentially be 
+     * circumvented.<p>
+     * 
+     * In case you need to create an instance of this Object programatically,
+     * use {@link OpenCms#initCmsObject(String)}.<p>
+     *
+     * @param driverManager the driver manager to access the database
+     * @param context the request context that contains the user authentification
+     * @param sessionStorage the core session
+     */
+    public void init(
+            CmsDriverManager driverManager,
+            CmsRequestContext context,
+            CmsSessionInfoManager sessionStorage
+    ) {
+        m_sessionStorage = sessionStorage;
+        m_driverManager = driverManager;
+        m_context = context;
+    }
+    
+    /**
+     * Reads a property object from a resource specified by a property (definition) name.<p>
+     * 
+     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
+     * 
+     * @param resourcename the name of resource where the property is attached to
+     * @param propertydefinition the property definition name
+     * @param search if true, the property is searched on all parent folders of the resource 
+     *      if it's not found attached directly to the resource
+     * 
+     * @return the found property, or {@link CmsProperty#getNullProperty()} if the property was not found
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    public CmsProperty readPropertyObject(String resourcename, String propertydefinition, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), propertydefinition, search);
+    }
+    
+    /**
+     * Reads all property objects from a resource.<p>
+     * 
+     * Returns an empty list if no properties are found.<p>
+     * 
+     * If the <code>search</code> parameter is specified, the properties of all 
+     * parent folders of the resource are also read. The results are merged with the 
+     * properties directly attached to the resource. While merging, a property
+     * on a parent folder that has already been found will be ignored.
+     * So e.g. if a resource has a property "Title" attached, and it's parent folder 
+     * has the same property attached but with a differrent value, the result list will
+     * contain only the property with the value from the resource, not form the parent folder(s).<p>
+     * 
+     * @param resourcename the name of resource where the property is mapped to
+     * @param search if true, the properties of all parent folders of the resource 
+     *      are merged with the resource properties
+     * 
+     * @return a list of {@link CmsProperty} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    public List readPropertyObjects(String resourcename, boolean search) throws CmsException {
+        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourcename), m_context.getAdjustedSiteRoot(resourcename), search);
+    }
+    
+    
+    /**
+     * Returns the current users request context.<p>
+     *
+     * This request context is used to authenticate the user for all 
+     * OpenCms operations. It also contains the request runtime settings, e.g.
+     * about the current site this request was made on.<p>
+     *
+     * @return the current users request context.
+     */
+    public CmsRequestContext getRequestContext() {
+        return m_context;
+    }
+
+    /**
+     * Returns the lock state for a specified resource.<p>
+     * 
+     * @param resource the resource to return the lock state for
+     * 
+     * @return the lock state for the specified resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLock(CmsResource resource) throws CmsException {
+        return m_driverManager.getLock(m_context, resource);
+    }    
+    
+    /**
+     * Returns the lock state for a specified resource name.<p>
+     * 
+     * @param resourcename the name if the resource to get the lock state for (full path)
+     * 
+     * @return the lock state for the specified resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsLock getLock(String resourcename) throws CmsException {
+        return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
+    }      
+    
+    /**
+     * Convenience method to add the site root from the current users 
+     * request context to a resource name.<p>
+     *
+     * @param resourcename the resource name
+     * @return the resource name with the site root added
+     * 
+     * @see CmsRequestContext#addSiteRoot(String)
+     */
+    private String addSiteRoot(String resourcename) {
+        
+        return m_context.addSiteRoot(resourcename);
+    }    
+
+    /**
+     * Convenience method to return the initialized resource type 
+     * instance for the given id.<p>
+     * 
+     * @param resourceType the id of the resource type to get
+     * @return the initialized resource type instance for the given id
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
+     */
+    private I_CmsResourceType getResourceType(int resourceType) throws CmsException {
+        
+        return OpenCms.getResourceManager().getResourceType(resourceType);
+    }
+    
+    /**
+     * Reads a file resource (including it's binary content) from the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p>
+     *  
+     * In case you do not need the file content, 
+     * use {@link #readResource(String)} instead.<p>
+     *
+     * @param resourcename the name of the resource to read (full path)
+     *
+     * @return the file resource that was read
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     * 
+     * @see #readFile(String, CmsResourceFilter)
+     * @see #readResource(String)
+     */
+    public CmsFile readFile(String resourcename) throws CmsException {
+
+        return readFile(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Reads a file resource (including it's binary content) from the VFS,
+     * using the specified resource filter.<p>
+     * 
+     * In case you do not need the file content, 
+     * use {@link #readResource(String, CmsResourceFilter)} instead.<p>
+     * 
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     *
+     * @param resourcename the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the file resource that was read
+     *
+     * @throws CmsException if the file resource could not be read for any reason
+     * 
+     * @see #readResource(String, CmsResourceFilter)
+     */
+    public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        return m_driverManager.readFile(m_context, addSiteRoot(resourcename), filter);
+    }    
+    
+    /**
+     * Reads a resource from the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * A resource may be of type {@link CmsFile} or {@link CmsFolder}. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutly
+     * required. To "upgrade" a resource to a file, 
+     * use {@link CmsFile#upgrade(CmsResource, CmsObject)}.<p> 
+     *
+     * @param resourcename the name of the resource to read (full path)
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     *
+     * @see #readFile(String) 
+     * @see #readResource(String, CmsResourceFilter)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(String resourcename) throws CmsException {
+
+        return readResource(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Reads a resource from the VFS,
+     * using the specified resource filter.<p>
+     *
+     * A resource may be of type {@link CmsFile} or {@link CmsFolder}. In case of
+     * a file, the resource will not contain the binary file content. Since reading 
+     * the binary content is a cost-expensive database operation, it's recommended 
+     * to work with resources if possible, and only read the file content when absolutly
+     * required. To "upgrade" a resource to a file, 
+     * use {@link CmsFile#upgrade(CmsResource, CmsObject)}.<p> 
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param resourcename the name of the resource to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see #readFile(String, CmsResourceFilter)
+     * @see #readFolder(String, CmsResourceFilter)
+     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     */
+    public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        return m_driverManager.readResource(m_context, addSiteRoot(resourcename), filter);
+    }
+
+    /**
+     * Reads a folder resource from the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * @param resourcename the name of the folder resource to read (full path)
+     *
+     * @return the folder resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     *
+     * @see #readResource(String, CmsResourceFilter)
+     * @see #readFolder(String, CmsResourceFilter)
+     */
+    public CmsFolder readFolder(String resourcename) throws CmsException {
+        
+        return readFolder(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Reads a folder resource from the VFS,
+     * using the specified resource filter.<p>
+     *
+     * The specified filter controls what kind of resources should be "found" 
+     * during the read operation. This will depend on the application. For example, 
+     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
+     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
+     * will ignore the date release / date expired information of the resource.<p>
+     * 
+     * @param resourcename the name of the folder resource to read (full path)
+     * @param filter the resource filter to use while reading
+     *
+     * @return the folder resource that was read
+     *
+     * @throws CmsException if the resource could not be read for any reason
+     * 
+     * @see #readResource(String, CmsResourceFilter)
+     */
+    public CmsFolder readFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+
+        return m_driverManager.readFolder(m_context, addSiteRoot(resourcename), filter);
+    }
+    
+    /**
+     * Adjusts the absolute resource root path for the current site.<p> 
+     * 
+     * The full root path of a resource is always available using
+     * {@link CmsResource#getRootPath()}. From this name this method cuts 
+     * of the current site root using 
+     * {@link CmsRequestContext#removeSiteRoot(String)}.<p>
+     * 
+     * @param resource the resource to get the adjusted site root path for
+     * 
+     * @return the absolute resource path adjusted for the current site
+     * 
+     * @see CmsRequestContext#removeSiteRoot(String)
+     * @see CmsRequestContext#getSitePath(CmsResource)
+     * @see CmsResource#getRootPath()
+     */    
+    public String getSitePath(CmsResource resource) {
+        
+        return m_context.getSitePath(resource);     
+    }    
+
+    //-----------------------------------------------------------------------------------
+    // Permission related methods:
+    private int warning1;
+
+    
+    
+    
+    
+    
+    
+
+    /**
+     * Changes the access control for a given resource and a given principal(user/group).
+     * 
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
+     * @param allowedPermissions bitset of allowed permissions
+     * @param deniedPermissions bitset of denied permissions
+     * @param flags flags
+     * @throws CmsException if something goes wrong
+     */
+    public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
+        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsAccessControlEntry acEntry = null;
+        I_CmsPrincipal principal = null;
+
+        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
+            principal = readGroup(principalName);
+            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
+            principal = readUser(principalName);
+            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
+        }
+
+        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
+    }
+
+    /**
+     * Changes the access control for a given resource and a given principal(user/group).
+     * 
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (group or user)
+     * @param principalName name of the principal
+     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
+     * @throws CmsException if something goes wrong
+     */
+    public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
+        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        CmsAccessControlEntry acEntry = null;
+        I_CmsPrincipal principal = null;
+
+        if ("group".equals(principalType.toLowerCase())) {
+            principal = readGroup(principalName);
+            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
+            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
+        } else if ("user".equals(principalType.toLowerCase())) {
+            principal = readUser(principalName);
+            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
+            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
+        }
+
+        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
+    }    
+    
+
+    /**
+     * Copies access control entries of a given resource to another resource.<p>
+     * 
+     * @param sourceName the name of the resource of which the access control entries are copied
+     * @param destName the name of the resource to which the access control entries are applied
+     * @throws CmsException if something goes wrong
+     */
+    public void cpacc(String sourceName, String destName) throws CmsException {
+        CmsResource source = readResource(sourceName);
+        CmsResource dest = readResource(destName);
+        m_driverManager.copyAccessControlEntries(m_context, source, dest);
+    }    
+    
+    
+    /**
+     * Returns the vector of access control entries of a resource.<p>
+     * 
+     * @param resourceName the name of the resource.
+     * @return a vector of access control entries
+     * @throws CmsException if something goes wrong
+     */
+    public Vector getAccessControlEntries(String resourceName) throws CmsException {
+        return getAccessControlEntries(resourceName, true);
+    }
+
+    /**
+     * Returns the vector of access control entries of a resource.<p>
+     * 
+     * @param resourceName the name of the resource.
+     * @param getInherited true, if inherited access control entries should be returned, too
+     * @return a vector of access control entries
+     * @throws CmsException if something goes wrong
+     */
+    public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
+        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
+    }
+
+    /**
+     * Returns the access control list (summarized access control entries) of a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @return the access control list of the resource
+     * @throws CmsException if something goes wrong
+     */
+    public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
+        return getAccessControlList(resourceName, false);
+    }
+
+    /**
+     * Returns the access control list (summarized access control entries) of a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @param inheritedOnly if set, the non-inherited entries are skipped
+     * @return the access control list of the resource
+     * @throws CmsException if something goes wrong
+     */
+    public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
+        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
+    }    
+    
+
+    /**
+     * Returns the set of permissions of the current user for a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @return the set of the permissions of the current user
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
+        // reading permissions is allowed even if the resource is marked as deleted
+        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
+        CmsUser user = m_context.currentUser();
+
+        return m_driverManager.getPermissions(m_context, resource, user);
+    }
+
+    /**
+     * Returns the set of permissions of a given user for a given resource.<p>
+     * 
+     * @param resourceName the name of the resource
+     * @param userName the name of the user
+     * @return the current permissions on this resource
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
+        CmsAccessControlList acList = getAccessControlList(resourceName);
+        CmsUser user = readUser(userName);
+        return acList.getPermissions(user, getGroupsOfUser(userName));
+    }    
+   
+    /**
+     * Checks if the current user has required permissions to access a given resource.<p>
+     * 
+     * @param resource the resource that will be accessed
+     * @param requiredPermissions the set of required permissions
+     * @return true if the required permissions are satisfied
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
+        return  CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
+    }
+    
+    /**
+     * Checks if the current user has required permissions to access a given resource.<p>
+     * 
+     * @param resource the resource that will be accessed
+     * @param requiredPermissions the set of required permissions
+     * @param checkLock if true, a lock for the current user is required for 
+     *      all write operations, if false it's ok to write as long as the resource
+     *      is not locked by another user
+     * @param filter the resource filter to use
+     * 
+     * @return true if the required permissions are satisfied
+     * @throws CmsException if something goes wrong
+     */
+    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, boolean checkLock, CmsResourceFilter filter) throws CmsException {
+        return CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
+    }    
+    
+
+    /**
+     * Lookup and reads the user or group with the given UUID.<p>
+     *   
+     * @param principalId the uuid of a user or group
+     * @return the user or group with the given UUID
+     */
+    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
+        return m_driverManager.lookupPrincipal(principalId);
+    }
+
+    /**
+     * Lookup and reads the user or group with the given name.<p>
+     * 
+     * @param principalName the name of the user or group
+     * @return the user or group with the given name
+     */
+    public I_CmsPrincipal lookupPrincipal(String principalName) {
+        return m_driverManager.lookupPrincipal(principalName);
+    }    
+    
+
+    /**
+     * Writes access control entries for a given resource.<p>
+     * 
+     * @param resource the resource to attach the control entries to
+     * @param acEntries a vector of access control entries
+     * @throws CmsException if something goes wrong
+     */
+    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
+        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
+    }    
+
+    /**
+     * Removes an access control entry of a griven principal from a given resource.<p>
+     * 
+     * @param resourceName name of the resource
+     * @param principalType the type of the principal (currently group or user)
+     * @param principalName name of the principal
+     * @throws CmsException if something goes wrong
+     */
+    public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
+
+        CmsResource res = readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
+        I_CmsPrincipal principal = null;
+
+        if ("group".equals(principalType.toLowerCase())) {
+            principal = readGroup(principalName);
+        } else if ("user".equals(principalType.toLowerCase())) {
+            principal = readUser(principalName);
+        }
+
+        m_driverManager.removeAccessControlEntry(m_context, res, principal.getId());
+    }    
+    
+
+    
+    
+    
+    
+    
     
     //-----------------------------------------------------------------------------------
-    private int warning1;
+    // Task related methods:
+
+    private int warning2;     
     
     
     
@@ -897,11 +1413,56 @@ public class CmsObject {
     
     
     
-    
-    
-    
-    
-    
+    /**
+     * Reads log entries for a project.
+     *
+     * @param projectId the id of the project for which the tasklog will be read.
+     * @return a list of new TaskLog objects
+     * @throws CmsException if operation was not successful.
+     */
+   public List readProjectLogs(int projectId) throws CmsException {
+       return m_driverManager.readProjectLogs(projectId);
+   }
+          
+
+    /**
+      * Creates a new task.<p>
+      * 
+      * <B>Security:</B>
+      * All users can create a new task.
+      *
+      * @param projectid the Id of the current project task of the user
+      * @param agentName the User who will edit the task
+      * @param roleName a Usergroup for the task
+      * @param taskname a Name of the task
+      * @param tasktype the type of the task
+      * @param taskcomment a description of the task
+      * @param timeout the time when the task must finished
+      * @param priority the Id for the priority of the task
+      * @return the created task
+      * @throws CmsException if something goes wrong
+      */
+    public CmsTask createTask(int projectid, String agentName, String roleName, String taskname, String taskcomment, int tasktype, long timeout, int priority) throws CmsException {
+        return m_driverManager.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
+    }
+
+    /**
+      * Creates a new task.<p>
+      * 
+      * <B>Security:</B>
+      * All users can create a new task.
+      * 
+      * @param agentName the User who will edit the task
+      * @param roleName a Usergroup for the task
+      * @param taskname the name of the task
+      * @param timeout the time when the task must finished
+      * @param priority the Id for the priority of the task
+      * @return the created task
+      * @throws CmsException if something goes wrong
+      */
+    public CmsTask createTask(String agentName, String roleName, String taskname, long timeout, int priority) throws CmsException {
+        return (m_driverManager.createTask(m_context, agentName, roleName, taskname, timeout, priority));
+    }
     
     
     
@@ -915,19 +1476,494 @@ public class CmsObject {
     public void acceptTask(int taskId) throws CmsException {
         m_driverManager.acceptTask(m_context, taskId);
     }
+    
+    
+    
+    /**
+     * Reactivates a task.<p>
+     *
+     * @param taskId the Id of the task to reactivate
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void reaktivateTask(int taskId) throws CmsException {
+        m_driverManager.reaktivateTask(m_context, taskId);
+    }
+    
 
     /**
-     * Checks if the user can access the project.
+     * Sets the priority of a task.<p>
      *
-     * @param projectId the id of the project.
-     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
+     * @param taskId the id of the task
+     * @param priority the new priority value
+     * @throws CmsException if something goes wrong
+     */
+    public void setPriority(int taskId, int priority) throws CmsException {
+        m_driverManager.setPriority(m_context, taskId, priority);
+    }
+    
+    /**
+     * Set a parameter for a task.<p>
+     *
+     * @param taskid the Id of the task
+     * @param parname the ame of the parameter
+     * @param parvalue the value of the parameter
+     * @throws CmsException if something goes wrong
+     */
+    public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
+        m_driverManager.setTaskPar(taskid, parname, parvalue);
+    }
+
+    /**
+     * Sets the timeout of a task.<p>
+     *
+     * @param taskId the id of the task
+     * @param timeout the new timeout value
+     * @throws CmsException if something goes wrong
+     */
+    public void setTimeout(int taskId, long timeout) throws CmsException {
+        m_driverManager.setTimeout(m_context, taskId, timeout);
+    }
+    
+
+    /**
+     * Writes a new user tasklog for a task.
+     *
+     * @param taskid the Id of the task.
+     * @param comment the description for the log.
      *
      * @throws CmsException if operation was not successful.
      */
-    public boolean accessProject(int projectId) throws CmsException {
-        return (m_driverManager.accessProject(m_context, projectId));
+    public void writeTaskLog(int taskid, String comment) throws CmsException {
+        m_driverManager.writeTaskLog(m_context, taskid, comment);
     }
 
+    /**
+     * Writes a new user tasklog for a task.
+     *
+     * @param taskId the id of the task 
+     * @param comment the description for the log
+     * @param taskType the type of the tasklog, user task types must be greater than 100
+     * @throws CmsException if something goes wrong
+     */
+    public void writeTaskLog(int taskId, String comment, int taskType) throws CmsException {
+        m_driverManager.writeTaskLog(m_context, taskId, comment, taskType);
+    }        
+    
+    
+    /**
+     * Reads the task with the given id.
+     *
+     * @param id the id of the task to be read.
+     * @return the task with the given id
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsTask readTask(int id) throws CmsException {
+        return (m_driverManager.readTask(id));
+    }
+
+    /**
+     * Reads log entries for a task.
+     *
+     * @param taskid the task for which the tasklog will be read.
+     * @return a Vector of new TaskLog objects.
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector readTaskLogs(int taskid) throws CmsException {
+        return m_driverManager.readTaskLogs(taskid);
+    }
+
+    /**
+     * Reads all tasks for a project.
+     *
+     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
+     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
+     * @return vector of tasks for the project
+     * 
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
+        return (m_driverManager.readTasksForProject(projectId, tasktype, orderBy, sort));
+    }
+
+    /**
+     * Reads all tasks for a role in a project.
+     *
+     * @param projectId the id of the Project in which the tasks are defined.
+     * @param roleName the role who has to process the task.
+     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return vector of tasks for the role
+     * 
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
+        return (m_driverManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
+    }
+
+    /**
+     * Reads all tasks for a user in a project.
+     *
+     * @param projectId the id of the Project in which the tasks are defined.
+     * @param userName the user who has to process the task.
+     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+     * @param orderBy specifies how to order the tasks.
+     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
+     * @return vector of tasks for the user 
+     * 
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
+        return (m_driverManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
+    }
+    
+    /**
+     * Reads the original agent of a task from the Cms.<p>
+     *
+     * @param task the task to read the original agent from
+     * @return the original agent of the task
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
+        return m_driverManager.readOriginalAgent(task);
+    }
+    
+    /**
+     * Reads the owner of a project.
+     *
+     * @param project the project to read the owner from
+     * @return the owner of the project
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser readOwner(CmsProject project) throws CmsException {
+        return m_driverManager.readOwner(project);
+    }
+
+    /**
+     * Reads the owner (initiator) of a task.<p>
+     *
+     * @param task the task to read the owner from
+     * @return the owner of the task
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser readOwner(CmsTask task) throws CmsException {
+        return m_driverManager.readOwner(task);
+    }
+
+    /**
+     * Reads the owner of a task log.<p>
+     *
+     * @param log the task log
+     * @return the owner of the task log
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser readOwner(CmsTaskLog log) throws CmsException {
+        return m_driverManager.readOwner(log);
+    }    
+    
+    /**
+     * Ends a task.<p>
+     *
+     * @param taskid the ID of the task to end.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void endTask(int taskid) throws CmsException {
+        m_driverManager.endTask(m_context, taskid);
+    }
+
+    /**
+     * Forwards a task to a new user.<p>
+     *
+     * @param taskid the id of the task which will be forwarded.
+     * @param newRoleName the new group for the task.
+     * @param newUserName the new user who gets the task.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
+        m_driverManager.forwardTask(m_context, taskid, newRoleName, newUserName);
+    }
+    
+
+    /**
+     * Gets a parameter value for a task.<p>
+     *
+     * @param taskid the id of the task.
+     * @param parname the name of the parameter.
+     * @return the parameter value.
+     * @throws CmsException if operation was not successful.
+     */
+    public String getTaskPar(int taskid, String parname) throws CmsException {
+        return (m_driverManager.getTaskPar(taskid, parname));
+    }
+
+    /**
+     * Get the template task id fo a given taskname.<p>
+     *
+     * @param taskname the name of the task.
+     * @return the id of the task template.
+     * @throws CmsException if operation was not successful.
+     */
+    public int getTaskType(String taskname) throws CmsException {
+        return m_driverManager.getTaskType(taskname);
+    }
+
+    /**
+     * Reads the agent of a task.<p>
+     *
+     * @param task the task to read the agent from
+     * @return the agent of a task
+     * @throws CmsException if something goes wrong
+     */
+    public CmsUser readAgent(CmsTask task) throws CmsException {
+        return (m_driverManager.readAgent(task));
+    }    
+    
+
+    /**
+      * Reads all given tasks from a user for a project.
+      *
+      * @param projectId the id of the project in which the tasks are defined.
+      * @param ownerName the owner of the task.
+      * @param taskType the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
+      * @param orderBy specifies how to order the tasks.
+      * @param sort sorting of the tasks
+      * @return vector of given tasks for a user for a project 
+      * 
+      * @throws CmsException if operation was not successful.
+      */
+    public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
+        return (m_driverManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
+    }        
+    
+    /**
+     * Set a new name for a task.<p>
+     *
+     * @param taskId the id of the task
+     * @param name the new name of the task
+     * @throws CmsException if something goes wrong
+     */
+    public void setName(int taskId, String name) throws CmsException {
+        m_driverManager.setName(m_context, taskId, name);
+    }    
+    
+    //-----------------------------------------------------------------------------------
+    // Miscellaneous methods:
+    private int warning3;    
+      
+
+    /**
+     * Gets the Crontable.
+     *
+     * <B>Security:</B>
+     * All users are garnted<BR/>
+     *
+     * @return the crontable.
+     * @throws CmsException if something goes wrong
+     */
+    public String readCronTable() throws CmsException {
+        return m_driverManager.readCronTable();
+    }
+    
+    /**
+     * Returns the current OpenCms registry.<p>
+     *
+     * @return the current OpenCms registry
+     */
+    public CmsRegistry getRegistry() {
+        return m_driverManager.getRegistry(this);
+    }
+
+    /**
+     * Imports an import-resource (folder or zipfile).<p>
+     *
+     * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
+     * @param importPath the name (absolute Path) of the folder in which should be imported.
+     * @throws CmsException if operation was not successful.
+     */
+    public void importFolder(String importFile, String importPath) throws CmsException {
+        
+        m_driverManager.clearcache();
+        
+        // import the resources
+        m_driverManager.importFolder(this, m_context, importFile, importPath);
+        
+        m_driverManager.clearcache();
+    }
+    
+    /**
+     * Returns the configured file extensions (suffixes).<p>
+     *
+     * @return a Hashtable with all known file extensions as Strings.
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public Hashtable readFileExtensions() throws CmsException {
+        return m_driverManager.readFileExtensions();
+    }
+
+    /**
+     * Returns the default resource type for the given resource name, using the 
+     * configured resource type file extensions.<p>
+     * 
+     * In case the given name does not map to a configured resource type,
+     * {@link CmsResourceTypePlain} is returned.<p>
+     * 
+     * This is only required (and should <i>not</i> be used otherwise) when 
+     * creating a new resource automatically during file upload or synchronization.
+     * Only in this case, the file type for the new resource is determined using this method.
+     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
+     * and is <i>not</i> related to the file name.<p>
+     * 
+     * @param resourcename the resource name to look up the resource type for
+     * 
+     * @return the default resource type for the given resource name
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #readFileExtensions()
+     */
+    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
+
+        String typeName = null;
+        if (! CmsStringSubstitution.isEmpty(resourcename)) {
+            int pos = resourcename.lastIndexOf('.');
+            if (pos >= 0) {
+                String suffix = resourcename.substring(pos + 1);
+                if (! CmsStringSubstitution.isEmpty(suffix)) {
+                    suffix = suffix.toLowerCase();
+    
+                    // read the known file extensions from the database
+                    Hashtable extensions = readFileExtensions();
+                    if (extensions != null) {
+                        typeName = (String)extensions.get(suffix);
+                    }                
+                }
+            }      
+        }
+        
+        if (typeName == null) {
+            // use default type "plain"
+            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
+        }
+        
+        // look up and return the resource type
+        return OpenCms.getResourceManager().getResourceType(typeName);
+    }
+
+    /**
+     * Gets the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * All users are granted<BR/>
+     *
+     * @return the linkchecktable
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    public Hashtable readLinkCheckTable() throws CmsException {
+        return m_driverManager.readLinkCheckTable();
+    }
+    
+    /**
+     * Reads the package path of the system.
+     * This path is used for db-export and db-import and all module packages.
+     *
+     * @return the package path
+     * @throws CmsException if operation was not successful
+     */
+    public String readPackagePath() throws CmsException {
+        return m_driverManager.readPackagePath();
+    }
+    
+    /**
+     * Returns the parameters of a resource in the table of all published template resources.<p>
+     * @param rfsName the rfs name of the resource
+     * @return the paramter string of the requested resource
+     * @throws CmsException if something goes wrong
+     */
+    public String readStaticExportPublishedResourceParameters(String rfsName) throws CmsException {
+        return  m_driverManager.readStaticExportPublishedResourceParameters(m_context, rfsName);
+    }
+
+    /**
+     * Returns a list of all template resources which must be processed during a static export.<p>
+     * 
+     * @param parameterResources flag for reading resources with parameters (1) or without (0)
+     * @param timestamp a timestamp for reading the data from the db
+     * @return List of template resources
+     * @throws CmsException if something goes wrong
+     */
+    public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
+        return m_driverManager.readStaticExportResources(m_context, parameterResources, timestamp);
+    }
+    
+    /**
+     * Gets the configurations of the OpenCms properties file.<p>
+     * 
+     * @return the configurations of the properties file.
+     */
+    public ExtendedProperties getConfigurations() {
+        return m_driverManager.getConfigurations();
+    }      
+
+    /**
+     * Returns a list of all currently logged in users.<p>
+     * 
+     * This method is can only be executed by administrators.<p>
+     * 
+     * @return a vector of users that are currently logged in
+     * @throws CmsException if something goes wrong
+     */
+    public Vector getLoggedInUsers() throws CmsException {
+        if (isAdmin()) {
+            if (m_sessionStorage != null) {
+                return m_sessionStorage.getLoggedInUsers();
+            } else {
+                return null;
+            }
+        } else {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] getLoggedInUsers()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }
+    
+    /**
+     * Deletes all entries in the published resource table.<p>
+     * 
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
+        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
+    }
+    
+    /**
+     * Deletes an entry in the published resource table.<p>
+     * 
+     * @param resourceName The name of the resource to be deleted in the static export
+     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters of the resource
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
+        m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
+    }
+
+    /**
+     * Method to encrypt the passwords.<p>
+     *
+     * @param value The value to encrypt.
+     * @return The encrypted value.
+     */
+    public String digest(String value) {
+        return m_driverManager.digest(value);
+    }
+    
     /**
      * Adds a file extension to the list of known file extensions.
      * <p>
@@ -943,7 +1979,302 @@ public class CmsObject {
     public void addFileExtension(String extension, String resTypeName) throws CmsException {
         m_driverManager.addFileExtension(m_context, extension, resTypeName);
     }
+    
+    /**
+     * Validates the HTML links in the unpublished files of the specified
+     * publish list, if a files resource type implements the interface 
+     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
+     * 
+     * @param publishList an OpenCms publish list
+     * @param report a report to write the messages to
+     * 
+     * @return a map with lists of invalid links keyed by resource names
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
+     */    
+    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
+        return m_driverManager.validateHtmlLinks(this, publishList, report);  
+    }
+    
+    /**
+     * Writes the Linkchecktable.
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this<BR/>
+     *
+     * @param linkchecktable The hashtable that contains the links that were not reachable
+     * @throws CmsException if something goes wrong
+     */
+    public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
+        m_driverManager.writeLinkCheckTable(m_context, linkchecktable);
+    }
 
+    /**
+     * Writes the package for the system.<p>
+     * 
+     * This path is used for db-export and db-import as well as module packages.<p>
+     *
+     * @param path the package path
+     * @throws CmsException if operation ws not successful
+     */
+    public void writePackagePath(String path) throws CmsException {
+        m_driverManager.writePackagePath(m_context, path);
+    }
+
+    /**
+     * Inserts an entry in the published resource table.<p>
+     * 
+     * This is done during static export.
+     * @param resourceName The name of the resource to be added to the static export
+     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkParameter the parameters added to the resource
+     * @param timestamp a timestamp for writing the data into the db
+     * @throws CmsException if something goes wrong
+     */
+    public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
+        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter, timestamp);
+    }
+    
+    /**
+     * Fires a CmsEvent.<p>
+     *
+     * @param type The type of the event
+     * @param data A data object that contains data used by the event listeners
+     */
+    private void fireEvent(int type, Object data) {
+        
+        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
+    }       
+    
+    /**
+     * Writes the Crontable.<p>
+     *
+     * <B>Security:</B>
+     * Only a administrator can do this.<p>
+     *
+     * @param crontable the crontable to write
+     * @throws CmsException if something goes wrong
+     */
+    public void writeCronTable(String crontable) throws CmsException {
+        m_driverManager.writeCronTable(m_context, crontable);
+    }
+
+    /**
+     * Writes the file extension mappings.<p>
+     *
+     * <B>Security:</B>
+     * Only the admin user is allowed to write file extensions.
+     *
+     * @param extensions holds extensions as keys and resourcetypes (Strings) as values
+     * @throws CmsException if something goes wrong
+     */
+    public void writeFileExtensions(Hashtable extensions) throws CmsException {
+        m_driverManager.writeFileExtensions(m_context, extensions);
+    }    
+    
+    /**
+     * Send a broadcast message to all currently logged in users.<p>
+     * 
+     * This method is only allowed for administrators.
+     * 
+     * @param message the message to send
+     * @throws CmsException if something goes wrong
+     */
+    public void sendBroadcastMessage(String message) throws CmsException {
+        if (isAdmin()) {
+            if (m_sessionStorage != null) {
+                m_sessionStorage.sendBroadcastMessage(message);
+            }
+        } else {
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] sendBroadcastMessage()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
+        }
+    }    
+
+    //-----------------------------------------------------------------------------------
+    // Deprecated methods
+    private int warning4;
+    
+    /**
+     * Reads a resource from the VFS,
+     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
+     *
+     * @param resourcename the name of the resource to read (full path)
+     *
+     * @return the file resource that was read
+     *
+     * @throws CmsException if something goes wrong
+     *
+     * @deprecated use {@link #readResource(String, CmsResourceFilter)} instead
+     */
+    public CmsResource readFileHeader(String resourcename) throws CmsException {
+
+        return readResource(resourcename, CmsResourceFilter.DEFAULT);
+    }
+
+    /**
+     * Deletes a property for a file or folder.<p>
+     *
+     * @param resourcename the name of a resource for which the property should be deleted
+     * @param key the name of the property
+     * @throws CmsException if something goes wrong
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
+     */
+    public void deleteProperty(String resourcename, String key) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(CmsProperty.C_DELETE_VALUE);
+        
+        writePropertyObject(resourcename, property);        
+    }
+    
+    /**
+     * Writes a couple of properties as structure values for a file or folder.
+     *
+     * @param resourceName the resource-name of which the Property has to be set.
+     * @param properties a Hashtable with property-definitions and property values as Strings.
+     * @throws CmsException if operation was not successful
+     * @deprecated use {@link #writePropertyObjects(String, List)} instead
+     */
+    public void writeProperties(String resourceName, Map properties) throws CmsException {
+        writePropertyObjects(resourceName, CmsProperty.toList(properties));
+    }
+
+    /**
+     * Writes a couple of Properties for a file or folder.
+     *
+     * @param name the resource-name of which the Property has to be set.
+     * @param properties a Hashtable with property-definitions and property values as Strings.
+     * @param addDefinition flag to indicate if unknown definitions should be added
+     * @throws CmsException if operation was not successful.
+     * @deprecated use {@link #writePropertyObjects(String, List)} instead
+     */
+    public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
+        writePropertyObjects(name, CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
+    }
+    
+    /**
+     * Writes a property as a structure value for a file or folder.<p>
+     *
+     * @param resourceName the resource-name for which the property will be set
+     * @param key the property-definition name
+     * @param value the value for the property to be set
+     * @throws CmsException if operation was not successful
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
+     */
+    public void writeProperty(String resourceName, String key, String value) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(value);
+        
+        writePropertyObject(resourceName, property);        
+    }
+
+    /**
+     * Writes a property for a file or folder.
+     *
+     * @param name the resource-name for which the property will be set.
+     * @param key the property-definition name.
+     * @param value the value for the property to be set.
+     * @param addDefinition flag to indicate if unknown definitions should be added
+     * @throws CmsException if operation was not successful.
+     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
+     */
+    public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
+        CmsProperty property = new CmsProperty();
+        property.setKey(key);
+        property.setStructureValue(value);
+        property.setAutoCreatePropertyDefinition(addDefinition);
+        
+        writePropertyObject(name, property); 
+    }    
+    
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
+     */
+    public Map readProperties(String resource) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) values of all properties mapped to a specified resource
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
+     * @return Map of Strings representing all properties of the resource
+     * @throws CmsException in case there where problems reading the properties
+     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
+     */
+    public Map readProperties(String resource, boolean search) throws CmsException {
+        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
+        return CmsProperty.toMap(properties);
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource.<p>
+     *
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
+        return value.isNullProperty() ? null : value.getValue();
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading.<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
+     * @return the value of the property found, <code>null</code> if nothing was found
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property, boolean search) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return value.isNullProperty() ? null : value.getValue();
+    }
+
+    /**
+     * Reads the (compound) value of a property mapped to a specified resource 
+     * with optional direcory upward cascading, a default value will be returned if the property 
+     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
+     * 
+     * @param resource the resource to look up the property for
+     * @param property the name of the property to look up
+     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
+     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
+     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
+     * @throws CmsException in case there where problems reading the property
+     * @see CmsProperty#getValue()
+     * @deprecated use new Object based methods
+     */
+    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
+        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
+        return value.isNullProperty() ? propertyDefault : value.getValue();
+    }    
+    
+    
+    //-----------------------------------------------------------------------------------
+    // User management related methods: 
+    private int warning5;
+
+    
     /**
      * Adds a user to the Cms by import.
      * <p>
@@ -973,7 +2304,18 @@ public class CmsObject {
     public CmsUser addImportUser(String id, String name, String password, String recoveryPassword, String description, String firstname, String lastname, String email, int flags, Hashtable additionalInfos, String defaultGroup, String address, String section, int type) throws CmsException {
         return m_driverManager.addImportUser(m_context, id, name, password, recoveryPassword, description, firstname, lastname, email, flags, additionalInfos, defaultGroup, address, section, type);
     }
-
+    
+    /**
+     * Returns the parent group of a group.<p>
+     *
+     * @param groupname the name of the group.
+     * @return group the parent group or null.
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsGroup getParent(String groupname) throws CmsException {
+        return (m_driverManager.getParent(groupname));
+    }  
+    
     /**
      * Adds a user to the OpenCms user table.<p>
      * 
@@ -1025,136 +2367,7 @@ public class CmsObject {
     public CmsUser addWebUser(String name, String password, String group, String description, Hashtable additionalInfos) throws CmsException {
         return m_driverManager.addWebUser(name, password, group, description, additionalInfos);
     }
-
-    /**
-     * Creates a backup of the published project.<p>
-     *
-     * @param projectId The id of the project in which the resource was published
-     * @param versionId The version of the backup
-     * @param publishDate The date of publishing
-     *
-     * @throws CmsException Throws CmsException if operation was not succesful
-     */
-    public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
-        CmsProject backupProject = m_driverManager.readProject(projectId);
-        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate);
-    }
-
-    /**
-     * Changes the access control for a given resource and a given principal(user/group).
-     * 
-     * @param resourceName name of the resource
-     * @param principalType the type of the principal (currently group or user)
-     * @param principalName name of the principal
-     * @param allowedPermissions bitset of allowed permissions
-     * @param deniedPermissions bitset of denied permissions
-     * @param flags flags
-     * @throws CmsException if something goes wrong
-     */
-    public void chacc(String resourceName, String principalType, String principalName, int allowedPermissions, int deniedPermissions, int flags) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
-
-        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
-        }
-
-        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
-    }
-
-    /**
-     * Changes the access control for a given resource and a given principal(user/group).
-     * 
-     * @param resourceName name of the resource
-     * @param principalType the type of the principal (group or user)
-     * @param principalName name of the principal
-     * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i))*
-     * @throws CmsException if something goes wrong
-     */
-    public void chacc(String resourceName, String principalType, String principalName, String permissionString) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
-
-        if ("group".equals(principalType.toLowerCase())) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        } else if ("user".equals(principalType.toLowerCase())) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
-        }
-
-        m_driverManager.writeAccessControlEntry(m_context, res, acEntry);
-    }
-
-    /**
-     * Changes the type of the user.<p>
-     *
-     * @param userId The id of the user to change
-     * @param userType The new type of the user
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(CmsUUID userId, int userType) throws CmsException {
-        m_driverManager.changeUserType(m_context, userId, userType);
-    }
-
-    /**
-     * Changes the type of the user.<p>
-     *
-     * @param username The name of the user to change
-     * @param userType The new type of the user
-     * @throws CmsException if something goes wrong
-     */
-    public void changeUserType(String username, int userType) throws CmsException {
-        m_driverManager.changeUserType(m_context, username, userType);
-    }
-
-    /**
-     * Counts the locked resources in a project.
-     *
-     * @param id the id of the project
-     * @return the number of locked resources in this project.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public int countLockedResources(int id) throws CmsException {
-        return m_driverManager.countLockedResources(m_context, id);
-    }
-
-    /**
-     * Counts the locked resources within a folder.<p>
-     *
-     * @param foldername the name of the folder
-     * @return the number of locked resources in this folder
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public int countLockedResources(String foldername) throws CmsException {
-        return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
-    }
-
-    /**
-     * Copies access control entries of a given resource to another resource.<p>
-     * 
-     * @param sourceName the name of the resource of which the access control entries are copied
-     * @param destName the name of the resource to which the access control entries are applied
-     * @throws CmsException if something goes wrong
-     */
-    public void cpacc(String sourceName, String destName) throws CmsException {
-        CmsResource source = readFileHeader(sourceName);
-        CmsResource dest = readFileHeader(destName);
-        m_driverManager.copyAccessControlEntries(m_context, source, dest);
-    }
-
+    
     /**
      * Adds a new group to the Cms.<p>
      * 
@@ -1190,190 +2403,57 @@ public class CmsObject {
      */
     public CmsGroup createGroup(String id, String name, String description, int flags, String parent) throws CmsException {
         return m_driverManager.createGroup(m_context, id, name, description, flags, parent);
-    }
-
+    }    
+    
     /**
-     * Creates a new project.
+     * Changes the type of the user.<p>
      *
-     * @param name the name of the project to create
-     * @param description the description for the new project
-     * @param groupname the name of the project user group
-     * @param managergroupname the name of the project manager group
-     * @return the created project
+     * @param userId The id of the user to change
+     * @param userType The new type of the user
      * @throws CmsException if something goes wrong
      */
-    public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException {
-        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
-        return (newProject);
+    public void changeUserType(CmsUUID userId, int userType) throws CmsException {
+        m_driverManager.changeUserType(m_context, userId, userType);
     }
 
     /**
-     * Creates a new project.
+     * Changes the type of the user.<p>
      *
-     * @param name the name of the project to create
-     * @param description the description for the new project
-     * @param groupname the name of the project user group
-     * @param managergroupname the name of the project manager group
-     * @param projecttype the type of the project (normal or temporary)
-     * @return the created project
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
-        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
-        return (newProject);
-    }
-
-    /**
-     * Creates a property-definition.<p>
-     *
-     * @param name the name of the property-definition to overwrite
-     * @return the new property definition
-     * 
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
-        return (m_driverManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
-    }
-
-    /**
-      * Creates a new task.<p>
-      * 
-      * <B>Security:</B>
-      * All users can create a new task.
-      *
-      * @param projectid the Id of the current project task of the user
-      * @param agentName the User who will edit the task
-      * @param roleName a Usergroup for the task
-      * @param taskname a Name of the task
-      * @param tasktype the type of the task
-      * @param taskcomment a description of the task
-      * @param timeout the time when the task must finished
-      * @param priority the Id for the priority of the task
-      * @return the created task
-      * @throws CmsException if something goes wrong
-      */
-    public CmsTask createTask(int projectid, String agentName, String roleName, String taskname, String taskcomment, int tasktype, long timeout, int priority) throws CmsException {
-        return m_driverManager.createTask(m_context.currentUser(), projectid, agentName, roleName, taskname, taskcomment, tasktype, timeout, priority);
-    }
-
-    /**
-      * Creates a new task.<p>
-      * 
-      * <B>Security:</B>
-      * All users can create a new task.
-      * 
-      * @param agentName the User who will edit the task
-      * @param roleName a Usergroup for the task
-      * @param taskname the name of the task
-      * @param timeout the time when the task must finished
-      * @param priority the Id for the priority of the task
-      * @return the created task
-      * @throws CmsException if something goes wrong
-      */
-    public CmsTask createTask(String agentName, String roleName, String taskname, long timeout, int priority) throws CmsException {
-        return (m_driverManager.createTask(m_context, agentName, roleName, taskname, timeout, priority));
-    }
-
-    /**
-     * Creates the project for the temporary workplace files.<p>
-     *
-     * @return the created project for the temporary workplace files
+     * @param username The name of the user to change
+     * @param userType The new type of the user
      * @throws CmsException if something goes wrong
      */
-    public CmsProject createTempfileProject() throws CmsException {
-        return m_driverManager.createTempfileProject(m_context);
-    }
-
+    public void changeUserType(String username, int userType) throws CmsException {
+        m_driverManager.changeUserType(m_context, username, userType);
+    }    
+    
     /**
-     * Deletes all entries in the published resource table.<p>
-     * 
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
-        m_driverManager.deleteAllStaticExportPublishedResources(m_context, linkType);
-    }
-
-    /**
-     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>
-     * 
-     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
-     * versions parameter, the timestamp will be ignored.
-     * Deletion will delete file header, content and properties.
-     * 
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted
-     * @param versions the number of versions per file which should kept in the system.
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
-       m_driverManager.deleteBackups(m_context, timestamp, versions, report);
-    }
-
-    /**
-     * Deletes a group.
+     * Updates the user information.
      * <p>
      * <b>Security:</b>
-     * Only the admin user is allowed to delete a group.
+     * Only the admin user is allowed to update the user information.
      *
-     * @param delgroup the name of the group.
-     * @throws CmsException  if operation was not successful.
-     */
-    public void deleteGroup(String delgroup) throws CmsException {
-        m_driverManager.deleteGroup(m_context, delgroup);
-    }
-
-    /**
-     * Deletes a project.<p>
-     *
-     * @param id the id of the project to delete.
+     * @param user the user to be written.
      *
      * @throws CmsException if operation was not successful.
      */
-    public void deleteProject(int id) throws CmsException {
-        m_driverManager.deleteProject(m_context, id);
+    public void writeUser(CmsUser user) throws CmsException {
+        m_driverManager.writeUser(m_context, user);
     }
 
     /**
-     * Deletes a property for a file or folder.<p>
+     * Updates the user information of a web user.
+     * <br>
+     * Only a web user can be updated this way.
      *
-     * @param resourcename the name of a resource for which the property should be deleted
-     * @param key the name of the property
-     * @throws CmsException if something goes wrong
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
-     */
-    public void deleteProperty(String resourcename, String key) throws CmsException {
-        CmsProperty property = new CmsProperty();
-        property.setKey(key);
-        property.setStructureValue(CmsProperty.C_DELETE_VALUE);
-        
-        writePropertyObject(resourcename, property);        
-    }
-
-    /**
-     * Deletes the property-definition for a resource.<p>
+     * @param user the user to be written.
      *
-     * @param name the name of the property-definition to delete
-     *
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if operation was not successful.
      */
-    public void deletePropertydefinition(String name) throws CmsException {
-        m_driverManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
-    }
-
-    /**
-     * Deletes an entry in the published resource table.<p>
-     * 
-     * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public void deleteStaticExportPublishedResource(String resourceName, int linkType, String linkParameter) throws CmsException {
-        m_driverManager.deleteStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter);
-    }
-        
+    public void writeWebUser(CmsUser user) throws CmsException {
+        m_driverManager.writeWebUser(user);
+    }    
+    
     /**
      * Deletes a user from the Cms.<p>
      * 
@@ -1412,131 +2492,96 @@ public class CmsObject {
     public void deleteWebUser(CmsUUID userId) throws CmsException {
         m_driverManager.deleteWebUser(userId);
     }
-
+    
     /**
-     * Method to encrypt the passwords.<p>
+     * Returns all users.<p>
      *
-     * @param value The value to encrypt.
-     * @return The encrypted value.
-     */
-    public String digest(String value) {
-        return m_driverManager.digest(value);
-    }
-
-    /**
-     * Ends a task.<p>
-     *
-     * @param taskid the ID of the task to end.
-     *
+     * @return a Vector of all users.
      * @throws CmsException if operation was not successful.
      */
-    public void endTask(int taskid) throws CmsException {
-        m_driverManager.endTask(m_context, taskid);
+    public Vector getUsers() throws CmsException {
+        return (m_driverManager.getUsers(m_context));
     }
-
+    
     /**
-     * Forwards a task to a new user.<p>
+     * Reads a user based on its id.<p>
      *
-     * @param taskid the id of the task which will be forwarded.
-     * @param newRoleName the new group for the task.
-     * @param newUserName the new user who gets the task.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void forwardTask(int taskid, String newRoleName, String newUserName) throws CmsException {
-        m_driverManager.forwardTask(m_context, taskid, newRoleName, newUserName);
-    }
-
-    /**
-     * Returns the vector of access control entries of a resource.<p>
-     * 
-     * @param resourceName the name of the resource.
-     * @return a vector of access control entries
+     * @param userId the id of the user to be read
+     * @return the user with the given id
      * @throws CmsException if something goes wrong
      */
-    public Vector getAccessControlEntries(String resourceName) throws CmsException {
-        return getAccessControlEntries(resourceName, true);
+    public CmsUser readUser(CmsUUID userId) throws CmsException {
+        return m_driverManager.readUser(userId);
     }
 
     /**
-     * Returns the vector of access control entries of a resource.<p>
-     * 
-     * @param resourceName the name of the resource.
-     * @param getInherited true, if inherited access control entries should be returned, too
-     * @return a vector of access control entries
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        return m_driverManager.getAccessControlEntries(m_context, res, getInherited);
-    }
-
-    /**
-     * Returns the access control list (summarized access control entries) of a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @return the access control list of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsAccessControlList getAccessControlList(String resourceName) throws CmsException {
-        return getAccessControlList(resourceName, false);
-    }
-
-    /**
-     * Returns the access control list (summarized access control entries) of a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @param inheritedOnly if set, the non-inherited entries are skipped
-     * @return the access control list of the resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsAccessControlList getAccessControlList(String resourceName, boolean inheritedOnly) throws CmsException {
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        return m_driverManager.getAccessControlList(m_context, res, inheritedOnly);
-    }
-
-    /**
-     * Returns all projects which the current user can access.<p>
+     * Reads a user based on its name.<p>
      *
-     * @return a list of objects of type <code>CmsProject</code>.
-     *
-     * @throws CmsException if operation was not successful.
+     * @param username the name of the user to be read
+     * @return the user with the given name
+     * @throws CmsException if somthing goes wrong
      */
-    public List getAllAccessibleProjects() throws CmsException {
-        return m_driverManager.getAllAccessibleProjects(m_context);
+    public CmsUser readUser(String username) throws CmsException {
+        return m_driverManager.readUser(username);
     }
 
     /**
-    * Returns a Vector with all projects from history.<p>
-    *
-    * @return Vector with all projects from history.
-    *
-    * @throws CmsException  Throws CmsException if operation was not succesful.
+     * Returns a user in the Cms.
+     *
+     * @param username the name of the user to be returned.
+     * @param type the type of the user.
+     * @return a user in the Cms.
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public CmsUser readUser(String username, int type) throws CmsException {
+        return (m_driverManager.readUser(username, type));
+    }
+
+    /**
+     * Returns a user in the Cms, if the password is correct.
+     *
+     * @param username the name of the user to be returned.
+     * @param password the password of the user to be returned.
+     * @return a user in the Cms.
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public CmsUser readUser(String username, String password) throws CmsException {
+        return (m_driverManager.readUser(username, password));
+    }
+
+    /**
+     * Returns a user object if the password for the user is correct.<P/>
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param username The username of the user that is to be read.
+     * @return User
+     *
+     * @throws CmsException  Throws CmsException if operation was not succesful
     */
-    public Vector getAllBackupProjects() throws CmsException {
-        return m_driverManager.getAllBackupProjects();
+    public CmsUser readWebUser(String username) throws CmsException {
+        return (m_driverManager.readWebUser(username));
     }
 
     /**
-     * Returns all projects which are owned by the current user or which are manageable
-     * for the group of the user.<p>
+     * Returns a web user object if the password for the user is correct.<p>
      *
-     * @return a list of objects of type <code>CmsProject</code>.
+     * <B>Security:</B>
+     * All users are granted.
      *
-     * @throws CmsException if operation was not successful.
+     * @param username the username of the user that is to be read
+     * @param password the password of the user that is to be read
+     * @return a web user
+     *
+     * @throws CmsException if something goes wrong
      */
-    public List getAllManageableProjects() throws CmsException {
-        return m_driverManager.getAllManageableProjects(m_context);
-    }
-
-    /**
-     * Get the next version id for the published backup resources.<p>
-     *
-     * @return int The new version id
-     */
-    public int getBackupTagId() {
-        return m_driverManager.getBackupTagId();
-    }
+    public CmsUser readWebUser(String username, String password) throws CmsException {
+        return (m_driverManager.readWebUser(username, password));
+    }    
+    
 
     /**
      * Returns all child groups of a group.<p>
@@ -1560,16 +2605,210 @@ public class CmsObject {
      */
     public Vector getChilds(String groupname) throws CmsException {
         return (m_driverManager.getChilds(m_context, groupname));
+    }    
+    
+    /**
+     * Deletes a group.
+     * <p>
+     * <b>Security:</b>
+     * Only the admin user is allowed to delete a group.
+     *
+     * @param delgroup the name of the group.
+     * @throws CmsException  if operation was not successful.
+     */
+    public void deleteGroup(String delgroup) throws CmsException {
+        m_driverManager.deleteGroup(m_context, delgroup);
+    }
+    
+    /**
+     * Sets a new parent-group for an already existing group in the Cms.
+     *
+     * @param groupName the name of the group that should be written to the Cms.
+     * @param parentGroupName the name of the parentGroup to set, or null if the parent
+     * group should be deleted.
+     * @throws CmsException  if operation was not successfull.
+     */
+    public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
+        m_driverManager.setParentGroup(m_context, groupName, parentGroupName);
     }
 
     /**
-     * Gets the configurations of the OpenCms properties file.<p>
-     * 
-     * @return the configurations of the properties file.
+     * Sets the password for a user.
+     *
+     * @param username the name of the user.
+     * @param newPassword the new password.
+     *
+     * @throws CmsException if operation was not successful.
      */
-    public ExtendedProperties getConfigurations() {
-        return m_driverManager.getConfigurations();
+    public void setPassword(String username, String newPassword) throws CmsException {
+        m_driverManager.setPassword(m_context, username, newPassword);
     }
+
+    /**
+     * Resets the password for a specified user.<p>
+     *
+     * @param username the name of the user
+     * @param oldPassword the old password
+     * @param newPassword the new password
+     * @throws CmsException if the user data could not be read from the database
+     */
+    public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
+        m_driverManager.resetPassword(username, oldPassword, newPassword);
+    } 
+    
+
+    /**
+     * Sets the recovery password for a user.<p>
+     *
+     * @param username the name of the user
+     * @param oldPassword the old (current) password
+     * @param newPassword the new recovery password
+     * @throws CmsException if something goes wrong
+     */
+    public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
+        m_driverManager.setRecoveryPassword(username, oldPassword, newPassword);
+    }
+
+    /**
+     * Tests, if a user is member of the given group.
+     *
+     * @param username the name of the user to test.
+     * @param groupname the name of the group to test.
+     * @return <code>true</code>, if the user is in the group; <code>else</code> false otherwise.
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public boolean userInGroup(String username, String groupname) throws CmsException {
+        return (m_driverManager.userInGroup(m_context, username, groupname));
+    }
+    
+    /**
+     * Writes an already existing group to the Cms.
+     *
+     * @param group the group that should be written to the Cms.
+     * @throws CmsException  if operation was not successful.
+     */
+    public void writeGroup(CmsGroup group) throws CmsException {
+        m_driverManager.writeGroup(m_context, group);
+    }     
+        
+    /**
+     * This method checks if a new password follows the rules for
+     * new passwords, which are defined by a Class configured in opencms.properties.<p>
+     * 
+     * If this method throws no exception the password is valid.<p>
+     *
+     * @param password the new password that has to be checked
+     *
+     * @throws CmsSecurityException if the password is not valid
+     */    
+    public void validatePassword(String password) throws CmsSecurityException {
+        m_driverManager.validatePassword(password);
+    }           
+    
+    /**
+     * Reads the group of a project.<p>
+     *
+     * @param project the project to read the group from
+     * @return the group of the given project
+     */
+    public CmsGroup readGroup(CmsProject project) {
+        return m_driverManager.readGroup(project);
+    }
+
+    /**
+     * Reads the group (role) of a task.<p>
+     *
+     * @param task the task to read the group (role) from
+     * @return the group (role) of the task
+     * @throws CmsException if something goes wrong
+     */
+    public CmsGroup readGroup(CmsTask task) throws CmsException {
+        return m_driverManager.readGroup(task);
+    }
+
+    /**
+     * Reads a group of the Cms based on its id.<p>
+     *
+     * @param groupId the id of the group to be read
+     * @return the group that has the provided id
+     * @throws CmsException if something goes wrong
+     */
+    public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
+        return m_driverManager.readGroup(groupId);
+    }
+
+    /**
+     * Reads a group of the Cms based on its name.
+     * @param groupName the name of the group to be read
+     * @return the group that has the provided name
+     * @throws CmsException if something goes wrong
+     */
+    public CmsGroup readGroup(String groupName) throws CmsException {
+        return (m_driverManager.readGroup(groupName));
+    }
+    
+    /**
+     * Returns all users of the given type.<p>
+     *
+     * @param type the type of the users.
+     * @return vector of all users of the given type.
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector getUsers(int type) throws CmsException {
+        return (m_driverManager.getUsers(m_context, type));
+    }
+
+    /**
+     * Gets all users of a group.
+     *
+     * @param groupname the name of the group to get all users for.
+     * @return all users in the group.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public Vector getUsersOfGroup(String groupname) throws CmsException {
+        return (m_driverManager.getUsersOfGroup(m_context, groupname));
+    }
+    
+
+    /**
+     * Reads the project manager group of a project.<p>
+     *
+     * @param project the project 
+     * @return the managergroup of the project
+     */
+    public CmsGroup readManagerGroup(CmsProject project) {
+        return m_driverManager.readManagerGroup(project);
+    }
+    
+    /**
+     * Sets a new password if the user knows his recovery-password.
+     *
+     * @param username the name of the user.
+     * @param recoveryPassword the recovery password.
+     * @param newPassword the new password.
+     *
+     * @throws CmsException if operation was not successfull.
+     */
+    public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
+        m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
+    }
+
+    /**
+     * Removes a user from a group.
+     *
+     * <p>
+     * <b>Security:</b>
+     * Only the admin user is allowed to remove a user from a group.
+     *
+     * @param username the name of the user that is to be removed from the group.
+     * @param groupname the name of the group.
+     * @throws CmsException if operation was not successful.
+     */
+    public void removeUserFromGroup(String username, String groupname) throws CmsException {
+        m_driverManager.removeUserFromGroup(m_context, username, groupname);
+    }    
 
     /**
      * Gets all groups to which a given user directly belongs.<p>
@@ -1581,21 +2820,6 @@ public class CmsObject {
      */
     public Vector getDirectGroupsOfUser(String username) throws CmsException {
         return (m_driverManager.getDirectGroupsOfUser(m_context, username));
-    }
-
-    /**
-     * Returns the generic driver objects.<p>
-     * 
-     * @return a mapping of class names to driver objects
-     */
-    public Map getDrivers() {
-        HashMap drivers = new HashMap();
-        drivers.put(this.m_driverManager.getVfsDriver().getClass().getName(), this.m_driverManager.getVfsDriver());
-        drivers.put(this.m_driverManager.getUserDriver().getClass().getName(), this.m_driverManager.getUserDriver());
-        drivers.put(this.m_driverManager.getProjectDriver().getClass().getName(), this.m_driverManager.getProjectDriver());
-        drivers.put(this.m_driverManager.getWorkflowDriver().getClass().getName(), this.m_driverManager.getWorkflowDriver());
-        drivers.put(this.m_driverManager.getBackupDriver().getClass().getName(), this.m_driverManager.getBackupDriver());    
-        return drivers;
     }
     
     /**
@@ -1630,358 +2854,8 @@ public class CmsObject {
      */
     public Vector getGroupsOfUser(String username, String remoteAddress) throws CmsException {
         return m_driverManager.getGroupsOfUser(m_context, username, remoteAddress);
-    }     
+    }       
     
-    /**
-     * Gets the lock state for a specified resource.<p>
-     * 
-     * @param resource the specified resource
-     * @return the CmsLock object for the specified resource
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsLock getLock(CmsResource resource) throws CmsException {
-        return m_driverManager.getLock(m_context, resource);
-    }    
-    
-    /**
-     * Gets the lock state for a specified resource name.<p>
-     * 
-     * @param resourcename the specified resource name
-     * @return the CmsLock object for the specified resource name
-     * @throws CmsException if somethong goes wrong
-     */
-    public CmsLock getLock(String resourcename) throws CmsException {
-        return m_driverManager.getLock(m_context, m_context.addSiteRoot(resourcename));
-    }
-
-    /**
-     * Returns a list of all currently logged in users.<p>
-     * 
-     * This method is can only be executed by administrators.<p>
-     * 
-     * @return a vector of users that are currently logged in
-     * @throws CmsException if something goes wrong
-     */
-    public Vector getLoggedInUsers() throws CmsException {
-        if (isAdmin()) {
-            if (m_sessionStorage != null) {
-                return m_sessionStorage.getLoggedInUsers();
-            } else {
-                return null;
-            }
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] getLoggedInUsers()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Returns the parent group of a group.<p>
-     *
-     * @param groupname the name of the group.
-     * @return group the parent group or null.
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsGroup getParent(String groupname) throws CmsException {
-        return (m_driverManager.getParent(groupname));
-    }
-
-    /**
-     * Returns the set of permissions of the current user for a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @return the set of the permissions of the current user
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPermissionSet getPermissions(String resourceName) throws CmsException {
-        // reading permissions is allowed even if the resource is marked as deleted
-        CmsResource resource = readFileHeader(resourceName, CmsResourceFilter.ALL);
-        CmsUser user = m_context.currentUser();
-
-        return m_driverManager.getPermissions(m_context, resource, user);
-    }
-
-    /**
-     * Returns the set of permissions of a given user for a given resource.<p>
-     * 
-     * @param resourceName the name of the resource
-     * @param userName the name of the user
-     * @return the current permissions on this resource
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPermissionSet getPermissions(String resourceName, String userName) throws CmsException {
-        CmsAccessControlList acList = getAccessControlList(resourceName);
-        CmsUser user = readUser(userName);
-        return acList.getPermissions(user, getGroupsOfUser(userName));
-    }
-    
-    /**
-     * Returns a publish list for the specified Cms resource to be published directly, plus 
-     * optionally it's siblings.<p>
-     * 
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
-     * @return a publish list
-     * @throws CmsException if something goes wrong
-     */
-    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
-        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
-    }
-    
-    /**
-     * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
-     * project that actually get published.<p>
-     * 
-     * @param report an instance of I_CmsReport to print messages
-     * @return a publish list
-     * @throws Exception if something goes wrong
-     */
-    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
-        return getPublishList(null, false, report);
-    }    
-
-    /**
-     * Returns the current OpenCms registry.<p>
-     *
-     * @return the current OpenCms registry
-     */
-    public CmsRegistry getRegistry() {
-        return m_driverManager.getRegistry(this);
-    }
-
-    /**
-     * Returns the current request context.<p>
-     *
-     * @return the current request context.
-     */
-    public CmsRequestContext getRequestContext() {
-        return (m_context);
-    }
-
-    /**
-    * Returns a List with all sub resources of a given folder that have benn modified
-    * in a given time range.<p>
-    * 
-    * The rertuned list is sorted descending (newest resource first).
-    *
-    * <B>Security:</B>
-    * All users are granted.
-    *
-    * @param folder the folder to get the subresources from
-    * @param starttime the begin of the time range
-    * @param endtime the end of the time range
-    * @return List with all resources
-    *
-    * @throws CmsException if operation was not succesful 
-    */
-    public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
-        return m_driverManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
-    }
-
-    /**
-     * Returns a List with resources that have set the given property.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.<p>
-     *
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return List with all resources
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
-    }
-
-    /**
-     * Returns a List with the complete sub tree of a given folder that have set the given property.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.<p>
-     *
-     * @param folder the folder to get the subresources from
-     * @param propertyDefinition the name of the propertydefinition to check
-     * @return List with all resources
-     *
-     * @throws CmsException if operation was not succesful
-     */
-    public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
-    }
-
-    /**
-     * Reads all resources that have set the specified property.<p>
-     * 
-     * A property definition is the "key name" of a property.<p>
-     *
-     * @param propertyDefinition the name of the property definition
-     * @return list of Cms resources having set the specified property definition
-     * @throws CmsException if operation was not successful
-     */
-    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
-        return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
-    }
-
-    /**
-     * Gets a parameter value for a task.<p>
-     *
-     * @param taskid the id of the task.
-     * @param parname the name of the parameter.
-     * @return the parameter value.
-     * @throws CmsException if operation was not successful.
-     */
-    public String getTaskPar(int taskid, String parname) throws CmsException {
-        return (m_driverManager.getTaskPar(taskid, parname));
-    }
-
-    /**
-     * Get the template task id fo a given taskname.<p>
-     *
-     * @param taskname the name of the task.
-     * @return the id of the task template.
-     * @throws CmsException if operation was not successful.
-     */
-    public int getTaskType(String taskname) throws CmsException {
-        return m_driverManager.getTaskType(taskname);
-    }
-
-    /**
-     * Returns all users.<p>
-     *
-     * @return a Vector of all users.
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector getUsers() throws CmsException {
-        return (m_driverManager.getUsers(m_context));
-    }
-
-    /**
-     * Returns all users of the given type.<p>
-     *
-     * @param type the type of the users.
-     * @return vector of all users of the given type.
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector getUsers(int type) throws CmsException {
-        return (m_driverManager.getUsers(m_context, type));
-    }
-
-    /**
-    * Returns all users from a given type that start with a specified string.<p>
-    *
-    * @param type the type of the users.
-    * @param namefilter The filter for the username
-    * @return vector of all users of the given type with the specified string.
-    *
-    * @throws CmsException if operation was not successful.
-    * @deprecated
-    */
-    public Vector getUsers(int type, String namefilter) throws CmsException {
-        return m_driverManager.getUsers(m_context, type, namefilter);
-    }
-
-    /**
-     * Gets all users with a certain last name.<p>
-     *
-     * @param lastname      the start of the users lastname
-     * @param UserType      webuser or systemuser
-     * @param UserStatus    enabled, disabled
-     * @param wasLoggedIn   was the user ever locked in?
-     * @param nMax          max number of results
-     * @return the users with the specified last name
-     * @throws CmsException if operation was not successful
-     * @deprecated
-     */
-    public Vector getUsersByLastname(String lastname, int UserType, int UserStatus, int wasLoggedIn, int nMax) throws CmsException {
-
-        return m_driverManager.getUsersByLastname(m_context, lastname, UserType, UserStatus, wasLoggedIn, nMax);
-    }
-
-    /**
-     * Gets all users of a group.
-     *
-     * @param groupname the name of the group to get all users for.
-     * @return all users in the group.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector getUsersOfGroup(String groupname) throws CmsException {
-        return (m_driverManager.getUsersOfGroup(m_context, groupname));
-    }
-    
-    /**
-     * Checks if the current user has required permissions to access a given resource.<p>
-     * 
-     * @param resource the resource that will be accessed
-     * @param requiredPermissions the set of required permissions
-     * @return true if the required permissions are satisfied
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
-        return  CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL);
-    }
-    
-    /**
-     * Checks if the current user has required permissions to access a given resource.<p>
-     * 
-     * @param resource the resource that will be accessed
-     * @param requiredPermissions the set of required permissions
-     * @param checkLock if true, a lock for the current user is required for 
-     *      all write operations, if false it's ok to write as long as the resource
-     *      is not locked by another user
-     * @param filter the resource filter to use
-     * 
-     * @return true if the required permissions are satisfied
-     * @throws CmsException if something goes wrong
-     */
-    public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions, boolean checkLock, CmsResourceFilter filter) throws CmsException {
-        return CmsDriverManager.PERM_ALLOWED == m_driverManager.hasPermissions(m_context, resource, requiredPermissions, checkLock, filter);
-    }
-
-    /**
-     * Writes access control entries for a given resource.<p>
-     * 
-     * @param resource the resource to attach the control entries to
-     * @param acEntries a vector of access control entries
-     * @throws CmsException if something goes wrong
-     */
-    public void importAccessControlEntries(CmsResource resource, Vector acEntries) throws CmsException {
-        m_driverManager.importAccessControlEntries(m_context, resource, acEntries);
-    }
-    
-    /**
-     * Imports an import-resource (folder or zipfile).<p>
-     *
-     * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
-     * @param importPath the name (absolute Path) of the folder in which should be imported.
-     * @throws CmsException if operation was not successful.
-     */
-    public void importFolder(String importFile, String importPath) throws CmsException {
-        
-        m_driverManager.clearcache();
-        
-        // import the resources
-        m_driverManager.importFolder(this, m_context, importFile, importPath);
-        
-        m_driverManager.clearcache();
-    }
-
-    /**
-     * Initializes this CmsObject with the provided user context and database connection.<p>
-     *
-     * @param driverManager the driver manager to access the database
-     * @param context the request context that contains the user authentification
-     * @param sessionStorage the core session
-     */
-    public void init(
-            CmsDriverManager driverManager,
-            CmsRequestContext context,
-            CmsSessionInfoManager sessionStorage
-    ) {
-        m_sessionStorage = sessionStorage;
-        m_driverManager = driverManager;
-        m_context = context;
-    }
-
     /**
      * Checks, if the users current group is the admin-group.<p>
      *
@@ -1993,45 +2867,6 @@ public class CmsObject {
         return m_driverManager.isAdmin(m_context);
     }
     
-    /**
-     * Proves if a specified resource is inside the current project.<p>
-     * 
-     * @param resource the specified resource
-     * @return true, if the resource name of the specified resource matches any of the current project's resources
-     */
-    public boolean isInsideCurrentProject(CmsResource resource) {
-        return m_driverManager.isInsideCurrentProject(m_context, resource);
-    }      
-
-    /**
-     * Checks if the user has management access to the project.
-     *
-     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
-     * check. If the user has management access to a project depends on the
-     * project settings.<p>
-     *
-     * @return true if the user has management access to the project
-     * @throws CmsException if operation was not successful.
-     * @see #isProjectManager()
-     */
-    public boolean isManagerOfProject() throws CmsException {
-        return m_driverManager.isManagerOfProject(m_context);
-    }
-    
-    /**
-     * Checks if the user is a member of the project manager group.<p>
-     *
-     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
-     * check. If the user is a member of the project manager group, 
-     * he can create new projects.<p>
-     *
-     * @return true if the user is a member of the project manager group
-     * @throws CmsException if operation was not successful.
-     * @see #isManagerOfProject()
-     */    
-    public boolean isProjectManager() throws CmsException {
-        return m_driverManager.isProjectManager(m_context);
-    }
 
     /**
      * Logs a user into the Cms, if the password is correct.<p>
@@ -2103,27 +2938,12 @@ public class CmsObject {
      */
     public String loginWebUser(String username, String password) throws CmsSecurityException {
         return loginUser(username, password, m_context.getRemoteAddress(), I_CmsConstants.C_USER_TYPE_WEBUSER);
-    }
-
-    /**
-     * Lookup and reads the user or group with the given UUID.<p>
-     *   
-     * @param principalId the uuid of a user or group
-     * @return the user or group with the given UUID
-     */
-    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
-        return m_driverManager.lookupPrincipal(principalId);
-    }
-
-    /**
-     * Lookup and reads the user or group with the given name.<p>
-     * 
-     * @param principalName the name of the user or group
-     * @return the user or group with the given name
-     */
-    public I_CmsPrincipal lookupPrincipal(String principalName) {
-        return m_driverManager.lookupPrincipal(principalName);
-    }
+    }    
+    
+    //-----------------------------------------------------------------------------------
+    // Project methods:
+    private int warning6; 
+   
     
     /**
      * Completes all post-publishing tasks for a "directly" published COS resource.<p>
@@ -2253,7 +3073,7 @@ public class CmsObject {
         CmsResource resource = null;
         
         try {
-            resource = readFileHeader(resourcename, CmsResourceFilter.ALL);
+            resource = readResource(resourcename, CmsResourceFilter.ALL);
             publishProject(report, resource, directPublishSiblings);
         } catch (CmsException e) {
             throw e;
@@ -2261,71 +3081,7 @@ public class CmsObject {
             OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", resource)));
         }
     }
-
-    /**
-     * Returns the absolute path of a given resource.<p>
-     * The absolute path is the root path without the site information.
-     * 
-     * @param resource the resource
-     * @return the absolute path
-     */
-    public String readAbsolutePath(CmsResource resource) {
-        int warning = 0;
-        // TODO: check where this is used and ensure proper filter is selected
-        return readAbsolutePath(resource, CmsResourceFilter.IGNORE_EXPIRATION);
-    }
-
-    /**
-     * Returns the absolute path of a given resource.<p>
-     * The absolute path is the root path without the site information.
-     * 
-     * @param resource the resource
-     * @param filter  a filter object to filter the resources
-     * @return the absolute path
-     */
-    public String readAbsolutePath(CmsResource resource, CmsResourceFilter filter) {
-        if (!resource.hasFullResourceName()) {
-            try {
-                m_driverManager.readPath(m_context, resource, filter);
-            } catch (CmsException e) {
-                OpenCms.getLog(this).error("Could not read absolute path for resource " + resource, e);
-                resource.setFullResourceName(null);
-            }
-        }
-
-        // adjust the resource path for the current site root
-        return removeSiteRoot(resource.getRootPath());
-    }
-
-    /**
-     * Reads the agent of a task.<p>
-     *
-     * @param task the task to read the agent from
-     * @return the agent of a task
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readAgent(CmsTask task) throws CmsException {
-        return (m_driverManager.readAgent(task));
-    }
-
-    /**
-     * Reads all file headers of a file in the OpenCms.
-     * <br>
-     * This method returns a vector with the history of all file headers, i.e.
-     * the file headers of a file, independent of the project they were attached to.<br>
-     *
-     * The reading excludes the filecontent.
-     *
-     * @param filename the name of the file to be read.
-     *
-     * @return a Vector of file headers read from the Cms.
-     *
-     * @throws CmsException  if operation was not successful.
-     */
-    public List readAllBackupFileHeaders(String filename) throws CmsException {
-        return (m_driverManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
-    }
-
+    
     /**
      * Returns a list with all project resources for a given project.<p>
      * 
@@ -2335,8 +3091,454 @@ public class CmsObject {
      */
     public List readAllProjectResources(int projectId) throws CmsException {
         return m_driverManager.readAllProjectResources(m_context, projectId);
+    }    
+    
+    
+    /**
+     * Reads a project of a given task from the Cms.
+     *
+     * @param task the task for which the project will be read.
+     * @return the project of the task
+     * 
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsProject readProject(CmsTask task) throws CmsException {
+        return m_driverManager.readProject(task);
     }
 
+    /**
+     * Reads a project from the Cms.
+     *
+     * @param id the id of the project
+     * @return the project with the given id
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsProject readProject(int id) throws CmsException {
+        return m_driverManager.readProject(id);
+    }
+    
+    /**
+     * Reads a project from the Cms.<p>
+     *
+     * @param name the name of the project
+     * @return the project with the given name
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsProject readProject(String name) throws CmsException {
+        return m_driverManager.readProject(name);
+    }         
+    
+    /**
+     * Returns the list of all resources that define the "view" of the given project.<p>
+     * 
+     * @param project the project to get the project resources for
+     * @return the list of all resources that define the "view" of the given project
+     * @throws CmsException if something goes wrong
+     */
+    public List readProjectResources(CmsProject project) throws CmsException {
+        return m_driverManager.readProjectResources(project);
+    }
+
+    /**
+     * Reads all file headers of a project from the Cms.
+     *
+     * @param projectId the id of the project to read the file headers for.
+     * @param filter The filter for the resources (all, new, changed, deleted, locked)
+     *
+     * @return a Vector (of CmsResources objects) of resources.
+     * 
+     * @throws CmsException if something goes wrong
+     *
+     */
+    public Vector readProjectView(int projectId, String filter) throws CmsException {
+        return m_driverManager.readProjectView(m_context, projectId, filter);
+    }
+    
+    /**
+     * Reads the resources that were published in a publish task for a given publish history ID.<p>
+     * 
+     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @return a List of CmsPublishedResource objects
+     * @throws CmsException if something goes wrong
+     */
+    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
+        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
+    }
+
+    /**
+     * Unlocks all resources of a project.
+     *
+     * @param id the id of the project to be unlocked.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void unlockProject(int id) throws CmsException {
+        m_driverManager.unlockProject(m_context, id);
+    }       
+
+    /**
+     * Deletes a project.<p>
+     *
+     * @param id the id of the project to delete.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public void deleteProject(int id) throws CmsException {
+        m_driverManager.deleteProject(m_context, id);
+    }    
+    
+    /**
+     * Checks if the user can access the project.
+     *
+     * @param projectId the id of the project.
+     * @return <code>true</code>, if the user may access this project; <code>false</code> otherwise
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public boolean accessProject(int projectId) throws CmsException {
+        return (m_driverManager.accessProject(m_context, projectId));
+    }
+
+    /**
+     * Creates a backup of the published project.<p>
+     *
+     * @param projectId The id of the project in which the resource was published
+     * @param versionId The version of the backup
+     * @param publishDate The date of publishing
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    public void backupProject(int projectId, int versionId, long publishDate) throws CmsException {
+        CmsProject backupProject = m_driverManager.readProject(projectId);
+        m_driverManager.backupProject(m_context, backupProject, versionId, publishDate);
+    }
+
+    /**
+     * Counts the locked resources in a project.
+     *
+     * @param id the id of the project
+     * @return the number of locked resources in this project.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public int countLockedResources(int id) throws CmsException {
+        return m_driverManager.countLockedResources(m_context, id);
+    } 
+
+    /**
+     * Creates a new project.
+     *
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
+     * @return the created project
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProject createProject(String name, String description, String groupname, String managergroupname) throws CmsException {
+        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+        return (newProject);
+    }
+
+    /**
+     * Creates a new project.
+     *
+     * @param name the name of the project to create
+     * @param description the description for the new project
+     * @param groupname the name of the project user group
+     * @param managergroupname the name of the project manager group
+     * @param projecttype the type of the project (normal or temporary)
+     * @return the created project
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsProject createProject(String name, String description, String groupname, String managergroupname, int projecttype) throws CmsException {
+        CmsProject newProject = m_driverManager.createProject(m_context, name, description, groupname, managergroupname, projecttype);
+        return (newProject);
+    }
+
+    /**
+     * Creates the project for the temporary workplace files.<p>
+     *
+     * @return the created project for the temporary workplace files
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProject createTempfileProject() throws CmsException {
+        return m_driverManager.createTempfileProject(m_context);
+    }
+    
+    /**
+     * Returns all projects which the current user can access.<p>
+     *
+     * @return a list of objects of type <code>CmsProject</code>.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public List getAllAccessibleProjects() throws CmsException {
+        return m_driverManager.getAllAccessibleProjects(m_context);
+    }
+
+    /**
+    * Returns a Vector with all projects from history.<p>
+    *
+    * @return Vector with all projects from history.
+    *
+    * @throws CmsException  Throws CmsException if operation was not succesful.
+    */
+    public Vector getAllBackupProjects() throws CmsException {
+        return m_driverManager.getAllBackupProjects();
+    }
+
+    /**
+     * Returns all projects which are owned by the current user or which are manageable
+     * for the group of the user.<p>
+     *
+     * @return a list of objects of type <code>CmsProject</code>.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public List getAllManageableProjects() throws CmsException {
+        return m_driverManager.getAllManageableProjects(m_context);
+    }    
+    
+    
+    /**
+     * Returns a publish list for the specified Cms resource to be published directly, plus 
+     * optionally it's siblings.<p>
+     * 
+     * @param directPublishResource the resource which will be directly published
+     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws CmsException {
+        return m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
+    }
+    
+    /**
+     * Returns a publish list with all new/changed/deleted Cms resources of the current (offline)
+     * project that actually get published.<p>
+     * 
+     * @param report an instance of I_CmsReport to print messages
+     * @return a publish list
+     * @throws Exception if something goes wrong
+     */
+    public CmsPublishList getPublishList(I_CmsReport report) throws Exception {
+        return getPublishList(null, false, report);
+    }        
+    
+    /**
+     * Proves if a specified resource is inside the current project.<p>
+     * 
+     * @param resource the specified resource
+     * @return true, if the resource name of the specified resource matches any of the current project's resources
+     */
+    public boolean isInsideCurrentProject(CmsResource resource) {
+        return m_driverManager.isInsideCurrentProject(m_context, resource);
+    }      
+
+    /**
+     * Checks if the user has management access to the project.
+     *
+     * Please note: This is NOT the same as the {@link CmsObject#isProjectManager()} 
+     * check. If the user has management access to a project depends on the
+     * project settings.<p>
+     *
+     * @return true if the user has management access to the project
+     * @throws CmsException if operation was not successful.
+     * @see #isProjectManager()
+     */
+    public boolean isManagerOfProject() throws CmsException {
+        return m_driverManager.isManagerOfProject(m_context);
+    }
+    
+    /**
+     * Checks if the user is a member of the project manager group.<p>
+     *
+     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
+     * check. If the user is a member of the project manager group, 
+     * he can create new projects.<p>
+     *
+     * @return true if the user is a member of the project manager group
+     * @throws CmsException if operation was not successful.
+     * @see #isManagerOfProject()
+     */    
+    public boolean isProjectManager() throws CmsException {
+        return m_driverManager.isProjectManager(m_context);
+    }    
+    
+    //-----------------------------------------------------------------------------------
+    // VFS access methods:
+    private int warning7; 
+    
+    
+    /**
+     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
+     * 
+     * The files in the result list include the file content.<p>
+     * 
+     * @param projectId a project id for reading online or offline resources
+     * @param resourcetype the resourcetype of the files
+     * @return a list of Cms files
+     * @throws CmsException if operation was not successful
+     */   
+    public List readFilesByType(int projectId, int resourcetype) throws CmsException {
+        return m_driverManager.readFilesByType(m_context, projectId, resourcetype);
+    }    
+    
+    /**
+     * Builds a list of resources for a given path.<p>
+     * 
+     * Use this method if you want to select a resource given by it's full filename and path. 
+     * This is done by climbing down the path from the root folder using the parent-ID's and
+     * resource names. Use this method with caution! Results are cached but reading path's 
+     * inevitably increases runtime costs.
+     * 
+     * @param path the requested path
+     * @param filter a filter object to filter the resources
+     * @return List of CmsResource's
+     * @throws CmsException if something goes wrong
+     */
+    public List readPath(String path, CmsResourceFilter filter) throws CmsException {
+        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), filter));
+    }        
+
+    /**
+     * Reads the property-definition for a resource.<p>
+     *
+     * @param name the name of the property-definition to read.
+     * @return the property-definition.
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
+        return (m_driverManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+    }
+    
+    /**
+     * Returns a List of all siblings of the specified resource,
+     * the specified resource being always part of the result set.<p>
+     * 
+     * @param resourcename the name of the specified resource
+     * @param filter a resource filter
+     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
+     * @throws CmsException if something goes wrong
+     */
+    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
+        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
+    }
+
+    /**
+     * Writes a file-header to the Cms.
+     *
+     * @param file the file to write.
+     *
+     * @throws CmsException if resourcetype is set to folder. The CmsException will also be thrown,
+     * if the user has not the rights to write the file header..
+     */
+    public void writeFileHeader(CmsFile file) throws CmsException {
+        m_driverManager.writeResource(m_context, file);
+    } 
+    
+    /**
+     * Counts the locked resources within a folder.<p>
+     *
+     * @param foldername the name of the folder
+     * @return the number of locked resources in this folder
+     *
+     * @throws CmsException if operation was not successful.
+     */
+    public int countLockedResources(String foldername) throws CmsException {
+        return m_driverManager.countLockedResources(m_context, addSiteRoot(foldername));
+    }   
+    
+    /**
+     * Creates a property-definition.<p>
+     *
+     * @param name the name of the property-definition to overwrite
+     * @return the new property definition
+     * 
+     * @throws CmsException if operation was not successful.
+     */
+    public CmsPropertydefinition createPropertydefinition(String name) throws CmsException {
+        return (m_driverManager.createPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
+    }
+
+    /**
+     * Deletes the property-definition for a resource.<p>
+     *
+     * @param name the name of the property-definition to delete
+     *
+     * @throws CmsException if something goes wrong
+     */
+    public void deletePropertydefinition(String name) throws CmsException {
+        m_driverManager.deletePropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+    }
+
+    /**
+    * Returns a List with all sub resources of a given folder that have benn modified
+    * in a given time range.<p>
+    * 
+    * The rertuned list is sorted descending (newest resource first).
+    *
+    * <B>Security:</B>
+    * All users are granted.
+    *
+    * @param folder the folder to get the subresources from
+    * @param starttime the begin of the time range
+    * @param endtime the end of the time range
+    * @return List with all resources
+    *
+    * @throws CmsException if operation was not succesful 
+    */
+    public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
+        return m_driverManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
+    }
+
+    /**
+     * Returns a List with resources that have set the given property.<p>
+     *
+     * <B>Security:</B>
+     * All users are granted.<p>
+     *
+     * @param propertyDefinition the name of the propertydefinition to check
+     * @return List with all resources
+     * @throws CmsException if operation was not succesful
+     */
+    public List getResourcesWithProperty(String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithProperty(m_context, "/", propertyDefinition);
+    }
+
+    /**
+     * Returns a List with the complete sub tree of a given folder that have set the given property.<p>
+     *
+     * <B>Security:</B>
+     * All users are granted.<p>
+     *
+     * @param folder the folder to get the subresources from
+     * @param propertyDefinition the name of the propertydefinition to check
+     * @return List with all resources
+     *
+     * @throws CmsException if operation was not succesful
+     */
+    public List getResourcesWithProperty(String folder, String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithProperty(m_context, addSiteRoot(folder), propertyDefinition);
+    }
+
+    /**
+     * Reads all resources that have set the specified property.<p>
+     * 
+     * A property definition is the "key name" of a property.<p>
+     *
+     * @param propertyDefinition the name of the property definition
+     * @return list of Cms resources having set the specified property definition
+     * @throws CmsException if operation was not successful
+     */
+    public List getResourcesWithPropertyDefinition(String propertyDefinition) throws CmsException {
+        return m_driverManager.getResourcesWithPropertyDefinition(m_context, propertyDefinition);
+    }
+    
     /**
      * Reads all property definitions.<p>
      *
@@ -2347,8 +3549,38 @@ public class CmsObject {
      */
     public List readAllPropertydefinitions() throws CmsException {
         return m_driverManager.readAllPropertydefinitions(m_context, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE);
+    }    
+    
+    //-----------------------------------------------------------------------------------
+    // Backup / Versioning methods
+    private int warning8; 
+
+    /**
+     * Deletes the versions from the backup tables that are older then the given timestamp  and/or number of remaining versions.<p>
+     * 
+     * The number of verions always wins, i.e. if the given timestamp would delete more versions than given in the
+     * versions parameter, the timestamp will be ignored.
+     * Deletion will delete file header, content and properties.
+     * 
+     * @param timestamp timestamp which defines the date after which backup resources must be deleted
+     * @param versions the number of versions per file which should kept in the system.
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
+       m_driverManager.deleteBackups(m_context, timestamp, versions, report);
     }
 
+    /**
+     * Get the next version id for the published backup resources.<p>
+     *
+     * @return int The new version id
+     */
+    public int getBackupTagId() {
+        return m_driverManager.getBackupTagId();
+    }  
+    
     /**
      * Reads a file from the Cms for history.
      * <br>
@@ -2395,1273 +3627,20 @@ public class CmsObject {
     }
 
     /**
-     * Gets the Crontable.
-     *
-     * <B>Security:</B>
-     * All users are garnted<BR/>
-     *
-     * @return the crontable.
-     * @throws CmsException if something goes wrong
-     */
-    public String readCronTable() throws CmsException {
-        return m_driverManager.readCronTable();
-    }
-
-    /**
-     * Reads a file from the Cms.
-     *
-     * @param filename the complete path to the file.
-     *
-     * @return file the read file.
-     *
-     * @throws CmsException if the user has not the rights to read this resource,
-     * or if the file couldn't be read.
-     */
-    public CmsFile readFile(String filename) throws CmsException {
-        return m_driverManager.readFile(m_context, addSiteRoot(filename));
-    }
-
-    /**
-     * Reads a file from the Cms.
-     *
-     * @param filename the complete path to the file.
-     * @param filter a filter object to filter the resources
-     *
-     * @return file the read file.
-     *
-     * @throws CmsException if the user has not the rights to read this resource,
-     * or if the file couldn't be read.
-     */
-    public CmsFile readFile(String filename, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.readFile(m_context, addSiteRoot(filename), filter);
-    }
-
-    /**
-     * Returns the configured file extensions (suffixes).<p>
-     *
-     * @return a Hashtable with all known file extensions as Strings.
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public Hashtable readFileExtensions() throws CmsException {
-        return m_driverManager.readFileExtensions();
-    }
-
-    /**
-     * Returns the default resource type for the given resource name, using the 
-     * configured resource type file extensions.<p>
-     * 
-     * In case the given name does not map to a configured resource type,
-     * {@link CmsResourceTypePlain} is returned.<p>
-     * 
-     * This is only required (and should <i>not</i> be used otherwise) when 
-     * creating a new resource automatically during file upload or synchronization.
-     * Only in this case, the file type for the new resource is determined using this method.
-     * Otherwise the resource type is <i>always</i> stored as part of the resource, 
-     * and is <i>not</i> related to the file name.<p>
-     * 
-     * @param resourcename the resource name to look up the resource type for
-     * 
-     * @return the default resource type for the given resource name
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #readFileExtensions()
-     */
-    public I_CmsResourceType getDefaultTypeForName(String resourcename) throws CmsException {
-
-        String typeName = null;
-        if (! CmsStringSubstitution.isEmpty(resourcename)) {
-            int pos = resourcename.lastIndexOf('.');
-            if (pos >= 0) {
-                String suffix = resourcename.substring(pos + 1);
-                if (! CmsStringSubstitution.isEmpty(suffix)) {
-                    suffix = suffix.toLowerCase();
-    
-                    // read the known file extensions from the database
-                    Hashtable extensions = readFileExtensions();
-                    if (extensions != null) {
-                        typeName = (String)extensions.get(suffix);
-                    }                
-                }
-            }      
-        }
-        
-        if (typeName == null) {
-            // use default type "plain"
-            typeName = CmsResourceTypePlain.C_RESOURCE_TYPE_NAME;
-        }
-        
-        // look up and return the resource type
-        return OpenCms.getResourceManager().getResourceType(typeName);
-    }
-    
-    /**
-     * Reads a file header from the Cms.
+     * Reads all file headers of a file in the OpenCms.
      * <br>
+     * This method returns a vector with the history of all file headers, i.e.
+     * the file headers of a file, independent of the project they were attached to.<br>
+     *
      * The reading excludes the filecontent.
      *
-     * @param filename the complete path of the file to be read.
-     *
-     * @return file the read file.
-     *
-     * @throws CmsException , if the user has not the rights
-     * to read the file headers, or if the file headers couldn't be read.
-     */
-    public CmsResource readFileHeader(String filename) throws CmsException {
-        return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename)));
-    }
-
-    /**
-     * Reads a file header from the Cms.
-     * <br>
-     * The reading excludes the filecontent.
-     *
-     * @param filename the complete path of the file to be read
-     * @param filter a filter object to filter the resources
-     *
-     * @return file the read file header
-     *
-     * @throws CmsException if the user has not the rights
-     * to read the file headers, or if the file headers couldn't be read
-     */
-    public CmsResource readFileHeader(String filename, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readFileHeader(m_context, addSiteRoot(filename), filter));
-    }
-
-    /**
-     * Reads a file header from the Cms.
-     * <br>
-     * The reading excludes the filecontent.
-     *
-     * @param filename the complete path of the file to be read.
-     * @param projectId the id of the project where the resource should belong to
-     * @param filter a filter object to filter the resources
-     * 
-     * @return file the read file.
-     *
-     * @throws CmsException , if the user has not the rights
-     * to read the file headers, or if the file headers couldn't be read.
-     */
-    public CmsResource readFileHeader(String filename, int projectId, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readFileHeaderInProject(projectId, addSiteRoot(filename), filter));
-    }
-
-    /**
-     * Reads a file header from the Cms.
-     * <br>
-     * The reading excludes the filecontent.
-     *
-     * @param folder the complete path to the folder from which the file will be read.
      * @param filename the name of the file to be read.
      *
-     * @return file the read file.
+     * @return a Vector of file headers read from the Cms.
      *
-     * @throws CmsException if the user has not the rights
-     * to read the file header, or if the file header couldn't be read.
-     */
-    public CmsResource readFileHeader(String folder, String filename) throws CmsException {
-        return (m_driverManager.readFileHeader(m_context, addSiteRoot(folder + filename)));
-    }
-
-    /**
-     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
-     * 
-     * The files in the result list include the file content.<p>
-     * 
-     * @param projectId a project id for reading online or offline resources
-     * @param resourcetype the resourcetype of the files
-     * @return a list of Cms files
-     * @throws CmsException if operation was not successful
-     */   
-    public List readFilesByType(int projectId, int resourcetype) throws CmsException {
-        return m_driverManager.readFilesByType(m_context, projectId, resourcetype);
-    }
-
-    /**
-     * Reads a folder from the Cms.
-     *
-     * @param folderId the id of the folder to be read
-     * @param filter a filter object to filter the resources
-     *
-     * @return folder the read folder
-     *
-     * @throws CmsException if the user does not have the permissions
-     * to read this folder, or if the folder couldn't be read
-     */
-    public CmsFolder readFolder(CmsUUID folderId, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readFolder(m_context, folderId, filter));
-    }
-
-    /**
-     * Reads a folder from the Cms.
-     *
-     * @param folderName the name of the folder to be read
-     *
-     * @return The read folder
-     *
-     * @throws CmsException if the user does not have the permissions
-     * to read this folder, or if the folder couldn't be read
-     */
-    public CmsFolder readFolder(String folderName) throws CmsException {
-        return (m_driverManager.readFolder(m_context, addSiteRoot(folderName)));
-    }
-
-    /**
-     * Reads a folder from the Cms.
-     *
-     * @param folderName the complete path to the folder to be read
-     * @param filter a filter object to filter the resources
-     *
-     * @return The read folder 
-     *
-     * @throws CmsException If the user does not have the permissions
-     * to read this folder, or if the folder couldn't be read
-     */
-    public CmsFolder readFolder(String folderName, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readFolder(m_context, addSiteRoot(folderName), filter));
-    }
-
-    /**
-      * Reads all given tasks from a user for a project.
-      *
-      * @param projectId the id of the project in which the tasks are defined.
-      * @param ownerName the owner of the task.
-      * @param taskType the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
-      * @param orderBy specifies how to order the tasks.
-      * @param sort sorting of the tasks
-      * @return vector of given tasks for a user for a project 
-      * 
-      * @throws CmsException if operation was not successful.
-      */
-    public Vector readGivenTasks(int projectId, String ownerName, int taskType, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readGivenTasks(projectId, ownerName, taskType, orderBy, sort));
-    }
-
-    /**
-     * Reads the group of a project.<p>
-     *
-     * @param project the project to read the group from
-     * @return the group of the given project
-     */
-    public CmsGroup readGroup(CmsProject project) {
-        return m_driverManager.readGroup(project);
-    }
-
-    /**
-     * Reads the group (role) of a task.<p>
-     *
-     * @param task the task to read the group (role) from
-     * @return the group (role) of the task
-     * @throws CmsException if something goes wrong
-     */
-    public CmsGroup readGroup(CmsTask task) throws CmsException {
-        return m_driverManager.readGroup(task);
-    }
-
-    /**
-     * Reads a group of the Cms based on its id.<p>
-     *
-     * @param groupId the id of the group to be read
-     * @return the group that has the provided id
-     * @throws CmsException if something goes wrong
-     */
-    public CmsGroup readGroup(CmsUUID groupId) throws CmsException {
-        return m_driverManager.readGroup(groupId);
-    }
-
-    /**
-     * Reads a group of the Cms based on its name.
-     * @param groupName the name of the group to be read
-     * @return the group that has the provided name
-     * @throws CmsException if something goes wrong
-     */
-    public CmsGroup readGroup(String groupName) throws CmsException {
-        return (m_driverManager.readGroup(groupName));
-    }
-
-    /**
-     * Gets the Linkchecktable.
-     *
-     * <B>Security:</B>
-     * All users are granted<BR/>
-     *
-     * @return the linkchecktable
-     * 
-     * @throws CmsException if something goes wrong 
-     */
-    public Hashtable readLinkCheckTable() throws CmsException {
-        return m_driverManager.readLinkCheckTable();
-    }
-
-    /**
-     * Reads the project manager group of a project.<p>
-     *
-     * @param project the project 
-     * @return the managergroup of the project
-     */
-    public CmsGroup readManagerGroup(CmsProject project) {
-        return m_driverManager.readManagerGroup(project);
-    }
-
-    /**
-     * Reads the original agent of a task from the Cms.<p>
-     *
-     * @param task the task to read the original agent from
-     * @return the original agent of the task
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
-        return m_driverManager.readOriginalAgent(task);
-    }
-    
-    /**
-     * Reads the owner of a project.
-     *
-     * @param project the project to read the owner from
-     * @return the owner of the project
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOwner(CmsProject project) throws CmsException {
-        return m_driverManager.readOwner(project);
-    }
-
-    /**
-     * Reads the owner (initiator) of a task.<p>
-     *
-     * @param task the task to read the owner from
-     * @return the owner of the task
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOwner(CmsTask task) throws CmsException {
-        return m_driverManager.readOwner(task);
-    }
-
-    /**
-     * Reads the owner of a task log.<p>
-     *
-     * @param log the task log
-     * @return the owner of the task log
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readOwner(CmsTaskLog log) throws CmsException {
-        return m_driverManager.readOwner(log);
-    }
-
-    /**
-     * Reads the package path of the system.
-     * This path is used for db-export and db-import and all module packages.
-     *
-     * @return the package path
-     * @throws CmsException if operation was not successful
-     */
-    public String readPackagePath() throws CmsException {
-        return m_driverManager.readPackagePath();
-    }
-    
-    /**
-     * Builds a list of resources for a given path.<p>
-     * 
-     * Use this method if you want to select a resource given by it's full filename and path. 
-     * This is done by climbing down the path from the root folder using the parent-ID's and
-     * resource names. Use this method with caution! Results are cached but reading path's 
-     * inevitably increases runtime costs.
-     * 
-     * @param path the requested path
-     * @param filter a filter object to filter the resources
-     * @return List of CmsResource's
-     * @throws CmsException if something goes wrong
-     */
-    public List readPath(String path, CmsResourceFilter filter) throws CmsException {
-        return (m_driverManager.readPath(m_context, m_context.addSiteRoot(path), filter));
-    }
-    
-    /**
-     * Reads a project of a given task from the Cms.
-     *
-     * @param task the task for which the project will be read.
-     * @return the project of the task
-     * 
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsProject readProject(CmsTask task) throws CmsException {
-        return m_driverManager.readProject(task);
-    }
-
-    /**
-     * Reads a project from the Cms.
-     *
-     * @param id the id of the project
-     * @return the project with the given id
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsProject readProject(int id) throws CmsException {
-        return m_driverManager.readProject(id);
-    }
-    
-    /**
-     * Reads a project from the Cms.<p>
-     *
-     * @param name the name of the project
-     * @return the project with the given name
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsProject readProject(String name) throws CmsException {
-        return m_driverManager.readProject(name);
-    }     
-
-    /**
-      * Reads log entries for a project.
-      *
-      * @param projectId the id of the project for which the tasklog will be read.
-      * @return a list of new TaskLog objects
-      * @throws CmsException if operation was not successful.
-      */
-    public List readProjectLogs(int projectId) throws CmsException {
-        return m_driverManager.readProjectLogs(projectId);
-    }
-    
-    /**
-     * Returns the list of all resources that define the "view" of the given project.<p>
-     * 
-     * @param project the project to get the project resources for
-     * @return the list of all resources that define the "view" of the given project
-     * @throws CmsException if something goes wrong
-     */
-    public List readProjectResources(CmsProject project) throws CmsException {
-        return m_driverManager.readProjectResources(project);
-    }
-
-    /**
-     * Reads all file headers of a project from the Cms.
-     *
-     * @param projectId the id of the project to read the file headers for.
-     * @param filter The filter for the resources (all, new, changed, deleted, locked)
-     *
-     * @return a Vector (of CmsResources objects) of resources.
-     * 
-     * @throws CmsException if something goes wrong
-     *
-     */
-    public Vector readProjectView(int projectId, String filter) throws CmsException {
-        return m_driverManager.readProjectView(m_context, projectId, filter);
-    }
-    
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
-     */
-    public Map readProperties(String resource) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), false);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
-     * @return Map of Strings representing all properties of the resource
-     * @throws CmsException in case there where problems reading the properties
-     * @deprecated use {@link #readPropertyObjects(String, boolean)} instead
-     */
-    public Map readProperties(String resource, boolean search) throws CmsException {
-        List properties = m_driverManager.readPropertyObjects(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), search);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource.<p>
-     *
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, false);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property, boolean search) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading, a default value will be returned if the property 
-     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
-     * 
-     * @param resource the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
-     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
-     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
-     * @throws CmsException in case there where problems reading the property
-     * @see CmsProperty#getValue()
-     * @deprecated use new Object based methods
-     */
-    public String readProperty(String resource, String property, boolean search, String propertyDefault) throws CmsException {
-        CmsProperty value = m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resource), m_context.getAdjustedSiteRoot(resource), property, search);
-        return value.isNullProperty() ? propertyDefault : value.getValue();
-    }    
-
-    /**
-     * Reads the property-definition for a resource.<p>
-     *
-     * @param name the name of the property-definition to read.
-     * @return the property-definition.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsPropertydefinition readPropertydefinition(String name) throws CmsException {
-        return (m_driverManager.readPropertydefinition(m_context, name, I_CmsConstants.C_PROPERYDEFINITION_RESOURCE));
-    }
-    
-    /**
-     * Reads a property object from the database specified by it's key name mapped to a resource.<p>
-     * 
-     * Returns {@link CmsProperty#getNullProperty()} if the property is not found.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param propertyName the property key name
-     * @param search true, if the property should be searched on all parent folders  if not found on the resource
-     * @return a CmsProperty object containing the structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public CmsProperty readPropertyObject(String resourceName, String propertyName, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObject(m_context, m_context.addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), propertyName, search);
-    }
-    
-    /**
-     * Reads all property objects mapped to a specified resource from the database.<p>
-     * 
-     * Returns an empty list if no properties are found at all.<p>
-     * 
-     * @param resourceName the name of resource where the property is mapped to
-     * @param search true, if the properties should be searched on all parent folders  if not found on the resource
-     * @return a list of CmsProperty objects containing the structure and/or resource value
-     * @throws CmsException if something goes wrong
-     */    
-    public List readPropertyObjects(String resourceName, boolean search) throws CmsException {
-        return m_driverManager.readPropertyObjects(m_context, addSiteRoot(resourceName), m_context.getAdjustedSiteRoot(resourceName), search);
-    }
-
-    /**
-     * Reads the resources that were published in a publish task for a given publish history ID.<p>
-     * 
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
-     * @return a List of CmsPublishedResource objects
-     * @throws CmsException if something goes wrong
-     */
-    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
-        return m_driverManager.readPublishedResources(m_context, publishHistoryId);
-    }
-
-    /**
-     * Returns a List of all siblings of the specified resource,
-     * the specified resource being always part of the result set.<p>
-     * 
-     * @param resourcename the name of the specified resource
-     * @param filter a resource filter
-     * @return a List of CmsResources that are siblings to the specified resource, including the specified resource itself 
-     * @throws CmsException if something goes wrong
-     */
-    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
-        return m_driverManager.readSiblings(m_context, addSiteRoot(resourcename), filter);
-    }
-
-
-    /**
-     * Returns the parameters of a resource in the table of all published template resources.<p>
-     * @param rfsName the rfs name of the resource
-     * @return the paramter string of the requested resource
-     * @throws CmsException if something goes wrong
-     */
-    public String readStaticExportPublishedResourceParameters(String rfsName) throws CmsException {
-        return  m_driverManager.readStaticExportPublishedResourceParameters(m_context, rfsName);
-    }
-
-    /**
-     * Returns a list of all template resources which must be processed during a static export.<p>
-     * 
-     * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param timestamp a timestamp for reading the data from the db
-     * @return List of template resources
-     * @throws CmsException if something goes wrong
-     */
-    public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
-        return m_driverManager.readStaticExportResources(m_context, parameterResources, timestamp);
-    }    
-    
-    /**
-     * Reads the task with the given id.
-     *
-     * @param id the id of the task to be read.
-     * @return the task with the given id
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsTask readTask(int id) throws CmsException {
-        return (m_driverManager.readTask(id));
-    }
-
-    /**
-     * Reads log entries for a task.
-     *
-     * @param taskid the task for which the tasklog will be read.
-     * @return a Vector of new TaskLog objects.
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector readTaskLogs(int taskid) throws CmsException {
-        return m_driverManager.readTaskLogs(taskid);
-    }
-
-    /**
-     * Reads all tasks for a project.
-     *
-     * @param projectId the id of the project in which the tasks are defined. Can be null to select all tasks.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order: C_SORT_ASC, C_SORT_DESC, or null.
-     * @return vector of tasks for the project
-     * 
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector readTasksForProject(int projectId, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForProject(projectId, tasktype, orderBy, sort));
-    }
-
-    /**
-     * Reads all tasks for a role in a project.
-     *
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param roleName the role who has to process the task.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
-     * @return vector of tasks for the role
-     * 
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector readTasksForRole(int projectId, String roleName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForRole(projectId, roleName, tasktype, orderBy, sort));
-    }
-
-    /**
-     * Reads all tasks for a user in a project.
-     *
-     * @param projectId the id of the Project in which the tasks are defined.
-     * @param userName the user who has to process the task.
-     * @param tasktype the type of task you want to read: C_TASKS_ALL, C_TASKS_OPEN, C_TASKS_DONE, C_TASKS_NEW.
-     * @param orderBy specifies how to order the tasks.
-     * @param sort sort order C_SORT_ASC, C_SORT_DESC, or null
-     * @return vector of tasks for the user 
-     * 
-     * @throws CmsException if operation was not successful.
-     */
-    public Vector readTasksForUser(int projectId, String userName, int tasktype, String orderBy, String sort) throws CmsException {
-        return (m_driverManager.readTasksForUser(projectId, userName, tasktype, orderBy, sort));
-    }
-
-    /**
-     * Reads a user based on its id.<p>
-     *
-     * @param userId the id of the user to be read
-     * @return the user with the given id
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readUser(CmsUUID userId) throws CmsException {
-        return m_driverManager.readUser(userId);
-    }
-
-    /**
-     * Reads a user based on its name.<p>
-     *
-     * @param username the name of the user to be read
-     * @return the user with the given name
-     * @throws CmsException if somthing goes wrong
-     */
-    public CmsUser readUser(String username) throws CmsException {
-        return m_driverManager.readUser(username);
-    }
-
-    /**
-     * Returns a user in the Cms.
-     *
-     * @param username the name of the user to be returned.
-     * @param type the type of the user.
-     * @return a user in the Cms.
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsUser readUser(String username, int type) throws CmsException {
-        return (m_driverManager.readUser(username, type));
-    }
-
-    /**
-     * Returns a user in the Cms, if the password is correct.
-     *
-     * @param username the name of the user to be returned.
-     * @param password the password of the user to be returned.
-     * @return a user in the Cms.
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public CmsUser readUser(String username, String password) throws CmsException {
-        return (m_driverManager.readUser(username, password));
-    }
-
-    /**
-     * Returns a user object if the password for the user is correct.<P/>
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param username The username of the user that is to be read.
-     * @return User
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful
-    */
-    public CmsUser readWebUser(String username) throws CmsException {
-        return (m_driverManager.readWebUser(username));
-    }
-
-    /**
-     * Returns a web user object if the password for the user is correct.<p>
-     *
-     * <B>Security:</B>
-     * All users are granted.
-     *
-     * @param username the username of the user that is to be read
-     * @param password the password of the user that is to be read
-     * @return a web user
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public CmsUser readWebUser(String username, String password) throws CmsException {
-        return (m_driverManager.readWebUser(username, password));
-    }
-    
-    /**
-     * Reactivates a task.<p>
-     *
-     * @param taskId the Id of the task to reactivate
-     *
-     * @throws CmsException if something goes wrong
-     */
-    public void reaktivateTask(int taskId) throws CmsException {
-        m_driverManager.reaktivateTask(m_context, taskId);
-    }
-
-    /**
-     * Sets a new password if the user knows his recovery-password.
-     *
-     * @param username the name of the user.
-     * @param recoveryPassword the recovery password.
-     * @param newPassword the new password.
-     *
-     * @throws CmsException if operation was not successfull.
-     */
-    public void recoverPassword(String username, String recoveryPassword, String newPassword) throws CmsException {
-        m_driverManager.recoverPassword(username, recoveryPassword, newPassword);
-    }
-
-    /**
-     * Removes a user from a group.
-     *
-     * <p>
-     * <b>Security:</b>
-     * Only the admin user is allowed to remove a user from a group.
-     *
-     * @param username the name of the user that is to be removed from the group.
-     * @param groupname the name of the group.
-     * @throws CmsException if operation was not successful.
-     */
-    public void removeUserFromGroup(String username, String groupname) throws CmsException {
-        m_driverManager.removeUserFromGroup(m_context, username, groupname);
-    }
-
-    /**
-     * Removes an access control entry of a griven principal from a given resource.<p>
-     * 
-     * @param resourceName name of the resource
-     * @param principalType the type of the principal (currently group or user)
-     * @param principalName name of the principal
-     * @throws CmsException if something goes wrong
-     */
-    public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
-
-        CmsResource res = readFileHeader(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
-        I_CmsPrincipal principal = null;
-
-        if ("group".equals(principalType.toLowerCase())) {
-            principal = readGroup(principalName);
-        } else if ("user".equals(principalType.toLowerCase())) {
-            principal = readUser(principalName);
-        }
-
-        m_driverManager.removeAccessControlEntry(m_context, res, principal.getId());
-    }
-
-    /**
-     * Returns the root-folder object.
-     *
-     * @return the root-folder object.
-     * @throws CmsException if operation was not successful.
-     */
-    public CmsFolder rootFolder() throws CmsException {
-        return (readFolder(I_CmsConstants.C_ROOT));
-    }
-
-    /**
-     * Send a broadcast message to all currently logged in users.<p>
-     * 
-     * This method is only allowed for administrators.
-     * 
-     * @param message the message to send
-     * @throws CmsException if something goes wrong
-     */
-    public void sendBroadcastMessage(String message) throws CmsException {
-        if (isAdmin()) {
-            if (m_sessionStorage != null) {
-                m_sessionStorage.sendBroadcastMessage(message);
-            }
-        } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] sendBroadcastMessage()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
-        }
-    }
-
-    /**
-     * Sets the name of the current site root of the content objects system.<p>
-     */
-    public void setContextToCos() {
-        getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
-    }
-    
-    /**
-     * Set a new name for a task.<p>
-     *
-     * @param taskId the id of the task
-     * @param name the new name of the task
-     * @throws CmsException if something goes wrong
-     */
-    public void setName(int taskId, String name) throws CmsException {
-        m_driverManager.setName(m_context, taskId, name);
-    }
-
-    /**
-     * Sets a new parent-group for an already existing group in the Cms.
-     *
-     * @param groupName the name of the group that should be written to the Cms.
-     * @param parentGroupName the name of the parentGroup to set, or null if the parent
-     * group should be deleted.
-     * @throws CmsException  if operation was not successfull.
-     */
-    public void setParentGroup(String groupName, String parentGroupName) throws CmsException {
-        m_driverManager.setParentGroup(m_context, groupName, parentGroupName);
-    }
-
-    /**
-     * Sets the password for a user.
-     *
-     * @param username the name of the user.
-     * @param newPassword the new password.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void setPassword(String username, String newPassword) throws CmsException {
-        m_driverManager.setPassword(m_context, username, newPassword);
-    }
-
-    /**
-     * Resets the password for a specified user.<p>
-     *
-     * @param username the name of the user
-     * @param oldPassword the old password
-     * @param newPassword the new password
-     * @throws CmsException if the user data could not be read from the database
-     */
-    public void setPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.resetPassword(username, oldPassword, newPassword);
-    }
-
-    /**
-     * Sets the priority of a task.<p>
-     *
-     * @param taskId the id of the task
-     * @param priority the new priority value
-     * @throws CmsException if something goes wrong
-     */
-    public void setPriority(int taskId, int priority) throws CmsException {
-        m_driverManager.setPriority(m_context, taskId, priority);
-    }
-
-    /**
-     * Sets the recovery password for a user.<p>
-     *
-     * @param username the name of the user
-     * @param oldPassword the old (current) password
-     * @param newPassword the new recovery password
-     * @throws CmsException if something goes wrong
-     */
-    public void setRecoveryPassword(String username, String oldPassword, String newPassword) throws CmsException {
-        m_driverManager.setRecoveryPassword(username, oldPassword, newPassword);
-    }
-
-    /**
-     * Set a parameter for a task.<p>
-     *
-     * @param taskid the Id of the task
-     * @param parname the ame of the parameter
-     * @param parvalue the value of the parameter
-     * @throws CmsException if something goes wrong
-     */
-    public void setTaskPar(int taskid, String parname, String parvalue) throws CmsException {
-        m_driverManager.setTaskPar(taskid, parname, parvalue);
-    }
-
-    /**
-     * Sets the timeout of a task.<p>
-     *
-     * @param taskId the id of the task
-     * @param timeout the new timeout value
-     * @throws CmsException if something goes wrong
-     */
-    public void setTimeout(int taskId, long timeout) throws CmsException {
-        m_driverManager.setTimeout(m_context, taskId, timeout);
-    }
-
-    /**
-     * Unlocks all resources of a project.
-     *
-     * @param id the id of the project to be unlocked.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void unlockProject(int id) throws CmsException {
-        m_driverManager.unlockProject(m_context, id);
-    }
-
-    /**
-     * Tests, if a user is member of the given group.
-     *
-     * @param username the name of the user to test.
-     * @param groupname the name of the group to test.
-     * @return <code>true</code>, if the user is in the group; <code>else</code> false otherwise.
-     *
-     * @throws CmsException if operation was not successful
-     */
-    public boolean userInGroup(String username, String groupname) throws CmsException {
-        return (m_driverManager.userInGroup(m_context, username, groupname));
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in the unpublished Cms files of the specified
-     * Cms publish list, if the files resource types implement the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param publishList a Cms publish list
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */    
-    public Map validateHtmlLinks(CmsPublishList publishList, I_CmsReport report) throws Exception {       
-        return m_driverManager.validateHtmlLinks(this, publishList, report);  
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in the unpublished Cms file of the current 
-     * (offline) project, if the file's resource type implements the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings true, if all eventual siblings of the direct published resource should also get published
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */
-    public Map validateHtmlLinks(CmsResource directPublishResource, boolean directPublishSiblings, I_CmsReport report) throws Exception {
-        CmsPublishList publishList = null;
-        Map result = null;
-                   
-        publishList = m_driverManager.getPublishList(m_context, directPublishResource, directPublishSiblings, report);
-        result = m_driverManager.validateHtmlLinks(this, publishList, report);
-        
-        return result;
-    }
-    
-    /**
-     * Validates the HTML links (hrefs and images) in all unpublished Cms files of the current 
-     * (offline) project, if the files resource types implement the interface 
-     * {@link org.opencms.validation.I_CmsHtmlLinkValidatable}.<p>
-     * 
-     * Please refer to the Javadoc of the I_CmsHtmlLinkValidatable interface to see which classes
-     * implement this interface (and so, which file types get validated by the HTML link 
-     * validator).<p>
-     * 
-     * @param report an instance of I_CmsReport to print messages
-     * @return a map with lists of invalid links keyed by resource names
-     * @throws Exception if something goes wrong
-     * @see org.opencms.validation.I_CmsHtmlLinkValidatable
-     */
-    public Map validateHtmlLinks(I_CmsReport report) throws Exception {
-        CmsPublishList publishList = m_driverManager.getPublishList(m_context, null, false, report);
-        return m_driverManager.validateHtmlLinks(this, publishList, report);    
-    }
-    
-    /**
-     * This method checks if a new password follows the rules for
-     * new passwords, which are defined by a Class configured in opencms.properties.<p>
-     * 
-     * If this method throws no exception the password is valid.<p>
-     *
-     * @param password the new password that has to be checked
-     *
-     * @throws CmsSecurityException if the password is not valid
-     */    
-    public void validatePassword(String password) throws CmsSecurityException {
-        m_driverManager.validatePassword(password);
-    }           
-
-    /**
-     * Writes the Crontable.<p>
-     *
-     * <B>Security:</B>
-     * Only a administrator can do this.<p>
-     *
-     * @param crontable the crontable to write
-     * @throws CmsException if something goes wrong
-     */
-    public void writeCronTable(String crontable) throws CmsException {
-        m_driverManager.writeCronTable(m_context, crontable);
-    }
-
-    /**
-     * Writes the file extension mappings.<p>
-     *
-     * <B>Security:</B>
-     * Only the admin user is allowed to write file extensions.
-     *
-     * @param extensions holds extensions as keys and resourcetypes (Strings) as values
-     * @throws CmsException if something goes wrong
-     */
-    public void writeFileExtensions(Hashtable extensions) throws CmsException {
-        m_driverManager.writeFileExtensions(m_context, extensions);
-    }
-
-    /**
-     * Writes a file-header to the Cms.
-     *
-     * @param file the file to write.
-     *
-     * @throws CmsException if resourcetype is set to folder. The CmsException will also be thrown,
-     * if the user has not the rights to write the file header..
-     */
-    public void writeFileHeader(CmsFile file) throws CmsException {
-        m_driverManager.writeResource(m_context, file);
-    }
-
-    /**
-     * Writes an already existing group to the Cms.
-     *
-     * @param group the group that should be written to the Cms.
      * @throws CmsException  if operation was not successful.
      */
-    public void writeGroup(CmsGroup group) throws CmsException {
-        m_driverManager.writeGroup(m_context, group);
+    public List readAllBackupFileHeaders(String filename) throws CmsException {
+        return (m_driverManager.readAllBackupFileHeaders(m_context, addSiteRoot(filename)));
     }
-
-    /**
-     * Writes the Linkchecktable.
-     *
-     * <B>Security:</B>
-     * Only a administrator can do this<BR/>
-     *
-     * @param linkchecktable The hashtable that contains the links that were not reachable
-     * @throws CmsException if something goes wrong
-     */
-    public void writeLinkCheckTable(Hashtable linkchecktable) throws CmsException {
-        m_driverManager.writeLinkCheckTable(m_context, linkchecktable);
-    }
-
-    /**
-     * Writes the package for the system.<p>
-     * 
-     * This path is used for db-export and db-import as well as module packages.<p>
-     *
-     * @param path the package path
-     * @throws CmsException if operation ws not successful
-     */
-    public void writePackagePath(String path) throws CmsException {
-        m_driverManager.writePackagePath(m_context, path);
-    }
-
-    /**
-     * Writes a couple of properties as structure values for a file or folder.
-     *
-     * @param resourceName the resource-name of which the Property has to be set.
-     * @param properties a Hashtable with property-definitions and property values as Strings.
-     * @throws CmsException if operation was not successful
-     * @deprecated use {@link #writePropertyObjects(String, List)} instead
-     */
-    public void writeProperties(String resourceName, Map properties) throws CmsException {
-        writePropertyObjects(resourceName, CmsProperty.toList(properties));
-    }
-
-    /**
-     * Writes a couple of Properties for a file or folder.
-     *
-     * @param name the resource-name of which the Property has to be set.
-     * @param properties a Hashtable with property-definitions and property values as Strings.
-     * @param addDefinition flag to indicate if unknown definitions should be added
-     * @throws CmsException if operation was not successful.
-     * @deprecated use {@link #writePropertyObjects(String, List)} instead
-     */
-    public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
-        writePropertyObjects(name, CmsProperty.setAutoCreatePropertyDefinitions(CmsProperty.toList(properties), addDefinition));
-    }
-    
-    /**
-     * Writes a property as a structure value for a file or folder.<p>
-     *
-     * @param resourceName the resource-name for which the property will be set
-     * @param key the property-definition name
-     * @param value the value for the property to be set
-     * @throws CmsException if operation was not successful
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
-     */
-    public void writeProperty(String resourceName, String key, String value) throws CmsException {
-        CmsProperty property = new CmsProperty();
-        property.setKey(key);
-        property.setStructureValue(value);
-        
-        writePropertyObject(resourceName, property);        
-    }
-
-    /**
-     * Writes a property for a file or folder.
-     *
-     * @param name the resource-name for which the property will be set.
-     * @param key the property-definition name.
-     * @param value the value for the property to be set.
-     * @param addDefinition flag to indicate if unknown definitions should be added
-     * @throws CmsException if operation was not successful.
-     * @deprecated use {@link #writePropertyObject(String, CmsProperty)} instead
-     */
-    public void writeProperty(String name, String key, String value, boolean addDefinition) throws CmsException {
-        CmsProperty property = new CmsProperty();
-        property.setKey(key);
-        property.setStructureValue(value);
-        property.setAutoCreatePropertyDefinition(addDefinition);
-        
-        writePropertyObject(name, property); 
-    }
-
-    /**
-     * Inserts an entry in the published resource table.<p>
-     * 
-     * This is done during static export.
-     * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
-     * @throws CmsException if something goes wrong
-     */
-    public void writeStaticExportPublishedResource(String resourceName, int linkType, String linkParameter, long timestamp) throws CmsException {
-        m_driverManager.writeStaticExportPublishedResource(m_context, resourceName, linkType, linkParameter, timestamp);
-    }
-
-    /**
-     * Writes a new user tasklog for a task.
-     *
-     * @param taskid the Id of the task.
-     * @param comment the description for the log.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void writeTaskLog(int taskid, String comment) throws CmsException {
-        m_driverManager.writeTaskLog(m_context, taskid, comment);
-    }
-
-    /**
-     * Writes a new user tasklog for a task.
-     *
-     * @param taskId the id of the task 
-     * @param comment the description for the log
-     * @param taskType the type of the tasklog, user task types must be greater than 100
-     * @throws CmsException if something goes wrong
-     */
-    public void writeTaskLog(int taskId, String comment, int taskType) throws CmsException {
-        m_driverManager.writeTaskLog(m_context, taskId, comment, taskType);
-    }
-
-    /**
-     * Updates the user information.
-     * <p>
-     * <b>Security:</b>
-     * Only the admin user is allowed to update the user information.
-     *
-     * @param user the user to be written.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void writeUser(CmsUser user) throws CmsException {
-        m_driverManager.writeUser(m_context, user);
-    }
-
-    /**
-     * Updates the user information of a web user.
-     * <br>
-     * Only a web user can be updated this way.
-     *
-     * @param user the user to be written.
-     *
-     * @throws CmsException if operation was not successful.
-     */
-    public void writeWebUser(CmsUser user) throws CmsException {
-        m_driverManager.writeWebUser(user);
-    }
-    
-    /**
-     * Fires a CmsEvent.<p>
-     *
-     * @param type The type of the event
-     * @param data A data object that contains data used by the event listeners
-     */
-    private void fireEvent(int type, Object data) {
-        
-        OpenCms.fireCmsEvent(this, type, Collections.singletonMap("data", data));
-    }    
 }

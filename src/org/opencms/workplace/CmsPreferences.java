@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPreferences.java,v $
- * Date   : $Date: 2004/06/18 14:17:54 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 5.1.12
  */
@@ -702,7 +702,7 @@ public class CmsPreferences extends CmsTabDialog {
             
             boolean visible = true;
             try {
-                getCms().readFileHeader(viewUri);
+                getCms().readResource(viewUri);
             } catch (CmsException e) {
                 visible = false;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.3.3
  */
@@ -166,7 +166,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
                 bodyFileBytes = ("").getBytes();
             } else {
                 // get the specified body file
-                bodyFileBytes = getCms().readFile(getParamBodyFile()).getContents();               
+                bodyFileBytes = getCms().readFile(getParamBodyFile(), CmsResourceFilter.IGNORE_EXPIRATION).getContents();               
             }
             
             // create the xml page   
@@ -319,17 +319,17 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         List modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, CmsResourceFilter.IGNORE_EXPIRATION);
         for (int i = 0; i < modules.size(); i++) {
             List moduleTemplateFiles = new ArrayList();
-            String folder = cms.readAbsolutePath((CmsFolder)modules.get(i));
+            String folder = cms.getSitePath((CmsFolder)modules.get(i));
             moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder);
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {
                 // get the current template file
                 CmsFile templateFile = (CmsFile)moduleTemplateFiles.get(j);
-                String title = cms.readPropertyObject(cms.readAbsolutePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
+                String title = cms.readPropertyObject(cms.getSitePath(templateFile), I_CmsConstants.C_PROPERTY_TITLE, false).getValue();
                 if (title == null) {
                     // no title property found, display the file name
                     title = templateFile.getName();
                 }
-                String path = cms.readAbsolutePath(templateFile);
+                String path = cms.getSitePath(templateFile);
                 elements.put(title, path);
             }
         }

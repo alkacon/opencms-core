@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/06/25 16:34:23 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -291,7 +291,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.setContextToCos();
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         }
 
         // clear some required structures at the init phase of the import      

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * the content of a master template.<p>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2004/06/15 10:59:44 $
+ * @version $Revision: 1.52 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsRootTemplate {
 
@@ -69,7 +69,7 @@ public class CmsRootTemplate {
     public byte[] getMasterTemplate(CmsObject cms, I_CmsTemplate templateClass, CmsFile masterTemplate, com.opencms.template.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         byte[] result;
 
-        String masterTemplateUri = cms.readAbsolutePath(masterTemplate);
+        String masterTemplateUri = cms.getSitePath(masterTemplate);
         // Collect cache directives from subtemplates
         CmsCacheDirectives cd = templateClass.collectCacheDirectives(cms, masterTemplateUri, I_CmsConstants.C_ROOT_TEMPLATE_NAME, parameters, null);
 

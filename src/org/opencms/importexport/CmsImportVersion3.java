@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/06/25 16:34:23 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -274,7 +274,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.setContextToCos();
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
         }
 
         // clear some required structures at the init phase of the import      
@@ -431,8 +431,8 @@ public class CmsImportVersion3 extends A_CmsImport {
                     if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME)) && (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))) {
                         destination += I_CmsConstants.C_FOLDER_SEPARATOR;
                     }
-                    CmsResource channel = m_cms.readFileHeader(I_CmsConstants.C_ROOT + destination);
-                    channelId = m_cms.readPropertyObject(m_cms.readAbsolutePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
+                    CmsResource channel = m_cms.readResource(I_CmsConstants.C_ROOT + destination);
+                    channelId = m_cms.readPropertyObject(m_cms.getSitePath(channel), I_CmsConstants.C_PROPERTY_CHANNELID, false).getValue();
                 } catch (Exception e) {
                     // ignore the exception, a new channel id will be generated
                 }

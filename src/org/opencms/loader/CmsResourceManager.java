@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2004/06/25 16:34:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.loader;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -61,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class CmsResourceManager {
@@ -313,7 +314,7 @@ public class CmsResourceManager {
         String templateProperty
     ) throws CmsException {
 
-        String absolutePath = cms.readAbsolutePath(resource);
+        String absolutePath = cms.getSitePath(resource);
 
         String templateProp = cms.readPropertyObject(absolutePath, templateProperty, true).getValue();
 
@@ -322,7 +323,7 @@ public class CmsResourceManager {
             throw new CmsLoaderException("Property '" + templateProperty + "' undefined for file " + absolutePath);
         }
 
-        CmsResource template = cms.readFile(templateProp);
+        CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
         return new CmsTemplateLoaderFacade(getLoader(template.getLoaderId()), resource, template);
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.main.CmsException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1
  */
@@ -222,7 +222,7 @@ public class CmsTouch extends CmsDialog {
         
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             return "";
         }    
@@ -254,7 +254,7 @@ public class CmsTouch extends CmsDialog {
     public String getCurrentReleaseDate()  {
         // get the releasedate
         try {         
-            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
                 return C_RELEASE_EXPIRE_DEFAULT;
             } else {
@@ -273,7 +273,7 @@ public class CmsTouch extends CmsDialog {
     public String getCurrentExpireDate() {
         // get the expirationdate
         try {
-            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
                 return C_RELEASE_EXPIRE_DEFAULT;
             } else {
@@ -323,7 +323,7 @@ public class CmsTouch extends CmsDialog {
     private boolean performTouchOperation() throws CmsException {
 
         // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+        CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         if (sourceRes.isFolder() && ! DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
             return false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/25 16:33:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.25 $ $Date: 2004/06/25 16:33:15 $
+ * @version $Revision: 1.26 $ $Date: 2004/06/28 07:47:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -236,7 +236,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getLength(), 
                     new byte[0]
                 );
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                newFile.setRootPath(offlineFileHeader.getRootPath());                
 
                 m_driverManager.getVfsDriver().createResource(
                     onlineProject, 
@@ -283,7 +283,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getName());
 
                 newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                newFile.setRootPath(offlineFileHeader.getRootPath());                
             }
         } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {

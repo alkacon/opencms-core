@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.1
  */
@@ -152,7 +152,7 @@ public class CmsRename extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         try {
-            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             performRenameOperation(isFolder);
             // if no exception is caused rename operation was successful
@@ -207,7 +207,7 @@ public class CmsRename extends CmsDialog {
         // check if target already exists, if so, throw exception and terminate
         boolean targetExists = false;
         try {
-            getCms().readFileHeader(parentFolder + target, CmsResourceFilter.ALL);
+            getCms().readResource(parentFolder + target, CmsResourceFilter.ALL);
             targetExists = true;
         } catch (CmsException e) {
             // empty

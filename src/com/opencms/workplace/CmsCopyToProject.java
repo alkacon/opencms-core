@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.15 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.16 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault {
@@ -95,7 +95,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
         if(filename.endsWith("/")){
             file = cms.readFolder(filename);
         } else {
-            file = cms.readFileHeader(filename);
+            file = cms.readResource(filename);
         }
         //check if the name parameter was included in the request
         // if not, the copyToProject page is shown for the first time
@@ -104,7 +104,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
                 // copy the resource to the current project
                 try {
                     if (isManager(cms)) {
-                        cms.copyResourceToProject(cms.readAbsolutePath(file));
+                        cms.copyResourceToProject(cms.getSitePath(file));
                         session.removeValue(C_PARA_RESOURCE);
                         template = "done";
                     } else {
@@ -121,7 +121,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
         }
         // set the required datablocks
         if (action == null) {
-            xmlTemplateDocument.setData("FILENAME", cms.readAbsolutePath(file));
+            xmlTemplateDocument.setData("FILENAME", cms.getSitePath(file));
         }
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);

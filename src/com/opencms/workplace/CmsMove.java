@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2004/02/22 13:52:27 $
-* Version: $Revision: 1.69 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.70 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
@@ -49,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.69 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.70 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault {
@@ -96,7 +97,7 @@ public class CmsMove extends CmsWorkplaceDefault {
         }
         
         sourceFilename = (String)session.getValue(C_PARA_RESOURCE);
-        CmsResource source = cms.readFileHeader(sourceFilename);
+        CmsResource source = cms.readResource(sourceFilename);
 
         // read all request parameters
         String newFolder = new String();
@@ -113,7 +114,7 @@ public class CmsMove extends CmsWorkplaceDefault {
                     newFile = source.getName();
                 }
             } else {
-                newFolder = CmsResource.getParentFolder(cms.readAbsolutePath(source));
+                newFolder = CmsResource.getParentFolder(cms.getSitePath(source));
                 newFile = destinationName;
             }
         }
@@ -141,7 +142,7 @@ public class CmsMove extends CmsWorkplaceDefault {
             }
 
             // ednfal: check if the user try to move the resource into itself
-            if(newFolder.equals(cms.readAbsolutePath(source))) {
+            if(newFolder.equals(cms.getSitePath(source))) {
                  // something went wrong, so remove all session parameters
                 session.removeValue(C_PARA_RESOURCE);
                 session.removeValue(C_PARA_NEWFOLDER);
@@ -194,7 +195,7 @@ public class CmsMove extends CmsWorkplaceDefault {
 
                     // this is a file, so move it
                     try {
-                        cms.moveResource(cms.readAbsolutePath(source), newFolder + newFile);
+                        cms.moveResource(cms.getSitePath(source), newFolder + newFile);
                     }
                     catch(CmsException ex) {
 
@@ -236,7 +237,7 @@ public class CmsMove extends CmsWorkplaceDefault {
                     // this is a folder
                     // get all subfolders and files
                     try {
-                        cms.moveResource(cms.readAbsolutePath(source), newFolder + newFile);
+                        cms.moveResource(cms.getSitePath(source), newFolder + newFile);
                     } catch(CmsException e) {
                         // something went wrong, so remove all session parameters
                         session.removeValue(C_PARA_RESOURCE);
@@ -262,7 +263,7 @@ public class CmsMove extends CmsWorkplaceDefault {
 
         // set the required datablocks
         if(action == null) {
-            String title = cms.readProperty(cms.readAbsolutePath(source), C_PROPERTY_TITLE);
+            String title = cms.readProperty(cms.getSitePath(source), C_PROPERTY_TITLE);
             if(title == null) {
                 title = "";
             }
@@ -303,7 +304,7 @@ public class CmsMove extends CmsWorkplaceDefault {
     public Integer getFolder(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         Integer selected = new Integer(0);
         // get the root folder
-        CmsFolder rootFolder = cms.rootFolder();
+        CmsFolder rootFolder = cms.readFolder(I_CmsConstants.C_ROOT);
         // add the root folder
         names.addElement(lang.getLanguageValue("title.rootfolder"));
         values.addElement("/");
@@ -342,7 +343,7 @@ public class CmsMove extends CmsWorkplaceDefault {
      */
 
     private void getTree(CmsObject cms, CmsFolder root, Vector names, Vector values) throws CmsException {
-        List folders = cms.getSubFolders(cms.readAbsolutePath(root));
+        List folders = cms.getSubFolders(cms.getSitePath(root));
         //CmsProject currentProject = cms.getRequestContext().currentProject();
         Iterator enu = folders.iterator();
         while(enu.hasNext()) {
@@ -351,10 +352,10 @@ public class CmsMove extends CmsWorkplaceDefault {
             // check if the current folder is part of the current project
             //if(folder.inProject(currentProject)) {
             if (cms.isInsideCurrentProject(folder)) {
-                String name = cms.readAbsolutePath(folder);
+                String name = cms.getSitePath(folder);
                 name = name.substring(1, name.length() - 1);
                 names.addElement(name);
-                values.addElement(cms.readAbsolutePath(folder));
+                values.addElement(cms.getSitePath(folder));
             }
             getTree(cms, folder, names, values);
         }

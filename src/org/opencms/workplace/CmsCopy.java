@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2004/06/21 09:59:03 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 5.1
  */
@@ -187,7 +187,7 @@ public class CmsCopy extends CmsDialog {
         // check if the current resource is a folder
         boolean isFolder = false;
         try {
-            CmsResource curRes = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource curRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (curRes.isFolder()) {
                 isFolder = true;        
             }
@@ -248,7 +248,7 @@ public class CmsCopy extends CmsDialog {
         getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
         CmsResource resource = null;
         try {
-            resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
             if (performCopyOperation(isFolder))  {
                 // if no exception is caused and "true" is returned copy operation was successful
@@ -281,7 +281,7 @@ public class CmsCopy extends CmsDialog {
                         getCms().getRequestContext().setSiteRoot("/");
                         restoreSiteRoot = true;
                     }
-                    CmsResource targetRes = getCms().readFileHeader(getParamTarget());
+                    CmsResource targetRes = getCms().readResource(getParamTarget());
                     targetType = targetRes.getTypeId();
                 } catch (CmsException exc) { 
                     // ignore
@@ -363,7 +363,7 @@ public class CmsCopy extends CmsDialog {
             }            
             
             try {
-                CmsResource res = getCms().readFileHeader(target, CmsResourceFilter.ALL);
+                CmsResource res = getCms().readResource(target, CmsResourceFilter.ALL);
                 if (res.isFolder()) {
                     // target folder already exists, so we add the current folder name
                     if (! target.endsWith("/")) {

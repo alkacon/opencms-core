@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2004/06/21 11:42:51 $
-* Version: $Revision: 1.105 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.106 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.105 $ $Date: 2004/06/21 11:42:51 $
+ * @version $Revision: 1.106 $ $Date: 2004/06/28 07:44:02 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
@@ -944,7 +944,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
      * @throws CmsException if something goes wrong
      */
     public void init(CmsObject cms, CmsFile file) throws CmsException {
-        String filename = cms.readAbsolutePath(file);
+        String filename = cms.getSitePath(file);
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
         m_cms = cms;
@@ -1023,7 +1023,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
 
             // File was found in cache.
             // We have to read the file header to check access rights.
-            cms.readFileHeader(filename);
+            cms.readResource(filename);
         }
 
         if (C_PRINTNODES) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/25 16:33:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -56,7 +57,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -83,7 +84,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         CmsLink link = null;
 
         try {
-            file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
+            file = cms.readFile(cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error reading file content of " + resource.getRootPath(), e);

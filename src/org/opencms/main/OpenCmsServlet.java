@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2004/06/21 11:45:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
 
@@ -69,7 +70,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -195,7 +196,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         }     
         CmsFile file;
         try {
-            file = cms.readFile(handlerUri);
+            file = cms.readFile(handlerUri, CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             // handler file does not exist, display default error code page
             res.sendError(errorCode);

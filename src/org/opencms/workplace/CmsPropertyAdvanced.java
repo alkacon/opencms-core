@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.1
  */
@@ -256,7 +256,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
             try {
-                CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 if (res.isFolder()) {
                     List folderList = new ArrayList(1);
                     folderList.add(CmsResource.getParentFolder(getParamResource()));
@@ -492,7 +492,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
         try {
-            CmsResource res = jsp.getCmsObject().readFileHeader(resource, CmsResourceFilter.ALL);
+            CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             if (res.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID) {
                 // display special property dialog for xmlpage types
                 return C_PATH_WORKPLACE + "editors/dialogs/property.html";
@@ -655,7 +655,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // check the resource type of the edited resource
         m_isFolder = false;
         try {
-            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (resource.isFolder()) {
                 m_isFolder = true;
                 if (!getParamResource().endsWith("/")) {
@@ -725,7 +725,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 CmsResource file = null;
                 CmsLock lock = null;
                 try {
-                    file = getCms().readFileHeader(resourceName, CmsResourceFilter.ALL);
+                    file = getCms().readResource(resourceName, CmsResourceFilter.ALL);
                     // check if resource is a folder
                     if (file.isFolder()) {
                         resourceName += "/";            

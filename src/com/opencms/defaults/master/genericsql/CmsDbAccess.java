@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2004/04/13 16:43:03 $
-* Version: $Revision: 1.71 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.72 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1211,7 +1211,7 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         cms.getRequestContext().saveSiteRoot();
-        cms.setContextToCos();
+        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
             for (int i = 0; i < channelToAdd.size(); i++) {

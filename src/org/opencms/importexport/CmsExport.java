@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/06/25 16:34:23 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/06/28 07:47:33 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.40 $ $Date: 2004/06/25 16:34:23 $
+ * @version $Revision: 1.41 $ $Date: 2004/06/28 07:47:33 $
  */
 public class CmsExport implements Serializable {
 
@@ -298,7 +298,7 @@ public class CmsExport implements Serializable {
 
         if (isExportingCosData()) {
             // collect channel id information if required
-            String channelId = getCms().readFolder(folderName).getResourceId().toString();
+            String channelId = getCms().readFolder(folderName, CmsResourceFilter.IGNORE_EXPIRATION).getResourceId().toString();
             if (channelId != null) {
                 getExportedChannelIds().add(channelId);
             }
@@ -320,7 +320,7 @@ public class CmsExport implements Serializable {
                 || state == I_CmsConstants.C_STATE_NEW 
                 || state == I_CmsConstants.C_STATE_CHANGED) {
                 if ((state != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
-                    exportFile(getCms().readFile(getCms().readAbsolutePath(file), CmsResourceFilter.IGNORE_EXPIRATION));
+                    exportFile(getCms().readFile(getCms().getSitePath(file), CmsResourceFilter.IGNORE_EXPIRATION));
                 }
             }
             // release file header memory
@@ -334,7 +334,7 @@ public class CmsExport implements Serializable {
             CmsResource folder = (CmsResource)subFolders.get(i);
             if (folder.getState() != I_CmsConstants.C_STATE_DELETED) {
                 // check if this is a system-folder and if it should be included.
-                String export = getCms().readAbsolutePath(folder);
+                String export = getCms().getSitePath(folder);
                 if (// always export "/system/"
                 export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
                     || export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
@@ -350,7 +350,7 @@ public class CmsExport implements Serializable {
                     }
 
                     // export all sub-resources in this folder
-                    addChildResources(getCms().readAbsolutePath(folder));
+                    addChildResources(getCms().getSitePath(folder));
                 }
             }
             // release folder memory
@@ -370,7 +370,7 @@ public class CmsExport implements Serializable {
             for (int i = 0; i < fileNames.size(); i++) {
                 String fileName = (String)fileNames.elementAt(i);
                 try {
-                    CmsFile file = getCms().readFile(fileName);
+                    CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
                     if ((file.getState() != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                         addParentFolders(fileName);
                         exportFile(file);
@@ -443,7 +443,7 @@ public class CmsExport implements Serializable {
             String addFolder = (String)superFolders.elementAt(i);
             if (!m_superFolders.contains(addFolder)) {
                 // This super folder was NOT added previously. Add it now!
-                CmsFolder folder = getCms().readFolder(addFolder);
+                CmsFolder folder = getCms().readFolder(addFolder, CmsResourceFilter.IGNORE_EXPIRATION);
                 appendResourceToManifest(folder, false);
                 // Remember that this folder was added
                 m_superFolders.addElement(addFolder);
@@ -558,10 +558,10 @@ public class CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      */
     private void exportFile(CmsFile file) throws CmsException {
-        String source = trimResourceName(getCms().readAbsolutePath(file));
+        String source = trimResourceName(getCms().getSitePath(file));
         getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
         getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        getReport().print(getCms().readAbsolutePath(file));
+        getReport().print(getCms().getSitePath(file));
         getReport().print(getReport().key("report.dots"));
         try {
             // store content in zip-file
@@ -655,7 +655,7 @@ public class CmsExport implements Serializable {
         Element fileElement = m_fileNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
 
         // only write <source> if resource is a file
-        String fileName = trimResourceName(getCms().readAbsolutePath(resource));
+        String fileName = trimResourceName(getCms().getSitePath(resource));
         if (resource.isFile()) {
             if (source) {
                 fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
@@ -664,7 +664,7 @@ public class CmsExport implements Serializable {
             // output something to the report for the folder
             getReport().print(" ( " + ++m_exportCount + " ) ", I_CmsReport.C_FORMAT_NOTE);
             getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-            getReport().print(getCms().readAbsolutePath(resource));
+            getReport().print(getCms().getSitePath(resource));
             getReport().print(getReport().key("report.dots"));
             getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
@@ -704,7 +704,7 @@ public class CmsExport implements Serializable {
 
         // write the properties to the manifest
         Element propertiesElement = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
-        List properties = getCms().readPropertyObjects(getCms().readAbsolutePath(resource), false);
+        List properties = getCms().readPropertyObjects(getCms().getSitePath(resource), false);
         for (int i = 0, n = properties.size(); i < n; i++) {
             property = (CmsProperty)properties.get(i);
             key = property.getKey();
@@ -739,7 +739,7 @@ public class CmsExport implements Serializable {
         Element acl = fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
 
         // read the access control entries
-        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().readAbsolutePath(resource), false);
+        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().getSitePath(resource), false);
         Iterator i = fileAcEntries.iterator();
 
         // create xml elements for each access control entry

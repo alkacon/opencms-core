@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.66 $
+ * @version $Revision: 1.67 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -823,7 +823,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // check if the vfsname ends with ".jsp", then the rfs name must end with .html, except the 
             // resource is a plain resouce
             if (vfsName.toLowerCase().endsWith(".jsp")) {
-                CmsResource res = cms.readFileHeader(originalVfsName);
+                CmsResource res = cms.readResource(originalVfsName);
                 if (res.getTypeId() != CmsResourceTypePlain.C_RESOURCE_TYPE_ID) {
                     vfsName += ".html";
                 }
@@ -1312,7 +1312,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (!C_CACHEVALUE_404.equals(vfsName)) {
                     // this uri can be exported
                     try {
-                        resource = cms.readFileHeader(vfsName);
+                        resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
                         // no export if error occured here                       
                         return null;
@@ -1331,7 +1331,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (vfsName != null) {
                     match = true;
                     try {
-                        resource = cms.readFileHeader(vfsName);
+                        resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
                         rfsName = null;
                     }
@@ -1391,7 +1391,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // everything is there, so read the resource in the vfs and build the static export data object
         if (vfsBaseName != null) {
 
-            CmsResource resource = cms.readFileHeader(vfsBaseName);
+            CmsResource resource = cms.readResource(vfsBaseName);
 
             data = new CmsStaticExportData(vfsBaseName, rfsName, resource, parameters);
             cacheExportUri(rfsName, vfsName);
@@ -1418,7 +1418,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         boolean match = false;
 
         try {
-            resource = cms.readFileHeader(cms.getRequestContext().removeSiteRoot(rfsName));
+            resource = cms.readResource(cms.getRequestContext().removeSiteRoot(rfsName));
             if (resource.isFolder() && !rfsName.endsWith("/")) {
                 rfsName += "/";
             }
@@ -1441,7 +1441,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // TODO: handle multiple matches         
                     vfsName = exportnameFolders.get(exportName) + rfsName.substring(exportName.length());
                     try {
-                        resource = cms.readFileHeader(vfsName);
+                        resource = cms.readResource(vfsName);
                         if (resource.isFolder()) {
                             if (!rfsName.endsWith("/")) {
                                 rfsName += "/";
@@ -1534,7 +1534,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     List li = cms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);
                     siblings = new ArrayList();
                     for (int i = 0, l = li.size(); i < l; i++) {
-                        siblings.add(cms.readAbsolutePath((CmsResource)li.get(i)));
+                        siblings.add(cms.getSitePath((CmsResource)li.get(i)));
                     }
                 } catch (CmsException e) {
                     siblings = Collections.singletonList(res.getRootPath());
@@ -1639,7 +1639,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         for (int i = 0, n = resources.size(); i < n; i++) {
             CmsResource res = (CmsResource)resources.get(i);
             try {
-                String foldername = cms.readAbsolutePath(res);
+                String foldername = cms.getSitePath(res);
                 String exportname = cms.readPropertyObject(foldername, I_CmsConstants.C_PROPERTY_EXPORTNAME, false)
                     .getValue();
                 if (exportname != null) {

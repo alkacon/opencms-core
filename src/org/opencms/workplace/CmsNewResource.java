@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsNewResource.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.3.3
  */
@@ -279,7 +280,8 @@ public class CmsNewResource extends CmsDialog {
         if (currentFolder == null) {
             // set current folder to root folder
             try {
-                currentFolder = getCms().readAbsolutePath(getCms().rootFolder());
+                currentFolder = getCms().getSitePath(
+                    getCms().readFolder(I_CmsConstants.C_ROOT, CmsResourceFilter.IGNORE_EXPIRATION));
             } catch (CmsException e) {
                 currentFolder = I_CmsConstants.C_ROOT;
             }

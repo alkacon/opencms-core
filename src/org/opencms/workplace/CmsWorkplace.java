@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/06/21 11:45:41 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.fileupload.FileUploadException;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.83 $
+ * @version $Revision: 1.84 $
  * 
  * @since 5.1
  */
@@ -285,7 +285,7 @@ public abstract class CmsWorkplace {
         CmsResource res = null;
         try {
             // check access to the site
-            res = cms.readFileHeader("/");   
+            res = cms.readResource("/");   
             access = cms.hasPermissions(res, I_CmsConstants.C_VIEW_ACCESS);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
@@ -336,7 +336,7 @@ public abstract class CmsWorkplace {
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // loop through all types and check which types can be displayed for the user
             try {                
-                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + type.getTypeName());
+                cms.readResource(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + type.getTypeName());
                 resourceTypes.put(new Integer(type.getTypeId()), type);               
             } catch (CmsException e) {
                 // ignore
@@ -859,7 +859,7 @@ public abstract class CmsWorkplace {
     public void checkLock(String resource, int mode) throws CmsException {
         if (OpenCms.getWorkplaceManager().autoLockResources()) {
             // Autolock is enabled, check the lock state of the resource
-            CmsResource res = getCms().readFileHeader(resource, CmsResourceFilter.ALL);
+            CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
             if (getCms().getLock(res).isNullLock()) {
                 // resource is not locked, lock it automatically
                 getCms().lockResource(resource, mode);

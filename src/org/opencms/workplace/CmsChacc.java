@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2004/06/25 16:35:00 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 5.1
  */
@@ -242,7 +242,7 @@ public class CmsChacc extends CmsDialog {
             setCurPermissions(getCms().getPermissions(getParamResource(), userName));
     
             // check if the current resource is a folder
-            CmsResource resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (resource.isFolder()) {
                 setInherit(true);
             }
@@ -296,7 +296,7 @@ public class CmsChacc extends CmsDialog {
             internalValue = true;
         }     
         try { 
-            resource = (CmsFile)getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            resource = (CmsFile)getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
           
             int flags = resource.getFlags();
              
@@ -482,7 +482,7 @@ public class CmsChacc extends CmsDialog {
                     // ignore
                 }
             }
-            CmsResource res = getCms().readFileHeader(fileName, CmsResourceFilter.ALL);
+            CmsResource res = getCms().readResource(fileName, CmsResourceFilter.ALL);
             CmsUUID fileId = res.getContentId();
             CmsAccessControlEntry entry = new CmsAccessControlEntry(fileId, id, curSet, flags);
             return buildPermissionEntryForm(entry, editable, extendedView, null);
@@ -838,7 +838,7 @@ public class CmsChacc extends CmsDialog {
         
         // try to read the internal flag from the resource
         try { 
-            resource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             internal = ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0);
         } catch (CmsException e) {
             // an error occured reading the resource

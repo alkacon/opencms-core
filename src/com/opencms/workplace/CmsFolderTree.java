@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2004/06/21 11:43:01 $
-* Version: $Revision: 1.73 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.74 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.I_CmsWpConstants;
@@ -56,7 +57,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.73 $ $Date: 2004/06/21 11:43:01 $
+ * @version $Revision: 1.74 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -267,7 +268,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
             String filename = C_ICON_PREFIX + type.getTypeName().toLowerCase() + C_ICON_EXTENSION;
             try {
                 // read the icon file
-                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
+                cms.readResource(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
                 // add the icon to the cache
                 icon = filename;
                 m_iconCache.put(type.getTypeName(), icon);
@@ -318,7 +319,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
-            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
+            currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
         }
 
         // check if the files must be displayed as well
@@ -333,7 +334,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         }
 
         // get current and root folder
-        rootFolder = cms.readAbsolutePath(cms.rootFolder());
+        rootFolder = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
 
         //get the template
         CmsXmlWpTemplateFile template = (CmsXmlWpTemplateFile)doc;
@@ -424,7 +425,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
             if(checkAccess(cms, res)) {
                 subfolders = new Vector();
                 if(res.isFolder()) {
-                    untestedSubfolders = cms.getSubFolders(cms.readAbsolutePath(res));
+                    untestedSubfolders = cms.getSubFolders(cms.getSitePath(res));
 
                     // now filter all invisible subfolders
                     for(int i = 0;i < untestedSubfolders.size();i++) {
@@ -436,7 +437,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
                     // load the files as well if nescessary
                     if(displayFiles) {
-                        untestedSubfiles = cms.getFilesInFolder(cms.readAbsolutePath(res));
+                        untestedSubfiles = cms.getFilesInFolder(cms.getSitePath(res));
                         for(int i = 0;i < untestedSubfiles.size();i++) {
                             CmsFile subfile = (CmsFile)untestedSubfiles.get(i);
                             if(checkAccess(cms, subfile)) {
@@ -448,7 +449,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
                 // check if this folder must diplayes open
                 if(res.isFolder()) {
-                    if(cms.readAbsolutePath(res).equals(filelist)) {
+                    if(cms.getSitePath(res).equals(filelist)) {
                         folderimg = template.getProcessedDataValue(C_TREEIMG_FOLDEROPEN, this);
                     }
                     else {
@@ -465,13 +466,13 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 // now check if a treeswitch has to displayed
 
                 // is this the last element of the current folder, so display the end image
-                if(cms.readAbsolutePath(res).equals(cms.readAbsolutePath(lastFolder))) {
+                if(cms.getSitePath(res).equals(cms.getSitePath(lastFolder))) {
 
                     // if there are any subfolders extisintg, use the + or - box
                     if(subfolders.size() > 0) {
 
                         // test if the + or minus must be displayed
-                        if(endfolder.startsWith(cms.readAbsolutePath(res))) {
+                        if(endfolder.startsWith(cms.getSitePath(res))) {
                             template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
@@ -479,7 +480,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                         }
                         else {
                             template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + CmsEncoder.escape(cms.readAbsolutePath(res),
+                                    + "=" + CmsEncoder.escape(cms.getSitePath(res),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PEND, this);
                         }
@@ -494,7 +495,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                     if(subfolders.size() > 0) {
 
                         // test if the + or minus must be displayed
-                        if(endfolder.startsWith(cms.readAbsolutePath(res))) {
+                        if(endfolder.startsWith(cms.getSitePath(res))) {
                             template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
@@ -502,7 +503,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                         }
                         else {
                             template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
-                                    + "=" + CmsEncoder.escape(cms.readAbsolutePath(res),
+                                    + "=" + CmsEncoder.escape(cms.getSitePath(res),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PCROSS, this);
                         }
@@ -511,7 +512,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                         treeswitch = template.getProcessedDataValue(C_TREEIMG_CROSS, this);
                     }
                 }
-                if(cms.readAbsolutePath(res).equals(cms.readAbsolutePath(lastFolder))) {
+                if(cms.getSitePath(res).equals(cms.getSitePath(lastFolder))) {
                     newtab = tab + template.getProcessedDataValue(C_TREEIMG_EMPTY, this);
                 }
                 else {
@@ -529,11 +530,11 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
                 // set all data for the treeline tag
                 template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()) + "?" + C_PARA_FILELIST
-                        + "=" + cms.readAbsolutePath(res));
+                        + "=" + cms.getSitePath(res));
                 template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
-                        + "=" + cms.readAbsolutePath(res));
+                        + "=" + cms.getSitePath(res));
                 template.setData(C_TREEENTRY, res.getName());
-                template.setData(C_TREEVAR, cms.readAbsolutePath(res));
+                template.setData(C_TREEVAR, cms.getSitePath(res));
                 template.setData(C_TREETAB, tab);
                 template.setData(C_TREEFOLDER, folderimg);
                 template.setData(C_TREESWITCH, treeswitch);
@@ -553,8 +554,8 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 }
 
                 //finally process all subfolders if nescessary
-                if((endfolder.startsWith(cms.readAbsolutePath(res))) && (endfolder.endsWith("/"))) {
-                    showTree(cms, cms.readAbsolutePath(res), endfolder, filelist, template,
+                if((endfolder.startsWith(cms.getSitePath(res))) && (endfolder.endsWith("/"))) {
+                    showTree(cms, cms.getSitePath(res), endfolder, filelist, template,
                             output, newtab, displayFiles, offselect, configFile);
                 }
             }

@@ -140,13 +140,13 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         for(int i = 0;i < modules.size();i++) {
             List moduleLangFiles = (List) new ArrayList();
             try {
-                moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + lang);
+                moduleLangFiles = cms.getFilesInFolder(cms.getSitePath((CmsFolder)modules.get(i)) + lang);
             } catch (CmsException e) {
                 // try read from old module locales path
                 try {
-                    moduleLangFiles = cms.getFilesInFolder(cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
+                    moduleLangFiles = cms.getFilesInFolder(cms.getSitePath((CmsFolder)modules.get(i)) + oldLang);
                     if(OpenCms.getLog(this).isWarnEnabled() ) {
-                        OpenCms.getLog(this).warn("Old module 'locales' path used: " + cms.readAbsolutePath((CmsFolder)modules.get(i)) + oldLang);
+                        OpenCms.getLog(this).warn("Old module 'locales' path used: " + cms.getSitePath((CmsFolder)modules.get(i)) + oldLang);
                     }                    
                 } catch (CmsException ex) {
                     // no language files found, we can live with that, probably the module just has none                      
@@ -161,10 +161,10 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
             file = (CmsFile)langFiles.get(i);
             if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 try {
-                    init(cms, cms.readAbsolutePath(file));
+                    init(cms, cms.getSitePath(file));
                 } catch(Exception exc) {
                     if(OpenCms.getLog(this).isErrorEnabled() ) {
-                        OpenCms.getLog(this).error("Error merging language file: " + cms.readAbsolutePath(file), exc);
+                        OpenCms.getLog(this).error("Error merging language file: " + cms.getSitePath(file), exc);
                     }
                 }
             }

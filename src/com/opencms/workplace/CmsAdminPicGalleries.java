@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.56 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.57 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -137,7 +137,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(thefolder));
+            String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_PICS) && (parent.equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_picgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_picgalleries2", elementName, parameters, templateSelector);
@@ -170,7 +170,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
                     CmsFolder folder = (CmsFolder)cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
-                        cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
                     }
 //                  TODO: check how to set the appropriate access using acl
                     /*
@@ -207,7 +207,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     }
                     cms.chmod(cms.readAbsolutePath(folder), flag);
                     */
-                    cms.unlockResource(cms.readAbsolutePath(folder));
+                    cms.unlockResource(cms.getSitePath(folder));
                 }
                 catch(CmsException ex) {
                     xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(ex));
@@ -314,11 +314,11 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                             try {
                                 CmsFile file = (CmsFile)cms.createResource(foldername + filename, CmsResourceTypeImage.C_RESOURCE_TYPE_ID, filecontent, null);
                                 if(title != null) {
-                                    String filepath = cms.readAbsolutePath(file);
+                                    String filepath = cms.getSitePath(file);
                                     cms.writeProperty(filepath, C_PROPERTY_TITLE, title);
                                 }
                                 if(imagedescription != null) {
-                                    String filepath = cms.readAbsolutePath(file);
+                                    String filepath = cms.getSitePath(file);
                                     cms.writeProperty(filepath, C_PROPERTY_DESCRIPTION, imagedescription);
                                 }
                             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2004/06/21 09:52:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/28 07:42:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -307,7 +307,7 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob {
         linkList = new Vector(cms.readFilesByType(I_CmsConstants.C_UNKNOWN_INT, CmsResourceTypePointer.C_RESOURCE_TYPE_ID));
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);
-            String linkName = cms.readAbsolutePath(linkElement);
+            String linkName = cms.getSitePath(linkElement);
             String linkUrl = new String(linkElement.getContents());
             // do not check internal links
             if (!linkUrl.startsWith("/")) {

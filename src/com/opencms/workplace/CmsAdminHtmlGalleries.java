@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.27 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.28 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -119,7 +119,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
         // Check if we must redirect to head_2
         try {
-            String parent = CmsResource.getParentFolder(cms.readAbsolutePath(thefolder));
+            String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
             if(foldername.startsWith(C_VFS_GALLERY_HTML) && (parent.equals(C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
                 // we are in the wrong head - use the second one
                 xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
@@ -145,7 +145,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
                     CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
                     if(title != null) {
-                        cms.writeProperty(cms.readAbsolutePath(folder), C_PROPERTY_TITLE, title);
+                        cms.writeProperty(cms.getSitePath(folder), C_PROPERTY_TITLE, title);
                     }
 //                  TODO: check how to set the appropriate access using acl
                     /*                    
@@ -183,12 +183,12 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
                     cms.chmod(cms.readAbsolutePath(folder), flag);
                     */
                     try {
-                      cms.unlockResource(cms.readAbsolutePath(folder));
+                      cms.unlockResource(cms.getSitePath(folder));
                     }
                     catch (CmsException e) {
-                      String parent = CmsResource.getParentFolder(cms.readAbsolutePath(folder));
+                      String parent = CmsResource.getParentFolder(cms.getSitePath(folder));
                       cms.unlockResource(parent);
-                      cms.unlockResource(cms.readAbsolutePath(folder));
+                      cms.unlockResource(cms.getSitePath(folder));
 
                     }
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2004/06/14 15:54:43 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2004/06/14 15:54:43 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
 
@@ -214,7 +214,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             // first export the cos folders (ie. channels)               
             getReport().println(getReport().key("report.export_channels_begin"), I_CmsReport.C_FORMAT_HEADLINE);
 
-            getCms().setContextToCos();
+            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
             // export all the resources
             exportAllResources(exportNode, resourcesToExport);
             getReport().println(getReport().key("report.export_channels_end"), I_CmsReport.C_FORMAT_HEADLINE);

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2004/06/15 10:19:21 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.27 $ $Date: 2004/06/15 10:19:21 $
+ * @version $Revision: 1.28 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault {
@@ -95,14 +95,14 @@ public class CmsChnav extends CmsWorkplaceDefault {
         if(filename != null){
             session.putValue(C_SESSIONHEADER + C_PARA_RESOURCE, filename);
         }
-        CmsResource resource = cms.readFileHeader(filename);
+        CmsResource resource = cms.readResource(filename);
 
         // get request parameters
         String navpos = (String)parameters.get(C_PARA_NAVPOS);
 
         navtext = (String)parameters.get(C_PARA_NAVTEXT);
         if((navtext == null) || ("".equals(navtext))){
-            navtext = cms.readProperty(cms.readAbsolutePath(resource), I_CmsConstants.C_PROPERTY_NAVTEXT);
+            navtext = cms.readProperty(cms.getSitePath(resource), I_CmsConstants.C_PROPERTY_NAVTEXT);
         }
 
         // get the current phase of this wizard
@@ -115,7 +115,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
 
                     // update the navigation text
                     if(navtext != null){
-                        cms.writeProperty(cms.readAbsolutePath(resource), I_CmsConstants.C_PROPERTY_NAVTEXT, navtext);
+                        cms.writeProperty(cms.getSitePath(resource), I_CmsConstants.C_PROPERTY_NAVTEXT, navtext);
                     }
                     // all done, now we have to clean up our mess
                     clearSession(session);
@@ -183,7 +183,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
-            currentFilelist = cms.readAbsolutePath(cms.rootFolder());
+            currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
         }
 
         // get all files and folders in the current filelist.
@@ -217,19 +217,19 @@ public class CmsChnav extends CmsWorkplaceDefault {
             while(en.hasNext()) {
                 CmsResource res = (CmsResource)en.next();
                 // do not include the current file
-                if(!cms.readAbsolutePath(res).equals(filename)){
+                if(!cms.getSitePath(res).equals(filename)){
                     // check if the resource is not marked as deleted
                     if(res.getState() != C_STATE_DELETED) {
-                        String navpos = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVPOS);
+                        String navpos = cms.readProperty(cms.getSitePath(res), C_PROPERTY_NAVPOS);
                         // check if there is a navpos for this file/folder
                         if(navpos != null) {
-                            nicename = CmsEncoder.escapeHtml(cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_NAVTEXT));
+                            nicename = CmsEncoder.escapeHtml(cms.readProperty(cms.getSitePath(res), C_PROPERTY_NAVTEXT));
                             if(nicename == null) {
                                 nicename = res.getName();
                             }
 
                             // add this file/folder to the storage.
-                            filenames[count] = cms.readAbsolutePath(res);
+                            filenames[count] = cms.getSitePath(res);
                             nicenames[count] = nicename;
                             positions[count] = navpos;
                             if(new Float(navpos).floatValue() > max) {
@@ -380,7 +380,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
         boolean changePos = true;
 
         // get the nav information
-        Hashtable storage = getNavData(cms, cms.readAbsolutePath(curResource));
+        Hashtable storage = getNavData(cms, cms.getSitePath(curResource));
         if(storage.size() > 0) {
             String[] nicenames = (String[])storage.get("NICENAMES");
             String[] positions = (String[])storage.get("POSITIONS");
@@ -413,7 +413,7 @@ public class CmsChnav extends CmsWorkplaceDefault {
         }
         // only change position if new position was selected
         if(changePos){
-            cms.writeProperty(cms.readAbsolutePath(curResource), C_PROPERTY_NAVPOS, new Float(newPos).toString());
+            cms.writeProperty(cms.getSitePath(curResource), C_PROPERTY_NAVPOS, new Float(newPos).toString());
         }
     }
 

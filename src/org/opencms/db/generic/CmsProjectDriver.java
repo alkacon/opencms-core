@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/06/25 16:33:07 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.173 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.172 $ $Date: 2004/06/25 16:33:07 $
+ * @version $Revision: 1.173 $ $Date: 2004/06/28 07:47:32 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -513,7 +513,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             CmsResource.DATE_RELEASED_DEFAULT,
             CmsResource.DATE_EXPIRED_DEFAULT            
         );
-        onlineRootFolder.setFullResourceName("/");
+        onlineRootFolder.setRootPath("/");
 
         m_driverManager.getVfsDriver().createResource(
             online, 
@@ -678,7 +678,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             try {
                 // read the folder online
                 onlineFolder = m_driverManager.readFolder(context, currentFolder.getStructureId(), CmsResourceFilter.ALL);
-                onlineFolder.setFullResourceName(currentFolder.getRootPath());
+                onlineFolder.setRootPath(currentFolder.getRootPath());
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error reading resource " + currentFolder.toString(), e);
@@ -768,7 +768,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), true);
-                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());
+                    onlineFileHeader.setRootPath(offlineFileHeader.getRootPath());
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
                         OpenCms.getLog(this).error("Error reading resource " + offlineFileHeader.toString(), e);
@@ -852,7 +852,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the file header online                   
                     onlineFileHeader = m_driverManager.getVfsDriver().readFileHeader(onlineProject.getId(), offlineFileHeader.getStructureId(), false);
-                    onlineFileHeader.setFullResourceName(offlineFileHeader.getRootPath());                    
+                    onlineFileHeader.setRootPath(offlineFileHeader.getRootPath());                    
 
                     // reset the labeled link flag before writing the online file
                     int flags = offlineFileHeader.getFlags();
@@ -1076,12 +1076,12 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             if (!offlineFileHeader.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getContentId())) {
                 // read the file offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
-                offlineFile.setFullResourceName(offlineFileHeader.getRootPath());
+                offlineFile.setRootPath(offlineFileHeader.getRootPath());
 
                 // create the file online              
                 newFile = (CmsFile)offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                newFile.setRootPath(offlineFileHeader.getRootPath());                
                 
                 m_driverManager.getVfsDriver().createResource(
                     onlineProject, 
@@ -1101,7 +1101,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineFileHeader.getName());
 
                 newFile = m_driverManager.getVfsDriver().readFile(onlineProject.getId(), false, offlineFileHeader.getStructureId());
-                newFile.setFullResourceName(offlineFileHeader.getRootPath());                
+                newFile.setRootPath(offlineFileHeader.getRootPath());                
             }
         } catch (Exception e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1132,19 +1132,19 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     // create the folder online
                     newFolder = (CmsFolder) offlineFolder.clone();
                     newFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                    newFolder.setFullResourceName(offlineFolder.getRootPath());
+                    newFolder.setRootPath(offlineFolder.getRootPath());
 
                     onlineFolder = m_driverManager.getVfsDriver().createResource(
                         onlineProject, 
                         newFolder, 
                         null);
 
-                    onlineFolder.setFullResourceName(offlineFolder.getRootPath());
+                    onlineFolder.setRootPath(offlineFolder.getRootPath());
                 } catch (CmsException e) {
                     if (e.getType() == CmsException.C_FILE_EXISTS) {
                         try {
                             onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), newFolder.getStructureId());
-                            onlineFolder.setFullResourceName(offlineFolder.getRootPath());
+                            onlineFolder.setRootPath(offlineFolder.getRootPath());
                             m_driverManager.getVfsDriver().publishResource(onlineProject, onlineFolder, offlineFolder, false);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1165,13 +1165,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 try {
                     // read the folder online
                     onlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), offlineFolder.getStructureId());
-                    onlineFolder.setFullResourceName(offlineFolder.getRootPath());
+                    onlineFolder.setRootPath(offlineFolder.getRootPath());
                 } catch (CmsVfsResourceNotFoundException e) {
                     try {
                         //onlineFolder = m_driverManager.getVfsDriver().createFolder(onlineProject, offlineFolder, offlineFolder.getParentStructureId());
                         onlineFolder = m_driverManager.getVfsDriver().createResource(onlineProject, offlineFolder, null);
                         onlineFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
-                        onlineFolder.setFullResourceName(offlineFolder.getRootPath());
+                        onlineFolder.setRootPath(offlineFolder.getRootPath());
                         m_driverManager.getVfsDriver().writeResourceState(context.currentProject(), onlineFolder, CmsDriverManager.C_UPDATE_ALL);
                     } catch (CmsException e1) {
                         if (OpenCms.getLog(this).isErrorEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2004/06/14 15:54:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/28 07:44:02 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 package com.opencms.legacy;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.CmsIndexException;
@@ -46,6 +47,7 @@ import com.opencms.defaults.master.CmsMasterDataSet;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -56,7 +58,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.5 $ $Date: 2004/06/14 15:54:43 $
+ * @version $Revision: 1.6 $ $Date: 2004/06/28 07:44:02 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -201,10 +203,10 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     private CmsUUID getChannelId(String channelName) throws CmsIndexException {
 
         String siteRoot = m_cms.getRequestContext().getSiteRoot();
-        m_cms.setContextToCos();        
+        m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);        
         CmsUUID id = null;
         try {         
-            CmsResource channel = m_cms.readFolder(channelName);
+            CmsResource channel = m_cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);
             id = channel.getResourceId();
         } catch (Exception exc) {
             throw new CmsIndexException("Can't access channel " + channelName, exc);

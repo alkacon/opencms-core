@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlControlFile.java,v $
-* Date   : $Date: 2004/06/15 10:59:44 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2004/06/15 10:59:44 $
+ * @version $Revision: 1.50 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent {
 
@@ -483,13 +483,13 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
         }
                 
         try {
-            cms.readFileHeader(bodyPath, CmsResourceFilter.ALL);
+            cms.readResource(bodyPath, CmsResourceFilter.ALL);
             validatedBodyPath = bodyPath;
         } catch (CmsException e) {
             if (e.getType()==CmsException.C_NOT_FOUND) {
-                String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParentFolder(cms.readAbsolutePath(page)).substring(1) + page.getName();
+                String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES + CmsResource.getParentFolder(cms.getSitePath(page)).substring(1) + page.getName();
                 try {
-                    cms.readFileHeader(defaultBodyPath, CmsResourceFilter.ALL);
+                    cms.readResource(defaultBodyPath, CmsResourceFilter.ALL);
                     validatedBodyPath = defaultBodyPath;
                     setElementTemplate(CmsXmlTemplate.C_BODY_ELEMENT, validatedBodyPath);
                 } catch (CmsException e1) {

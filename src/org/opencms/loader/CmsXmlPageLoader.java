@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2004/06/21 11:45:12 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.3
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {   
@@ -87,7 +87,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     throws CmsException, IOException {
         
         // get the absolute path of the resource
-        String absolutePath = cms.readAbsolutePath(resource);
+        String absolutePath = cms.getSitePath(resource);
         
         // get the requested page
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);
@@ -194,7 +194,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
     throws IOException, CmsException {
         
         // get the absolute path of the resource
-        String absolutePath = cms.readAbsolutePath(resource);
+        String absolutePath = cms.getSitePath(resource);
         
         // get the requested page
         CmsXmlPage page = (CmsXmlPage)req.getAttribute(absolutePath);

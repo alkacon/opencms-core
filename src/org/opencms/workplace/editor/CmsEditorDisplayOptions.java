@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/28 07:51:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace.editor;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 
 import java.io.ByteArrayInputStream;
@@ -46,7 +47,7 @@ import java.util.Properties;
  * /system/workplace/jsp/editors/edit_options.properties.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1.14
  */
@@ -91,7 +92,7 @@ public class CmsEditorDisplayOptions {
         m_displayOptions = new Properties();
         synchronized (m_displayOptions) {
             try {
-                CmsFile optionFile = cms.readFile(C_PROPERTY_FILE);
+                CmsFile optionFile = cms.readFile(C_PROPERTY_FILE, CmsResourceFilter.IGNORE_EXPIRATION);
                 InputStream in = new ByteArrayInputStream(optionFile.getContents());
                 m_displayOptions.load(in);
                 

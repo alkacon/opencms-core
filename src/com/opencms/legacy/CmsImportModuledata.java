@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/06/18 10:46:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/18 10:46:13 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/28 07:44:02 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -114,7 +114,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             //importAllResources(null, null, null, null, null);
             // now find the correct import implementation    
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.setContextToCos();     
+            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);     
             Iterator i = m_importImplementations.iterator();
                 while (i.hasNext()) {
                     I_CmsImport imp = (I_CmsImport)i.next();

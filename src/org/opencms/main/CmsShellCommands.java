@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/06/25 16:34:41 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.main;
 
-import org.opencms.db.I_CmsDriver;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -56,7 +55,6 @@ import java.io.FileInputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -69,7 +67,7 @@ import java.util.Vector;
  * require complex data type parameters are provided.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  */
 class CmsShellCommands implements I_CmsShellCommands {
 
@@ -156,7 +154,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             target += "/";
         }
         String resolvedTarget = CmsLinkManager.getAbsoluteUri(target, folder);
-        CmsResource res = m_cms.readFileHeader(resolvedTarget);
+        CmsResource res = m_cms.readResource(resolvedTarget);
         if (! res.isFolder()) {
             throw new Exception("Not a folder: " + resolvedTarget);
         }
@@ -411,16 +409,6 @@ class CmsShellCommands implements I_CmsShellCommands {
             System.out.println(p.getName() + ": " + acList.getPermissions(p).getPermissionString());
         }
     }
-    
-    /**
-     * Displays further information about a driver class.<p>
-     * 
-     * @param driverName the driver class name to display more information for
-     */
-    public void getDriverInfo(String driverName) {
-        Map drivers = m_cms.getDrivers();
-        System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
-    }    
 
     /**
      * Provides help information for the CmsShell.<p>
@@ -587,7 +575,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
-            System.out.println(m_cms.readAbsolutePath(r));
+            System.out.println(m_cms.getSitePath(r));
         }
         System.out.println();
     }
@@ -653,7 +641,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 int index = random.nextInt(resourceCount);
                 CmsResource resource = (CmsResource)testResources.get(index);
                 start = System.currentTimeMillis();               
-                m_cms.readFileHeader(m_cms.readAbsolutePath(resource), CmsResourceFilter.ALL);
+                m_cms.readResource(m_cms.getSitePath(resource), CmsResourceFilter.ALL);
                 time = System.currentTimeMillis() - start;
                 totalTime += time;
                 if (time < minTime) {
@@ -773,7 +761,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public String readFileContent(String filename) throws CmsException {
         filename = CmsLinkManager.getAbsoluteUri(filename, CmsResource.getFolderPath(m_cms.getRequestContext().getUri()));
-        CmsFile file = m_cms.readFile(filename);
+        CmsFile file = m_cms.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         return new String(file.getContents());
     }
 

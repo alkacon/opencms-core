@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.43 $ $Date: 2004/06/21 09:53:52 $
+ * @version $Revision: 1.44 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -79,7 +79,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
         // test whether the download folder exists at all
         try {
-            cms.readFileHeader(getConfigFile(cms).getDownGalleryPath());
+            cms.readResource(getConfigFile(cms).getDownGalleryPath());
         }
         catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
@@ -109,7 +109,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                 if(galleries.size() > 0) {
 
                     // take the first gallery
-                    folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
+                    folder = cms.getSitePath((CmsResource)galleries.get(0));
                     session.putValue(C_PARA_FOLDER, folder);
                 }
                 else {
@@ -129,7 +129,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                     if (deleteResource != null && !"".equals(deleteResource)) {
                         try {
                             // lock and delete the resource
-                            CmsResource res = cms.readFileHeader(deleteResource);
+                            CmsResource res = cms.readResource(deleteResource);
                             if (cms.getLock(res).isNullLock()) {
                                 cms.lockResource(deleteResource);
                             }
@@ -196,11 +196,11 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
         String servletPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-        String downloadPath = servletPath + cms.readAbsolutePath(res);
+        String downloadPath = servletPath + cms.getSitePath(res);
         filelistTemplate.setData("fullpath", downloadPath);
         filelistTemplate.setData("name_value", res.getName());
-        filelistTemplate.setData("filepath", cms.readAbsolutePath(res));
-        if ((cms.getPermissions(cms.readAbsolutePath(res)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
+        filelistTemplate.setData("filepath", cms.getSitePath(res));
+        if ((cms.getPermissions(cms.getSitePath(res)).getPermissions() & I_CmsConstants.C_ACCESS_WRITE) > 0  ) {
             filelistTemplate.setData("delete", filelistTemplate.getProcessedDataValue("deleteentry", this));
         } else {
             filelistTemplate.setData("delete", "&nbsp;");
@@ -208,7 +208,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
         String title = "";
         try {
-            title = cms.readProperty(cms.readAbsolutePath(res), C_PROPERTY_TITLE);
+            title = cms.readProperty(cms.getSitePath(res), C_PROPERTY_TITLE);
         }
         catch(CmsException e) {
 
@@ -256,7 +256,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             if(galleries.size() > 0) {
 
                 // take the first gallery if none was chosen
-                folder = cms.readAbsolutePath((CmsResource)galleries.get(0));
+                folder = cms.getSitePath((CmsResource)galleries.get(0));
             }
             session.putValue(C_PARA_FOLDER, folder);
         }
@@ -291,7 +291,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             CmsFile file = (CmsFile)allFiles.get(i);
             if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
                 String filename = file.getName();
-                String title = cms.readProperty(cms.readAbsolutePath(file), C_PROPERTY_TITLE);
+                String title = cms.readProperty(cms.getSitePath(file), C_PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);
                 boolean titleFilter = ((title == null) || ("".equals(title))) ? false : inFilter(title, filter);
                 if (filenameFilter || titleFilter) {

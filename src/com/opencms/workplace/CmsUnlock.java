@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2004/06/25 16:32:34 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.56 $ $Date: 2004/06/25 16:32:34 $
+ * @version $Revision: 1.57 $ $Date: 2004/06/28 07:44:02 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault {
@@ -115,7 +115,7 @@ public class CmsUnlock extends CmsWorkplaceDefault {
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
         filename = (String)session.getValue(C_PARA_RESOURCE);
-        CmsResource file = cms.readFileHeader(filename);
+        CmsResource file = cms.readResource(filename);
 
         // select the template to be displayed
         if(file.isFile()) {

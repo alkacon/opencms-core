@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2004/06/25 16:35:00 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1.12
  */
@@ -259,7 +259,7 @@ public class CmsPublishProject extends CmsReport {
                     
                     if ("true".equalsIgnoreCase(getParamDirectpublish())) {
                         // get the offline resource in direct publish mode
-                        publishResource = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+                        publishResource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                         // check if the resource is locked in direct publish mode                     
                         org.opencms.lock.CmsLock lock = getCms().getLock(publishResource);
                         if (!lock.isNullLock()) {
@@ -388,7 +388,7 @@ public class CmsPublishProject extends CmsReport {
      */
     private void computePublishResource() {
         try {
-            CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             setParamResourcename(res.getName());
             setParamModifieddate(CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), CmsMessages.SHORT, getLocale()));
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
@@ -406,7 +406,7 @@ public class CmsPublishProject extends CmsReport {
         try {
             if ("true".equals(getParamDirectpublish())) {
                 // direct publish: check sub resources of a folder
-                CmsResource res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
                 if (res.getState() != I_CmsConstants.C_STATE_DELETED && res.isFolder()) {
                     return (getCms().countLockedResources(getParamResource()) > 0);
                 }               
@@ -469,7 +469,7 @@ public class CmsPublishProject extends CmsReport {
     public String buildCheckSiblings() {
         CmsResource res = null;
         try {
-            res = getCms().readFileHeader(getParamResource(), CmsResourceFilter.ALL);
+            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
         } catch (CmsException e) {
             // res will be null
         }

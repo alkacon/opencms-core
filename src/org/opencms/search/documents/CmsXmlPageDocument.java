@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsXmlPageDocument.java,v $
- * Date   : $Date: 2004/06/10 19:36:08 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2004/06/10 19:36:08 $
+ * @version $Revision: 1.10 $ $Date: 2004/06/28 07:47:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsXmlPageDocument extends CmsVfsDocument {
@@ -79,7 +79,7 @@ public class CmsXmlPageDocument extends CmsVfsDocument {
         
         try {
             CmsFile file = CmsFile.upgrade(resource, m_cms);
-            String absolutePath = m_cms.readAbsolutePath(file);
+            String absolutePath = m_cms.getSitePath(file);
             CmsXmlPage page = CmsXmlPage.unmarshal(m_cms, file);
             
             List pageLocales = page.getLocales();

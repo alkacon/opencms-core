@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/21 11:45:12 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -352,7 +352,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
         // read "stream" property from requested VFS resource                                     
         String streamProperty = cms.readPropertyObject(
-            cms.readAbsolutePath(file),
+            cms.getSitePath(file),
             I_CmsResourceLoader.C_LOADER_STREAMPROPERTY,
             false).getValue();
         if (streamProperty != null) {
@@ -369,7 +369,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         if (bypass) {
             // bypass Flex cache for this page        
             if (DEBUG > 1) {
-                System.err.println("JspLoader.load() bypassing cache for file " + cms.readAbsolutePath(file));
+                System.err.println("JspLoader.load() bypassing cache for file " + cms.getSitePath(file));
             }
             // update the JSP first if neccessary            
             String target = updateJsp(file, controller, new HashSet());
@@ -403,7 +403,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         // important: Indicate that all output must be buffered
         controller.getCurrentResponse().setOnlyBuffering(true);
         // dispatch to external file
-        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.readAbsolutePath(resource), target).include(
+        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
             req,
             res);
     }
@@ -423,7 +423,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         CmsFlexResponse f_res = controller.getCurrentResponse();
 
         try {
-            f_req.getRequestDispatcher(controller.getCmsObject().readAbsolutePath(controller.getCmsResource()))
+            f_req.getRequestDispatcher(controller.getCmsObject().getSitePath(controller.getCmsResource()))
                 .include(f_req, f_res);
         } catch (SocketException e) {
             // uncritical, might happen if client (browser) does not wait until end of page delivery
@@ -918,7 +918,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             // all JSP must be exported with full "root path" site root information
             cms.getRequestContext().setSiteRoot("");
             
-            String jspVfsName = cms.readAbsolutePath(resource);
+            String jspVfsName = cms.getSitePath(resource);
             String extension;
             boolean isHardInclude;
             if ((resource.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) 
@@ -1004,7 +1004,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                             "Updated JSP file \""
                                 + jspTargetName
                                 + "\" for resource \""
-                                + cms.readAbsolutePath(resource)
+                                + cms.getSitePath(resource)
                                 + "\"");
                     }
                 } catch (FileNotFoundException e) {
@@ -1042,7 +1042,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         String jspRfsName = null;
         try {
             // make sure the jsp referenced file is generated
-            CmsResource includeResource = controller.getCmsObject().readFileHeader(jspVfsName);
+            CmsResource includeResource = controller.getCmsObject().readResource(jspVfsName);
             jspRfsName = updateJsp(includeResource, controller, includes);
             if (OpenCms.getLog(this).isDebugEnabled()) {
                 OpenCms.getLog(this).debug("JspLoader: Name of JSP in real FS is '" + jspRfsName + "'");

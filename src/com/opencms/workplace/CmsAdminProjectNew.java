@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2004/06/18 14:17:54 $
-* Version: $Revision: 1.95 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.96 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.95 $ $Date: 2004/06/18 14:17:54 $
+ * @version $Revision: 1.96 $ $Date: 2004/06/28 07:44:02 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -193,7 +193,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         if (fileToGo == null){
             fileToGo = (String)session.getValue("newProjectCallingFrom");
         } else {
-            CmsResource resource = cms.readFileHeader(fileToGo);
+            CmsResource resource = cms.readResource(fileToGo);
             if (resource.isFolder() && !resource.getRootPath().endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
                 fileToGo += I_CmsConstants.C_FOLDER_SEPARATOR;
             }
@@ -357,7 +357,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                     }
                     //now copy the channels to the project
                     cms.getRequestContext().saveSiteRoot();
-                    cms.setContextToCos();
+                    cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_COS);
                     for(int j = 0; j < channels.size(); j++){
                         cms.copyResourceToProject((String)channels.elementAt(j));
                     }

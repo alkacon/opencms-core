@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsPdfDocument.java,v $
- * Date   : $Date: 2004/02/17 12:10:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/28 07:47:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.search.CmsIndexResource;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -55,7 +56,7 @@ import org.pdfbox.util.PDFTextStripper;
  * Lucene document factory class to extract index data from a cms resource 
  * containing Adobe pdf data.<p>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:10:52 $
+ * @version $Revision: 1.5 $ $Date: 2004/06/28 07:47:32 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsPdfDocument extends CmsVfsDocument {
@@ -82,7 +83,7 @@ public class CmsPdfDocument extends CmsVfsDocument {
         String rawContent = null;
         
         try {
-            CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
+            CmsFile file = m_cms.readFile(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.IGNORE_EXPIRATION);
             if (!(file.getLength() > 0)) {
                 throw new CmsIndexException("Resource " + resource.getRootPath() + " has no content.");
             }

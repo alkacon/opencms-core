@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2004/06/21 09:53:52 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2004/06/28 07:44:02 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -120,7 +120,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
             CmsFile resourceTyp = (CmsFile)resTypes.get(i);
             try {
                 int resId = resourceTyp.getTypeId();
-                jsOutput.append(getResourceEntry(lang, new String(cms.readFile(cms.readAbsolutePath(resourceTyp)).getContents()), resId));
+                jsOutput.append(getResourceEntry(lang, new String(cms.readFile(cms.getSitePath(resourceTyp)).getContents()), resId));
             }
             catch(CmsException e) {
 

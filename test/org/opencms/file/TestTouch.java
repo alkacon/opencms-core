@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/28 07:52:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -148,7 +148,7 @@ public class TestTouch extends OpenCmsTestCase {
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+            String resName = cms.getSitePath(res);
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
         }                   
@@ -188,7 +188,7 @@ public class TestTouch extends OpenCmsTestCase {
         Iterator i = subresources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
-            String resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+            String resName = cms.getSitePath(res);
             // now evaluate the result
             tc.assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_TOUCH);
             // project must be current project
