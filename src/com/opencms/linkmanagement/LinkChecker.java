@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2002/12/06 23:16:58 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2002/12/12 18:44:20 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -118,7 +118,7 @@ public class LinkChecker{
             // lets check only the online project
             Vector result = cms.getOnlineBrokenLinks();
             for(int i=0; i<result.size(); i++){
-                report.addPageLinks((CmsPageLinks)result.elementAt(i));
+                report.println((CmsPageLinks)result.elementAt(i));
             }
         }else{
             // we are in a project. First get the changed, new ,deleted resources
