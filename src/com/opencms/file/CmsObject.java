@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2001/08/03 09:37:29 $
-* Version: $Revision: 1.184 $
+* Date   : $Date: 2001/08/06 07:18:50 $
+* Version: $Revision: 1.185 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.184 $ $Date: 2001/08/03 09:37:29 $
+ * @version $Revision: 1.185 $ $Date: 2001/08/06 07:18:50 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -2317,6 +2317,14 @@ public void publishResource(String resourcename) throws CmsException {
     }
     if(res.isLocked()){
         throw new CmsException("[CmsObject] cannot publish locked resource", CmsException.C_NO_ACCESS);
+    }
+    if(res.getState() == C_STATE_NEW){
+        try{
+            CmsFolder parent = m_rb.readFolder(m_context.currentUser(), readProject(I_CmsConstants.C_PROJECT_ONLINE_ID),
+                                            res.getParent());
+        } catch (CmsException ex){
+            throw new CmsException("[CmsObject] cannot read parent folder in online project", CmsException.C_NOT_FOUND);
+        }
     }
     if(oldProjectId != C_PROJECT_ONLINE_ID){
         // check access to project
