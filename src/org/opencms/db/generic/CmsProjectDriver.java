@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/03/19 13:51:08 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2004/03/22 16:29:00 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.153 $ $Date: 2004/03/19 13:51:08 $
+ * @version $Revision: 1.154 $ $Date: 2004/03/22 16:29:00 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -478,7 +478,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         // add the export user (if it is not set to guest or admin)
         if (!OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserAdmin()) 
                 && !OpenCms.getDefaultUsers().getUserExport().equals(OpenCms.getDefaultUsers().getUserGuest())) {
-        	String exportUser = OpenCms.getDefaultUsers().getUserExport();
+            String exportUser = OpenCms.getDefaultUsers().getUserExport();
             CmsUser export = m_driverManager.getUserDriver().importUser(CmsUUID.getConstantUUID(exportUser), exportUser, m_driverManager.getUserDriver().encryptPassword((new CmsUUID()).toString()), m_driverManager.getUserDriver().encryptPassword(""), "The static export user", " ", " ", " ", 0, 0, I_CmsConstants.C_FLAG_ENABLED, new Hashtable(), guests, " ", " ", I_CmsConstants.C_USER_TYPE_SYSTEMUSER, null);
             m_driverManager.getUserDriver().createUserInGroup(export.getId(), guests.getId(), null);
         }
