@@ -60,6 +60,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		CmsProject project = cms.readProject(site.getOnlineProjectId());
 		String projectmanager = cms.readManagerGroup(project).getName();
 		String projectworker = cms.readGroup(project).getName();
+
+		String fallBackSite = "";
+		if (project.getParentId()!=-1) fallBackSite = cms.getSite(project.getParentId()).getName();
 		//Cannot delete the root site
 		if (project.getParentId() == -1)
 		{
@@ -76,6 +79,7 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		xmlTemplateDocument.setData("domain", domain);
 		xmlTemplateDocument.setData("projectmanager", projectmanager);
 		xmlTemplateDocument.setData("projectworker", projectworker);
+		xmlTemplateDocument.setData("fallbacksite", fallBackSite);
 	}
 	String site_id = (String) parameters.get("site_id");
 	if (site_id != null)

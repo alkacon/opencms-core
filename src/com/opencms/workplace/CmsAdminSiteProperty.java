@@ -54,6 +54,9 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		String projectmanager = cms.readManagerGroup(project).getName();
 		String projectworker = cms.readGroup(project).getName();
 
+		String fallBackSite = "";
+		if (project.getParentId()!=-1) fallBackSite = cms.getSite(project.getParentId()).getName();
+
 		xmlTemplateDocument.setData("name", name);
 		xmlTemplateDocument.setData("domainname", domainname);
 		xmlTemplateDocument.setData("description", description);
@@ -62,7 +65,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 		xmlTemplateDocument.setData("domain", domain);
 		xmlTemplateDocument.setData("projectmanager", projectmanager);
 		xmlTemplateDocument.setData("projectworker", projectworker);
-		
+		xmlTemplateDocument.setData("fallbacksite", fallBackSite);
+	
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
 /**
