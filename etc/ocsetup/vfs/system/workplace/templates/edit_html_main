@@ -90,6 +90,7 @@
 				height="100%"
 				VIEWASTEXT>
 				<param name=Scrollbars value=true>
+				<param name=ShowBorders value=true>				
 			</OBJECT>
 			<!-- DEInsertTableParam Object -->
 			<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
