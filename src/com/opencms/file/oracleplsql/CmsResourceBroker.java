@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/10/18 07:06:33 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/12/20 13:14:34 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.33 $ $Date: 2001/10/18 07:06:33 $
+ * @version $Revision: 1.34 $ $Date: 2001/12/20 13:14:34 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -165,6 +165,7 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
             dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
             // inform about the file-system-change
             fileSystemChanged(false);
+            m_subresCache.clear();
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + source,
                 CmsException.C_NO_ACCESS);
@@ -324,7 +325,6 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
                                     cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
 
-            m_resourceCache.remove(resourceName);
         } else {
             cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
                                     cmsResource.getFileId(), resourceName, cmsResource.getType(),
@@ -335,8 +335,8 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
                                     cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
 
-            m_resourceCache.remove(resourceName);
         }
+        m_resourceCache.remove(resourceName);
     }
     m_subresCache.clear();
 }
@@ -384,8 +384,6 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
                                     cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
                                     cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
-
-            m_resourceCache.remove(resourceName);
         } else {
             cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
                                     cmsResource.getFileId(), resourceName, cmsResource.getType(),
@@ -395,11 +393,9 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
                                     cmsResource.getLauncherClassname(), cmsResource.getDateCreated(),
                                     cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
-
-            m_resourceCache.remove(resourceName);
         }
+        m_resourceCache.remove(resourceName);
     }
-
     m_subresCache.clear();
 }
 /**
