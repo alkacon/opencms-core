@@ -5021,11 +5021,6 @@
             <access>383</access>
             <properties>
                 <property>
-                    <name>visiblemethod</name>
-                    <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isProjectManager]]></value>
-                </property>
-                <property>
                     <name>NavText</name>
                     <type>0</type>
                     <value><![CDATA[icon.project]]></value>
@@ -5190,6 +5185,11 @@
             <group>Administrators</group>
             <access>383</access>
             <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isProjectManager]]></value>
+                </property>
                 <property>
                     <name>NavText</name>
                     <type>0</type>
