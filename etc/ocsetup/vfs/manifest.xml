@@ -2264,7 +2264,7 @@
                 <property>
                     <name>visiblemethod</name>
                     <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsAdminProperties.isAdmin]]></value>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isAdmin]]></value>
                 </property>
                 <property>
                     <name>NavText</name>
