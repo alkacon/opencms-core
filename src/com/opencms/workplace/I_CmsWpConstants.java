@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/16 19:20:59 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.64 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,12 +34,15 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.63 $ $Date: 2000/03/16 19:20:59 $
+ * @version $Revision: 1.64 $ $Date: 2000/03/16 19:26:44 $
  */
 public interface I_CmsWpConstants {
 
 	/** Parameter for creating projects: copy content to project */
 	public static final String C_CONTENTPATH = "/content/";
+
+    /** Parameter for the default language */
+	public static final String C_DEFAULT_LANGUAGE = "de";
     
     /** Parameter for content templates folder */
 	public static final String C_CONTENTTEMPLATEPATH = C_CONTENTPATH+"templates/";

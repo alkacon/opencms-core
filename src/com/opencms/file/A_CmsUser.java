@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsUser.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/16 19:26:44 $
  */
 public abstract class A_CmsUser {
 	
@@ -97,14 +97,14 @@ public abstract class A_CmsUser {
      * 
      * @return Default Group of the user
      */
-    public abstract A_CmsGroup getDefaultGroup();
+    abstract public  A_CmsGroup getDefaultGroup();
     
     /**
      * Sets the default group object of this user.
      * 
      * @param defaultGroup The default group of this user.
      */
-    abstract void setDefaultGroup(A_CmsGroup defaultGroup);
+    abstract public void setDefaultGroup(A_CmsGroup defaultGroup);
     
           
 	/**

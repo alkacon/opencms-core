@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
- * Date   : $Date: 2000/03/16 10:04:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,8 +41,10 @@ import java.util.*;
  * Template class for displaying the preference panels screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
+ * TODO: use predefined constants in this class.
+ * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/03/16 10:04:44 $
+ * @version $Revision: 1.5 $ $Date: 2000/03/16 19:26:44 $
  */
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -140,13 +142,15 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             if (panel!= null) {
                 // the active panel are the explorer settings, save its data
                 if (panel.equals("explorer")) {
-                    int explorerSettings=getExplorerSettings(parameters);  
+                    int explorerSettings=getExplorerSettings(parameters);
+                  
                     session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());        
                 }
                 // the active panel are the task settings, save its data
                 if (panel.equals("task")) {
                     Hashtable taskSettings=getTaskSettings(parameters,session);
                     if (taskSettings != null) {
+                      
                         session.putValue("TASKSETTINGS",taskSettings);
                     }
                 }
@@ -154,13 +158,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 if (panel.equals("user")) {
                     String userSettings=getUserSettings(parameters);
                     if (userSettings != null) {
+                       
                         session.putValue("USERSETTINGS",userSettings);
                     }
                 }
                 
                 // the active panel are the starup settings, save its data
                 if (panel.equals("start")) {
-                    Hashtable startSettings=getStartSettings(parameters);
+                    Hashtable startSettings=getStartSettings(cms,parameters);
                     if (startSettings != null) {
                         session.putValue("STARTSETTINGS",startSettings);
                     }
@@ -185,6 +190,8 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             Hashtable startSettings=(Hashtable)session.getValue("STARTSETTINGS");
             if (startSettings != null) {
                 cms.getRequestContext().currentUser().setAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS,startSettings);
+                String defaultGroup=(String)startSettings.get(C_START_DEFAULTGROUP);
+                cms.getRequestContext().currentUser().setDefaultGroup(cms.readGroup(defaultGroup));
             }
             
             // write the user data to the database
@@ -296,11 +303,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 // Task filer is new tasks for the actual user.
                 if (taskSettings== null) {
                     taskSettings=new Hashtable();
+                    
                     taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
+           
                     taskSettings.put(C_TASK_MESSAGES,new Integer(C_TASK_MESSAGES_ACCEPTED+
                                                                  C_TASK_MESSAGES_FORWARDED+
                                                                  C_TASK_MESSAGES_COMPLETED+
                                                                  C_TASK_MESSAGES_MEMBERS));
+                 
                     taskSettings.put(C_TASK_FILTER,new String("a1"));  
                  }
                 
@@ -347,25 +357,19 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 if (startSettings== null) {
                    startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
                 }                 
-                  
-                 Hashtable blub=cms.getRequestContext().currentUser().getAdditionalInfo();
-                 Enumeration sdkeys=blub.keys();
-                while (sdkeys.hasMoreElements()) {
-                   String sdkey=(String)sdkeys.nextElement();
-                   System.err.println(sdkey+" : "+ blub.get(sdkey));
-                }
-                     
+                                   
                 // if the settings are still empty, set them to default
                 if (startSettings== null) {
                     startSettings=new Hashtable();
-                    startSettings.put(C_START_LANGUAGE,"de");
+                 
+                    startSettings.put(C_START_LANGUAGE,C_DEFAULT_LANGUAGE);
                     startSettings.put(C_START_PROJECT,reqCont.currentProject().getName()); 
                     String currentView = (String)session.getValue(C_PARA_VIEW);
                     if (currentView == null) {
                         currentView="explorer.html";
-                    }
-                    startSettings.put(C_START_VIEW,currentView);
-                    startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());
+                    }        
+                    startSettings.put(C_START_VIEW,currentView);           
+                    startSettings.put(C_START_DEFAULTGROUP,reqCont.currentGroup().getName());            
                     startSettings.put(C_START_ACCESSFLAGS,new Integer(C_ACCESS_DEFAULT_FLAGS));
                 }
                 
@@ -440,12 +444,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     // the previous panel was the explorer panel, save all the data form there
                     if (oldPanel.equals("explorer")) {
                         int explorerSettings=getExplorerSettings(parameters);  
+                    
                         session.putValue("EXPLORERSETTINGS",new Integer(explorerSettings).toString());
                     }
                     // the previous panel was the task panel, save all the data form there
                     if (oldPanel.equals("task")) {
                         Hashtable taskSettings=getTaskSettings(parameters,session);
                         if (taskSettings != null) {
+                    
                             session.putValue("TASKSETTINGS",taskSettings);    
                         }
                     }
@@ -453,17 +459,19 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                     if (oldPanel.equals("user")) {  
                         String userSettings=getUserSettings(parameters);
                         if (userSettings != null) {
+                  
                             session.putValue("USERSETTINGS",userSettings);
                         }
                     }
                     // the previous panel was the start panel, save all the data form there
                     if (oldPanel.equals("start")) {  
-                         Hashtable startSettings=getStartSettings(parameters);
+                         Hashtable startSettings=getStartSettings(cms,parameters);
                          if (startSettings != null) {
                             session.putValue("STARTSETTINGS",startSettings);
                         }
                     }
                 }
+
             session.putValue(C_PARA_OLDPANEL,panel);
         }
         
@@ -537,10 +545,13 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         Hashtable taskSettings=new Hashtable();
                
         if (parameters.get("CBALL")!= null) {
+         
             taskSettings.put(C_TASK_VIEW_ALL,new Boolean(true));            
         } else {
+    
             taskSettings.put(C_TASK_VIEW_ALL,new Boolean(false));
         }
+        
         session.putValue(C_SESSION_TASK_ALLPROJECTS,taskSettings.get(C_TASK_VIEW_ALL));      
         
         
@@ -561,11 +572,14 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         if (parameters.get("CBMSGMEMBERS")!= null) {
             taskMessages+=C_TASK_MESSAGES_MEMBERS;            
         }
+       
        taskSettings.put(C_TASK_MESSAGES,new Integer(taskMessages));
              
         String filter=(String)parameters.get("filter");
         if (filter != null) {  
+          
             taskSettings.put(C_TASK_FILTER,parameters.get("filter")); 
+     
             session.putValue(C_SESSION_TASK_FILTER,parameters.get("filter"));
         }
 
@@ -578,14 +592,16 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
     * @param parameters Hashtable containing all request parameters
     * @return Hashtable containing the start settings.
     */
-    private Hashtable getStartSettings(Hashtable parameters) {
+    private Hashtable getStartSettings(A_CmsObject cms,Hashtable parameters) 
+        throws CmsException {
+        
            Hashtable startSettings=new Hashtable();
-
+       
            startSettings.put(C_START_LANGUAGE,(String)parameters.get("LANGUAGE"));
            startSettings.put(C_START_PROJECT,(String)parameters.get("project")); 
            startSettings.put(C_START_VIEW,(String)parameters.get("view"));
            startSettings.put(C_START_DEFAULTGROUP,(String)parameters.get("dgroup"));
-           
+           cms.getRequestContext().setCurrentProject((String)parameters.get("project"));
            // get all access flags from the request
            String ur=(String)parameters.get("ur");
            String uw=(String)parameters.get("uw");
@@ -650,7 +666,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 flag+=C_ACCESS_INTERNAL_READ;
             }
            }  
-           
+          
            startSettings.put(C_START_ACCESSFLAGS,new Integer(flag));
        return startSettings;
     }
@@ -873,6 +889,22 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         // get all language files
         Vector allLangFiles = cms.getFilesInFolder(conf.getLanguagePath());
        
+        String langName=null;
+        Hashtable startSettings=null;
+        A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest ().getOriginalRequest()).getSession(false);
+       
+        startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+        // if this fails, get the settings from the user obeject
+        if (startSettings== null) {
+            startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        }
+        if (startSettings != null) {
+            langName = (String)startSettings.get(C_START_LANGUAGE);  
+        } else {        
+            langName = C_DEFAULT_LANGUAGE;
+        }
+        
         int select=0;
         
         // now go through all language files and add their name and reference to the
@@ -882,7 +914,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             CmsXmlLanguageFile langFile=new CmsXmlLanguageFile(cms,file.getAbsolutePath());
             names.addElement(langFile.getDataValue("name"));
             values.addElement(file.getName());
-            if (langFile.equals(lang)) {
+            if (file.getName().equals(langName)) {
                 select=i;
             }
         }     
@@ -916,11 +948,24 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
-        // If there ist a session, let's see if it has a view stored
+        Hashtable startSettings=null;
         String currentView = null;
-        if(session != null) {
+        
+        // try to get an existing value for the default value
+        startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+        // if this fails, get the settings from the user obeject
+        if (startSettings== null) {
+            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        }      
+        if (startSettings != null) {
+            currentView = (String)startSettings.get(C_START_VIEW);
+        }
+        // If there ist a session, let's see if it has a view stored
+        if (currentView == null) {
+            if(session != null) {
             currentView = (String)session.getValue(C_PARA_VIEW);
-        }    
+            }    
+        }
         if (currentView == null) {
             currentView="";
         }
@@ -974,9 +1019,28 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             throws CmsException {
         // Get all project information
         A_CmsRequestContext reqCont = cms.getRequestContext();
-        A_CmsProject currentProject = reqCont.currentProject();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+
+        String currentProject=null;
         Vector allProjects = cms.getAllAccessibleProjects();
+       
+        Hashtable startSettings=null;
+ 
+        startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+        // if this fails, get the settings from the user obeject
+        if (startSettings== null) {
+            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);         
+        }
         
+        if (startSettings != null) {
+          currentProject = (String)startSettings.get(C_START_PROJECT);
+        }
+        
+        // no project available in the user info, check out the current session
+        if (currentProject == null) {
+             currentProject = reqCont.currentProject().getName();
+        }  
+              
         // Now loop through all projects and fill the result vectors
         int numProjects = allProjects.size();
         int currentProjectNum = 0;
@@ -985,7 +1049,7 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             String loopProjectName = loopProject.getName();
             values.addElement(loopProjectName);
             names.addElement(loopProjectName);
-            if(loopProject.equals(currentProject)) {
+            if(loopProjectName.equals(currentProject)) {
                 // Fine. The project of this loop is the user's current project. Save it!
                 currentProjectNum = i;
             }
@@ -1016,12 +1080,24 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             throws CmsException {
 
         A_CmsRequestContext reqCont = cms.getRequestContext();
+        HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
+       
         String group=null;
        
         // Get a vector of all of the user's groups by asking the request context
-        A_CmsGroup currentGroup = reqCont.currentGroup();
+        A_CmsGroup currentGroup = reqCont.currentUser().getDefaultGroup();
         Vector allGroups = cms.getGroupsOfUser(reqCont.currentUser().getName());
-         
+                
+        // try to get an existing value for the default value
+        Hashtable startSettings=null;
+        startSettings=(Hashtable)session.getValue("STARTSETTINGS");
+        // if this fails, get the settings from the user obeject
+        if (startSettings== null) {
+            startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        }      
+        if (startSettings != null) {
+            group = (String)startSettings.get(C_START_DEFAULTGROUP);
+        }            
         if (group == null) {
                group=currentGroup.getName();
         }

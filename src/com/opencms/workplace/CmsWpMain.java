@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/02/15 17:51:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,8 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:51:19 $
+ * @author Michael Emmerich
+ * @version $Revision: 1.8 $ $Date: 2000/03/16 19:26:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -198,9 +199,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             throws CmsException {
         // Get all project information
         A_CmsRequestContext reqCont = cms.getRequestContext();
-        A_CmsProject currentProject = reqCont.currentProject();
+        String currentProject = null;
         Vector allProjects = cms.getAllAccessibleProjects();
-        
+         
+        currentProject = reqCont.currentProject().getName();
+               
         // Now loop through all projects and fill the result vectors
         int numProjects = allProjects.size();
         int currentProjectNum = 0;
@@ -209,7 +212,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             String loopProjectName = loopProject.getName();
             values.addElement(loopProjectName);
             names.addElement(loopProjectName);
-            if(loopProject.equals(currentProject)) {
+            if(loopProjectName.equals(currentProject)) {
                 // Fine. The project of this loop is the user's current project. Save it!
                 currentProjectNum = i;
             }
@@ -244,13 +247,26 @@ public class CmsWpMain extends CmsWorkplaceDefault {
         A_CmsRequestContext reqCont = cms.getRequestContext();
         HttpSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
 
-        // If there ist a session, let's see if it has a view stored
+        // try to get an existing view
         String currentView = null;
+        Hashtable startSettings=null;
+        // check out the user infor1ation if a default view is stored there.
+        startSettings=(Hashtable)reqCont.currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        if (startSettings != null) {
+            currentView = (String)startSettings.get(C_START_VIEW);
+        }
+        // If there is a session, let's see if it has a view stored
         if(session != null) {
-            currentView = (String)session.getValue(C_PARA_VIEW);
-        }        
-        
-        // Check if the list of available views is not yet loaded from the workplace.ini
+             if (session.getValue(C_PARA_VIEW) != null) {
+                currentView = (String)session.getValue(C_PARA_VIEW);
+            }    
+        }
+  
+        if (currentView == null) {
+            currentView="";
+        }
+    
+         // Check if the list of available views is not yet loaded from the workplace.ini
         if(m_viewNames == null || m_viewLinks == null) {
             m_viewNames = new Vector();
             m_viewLinks = new Vector();

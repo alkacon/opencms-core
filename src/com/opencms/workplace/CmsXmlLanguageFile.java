@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
- * Date   : $Date: 2000/02/19 14:23:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,14 +32,18 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
 
+import java.util.*;
+
 
 /**
  * Content definition for language files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.6 $ $Date: 2000/02/19 14:23:24 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/16 19:26:44 $
  */
-public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels {
+public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,
+                                                                   I_CmsWpConstants,
+                                                                   I_CmsConstants{
 
     /** Constant for the current language
      * HACK: replace this by the corresponding value from the user object
@@ -95,7 +99,20 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
         CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
         
         String languagePath = configFile.getLanguagePath();
-        String currentLanguage = C_CURRENT_LANGUAGE;
+        
+        // select the right language to use
+        String currentLanguage=null;
+        Hashtable startSettings=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+        // try to read it form the user additional info
+        if (startSettings != null) {
+            currentLanguage = (String)startSettings.get(C_START_LANGUAGE);  
+        }
+        // if no language was found so far, set it to default
+        if (currentLanguage == null) {        
+            currentLanguage = C_DEFAULT_LANGUAGE;
+        }
+     
         
         CmsFile languageFile = null;
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2000/03/09 13:40:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/03/09 13:40:50 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/16 19:26:44 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -164,17 +164,19 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants,
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
        
         String filename=(String)session.getValue(C_PARA_FILE);
-		CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        if (filename != null) {
+		    CmsFile file=(CmsFile)cms.readFileHeader(filename);
 
-		// fill the names and values
-		for(int z = 0; z < groups.size(); z++) {
-			String name = ((A_CmsGroup)groups.elementAt(z)).getName();
-			if(cms.readGroup(file).getName().equals(name)) {
-			    retValue = z;
-		    }
-			names.addElement(name);
-			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
-		}
+		    // fill the names and values
+		    for(int z = 0; z < groups.size(); z++) {
+			    String name = ((A_CmsGroup)groups.elementAt(z)).getName();
+			    if(cms.readGroup(file).getName().equals(name)) {
+   			        retValue = z;
+	    	    }
+		    	names.addElement(name);
+    			values.addElement(((A_CmsGroup)groups.elementAt(z)).getName());
+	    	}
+        }
 		// no current user, set index to -1
         return new Integer(retValue);
     }

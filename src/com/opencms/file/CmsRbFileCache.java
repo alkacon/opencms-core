@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRbFileCache.java,v $
- * Date   : $Date: 2000/02/25 16:55:09 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/25 16:55:09 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/16 19:26:44 $
  */
  class CmsRbFileCache extends CmsRbFile {
      
@@ -132,8 +132,8 @@ import com.opencms.core.*;
                                 CmsFile file,boolean changed)
 		throws CmsException{
         String key=C_FILE+project.getId()+file.getAbsolutePath();
+        m_filecache.remove(key);
         m_accessFile.writeFileHeader(project,onlineProject,file,changed);
-        m_filecache.put(key,file);
         }
     
     	 /**
@@ -164,9 +164,9 @@ import com.opencms.core.*;
                           CmsFile file, boolean changed)
 		throws CmsException{
         String key=C_FILE+project.getId()+file.getAbsolutePath();
+        m_filecache.remove(key);
         m_accessFile.writeFile(project,onlineProject,file,changed);
-        m_filecache.put(key,file);
-    }
+     }
     
     
   /**

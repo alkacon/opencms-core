@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileMySql.java,v $
- * Date   : $Date: 2000/03/01 13:22:30 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.38 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.util.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2000/03/01 13:22:30 $
+ * @version $Revision: 1.38 $ $Date: 2000/03/16 19:26:44 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants, I_CmsLogChannels  {
 
@@ -742,7 +742,7 @@ import com.opencms.util.*;
            try {   
              // update the file header in the RESOURCE database.
              writeFileHeader(project,onlineProject,file,changed);
-             file.setState(C_STATE_CHANGED);
+            // file.setState(C_STATE_CHANGED);
              // update the file content in the FILES database.
              PreparedStatement statementFileUpdate=m_Con.prepareStatement(C_FILE_UPDATE);
              //FILE_CONTENT
@@ -809,7 +809,6 @@ import com.opencms.util.*;
                             se.printStackTrace();
                             }                            
                         }
-                    
                 }             
                 // update resource in the database
                 PreparedStatement statementResourceUpdate=m_Con.prepareStatement(C_RESOURCE_UPDATE);
@@ -824,10 +823,23 @@ import com.opencms.util.*;
                 //ACCESS_FLAGS
                 statementResourceUpdate.setInt(5,file.getAccessFlags());
                 //STATE
-                if (changed==true) {
-                    statementResourceUpdate.setInt(6,C_STATE_CHANGED);
-                } else {
-                    statementResourceUpdate.setInt(6,file.getState());
+                System.err.println("");
+                System.err.println("WRITE FIELE HEADER FOR "+file.getAbsolutePath());
+           
+                int state=file.getState();
+                System.err.println("State :"+state);
+                System.err.println("Forceflag :"+changed);
+                if ((state == C_STATE_NEW) || (state == C_STATE_CHANGED)) {
+                    statementResourceUpdate.setInt(6,state);
+                    System.err.println("The file was new or already changed");
+                } else {                                                                       
+                    if (changed==true) {
+                        statementResourceUpdate.setInt(6,C_STATE_CHANGED);
+                        System.err.println("The file state was forced");
+                    } else {
+                        statementResourceUpdate.setInt(6,file.getState());
+                        System.err.println("The file state was unchanged");
+                    }
                 }
                 //LOCKED_BY
                 statementResourceUpdate.setInt(7,file.isLockedBy());

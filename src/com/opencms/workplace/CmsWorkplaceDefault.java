@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/03/16 19:21:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/03/16 19:26:44 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/03/16 19:21:04 $
+ * @version $Revision: 1.17 $ $Date: 2000/03/16 19:26:44 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -98,11 +98,23 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         //return v;
         String result = reqContext.currentProject().getName() + templateFile;
         Enumeration keys = parameters.keys();
+        
+        // select the right language to use
+        String currentLanguage=null;
+        Hashtable startSettings=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);                    
+ 
+        if (startSettings != null) {
+            currentLanguage = (String)startSettings.get(C_START_LANGUAGE);  
+        } else {        
+            currentLanguage = C_DEFAULT_LANGUAGE;
+        }
+             
         while(keys.hasMoreElements()) {
             String key = (String)keys.nextElement();
             result = result + key + parameters.get(key);            
         }
-        result = result + templateSelector;
+        result = result + templateSelector+currentLanguage;
         return result;        
     }    
     
