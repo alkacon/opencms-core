@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
-* Date   : $Date: 2003/01/09 08:17:06 $
-* Version: $Revision: 1.25.2.2 $
+* Date   : $Date: 2003/03/12 13:29:16 $
+* Version: $Revision: 1.25.2.2.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -430,8 +430,8 @@ function doSubmit()
     if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
         // IE5
         //Gridnine AB Aug 12, 2002
- 	    //document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
- 	    document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
+ 	    document.EDITOR.content.value = encodeURIComponent(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+ 	    //document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML));
      } else {
         // IE4
         document.EDITOR.content.value = encodeURIComponent(document.EDITOR.EDIT_HTML.DocumentHTML);
@@ -807,7 +807,7 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 //Gridnine AB Aug 12, 2002
-/* we don't need this function any more as Cms now supports Unicode
+// we don't need this function any more as Cms now supports Unicode
 function getChars(value) {
     ret = "";
     var num;
@@ -821,7 +821,7 @@ function getChars(value) {
     }
     return ret + "";
 }
-*/
+
 
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
