@@ -15634,7 +15634,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[4]]></value>
+					<value><![CDATA[40]]></value>
 				</property>
 				<property>
 					<name>default-file</name>

@@ -72,8 +72,8 @@
 			<datecreated>Wed, 09 Feb 2005 08:11:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
+			<properties/>
+				<!--property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
 				</property>
@@ -101,7 +101,7 @@
 					<name>Title</name>
 					<value><![CDATA[Link Management]]></value>
 				</property>
-			</properties>
+			</properties-->
 			<accesscontrol/>
 		</file>
 		<file>
@@ -112,8 +112,8 @@
 			<datecreated>Wed, 09 Feb 2005 08:11:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
+			<properties/>
+				<!--property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[onlyoffline:true]]></value>
 				</property>
@@ -149,7 +149,7 @@
 					<name>Title</name>
 					<value><![CDATA[HTML Links]]></value>
 				</property>
-			</properties>
+			</properties-->
 			<accesscontrol/>
 		</file>
 		<file>
