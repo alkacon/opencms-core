@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/web/Attic/CmsXmlOnlineBewerbungSmall.java,v $ 
  * Author : $Author: w.babachan $
- * Date   : $Date: 2000/02/21 14:12:19 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/02/21 14:21:14 $
+ * Version: $Revision: 1.3 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Mindfact interaktive medien ag.   All Rights Reserved.
@@ -42,40 +42,16 @@ import java.io.*;
  * possible to send the application form as a mail.
  * 
  * @author $Author: w.babachan $
- * @version $Name:  $ $Revision: 1.2 $ $Date: 2000/02/21 14:12:19 $
+ * @version $Name:  $ $Revision: 1.3 $ $Date: 2000/02/21 14:21:14 $
  * @see com.opencms.template.CmsXmlTemplate
  */
 public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
-	
-	// static constants
-	private static final String C_PATH="/var/opencms/mail/";
+		
 	// Parameters
 	private static final String C_TEXT="text";
-	private static final String C_FILE1="file1";
-	private static final String C_FILE1_CONTENT="file1.content";
-	private static final String C_OLDPOSITION="oldPosition";
-	private static final String C_NEWPOSITION="newPosition";
-	private static final String C_BASE="base";
-	private static final String C_ENTRY="entry";
-	private static final String C_SALARY="salary";
-	private static final String C_HOW="how";
-	private static final String C_ANREDE="anrede";
-	private static final String C_TITEL="titel";
-	private static final String C_FIRSTNAME="firstname";
 	private static final String C_SURNAME="surname";
-	private static final String C_BIRTHDATE="birthdate";
-	private static final String C_CITIZEN="citizen";
-	private static final String C_FAMILY="family";
 	private static final String C_CO="co";
-	private static final String C_STREET="street";
-	private static final String C_PLZ="plz";
-	private static final String C_CITY="city";
-	private static final String C_COMPANYFON="companyFon";
-	private static final String C_PRIVATEFON="privateFon";
-	private static final String C_MOBILEFON="mobileFon";
-	private static final String C_FAX="fax";
 	private static final String C_EMAIL="email";	
-	private static final String C_URL="url";
 	private static final String C_ERRORNUMBER="errorNumber";
 	private static final String C_ACTION="action";
 	// Error message
@@ -83,12 +59,7 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 	private static final String C_ERR_SURNAME="Nachname";
 	private static final String C_ERR_CO="C/o";
 	private static final String C_ERR_EMAIL="Email";
-	// Datablocks
-	private static final String C_DATA_NEWPOSITION="newPosition";
-	private static final String C_DATA_BASE="base";	
-	private static final String C_DATA_HOW="how";
-	private static final String C_DATA_ANREDE="anrede";	
-	private static final String C_DATA_FAMILY="family";
+	
 	// Hashtable keys for sending a mail
 	private static final String C_HASH_CERTIFICATES="certificates";
 	private static final String C_HASH_FROM="from";
@@ -426,44 +397,6 @@ public class CmsXmlOnlineBewerbungSmall extends CmsXmlTemplate {
 		}
 		
 	}	
-	
-	/**
-	 * This method saves the attachment at the server
-	 * 
-	 */
-	private String saveFile(String certificates,String certificatesContent) {
-		
-		if (!certificates.equals("")) {
-			try {
-				int counter=0;
-				String path=C_PATH;
-				String tmpName=certificates;
-				String filename=certificates;
-			
-				File tmpFile=new File(path,filename);
-				// if the file exists then count the files and build a new filename with the latest countnumber.
-				while (tmpFile.exists()) {
-					if (counter<10) {
-						tmpName=filename.substring(0,filename.lastIndexOf('.'))+"0"+counter+filename.substring(filename.lastIndexOf('.'));
-					} else {
-						tmpName=filename.substring(0,filename.lastIndexOf('.'))+counter+filename.substring(filename.lastIndexOf('.'));
-					}
-					tmpFile=new File(path,tmpName);
-					counter++;
-				}
-				certificates=tmpFile.getName();
-				OutputStream  file=new FileOutputStream(tmpFile);
-				file.write(certificatesContent.getBytes());
-				file.close();
-			
-			} catch (Exception e) {
-				if (A_OpenCms.isLogging()) {
-				   A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL,e.getMessage());
-				}
-			}
-		}
-		return certificates;
-	}
 	
 	
 	/**
