@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/08/27 11:59:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/28 16:05:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.1
  */
@@ -98,7 +98,7 @@ public class CmsTree extends CmsWorkplace {
         StringBuffer retValue = new StringBuffer(512);
         String servletUrl = cms.getRequestContext().getRequest().getServletUrl();
         retValue.append("function initTreeResources() {\n");
-        retValue.append("\tinitResources(\"" + encoding + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
+        retValue.append("\tinitResources(\"" + encoding + "\", \"" + C_PATH_WORKPLACE + "\", \"" + skinUri + "\", \"" + servletUrl + "\");\n");
 
         retValue.append("\taddResourceType(0, \"folder\",\t\"Folder\",\t\"filetypes/folder.gif\");\n");
         retValue.append("\taddResourceType(2, \"link\",\t\"Link\",\t\"filetypes/link.gif\");\n");
