@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/22 09:27:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,14 @@
 
 package org.opencms.db.oracle;
 
-import oracle.jdbc.driver.OracleResultSet;
-
 import com.opencms.core.CmsException;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +49,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.9 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.10 $ $Date: 2003/09/22 09:27:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -62,75 +60,95 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
      * @see org.opencms.db.I_CmsProjectDriver#addSystemProperty(java.lang.String, java.io.Serializable)
      */
     public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
-        byte[] value;
+
         PreparedStatement stmt = null;
-        PreparedStatement stmt2 = null;
-        PreparedStatement nextStmt = null;
+        PreparedStatement commit = null;
+        PreparedStatement rollback = null;
         Connection conn = null;
         ResultSet res = null;
-        try {
-            int id = m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES);
-            // serialize the object
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(object);
-            oout.close();
-            value = bout.toByteArray();
 
+        try {
+            
+            // serialize the object
+            byte[] value = internalSerializeObject(object);
+
+            int id = m_sqlManager.nextId(C_TABLE_SYSTEMPROPERTIES);
+                        
+            conn = m_sqlManager.getConnection();
+            
             // create the object
             // first insert the new systemproperty with empty systemproperty_value, then update
             // the systemproperty_value. These two steps are necessary because of using Oracle BLOB
-            conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_FORINSERT");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_ADD");
             stmt.setInt(1, id);
             stmt.setString(2, name);
-            //statement.setBytes(3,value);
             stmt.executeUpdate();
-            //statement.close();
-            // now update the systemproperty_value
-            stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_FORUPDATE");
-            stmt2.setInt(1, id);
+            stmt.close();
+            stmt = null;
+            
             conn.setAutoCommit(false);
-            // res = stmt2.executeQuery();
-            res = ((DelegatingResultSet)stmt2.executeQuery()).getInnermostDelegate();
-            while (res.next()) {
-                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
-                ByteArrayInputStream instream = new ByteArrayInputStream(value);
-                OutputStream outstream = blob.getBinaryOutputStream();
-                byte[] chunk = new byte[blob.getChunkSize()];
-                int i = -1;
-                while ((i = instream.read(chunk)) != -1) {
-                    outstream.write(chunk, 0, i);
-                }
-                instream.close();
-                outstream.close();
-            }
-            // for the oracle-driver commit or rollback must be executed manually
-            // because setAutoCommit = false
-            nextStmt = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            nextStmt.execute();
-            nextStmt.close();
-            conn.setAutoCommit(true);
+            
+            // now update the systemproperty_value
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE");
+            stmt.setInt(1, id);
+            res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
+            if (!res.next()) 
+                throw new CmsException("createSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
+
+            // write serialized system property 
+            Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");
+            ((oracle.sql.BLOB)propertyValue).trim(0);
+            OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
+            output.write(value);
+            output.close();
+                         
+            commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
+            commit.execute();
+            commit.close();
+            commit = null;
+               
+            stmt.close();
+            stmt = null;
+            res = null;
+                          
+            conn.setAutoCommit(true);            
+
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "createSystemProperty name=" + name, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw m_sqlManager.getCmsException(this, "createSystemProperty name=" + name, CmsException.C_SERIALIZATION, e, false);
         } finally {
-            if (stmt2 != null) {
+            
+            if (res != null) {
                 try {
-                    stmt2.close();
+                    res.close();
+                } catch (SQLException exc) {
+                }                
+            } 
+            if (commit != null) {
+                try {
+                    commit.close();
                 } catch (SQLException exc) {
                 }
+            } 
+            if (stmt != null) {
                 try {
-                    //nextStmt = conn.prepareStatement(m_sqlManager.get("C_ROLLBACK"));
-                    nextStmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery("C_ROLLBACK"));
-                    nextStmt.execute();
-                } catch (SQLException exc) {
-                    // nothing to do here
+                    rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
+                    rollback.execute();
+                    rollback.close();
+                } catch (SQLException se) {
                 }
+                try {
+                    stmt.close();
+                } catch (SQLException exc) {
+                }                
+            }                
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException se) {
+                }                   
             }
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         return readSystemProperty(name);
@@ -147,78 +165,103 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
      * @see org.opencms.db.I_CmsProjectDriver#writeSystemProperty(java.lang.String, java.io.Serializable)
      */
     public Serializable writeSystemProperty(String name, Serializable object) throws CmsException {
+
         PreparedStatement stmt = null;
-        PreparedStatement nextStmt = null;
-        PreparedStatement trimStmt = null;
+        PreparedStatement commit = null;
+        PreparedStatement rollback = null;
         ResultSet res = null;
         Connection conn = null;
-        byte[] value = null;
 
         try {
+            
             // serialize the object
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutputStream oout = new ObjectOutputStream(bout);
-            oout.writeObject(object);
-            oout.close();
-            value = bout.toByteArray();
+            byte[] value = internalSerializeObject(object);
+            
             conn = m_sqlManager.getConnection();
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_NAMEFORUPDATE");
-            stmt.setString(1, name);
             conn.setAutoCommit(false);
-            // res = stmt.executeQuery();
+            
+            // update system property
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_SYSTEMPROPERTIES_UPDATE_BYNAME");
+            stmt.setString(1, name);
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
-            while (res.next()) {
-                oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("SYSTEMPROPERTY_VALUE");
-                // first trim the blob to 0 bytes, otherwise ther could be left some bytes
-                // of the old content
+            if (!res.next()) 
+                throw new CmsException("writeSystemProperty name=" + name + " system property not found", CmsException.C_NOT_FOUND);
 
-                trimStmt = m_sqlManager.getPreparedStatement(conn, "C_TRIMBLOB");
-                trimStmt.setBlob(1, blob);
-                trimStmt.setInt(2, 0);
-                trimStmt.execute();
-                trimStmt.close();
-                ByteArrayInputStream instream = new ByteArrayInputStream(value);
-                OutputStream outstream = blob.getBinaryOutputStream();
-                byte[] chunk = new byte[blob.getChunkSize()];
-                int i = -1;
-                while ((i = instream.read(chunk)) != -1) {
-                    outstream.write(chunk, 0, i);
-                }
-                instream.close();
-                outstream.close();
-            }
+            // write serialized system property 
+            Blob propertyValue = res.getBlob("SYSTEMPROPERTY_VALUE");
+            ((oracle.sql.BLOB)propertyValue).trim(0);
+            OutputStream output = ((oracle.sql.BLOB)propertyValue).getBinaryOutputStream();
+            output.write(value);
+            output.close();
+                         
+            commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
+            commit.execute();
+            commit.close();
+            commit = null;
+               
             stmt.close();
-            res.close();
-            // for the oracle-driver commit or rollback must be executed manually
-            // because setAutoCommit = false in CmsDbPool.CmsDbPool
-            nextStmt = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
-            nextStmt.execute();
-            nextStmt.close();
-            conn.setAutoCommit(true);
+            stmt = null;
+            res = null;
+                          
+            conn.setAutoCommit(true);            
+
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "writeSystemProperty name=" + name, CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, null, CmsException.C_SERIALIZATION, e, false);
+            throw m_sqlManager.getCmsException(this, "writeSystemProperty name=" + name, CmsException.C_SERIALIZATION, e, false);
         } finally {
+
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (SQLException exc) {
+                }                
+            } 
+            if (commit != null) {
+                try {
+                    commit.close();
+                } catch (SQLException exc) {
+                }
+            } 
             if (stmt != null) {
                 try {
-                    stmt.close();
+                    rollback = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
+                    rollback.execute();
+                    rollback.close();
                 } catch (SQLException se) {
-                    // noop
                 }
-
                 try {
-                    nextStmt = m_sqlManager.getPreparedStatement(conn, "C_ROLLBACK");
-                    nextStmt.execute();
+                    stmt.close();
                 } catch (SQLException exc) {
-                    // noop
-                }
+                }                
+            }                
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException se) {
+                }                   
             }
-            m_sqlManager.closeAll(null, nextStmt, null);
-            m_sqlManager.closeAll(conn, trimStmt, res);
         }
 
         return readSystemProperty(name);
     }
 
+    /**
+     * Serialize object data to write it as byte array in the database.<p>
+     * 
+     * @param object the object
+     * @return byte[] the byte array with object data
+     * @throws IOException if something goes wrong
+     */
+    protected final byte[] internalSerializeObject (Serializable object) throws IOException {
+        // this method is final to allow the java compiler to inline this code!
+
+        // serialize the object
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(object);
+        oout.close();
+
+        return bout.toByteArray();
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2003/09/18 16:24:55 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/09/22 09:27:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,16 @@
 
 package org.opencms.db.oracle;
 
-import oracle.jdbc.driver.OracleResultSet;
-
+import java.sql.Blob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
-
-import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
  * Handles SQL queries from query.properties of the Oracle/OCI package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $ $Date: 2003/09/18 16:24:55 $ 
+ * @version $Revision: 1.10 $ $Date: 2003/09/22 09:27:12 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
@@ -98,11 +95,15 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @see org.opencms.db.generic.CmsSqlManager#getBytes(java.sql.ResultSet, java.lang.String)
      */
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
-        OracleResultSet ors = (OracleResultSet)((DelegatingResultSet)res).getInnermostDelegate();
-        oracle.sql.BLOB blob = ors.getBLOB(attributeName);
-        byte[] content = new byte[(int) blob.length()];
-        content = blob.getBytes(1, (int) blob.length());
+        // OracleResultSet ors = (OracleResultSet)((DelegatingResultSet)res).getInnermostDelegate();
+        // oracle.sql.BLOB blob = ors.getBLOB(attributeName);
+        // byte[] content = new byte[(int) blob.length()];
+        // content = blob.getBytes(1, (int) blob.length());
 
+        Blob blob = res.getBlob(attributeName);
+        byte[] content = new byte[(int) blob.length()];
+        content = blob.getBytes(1, (int)blob.length());
+        
         return content;
     }
 

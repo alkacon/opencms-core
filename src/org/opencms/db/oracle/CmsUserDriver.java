@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/09/18 07:19:02 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/22 09:27:12 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import java.util.Hashtable;
 import org.apache.commons.dbcp.DelegatingResultSet;
 
 /**
- * Oracle/OCI implementation of the user driver methods.<p>
+ * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.15 $ $Date: 2003/09/18 07:19:02 $
+ * @version $Revision: 1.16 $ $Date: 2003/09/22 09:27:12 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -101,7 +101,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(id, additionalInfos);
              
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[createUser]:", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "createUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -147,7 +147,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(id, additionalInfos);
                         
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[importUser]:", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "importUser name=" + name + " id=" + id.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -196,7 +196,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             internalWriteUserInfo(user.getId(), user.getAdditionalInfo());
             
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[writeUser]:", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "writeUser name=" + user.getName() + " id=" + user.getId().toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
@@ -216,9 +216,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         PreparedStatement rollback = null;
         ResultSet res = null;
         Connection conn = null;
-        
+                
         try {
 
+            // serialize the user info
+            byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
+            
             // get connection
             conn = m_sqlManager.getConnection();
             conn.setAutoCommit(false);
@@ -228,11 +231,11 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             stmt.setString(1, userId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) 
-                throw new CmsException("[internalWriteUserInfo]: " + "USER_INFO not found.", CmsException.C_NOT_FOUND);
+                throw new CmsException("internalWriteUserInfo id=" + userId.toString() + " user info not found", CmsException.C_NOT_FOUND);
             
             // write serialized user info 
-            byte[] value = internalSerializeAdditionalUserInfo(additionalInfo);
             Blob userInfo = res.getBlob("USER_INFO");
+            ((oracle.sql.BLOB)userInfo).trim(0);
             OutputStream output = ((oracle.sql.BLOB)userInfo).getBinaryOutputStream();
             output.write(value);
             output.close();
@@ -249,9 +252,9 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             conn.setAutoCommit(true);
             
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "[internalWriteUserInfo]:", CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "internalWriteUserInfo id=" + userId.toString(), CmsException.C_SQL_ERROR, e, false);
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "[internalWriteUserInfo]:", CmsException.C_SERIALIZATION, e, false);
+            throw m_sqlManager.getCmsException(this, "internalWriteUserInfo id=" + userId.toString(), CmsException.C_SERIALIZATION, e, false);
         } finally {
 
             if (res != null) {
