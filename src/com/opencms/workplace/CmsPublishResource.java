@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2001/07/17 07:13:59 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2001/07/18 15:07:30 $
+* Version: $Revision: 1.2 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2001/07/17 07:13:59 $
+ * @version $Revision: 1.2 $ $Date: 2001/07/18 15:07:30 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -71,16 +71,11 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         if(initial != null) {
             // remove all session values
             session.removeValue(C_PARA_FILE);
-            session.removeValue("publish");
             session.removeValue("lasturl");
         }
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-        String publish = (String)parameters.get("publish");
-        if(publish != null) {
-            session.putValue("publish", publish);
-        }
-        publish = (String)session.getValue("publish");
+
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
             session.putValue(C_PARA_FILE, filename);
@@ -94,10 +89,32 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         } else {
             file = (CmsResource)cms.readFileHeader(filename);
         }
-        //check if the name parameter was included in the request
-        // if not, the publishresource page is shown for the first time
-        if(publish != null){
-            if(action != null) {
+
+        if(action!= null){
+            if ("check".equals(action)){
+                if(checkLocked(cms, file)){
+                    action = "wait";
+                } else {
+                    // ask user if the locks should be removed
+                    return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"asklock");
+                }
+            } else if("rmlocks".equals(action)){
+                // remove the locks and publish
+                try{
+                    unlockResource(cms, file);
+                    action = "wait";
+                } catch (CmsException exc){
+                    xmlTemplateDocument.setData("details", Utils.getStackTrace(exc));
+                    return startProcessing(cms, xmlTemplateDocument, elementName, parameters,"errorlock");
+                }
+
+            //check if the name parameter was included in the request
+            // if not, the publishresource page is shown for the first time
+            }
+            if((action != null) && "wait".equals(action)) {
+                return startProcessing(cms, xmlTemplateDocument, "", parameters, "wait");
+            }
+            if((action != null) && "ok".equals(action)) {
                 // publish the resource
                 try{
                     cms.publishResource(file.getAbsolutePath());
@@ -108,10 +125,9 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }
-            } else {
-                template = "wait";
             }
         }
+
         // set the required datablocks
         if(action == null) {
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
@@ -119,9 +135,71 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
             xmlTemplateDocument.setData("USER", cms.readUser(file.getResourceLastModifiedBy()).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());
         }
-
         // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
+    }
+
+    /**
+     * check if there are any locked resources in the folder
+     *
+     * @param cms The CmsObject for accessing system resources
+     * @param resource The resource to check
+     */
+    private boolean checkLocked(CmsObject cms, CmsResource resource) throws CmsException{
+        // do not need to check a file
+        if(resource.isFile()){
+            return true;
+        }
+        // check if the folder itself is locked
+        if(resource.isLocked()){
+            return false;
+        }
+        Vector allFiles = cms.getFilesInFolder(resource.getAbsolutePath());
+        Vector allFolders = cms.getSubFolders(resource.getAbsolutePath());
+        // first check if any file in the folder is locked
+        for(int i=0; i<allFiles.size(); i++){
+            CmsResource curFile = (CmsResource)allFiles.elementAt(i);
+            if(curFile.isLocked()){
+                return false;
+            }
+        }
+        // now check all subfolders
+        for(int j=0; j<allFolders.size(); j++){
+            CmsResource curFolder = (CmsResource)allFolders.elementAt(j);
+            if(!checkLocked(cms, curFolder)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Unlocks all resources in the folder
+     *
+     * @param cms The CmsObject for accessing system resources
+     * @param resource The resource to unlock
+     */
+    private void unlockResource(CmsObject cms, CmsResource resource) throws CmsException{
+        // if the folder itself is locked, all subresources are unlocked by unlocking the folder
+        if(resource.isLocked()){
+            cms.unlockResource(resource.getAbsolutePath());
+        } else {
+            // need to unlock each resource
+            Vector allFiles = cms.getFilesInFolder(resource.getAbsolutePath());
+            Vector allFolders = cms.getSubFolders(resource.getAbsolutePath());
+            // unlock the files
+            for(int i=0; i<allFiles.size(); i++){
+                CmsResource curFile = (CmsResource)allFiles.elementAt(i);
+                if(curFile.isLocked()){
+                    cms.unlockResource(curFile.getAbsolutePath());
+                }
+            }
+            // unlock the folders
+            for(int j=0; j<allFolders.size(); j++){
+                CmsResource curFolder = (CmsResource)allFolders.elementAt(j);
+                unlockResource(cms, curFolder);
+            }
+        }
     }
 
     /**
