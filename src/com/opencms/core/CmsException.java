@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2000/11/17 10:19:12 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/11/17 15:17:45 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This exception is thrown for security reasons in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.34 $ $Date: 2000/11/17 10:19:12 $
+ * @version $Revision: 1.35 $ $Date: 2000/11/17 15:17:45 $
  */
 public class CmsException extends Exception {
 	
@@ -227,7 +227,12 @@ public class CmsException extends Exception {
 	 * Definition of error code for Registry exception
 	 */
 	public final static int C_REGISTRY_ERROR = 34;
-	
+
+	/**
+	 * Definition of error code for user exists
+	 */
+	public final static int C_USER_EXISTS = 35;
+		
 	public final static String C_EXTXT[] = {
 							"Unknown exception",
 							"Access denied",
@@ -264,6 +269,7 @@ public class CmsException extends Exception {
 							"Resource deleted",
 							"Resourcebroker-init error",
 							"Registry error",
+							"User already exists",
 };
 	/** 
 	 * Constructs a simple CmsException

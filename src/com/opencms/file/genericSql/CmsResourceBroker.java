@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/11/16 13:42:44 $
- * Version: $Revision: 1.194 $
+ * Date   : $Date: 2000/11/17 15:17:45 $
+ * Version: $Revision: 1.195 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.194 $ $Date: 2000/11/16 13:42:44 $
+ * @version $Revision: 1.195 $ $Date: 2000/11/17 15:17:45 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -709,6 +709,14 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
 	public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, 
 							   String username, String groupname)
 		throws CmsException {
+
+		// test if this user is already in the group
+		if (userInGroup(currentUser,currentProject,username,groupname)) {
+		   // user already there, throw exception
+		   throw new CmsException("[" + this.getClass().getName() + "] add " +  username+ " to " +groupname, 
+				CmsException.C_USER_EXISTS);
+		}
+		
 		// Check the security
 		if( isAdmin(currentUser, currentProject) ) {
 			CmsUser user;
@@ -2132,6 +2140,9 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	public void deleteUser(CmsUser currentUser, CmsProject currentProject, 
 						   String username)
 		throws CmsException {
+		// Test is this user is existing
+		CmsUser user=readUser(currentUser,currentProject,username);
+		
 		// Check the security
 		// Avoid to delete admin or guest-user
 		if( isAdmin(currentUser, currentProject) && 
@@ -5162,6 +5173,15 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 	public void removeUserFromGroup(CmsUser currentUser, CmsProject currentProject, 
 									String username, String groupname)
 		throws CmsException {
+
+		// test if this user is existing in the group
+		if (!userInGroup(currentUser,currentProject,username,groupname)) {
+		   // user already there, throw exception
+		   throw new CmsException("[" + this.getClass().getName() + "] remove " +  username+ " from " +groupname, 
+				CmsException.C_NO_USER);
+		}
+
+			
 		if( isAdmin(currentUser, currentProject) ) {
 		    CmsUser user;
 			CmsGroup group;
