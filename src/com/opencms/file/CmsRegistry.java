@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/02/14 14:26:42 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,12 +37,13 @@ import java.lang.reflect.*;
 import org.w3c.dom.*;
 import com.opencms.template.*;
 import com.opencms.core.*;
+import com.opencms.report.*;
 
 /**
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.42 $ $Date: 2002/02/14 14:26:42 $
+ * @version $Revision: 1.43 $ $Date: 2002/05/24 12:51:08 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1394,7 +1395,7 @@ public Vector importGetConflictingFileNames(String moduleZip) throws CmsExceptio
         throw new CmsException("No access to perform the action 'getConflictingFileNames'", CmsException.C_REGISTRY_ERROR);
     }
 
-    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
     return cmsImport.getConflictingFilenames();
 }
 /**
@@ -1418,7 +1419,7 @@ public Vector importGetResourcesForProject(String moduleZip) throws CmsException
         throw new CmsException("No access to perform the action 'importGetResourcesForProject'", CmsException.C_REGISTRY_ERROR);
     }
 
-    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
     return cmsImport.getResourcesForProject();
 }
 /**
@@ -1449,7 +1450,7 @@ public synchronized void importModule(String moduleZip, Vector exclusion) throws
     }
     Vector resourceNames = new Vector();
     Vector resourceCodes = new Vector();
-    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms);
+    CmsImport cmsImport = new CmsImport(moduleZip, "/", m_cms, new CmsShellReport());
     cmsImport.importResources(exclusion, resourceNames, resourceCodes, "module", newModuleName + "_" + newModuleVersion);
     // import the module data into the registry
     Element regModules = (Element) (m_xmlReg.getElementsByTagName("modules").item(0));

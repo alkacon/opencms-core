@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExportThread.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.report.*;
 import java.util.*;
 import java.io.*;
 
@@ -48,10 +49,13 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
 
     private I_CmsSession m_session;
 
+    // the object to send the information to the workplace.
+    private CmsReport m_report;
+
     public CmsAdminStaticExportThread(CmsObject cms, I_CmsSession session) {
         m_cms = cms;
         m_session = session;
-
+        m_report = new CmsReport(new String[]{"<br>", "&nbsp;&nbsp;&nbsp;", "<b>", "</b>", "<b>Static Export</b><br>&nbsp; links to start:"});
     }
 
     public void run() {
@@ -62,7 +66,7 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
         String errormessage = "Error exporting resources:\n";
         try {
             // start the export
-            m_cms.exportStaticResources(m_cms.getStaticExportProperties().getStartPoints(), null, null);
+            m_cms.exportStaticResources(m_cms.getStaticExportProperties().getStartPoints(), null, null, m_report);
 
         }catch(CmsException e){
             everythingOk = false;
@@ -125,4 +129,10 @@ public class CmsAdminStaticExportThread extends Thread implements I_CmsConstants
         }
     }
 
+    /**
+     * returns the part of the report that is ready.
+     */
+    public String getReportUpdate(){
+        return m_report.getReportUpdate();
+    }
 }

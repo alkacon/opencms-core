@@ -119,6 +119,9 @@
                 <titleimport>Import Database from Server</titleimport>
                 <upload>Upload Database from </upload>
                 <uploadlocal>Upload Database from local computer</uploadlocal>
+                <import>Import Database</import>
+                <importend>Import Database ready.</importend>
+                <exportend>Export Database ready.</exportend>
             </label>
         </database>
 
@@ -131,9 +134,19 @@
                 <testlink>Link:</testlink>
                 <testregexp>Expression:</testregexp>
                 <testresult>Result:</testresult>
+                <exportend>Static Export ready.</exportend>
             </label>
         </staticexport>
         
+        <linkmanagement>
+            <label>
+                <title>Link Check</title>
+                <text1>Aktual project (</text1>
+                <text2>) is checked for broken Links.</text2>
+                <textende>Check ready.</textende>
+            </label>
+        </linkmanagement>
+
         <flex>
             <cache>
                 <label>
@@ -178,7 +191,7 @@
                 <addgroup>Sorry, the group could not be created..</addgroup>
                 <database>Sorry, the database could not be imported / exported.</database>
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
-				<lock>Sorry, the file could not be locked.</lock>
+                <lock>Sorry, the file could not be locked.</lock>
                 <lockchange>Sorry, the file lock could not be stolen.</lockchange>
                 <login>Sorry, the user could not log in to the system.</login>
                 <projectlockchange>Sorry, the project could not be unlocked.</projectlockchange>
@@ -186,7 +199,7 @@
                 <newprop>Sorry, the new propertydefinition could not be created.</newprop>
                 <newextension>Sorry, the new file extension could not be assigned.</newextension>
                 <newlink>Sorry, the link could not be created.</newlink>
-				<newtask>Sorry, the new task could not be created.</newtask>
+                <newtask>Sorry, the new task could not be created.</newtask>
                 <picbrowser>Sorry, you can't use the picture browser yet.</picbrowser>
                 <picgallery>You don't have permission to create a new gallery in this project.</picgallery>
                 <propinuse>Some file uses this property.<![CDATA[<br>]]>You cannot delete it.</propinuse>
@@ -249,7 +262,7 @@
                 <newproject>The entered project data is invalid.</newproject>
                 <newextformat>Your input was in the wrong format.</newextformat>
                 <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
-				<newprop>see details</newprop>
+                <newprop>see details</newprop>
                 <newprop1>Property</newprop1>
                 <newprop2>of</newprop2>
                 <newprop3>could not be established.</newprop3>
@@ -304,7 +317,7 @@
                 <newextformat>Please enter only one file extension at a time. You need not enter the star and the dot.</newextformat>
                 <newextension>Please contact your system administrator.</newextension>              
                 <newlink>Please check the entered data or contact your system administrator.</newlink>
-				<newtask>Please check the entered data or contact your system administrator.</newtask>
+                <newtask>Please check the entered data or contact your system administrator.</newtask>
                 <none></none>
                 <picbrowser>Create the folder for the picture galleries or contact your system administrator.</picbrowser>
                 <picgallery>Creating a picture gallery</picgallery>
@@ -349,7 +362,7 @@
                 <newprop>New property for resource type</newprop>
                 <newextension>Associate new file extension</newextension>
                 <newlink>New Link</newlink>
-				<newproject>New Project</newproject>
+                <newproject>New Project</newproject>
                 <newtask>New Task</newtask>
                 <picbrowser>Picture Browser</picbrowser>
                 <picgallery>Creating new Picture Gallery</picgallery>
@@ -395,16 +408,17 @@
             <export>Export</export>
             <exportmoduledata>Export Moduldata</exportmoduledata>
             <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
-			<groups>Edit Groups</groups> 
+            <groups>Edit Groups</groups> 
             <imagelist>image list</imagelist>
             <import>Import</import>
+            <linkmanagement>Check Project</linkmanagement>
             <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
-			<logfileviewer>Logfileviewer</logfileviewer>
+            <logfileviewer>Logfileviewer</logfileviewer>
             <module>Module- management</module>
             <mountpoint>Mountpoints</mountpoint> 
             <newgallery>new gallery</newgallery>
             <newlink>New external link</newlink>
-			<newproject>New Project</newproject>
+            <newproject>New Project</newproject>
             <picgallery>Picture galleries<![CDATA[<br>]]>management</picgallery>
             <processmanagement>Scheduler</processmanagement>
             <project>Project- management</project>
@@ -560,7 +574,7 @@
             <newpwd>New Password</newpwd>       
             <newpwdrepeat>Confirm Password</newpwdrepeat>   
             <next>next</next>
-			<nochange>No change</nochange>
+            <nochange>No change</nochange>
             <none>-- none --</none>
             <oldpwd>Current Password</oldpwd>
             <owner>Owner</owner>

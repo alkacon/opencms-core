@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
-* Date   : $Date: 2001/10/26 13:54:01 $
-* Version: $Revision: 1.109 $
+* Date   : $Date: 2002/05/24 12:51:10 $
+* Version: $Revision: 1.110 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.109 $ $Date: 2001/10/26 13:54:01 $
+ * @version $Revision: 1.110 $ $Date: 2002/05/24 12:51:10 $
  */
 
 public interface I_CmsWpConstants {
@@ -317,7 +317,6 @@ public interface I_CmsWpConstants {
     public static final String C_SESSION_MODULE_ADMIN_PROP_VAL = "module_admin_props_value";
 
     public static final String C_MODULE_PACKETNAME = "packetname";
-
 
     //** The filename to the filetypelist template */
     public static final String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";

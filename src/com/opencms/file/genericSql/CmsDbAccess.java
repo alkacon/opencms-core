@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2002/05/13 14:49:33 $
-* Version: $Revision: 1.243 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.244 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.launcher.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.243 $ $Date: 2002/05/13 14:49:33 $ *
+ * @version $Revision: 1.244 $ $Date: 2002/05/24 12:51:08 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -6189,6 +6189,11 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
                     }
                     links = new CmsPageLinks(next);
                     links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
+                    try{
+                        links.setResourceName(((CmsFile)readFileHeader(I_CmsConstants.C_PROJECT_ONLINE_ID, next)).getResourceName());
+                    }catch(CmsException e){
+                        links.setResourceName("id="+next+". Sorry, can't read resource. "+e.getMessage());
+                    }
                     links.setOnline(true);
                 }else{
                     links.addLinkTarget(res.getString(m_cq.get("C_LM_LINK_DEST")));
@@ -6237,7 +6242,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
      * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
      * @param newRes A vecor (of CmsResources) with the new resources in the project.
      */
-     public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
+     public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
 
         // first create some Vectors for performance increase
         Vector deletedByName = new Vector(deleted.size());
@@ -6417,6 +6422,105 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         }
         return resources;
      }
+
+    /**
+     * When a project is published this method aktualises the online link table.
+     *
+     * @param deleted A Vector (of CmsResources) with the deleted resources of the project.
+     * @param changed A Vector (of CmsResources) with the changed resources of the project.
+     * @param newRes A Vector (of CmsResources) with the newRes resources of the project.
+     */
+    public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException{
+        if(deleted != null){
+            for(int i=0; i<deleted.size(); i++){
+                // delete the old values in the online table
+                if(((CmsResource)deleted.elementAt(i)).getType() == pageType){
+                    int id = readOnlineId(((CmsResource)deleted.elementAt(i)).getResourceName());
+                    if(id != -1){
+                        deleteOnlineLinkEntrys(id);
+                    }
+                }
+            }
+        }
+        if(changed != null){
+            for(int i=0; i<changed.size(); i++){
+                // delete the old values and copy the new values from the project link table
+                if(((CmsResource)changed.elementAt(i)).getType() == pageType){
+                    int id = readOnlineId(((CmsResource)changed.elementAt(i)).getResourceName());
+                    if(id != -1){
+                        deleteOnlineLinkEntrys(id);
+                        createOnlineLinkEntrys(id, readLinkEntrys(((CmsResource)changed.elementAt(i)).getResourceId()));
+                    }
+                }
+            }
+        }
+        if(newRes != null){
+            for(int i=0; i<newRes.size(); i++){
+                // copy the values from the project link table
+                if(((CmsResource)newRes.elementAt(i)).getType() == pageType){
+                    int id = readOnlineId(((CmsResource)newRes.elementAt(i)).getResourceName());
+                    if(id != -1){
+                        createOnlineLinkEntrys(id, readLinkEntrys(((CmsResource)newRes.elementAt(i)).getResourceId()));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * reads the online id of a offline file.
+     * @param filename
+     * @return the id or -1 if not found (should not happen).
+     */
+    private int readOnlineId(String filename)throws CmsException {
+
+        ResultSet res =null;
+        PreparedStatement statement = null;
+        Connection con = null;
+        int resourceId = -1;
+        try {
+            con = DriverManager.getConnection(m_poolNameOnline);
+            statement=con.prepareStatement(m_cq.get("C_LM_READ_ONLINE_ID"));
+            // read file data from database
+            statement.setString(1, filename);
+            res = statement.executeQuery();
+            // read the id
+            if(res.next()) {
+                resourceId = res.getInt(m_cq.get("C_RESOURCES_RESOURCE_ID"));
+                while(res.next()){
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException e){
+            throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);
+        } catch( Exception exc ) {
+            throw new CmsException("readOnlineId "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
+        } finally {
+            // close all db-resources
+            if(res != null) {
+                try {
+                    res.close();
+                } catch(SQLException exc) {
+                    // nothing to do here
+                }
+            }
+            if(statement != null) {
+                try {
+                    statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+          }
+        return resourceId;
+    }
 /****************  end  methods for link management          ****************************/
 
     /**
@@ -7143,7 +7247,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         String usedPool;
         String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;
@@ -7349,7 +7452,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         Connection con = null;
         String usedPool;
         String usedStatement;
-        //int onlineProject = getOnlineProject(projectId).getId();
         int onlineProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
         if (projectId == onlineProject){
             usedPool = m_poolNameOnline;

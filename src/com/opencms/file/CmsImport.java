@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2001/11/20 11:04:38 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import com.opencms.boot.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
 import com.opencms.template.*;
+import com.opencms.linkmanagement.*;
+import com.opencms.report.*;
 import org.w3c.dom.*;
 import source.org.apache.java.util.*;
 
@@ -45,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.52 $ $Date: 2001/11/20 11:04:38 $
+ * @version $Revision: 1.53 $ $Date: 2002/05/24 12:51:08 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -102,18 +104,31 @@ public class CmsImport implements I_CmsConstants, Serializable {
     private Stack m_groupsToCreate = new Stack();
 
     /**
+     * In this vector we store the imported pages (as Strings from getAbsolutePath()).
+     * After the import we check them all to update the link tables for the linkmanagement.
+     */
+    private Vector m_importedPages = new Vector();
+
+    /**
+     * The object to report the log-messages.
+     */
+    private I_CmsReport m_report = null;
+
+    /**
      * This constructs a new CmsImport-object which imports the resources.
      *
      * @param importFile the file or folder to import from.
      * @param importPath the path to the cms to import into.
+     * @param report A report object to provide the loggin messages.
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
-    public CmsImport(String importFile, String importPath, CmsObject cms)
+    public CmsImport(String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException {
 
         m_importFile = importFile;
         m_importPath = importPath;
         m_cms = cms;
+        m_report=report;
 
         // create the digest
         createDigest();
@@ -188,7 +203,7 @@ private void createDigest() throws CmsException {
             // ok, an old system exported this, check if the file is ok
             if(!(new CmsCompatibleCheck()).isTemplateCompatible(path+name, content, type)){
                 type = C_TYPE_COMPATIBLEPLAIN_NAME;
-                System.out.print(" must set to "+C_TYPE_COMPATIBLEPLAIN_NAME+" ");
+                m_report.addString(" must set to "+C_TYPE_COMPATIBLEPLAIN_NAME+" ");
             }
         }
         return type;
@@ -423,8 +438,7 @@ public Vector getResourcesForProject() throws CmsException {
  */
 private void importResource(String source, String destination, String type, String user, String group, String access, Hashtable properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
     // print out the information for shell-users
-    System.out.print("Importing ");
-    System.out.print(destination + " ");
+    m_report.addString("Importing " + destination + " ");
     boolean success = true;
     byte[] content = null;
     String fullname = null;
@@ -441,12 +455,17 @@ private void importResource(String source, String destination, String type, Stri
                                     properties, launcherStartClass, content, m_importPath);
         if(res != null){
             fullname = res.getAbsolutePath();
+            if(C_TYPE_PAGE_NAME.equals(type)){
+                m_importedPages.add(fullname);
+            }
         }
-        System.out.println("OK");
+        m_report.addString("OK");
+        m_report.addSeperator(0);
     } catch (Exception exc) {
         // an error while importing the file
         success = false;
-        System.out.println("Error: "+exc.toString());
+        m_report.addString("Error: "+exc.toString());
+        m_report.addSeperator(0);
     }
     byte[] digestContent = {0};
     if (content != null) {
@@ -551,9 +570,12 @@ public void importResources(Vector excludeList, Vector writtenFilenames, Vector 
                 // import the specified file and write maybe put it on the lists writtenFilenames,fileCodes
                 importResource(source, destination, type, user, group, access, properties, launcherStartClass, writtenFilenames, fileCodes);
             } else {
-                System.out.print("skipping " + destination);
+                m_report.addString("skipping " + destination);
             }
         }
+        // at last we have to get the links from all new imported pages for the  linkmanagement
+        m_report.addSeperator(1);
+        updatePageLinks();
     } catch (Exception exc) {
         throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
     }
@@ -676,7 +698,8 @@ private boolean inExcludeList(Vector excludeList, String path) {
                     ObjectInputStream oin = new ObjectInputStream(bin);
                     userInfo = (Hashtable)oin.readObject();
                 } catch (IOException ioex){
-                    System.out.println(ioex.getMessage());
+                    m_report.addString(ioex.getMessage());
+                    m_report.addSeperator(0);
                 }
 
                 // get the groups of the user and put them into the vector
@@ -721,11 +744,13 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 m_groupsToCreate.push(groupData);
             } else {
                 try{
-                    System.out.print("Importing Group: "+name+" ...");
+                    m_report.addString("Importing Group: "+name+" ...");
                     m_cms.addGroup(name, description, Integer.parseInt(flags), parentgroupName);
-                    System.out.println("OK");
+                    m_report.addString("OK");
+                    m_report.addSeperator(0);
                 } catch (CmsException exc){
-                    System.out.println("not created");
+                    m_report.addString("not created");
+                    m_report.addSeperator(0);
                 }
             }
         } catch (Exception exc){
@@ -744,7 +769,7 @@ private boolean inExcludeList(Vector excludeList, String path) {
         int defGroupId = C_UNKNOWN_ID;
         try{
             try{
-                System.out.print("Importing User: "+name+" ...");
+                m_report.addString("Importing User: "+name+" ...");
                 newUser = m_cms.addImportUser(name, password, recoveryPassword, description, firstname,
                                     lastname, email, Integer.parseInt(flags), userInfo, defaultGroup, address,
                                     section, Integer.parseInt(type));
@@ -755,12 +780,33 @@ private boolean inExcludeList(Vector excludeList, String path) {
                     } catch (CmsException exc){
                     }
                 }
-                System.out.println("OK");
+                m_report.addString("OK");
+                m_report.addSeperator(0);
             } catch (CmsException exc){
-                System.out.println("not created");
+                m_report.addString("not created");
+                m_report.addSeperator(0);
             }
         } catch (Exception exc){
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
+        }
+    }
+
+    /**
+     * checks all new imported pages and create/updates the entrys in the
+     * database for the linkmanagement.
+     */
+    private void updatePageLinks(){
+        LinkChecker checker = new LinkChecker();
+        for(int i=0; i<m_importedPages.size(); i++){
+            try{
+                // first parse the page
+                CmsPageLinks links = m_cms.getPageLinks((String)m_importedPages.elementAt(i));
+                // now save the result in the database
+                m_cms.createLinkEntrys(links.getResourceId(), links.getLinkTargets());
+            }catch(CmsException e){
+                m_report.addString("problems with "+(String)m_importedPages.elementAt(i)+":"+e.getMessage());
+                m_report.addSeperator(0);
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
-* Date   : $Date: 2001/10/15 09:58:55 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.zip.*;
 import com.opencms.core.*;
 import com.opencms.template.*;
+import com.opencms.report.*;
 import org.w3c.dom.*;
 
 import com.opencms.util.*;
@@ -42,7 +43,7 @@ import com.opencms.util.*;
  * to the filesystem.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.26 $ $Date: 2001/10/15 09:58:55 $
+ * @version $Revision: 1.27 $ $Date: 2002/05/24 12:51:08 $
  */
 public class CmsExport implements I_CmsConstants, Serializable {
 
@@ -105,6 +106,11 @@ public class CmsExport implements I_CmsConstants, Serializable {
      * Cache for previously added super folders
      */
     private Vector m_superFolders;
+
+    /**
+     * The object to report the log-messages.
+     */
+    private I_CmsReport m_report = null;
 
     /**
      * This constructs a new CmsImport-object which imports the resources.
@@ -174,7 +180,28 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
      * @param exportUserdata if true, the userdata and groupdata are exported
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
-    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode, boolean exportUserdata)
+    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem
+                            , boolean excludeUnchanged, Node moduleNode, boolean exportUserdata)
+                        throws CmsException {
+        this(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, moduleNode, exportUserdata,
+                new CmsShellReport());
+    }
+
+    /**
+     * This constructs a new CmsImport-object which imports the resources.
+     *
+     * @param importFile the file or folder to import from.
+     * @param exportPaths the paths of folders and files to write into the exportFile
+     * @param cms the cms-object to work with.
+     * @param excludeSystem if true, the system folder is excluded, if false exactly the resources in
+     *        exportPaths are included
+     * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+     * @param Node moduleNode module informations in a Node for module-export.
+     * @param exportUserdata if true, the userdata and groupdata are exported
+     * @param report the cmsReport to handle the log messages.
+     * @exception CmsException the CmsException is thrown if something goes wrong.
+     */
+    public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, Node moduleNode, boolean exportUserdata, I_CmsReport report)
         throws CmsException {
 
         m_exportFile = exportFile;
@@ -183,6 +210,7 @@ public CmsExport(String exportFile, String[] exportPaths, CmsObject cms, boolean
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
         m_isOnlineProject = cms.getRequestContext().currentProject().equals(cms.onlineProject());
+        m_report = report;
 
         Vector folderNames = new Vector();
         Vector fileNames = new Vector();
@@ -367,7 +395,7 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
         throws CmsException {
         String source = getSourceFilename(file.getAbsolutePath());
 
-        System.out.print("Exporting " + source + " ...");
+        m_report.addString("Exporting " + source + " ...");
 
         try {
             // create the manifest-entrys
@@ -378,11 +406,13 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportZipStream.write(file.getContents());
             m_exportZipStream.closeEntry();
         } catch(Exception exc) {
-            System.out.println("Error");
+            m_report.addString("Error:"+exc.getMessage());
+            m_report.addSeperator(0);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
 
-        System.out.println("OK");
+        m_report.addString("OK");
+        m_report.addSeperator(0);
     }
     /**
      * Exports all needed sub-resources to the zip-file.
@@ -615,15 +645,17 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      */
     private void exportGroup(CmsGroup group)
         throws CmsException {
-        System.out.print("Exporting group "+group.getName()+" ...");
+        m_report.addString("Exporting group "+group.getName()+" ...");
         try {
             // create the manifest entries
             writeXmlGroupEntrys(group);
         } catch(Exception e) {
-            System.out.println("Error");
+            m_report.addString("Error:"+e.getMessage());
+            m_report.addSeperator(0);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-        System.out.println("OK");
+        m_report.addString("OK");
+        m_report.addSeperator(0);
     }
 
     /**
@@ -634,15 +666,17 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
      */
     private void exportUser(CmsUser user)
         throws CmsException {
-        System.out.print("Exporting user "+user.getName()+" ...");
+        m_report.addString("Exporting user "+user.getName()+" ...");
         try {
             // create the manifest entries
             writeXmlUserEntrys(user);
         } catch(Exception e) {
-            System.out.println("Error");
+            m_report.addString("Error:"+e.getMessage());
+            m_report.addSeperator(0);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
         }
-        System.out.println("OK");
+            m_report.addString("OK");
+            m_report.addSeperator(0);
     }
 
     /**
@@ -743,7 +777,8 @@ private void checkRedundancies(Vector folderNames, Vector fileNames) {
             m_exportZipStream.write(serializedInfo);
             m_exportZipStream.closeEntry();
         } catch (IOException ioex){
-            System.out.println("IOException: "+ioex.getMessage());
+            m_report.addString("IOException: "+ioex.getMessage());
+            m_report.addSeperator(0);
         }
         // create tag for userinfo
         addCdataElement(userdata, C_EXPORT_TAG_USERINFO, datfileName);

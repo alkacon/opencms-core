@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/05/13 14:49:32 $
-* Version: $Revision: 1.231 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.232 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.231 $ $Date: 2002/05/13 14:49:32 $
+ * @version $Revision: 1.232 $ $Date: 2002/05/24 12:51:08 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -1382,12 +1382,27 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
  * @param exportPath the name (absolute Path) of folder from which should be exported.
  * @param includeSystem indicates if the system resources will be included in the export.
  * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+ * @param report the cmsReport to handle the log messages.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report) throws CmsException {
+    // export the resources
+    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata, report);
+}
+/**
+ * Exports cms-resources to a zip-file.
+ *
+ * @param exportFile the name (absolute Path) of the export resource (zip-file).
+ * @param exportPath the name (absolute Path) of folder from which should be exported.
+ * @param includeSystem indicates if the system resources will be included in the export.
+ * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
  *
  * @exception CmsException if operation was not successful.
  */
 public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata) throws CmsException {
-    // export the resources
-    m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata);
+    // call the export with the standard report object.
+    exportResources(exportFile, exportPaths, includeSystem, excludeUnchanged, exportUserdata, new CmsShellReport());
 }
 
 /**
@@ -1421,14 +1436,17 @@ public CmsFile exportResource(CmsFile file) throws CmsException {
  * Creates a static export in the filesystem
  *
  * @param startpoints the startpoints for the export.
+ * @param projectResources
+ * @param changedResources
+ * @param report the cmsReport to handle the log messages.
  *
  * @exception CmsException if operation was not successful.
  */
 public void exportStaticResources(Vector startpoints, Vector projectResources,
-            CmsPublishedResources changedResources) throws CmsException {
+            CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
 
     m_rb.exportStaticResources(m_context.currentUser(), m_context.currentProject(),
-             this, startpoints, projectResources, changedResources);
+             this, startpoints, projectResources, changedResources, report);
 }
 
 /**
@@ -2045,9 +2063,21 @@ public CmsResource importResource(String source, String destination, String type
  * @exception CmsException if operation was not successful.
  */
 public void importResources(String importFile, String importPath) throws CmsException {
+    importResources(importFile, importPath, new CmsShellReport());
+}
+/**
+ * Imports a import-resource (folder or zip-file) to the cms.
+ *
+ * @param importFile the name (absolute Path) of the import resource (zipfile or folder).
+ * @param importPath the name (absolute Path) of folder in which should be imported.
+ * @param report A report object to provide the loggin messages.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void importResources(String importFile, String importPath, I_CmsReport report) throws CmsException {
     // import the resources
     clearcache();
-    m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this);
+    m_rb.importResources(m_context.currentUser(), m_context.currentProject(), importFile, importPath, this, report);
     clearcache();
 }
 /**
@@ -2293,8 +2323,14 @@ public void publishProject(int id) throws CmsException {
     boolean success = false;
     CmsProject theProject = readProject(id);
     try{
+        // first we remember the new resources for the link management
+        Vector newRes  = readProjectView(id, "new");
+        updateOnlineProjectLinks(readProjectView(id, "deleted"), readProjectView(id, "changed"), null, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
         Vector projectResources = readProjectView(id, "all");
         allChanged = m_rb.publishProject(this, m_context.currentUser(), m_context.currentProject(), id);
+        // update the online links table for the new resources (now they are there)
+        updateOnlineProjectLinks(null, null, newRes, this.getResourceType(C_TYPE_PAGE_NAME).getResourceType());
+        newRes = null;
         changedResources = allChanged.getChangedResources();
         changedModuleMasters = allChanged.getChangedModuleMasters();
         getOnlineElementCache().cleanupCache(changedResources, changedModuleMasters);
@@ -2306,7 +2342,8 @@ public void publishProject(int id) throws CmsException {
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
                 Vector linkChanges = new Vector();
                 this.exportStaticResources(this.getStaticExportProperties().getStartPoints(),
-                                 linkChanges, allChanged);
+                                 linkChanges, allChanged, new CmsShellReport());
+// todo: got the right report here                         ^^^^^^^^^^^^^^^^^^^
                 m_context.setCurrentProject(oldId);
                 Utils.getModulPublishMethods(this, linkChanges);
             } catch (Exception ex){
@@ -2318,7 +2355,7 @@ public void publishProject(int id) throws CmsException {
                 // just generate the link rules, in case there were properties changed
                 int oldId = m_context.currentProject().getId();
                 m_context.setCurrentProject(C_PROJECT_ONLINE_ID);
-                new CmsStaticExport(this, null, false, null, null);
+                new CmsStaticExport(this, null, false, null, null, null);
                 m_context.setCurrentProject(oldId);
             }
         }
@@ -2618,10 +2655,18 @@ public Vector getOnlineBrokenLinks() throws CmsException{
  * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
  * @param newRes A vecor (of CmsResources) with the new resources in the project.
  */
- public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
+ public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
     m_rb.getBrokenLinks(projectId, report, changed, deleted, newRes);
  }
 
+/**
+ * When a project is published this method aktualises the online link table.
+ *
+ * @param projectId of the project that is published.
+ */
+public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException{
+    m_rb.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
+}
 /****************  end  methods for link management          ****************************/
 
 /****************     methods for export and export links    ****************************/
@@ -3090,7 +3135,7 @@ public CmsProject readProject(CmsTask task) throws CmsException {
  * @param projectId the id of the project to read the file headers for.
  * @param filter The filter for the resources (all, new, changed, deleted, locked)
  *
- * @return a Vector of resources.
+ * @return a Vector (of CmsResources objects) of resources.
  *
  */
 public Vector readProjectView(int projectId, String filter) throws CmsException {

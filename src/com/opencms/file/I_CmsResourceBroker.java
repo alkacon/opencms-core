@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/05/13 14:49:32 $
-* Version: $Revision: 1.176 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.177 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.176 $ $Date: 2002/05/13 14:49:32 $
+ * @version $Revision: 1.177 $ $Date: 2002/05/24 12:51:08 $
  *
  */
 
@@ -998,10 +998,11 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @param includeSystem, desides if to include the system resources to the export.
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      * @param cms the cms-object to use for the export.
+     * @param report the cmsReport to handle the log messages.
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata)
+    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report)
         throws CmsException;
 
     /**
@@ -1029,12 +1030,13 @@ public CmsProject createProject(CmsUser currentUser, CmsProject currentProject, 
      * @param currentProject current project of the user
      * @param cms the cms-object to use for the export.
      * @param startpoints the startpoints for the export.
+     * @param report the cmsReport to handle the log messages.
      *
      * @exception CmsException if operation was not successful.
      */
     public void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
                  CmsObject cms, Vector startpoints, Vector projectResources,
-                 CmsPublishedResources changedResources) throws CmsException ;
+                 CmsPublishedResources changedResources, I_CmsReport report) throws CmsException ;
 
      /**
       * Forwards a task to a new user.
@@ -1658,10 +1660,11 @@ public Vector getFilesWithProperty(CmsUser currentUser, CmsProject currentProjec
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
+     * @param report A report object to provide the loggin messages.
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
+    public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException;
     // Internal ResourceBroker methods
 
@@ -2064,7 +2067,16 @@ public Vector getOnlineBrokenLinks() throws CmsException;
  * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
  * @param newRes A vecor (of CmsResources) with the new resources in the project.
  */
- public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException;
+ public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException;
+
+/**
+ * When a project is published this method aktualises the online link table.
+ *
+ * @param deleted A Vector (of CmsResources) with the deleted resources of the project.
+ * @param changed A Vector (of CmsResources) with the changed resources of the project.
+ * @param newRes A Vector (of CmsResources) with the newRes resources of the project.
+ */
+public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException;
 
 /****************  end  methods for link management          ****************************/
 

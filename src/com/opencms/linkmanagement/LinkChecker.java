@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2002/05/13 14:50:39 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,8 +35,7 @@ import com.opencms.report.*;
 
 /**
  * Title:       OpenCms
- * Description: This Class is used to extract all links of a page (or a String) to a
- *              CmsPageLinks Object for saving in the database.
+ * Description: This Class is used for the linkmanagement.
  *
  * @author Hanjo Riege
  * @version 1.0
@@ -47,6 +46,14 @@ public class LinkChecker{
     public LinkChecker() {
     }
 
+    /**
+     * Checks the content of the page and extracts all links that are on this page.
+     * Used by the linkmanagement to save the links in the database.
+     *
+     * @param cms The CmsObject.
+     * @param page The name(getAbsolutePath) of the page
+     * @return The compleate CmsPageLinks object for this page.
+     */
     public CmsPageLinks extractLinks(CmsObject cms, String page) throws CmsException{
 
         // first lets get the prefix of the page name (we need it later)
@@ -101,7 +108,7 @@ public class LinkChecker{
      * The report is filled with a CmsPageLinks object for each page containing broken links
      *          this CmsPageLinks object contains all links on the page withouth a valid target.
      */
-    public void checkProject(CmsObject cms, int projectId, CmsReport report)throws CmsException{
+    public void checkProject(CmsObject cms, int projectId, I_CmsReport report)throws CmsException{
         if(projectId == cms.C_PROJECT_ONLINE_ID){
             // lets check only the online project
             Vector result = cms.getOnlineBrokenLinks();

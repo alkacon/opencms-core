@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/report/Attic/CmsReport.java,v $
-* Date   : $Date: 2002/05/13 14:50:39 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,14 +29,16 @@ package com.opencms.report;
 
 import java.util.*;
 import com.opencms.linkmanagement.*;
+
 /**
  * Title:        OpenCms
- * Description:
+ * Description: The report object for the workplace. It stores all information till
+ *              they are retrieved.
  * @author Hanjo Riege
  * @version 1.0
  */
 
-public class CmsReport {
+public class CmsReport implements I_CmsReport{
 
     /**
      * the report objects i.e. String, CmsPageLink, ...
@@ -78,6 +80,7 @@ public class CmsReport {
         m_content = new Vector();
         m_type = new Vector();
         m_indexNext = 0;
+        m_seperator = new String[]{"\n", "  ", "\n", "\n"};
     }
 
     /**
@@ -97,11 +100,19 @@ public class CmsReport {
      */
     public void addSeperator(int sepNumber){
         m_type.add(C_TYPE_SEPERATOR);
-        if((m_seperator != null)||(m_seperator.length > sepNumber)){
+        if((m_seperator != null)&&(m_seperator.length > sepNumber)){
             m_content.add(m_seperator[sepNumber]);
         }else{
             m_content.add(C_STANDARD_SEPERATOR);
         }
+    }
+
+    /**
+     * adds the standard seperator.
+     */
+    public void addSeperator(){
+        m_type.add(C_TYPE_SEPERATOR);
+        m_content.add(C_STANDARD_SEPERATOR);
     }
 
     /**
@@ -132,12 +143,13 @@ public class CmsReport {
             Integer curType = (Integer)m_type.elementAt(i);
             if(curType.equals(C_TYPE_PAGELINKS)){
                 CmsPageLinks links = (CmsPageLinks)m_content.elementAt(i);
-                result.append(links.getResourceName() + "\n");
+                result.append(m_seperator[2] + links.getResourceName() + m_seperator[3] + m_seperator[0]);
                 for(int index=0; index<links.getLinkTargets().size(); index++){
-                    result.append("     "+(String)links.getLinkTargets().elementAt(i)+ "\n");
+                    result.append(m_seperator[1]+(String)links.getLinkTargets().elementAt(index)+ m_seperator[0]);
                 }
+                result.append(m_seperator[0]);
             }else if(curType.equals(C_TYPE_STRING)){
-                result.append((String)m_content.elementAt(i) + "\n");
+                result.append((String)m_content.elementAt(i));
             }else if(curType.equals(C_TYPE_SEPERATOR)){
                 result.append((String)m_content.elementAt(i));
             }

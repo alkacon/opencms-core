@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseImportThread.java,v $
-* Date   : $Date: 2001/09/06 06:53:33 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.report.*;
 import java.util.*;
 import java.io.*;
 
@@ -47,6 +48,8 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
 
     private CmsObject m_cms;
 
+    private CmsReport m_report;
+
     private I_CmsSession m_session;
 
     /**
@@ -58,6 +61,7 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
         m_cms = cms;
         m_existingFile = existingFile;
         m_session = session;
+        m_report = new CmsReport(new String[]{"<br>", "<br><p>updating linkmanagement.</p><br>"});
     }
 
     public void run() {
@@ -67,7 +71,7 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
         try {
 
             // import the database
-            m_cms.importResources(m_existingFile, C_ROOT);
+            m_cms.importResources(m_existingFile, C_ROOT, m_report);
         }
         catch(CmsException e) {
             m_session.putValue(C_SESSION_THREAD_ERROR, Utils.getStackTrace(e));
@@ -75,5 +79,12 @@ public class CmsAdminDatabaseImportThread extends Thread implements I_CmsConstan
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
+    }
+
+    /**
+     * returns the part of the report that is ready.
+     */
+    public String getReportUpdate(){
+        return m_report.getReportUpdate();
     }
 }

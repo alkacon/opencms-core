@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/05/13 14:49:33 $
-* Version: $Revision: 1.321 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.322 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.321 $ $Date: 2002/05/13 14:49:33 $
+ * @version $Revision: 1.322 $ $Date: 2002/05/24 12:51:09 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2691,13 +2691,14 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
      * @param excludeSystem, decides whether to exclude the system
      * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
      * @param cms the cms-object to use for the export.
+     * @param report the cmsReport to handle the log messages.
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata)
+    public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean excludeSystem, boolean excludeUnchanged, boolean exportUserdata, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
-            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, exportUserdata);
+            new CmsExport(exportFile, exportPaths, cms, excludeSystem, excludeUnchanged, null, exportUserdata, report);
         } else {
              throw new CmsException("[" + this.getClass().getName() + "] exportResources",
                  CmsException.C_NO_ACCESS);
@@ -3921,10 +3922,11 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
+     * @param report A report object to provide the loggin messages.
      *
      * @exception Throws CmsException if something goes wrong.
      */
-    public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms)
+    public void importResources(CmsUser currentUser,  CmsProject currentProject, String importFile, String importPath, CmsObject cms, I_CmsReport report)
         throws CmsException {
         if(isAdmin(currentUser, currentProject)) {
             // get the first node of the manifest to check if its an import of resources
@@ -3934,7 +3936,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                 CmsImportModuledata imp = new CmsImportModuledata(importFile, importPath, cms);
                 imp.importModuledata();
             } else {
-                CmsImport imp = new CmsImport(importFile, importPath, cms);
+                CmsImport imp = new CmsImport(importFile, importPath, cms, report);
                 imp.importResources();
             }
         } else {
@@ -4424,16 +4426,17 @@ public CmsProject onlineProject(CmsUser currentUser, CmsProject currentProject) 
  * @param currentProject current project of the user
  * @param cms the cms-object to use for the export.
  * @param startpoints the startpoints for the export.
+ * @param report the cmsReport to handle the log messages.
  *
  * @exception CmsException if operation was not successful.
  */
 public synchronized void exportStaticResources(CmsUser currentUser, CmsProject currentProject,
                      CmsObject cms, Vector startpoints, Vector projectResources,
-                     CmsPublishedResources changedResources) throws CmsException {
+                     CmsPublishedResources changedResources, I_CmsReport report) throws CmsException {
 
     if(isAdmin(currentUser, currentProject) || isProjectManager(currentUser, currentProject) ||
         isUser(currentUser, currentProject)) {
-        new CmsStaticExport(cms, startpoints, true, projectResources, changedResources);
+        new CmsStaticExport(cms, startpoints, true, projectResources, changedResources, report);
     } else {
          throw new CmsException("[" + this.getClass().getName() + "] exportResources",
              CmsException.C_NO_ACCESS);
@@ -4868,9 +4871,20 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
      * @param deleted A vecor (of CmsResources) with the deleted resources in the project.
      * @param newRes A vecor (of CmsResources) with the new resources in the project.
      */
-     public void getBrokenLinks(int projectId, CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
+     public void getBrokenLinks(int projectId, I_CmsReport report, Vector changed, Vector deleted, Vector newRes)throws CmsException{
         m_dbAccess.getBrokenLinks(projectId, report, changed, deleted, newRes);
      }
+
+    /**
+     * When a project is published this method aktualises the online link table.
+     *
+     * @param deleted A Vector (of CmsResources) with the deleted resources of the project.
+     * @param changed A Vector (of CmsResources) with the changed resources of the project.
+     * @param newRes A Vector (of CmsResources) with the newRes resources of the project.
+     */
+    public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException{
+        m_dbAccess.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
+    }
 
 /****************  end  methods for link management          ****************************/
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -73,9 +73,27 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
 
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         I_CmsSession session = cms.getRequestContext().getSession(true);
+        CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 
         // get the parameters
         String action = (String)parameters.get("action");
+
+        // here we show the report updates when the threads are allready running.
+        if("showResult".equals(action)){
+            // ok. Thread is started and we shoud show the report information.
+            CmsAdminStaticExportThread doTheWork = (CmsAdminStaticExportThread)session.getValue(C_STATICEXPORT_THREAD);
+            //still working?
+            if(doTheWork.isAlive()){
+                xmlTemplateDocument.setData("endMethod", "");
+                xmlTemplateDocument.setData("text", "");
+            }else{
+                xmlTemplateDocument.setData("endMethod", xmlTemplateDocument.getDataValue("endMethod"));
+                xmlTemplateDocument.setData("autoUpdate","");
+                xmlTemplateDocument.setData("text", lang.getDataValue("staticexport.label.exportend"));
+            }
+            xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
+            return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");
+        }
         if(action == null || "dynPrint".equals(action)) {
             // This is an initial request of the static export page
             Vector exportStartPoints = cms.getStaticExportProperties().getStartPoints();
@@ -174,7 +192,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
             doExport.start();
             session.putValue(C_STATICEXPORT_THREAD , doExport);
             xmlTemplateDocument.setData("time", "10");
-            templateSelector = "wait";
+            templateSelector = "showresult";
         }
 
         // Now load the template file and start the processing

@@ -119,6 +119,9 @@
                 <files>bestehende Dateien</files>
                 <upload>Datenbank importieren von </upload>
                 <uploadlocal>Datenbank importieren von localem Rechner</uploadlocal>
+                <import>Datenbank Import</import>
+                <importend>Datenbank Import beendet.</importend>
+                <exportend>Datenbank Export beendet.</exportend>
             </label>
         </database>
         <staticexport>
@@ -130,8 +133,18 @@
                 <testlink>Link:</testlink>
                 <testregexp>Ausdruck:</testregexp>
                 <testresult>Ergebnis:</testresult>
+                <exportend>Statischer Export beendet.</exportend>
             </label>
         </staticexport>
+
+        <linkmanagement>
+            <label>
+                <title>Link Überprüfung</title>
+                <text1>Aktuelles Projekt (</text1>
+                <text2>) wird auf Links ohne Ziel überprüft.</text2>
+                <textende>Überprüfung beendet.</textende>
+            </label>
+        </linkmanagement>
         
         <flex>
             <cache>
@@ -181,7 +194,7 @@
                 <login>Der Benutzer konnte nicht im System angemeldet werden.</login> 
                 <projectlockchange>Leider konnte das Projekt nicht wieder freigegeben werden.</projectlockchange>
                 <newlink>Leider konnte die Verknüpfung nicht angelegt werden.</newlink>
-				<newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
+                <newproject>Leider konnte das Projekt nicht angelegt werden.</newproject>
                 <newprop>Die neue Eigenschaft konnte leider nicht angelegt werden.</newprop>
                 <newextension>Die neue Dateiendung konnte leider nicht zugeordnet werden.</newextension>
                 <newtask>Leider konnte die Aufgabe nicht angelegt werden.</newtask>
@@ -246,7 +259,7 @@
                 <newproject>Die Projektdaten sind ungültig oder falsch eingegeben.</newproject>
                 <newextformat>Ihre Eingabe war im falschen Format.</newextformat>
                 <newlink>Sie haben eventuell keine Berechtigung, einen Link anzulegen oder es existiert bereits eine Datei gleichen Namens.</newlink>
-				<newprop>siehe Details</newprop>
+                <newprop>siehe Details</newprop>
                 <newprop1>Eigenschaft</newprop1>
                 <newprop2>von</newprop2>
                 <newprop3>konnte nicht angelegt werden.</newprop3>
@@ -299,7 +312,7 @@
                 <picnogallery>Bitte legen Sie erst eine Galerie unter dem Menüpunkt Administration/Bildergalerien an.</picnogallery>
                 <projectlockchange>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</projectlockchange>
                 <newlink>Bitte überprüfen Sie Ihre Eingaben oder wenden Sie sich an den Systemadministrator.</newlink>
-				<newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
+                <newproject>Bitte überprüfen Sie Ihre Eingabe oder wenden Sie sich an den Systemadministrator.</newproject>
                 <newprop>Bitte versuchen Sie es später erneut, oder kontaktieren Sie Ihren Systemadministrator.</newprop>
                 <newextformat>Geben Sie immer nur eine Endung auf einmal ein. Sternchen oder Punkt brauchen nicht eingegeben zu werden.</newextformat>
                 <newextension>Kontaktieren Sie Ihren Systemadministrator.</newextension>
@@ -345,7 +358,7 @@
                 <login>Anmeldungsfehler</login>
                 <projectlockchange>Dateisperrungen für Projekt aufheben</projectlockchange>
                 <newlink>Neue Verknüpfung anlegen</newlink>
-				<newproject>Neues Projekt</newproject>
+                <newproject>Neues Projekt</newproject>
                 <newprop>Neue Eigenschaft für Dateityp</newprop>
                 <newextension>Neue Dateiendung zuordnen</newextension>
                 <newtask>Neue Aufgabe</newtask>
@@ -393,15 +406,16 @@
             <export>Export</export>
             <exportmoduledata>Export Moduldaten</exportmoduledata>
             <extlinkgallery>Externe Links<![CDATA[<br>]]>verwalten</extlinkgallery>
-			<groups>Gruppe</groups>
+            <groups>Gruppe</groups>
             <imagelist>Bilderliste</imagelist>
             <import>Import</import>
+            <linkmanagement>Projekt prüfen</linkmanagement>
             <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
-			<logfileviewer>Logfileviewer</logfileviewer>
+            <logfileviewer>Logfileviewer</logfileviewer>
             <module>Modul- verwaltung</module>
             <mountpoint>Mountpoint- </mountpoint>
             <newlink>Neue externe Verknüpfung</newlink>
-			<newgallery>Neue Galerie</newgallery>
+            <newgallery>Neue Galerie</newgallery>
             <newproject>Neues Projekt</newproject>
             <picgallery>Bildergalerien<![CDATA[<br>]]>verwalten</picgallery>
             <processmanagement>Vorgangs- verwaltung</processmanagement>
@@ -558,7 +572,7 @@
             <newpwd>Neues Kennwort</newpwd>     
             <newpwdrepeat>Kennwort bestätigen</newpwdrepeat>    
             <next>nach</next>
-			<nochange>Wert beibehalten</nochange>
+            <nochange>Wert beibehalten</nochange>
             <none>-- keine --</none>
             <oldpwd>Aktuelles Kennwort</oldpwd>
             <owner>Eigentümer</owner>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2002/05/13 14:49:34 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2002/05/13 14:49:34 $
+ * @version $Revision: 1.55 $ $Date: 2002/05/24 12:51:09 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -258,7 +258,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      */
     public static void clearFileCache(A_CmsXmlContent doc) {
         if(doc != null) {
-            String currentProject = doc.m_cms.getRequestContext().currentUser().getName();
+            String currentProject = doc.m_cms.getRequestContext().currentProject().getName();
             m_filecache.remove(currentProject + ":" + doc.getAbsoluteFilename());
         }
     }
@@ -1022,7 +1022,6 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
         else {
 
             // File was found in cache.
-
             // We have to read the file header to check access rights.
             cms.readFileHeader(filename);
         }

@@ -313,4 +313,155 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 ]]>
 </TEMPLATE>
 
+<TEMPLATE name="showresult">
+<![CDATA[
+<HTML>
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../../templates/js/opencms.js"></SCRIPT>
+
+<script language=JavaScript>
+<!--
+ var pageStart="<HTML><head>"+
+                    "<META HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=iso-8859-1'>"+
+                    "<link rel=stylesheet type='text/css' href='../../css/format.css'>"+
+                "</HEAD>"+
+                "<BODY bgcolor='#ffffff' marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload=\"window.scrollTo(0,100000);\">";
+ var pageEnd="</BODY></HTML>";
+ 
+ var pageBody="";
+
+ /**
+  *  initiates the iframe to show the result
+  */
+ function initiate(){
+    refreshResult("");
+ }
+ /**
+  * adds new lines to the iframe body.
+  * param addon The lines to add to the result.
+  */
+ function refreshResult(addOn){
+    pageBody += addOn;
+    showframe.document.open();
+    showframe.document.write(pageStart + pageBody + pageEnd);
+    showframe.document.close();
+ }
+ /**
+  */
+ function finish(){
+    document.getElementById("cancel").disabled=false;
+ }
+ function fillHead(content){
+    document.getElementById("headline").innerHTML=content;
+ }
+
+//-->
+</script>
+
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<title>OpenCms</title>
+<link rel=stylesheet type="text/css" href="../../css/format.css">
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="initiate();">
+
+<!-- Tabelle um vertikal und horizontal zu zentrieren-->
+<table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
+<tr><td align=middle valign=center>
+<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<table cellspacing=0 cellpadding=0 border=1 width=950>
+    <tr><td>
+        <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+            
+            <!-- Beginn Tabellenkopf blau-->
+            <tr> 
+                <td class="head">]]><LABEL value="staticexport.label.titleexport" /><![CDATA[</td>
+            </tr>
+            <!-- Ende Tabellenkopf blau-->
+            
+            <!-- Beginn Leerzeile-->
+            <tr> 
+                <td class="leerzeile">&nbsp;</td>
+            </tr>
+            <!-- Ende Leerzeile-->
+            
+            <!-- Beginn Inhalt-->
+            <tr><td class=dialogtxt>
+                <table border=0 width=100%>
+                    <tr><td class=dialogtxt>
+                        <table border=0 cellspacing=4 width=100% height=300px>
+                            <tr>
+                                <td id=headline class=formular width=10%></td>
+                            </tr>
+                            <tr>
+                                <td height=280px>
+                                    <iframe align="center" width="100%" height="100%" scrolling="yes" name="showframe" id="showframe">
+                                    </iframe>
+                                </td>
+                            </tr>
+                        </table>
+                    </td></tr>
+            
+                    <!-- Beginn Buttonleiste-->
+                    <tr><td class=dialogtxt>
+                        <table cellspacing=0 border=0 cellpadding=5 width=100%>
+                            <tr>
+                                <td class=formular align=center width=100%><input type="button" class="button" disabled="true" width=100 value="]]><LABEL value="button.ok" /><![CDATA[" name="cancel" id="cancel" onClick="parent.admin_content.location.href='../../action/administration_content_top.html?sender=/system/workplace/administration/';"></td>
+                            </tr>
+                        </table>
+                    </td></tr>
+                    <!-- Ende Buttonleiste-->
+                </table>
+            </td></tr>
+        </table>
+    </td></tr>
+</table>
+</td></tr>
+</table>
+                        <iframe  src="index.html?action=showResult" width="0" height="0" id="loadframe">
+                        </iframe>
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="updateReport">
+<![CDATA[
+<HTML>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<script language=JavaScript>
+<!--
+ function update(){
+    var value="]]><process>data</process><![CDATA[";
+    var headline="]]><process>text</process><![CDATA[";
+    parent.refreshResult(value);
+    parent.fillHead(headline);
+ }
+
+ function finish(){
+    parent.finish();
+ }
+
+//-->
+</script>
+<SCRIPT LANGUAGE="Javascript">
+function reload()
+{
+location.href="index.html?action=showResult" ;
+}
+</SCRIPT>
+<title>OpenCms</title>
+
+</HEAD>
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onLoad="]]><process>autoUpdate</process><![CDATA[update();]]><process>endMethod</process><![CDATA[">
+</BODY>
+</html>
+]]>
+</TEMPLATE>
+<endMethod><![CDATA[finish();]]></endMethod>
+<autoUpdate><![CDATA[setTimeout('reload()', 2000);]]></autoUpdate>
+
 </WORKPLACE>

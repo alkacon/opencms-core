@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2002/04/10 08:22:11 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/05/24 12:51:08 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.file;
 import com.opencms.core.*;
 import com.opencms.launcher.*;
 import com.opencms.util.Utils;
+import com.opencms.report.*;
 import java.util.*;
 import java.io.*;
 import java.net.*;
@@ -40,7 +41,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.25 $ $Date: 2002/04/10 08:22:11 $
+ * @version $Revision: 1.26 $ $Date: 2002/05/24 12:51:08 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -117,23 +118,30 @@ public class CmsStaticExport implements I_CmsConstants{
     public static Vector m_rulesForHttpsEnabledResources = null;
 
     /**
+     * The object to report the log-messages.
+     */
+    private I_CmsReport m_report = null;
+
+    /**
      * This constructs a new CmsStaticExport-object which generates static html pages in the filesystem.
      *
      * @param cms the cms-object to work with.
      * @param startpoints. The resources to export (Vector of Strings)
      * @param doTheExport. must be set to true to export something, otherwise only the linkrules are generated.
      * @param changedResources. Contains the changed resources belonging to the project, if started after publishProject.
+     * @param report the cmsReport to handle the log messages.
      *
      * @exception CmsException the CmsException is thrown if something goes wrong.
      */
     public CmsStaticExport(CmsObject cms, Vector startpoints, boolean doTheExport,
-                     Vector changedLinks, CmsPublishedResources changedResources)
+                     Vector changedLinks, CmsPublishedResources changedResources, I_CmsReport report)
                      throws CmsException{
         m_cms = cms;
         m_startpoints = startpoints;
         m_changedLinks = changedLinks;
         m_exportPath = cms.getStaticExportProperties().getExportPath();
         c_perlUtil = new Perl5Util();
+        m_report = report;
         if(changedResources != null){
             m_afterPublish = true;
         }
@@ -165,7 +173,13 @@ public class CmsStaticExport implements I_CmsConstants{
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] got "+exportLinks.size()+" links to start with.");
                 }
+                m_report.addSeperator(4);
+                m_report.addString(" "+exportLinks.size());
+                m_report.addSeperator(0);
+                m_report.addSeperator(0);
+
                 for(int i=0; i < exportLinks.size(); i++){
+                    m_report.addString(" "+i+" ");
                     String aktLink = (String)exportLinks.elementAt(i);
                     exportLink(aktLink, exportLinks);
                 }
@@ -174,6 +188,7 @@ public class CmsStaticExport implements I_CmsConstants{
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT,
                             "[CmsStaticExport] all done.");
                 }
+                m_report.addSeperator(0);
             }catch(NullPointerException e){
                 // no original request
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
@@ -434,6 +449,7 @@ public class CmsStaticExport implements I_CmsConstants{
         CmsExportLink dbLink = new CmsExportLink(link, System.currentTimeMillis(), null);
         // remember the original link for later
         String remLink = link;
+        m_report.addString("exporting "+link+" ");
 
         try{
             // first lets create our request and response objects for the export
@@ -449,6 +465,7 @@ public class CmsStaticExport implements I_CmsConstants{
             }
             if(C_EXPORT_FALSE.equals(externLink)){
                 // this should not be exported and has no links on it that must be exported
+                m_report.addSeperator(0);
                 return;
             }
             if(paraStart >= 0){
@@ -544,16 +561,22 @@ public class CmsStaticExport implements I_CmsConstants{
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
                 }
+                m_report.addString(" write ExportLink "+dbLink.getLink()+" failed: "+e.toString());
             }
 
             // at last close the outputstream
             if(outStream != null){
                 outStream.close();
             }
+            m_report.addSeperator(0);
         }catch(CmsException exc){
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport] "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
             }
+            m_report.addSeperator(0);
+            m_report.addSeperator(1);
+            m_report.addString("  "+deleteFileOnError+" export "+link+" failed: "+exc.toString());
+            m_report.addSeperator(0);
             if(deleteFileOnError != null){
                 try{
                     File deleteMe = new File(deleteFileOnError);
@@ -571,6 +594,8 @@ public class CmsStaticExport implements I_CmsConstants{
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                 A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_STATICEXPORT, "[CmsStaticExport]  export "+link+" failed : "+Utils.getStackTrace(e));
             }
+            m_report.addString("  export "+link+" failed : "+Utils.getStackTrace(e));
+            m_report.addSeperator(0);
         }
     }
 

@@ -117,6 +117,11 @@
                 <titleimport>Importa Database dal server</titleimport>
                 <upload>Importa Database da</upload>
                 <uploadlocal>Importa Database dal computer locale</uploadlocal>
+                <import>Importa Database</import>
+
+                <importend>Import Database ready</importend>
+                <exportend>Export Database ready.</exportend>
+
             </label>
         </database>
 
@@ -129,8 +134,22 @@
                 <testlink>Link:</testlink>
                 <testregexp>Espressione:</testregexp>
                 <testresult>Risultato:</testresult>
+
+                <exportend>Static Export ready.</exportend>
+
             </label>
         </staticexport>
+
+        <linkmanagement>
+            <label>
+
+                <title>Link Check</title>
+                <text1>Aktual project (</text1>
+                <text2>) is checked for broken Links.</text2>
+                <textende>Check ready.</textende>
+
+            </label>
+        </linkmanagement>
         
         <flex>
             <cache>
@@ -176,7 +195,7 @@
                 <addgroup>Spiacente, il gruppo non ha potuto essere creato.</addgroup>
                 <database>Spiacente, il database non ha potuto essere importato / esportato.</database>
                 <linkcheckerror>The url could not be connected. You can store the link now or you can change it.</linkcheckerror>
-				<lock>Spiacente, il file non ha potuto essere bloccato.</lock>
+                <lock>Spiacente, il file non ha potuto essere bloccato.</lock>
                 <lockchange>Spiacente, il blocco sul file non ha potuto essere rubato.</lockchange>
                 <login>Spiacente, l'utente non ha potuto accedere al sistema.</login>
                 <projectlockchange>Spiacente, il progetto non ha potuto essere sbloccato.</projectlockchange>
@@ -184,7 +203,7 @@
                 <newprop>Spiacente, la nuova definizione di proprietà non ha potuto essere creata.</newprop>
                 <newextension>Spiacente, la nuova estensione di file non ha potuto essere assegnata.</newextension>
                 <newlink>Sorry, the link could not be created.</newlink>
-				<newtask>Spiacente, il nuovo compito non ha potuto essere creato.</newtask>
+                <newtask>Spiacente, il nuovo compito non ha potuto essere creato.</newtask>
                 <picbrowser>Spiacente, non puoi ancora usare la ricerca immagini.</picbrowser>
                 <picgallery>Non hai il permesso di creare una nuova galleria in questo progetto.</picgallery>
                 <propinuse>Qualche file usa questa proprietà.<![CDATA[<br>]]>Non puoi cancellarla.</propinuse>
@@ -247,7 +266,7 @@
                 <newproject>I dati introdotti per il progetto non sono validi.</newproject>
                 <newextformat>I dati da te introdotti erano nel formato errato.</newextformat>
                 <newlink>Maybe you don't have the needed permissions or this link already exist.</newlink>
-				<newprop>vedere dettagli</newprop>
+                <newprop>vedere dettagli</newprop>
                 <newprop1>Proprietà</newprop1>
                 <newprop2>di</newprop2>
                 <newprop3>non ha potuto essere stabilita.</newprop3>
@@ -302,7 +321,7 @@
                 <newextformat>Introduci per favore solo un'estensione di file alla volta. Non hai bisogno di introdurre l'asterisco e il punto.</newextformat>
                 <newextension>Per favore contatta il tuo amministratore di sistema.</newextension>
                 <newlink>Please check the entered data or contact your system administrator.</newlink>
-				<newtask>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</newtask>
+                <newtask>Per favore controlla i dati introdotti o contatta il tuo amministratore di sistema.</newtask>
                 <none></none>
                 <picbrowser>Crea la cartella per le gallerie di immagini o contatta il tuo amministratore di sistema.</picbrowser>
                 <picgallery>Creazione di una galleria di immagini</picgallery>
@@ -347,7 +366,7 @@
                 <newprop>Nuova proprietà per il tipo di risorsa</newprop>
                 <newextension>Associa nuova estensione di file</newextension>
                 <newlink>New Link</newlink>
-				<newproject>Nuovo Progetto</newproject>
+                <newproject>Nuovo Progetto</newproject>
                 <newtask>Nuovo Compito</newtask>
                 <picbrowser>Navigatore Immagini</picbrowser>
                 <picgallery>Creazione nuova Galleria di Immagini</picgallery>
@@ -393,16 +412,17 @@
             <export>Esporta</export>
             <exportmoduledata>Esporta dati del Modulo</exportmoduledata>
             <extlinkgallery>External links<![CDATA[<br>]]>management</extlinkgallery>
-			<groups>Modifica Gruppi</groups>
+            <groups>Modifica Gruppi</groups>
             <imagelist>lista immagini</imagelist>
             <import>Importa</import>
+            <linkmanagement>Check Project</linkmanagement>
             <linkcheckviewer>LinkCheck Viewer</linkcheckviewer>
-			<logfileviewer>Visualizzatore<![CDATA[<BR>]]>file registro</logfileviewer>
+            <logfileviewer>Visualizzatore<![CDATA[<BR>]]>file registro</logfileviewer>
             <module>Gestione Moduli</module>
             <mountpoint>Punti di Mount</mountpoint>
             <newgallery>nuova galleria</newgallery>
             <newlink>New external link</newlink>
-			<newproject>Nuovo Progetto</newproject>
+            <newproject>Nuovo Progetto</newproject>
             <picgallery>Gestione Gallerie<![CDATA[<BR>]]>di immagini</picgallery>
             <processmanagement>Pianificatore</processmanagement>
             <project>Gestione Progetti</project>
@@ -550,7 +570,7 @@
             <newpwdrepeat>Conferma Password</newpwdrepeat>
             <next>successivo</next>
             <nochange>No change</nochange>
-			<nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
+            <nolinkvalue>Per favore inserisci il collegamento!</nolinkvalue>
             <none>-- nessuno --</none>
             <oldpwd>Password Attuale</oldpwd>
             <owner>Proprietario</owner>

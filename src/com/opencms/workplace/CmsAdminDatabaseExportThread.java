@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabaseExportThread.java,v $
-* Date   : $Date: 2002/02/14 14:25:48 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/05/24 12:51:09 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import com.opencms.report.*;
 import java.util.*;
 import java.io.*;
 
@@ -61,6 +62,9 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
 
     private boolean m_moduledataExport;
 
+    // the object to send the information to the workplace.
+    private CmsReport m_report;
+
     /**
      * Insert the method's description here.
      * Creation date: (13.09.00 09:52:24)
@@ -76,6 +80,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
         m_session = session;
+        m_report = new CmsReport(new String[]{"<br>"});
         m_moduledataExport = false;
     }
 
@@ -103,7 +108,7 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
             if(m_moduledataExport){
                 m_cms.exportModuledata(m_fileName, m_exportPaths, m_exportModules);
             } else {
-                m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata);
+                m_cms.exportResources(m_fileName, m_exportPaths, m_excludeSystem, m_excludeUnchanged, m_exportUserdata, m_report);
             }
         }
         catch(CmsException e) {
@@ -112,5 +117,12 @@ public class CmsAdminDatabaseExportThread extends Thread implements I_CmsConstan
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, e.getMessage());
             }
         }
+    }
+
+    /**
+     * returns the part of the report that is ready.
+     */
+    public String getReportUpdate(){
+        return m_report.getReportUpdate();
     }
 }
