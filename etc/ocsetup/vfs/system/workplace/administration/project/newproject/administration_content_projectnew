@@ -195,6 +195,7 @@ var lasturl=']]><PROCESS>backButton</PROCESS><![CDATA[';
                                 </td>
                                 <td class=formular>&nbsp;</td>
                             </tr>
+							]]><process>projectstatexp</process><![CDATA[                         
                 </table>
             </td></tr>
             
@@ -340,5 +341,25 @@ function reload(){
     </BODY>
     </html> ]]>
 </TEMPLATE>
+
+<STATEXP_ENABLED>
+<![CDATA[
+    <tr> 
+      <td class=formular width=10%>&nbsp;</td>
+      <td class=formular>
+        <input type=checkbox name="staticexport" value="staticexport" checked>]]><LABEL value="label.projectstaticexport"/><![CDATA[
+      </td>
+      <td class=formular>&nbsp;</td>
+    </tr>
+]]>  
+</STATEXP_ENABLED>
+
+<STATEXP_DISABLED>
+<![CDATA[
+	<tr>
+		<td>&nbsp;</td>
+	</tr>
+]]>
+</STATEXP_DISABLED>
 
 </WORKPLACE>
