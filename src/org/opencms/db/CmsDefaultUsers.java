@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/02/27 11:35:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2004/02/13 13:41:44 $
+ * @version $Revision: 1.17 $ $Date: 2004/02/27 11:35:29 $
  * @since 5.1.5
  */
 public class CmsDefaultUsers {
@@ -303,5 +303,28 @@ public class CmsDefaultUsers {
         } else {
             return name;
         }
+    }
+    
+    /**
+     * Checks if a given group name is the name of one of the OpenCms default groups.<p>
+     *
+     * @param groupName the group name to check
+     * @return <code>true</code> if group name is one of OpenCms default groups, <code>false</code> if it is not
+     * or if <code>groupName</code> is <code>null</code> or an empty string (no trim)
+     * 
+     * @see #getGroupAdministrators()
+     * @see #getGroupProjectmanagers()
+     * @see #getGroupUsers()
+     * @see #getGroupGuests()
+     */
+    public boolean isDefaultGroup(String groupName) {
+        if ((groupName == null) || (groupName.length() == 0)) {
+            return false;
+        }
+
+        return m_groupAdministrators.equals(groupName) 
+            || m_groupProjectmanagers.equals(groupName) 
+            || m_groupUsers.equals(groupName) 
+            || m_groupGuests.equals(groupName);
     }
 }
