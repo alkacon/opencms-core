@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2004/08/18 11:53:29 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,6 +86,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
@@ -105,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.138 $
+ * @version $Revision: 1.139 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1421,20 +1422,17 @@ public final class OpenCmsCore {
             // only do basic authentification
             if (auth.toUpperCase().startsWith("BASIC ")) {
 
-                // Get encoded user and password, following after "BASIC "
-                String userpassEncoded = auth.substring(6);
+                // get encoded user and password, following after "BASIC "
+                String base64Token = auth.substring(6);
 
-                // Decode it, using any base 64 decoder
-                sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
-                String userstr = new String(dec.decodeBuffer(userpassEncoded));
+                // decode it, using base 64 decoder
+                String token = new String(Base64.decodeBase64(base64Token.getBytes()));
                 String username = null;
                 String password = null;
-                StringTokenizer st = new StringTokenizer(userstr, ":");
-                if (st.hasMoreTokens()) {
-                    username = st.nextToken();
-                }
-                if (st.hasMoreTokens()) {
-                    password = st.nextToken();
+                int pos = token.indexOf(":");           
+                if (pos != -1) {
+                    username = token.substring(0, pos);
+                    password = token.substring(pos + 1);
                 }
                 // authentication in the DB
                 try {
