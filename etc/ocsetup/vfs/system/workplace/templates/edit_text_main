@@ -2,7 +2,7 @@
 <WORKPLACE>
 <TEMPLATE name="ie">
 <![CDATA[
-<!-- Buttonleiste internetexplorer-->
+<!-- Buttonleiste -->
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
     <tr>
         <td class=menu>]]><BUTTON href="javascript:doEdit(2);" name="bt_saveclose" action="" alt="saveclose"/><![CDATA[</td>
@@ -21,13 +21,6 @@
         <td class=menu>]]><BUTTON href="#" name="bt_cut" action="doEdit(9);" alt="cut"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_copy" action="doEdit(10);" alt="copy"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_paste" action="doEdit(11);" alt="paste"/><![CDATA[</td>
-
-        ]]><!-- FLEX: Removed static button entries and replaced them with dynamic entries:
-        <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_fileimport" action="doEdit(12);" alt="fileimport"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_fileexport" action="doEdit(13);" alt="fileexport"/><![CDATA[</td>
-        <td class=menu>]]><BUTTON href="#" name="bt_fileexportas" action="doEdit(14);" alt="fileexportas"/><![CDATA[</td>
-        --><![CDATA[
 
         <script language="JavaScript">
         if (USE_IMPORTBUTTONS) {
@@ -53,9 +46,9 @@
 
 <!-- Inhalt -->
 <tr>
-    <td class="texteditor" colspan=23 height="100%" width=100%>
-        <OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02
-            height=100% id=edit1 name=edit1 width=100% onFocus="setTextDelayed();">
+    <td class="texteditor" height="100%" width="100%">
+        <OBJECT classid="clsid:EB3A74C0-5343-101D-BB4D-040224009C02"
+            width="100%" height="100%" id="edit1" name="edit1" onFocus="setTextDelayed();">
             <PARAM NAME="_Version" VALUE="131083">
             <PARAM NAME="_ExtentX" VALUE="22887">
             <PARAM NAME="_ExtentY" VALUE="7223">
@@ -111,12 +104,11 @@
             <PARAM NAME="ZeroSubstitute" VALUE="0">
         </OBJECT>
         <script language="javascript">
-            if(document.edit1!=true)document.location=document.location+"&noactivex=true";
+            if(document.edit1 != true) document.location=document.location+"&noactivex=true";
         </script>
     </td>
 </tr>
-</table>
-<table>
+<tr><td>
 ]]>
 </TEMPLATE>
 
@@ -135,21 +127,18 @@
 </table>
 
 <!-- Inhalt -->
+<tr>
+    <td class="texteditor" height="100%" width=100%>
     <!-- write the text area -->
     <script language="JavaScript">
-    <!--
-
-        if(!ie)getDimensions();
-        else windowHeight="50%";
-
-
-        str = '<textarea class="textarea" name="edit1" onfocus=setTextDelayed(); rows='+windowHeight+' cols='+windowWidth+' wrap=virtual style="width:100%"></textarea>';
-
+    <!--      
+        str = '<textarea wrap="off" name="edit1" onfocus="setTextDelayed();" style="width:100%; height:100%; font-family:Fixedsys, monospace"></textarea>';
         document.write(str);
     //-->
     </script>
-
-
+    </td>
+</tr>
+<tr><td>
 ]]>
 </TEMPLATE>
 </WORKPLACE>

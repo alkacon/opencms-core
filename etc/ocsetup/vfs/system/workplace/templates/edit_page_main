@@ -127,20 +127,18 @@
 
 <SCRIPT LANGUAGE="javascript" FOR="EDIT_HTML" EVENT="onkeyup">
 <!--
-/** (by comundus GmbH)
-* if the user selected a text or a image, that has a link and delete
-* then the link will be clean.
-* this function is for pasted text from word to mshtml editor,too.
-*/
-	
+/**
+ * if the user selected a text or a image, that has a link and delete
+ * then the link will be clean.
+ * this function is for pasted text from word to mshtml editor,too.
+ */
     function checkContentByKeyUp()
     {
 	var cBackSpace  = 8;
 	var cDelete		= 46;
 	var cReturn		= 13;
 	    if (IE==true) 
-		{
-			
+		{			
 			var keyPressed;	
 			keyPressed = document.EDITOR.EDIT_HTML.DOM.parentWindow.event.keyCode;		
 			if (keyPressed == cBackSpace || keyPressed == cDelete || keyPressed == cReturn)
@@ -150,7 +148,7 @@
 		}
     }
     checkContentByKeyUp();
-    //-->
+//-->
 </script>
 
 <script LANGUAGE="vbscript">
@@ -179,14 +177,14 @@ End Sub
     <INPUT TYPE=HIDDEN name="bodyclass" value="]]><PROCESS>bodyclass</PROCESS><![CDATA[">
     <INPUT TYPE=HIDDEN name="bodyfile" value="]]><PROCESS>bodyfile</PROCESS><![CDATA[">
     <INPUT TYPE=HIDDEN name="URL" id="URL">
-        <table width=100%>
+        <table "width=100%">
             <tr>
-                <td class=dialogtxt>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]> <INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
-                <td class=dialogtxt><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
+                <td nowrap class=dialogtxt>]]><LABEL value="input.title"/>:<![CDATA[&nbsp;</td><td class=dialogtxt>]]><INPUTFIELD name="title" class="textfeld" size="10" length="255" method="setTitle"/><![CDATA[</td>
+                <td nowrap class=dialogtxt>&nbsp;&nbsp;]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;</td><td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="200" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
 
                 <script language="JavaScript">
                 if (USE_TEMPLATESELECTOR && (! USE_BODYSELECTOR)) {
-                    document.write('<td class=dialogtxt><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
+                    document.write('<td class=dialogtxt>&nbsp;&nbsp;]]><LABEL value="input.template"/>:<![CDATA[&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
                 } else if (! USE_TEMPLATESELECTOR) {
                     document.write('<td style="visibility:hidden;">]]><SELECT class="textfeld" name="template" width="1" method="getAvailableTemplates" /><![CDATA[</td>');
@@ -200,17 +198,8 @@ End Sub
                 <td class=menu align=right width="100%">]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>
 
                 <script language="JavaScript">
-                if (USE_BODYSELECTOR && USE_TEMPLATESELECTOR) {
-                    document.write('</tr></table></td></tr><tr><td><hr></td></tr><tr><td><table><tr>');
-                }
-                </script>
-
-                ]]><!-- FLEX: Removed static body select entries and replaced them with dynamic entries:
-                <td class=menu><p class=tab>]]><BUTTON href="javascript:doTemplSubmit(6);" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
-                --><![CDATA[
-
-                <script language="JavaScript">
                 if (USE_TEMPLATESELECTOR && USE_BODYSELECTOR) {
+                    document.write('</tr></table></td></tr><tr><td>><hr noshade size="1"></td></tr><tr><td><table><tr>');
                     document.write('<td class=dialogtxt>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>');
                     document.write('<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="220" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>');
                 }
@@ -227,7 +216,7 @@ End Sub
             </tr>
         </table>
 </td></tr>
-<tr><td><hr></td></tr>
+<tr><td><hr noshade size="1"></td></tr>
 <tr><td>
 
   ]]><ELEMENT name="editor"/><![CDATA[
