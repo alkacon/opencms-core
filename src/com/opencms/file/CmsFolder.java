@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFolder.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -33,7 +33,7 @@ import com.opencms.core.*;
  * This class describes a folder in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsFolder extends CmsResource implements I_CmsConstants,
                                                       Cloneable {
@@ -67,11 +67,11 @@ public class CmsFolder extends CmsResource implements I_CmsConstants,
    }
     
     /** 
-    * Clones the CmsResource by creating a new CmsFolder.
+    * Clones the CmsFolder by creating a new CmsFolder.
     * @return Cloned CmsFolder.
     */
     public Object clone() {
-        return new CmsFolder(this.getAbsolutePath(),this.getType(),
+        return new CmsFolder(new String(this.getAbsolutePath()),this.getType(),
                              this.getFlags(), this.getOwnerId(), this.getGroupId(),
                              this.getProjectId(),this.getAccessFlags(), 
                              this.getState(),this.isLockedBy(),this.getDateCreated(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/19 10:15:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/02/19 10:15:27 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -110,11 +110,14 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    checkFolders(cms,currentFilelist);
                    
                    // create the page file
+                   System.err.println("##Creating file "+ currentFilelist);
+                  
                    CmsFile file=cms.createFile(currentFilelist,newFile,content,"page");
                    cms.lockResource(file.getAbsolutePath());
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
                    
                    // now create the page content file
+                   System.err.println("##Creating body "+C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()));
                    CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
                    
                    // set the flags for the content file to internal use, the content 

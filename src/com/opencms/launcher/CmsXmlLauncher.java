@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsXmlLauncher.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -54,7 +54,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -69,9 +69,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
 	 */	
     protected void launch(A_CmsObject cms, CmsFile file, String startTemplateClass) throws CmsException {
   
-        long timer=System.currentTimeMillis();
-        System.err.println("Launching for "+file);
-        
+         
         // get the CmsRequest 
         I_CmsRequest req = cms.getRequestContext().getRequest();
         byte[] result = null;
@@ -150,10 +148,7 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
                 newParameters.put(datafor + pname, req.getParameter(pname));
             }
         }
-  
-        System.err.println((System.currentTimeMillis()-timer)+" Init completed for "+file.getName());
-        
-        try {
+       try {
             result = callCanonicalRoot(cms, (I_CmsTemplate)tmpl, masterTemplate, newParameters);
         } catch (CmsException e) {
             if(A_OpenCms.isLogging()) {
@@ -163,13 +158,11 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
             doc.removeFromFileCache();
             throw e;
         }
-        System.err.println((System.currentTimeMillis()-timer)+" Processing completed for "+file.getName());
-                  
+                   
         if(result != null) {
             writeBytesToResponse(cms, result);
         }
-        System.err.println((System.currentTimeMillis()-timer)+" Output written for  "+file.getName());
-      
+       
     }
 
     /**

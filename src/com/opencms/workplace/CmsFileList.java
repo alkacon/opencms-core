@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.23 $ $Date: 2000/02/20 11:42:09 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -304,8 +304,10 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
             // go through all folders and files
             enum=list.elements();
             while (enum.hasMoreElements()) {
-                long starttime=System.currentTimeMillis();
                 res=(CmsResource)enum.nextElement();
+                
+                if (checkAccess(cms,res)) {
+                
                 if (res.isFolder()) {
                     folder=(CmsFolder)res; 
             
@@ -436,9 +438,9 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
                      // as a last step, check which colums must be displayed and add the file
                     // to the output.
                     template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
-                     output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
-                   
+                    output.append(template.getProcessedXmlDataValue(C_LIST_ENTRY,callingObject));                
                 }
+               }
             }
          return output.toString();
      }            
@@ -754,7 +756,26 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
          }                
          return contextMenu;
      }
-     
+
+     /** 
+      * Check if this resource should be displayed in the filelist.
+      * @param cms The CmsObject
+      * @param res The resource to be checked.
+      * @return True or false.
+      * @exception CmsException if something goes wrong.
+      */
+     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     throws CmsException {
+         boolean access=false;
+         int accessflags=res.getAccessFlags();
+         
+         if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
+              (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
+              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {
+             access=true;
+         }
+         return access;
+     }
      
      
      /**

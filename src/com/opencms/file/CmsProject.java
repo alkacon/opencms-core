@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/02/19 18:38:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/02/19 18:38:51 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsProject extends A_CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -270,4 +270,17 @@ public class CmsProject extends A_CmsProject implements I_CmsConstants,
         }
         return equal;
 	}
+    
+    /** 
+    * Clones the CmsProject by creating a new CmsProject Object.
+    * @return Cloned CmsProject.
+    */
+    public Object clone() {
+        CmsProject project=new CmsProject(this.m_id,new String (this.m_name),
+                                       new String(m_description),this.m_taskId,
+                                       this.m_ownerId,this.m_groupId,this.m_managergroupId,
+                                       this.m_flags,new Timestamp(this.m_createdate),
+                                       new Timestamp(this.m_publishingdate));
+        return project;    
+    }  
 }

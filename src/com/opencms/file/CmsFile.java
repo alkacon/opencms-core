@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsFile.java,v $
- * Date   : $Date: 2000/02/15 17:43:59 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.io.*;
  * This class describes a file in the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/02/15 17:43:59 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsFile extends CmsResource { 	
 
@@ -121,7 +121,17 @@ public class CmsFile extends CmsResource {
         return extension;          
     }
      
- 
-    
-
+    /** 
+    * Clones the CmsFile by creating a new CmsFolder.
+    * @return Cloned CmsFile.
+    */
+    public Object clone() {
+        return new CmsFile(new String(this.getAbsolutePath()),this.getType(),
+                             this.getFlags(), this.getOwnerId(), this.getGroupId(),
+                             this.getProjectId(),this.getAccessFlags(), 
+                             this.getState(),this.isLockedBy(), this.getLauncherType(),
+                             new String(this.getLauncherClassname()), this.getDateCreated(),
+                             this.getDateLastModified(), this.getContents(),
+                             this.getLength());                             
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsRootTemplate.java,v $
- * Date   : $Date: 2000/02/19 17:05:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/20 11:42:09 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2000/02/19 17:05:41 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/20 11:42:09 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -65,7 +65,6 @@ public class CmsRootTemplate implements I_CmsLogChannels {
             com.opencms.launcher.I_CmsTemplateCache cache, Hashtable parameters) throws CmsException {
         
         long timer=System.currentTimeMillis();
-        System.err.println("**Starting gmt for "+masterTemplate.getName());
         
         byte[] result;
         //String cacheKey = cms.getUrl();
@@ -78,13 +77,10 @@ public class CmsRootTemplate implements I_CmsLogChannels {
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] page " + masterTemplate.getAbsolutePath() + " was read from cache.");                                                                 
             }
-            System.err.println((System.currentTimeMillis()-timer)+" **Init 1 for "+masterTemplate.getName());
         } else {
             try {
-                System.err.println((System.currentTimeMillis()-timer)+" **Init 2 for "+masterTemplate.getName());
                 result = templateClass.getContent(cms, masterTemplate.getAbsolutePath(), null, parameters);
-                System.err.println((System.currentTimeMillis()-timer)+" **Got Result for "+masterTemplate.getName());
-            } catch(CmsException e) {
+          } catch(CmsException e) {
                 cache.clearCache(cacheKey);
                 if(A_OpenCms.isLogging()) {
                     A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] Could not get contents of master template " + masterTemplate.getName());
@@ -94,8 +90,7 @@ public class CmsRootTemplate implements I_CmsLogChannels {
             if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, null)) {
                 cache.put(cacheKey, result);
             }
-           System.err.println((System.currentTimeMillis()-timer)+" **Done for "+masterTemplate.getName());
-        }         
+       }         
         return result;
     }
 }
