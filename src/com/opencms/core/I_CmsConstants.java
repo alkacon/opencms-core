@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2004/01/19 17:14:14 $
-* Version: $Revision: 1.280 $
+* Date   : $Date: 2004/01/22 18:17:28 $
+* Version: $Revision: 1.281 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.280 $ $Date: 2004/01/19 17:14:14 $
+ * @version $Revision: 1.281 $ $Date: 2004/01/22 18:17:28 $
  */
 public interface I_CmsConstants {
 
@@ -274,6 +274,17 @@ public interface I_CmsConstants {
      * The permission to control a resource
      */
     int C_PERMISSION_CONTROL = 8;
+
+    /**
+     * All allowed permissions for a resource
+     */
+     int C_PERMISSION_FULL = I_CmsConstants.C_PERMISSION_VIEW + I_CmsConstants.C_PERMISSION_READ
+            + I_CmsConstants.C_PERMISSION_WRITE +  I_CmsConstants.C_PERMISSION_CONTROL;
+
+    /**
+     * No permissions for a resource (used especially for deniedPermissions)
+     */
+     int C_PERMISSION_EMPTY  =  0;
 
     /**
      * Permission set to check read acces
