@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/11/15 15:43:58 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/12/11 14:49:50 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -168,6 +168,26 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
     public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
+    }
+
+    /**
+     * Checks if the staticExport is active and the current project is the online project.
+     * <P>
+     * This method is used by workplace icons to decide whether the icon should
+     * be activated or not. Icons will use this method if the attribute <code>method="isOnlineProject"</code>
+     * is defined in the <code>&lt;ICON&gt;</code> tag.
+     *
+     * @param cms CmsObject Object for accessing system resources <em>(not used here)</em>.
+     * @param lang reference to the currently valid language file <em>(not used here)</em>.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return <code>true</code> if the current project is the online project, <code>false</code> otherwise.
+     * @exception CmsException if there were errors while accessing project data.
+     */
+
+    public Boolean isExportActive(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) throws CmsException {
+        CmsRequestContext reqCont = cms.getRequestContext();
+        boolean isProMan = isProjectManager(cms, lang, parameters).booleanValue();
+        return new Boolean(cms.isStaticExportEnabled() && isProMan);
     }
 
     /** Parse the string which holds all resources

@@ -5578,7 +5578,7 @@
                 <property>
                     <name>visiblemethod</name>
                     <type>0</type>
-                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isProjectManager]]></value>
+                    <value><![CDATA[com.opencms.workplace.CmsAdminStaticExport.isExportActive]]></value>
                 </property>
                 <property>
                     <name>activemethod</name>
