@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsDumpLauncher.java,v $
-* Date   : $Date: 2002/10/15 13:16:32 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/10/30 10:28:47 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import com.opencms.template.cache.*;
  * be used to create output.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.33 $ $Date: 2002/10/15 13:16:32 $
+ * @version $Revision: 1.34 $ $Date: 2002/10/30 10:28:47 $
  */
 public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
 
@@ -135,6 +135,14 @@ public class CmsDumpLauncher extends A_CmsLauncher implements I_CmsConstants {
                 }
             }
         }
+
+        // Important because PDFs will not be displayed if caching is disabled
+        // Setting this header here will cause root template and element cache 
+        // not to set caching header again
+        String mimetype = cms.getRequestContext().getResponse().getContentType();   
+        if ((null != mimetype) && (mimetype.endsWith("pdf"))) {
+            cms.getRequestContext().getResponse().setHeader("Cache-Control","max-age=300");
+        }         
 
         if(elementCacheEnabled) {
             // lets check if ssl is active
