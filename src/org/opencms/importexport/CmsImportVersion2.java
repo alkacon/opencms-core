@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/02/09 10:27:12 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/11 14:23:48 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,19 @@ import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
-import org.opencms.util.CmsXmlTemplateLinkConverter;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.file.*;
+import com.opencms.file.CmsFile;
+import com.opencms.file.CmsObject;
+import com.opencms.file.CmsPropertydefinition;
+import com.opencms.file.CmsResource;
+import com.opencms.file.CmsResourceTypeFolder;
+import com.opencms.file.CmsResourceTypeLink;
+import com.opencms.file.CmsResourceTypePage;
+import com.opencms.file.CmsResourceTypePlain;
+import com.opencms.file.CmsResourceTypeXmlPage;
 import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsXmlXercesParser;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.ByteArrayInputStream;
@@ -51,38 +57,33 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.zip.ZipFile;
 
-import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the OpenCms Import Interface (@see org.opencms.importexport.I_CmsImport) for 
- * the import version 2. <p>
+ * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
+ * the import version 2.</p>
  * 
- * This import format was used in OpenCms 5.0.0 - 5.1.2.
- * 
- * @see org.opencms.importexport.A_CmsImport
+ * This import format was used in OpenCms 5.0.0 - 5.1.2.</p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * 
+ * @see org.opencms.importexport.A_CmsImport
  */
 public class CmsImportVersion2 extends A_CmsImport {
 
-
     /** Web application names for conversion support */
-    private List m_webAppNames = new ArrayList();
+    protected List m_webAppNames = new ArrayList();
 
     /** Old webapp URL for import conversion */
-    private String m_webappUrl = null;
+    protected String m_webappUrl = null;
     
     /** folder storage for page file and body coversion */
     private List m_folderStorage;
@@ -90,10 +91,6 @@ public class CmsImportVersion2 extends A_CmsImport {
     /** page file storage for page file and body coversion */
     private List m_pageStorage;
     
-    /** The path to the bodies in OpenCms 4.x */
-     private static final String C_VFS_PATH_OLD_BODIES = "/content/bodys/";
-
-
     /**
      * Returns the import version of the import implementation.<p>
      * 
@@ -515,45 +512,48 @@ public class CmsImportVersion2 extends A_CmsImport {
              if (source != null) {
                  content = getFileBytes(source);
              }
-             // check and convert old import files    
-             if (m_importVersion < 2) {
+             
+//             // check and convert old import files    
+//             if (m_importVersion < 2) {
+//
+//                 // convert content from pre 5.x must be activated
+//                 if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
+//                     if (DEBUG > 0) {
+//                         System.err.println("#########################");
+//                         System.err.println("[" + this.getClass().getName() + ".importResource()]: starting conversion of \"" + type + "\" resource " + source + ".");
+//                     }
+//                     // change the filecontent for encoding if necessary
+//                     content = convertFile(source, content);
+//                 }
+//                 // only check the file type if the version of the export is 0
+//                 if (m_importVersion == 0) {
+//                     // ok, a (very) old system exported this, check if the file is ok
+//                     if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, type)) {
+//                         type = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;
+//                         m_report.print(m_report.key("report.must_set_to") + type + " ", I_CmsReport.C_FORMAT_WARNING);
+//                     }
+//                 }
+//             }
 
-                 // convert content from pre 5.x must be activated
-                 if ("page".equals(type) || ("plain".equals(type)) || ("XMLTemplate".equals(type))) {
-                     if (DEBUG > 0) {
-                         System.err.println("#########################");
-                         System.err.println("[" + this.getClass().getName() + ".importResource()]: starting conversion of \"" + type + "\" resource " + source + ".");
-                     }
-                     // change the filecontent for encoding if necessary
-                     content = convertFile(source, content);
-                 }
-                 // only check the file type if the version of the export is 0
-                 if (m_importVersion == 0) {
-                     // ok, a (very) old system exported this, check if the file is ok
-                     if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, type)) {
-                         type = CmsResourceTypeCompatiblePlain.C_RESOURCE_TYPE_NAME;
-                         m_report.print(m_report.key("report.must_set_to") + type + " ", I_CmsReport.C_FORMAT_WARNING);
-                     }
-                 }
-             }
-
-             // if the import is older than version 3, some additional conversions must be made
-             if (m_importVersion < 3) {
-                 if ("page".equals(type)) {
-
-                     // if the imported resource is a page, store its path inside the VFS for later
-                     // integration with its body
-                     m_pageStorage.add(destination);
-                 } else if ("folder".equals(type)) {
-                     // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
-                     // must be remove since we do not use body files anymore.
-                     if (destination.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(1))) {
-                         m_folderStorage.add(destination);
-
-                     }
-                 }
-
-             }                  
+//             // if the import is older than version 3, some additional conversions must be made
+//             if (m_importVersion < 3) {
+//                 if ("page".equals(type)) {
+//
+//                     // if the imported resource is a page, store its path inside the VFS for later
+//                     // integration with its body
+//                     m_pageStorage.add(destination);
+//                 } else if ("folder".equals(type)) {
+//                     // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
+//                     // must be remove since we do not use body files anymore.
+//                     if (destination.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(1))) {
+//                         m_folderStorage.add(destination);
+//                     }
+//                 }
+//
+//             } 
+             
+             content = convertContent(source, destination, content, type);
+             
              // get all required information to create a CmsResource
              int resType=m_cms.getResourceTypeId(type);
              int size=0;
@@ -640,6 +640,40 @@ public class CmsImportVersion2 extends A_CmsImport {
          }
          return res;
      }
+     
+     /**
+      * Performs all required pre-import steps.<p>
+      * 
+      * The content is *NOT* changed in the implementation of this class.<p>
+      * 
+      * @param source the source path of the resource
+      * @param destination the destination path of the resource
+      * @param content the content of the resource
+      * @param resType the type of the resource
+      * @return the (prepared) content of the resource
+      */
+     protected byte[] convertContent(String source, String destination, byte[] content, String resType) {
+        // if the import is older than version 3, some additional conversions must be made
+        if (m_importVersion < 3) {
+            if ("page".equals(resType)) {
+                if (DEBUG > 0) {
+                    System.err.println("#########################");
+                    System.err.println("[" + this.getClass().getName() + ".convertContent()]: storing resource " + source + ".");
+                }                
+                // if the imported resource is a page, store its path inside the VFS for later
+                // integration with its body
+                m_pageStorage.add(destination);
+            } else if ("folder".equals(resType)) {
+                // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
+                if (destination.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES.substring(1))) {
+                    // must be remove since we do not use body files anymore.
+                    m_folderStorage.add(destination);
+                }
+            }
+        }
+        
+        return content;
+    }
 
     /**
      * Merges the page control files and their corresponding bodies into a single files.<p>
@@ -875,70 +909,12 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-      * Converts the content of a file from OpenCms 4.x versions.<p>
-      * 
-      * @param filename the name of the file to convert
-      * @param byteContent the content of the file
-      * @return the converted filecontent
-      */
-     private byte[] convertFile(String filename, byte[] byteContent) {
-         byte[] returnValue = byteContent;
-         if (!filename.startsWith("/")) {
-             filename = "/" + filename;
-         }
-
-         String fileContent = new String(byteContent);
-         String encoding = getEncoding(fileContent);
-         if (!"".equals(encoding)) {
-             // encoding found, ensure that the String is correct
-             try {
-                 // get content of the file and store it in String with the correct encoding
-                 fileContent = new String(byteContent, encoding);
-             } catch (UnsupportedEncodingException e) {
-                 // encoding not supported, we use the default and hope we are lucky
-                 if (DEBUG > 0) {
-                     System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not supported, using default encoding.");
-                 }
-             }
-         } else {
-             // encoding not found, set encoding of xml files to default
-             if (DEBUG > 0) {
-                 System.err.println("[" + this.getClass().getName() + ".convertFile()]: Encoding not set, using default encoding and setting it in <?xml...?>.");
-             }
-             encoding = OpenCms.getDefaultEncoding();
-             fileContent = setEncoding(fileContent, encoding);
-         }
-         // check the frametemplates
-         if (filename.indexOf("frametemplates") != -1) {
-             fileContent = scanFrameTemplate(fileContent);
-         }
-         // scan content/bodys
-         if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
-             if (DEBUG > 0) {
-                 System.err.println("[" + this.getClass().getName() + ".convertFile()]: Starting scan of body page.");
-             }
-             fileContent = convertPageBody(fileContent, filename);
-         }
-         // translate OpenCms 4.x paths to the new directory structure 
-         fileContent = setDirectories(fileContent, m_cms.getRequestContext().getDirectoryTranslator().getTranslations());
-                  
-         // create output ByteArray
-         try {
-             returnValue = fileContent.getBytes(encoding);
-         } catch (UnsupportedEncodingException e) {
-             // encoding not supported, we use the default and hope we are lucky
-             returnValue = fileContent.getBytes();
-         }
-         return returnValue;
-     }
-     
-    /**
      * Gets the encoding from the &lt;?XML ...&gt; tag if present.<p>
      * 
      * @param content the file content
      * @return String the found encoding
      */
-    private String getEncoding(String content) {
+    protected String getEncoding(String content) {
         String encoding = content;
         int index = encoding.toLowerCase().indexOf("encoding=\"");
         // encoding attribute found, get the value
@@ -960,7 +936,7 @@ public class CmsImportVersion2 extends A_CmsImport {
      * @param encoding the encoding to use
      * @return modified content
      */
-    private String setEncoding(String content, String encoding) {
+    protected String setEncoding(String content, String encoding) {
         if (content.toLowerCase().indexOf("<?xml") == -1) {
             return content;
         } else {
@@ -976,147 +952,6 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
 
-    /** 
-     * Scans the given content of a frametemplate and returns the result.<p>
-     *
-     * @param content the filecontent
-     * @return modified content
-     */
-    private String scanFrameTemplate(String content) {
-        // no Meta-Tag present, insert it!
-        if (content.toLowerCase().indexOf("http-equiv=\"content-type\"") == -1) {
-            content = CmsStringSubstitution.substitute(content, "</head>", "<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
-        } else {
-            // Meta-Tag present
-            if (content.toLowerCase().indexOf("charset=]]><method name=\"getencoding\"/>") == -1) {
-                String fileStart = content.substring(0, content.toLowerCase().indexOf("charset=") + 8);
-                String editContent = content.substring(content.toLowerCase().indexOf("charset="));
-                editContent = editContent.substring(editContent.indexOf("\""));
-                String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
-                content = fileStart + newEncoding + editContent;
-            }
-        }
-        return content;
-    }
-    
-    /**
-      * Searches for the webapps String and replaces it with a macro which is needed for the WYSIWYG editor,
-      * also creates missing &lt;edittemplate&gt; tags for exports of older OpenCms 4.x versions.<p>
-      * 
-      * @param content the filecontent 
-      * @param fileName the name of the file 
-      * @return String the modified filecontent
-      */
-     private String convertPageBody(String content, String fileName) {
-         // variables needed for the creation of <template> elements
-         boolean createTemplateTags = false;
-         Hashtable templateElements = new Hashtable();
-         // first check if any contextpaths are in the content String
-         boolean found = false;
-         for (int i = 0; i < m_webAppNames.size(); i++) {
-             if (content.indexOf((String)m_webAppNames.get(i)) != -1) {
-                 found = true;
-             }
-         }
-         // check if edittemplates are in the content string
-         if (content.indexOf("<edittemplate>") != -1) {
-             found = true;
-         }
-         // only build document when some paths were found or <edittemplate> is missing!
-         if (found) {
-             InputStream in = new ByteArrayInputStream(content.getBytes());
-             String editString, templateString;
-             try {
-                 // create DOM document
-                 Document contentXml = A_CmsXmlContent.getXmlParser().parse(in);
-                 // get all <edittemplate> nodes to check their content
-                 NodeList editNodes = contentXml.getElementsByTagName("edittemplate");
-                 // no <edittemplate> tags present, create them!
-                 if (editNodes.getLength() < 1) {
-                     if (DEBUG > 0) {
-                         System.err.println("[" + this.getClass().getName() + ".convertPageBody()]: No <edittemplate> found, creating it.");
-                     }
-                     createTemplateTags = true;
-                     NodeList templateNodes = contentXml.getElementsByTagName("TEMPLATE");
-                     // create an <edittemplate> tag for each <template> tag
-                     for (int i = 0; i < templateNodes.getLength(); i++) {
-                         // get the CDATA content of the <template> tags
-                         editString = templateNodes.item(i).getFirstChild().getNodeValue();
-                         templateString = editString;
-                         // substitute the links in the <template> tag String
-                         try {
-                             templateString = CmsXmlTemplateLinkConverter.convertFromImport(templateString, m_webappUrl, fileName);
-                         } catch (CmsException e) {
-                             throw new CmsException("[" + this.getClass().getName() + ".convertPageBody()] can't parse the content: ", e);
-                         }
-                         // look for the "name" attribute of the <template> tag
-                         NamedNodeMap attrs = templateNodes.item(i).getAttributes();
-                         String templateName = "";
-                         if (attrs.getLength() > 0) {
-                             templateName = attrs.item(0).getNodeValue();
-                         }
-                         // create the new <edittemplate> node                       
-                         Element newNode = contentXml.createElement("edittemplate");
-                         CDATASection newText = contentXml.createCDATASection(editString);
-                         newNode.appendChild(newText);
-                         // set the "name" attribute, if necessary
-                         attrs = newNode.getAttributes();
-                         if (!templateName.equals("")) {
-                             newNode.setAttribute("name", templateName);
-                         }
-                         // append the new edittemplate node to the document
-                         contentXml.getElementsByTagName("XMLTEMPLATE").item(0).appendChild(newNode);
-                         // store modified <template> node Strings in Hashtable
-                         if (templateName.equals("")) {
-                             templateName = "noNameKey";
-                         }
-                         templateElements.put(templateName, templateString);
-                     }
-                     // finally, delete old <TEMPLATE> tags from document
-                     while (templateNodes.getLength() > 0) {
-                         contentXml.getElementsByTagName("XMLTEMPLATE").item(0).removeChild(templateNodes.item(0));
-                     }
-                 }
-                 // check the content of the <edittemplate> nodes
-                 for (int i = 0; i < editNodes.getLength(); i++) {
-                     editString = editNodes.item(i).getFirstChild().getNodeValue();
-                     for (int k = 0; k < m_webAppNames.size(); k++) {
-                         editString = CmsStringSubstitution.substitute(editString, (String)m_webAppNames.get(k), I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
-                     }
-                     editNodes.item(i).getFirstChild().setNodeValue(editString);
-                 }
-                 // convert XML document back to String
-                 CmsXmlXercesParser parser = new CmsXmlXercesParser();
-                 Writer out = new StringWriter();
-                 parser.getXmlText(contentXml, out);
-                 content = out.toString();
-                 // rebuild the template tags in the document!
-                 if (createTemplateTags) {
-                     content = content.substring(0, content.lastIndexOf("</XMLTEMPLATE>"));
-                     // get the keys
-                     Enumeration enum = templateElements.keys();
-                     while (enum.hasMoreElements()) {
-                         String key = (String)enum.nextElement();
-                         String value = (String)templateElements.get(key);
-                         // create the default template
-                         if (key.equals("noNameKey")) {
-                             content += "\n<TEMPLATE><![CDATA[" + value;
-                         } else {
-                             // create template with "name" attribute
-                             content += "\n<TEMPLATE name=\"" + key + "\"><![CDATA[" + value;
-                         }
-                         content += "]]></TEMPLATE>\n";
-                     }
-                     content += "\n</XMLTEMPLATE>";
-                 }
-
-             } catch (Exception exc) {
-                 // ignore
-             }
-         }
-         return content;
-     }
-     
     /** 
      * Translates directory Strings from OpenCms 4.x structure to new 5.0 structure.<p>
      * 

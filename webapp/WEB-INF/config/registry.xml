@@ -23,7 +23,7 @@
 			<class>org.opencms.loader.CmsXmlPageLoader</class>
 		</resourceloader>
 		<importclasses>
-			<class>org.opencms.importexport.CmsImportVersion1</class>
+			<class>com.opencms.template.CmsImportVersion1</class>
 			<class>org.opencms.importexport.CmsImportVersion2</class>
 			<class>org.opencms.importexport.CmsImportVersion3</class>
 			<class>org.opencms.importexport.CmsImportVersion4</class>
