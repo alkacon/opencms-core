@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2004/08/10 15:46:17 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2004/09/28 15:16:55 $
+* Version: $Revision: 1.25 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.security.MessageDigest;
@@ -72,7 +71,7 @@ import org.dom4j.io.SAXReader;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.24 $ $Date: 2004/08/10 15:46:17 $
+ * @version $Revision: 1.25 $ $Date: 2004/09/28 15:16:55 $
  */
 public class CmsImport implements Serializable {
     
@@ -509,36 +508,6 @@ public class CmsImport implements Serializable {
         return doc;
     }
     
-    /**
-     * Creates a dom4j document out of a specified reader.<p>
-     * 
-     * The specified reader will be forced to be closed inside this method!<p>
-     * 
-     * @param reader the reader
-     * @return a dom4j document
-     * @throws CmsException if something goes wrong
-     */
-    public static Document getXmlDocument(Reader reader) throws CmsException {
-        Document doc = null;
-        
-        try {
-            SAXReader saxReader = new SAXReader();
-            doc = saxReader.read(reader);
-        } catch (Exception e) {            
-            throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);            
-        } finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } catch (Exception e) {
-                // noop
-            }
-        }
-        
-        return doc;
-    }
-
     /**
      * Returns the value of a child element with a specified name for a given parent element.<p>
      *

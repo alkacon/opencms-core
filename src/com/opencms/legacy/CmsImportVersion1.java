@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/07/18 16:27:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/09/28 15:17:08 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,22 +37,27 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.xml.CmsXmlUtils;
 
 import com.opencms.template.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.dom4j.io.SAXReader;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
@@ -317,6 +322,24 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
         
         // drag the content also through the conversion method in the super class
         return super.convertContent(source, destination, content, resType);
+    }
+
+    /**
+     * Creates a dom4j document out of a specified reader.<p>
+     * 
+     * The specified reader will be forced to be closed inside this method!<p>
+     * 
+     * @param reader the reader
+     * @return a dom4j document
+     * @throws CmsException if something goes wrong
+     */
+    public static org.dom4j.Document getXmlDocument(InputStream stream) throws CmsException {
+
+        org.dom4j.Document doc = null;
+
+        doc = CmsXmlUtils.unmarshalHelper(new InputSource(stream), null);
+
+        return doc;
     }
 
 }

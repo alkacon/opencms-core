@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2004/09/28 15:17:08 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import com.opencms.defaults.master.*;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -73,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2004/07/18 16:27:13 $
+ * @version $Revision: 1.11 $ $Date: 2004/09/28 15:17:08 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -274,7 +275,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         // get the file with the dataset of the master
         datasetfile = ((Element) masterElement.selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0)).getTextTrim();
        
-        Document datasetXml = CmsImport.getXmlDocument(getFileReader(datasetfile));
+        Document datasetXml = CmsImportVersion1.getXmlDocument(getFileInputStream(datasetfile));
         Element dataset = (Element) datasetXml.getRootElement().selectNodes("./" + CmsExportModuledata.C_EXPORT_TAG_MASTER_DATASET).get(0);
         
         // get the information from the dataset and add it to the dataset
@@ -489,7 +490,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         byte[] mediacontent = null;
         
         newMedia = new CmsMasterMedia();
-        mediaXml = CmsImport.getXmlDocument(getFileReader(mediaFilename));
+        mediaXml = CmsImportVersion1.getXmlDocument(getFileInputStream(mediaFilename));
         rootElement = mediaXml.getRootElement();
         
         position = ((Element)rootElement.selectNodes("./media/" + CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION).get(0)).getTextTrim();        
@@ -557,18 +558,17 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @return the file reader for this file
      * @throws CmsException in case something goes wrong
      */
-    private BufferedReader getFileReader(String filename) throws CmsException {
+    private InputStream getFileInputStream(String filename) throws CmsException {
         try {
             // is this a zip-file?
             if (m_importZip != null) {
                 // yes
                 ZipEntry entry = m_importZip.getEntry(filename);
-                InputStream stream = m_importZip.getInputStream(entry);
-                return new BufferedReader(new InputStreamReader(stream));
+                return m_importZip.getInputStream(entry);
             } else {
                 // no - use directory
                 File xmlFile = new File(m_importResource, filename);
-                return new BufferedReader(new FileReader(xmlFile));
+                return new FileInputStream(xmlFile);
             }
         } catch (Exception e) {
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
