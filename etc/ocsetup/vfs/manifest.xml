@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <export>
     <info>
-        <creator>Thomas Weckert</creator>
+        <creator>Alexander Kandzior (a.kandzior@alkacon.com)</creator>
         <opencms_version>5.0_rc_2 Kaitain</opencms_version>
-        <createdate>31.01.2003 18:11</createdate>
+        <createdate>01.02.2003 12:00</createdate>
         <project>Offline</project>
-        <export_version>1</export_version>
+        <export_version>1</export_version>        
     </info>
     <files>
         <file>
@@ -115,13 +115,7 @@
             <user>Admin</user>
             <group>Administrators</group>
             <access>591</access>
-            <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>3</type>
-                    <value><![CDATA[UTF-8]]></value>
-                </property>
-            </properties>
+            <properties/>
         </file>
         <file>
             <source>system/login/index.html</source>
@@ -131,11 +125,6 @@
             <group>Administrators</group>
             <access>79</access>
             <properties>
-                <property>
-                    <name>content-encoding</name>
-                    <type>4</type>
-                    <value><![CDATA[UTF-8]]></value>
-                </property>
                 <property>
                     <name>Title</name>
                     <type>4</type>
@@ -3559,15 +3548,6 @@
         <file>
             <source>system/workplace/resources/bg_weiss.gif</source>
             <destination>system/workplace/resources/bg_weiss.gif</destination>
-            <type>image</type>
-            <user>Admin</user>
-            <group>Users</group>
-            <access>15</access>
-            <properties/>
-        </file>
-        <file>
-            <source>system/workplace/resources/blank.jpg</source>
-            <destination>system/workplace/resources/blank.jpg</destination>
             <type>image</type>
             <user>Admin</user>
             <group>Users</group>

@@ -945,22 +945,6 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
   EDITOR.EDIT_HTML.focus();
 }
 
-//Gridnine AB Aug 12, 2002
-/* we don't need this function any more as Cms now supports Unicode
-function getChars(value) {
-    ret = "";
-    var num;
-    for(i=0;i<value.length;i++) {
-        num = value.charCodeAt(i);
-        if(num > 127) {
-            ret += "&#" + num.toString(10) + ";";
-        } else {
-            ret += value.charAt(i);
-        }
-    }
-    return ret + "";
-}
-*/
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
     var obj1='top.window.opener.self.document.'+ destFormName;
