@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2003/11/05 17:40:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/06 10:55:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  *
  * @see org.opencms.cache.I_CmsLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsLruCache extends java.lang.Object {
     
@@ -178,7 +178,7 @@ public class CmsLruCache extends java.lang.Object {
         }
         
         // only objects with cache costs < the max. allowed object cache costs can be cached!
-        if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts()>this.m_maxObjectCosts)) {
+        if ((this.m_maxObjectCosts!=-1) && (theCacheObject.getLruCacheCosts() > this.m_maxObjectCosts)) {
             if (OpenCms.getLog(this).isInfoEnabled()) 
                 OpenCms.getLog(this).info("Attempt to cache objects with cache costs " + theCacheObject.getLruCacheCosts() + " which is bigger than the max. allowed costs " + this.m_maxObjectCosts);
             return false;
@@ -192,7 +192,7 @@ public class CmsLruCache extends java.lang.Object {
         }
         
         // check if the cache has to trash the last-recently-used objects before adding a new object
-        if (this.m_objectCosts>this.m_maxCacheCosts) {
+        if (this.m_objectCosts > this.m_maxCacheCosts) {
             this.gc();
         }
         
@@ -422,8 +422,8 @@ public class CmsLruCache extends java.lang.Object {
      */
     private void gc() {       
         I_CmsLruCacheObject currentObject = this.m_listTail;
-        while (currentObject!=null) {
-            if (this.m_objectCosts<this.m_avgCacheCosts) break;
+        while (currentObject != null) {
+            if (this.m_objectCosts < this.m_avgCacheCosts) break;
             currentObject = currentObject.getNextLruObject();
             this.removeTail();
         }

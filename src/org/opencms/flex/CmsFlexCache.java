@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/11/05 17:44:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/06 10:55:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import com.opencms.file.CmsObject;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,7 +88,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -140,10 +141,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     /** The LRU cache to organize the cached entries. */
     private CmsLruCache m_entryLruCache;
     
-    /** The LRU cache to organize the cached resources. */
-    private CmsLruCache m_variationCache;
-    
-    
     /**
      * Constructor for class CmsFlexCache.<p>
      *
@@ -163,21 +160,18 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         int maxCacheBytes = conf.getInteger("flex.cache.maxCacheBytes", 2000000);
         int avgCacheBytes = conf.getInteger("flex.cache.avgCacheBytes", 1500000);
         int maxEntryBytes = conf.getInteger("flex.cache.maxEntryBytes", 400000);  
-        int maxVariations = conf.getInteger("flex.cache.maxEntries", 4000);
         int maxKeys = conf.getInteger("flex.cache.maxKeys", 4000);
      
         this.m_entryLruCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes, forceGC);             
-        this.m_variationCache = new CmsLruCache(maxVariations, (int)(maxVariations*0.75), -1, false);
         
         if (OpenCms.getMemoryMonitor().enabled()) {
             OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_entryLruCache", m_entryLruCache);
-            OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_variationCache", m_variationCache);
         }
         
         if (m_enabled) {
 
             CmsLruHashMap hashMap;
-            this.m_resourceMap = java.util.Collections.synchronizedMap(hashMap = new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
+            this.m_resourceMap = Collections.synchronizedMap(hashMap = new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
 
             if (OpenCms.getMemoryMonitor().enabled()) {
                 OpenCms.getMemoryMonitor().register(this.getClass().getName()+"."+"m_resourceMap", hashMap);    
@@ -206,7 +200,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         this.clear();
         
         this.m_entryLruCache = null;
-        this.m_variationCache = null;
         this.m_resourceMap = null;
         
         super.finalize();
@@ -458,7 +451,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         Object o = m_resourceMap.get(key);
         if (o != null) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
-            this.m_variationCache.touch((I_CmsLruCacheObject)o);
             return v.m_map.keySet();
         }
         return null;
@@ -484,7 +476,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         Object o = m_resourceMap.get(key);
         if (o != null) {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
-            this.m_variationCache.touch((I_CmsLruCacheObject)o);
             return v.m_key;
         }
         return null;
@@ -601,8 +592,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)o;
             String variation = v.m_key.matchRequestKey(key);
             
-            this.m_variationCache.touch((I_CmsLruCacheObject)o);
-            
             if (DEBUG > 0) {
                 if (variation != null) {
                     CmsFlexCacheEntry e = (CmsFlexCacheEntry)v.m_map.get(variation);
@@ -649,7 +638,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         Object o = m_resourceMap.get(resource);
         if (o != null) {
             if (DEBUG > 1) System.err.println("FlexCache: Found pre-calculated key for resource " + resource);
-            this.m_variationCache.touch((I_CmsLruCacheObject)o);
             return ((CmsFlexCacheVariation)o).m_key;
         } else {
             if (DEBUG > 1) System.err.println("FlexCache: Did not find pre-calculated key for resource " + resource);
@@ -669,7 +657,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation variationMap = new CmsFlexCacheVariation(key);
             m_resourceMap.put(key.m_resource, variationMap);
-            this.m_variationCache.add(variationMap);
             if (DEBUG > 1) System.err.println("FlexCache: Added pre-calculated key for resource " + key.m_resource);
         }
         // If != null the key is already in the cache, so we just do nothing
@@ -684,7 +671,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * entry was created. This is usually calculated from the request.
      * If the variation is != null, the entry is cachable.<p>
      *
-     * @param key the key for the new value entry. Usually calculated from the response
+     * @param key the key for the new value entry
      * @param entry the CmsFlexCacheEntry to store in the cache
      * @param variation the pre-calculated variation for the entry
      * @return true if the value was added to the cache, false otherwise
@@ -747,7 +734,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         m_size = 0;
         
         this.m_entryLruCache.clear();
-        this.m_variationCache.clear();
         
         if (OpenCms.getLog(this).isInfoEnabled()) 
             OpenCms.getLog(this).info("Complete FlexCache cleared - clear() called");
@@ -775,7 +761,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             if (wasAdded) {
                 theCacheEntry.setVariationData(key.m_variation, m);
                 m.put(key.m_variation, theCacheEntry);
-                this.m_variationCache.touch((I_CmsLruCacheObject)o);
             }
         } else {
             // No variation map for this resource yet, so create one
@@ -787,7 +772,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 theCacheEntry.setVariationData(key.m_variation, list.m_map);
                 list.m_map.put(key.m_variation, theCacheEntry);
                 m_resourceMap.put(key.m_resource, list);
-                this.m_variationCache.add(list);
             }
         }
         
@@ -851,8 +835,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         this.m_entryLruCache.remove(nextObject);
                     }
                     
-                    this.m_variationCache.remove(v);
-                    
                     v.m_map = null;
                     v.m_key = null;
                     m_resourceMap.remove(s);
@@ -879,24 +861,15 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.11 $ 
+     * @version $Revision: 1.12 $ 
      */
-    class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
-        
-        /** Pointer to the next cache entry in the LRU cache */
-        private I_CmsLruCacheObject m_next;
-        
-        /** Pointer to the previous cache entry in the LRU cache. */
-        private I_CmsLruCacheObject m_previous;        
+    class CmsFlexCacheVariation extends Object {    
         
         /** The key belonging to the resource */
         public CmsFlexCacheKey m_key;
         
         /** Maps variations to CmsFlexCacheEntries */
         public Map m_map;
-        
-        /** Internal debug switch */
-        private static final int DEBUG = 0;
                 
         /**
          * Generates a new instance of CmsFlexCacheVariation.<p>
@@ -904,68 +877,18 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
          * @param theKey The (resource) key to contruct this variation list for
          */
         public CmsFlexCacheVariation(CmsFlexCacheKey theKey) {
-            this.m_key = theKey;
-            this.m_map = java.util.Collections.synchronizedMap(new HashMap(CmsFlexCache.C_INITIAL_CAPACITY_VARIATIONS));
+            m_key = theKey;
+            m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.C_INITIAL_CAPACITY_VARIATIONS));
         }
-        
-        // implementation of the com.opencms.flex.util.I_CmsFlexLruCacheObject interface methods
-        
+   
         /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setNextLruObject(I_CmsFlexLruCacheObject)
+         * @see java.lang.Object#finalize()
          */
-        public void setNextLruObject(I_CmsLruCacheObject theNextEntry) {
-            this.m_next = theNextEntry;
-        }
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getNextLruObject()
-         */
-        public I_CmsLruCacheObject getNextLruObject() {
-            return this.m_next;
-        }
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#setPreviousLruObject(I_CmsFlexLruCacheObject)
-         */
-        public void setPreviousLruObject(I_CmsLruCacheObject thePreviousEntry) {
-            this.m_previous = thePreviousEntry;
-        }
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getPreviousLruObject()
-         */
-        public I_CmsLruCacheObject getPreviousLruObject() {
-            return this.m_previous;
-        }  
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#addToLruCache()
-         */
-        public void addToLruCache() {
-            // NOOP
-            if (DEBUG>0) System.out.println("Added resource " + this.m_key.m_resource + " to the LRU cache");
-        }
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#removeFromLruCache()
-         */
-        public void removeFromLruCache() {
-            // NOOP            
-            if (DEBUG>0) System.out.println("Removed resource " + this.m_key.m_resource + " from the LRU cache");
-        }
-        
-        /**
-         * @see com.opencms.flex.util.I_CmsFlexLruCacheObject#getLruCacheCosts()
-         */
-        public int getLruCacheCosts() {
-            return this.m_map.size();
-        }
-        
-        /**
-         * @see org.opencms.cache.I_CmsLruCacheObject#getValue()
-         */
-        public Object getValue() {
-            return this.m_map;
+        protected void finalize() throws java.lang.Throwable {
+            if (OpenCms.getLog(this).isDebugEnabled()) {
+                OpenCms.getLog(this).debug("Finalizing FlexCache variation: " + this);
+            }        
+            super.finalize();      
         }     
     }    
 }

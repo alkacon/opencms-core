@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/11/03 17:31:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/06 10:55:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.threads.CmsPublishThread;
  * Creates the dialogs for publishing a project or a resource.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1.12
  */
@@ -268,7 +268,9 @@ public class CmsPublishProject extends CmsReport {
                         // switch to prject which will be published
                         int projectId = Integer.parseInt(getParamProjectid());
                         getCms().getRequestContext().setCurrentProject(projectId);
-                    } catch (Exception e) { }
+                    } catch (Exception e) {
+                        // ignore
+                    }
                     
                     thread = new CmsPublishThread(getCms());
                 }

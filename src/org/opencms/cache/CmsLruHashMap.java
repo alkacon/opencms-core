@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/Attic/CmsLruHashMap.java,v $
- * Date   : $Date: 2003/11/05 17:40:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/06 10:55:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.cache;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,7 +41,7 @@ import java.util.Map;
  * and a "last-recently-used" cache policy of the mapped key/values.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @see CmsFlexLruCache
  * @see I_CmsLruCacheObject
  */
@@ -207,7 +208,7 @@ public class CmsLruHashMap extends HashMap {
     public Object remove(Object key) {
         CmsLruCacheObject cachedObject = (CmsLruCacheObject)super.remove(key);
         
-        if (cachedObject!=null) {
+        if (cachedObject != null) {
             this.m_lruCache.remove(cachedObject);
             return cachedObject.getValue();    
         }
@@ -245,6 +246,7 @@ public class CmsLruHashMap extends HashMap {
         private CmsLruHashMap m_parentHashMap;
         private Object m_parentKey;
         private Object m_value;
+        private int m_cost;
         
         /** Pointer to the next cache entry in the LRU cache. */
         private I_CmsLruCacheObject m_next;
@@ -262,10 +264,11 @@ public class CmsLruHashMap extends HashMap {
         public CmsLruCacheObject(Object theInitialValue, Object theParentKey, CmsLruHashMap theParentHashMap) {
             this.m_next = null; 
             this.m_previous = null;
+            this.m_cost = calculateCosts(theInitialValue);
             this.m_value = theInitialValue;
             this.m_parentKey = theParentKey;
             this.m_parentHashMap = theParentHashMap;
-        }        
+        } 
             
         /**
          * @see java.lang.Object#finalize()
@@ -276,6 +279,27 @@ public class CmsLruHashMap extends HashMap {
             this.m_value = null;  
             this.m_parentKey = null;
             this.m_parentHashMap = null;          
+        }
+        
+        /**
+         * Calculates the cost of the cached object.<p>
+         * 
+         * In case of a Collection this is the size of the collection,
+         * otherwise it is 1. 
+         * 
+         * @param value the value to calculate the cost for
+         * @return the costs
+         */
+        private int calculateCosts(Object value) {
+            if (value instanceof Map) {
+                int size = ((Map)value).size();
+                return (size > 0)?size:1;
+            } else if (value instanceof Collection) {
+                int size = ((Collection)value).size();
+                return (size > 0)?size:1;                
+            } else {           
+                return 1;
+            }
         }
         
         /**
@@ -324,7 +348,7 @@ public class CmsLruHashMap extends HashMap {
          * @see org.opencms.cache.I_CmsLruCacheObject#getLruCacheCosts()
          */
         public int getLruCacheCosts() {
-            return 1;
+            return this.m_cost;
         }   
            
         /**
