@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/04/24 07:17:27 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/07/10 08:12:55 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.48 $ $Date: 2002/04/24 07:17:27 $
+ * @version $Revision: 1.49 $ $Date: 2002/07/10 08:12:55 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -3562,5 +3562,16 @@ public class CmsShellCommands implements I_CmsConstants {
         }
     }
 
-
+    /**
+     * Deletes the versions from the backup tables that are older then the given weeks
+     * 
+     * @param weeks The number of weeks: the max age of the remaining versions
+     */
+    public void deleteBackups(String weeks) throws CmsException{
+        try{
+            System.out.println("Oldest remaining version: "+m_cms.deleteBackups(Integer.parseInt(weeks)));
+        } catch (Exception e){
+            CmsShell.printException(e);
+        }
+    }
 }
