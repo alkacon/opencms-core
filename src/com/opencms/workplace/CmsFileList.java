@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
- * Date   : $Date: 2000/02/17 18:41:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/02/17 19:32:37 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;FILELIST&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/02/17 18:41:47 $
+ * @version $Revision: 1.20 $ $Date: 2000/02/17 19:32:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants,
@@ -767,6 +767,7 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
         
         // set the default columns in the filelist
         int filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+        // TODO: remove, for testing only
         filelist=4095;
         pref.put(C_USERPREF_FILELIST,new Integer(filelist));
         return pref;

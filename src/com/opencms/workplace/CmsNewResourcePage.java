@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/17 13:39:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/17 19:32:37 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/02/17 13:39:17 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/17 19:32:37 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -86,6 +86,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile=(String)parameters.get(C_PARA_TEMPLATE);
         String navtitle=(String)parameters.get(C_PARA_NAVTITLE);       
+        String navpos=(String)parameters.get(C_PARA_NAVPOS);   
         
         // get the current phase of this wizard
         String step=cms.getRequestContext().getRequest().getParameter("step");
@@ -123,10 +124,16 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    // now check if navigation informations have to be added to the new page.
                    if (navtitle != null) {
                         cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_NAVTITLE,navtitle);                       
+                        
+                        // update the navposition.
+                        if (navpos != null) {
+                            updateNavPos(cms,file,new Integer(navpos).intValue());
+                        }
                    }
                    
+                   
                   } catch (CmsException ex) {
-                    throw new CmsException("###"+ex.getMessage(),ex.getType(),ex);
+                    throw new CmsException(ex.getMessage(),ex.getType(),ex);
                 }
             
                 // TODO: ErrorHandling
@@ -260,5 +267,175 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
           }          
      }
     
+      /**
+      * Gets the files displayed in the navigation select box.
+      * @param cms The CmsObject.
+      * @param lang The langauge definitions.
+      * @param names The names of the new rescources.
+      * @param values The links that are connected with each resource.
+      * @param parameters Hashtable of parameters (not used yet).
+      * @returns The vectors names and values are filled with the information found in the 
+      * workplace.ini.
+      * @exception Throws CmsException if something goes wrong.
+      */
+      public Integer getNavPos(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+            throws CmsException {
+
+            HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+            CmsFolder folder=null;
+            CmsFile file=null;
+            String nicename=null;
+            String currentFilelist=null;
+            Hashtable storage=new Hashtable();
+            int max=0;
+                  
+            // get the current folder 
+            currentFilelist=(String)session.getValue(C_PARA_FILELIST);
+            if (currentFilelist==null) {
+                currentFilelist=cms.rootFolder().getAbsolutePath();
+            }          
+          
+            // get all files and folders in the current filelist.
+            Vector files=cms.getFilesInFolder(currentFilelist);
+            Vector folders=cms.getSubFolders(currentFilelist);
+                        
+            // combine folder and file vector
+            Vector filefolders=new Vector();
+            Enumeration enum=folders.elements();
+            while (enum.hasMoreElements()) {
+                folder=(CmsFolder)enum.nextElement();
+                filefolders.addElement(folder);
+            }
+            enum=files.elements();
+            while (enum.hasMoreElements()) {
+                file=(CmsFile)enum.nextElement();
+                filefolders.addElement(file);
+            }
+                      
+            int count=0;
+             //now check files and folders that are not deleted and include navigation
+            // information
+            enum=filefolders.elements();
+            while (enum.hasMoreElements()) {
+                CmsResource res =(CmsResource)enum.nextElement();
+                
+                // check if deleted
+                if (res.getState() != C_STATE_DELETED) {
+                    String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
+
+                    // check if there is a navpos for this file/folder
+                    if (navpos!= null) {
+                        nicename=cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVTITLE);
+                        if (nicename == null) {
+                            nicename=res.getName();
+                        }
+                     // add this file/folder to the storage. Use the NavPos as its position                              
+                     storage.put(navpos,lang.getDataValue("input.next")+" "+nicename);
+                     if (new Integer(navpos).intValue() > max) {
+                         max=new Integer(navpos).intValue();
+                     }
+                   }
+                }
+            }
+            
+            // first and last element
+            storage.put("0",lang.getDataValue("input.firstelement"));
+            storage.put(new Integer(max+1).toString(),lang.getDataValue("input.lastelement"));
+            
+            // finally fill the result vectors
+            for (int i=0;i<=max+1;i++) {
+                String name=(String)storage.get(new Integer(i).toString());
+                if (name!= null) {
+                    System.err.println(i+":"+name);
+                    names.addElement(name);
+                    values.addElement(new Integer(i).toString());
+                }
+            }
+            return new Integer(max+1);           
+      }      
     
+      
+    /**
+     * Updates the navigation position of all resources in the actual folder.
+     * @param cms The CmsObject.
+     * @param newfile The new file added to the nav.
+     * @param The position of the new file.
+     */  
+    private void updateNavPos(A_CmsObject cms, CmsFile newfile, int newpos)
+        throws CmsException {
+               
+        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+        CmsFolder folder=null;
+        CmsFile file=null;
+        Hashtable storage = new Hashtable();
+        int max=0;
+        
+        // get the current folder 
+        String currentFilelist=(String)session.getValue(C_PARA_FILELIST);
+        if (currentFilelist==null) {
+            currentFilelist=cms.rootFolder().getAbsolutePath();
+        }          
+          
+        // get all files and folders in the current filelist.
+        Vector files=cms.getFilesInFolder(currentFilelist);
+        Vector folders=cms.getSubFolders(currentFilelist);
+                        
+        // combine folder and file vector
+        Vector filefolders=new Vector();
+        Enumeration enum=folders.elements();
+        while (enum.hasMoreElements()) {
+            folder=(CmsFolder)enum.nextElement();
+            filefolders.addElement(folder);
+        }
+        enum=files.elements();
+        while (enum.hasMoreElements()) {
+            file=(CmsFile)enum.nextElement();
+            filefolders.addElement(file);
+        } 
+        
+        enum=filefolders.elements();
+   
+        // get all resources and store them in a hashtable storage for sorting
+        while (enum.hasMoreElements()) {
+            CmsResource res =(CmsResource)enum.nextElement();      
+            // check if deleted
+            if (res.getState() != C_STATE_DELETED) {
+                String navpos= cms.readMetainformation(res.getAbsolutePath(),C_METAINFO_NAVPOS);                    
+
+                // check if there is a navpos for this file/folder
+                if (navpos!= null) {
+                    int pos=new Integer(navpos).intValue();
+                     System.err.println("pos "+pos);
+                    if (pos > max) {
+                        max=pos;
+                    }
+                     // add this file/folder to the storage. Use the NavPos as its position                              
+                    storage.put(new Integer(pos).toString(),res.getAbsolutePath());       
+                }
+            }
+        }
+        
+        // alter the newpos if nescessary. This has be done when the "last entry" in the
+        // selectbox was selected
+        if (newpos>max+1) {
+            newpos=max+1;
+        }
+        // now update all metainformations
+         for (int i=0;i<=max+2;i++) {
+                String name=(String)storage.get(new Integer(i).toString());
+                int pos=i;
+                // add the new file
+                if (i==newpos+1) {                   
+                    cms.writeMetainformation(newfile.getAbsolutePath(),C_METAINFO_NAVPOS,new Integer(newpos+1).toString());
+                 }
+                // for all files displayed after the new file -> alter the nav position
+                if (i>newpos) {
+                    pos=i+1;
+                }
+                // update the existing nav entrys
+                if (name!= null) {
+                    cms.writeMetainformation(name,C_METAINFO_NAVPOS,new Integer(pos).toString());
+                }
+            }
+      }
 }
