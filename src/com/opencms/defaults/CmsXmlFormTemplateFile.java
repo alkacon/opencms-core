@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
- * Date   : $Date: 2000/06/25 08:26:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/08/02 11:58:05 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,11 +39,13 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
- * Content definition for Workplace template files.
+ * Template content definition for generating HTML forms.
+ * This is an extension of the default template content definition.
+ * Special tags for handling HTML form elements are added here.
+ * See the handleXxxTag Methods for more details.
  * 
  * @author Alexander Lucas
- * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2000/06/25 08:26:24 $
+ * @version $Revision: 1.3 $ $Date: 2000/08/02 11:58:05 $
  */
 public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -91,14 +93,11 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     /** Name of the radio button link */
     public static final String C_RADIO_LINK = "link";
   
-    /** Name of the radio button image name */
-    //public static final String C_RADIO_IMAGENAME = "image";
+    /** Stylesheet class string of the radio button */
+    public static final String C_RADIO_CLASS = "class";
 
-    /** Datablock conatining the image option*/
-    //public static final String C_RADIO_IMAGEOPTION = "optionalimage";
-
-    /** Datablock conatining the optional entry for the image*/
-    //public static final String C_RADIO_IMAGEENTRY = "imageentry";
+    /** Stylesheet class name of the radio button */
+    public static final String C_RADIO_CLASSNAME = "classname";
 
     /** Datablock conatining the "checked" option*/
     public static final String C_RADIO_SELECTEDOPTION = "optionalselected";
@@ -125,7 +124,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     /** Name of the selectbox "class" option tag in the input definiton template */
     public static final String C_TAG_SELECTBOX_CLASS="selectbox.class";
 
-    /** Name of the selectbox "class" option tag in the input definiton template */
+    /** Name of the selectbox "width" option tag in the input definiton template */
     public static final String C_TAG_SELECTBOX_WIDTH="selectbox.width";    
     
     /** Name of the (select) option tag in the input definiton template */
@@ -133,8 +132,17 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 
     /** Name of the (select) selected option tag in the input definiton template */
     public static final String C_TAG_SELECTBOX_SELOPTION="selectbox.seloption";
+
+    /** Name of the radio "class" option tag in the input definiton template */
+    public static final String C_TAG_RADIO_CLASS="radiobuttons.class";
     
+    /** Name of the radion column entry tag in the input definiton template */
+    public static final String C_TAG_RADIO_COLENTRY="radiobuttons.colentry";
+
+    /** Name of the radion row entry tag in the input definiton template */
+    public static final String C_TAG_RADIO_ROWENTRY="radiobuttons.rowentry";
     
+
     /**
      * Default constructor.
      */
@@ -176,27 +184,7 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     private void registerMyTags() {
         super.registerTag("SELECT", CmsXmlFormTemplateFile.class, "handleSelectTag", C_REGISTER_MAIN_RUN); 
         super.registerTag("RADIOBUTTON", CmsXmlFormTemplateFile.class, "handleRadiobuttonTag", C_REGISTER_MAIN_RUN); 
-        //registerTag("SELECT", "com.opencms.workplace.CmsSelectBox");
-    }    
-    
-    /**
-     * Special registerTag method for this content definition class.
-     * Any workplace XML tag will be registered with the superclass for handling with
-     * the method <code>handleAnyTag()</code> in this class.
-     * Then the tagname together with the name of the class for the template
-     * element (e.g. <code>CmsButton</code> or <code>CmsLabel</code>) will be put in an internal Hashtable.
-     * <P>
-     * Every workplace element class used by this method has to implement the interface
-     * <code>I_CmsWpElement</code>
-     * 
-     * @param tagname XML tag to be registered as a special workplace tag.
-     * @param elementClassName Appropriate workplace element class name for this tag.
-     * @see com.opencms.workplace.I_CmsWpElement
-     */
-    private void registerTag(String tagname, String elementClassName) {
-        super.registerTag(tagname, CmsXmlFormTemplateFile.class, "handleAnyTag", C_REGISTER_MAIN_RUN); 
-        //m_wpTags.put(tagname.toLowerCase(), elementClassName);
-    }
+    }        
         
     /**
      * Gets the expected tagname for the XML documents of this content type
@@ -205,65 +193,41 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     public String getXmlDocumentTagName() {
         return "XMLTEMPLATE";
     }
-    
+                   
     /**
-     * Handles any occurence of any special workplace XML tag like <code>&lt;BUTTON&gt;</code> or 
-     * <code>&lt;LABEL&gt;</code>. Looks up the appropriate workplace element class for the current
-     * tag and calls the <code>handleSpecialWorkplaceTag()</code> method of this class.
+     * Handles any occurence of the special XML tag <code>&lt;SELECT&gt;</code> for 
+     * generating HTML form select boxes.
      * <P>
-     * Every workplace element class used by this method has to implement the interface
-     * <code>I_CmsWpElement</code>
+     * The definition of a HTML selectbox will be taken from /content/internal/HTMLFormDefs.
+     * If the file is missing, this method will crash. Ensure this file is created and filled
+     * with all required XML tags. 
+     * <P>
+     * Select boxes can be generated by adding the special XML tag
+     * <code>&lt;SELECT class="myClass" method="myMethod" name="myName" onchange="..." size="..."/&gt;</code>
+     * to the template file. This tag will be replaced with the correspondig select box
+     * while processing the template file. The <code>class</code> parameter is optional and 
+     * The <code>method</code> parameter will be used to look up a user defined method 
+     * in the template class assigned to the template file. This method should look like
+     * <br/>
+     * <code>public Integer myMethod(CmsObject cms, Vector names, Vector values, Hashtable parameters)</code><br/>
+     * and will be used to get the content of the requested select box group. The vectors <code>names</code>
+     * and <code>values</code> should be filled with the appropriate values. The return value should be an
+     * Integer containing the pre-selected option or -1, if no value should be pre-selected.
      * 
      * @param n XML element containing the current special workplace tag.
      * @param callingObject reference to the calling object.
      * @param userObj hashtable containig all user parameters.
      * @exception CmsException
-     * @see com.opencms.workplace.I_CmsWpElement
      */
-    /*public Object handleAnyTag(Element n, Object callingObject, Object userObj) throws CmsException {
-        Object result = null;        
-        I_CmsWpElement workplaceObject = null;        
-        String tagname = n.getTagName().toLowerCase();
-        String classname = null;
-        
-        classname = (String)m_wpTags.get(tagname);
-        if(classname == null || "".equals(classname)) {
-            throwException("Don't know which class handles " + tagname + " tags.");            
-        }            
-        
-        Object loadedClass = CmsTemplateClassManager.getClassInstance(m_cms, classname);
-        if(!(loadedClass instanceof I_CmsWpElement)) {
-            throwException("Loaded class " + classname + " is not implementing I_CmsWpElement");            
-        }
-     
-		processNode(n, m_mainProcessTags, null, callingObject, userObj);
-		workplaceObject = (I_CmsWpElement)loadedClass;
-        try {
-             result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
-        } catch(Exception e) {
-            String errorMessage = "Error while building workplace element \"" + tagname + "\": " + e;
-            if(e instanceof CmsException) {
-                if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
-                }
-                throw (CmsException)e;
-            } else {
-                throwException(errorMessage, e);
-            }            
-        }
-             return result; 
-    } */                   
-
-    
     public Object handleSelectTag(Element n, Object callingObject, Object userObj) throws CmsException {
 
         Hashtable parameters = (Hashtable)userObj;
         
-        /** Here the different select box options will be stored */
+        // Here the different select box options will be stored 
         Vector values = new Vector();
         Vector names = new Vector();
 
-        /** StringBuffer for the generated output */
+        // StringBuffer for the generated output *
         StringBuffer result = new StringBuffer();
         
         // Read selectbox parameters
@@ -277,11 +241,11 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
 		if( (selectSize == null) || (selectSize.length() == 0) ) {
 			selectSize = "1";
 		}
-
         
         // Get input definition file
         CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, "/content/internal/HTMLFormDefs"); 
                         
+        // Set the prefix string of the select box
         if(selectClass == null || "".equals(selectClass)) {
             inputdef.setData(C_SELECTBOX_CLASS, "");
         } else {
@@ -299,6 +263,8 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         inputdef.setData(C_SELECTBOX_NAME, selectName);
         inputdef.setData(C_SELECTBOX_ONCHANGE, selectOnchange);
         inputdef.setData(C_SELECTBOX_SIZE, selectSize);
+
+        // move the prefix string of the select box to the result StringBuffer 
         result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_START));
              
         // call the method for generating listbox elements
@@ -330,7 +296,6 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         // check the returned elements and put them into option tags.
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
-        // TODO: check, if this is neede: int numNames = names.size();
         
         for(int i=0; i<numValues; i++) {
             inputdef.setData(C_SELECTBOX_OPTIONNAME, (String)names.elementAt(i));
@@ -348,18 +313,45 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
     }               
     
     
+    /**
+     * Handles any occurence of the special XML tag <code>&lt;RADIOBUTTON&gt;</code> for 
+     * generating HTML form radio buttons.
+     * <P>
+     * The definition of a HTML radio button will be taken from /content/internal/HTMLFormDefs.
+     * If the file is missing, this method will crash. Ensure this file is created and filled
+     * with all required XML tags. 
+     * <P>
+     * Radio buttons can be generated by adding the special XML tag
+     * <code>&lt;RADIOBUTTON class="myClass" method="myMethod" name="myName"/&gt;</code>
+     * to the template file. This tag will be replaced with the correspondig group of radio buttons
+     * while processing the template file. The <code>class</code> parameter is optional.
+     * The <code>method</code> parameter will be used to look up a user defined method 
+     * in the template class assigned to the template file. This method should look like
+     * <br/>
+     * <code>public Integer myMethod(CmsObject cms, Vector names, Vector values, Hashtable parameters)</code><br/>
+     * and will be used to get the content of the requested radion button group. The vectors <code>names</code>
+     * and <code>values</code> should be filled with the appropriate values. The return value should be an
+     * Integer containing the pre-selected radio button or -1, if no value should be pre-selected.
+     * 
+     * @param n XML element containing the current special workplace tag.
+     * @param callingObject reference to the calling object.
+     * @param userObj hashtable containig all user parameters.
+     * @exception CmsException
+     */
     public Object handleRadiobuttonTag(Element n, Object callingObject, Object userObj) throws CmsException {
     
         Hashtable parameters = (Hashtable)userObj;
         
-        /** StringBuffer for the generated output */
+        // StringBuffer for the generated output
         StringBuffer result = new StringBuffer();
 
-        /** Here the different select box options will be stored */
+        // Here the different select box options will be stored 
         Vector values = new Vector();
         Vector names = new Vector();
         Integer returnObject = null;
         
+        // Read radiobutton parameters
+        String radioClass = n.getAttribute(C_SELECTBOX_CLASS);
         String radioName=n.getAttribute(C_RADIO_NAME);
         String radioMethod = n.getAttribute(C_RADIO_METHOD);
         String radioOrder = n.getAttribute(C_RADIO_ORDER);
@@ -404,6 +396,14 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
         int numValues = values.size();
         
         CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, "/content/internal/HTMLFormDefs");
+
+        if(radioClass == null || "".equals(radioClass)) {
+            radiodef.setData(C_RADIO_CLASS, "");
+        } else {
+            radiodef.setData(C_RADIO_CLASSNAME, radioClass);
+            radiodef.setData(C_RADIO_CLASS, radiodef.getProcessedData(C_TAG_RADIO_CLASS));
+        }
+        
         for(int i=0; i<numValues; i++) {        
             // Set values for this radiobutton entry
             radiodef.setData(C_RADIO_RADIONAME, radioName);
@@ -420,10 +420,10 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsL
             // Now get output for this option 
             if(radioOrder.equals("col")) {
                 // Buttons should be displayed in one column 
-                result.append(radiodef.getProcessedDataValue("radiobuttons.colentry",callingObject));
+                result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_COLENTRY, callingObject));
             } else {
                 // Buttons should be displayed in a row.
-                result.append(radiodef.getProcessedDataValue("radiobuttons.rowentry",callingObject));
+                result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_ROWENTRY, callingObject));
             }                        
         }        
         return result.toString();
