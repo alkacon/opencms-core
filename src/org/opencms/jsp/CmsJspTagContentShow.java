@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/01/12 16:46:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/01/13 12:44:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 5.5.0
  */
 public class CmsJspTagContentShow extends TagSupport {
@@ -141,7 +141,7 @@ public class CmsJspTagContentShow extends TagSupport {
             && element.endsWith(CmsStringUtil.C_MACRO_END)) {
 
             // this is an EL like string
-            content = m_stringMapper.map(element, contentContainer);
+            content = m_stringMapper.map(element, contentContainer, true);
         } else {
 
             // now get the content element value to display

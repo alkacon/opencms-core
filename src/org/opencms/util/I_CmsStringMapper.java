@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/I_CmsStringMapper.java,v $
- * Date   : $Date: 2005/01/12 16:46:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/01/13 12:44:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,13 @@ import java.util.List;
 
 /**
  * Used to resolve macro names of the form <code>${name}</code>.<p>
+ * 
+ * @author Carsten Weinholz (c.weinholz@alkacon.com)
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.4 $
+ * @since 6.0 alpha 3
+ * @see org.opencms.util.CmsStringUtil#substituteMacros(String, I_CmsStringMapper)
+ * @see org.opencms.util.CmsStringUtil#substituteMacros(String, I_CmsStringMapper, boolean)
  */
 public interface I_CmsStringMapper {
 
@@ -114,6 +121,8 @@ public interface I_CmsStringMapper {
 
     /**
      * Maps a key (macro name) to a string value.<p>
+     * 
+     * Implementations must return null if the specified key cannot be mapped to a string.<p>
      * 
      * @param key the key to map
      * 

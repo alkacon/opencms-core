@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringMapper.java,v $
- * Date   : $Date: 2005/01/12 16:43:30 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/01/13 12:44:32 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * A string mapper to resolve EL like strings in tag attributes of Cms JSP tags.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0 alpha 3
  */
 public class CmsStringMapper implements I_CmsStringMapper {
@@ -292,10 +292,11 @@ public class CmsStringMapper implements I_CmsStringMapper {
      * 
      * @param str an EL like string
      * @param contentContainer the XML-content tag that utilizes this mapper, or null in case of a non-XML-content tag
+     * @param keepUnreplacedMacros if true, macros that couldn't be replaced are left unchanged in the content string, otherwise they are removed quietyl from the content string
      * 
      * @return the result string
      */
-    public String map(String str, I_CmsJspTagContentContainer contentContainer) {
+    public String map(String str, I_CmsJspTagContentContainer contentContainer, boolean keepUnreplacedMacros) {
 
         if (str == null) {
             return null;
@@ -309,7 +310,7 @@ public class CmsStringMapper implements I_CmsStringMapper {
             m_resourceName = null;
         }
 
-        return CmsStringUtil.substituteMacros(str, this);
+        return CmsStringUtil.substituteMacros(str, this, keepUnreplacedMacros);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2004/12/11 13:20:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/01/13 12:44:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,8 @@ import org.apache.oro.text.perl.Perl5Util;
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @author Thomas Weckert (t.weckert@alkacon.com)
+ * @version $Revision: 1.9 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -526,26 +527,47 @@ public final class CmsStringUtil {
         }
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
     }
-
+    
     /**
      * Substitutes macro keys the content.<p>
-     * A substring ${key} in the content is replaced with its assigned value
-     * returned by the getValue method of the given <code>StringMapper</code> class.
+     * 
+     * A macro ${key} in the content is replaced with its assigned value
+     * returned by the getValue method of the specified <code>I_CmsStringMapper</code> class.<p>
+     * 
+     * Macros that couldn't be replaced are quitely removed from the content string.<p>
      * 
      * @param content the content which is scanned
      * @param substitution string mapper to obtain the value for a key
      * @return the value assigned to the given key
      */
     public static String substituteMacros(String content, I_CmsStringMapper substitution) {
+        
+        return substituteMacros(content, substitution, false);
+    }
+
+    /**
+     * Substitutes macro keys the content.<p>
+     * 
+     * A substring ${key} in the content is replaced with its assigned value
+     * returned by the getValue method of the given <code>StringMapper</code> class.
+     * 
+     * @param content the content which is scanned
+     * @param substitution string mapper to obtain the value for a key
+     * @param keepUnreplacedMacros if true, macros that couldn't be replaced are left unchanged in the content string, otherwise they are removed quietyl from the content string
+     * @return the value assigned to the given key
+     */
+    public static String substituteMacros(String content, I_CmsStringMapper substitution, boolean keepUnreplacedMacros) {
 
         String segments[];
         String replacements[];
+        String macros[];
 
         if (content == null) {
             return null;
         } else {
             segments = (String[])splitAsList(content, C_MACRO_DELIMITER).toArray(new String[10]);
             replacements = new String[segments.length];
+            macros = new String[segments.length];
         }
 
         if (segments.length == 1) {
@@ -556,7 +578,8 @@ public final class CmsStringUtil {
         for (int i = 0; i < segments.length && segments[i] != null; i++) {
             int len = segments[i].length(), pos;
             if (segments[i].startsWith(C_MACRO_START) && (pos = segments[i].indexOf(C_MACRO_END)) > 0) {
-                replacements[i] = substitution.getValue(segments[i].substring(1, pos));
+                macros[i] = segments[i].substring(1, pos);
+                replacements[i] = substitution.getValue(macros[i]);
                 segments[i] = segments[i].substring(pos + 1);
                 len = (replacements[i] != null) ? replacements[i].length() : 0;
                 len += (segments[i] != null) ? segments[i].length() : 0;
@@ -569,9 +592,13 @@ public final class CmsStringUtil {
 
         StringBuffer sb = new StringBuffer(totalLength);
         for (int i = 0; i < segments.length && segments[i] != null; i++) {
+            
             if (replacements[i] != null) {
                 sb.append(replacements[i]);
+            } else if (keepUnreplacedMacros && macros[i] != null) {
+                sb.append(C_MACRO_DELIMITER).append(C_MACRO_START).append(macros[i]).append(C_MACRO_END);
             }
+            
             if (segments[i] != null) {
                 sb.append(segments[i]);
             }

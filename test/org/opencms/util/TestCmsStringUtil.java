@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2004/12/10 16:17:26 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/01/13 12:44:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * Test cases for the class "CmsStringSubstitution".<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.0
  */
@@ -87,7 +87,7 @@ public class TestCmsStringUtil extends TestCase {
                 if ("test".equals(key)) {
                     return "REPLACED";
                 } else {
-                    return "";
+                    return null;
                 }
             }
         };
@@ -129,6 +129,23 @@ public class TestCmsStringUtil extends TestCase {
         content = "<<This is a prefix >>${test<<This is a suffix>>";
         result  = CmsStringUtil.substituteMacros(content, substitution);
         assertEquals("<<This is a prefix >>${test<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>${unknown}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution, true);
+        assertEquals("<<This is a prefix >>${unknown}<<This is a suffix>>", result);
+        
+        content = "<<This is a prefix >>${unknown}";
+        result  = CmsStringUtil.substituteMacros(content, substitution, true);
+        assertEquals("<<This is a prefix >>${unknown}", result);
+        
+        content = "${unknown}<<This is a suffix>>";
+        result  = CmsStringUtil.substituteMacros(content, substitution, true);
+        assertEquals("${unknown}<<This is a suffix>>", result);   
+        
+        content = "${test}<<This is a prefix >>${test}${unknown}${test}<<This is a suffix>>${test}";
+        result  = CmsStringUtil.substituteMacros(content, substitution, true);
+        assertEquals("REPLACED<<This is a prefix >>REPLACED${unknown}REPLACED<<This is a suffix>>REPLACED", result);        
+        
     }
         
     /**
