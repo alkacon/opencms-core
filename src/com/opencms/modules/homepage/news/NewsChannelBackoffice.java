@@ -22,7 +22,7 @@ public class NewsChannelBackoffice extends A_Backoffice {
   /**
    * when clicking directly on one entry in the list ...
 	 */
-   /*
+  /*
   public String getUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject)
 	throws Exception{
 		return "system/modules/com.opencms.modules.homepage.news/administration/news/index.html";

@@ -54,6 +54,9 @@ public class NewsBackoffice extends A_Backoffice {
 								 String templateSelector)
 								 throws CmsException {
 		boolean dateError = false;
+
+    System.err.println("--- Edit -"+template.toString());
+
     String error = "";
 		GregorianCalendar actDate = new GregorianCalendar();
 		// session will be created or fetched
@@ -206,6 +209,9 @@ public class NewsBackoffice extends A_Backoffice {
 								String templateSelector)
 								throws CmsException {
 		// session will be created or fetched
+
+     System.err.println("---NEW -"+template.toString());
+
 		I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
 		// get value of hidden input field action
 		String action = (String) parameters.get("action");
