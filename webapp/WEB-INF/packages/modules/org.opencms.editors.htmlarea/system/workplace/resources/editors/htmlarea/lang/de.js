@@ -23,7 +23,7 @@ HTMLArea.I18N = {
 		orderedlist:    "Nummerierung",
 		unorderedlist:  "Aufzaehlungszeichen",
 		outdent:        "Einzug verkleinern",
-		indent:         "Einzug vergrössern",
+		indent:         "Einzug vergroessern",
 		forecolor:      "Text Farbe",
 		hilitecolor:    "Hintergrund Farbe",
 		horizontalrule: "Horizontale Linie",
@@ -31,7 +31,7 @@ HTMLArea.I18N = {
 		insertimage:    "Bild einfuegen",
 		inserttable:    "Tabelle einfuegen",
 		htmlmode:       "HTML Modus",
-		popupeditor:    "Editor im Popup öffnen",
+		popupeditor:    "Editor im Popup oeffnen",
 		about:          "Ueber HtmlArea",
 		showhelp:       "Hilfe",
 		textindicator:  "derzeitiger Stil",
@@ -49,6 +49,29 @@ HTMLArea.I18N = {
 
 	msg: {
 		"Path":         "Pfad",
-		"TEXT_MODE":    "Du befindest dich im HTML Modus.  Benuetze die [<>] Schaltflaeche um in den WYSIWIG-Modus zu wechseln."
+		"TEXT_MODE":    "Sie befinden sich im Text Modus.  Benutzen Sie die [<>] Schaltflaeche um in den WYSIWIG-Modus zu wechseln.",
+		
+		"IE-sucks-full-screen" :
+		// translate here
+		"The full screen mode is known to cause problems with Internet Explorer, " +
+		"due to browser bugs that we weren't able to workaround.  You might experience garbage " +
+		"display, lack of editor functions and/or random browser crashes.  If your system is Windows 9x " +
+		"it's very likely that you'll get a 'General Protection Fault' and need to reboot.\n\n" +
+		"You have been warned.  Please press OK if you still want to try the full screen editor."
+	},
+	
+	dialogs: {
+		"Cancel"                                            : "Abbrechen",
+		"Insert/Modify Link"                                : "Link einfuegen/bearbeiten",
+		"New window (_blank)"                               : "Neues Fenster (_blank)",
+		"None (use implicit)"                               : "k.A. (implizit)",
+		"OK"                                                : "OK",
+		"Other"                                             : "Anderes",
+		"Same frame (_self)"                                : "Gleicher Rahmen (_self)",
+		"Target:"                                           : "Ziel:",
+		"Title (tooltip):"                                  : "Titel (Tooltip):",
+		"Top frame (_top)"                                  : "Top Frame (_top)",
+		"URL:"                                              : "URL:",
+		"You must enter the URL where this link points to"  : "Sie muessen die URL dieses Links eingeben"
 	}
 };
