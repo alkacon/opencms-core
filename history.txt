@@ -16,6 +16,7 @@ OpenCms 4.5.35 Chusuk       - XX February 2001
   (eg. group A, parent B; group B, parent A). This was done in the generic resourcebroker.
   It has to be tested for the oracle pl/sql broker.
 * it is now possible to use relative links in link tags.
+* New way to encode the passwords.
 - Removed old Usermanual. The usermanual is now part of the complete OpenCms documentation.
 
 OpenCms 4.5.34 Chusuk       - 05 February 2001
