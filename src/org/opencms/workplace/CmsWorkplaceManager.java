@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * For each setting one or more get methods are provided.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.3.1
  */
@@ -76,6 +76,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     private List m_labelSiteFolders;
     private boolean m_showUserGroupIcon;
     private CmsWorkplaceEditorManager m_editorManager;
+    private Locale m_defaultLocale;
     
     /** Set of installed workplace locales */
     private Set m_locales;
@@ -124,7 +125,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor handler class : non-critical error initializing editor handler");
             }
             // any exception here is fatal and will cause a stop in processing
-            // TODO: activate throwing exception: throw e;
+            throw e;
         }
         
         // initialize "editoraction" registry class
@@ -141,7 +142,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Editor action class  : non-critical error initializing editor action class");
             }
             // any exception here is fatal and will cause a stop in processing
-            // TODO: activate throwing exception: throw e;
+            throw e;
         }
         
         // read the maximum file upload size limit
@@ -180,6 +181,18 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         
         // set the property if the automatic locking of resources is enabled in explorer view
         m_autoLockResources = configuration.getBoolean("workplace.autolock.resources", false);
+        
+        // read the default user locale
+        try {
+            m_defaultLocale = CmsLocaleManager.getLocale(configuration.getString("workplace.user.default.locale", I_CmsWpConstants.C_DEFAULT_LOCALE.toString()));
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". User data init       : Default locale is '" + m_defaultLocale + "'");
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". User data init       : non-critical error " + e.toString());
+            }
+        }        
         
         // initialize the workplace editor manager
         m_editorManager = new CmsWorkplaceEditorManager(cms);
@@ -257,7 +270,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             Locale locale = CmsLocaleManager.getLocale(folder.getName());
             // add locale
             m_locales.add(locale);
-            // TODO: Check if it's a good idea to add the general locales here automatically like this: 
             // add less specialized locale
             m_locales.add(new Locale(locale.getLanguage(), locale.getCountry()));    
             // add even less specialized locale            
@@ -283,8 +295,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      * @return  the Workplace default locale
      */
     public Locale getDefaultLocale() {
-        // TODO: This should be made configurable
-        return I_CmsWpConstants.C_DEFAULT_LOCALE;
+        return m_defaultLocale;
     }
     
     /**

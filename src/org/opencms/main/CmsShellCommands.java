@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2004/02/13 17:13:40 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,17 +33,7 @@ package org.opencms.main;
 
 import org.opencms.cron.CmsCronEntry;
 import org.opencms.cron.CmsCronTable;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
-import org.opencms.db.I_CmsVfsDriver;
-import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsAccessControlList;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.util.CmsUUID;
-import org.opencms.workflow.CmsTask;
-import org.opencms.workplace.I_CmsWpConstants;
-
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -51,6 +41,13 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceTypeFolder;
 import org.opencms.file.CmsUser;
+import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsUUID;
+import org.opencms.workflow.CmsTask;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -67,53 +64,39 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 /**
- * This class is a commad line interface to OpenCms which 
- * can be used for the initial setup and to test the system.<p>
+ * Command processor for the CmsShell, each command available in the shell is implemented here.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.34 $ $Date: 2004/02/13 17:13:40 $ 
- * @see org.opencms.file.CmsObject
+ * @version $Revision: 1.35 $
  */
 class CmsShellCommands {
 
-    /**
-     * The CmsObject object which provides access to the VFS..
-     */
+    /** The OpenCms context object */
     private CmsObject m_cms;
-
-    /**
-     * The wrapped OpenCms object which provides the system environment.
-     */
-    private OpenCmsCore m_openCms;
-
-    /**
-     * The driver manager to provide low-level access.<p>
-     */
-    private CmsDriverManager m_driverManager;
     
-    /** The Cms shell.<p> */
+    /** The Cms shell object */
     private CmsShell m_shell;
+
+    /** Internal switch for short / long exception format */
+    boolean m_shortException;
     
     /**
-     * Generate a new instance of CmsShellCommands.<p>
+     * Generate a new instance of the command processor.<p>
      * 
-     * @param shell the shell that initialized this command proccessor
-     * @param openCms the operatin environment 
-     * @param cms an initialized OpenCms object (i.e. "operating system")
-     * @param driverManager the driver manager
+     * @param shell the CmsShell that for this command processor
+     * @param cms an initilized context object
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(CmsShell shell, OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
+    protected CmsShellCommands(CmsShell shell, CmsObject cms) throws Exception {
         m_shell = shell;
-        m_openCms = openCms;
-        m_driverManager = driverManager;
         m_cms = cms;
-
-        // print the version-string
+        // print the version information
         version();
+        // print the copyright message
         copyright();
-        printHelpText();
+        // print the help information
+        help();
     }
 
     /**
@@ -648,35 +631,6 @@ class CmsShellCommands {
             printException(exc);
         }
     }
-    
-
-    /**
-     * Displays the classes of the configured drivers.<p>
-     */
-    public void getDriverInfo() {
-        try {
-            Map drivers = m_cms.getDrivers();
-            for (Iterator i = drivers.keySet().iterator(); i.hasNext();) {
-                System.out.println(i.next());    
-            }
-        } catch (Exception exc) {
-            printException(exc);
-        }
-    }
-    
-    /**
-     * Displays further information of a driver class.<p>
-     * 
-     * @param driverName the driver class name
-     */
-    public void getDriverInfo(String driverName) {
-        try {
-            Map drivers = m_cms.getDrivers();
-            System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
-        } catch (Exception exc) {
-            printException(exc);
-        }
-    }    
 
     /**
      * Deletes the folder.
@@ -821,7 +775,9 @@ class CmsShellCommands {
         if (echo == null) {
             return;
         }
-        m_shell.setEcho("on".equalsIgnoreCase(echo.trim()));
+        boolean b = "on".equalsIgnoreCase(echo.trim());
+        m_shell.setEcho(b);
+        System.out.println("Echo is now " + (b?"on":"off"));
     }
 
     /**
@@ -840,12 +796,9 @@ class CmsShellCommands {
     /**
      * Exits the shell and destryose the OpenCms core instance.<p>
      */
-    public void exit() {
-        try {
-            m_openCms.destroy();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }        
+    public void exit() {    
+        System.out.println();
+        System.out.println("Goodbye!");
         m_shell.exit();
     } 
     
@@ -1166,6 +1119,35 @@ class CmsShellCommands {
             printException(exc);
         }
     }
+    
+
+    /**
+     * Displays the classes of the configured drivers.<p>
+     */
+    public void getDriverInfo() {
+        try {
+            Map drivers = m_cms.getDrivers();
+            for (Iterator i = drivers.keySet().iterator(); i.hasNext();) {
+                System.out.println(i.next());    
+            }
+        } catch (Exception exc) {
+            printException(exc);
+        }
+    }
+    
+    /**
+     * Displays further information of a driver class.<p>
+     * 
+     * @param driverName the driver class name
+     */
+    public void getDriverInfo(String driverName) {
+        try {
+            Map drivers = m_cms.getDrivers();
+            System.out.println(((I_CmsDriver)drivers.get(driverName)).toString());
+        } catch (Exception exc) {
+            printException(exc);
+        }
+    }    
 
     /**
      * Returns a Vector with all subfiles.<BR/>
@@ -1554,31 +1536,43 @@ class CmsShellCommands {
     }
 
     /**
-     * Prints all possible commands.
+     * Provides help information for the CmsShell.<p>
      */
     public void help() {
-        Method meth[] = getClass().getMethods();
-        for (int z = 0; z < meth.length; z++) {
-            if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC)) {
-                printMethod(meth[z]);
-            }
-        }
+        System.out.println();
+        System.out.println("help              Shows this text");
+        System.out.println("help *            Shows the signatures of all available commands");
+        System.out.println("help {string}     Shows the signatures of all commands containing this string");
+        System.out.println("exit or quit      Leaves this OpenCms Shell");
+        System.out.println();
     }
 
     /**
-     * Prints signature of all possible commands containing a certain string.<br>
-     * May also be used to print signature of a specific command by giving full command name.
+     * Executes the given help command.<p>
      *
-     * @param searchString The String to search for in the commands
+     * @param command the help command to execute
      */
-    public void help(String searchString) {
-        if (searchString.equals("help")) {
-            printHelpText();
+    public void help(String command) {
+        if ("*".equalsIgnoreCase(command)) {
+            helpFor(null);
+        } else if ("help".equalsIgnoreCase(command)) {
+            help();
         } else {
-            Method meth[] = getClass().getMethods();
-            for (int z = 0; z < meth.length; z++) {
-                if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC) && (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) {
-                    printMethod(meth[z]);
+            helpFor(command);
+        }
+    }
+        
+    /**
+     * Shows the signature of all commands containing the given search String.<p>
+     *
+     * @param searchString the String to search for in the commands, if null all commands are shown
+     */
+    private void helpFor(String searchString) {
+        Method methods[] = getClass().getMethods();
+        for (int i = 0; i < methods.length; i++) {
+            if ((methods[i].getDeclaringClass() == getClass()) && (methods[i].getModifiers() == Modifier.PUBLIC)) {
+                if ((searchString == null) || (methods[i].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)) { 
+                    printMethod(methods[i]);
                 }
             }
         }
@@ -2000,17 +1994,98 @@ class CmsShellCommands {
             printException(exc);
         }
     }
+        
+    /**
+     * Does some performance measurements of the OpenCms core.<p>
+     */
+    public void perf() {        
+        int maxTests = 50000;
+        String oldSiteRoot = m_cms.getRequestContext().getSiteRoot();
+        m_cms.getRequestContext().setSiteRoot("/");
+        try {       
+            Random random = new Random();            
+            List testResources = m_cms.getResourcesInTimeRange("/", 0, System.currentTimeMillis());
+            int resourceCount = testResources.size();
+            System.out.println("#Resources:\t" + resourceCount);
+            long start, time;            
+            long totalTime = 0;
+            long minTime = Long.MAX_VALUE;
+            long maxTime = Long.MIN_VALUE;
+            System.out.print("readFileHeader:\t");
+            for (int i = maxTests; i > 0; --i) {
+                int index = random.nextInt(resourceCount);
+                CmsResource resource = (CmsResource)testResources.get(index);
+                start = System.currentTimeMillis();               
+                m_cms.readFileHeader(m_cms.readAbsolutePath(resource), true);
+                time = System.currentTimeMillis() - start;
+                totalTime += time;
+                if (time < minTime) {
+                    minTime = time;
+                }
+                if (time > maxTime) {
+                    maxTime = time;
+                }
+                if ((i % 100) == 0) {
+                    System.out.print(".");
+                }
+            }
+            System.out.println("\nreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / maxTests) + " ms");
+            
+        } catch (Throwable t) {
+            printException(t);
+        } finally {
+            m_cms.getRequestContext().setSiteRoot(oldSiteRoot);
+        }
+    }
+    
+    
+    /**
+     * Prints an exception, either with stacktrace or in a short from.<p>
+     *
+     * @param t the exception to print
+     */
+    private void printException(Throwable t) {
+        if (m_shortException) {
+            String exceptionText;
+            exceptionText = t.getMessage();
+            if ((exceptionText == null) || (exceptionText.length() == 0)) {
+                exceptionText = t.getClass().getName();
+            }
+            System.out.println(exceptionText);
+        } else {
+            t.printStackTrace();
+        }
+    }
 
     /**
-     * Prints help text when Shell is startet.
+     * Prints the full name and signature of a method,
+     * used by help methods.<p>
+     * 
+     * @param method the method to print the full name and signature for
      */
-    public void printHelpText() {
-        System.out.println("help              Gives a list of available commands with signature");
-        System.out.println("help <command>    Shows signature of command");
-        System.out.println("help <substring>  Lists only those commands containing this substring");
-        System.out.println("help help         Prints this text");
-        System.out.println("exit or quit      Leaves the Shell");
-        System.out.println("");
+    private void printMethod(Method method) {
+        System.out.print("  " + method.getName() + " (");
+        Class[] params = method.getParameterTypes();
+        for (int i = 0; i < params.length; i++) {
+            String par = params[i].getName();
+            par = par.substring(par.lastIndexOf(".") + 1);
+            if (i == 0) {
+                System.out.print(par);
+            } else {
+                System.out.print(", " + par);
+            }
+        }
+        System.out.println(")");
+    }
+
+    /**
+     * Sets the current shell prompt.<p>
+     *
+     * @param prompt the prompt to set
+     * @see CmsShell#setPrompt(String)
+     */
+    public void prompt(String prompt) {
+        m_shell.setPrompt(prompt);
     }
 
     /**
@@ -2040,8 +2115,6 @@ class CmsShellCommands {
             printException(exc);
         }
     }
-
-    // All methods, that may be called by the user:
 
     /**
      * Exits the commandline-interface
@@ -2434,7 +2507,7 @@ class CmsShellCommands {
     }
 
     /**
-     * Reads the propertydefinition for the resource type.<BR/>
+     * Reads the property definition for a resource type.<p>
      *
      * @param name The name of the propertydefinition to read.
      * @param resourcetype The name of the resource type for the propertydefinition.
@@ -2697,22 +2770,6 @@ class CmsShellCommands {
             printException(exc);
         }
     }
-
-    /**
-     * Starts a new cron job with the given index.<p>
-     * 
-     * @param no the job index within the cron table
-     */
-    public void startCronJob(String no) {
-        try {
-            int index = Integer.parseInt(no);
-            CmsCronTable cronTable = new CmsCronTable(m_cms.readCronTable());
-            CmsCronEntry cronJob = cronTable.get(index);
-            OpenCmsCore.getInstance().startScheduleJob(cronJob);
-        } catch (Exception exc) {
-            printException(exc);
-        }    
-    } 
         
     /**
      * Sets the name of the current site root
@@ -2944,7 +3001,8 @@ class CmsShellCommands {
             printException(exc);
         }
     }
-
+    
+    
     /**
      * Sets the recovery password for a user.
      *
@@ -2997,9 +3055,6 @@ class CmsShellCommands {
             printException(exc);
         }
     }
-
-    
-    boolean m_shortException;
     
     /**
      * Echos the input to output.
@@ -3007,35 +3062,28 @@ class CmsShellCommands {
      * @param param The echo to be written to output.
      */
     public void shortException(String param) {
-        if (param.toLowerCase().equals("on")) {
-            m_shortException = true;
-        } else {
-            if (param.toLowerCase().equals("off")) {
-                m_shortException = false;
-            }
+        if (param == null) {
+            return;
         }
+        m_shortException = "on".equalsIgnoreCase(param.trim());
+        System.out.println("Short exception format is now " + (m_shortException?"on":"off"));        
     }
 
     /**
-     * Prints the full name and signature of a method,
-     * used by help methods.<p>
+     * Starts a new cron job with the given index.<p>
      * 
-     * @param method the method to print the full name and signature for
+     * @param no the job index within the cron table
      */
-    protected void printMethod(Method method) {
-        System.out.print("  " + method.getName() + " (");
-        Class[] params = method.getParameterTypes();
-        for (int i = 0; i < params.length; i++) {
-            String par = params[i].getName();
-            par = par.substring(par.lastIndexOf(".") + 1);
-            if (i == 0) {
-                System.out.print(par);
-            } else {
-                System.out.print(", " + par);
-            }
-        }
-        System.out.println(")");
-    }
+    public void startCronJob(String no) {
+        try {
+            int index = Integer.parseInt(no);
+            CmsCronTable cronTable = new CmsCronTable(m_cms.readCronTable());
+            CmsCronEntry cronJob = cronTable.get(index);
+            OpenCmsCore.getInstance().startScheduleJob(cronJob);
+        } catch (Exception exc) {
+            printException(exc);
+        }    
+    } 
     
     /**
     * Synchronize cms-resources on virtual filesystem with the server filesystem.
@@ -3159,23 +3207,24 @@ class CmsShellCommands {
     }
 
     /**
-     * Returns a version-string for this OpenCms.
+     * Returns the version information for this OpenCms instance.<p>
      */
     public void version() {
-        System.out.println(OpenCms.getSystemInfo().getVersionName());
+        System.out.println();
+        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
     }
 
     /**
-     * Returns the current user.
+     * Returns the current user.<p>
      */
     public void whoami() {
         System.out.println(m_cms.getRequestContext().currentUser());
     }
 
     /**
-     * Writes the Crontable.
+     * Writes the crontable.<p>
      * 
-     * @param crontable a crontable entry
+     * @param crontable the crontable to write
      */
     public void writeCronTable(String crontable) {
         try {
@@ -3310,68 +3359,6 @@ class CmsShellCommands {
 
             // write it back
             m_cms.writeUser(user);
-        } catch (Exception exc) {
-            printException(exc);
-        }
-    }
-    
-    
-    /**
-     * Prints an exception stacktrace to the command shell.<p>
-     *
-     * @param t the exception to print
-     */
-    protected void printException(Throwable t) {
-        if (m_shortException) {
-            String exceptionText;
-            exceptionText = t.getMessage();
-            if ((exceptionText == null) || (exceptionText.length() == 0)) {
-                exceptionText = t.getClass().getName();
-            }
-            System.out.println(exceptionText);
-        } else {
-            t.printStackTrace();
-        }
-    }
-        
-    /**
-     * Does some performance measurements of the OpenCms core.<p>
-     */
-    public void perf() {
-        
-        final int MAX_TESTS = 10000;
-        
-        try {
-        
-            I_CmsVfsDriver vfsDriver = m_driverManager.getVfsDriver();
-            Random random = new Random();
-            int projectId = m_cms.getRequestContext().currentProject().getId();
-
-            List testResources = vfsDriver.readResources(projectId, 0, System.currentTimeMillis());
-            int numResources = testResources.size();
-            System.out.println("#Resources:\t" + numResources);
-            long totalTime = 0, minTime = 0, maxTime = 0, t, tt;
-            
-            // readFileHeader
-            totalTime = 0; 
-            minTime = 0;
-            maxTime = 0;
-            System.out.print("readFileHeader:\t");
-            for (int i = MAX_TESTS; i > 0; --i) {
-                int index = random.nextInt(numResources);
-                CmsResource res = (CmsResource)testResources.get(index);
-                t = System.currentTimeMillis();
-                    vfsDriver.readFileHeader(projectId, res.getParentStructureId(), res.getName(), true);            
-                tt = System.currentTimeMillis() - t;
-                totalTime += tt;
-                minTime = (minTime==0 | minTime > tt) ? tt : minTime;
-                maxTime = (maxTime==0 | maxTime < tt) ? tt : maxTime;
-                if ((i % 100) == 0) {
-                    System.out.print(".");
-                }
-            }
-            System.out.println("\rreadFileHeader:\t" + minTime + "\t" + maxTime + "\t" + (((float)totalTime) / MAX_TESTS) + " ms");
-            
         } catch (Exception exc) {
             printException(exc);
         }

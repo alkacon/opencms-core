@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/13 17:13:40 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,6 +73,7 @@ import com.opencms.core.CmsResponseHttpServlet;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -101,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.80 $
+ * @version $Revision: 1.81 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -142,8 +143,8 @@ public final class OpenCmsCore {
     /** The driver manager to access the database */
     private CmsDriverManager m_driverManager;
 
-    /** The static export manager */
-    private CmsStaticExportManager m_staticExportManager;
+    /** List to save the event listeners in */
+    private Map m_eventListeners;
     
     /** The cron manager */
     // TODO enable the cron manager
@@ -152,11 +153,11 @@ public final class OpenCmsCore {
     /** Filename translator, used only for the creation of new files */
     private CmsResourceTranslator m_fileTranslator;
     
+    /** The site manager contains information about the Cms import/export */
+    private CmsImportExportManager m_importExportManager;    
+    
     /** The link manager to resolve links in &lt;link&gt; tags */
     private CmsLinkManager m_linkManager;    
-
-    /** List to save the event listeners in */
-    private Map m_eventListeners;
 
     /** The loader manager used for loading individual resources */
     private CmsLoaderManager m_loaderManager;
@@ -191,44 +192,35 @@ public final class OpenCmsCore {
     /**  The cron scheduler to schedule the cronjobs */
     private CmsCronScheduler m_scheduler;
     
+    /** The search manager provides indexing and searching */
+    private CmsSearchManager m_searchManager;
+    
     /** The session info storage for all active users */
     private CmsSessionInfoManager m_sessionInfoManager;
     
     /** The site manager contains information about all configured sites */
     private CmsSiteManager m_siteManager;
     
-    /** The site manager contains information about the Cms import/export */
-    private CmsImportExportManager m_importExportManager;    
-    
-    /** The search manager provides indexing and searching */
-    private CmsSearchManager m_searchManager;
-    
     /** Flag to indicate if the startup classes have already been initialized */
     private boolean m_startupClassesInitialized;
 
+    /** The static export manager */
+    private CmsStaticExportManager m_staticExportManager;
+
+    /** The system information container for "read only" system settings */
+    private CmsSystemInfo m_systemInfo;    
+
     /** The cron table to use with the scheduler */
-    private CmsCronTable m_table;
+    private CmsCronTable m_cronTable;
     
     /** The Thread store */
     private CmsThreadStore m_threadStore;
     
     /** Flag to indicate if basic or form based authentication is used */
     private boolean m_useBasicAuthentication;
-
-    /** The default setting for the user access flags */
-    private int m_userDefaultaccessFlags;
-
-    /** The default setting for the user language */
-    private String m_userDefaultLanguage;
-
-    /** The additional http headers */
-    private String[] m_exportHeaders;
     
     /** The workplace manager contains information about the global workplace settings */
     private CmsWorkplaceManager m_workplaceManager;
-
-    /** The system information container for "read only" system settings */
-    private CmsSystemInfo m_systemInfo;    
     
     /**
      * Protected constructor that will initialize the singleton OpenCms instance with runlevel 1.<p>
@@ -659,18 +651,6 @@ public final class OpenCmsCore {
     }
     
     /**
-     * Returns the driver manager.<p>
-     * 
-     * This is required for starting the CmsShell only
-     * and should not be used otherwise.<p>
-     *
-     * @return the driver manager
-     */
-    protected CmsDriverManager getDriverManager() {
-        return m_driverManager;
-    }
-    
-    /**
      * Returns a part of the html error message dialog.<p>
      *
      * @param part the name of the piece to return
@@ -697,15 +677,15 @@ public final class OpenCmsCore {
     protected CmsResourceTranslator getFileTranslator() {
         return m_fileTranslator;
     }    
-    
+
     /**
-     * Returns specific http headers for the static export.
-     * If the header <code>Cache-Control</code> is set, OpenCms will not use its default headers
+     * Returns the initialized import/export manager,
+     * which contains information about the Cms import/export.<p>
      * 
-     * @return the list of http export headers from opencms.properties
+     * @return the initialized import/export manager
      */
-    protected List getExportHeaders() {
-        return Collections.unmodifiableList(Arrays.asList(m_exportHeaders));
+    protected CmsImportExportManager getImportExportManager() {
+        return m_importExportManager;
     }
     
     /**
@@ -875,6 +855,16 @@ public final class OpenCmsCore {
     protected Map getRuntimePropertyMap() {
         return m_runtimeProperties;
     }
+
+    /**
+     * Returns the initialized search manager,
+     * which provides indexing and searching operations.<p>
+     * 
+     * @return the initialized search manager
+     */
+    protected CmsSearchManager getSearchManager() {
+        return m_searchManager;
+    }
     
     /**
      * Returns the session info storage for all active users.<p>
@@ -903,26 +893,6 @@ public final class OpenCmsCore {
     protected CmsSiteManager getSiteManager() {
         return m_siteManager;
     }
-
-    /**
-     * Returns the initialized import/export manager,
-     * which contains information about the Cms import/export.<p>
-     * 
-     * @return the initialized import/export manager
-     */
-    protected CmsImportExportManager getImportExportManager() {
-        return m_importExportManager;
-    }
-
-    /**
-     * Returns the initialized search manager,
-     * which provides indexing and searching operations.<p>
-     * 
-     * @return the initialized search manager
-     */
-    protected CmsSearchManager getSearchManager() {
-        return m_searchManager;
-    }
     
     /**
      * Returns the properties for the static export.<p>
@@ -934,32 +904,21 @@ public final class OpenCmsCore {
     }
     
     /**
+     * Returns the system information storage.<p> 
+     * 
+     * @return the system information storage
+     */
+    protected CmsSystemInfo getSystemInfo() {
+        return m_systemInfo;
+    }
+    
+    /**
      * Returns the OpenCms Thread store.<p>
      * 
      * @return the OpenCms Thread store
      */
     protected CmsThreadStore getThreadStore() {
         return m_threadStore;
-    }
-
-    /**
-     * Returns the value for the default user access flags.<p>
-     * 
-     * @return the value for the default user access flags
-     */
-    protected int getUserDefaultAccessFlags() {
-        return m_userDefaultaccessFlags;
-    }
-
-    /**
-     * Returns the value of the user default language.<p>
-     * 
-     * @return the value of the user default language
-     */
-    protected String getUserDefaultLanguage() {
-        // TODO: Move this into new workplace manager
-        // TODO: Use a Locale instead of a String
-        return m_userDefaultLanguage;
     }
     
     /**
@@ -1274,8 +1233,8 @@ public final class OpenCmsCore {
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if (!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
-                m_table = new CmsCronTable(m_driverManager.readCronTable());
-                m_scheduler = new CmsCronScheduler(this, m_table);
+                m_cronTable = new CmsCronTable(m_driverManager.readCronTable());
+                m_scheduler = new CmsCronScheduler(this, m_cronTable);
                 if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                     getLog(CmsLog.CHANNEL_INIT).info(". OpenCms scheduler    : enabled");
                 }
@@ -1397,19 +1356,7 @@ public final class OpenCmsCore {
         // make sure we always have at last an emtpy array      
         if (m_defaultFilenames == null) {
             m_defaultFilenames = new String[0];
-        }
-            
-        // read the default user settings
-        try {
-            m_userDefaultLanguage = configuration.getString("workplace.user.default.language", I_CmsWpConstants.C_DEFAULT_LANGUAGE);
-            if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". User data init       : Default language is '" + m_userDefaultLanguage + "'");
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". User data init       : non-critical error " + e.toString());
-            }
-        }
+        }            
                 
         // read the password validating class
         m_passwordValidatingClass = configuration.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
@@ -1485,33 +1432,6 @@ public final class OpenCmsCore {
         // initializes the cron manager
         // TODO enable the cron manager
         //m_cronManager = new CmsCronManager();
-
-        m_exportHeaders = null;
-        // try to initialize default directory file names (e.g. index.html)
-        try {
-            m_exportHeaders = configuration.getStringArray("staticexport.headers");
-            for (int i = 0; i < m_exportHeaders.length; i++) {
-                if (CmsStringSubstitution.split(m_exportHeaders[i], ":").length == 2) {
-                    if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + m_exportHeaders[i]);
-                    }
-                } else {
-                    if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                        getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : " + "invalid header: " + m_exportHeaders[i] + ", using default headers");
-                    }
-                    m_exportHeaders = null;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            if (getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : non-critical error " + e.toString());
-            }
-        }
-        // make sure we always have at last an empty array      
-        if (m_exportHeaders == null) {
-            m_exportHeaders = new String[0];
-        }
         
         // save the configuration
         m_configuration = configuration;  
@@ -1533,7 +1453,7 @@ public final class OpenCmsCore {
         // Check for OpenCms home (base) directory path
         String base = context.getInitParameter("opencms.home");
         if (base == null || "".equals(base)) {
-            base = CmsShell.searchBaseFolder(context.getRealPath("/"));
+            base = searchWebInfFolder(context.getRealPath("/"));
             if (base == null || "".equals(base)) {
                 throwInitException(new CmsInitException(C_ERRORMSG + "OpenCms base folder could not be guessed. Please define init parameter \"opencms.home\" in servlet engine configuration.\n\n"));
             }
@@ -1605,61 +1525,9 @@ public final class OpenCmsCore {
             throwInitException(new CmsInitException(C_ERRORMSG + "Trouble creating the com.opencms.core.CmsObject. Please check the root cause for more information.\n\n", exc));
         }
         
-        // initialize static export variables
-        m_staticExportManager = new CmsStaticExportManager();
+        // initialize static export manager
+        m_staticExportManager = CmsStaticExportManager.initialize(configuration, null);
         
-        // set if the static export is enabled or not
-        m_staticExportManager.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
-
-        // set the default value for the "export" property
-        m_staticExportManager.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
-                
-        // set the export suffixes
-        String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
-        if (exportSuffixes == null) {
-            exportSuffixes = new String[0];
-        }
-        m_staticExportManager.setExportSuffixes(exportSuffixes);
-                
-        // set the path for the export
-        m_staticExportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), getSystemInfo().getWebApplicationName()));
-
-        // replace the "magic" names                 
-        String servletName = configuration.getString("servlet.mapping"); 
-        String contextName = "/" + getSystemInfo().getWebApplicationName(); 
-        if ("/ROOT".equals(contextName)) {
-            contextName = "";
-        }
-        
-        // set the "magic" names in the extended properties
-        configuration.setProperty("CONTEXT_NAME", contextName);
-        configuration.setProperty("SERVLET_NAME", servletName);
-                
-        // get the export prefix variables for rfs and vfs
-        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
-        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
-                                        
-        // set the export prefix variables for rfs and vfs
-        m_staticExportManager.setRfsPrefix(rfsPrefix);
-        m_staticExportManager.setVfsPrefix(vfsPrefix);    
-                        
-        // set if links in the export should be relative or not
-        m_staticExportManager.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
-
-        // initialize "exportname" folders
-        m_staticExportManager.setExportnames();
-        
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (m_staticExportManager.isStaticExportEnabled()?"enabled":"disabled"));
-            if (m_staticExportManager.isStaticExportEnabled()) {
-                getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + m_staticExportManager.getExportPropertyDefault());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + m_staticExportManager.getExportPath());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + m_staticExportManager.getRfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + m_staticExportManager.getVfsPrefix());
-                getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (m_staticExportManager.relativLinksInExport()?"relative":"absolute"));                
-            }
-        }                       
-
         // initalize the session storage
         m_sessionInfoManager = new CmsSessionInfoManager();
         if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
@@ -1723,8 +1591,7 @@ public final class OpenCmsCore {
         m_eventListeners = new HashMap();
         m_requestHandlers = new HashMap();
         m_systemInfo = new CmsSystemInfo();
-        m_startupClassesInitialized = false;
-        m_userDefaultaccessFlags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;      
+        m_startupClassesInitialized = false;     
     }
 
     /**
@@ -1981,14 +1848,37 @@ public final class OpenCmsCore {
             res.sendRedirect(redirectURL);
         }
     }
-    
+
     /**
-     * Returns the system information storage.<p> 
+     * Searches for the OpenCms web application 'WEB-INF' folder during system startup.<p>
      * 
-     * @return the system information storage
+     * @param startFolder the folder where to start searching
+     * @return String the path of the 'WEB-INF' folder in the 'real' file system
      */
-    protected CmsSystemInfo getSystemInfo() {
-        return m_systemInfo;
+    protected String searchWebInfFolder(String startFolder) {        
+        
+        File f = new File(startFolder);        
+        if (! f.isDirectory()) {
+            return null;
+        }
+        
+        File configFile = new File(f, I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE.replace('/', File.separatorChar));
+        if (configFile.exists() && configFile.isFile()) {
+            return f.getAbsolutePath();
+        }
+        
+        String webInfFolder = null;
+        File[] subFiles = f.listFiles();
+        for (int i=0; i<subFiles.length; i++) {
+            if (subFiles[i].isDirectory()) {
+                webInfFolder = searchWebInfFolder(subFiles[i].getAbsolutePath());
+                if (webInfFolder != null) {
+                    break;
+                }
+            }
+        }        
+        
+        return webInfFolder;
     }
     
     /**
@@ -2146,7 +2036,7 @@ public final class OpenCmsCore {
      */
     public void updateCronTable() {
         try {
-            m_table.update(m_driverManager.readCronTable());
+            m_cronTable.update(m_driverManager.readCronTable());
         } catch (Exception exc) {
             if (getLog(this).isErrorEnabled()) {
                 getLog(this).error("Crontable is corrupt, Cron scheduler has been disabled", exc);

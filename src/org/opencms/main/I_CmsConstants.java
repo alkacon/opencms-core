@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.1 $ $Date: 2004/02/13 13:41:45 $
+ * @version $Revision: 1.2 $ $Date: 2004/02/14 00:22:01 $
  */
 public interface I_CmsConstants {
 
@@ -703,36 +703,32 @@ public interface I_CmsConstants {
     /** state values of task messages when members */
     int C_TASK_MESSAGES_MEMBERS = 8;
 
-    /** Task preferenses filter */
+    /** Task preferences filter */
     String C_TASK_FILTER = "task.filter.";
 
-    /** Task preferenses view all */
+    /** Task preferences view all */
     String C_TASK_VIEW_ALL = "TaskViewAll";
 
-    /** Task preferenses message flags */
+    /** Task preferences message flags */
     String C_TASK_MESSAGES = "TaskMessages";
 
-    /** Start preferenses Language */
+    /** Start preferences Language */
     String C_START_LOCALE = "StartLanguage";
 
-    /** Start preferenses Project */
+    /** Start preferences Project */
     String C_START_PROJECT = "StartProject";
 
-    /** Start preferenses View */
+    /** Start preferences View */
     String C_START_VIEW = "StartView";
 
-    /** Start preferenses DefaultGroup */
+    /** Start preferences DefaultGroup */
     String C_START_DEFAULTGROUP = "StartDefaultGroup";
 
-    /** Start preferenses lock dialog */
+    /** Start preferences lock dialog */
     String C_START_LOCKDIALOG = "StartLockDialog";
     
-    /** Start preferenses lock dialog */
+    /** Start preferences lock dialog */
     String C_START_UPLOADAPPLET = "StartUploadApplet";
-    
-
-    /** Start preferenses AccessFlags */
-    String C_START_ACCESSFLAGS = "StartAccessFlags";
 
     /** Template element name used for the canonical root template */
     String C_ROOT_TEMPLATE_NAME = "root";

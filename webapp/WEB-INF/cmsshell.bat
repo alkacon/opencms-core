@@ -16,6 +16,8 @@ set OPTIONS= %OPTIONS% -Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,
 
 set CLASSPATH= .
 set CLASSPATH= %CLASSPATH%;../../../common/lib/servlet.jar
+set CLASSPATH= %CLASSPATH%;../../../common/lib/servlet-api.jar
+set CLASSPATH= %CLASSPATH%;../../../common/lib/jsp-api.jar
 set CLASSPATH= %CLASSPATH%;lib/commons-dbcp.jar
 set CLASSPATH= %CLASSPATH%;lib/commons-pool.jar
 set CLASSPATH= %CLASSPATH%;lib/commons-collections.jar

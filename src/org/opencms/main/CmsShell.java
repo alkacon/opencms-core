@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2004/02/13 17:13:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,9 @@
 
 package org.opencms.main;
 
-
-import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
 import org.opencms.setup.CmsSetupUtils;
+import org.opencms.util.CmsStringSubstitution;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -46,7 +45,8 @@ import java.io.LineNumberReader;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.collections.ExtendedProperties;
 
@@ -57,15 +57,12 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $ $Date: 2004/02/13 17:13:40 $
+ * @version $Revision: 1.15 $ $Date: 2004/02/14 00:22:01 $
  */
 public class CmsShell {
 
     /** The OpenCms context object */
     private CmsObject m_cms;
-    
-    /** Internal driver manager */
-    private CmsDriverManager m_driverManager;
 
     /** If set to true, all commands are echoed */
     private boolean m_echo;
@@ -74,7 +71,10 @@ public class CmsShell {
     private boolean m_exitCalled;
 
     /** The OpenCms system object */
-    private OpenCmsCore m_openCms;
+    private OpenCmsCore m_opencms;
+
+    /** The shell prompt format */
+    private String m_prompt;
     
     /** Internal shell command object */
     private CmsShellCommands m_shellCommands;
@@ -82,81 +82,58 @@ public class CmsShell {
     /**
      * Creates a new CmsShell.<p>
      * 
-     * @param fileInput a (file) input stream from which commands are read
-     * @param basePath the OpenCms base application path
+     * @param fileInputStream a (file) input stream from which commands are read
+     * @param prompt the prompt format to set
+     * @param webInfPath the path to the 'WEB-INF' folder of the OpenCms installation
      */
-    public CmsShell(String basePath, FileInputStream fileInput) {
+    public CmsShell(String webInfPath, String prompt, FileInputStream fileInputStream) {
+        setPrompt(prompt);
+        
+        System.out.println();         
+        System.out.println("Welcome to the OpenCms shell!");            
+        System.out.println();  
+        
         try {
-            if (basePath == null || "".equals(basePath)) {
+            // first initialize runlevel 1 
+            m_opencms = OpenCmsCore.getInstance();
+            // search for the WEB-INF folder
+            if (webInfPath == null || "".equals(webInfPath)) {
                 System.err.println("No OpenCms home folder given. Trying to guess...");
-                basePath = searchBaseFolder(System.getProperty("user.dir"));
-                if (basePath == null || "".equals(basePath)) {
+                System.out.println();         
+                webInfPath = m_opencms.searchWebInfFolder(System.getProperty("user.dir"));
+                if (webInfPath == null || "".equals(webInfPath)) {
                     System.err.println("-----------------------------------------------------------------------");
-                    System.err.println("OpenCms base folder could not be guessed.");
-                    System.err.println("");
-                    System.err.println("Please start the OpenCms command line interface from the directory");
-                    System.err.println("containing the \"opencms.properties\" and the \"oclib\" folder or pass the");
-                    System.err.println("OpenCms home folder as argument.");
+                    System.err.println("The OpenCms 'WEB-INF' folder can not be found.");
+                    System.err.println();
+                    System.err.println("Please start the OpenCms shell from the 'WEB-INF' directory of your");
+                    System.err.println("OpenCms installation, or pass the OpenCms 'WEB-INF' folder as argument.");
                     System.err.println("-----------------------------------------------------------------------");
                     return;
                 }
             }
+            System.out.println("OpenCms WEB-INF path:  " + webInfPath);            
+            // set the path to the WEB-INF folder
+            m_opencms.getSystemInfo().setWebInfPath(webInfPath);
             
-            // first initialize runlevel 1 and set all path information
-            m_openCms = OpenCmsCore.getInstance();
-            m_openCms.getSystemInfo().setWebInfPath(basePath);
-            
-            String propsPath = m_openCms.getSystemInfo().getConfigurationFilePath();
-            System.out.println("[OpenCms] Property path: " + propsPath);
-            ExtendedProperties conf = CmsSetupUtils.loadProperties(propsPath);
+            // now read the configuration properties
+            String propertyPath = m_opencms.getSystemInfo().getConfigurationFilePath();
+            System.out.println("OpenCms property file: " + propertyPath);
+            System.out.println();            
+            ExtendedProperties configuration = CmsSetupUtils.loadProperties(propertyPath);
             
             // now upgrade to runlevel 2
-            m_openCms = m_openCms.upgradeRunlevel(conf);
-
-            m_echo = false;
-            m_exitCalled = false;
-                    
-            m_driverManager = m_openCms.getDriverManager();
-            m_cms = m_openCms.initCmsObject(null, null, m_openCms.getDefaultUsers().getUserGuest(), m_openCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);    
+            m_opencms = m_opencms.upgradeRunlevel(configuration);  
             
-            commands(fileInput);            
+            // create a context object with 'Guest' permissions
+            m_cms = m_opencms.initCmsObject(m_opencms.getDefaultUsers().getUserGuest());
+            // set the site root to the default site
+            m_cms.getRequestContext().setSiteRoot(m_opencms.getSiteManager().getDefaultSite().getSiteRoot());
+            
+            // execute the commands from the input stream
+            executeCommands(fileInputStream);            
         } catch (Throwable t) {
             t.printStackTrace(System.err);
         }
-    }
-
-    /**
-     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
-     * 
-     * @param currentDir current directory
-     * @return String directory name
-     */
-    private static String downSearchBaseFolder(File currentDir) {
-        if (isBaseFolder(currentDir)) {
-            return currentDir.getAbsolutePath();
-        } else {
-            if (currentDir.exists() && currentDir.isDirectory()) {
-                File webinfDir = new File(currentDir, "WEB-INF");
-                if (isBaseFolder(webinfDir)) {
-                    return webinfDir.getAbsolutePath();
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Internal helper method for {@link #searchBaseFolder(String)}.<p>
-     * 
-     * @param currentDir current directory
-     * @return boolean <code>true</code> if currentDir is the base folder
-     */
-    private static boolean isBaseFolder(File currentDir) {
-        if (currentDir.exists() && currentDir.isDirectory()) {
-            File f1 = new File(currentDir.getAbsolutePath() + File.separator + I_CmsConstants.C_CONFIGURATION_PROPERTIES_FILE.replace('/', File.separatorChar));
-            return f1.exists() && f1.isFile();
-        }
-        return false;
     }   
 
     /**
@@ -166,7 +143,7 @@ public class CmsShell {
      */
     public static void main(String[] args) {
         boolean wrongUsage = false;    
-        String base = null;
+        String webInfPath = null;
         String script = null;
     
         if (args.length > 2) {
@@ -175,7 +152,7 @@ public class CmsShell {
             for (int i = 0; i < args.length; i++) {
                 String arg = args[i];
                 if (arg.startsWith("-base=")) {
-                    base = arg.substring(6);
+                    webInfPath = arg.substring(6);
                 } else if (arg.startsWith("-script=")) {
                     script = arg.substring(8);
                 } else {
@@ -185,114 +162,73 @@ public class CmsShell {
             }
         }
         if (wrongUsage) {
-            System.out.println("Usage: java " + CmsShell.class.getName() + " [-base=<basepath>] [-script=<scriptfile>]");
+            System.out.println("Usage: java " + CmsShell.class.getName() + " [-base={path to WEB-INF}] [-script={scriptfile}]");
         } else {
             FileInputStream stream = null;
             if (script != null) {
                 try {
                     stream = new FileInputStream(script);
                 } catch (IOException exc) {
-                    System.out.println("wrong script-file " + script + " using stdin instead");
+                    System.out.println("trouble reading script file '" + script + "', using SDTIN instead");
                 }
             }
-    
             if (stream == null) {
-                // no script-file use input-stream
+                // no script-file, use standard input stream
                 stream = new FileInputStream(FileDescriptor.in);
             }
-    
-            new CmsShell(base, stream);
+            new CmsShell(webInfPath, "$u@$p:$s/>", stream);
         }
-    }
-
-    /**
-     * Searches for the OpenCms web application base folder during startup.<p>
-     * 
-     * @param startFolder the folder where to start searching
-     * @return String the name of the folder on the local file system
-     */
-    public static String searchBaseFolder(String startFolder) {
-        File currentDir = null;
-        String base = null;
-        File father = null;
-        File grandFather = null;
-    
-        // Get a file obkect of the current folder
-        if (startFolder != null && !"".equals(startFolder)) {
-            currentDir = new File(startFolder);
-        }
-    
-        // Get father and grand father
-        if (currentDir != null && currentDir.exists()) {
-            father = currentDir.getParentFile();
-        }
-        if (father != null && father.exists()) {
-            grandFather = father.getParentFile();
-        }
-    
-        if (currentDir != null) {
-            base = downSearchBaseFolder(currentDir);
-        }
-        if (base == null && grandFather != null) {
-            base = downSearchBaseFolder(grandFather);
-        }
-        if (base == null && father != null) {
-            base = downSearchBaseFolder(father);
-        }
-        return base;
     }
 
     /**
      * Entry point when started from the OpenCms setup wizard.<p>
      *
-     * @param file filename of a file containing the setup commands (e.g. cmssetup.txt)
-     * @param base base folder for the OpenCms web application
+     * @param fileName name of a script file containing the setup commands (e.g. cmssetup.txt)
+     * @param webInfPath base folder for the OpenCms web application
      */
-    public static void startSetup(String file, String base) {
+    public static void startSetup(String webInfPath, String fileName) {
         try {
-            new CmsShell(base, new FileInputStream(new File(file)));
+            new CmsShell(webInfPath, "$u@$p>", new FileInputStream(new File(fileName)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Calls a list of commands.<p>
+     * Executes a shell command with a list of parameters (the command must be the first item in the list).<p>
      *
-     * @param commands a Vector of commands to be called
+     * @param command a command with a list of parameters to execute
      */
-    private void call(Vector commands) {
+    private void executeCommand(List commandWithParameters) {
         if (m_echo) {
             // all commands should be echoed to the shell
-            for (int i = 0; i < commands.size(); i++) {
-                System.out.print(commands.elementAt(i) + " ");
+            for (int i = 0; i < commandWithParameters.size(); i++) {
+                System.out.print(commandWithParameters.get(i) + " ");
             }
             System.out.println();
         }
-        if ((commands == null) || (commands.size() == 0)) {
+        if ((commandWithParameters == null) || (commandWithParameters.size() == 0)) {
             return;
         }
-        String splittet[] = new String[commands.size()];
-        String toCall;
-        commands.copyInto(splittet);
-        toCall = splittet[0];
+        Object[] splittet = commandWithParameters.toArray();
+        String toCall = (String)splittet[0];
         if (toCall == null) {
             return;
         }
         Class paramClasses[] = new Class[splittet.length - 1];
         String params[] = new String[splittet.length - 1];
-        for (int z = 0; z < splittet.length - 1; z++) {
-            params[z] = splittet[z + 1];
-            paramClasses[z] = String.class;
+        for (int i = 0; i < splittet.length - 1; i++) {
+            params[i] = (String)splittet[i + 1];
+            paramClasses[i] = String.class;
         }
         try {
             m_shellCommands.getClass().getMethod(toCall, paramClasses).invoke(m_shellCommands, params);
         } catch (InvocationTargetException ite) {
             System.err.println("Got Exception while using reflection:");
-            ite.getTargetException().printStackTrace();
+            ite.getTargetException().printStackTrace(System.err);
         } catch (NoSuchMethodException nsm) {
             System.out.println("The requested command was not found.\n-----------------------------------------------");
-            m_shellCommands.printHelpText();
+            m_shellCommands.help();
         } catch (Throwable t) {
             System.err.println("Got Exception while using reflection:");
             t.printStackTrace(System.err);            
@@ -300,14 +236,14 @@ public class CmsShell {
     }
 
     /**
-     * The OpenCms command line interface.<p>
+     * Executes all commands read from the given input stream.<p>
      * 
-     * @param input a file input stream from which the commands are read
+     * @param fileInputStream a file input stream from which the commands are read
      */
-    private void commands(FileInputStream input) {
+    private void executeCommands(FileInputStream fileInputStream) {
         try {
-            m_shellCommands = new CmsShellCommands(this, m_openCms, m_cms, m_driverManager);
-            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(input));
+            m_shellCommands = new CmsShellCommands(this, m_cms);
+            LineNumberReader lnr = new LineNumberReader(new InputStreamReader(fileInputStream));
             while (!m_exitCalled) {
                 printPrompt();
                 String line = lnr.readLine();
@@ -320,18 +256,18 @@ public class CmsShell {
                 st.eolIsSignificant(true);                
                 
                 // put all tokens into a vector
-                Vector args = new Vector();
+                List args = new ArrayList();
                 while (st.nextToken() != StreamTokenizer.TT_EOF) {
                     if (st.ttype == StreamTokenizer.TT_NUMBER) {
-                        args.addElement(Integer.toString(new Double(st.nval).intValue()));
+                        args.add(Integer.toString(new Double(st.nval).intValue()));
                     } else {
-                        args.addElement(st.sval);
+                        args.add(st.sval);
                     }
                 }
                 reader.close();
 
                 // exec the command
-                call(args);
+                executeCommand(args);
             }
         } catch (Throwable t) {
             t.printStackTrace(System.err);            
@@ -342,15 +278,23 @@ public class CmsShell {
      * Exits this shell.<p>
      */
     protected void exit() {
+        try {
+            m_opencms.destroy();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }        
         m_exitCalled = true;
     }
-
+    
     /**
-     * Prints the current shell prompt.<p>
+     * Prints the shell prompt.<p>
      */
     private void printPrompt() {
-        System.out.print("{" + m_cms.getRequestContext().currentUser().getName() + "@" + m_cms.getRequestContext().currentProject().getName() + "}");
-        System.out.print("> ");
+        String prompt = m_prompt;
+        prompt = CmsStringSubstitution.substitute(prompt, "$u", m_cms.getRequestContext().currentUser().getName());
+        prompt = CmsStringSubstitution.substitute(prompt, "$s", m_cms.getRequestContext().getSiteRoot());
+        prompt = CmsStringSubstitution.substitute(prompt, "$p", m_cms.getRequestContext().currentProject().getName());
+        System.out.print(prompt);
     }
     
     /**
@@ -361,5 +305,19 @@ public class CmsShell {
     protected void setEcho(boolean echo) {
         m_echo = echo;
     }
-
+    
+    /**
+     * Sets the current shell prompt.<p>
+     * 
+     * To set the prompt, the following variables are available:<p>
+     * 
+     * <code>$u</code> the current user name<br>
+     * <code>$s</code> the current site root<br>
+     * <code>$p</code> the current project name<p>
+     * 
+     * @param prompt the prompt to set
+     */
+    protected void setPrompt(String prompt) {
+        m_prompt = prompt;
+    }
 }

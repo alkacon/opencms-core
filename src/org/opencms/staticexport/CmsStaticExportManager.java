@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/02/13 13:41:46 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,9 @@
 package org.opencms.staticexport;
 
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.loader.CmsPageLoader;
@@ -39,34 +42,25 @@ import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsCore;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsStringSubstitution;
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.LRUMap;
 
 /**
@@ -74,7 +68,7 @@ import org.apache.commons.collections.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
     
@@ -105,6 +99,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Cache for the online links */
     private Map m_cacheOnlineLinks;
     
+    /** The additional http headers for the static export */
+    private String[] m_exportHeaders;    
+    
     /** List of all resources that have the "exportname" property set */
     private Map m_exportnameResources;
 
@@ -128,7 +125,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     
     /** Prefix to use for internal OpenCms files */
     private String m_vfsPrefix;
-
+    
     /**
      * Creates a new static export property object.<p>
      */
@@ -160,6 +157,99 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
     
     /**
+     * Initializes the static export manager with the OpenCms system configuration.<p>
+     * 
+     * @param configuration the OpenCms configuration
+     * @param cms an OpenCms context object (not used in static export manager)
+     * @return the initialized site manager
+     */
+    public static CmsStaticExportManager initialize(ExtendedProperties configuration, CmsObject cms) {
+        CmsStaticExportManager exportManager = new CmsStaticExportManager();
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).debug("Created static export manager" + ((cms != null)?(" with CmsObject " + cms):""));
+        }
+        
+        // set if the static export is enabled or not
+        exportManager.setStaticExportEnabled("true".equalsIgnoreCase(configuration.getString("staticexport.enabled", "false")));
+
+        // set the default value for the "export" property
+        exportManager.setExportPropertyDefault("true".equalsIgnoreCase(configuration.getString("staticexport.export_default", "false")));
+        
+        // set the export suffixes
+        String[] exportSuffixes = configuration.getStringArray("staticexport.export_suffixes");
+        if (exportSuffixes == null) {
+            exportSuffixes = new String[0];
+        }
+        exportManager.setExportSuffixes(exportSuffixes);
+        
+        // set the path for the export
+        exportManager.setExportPath(CmsLinkManager.getAbsoluteUri(configuration.getString("staticexport.export_path", "export"), OpenCms.getSystemInfo().getWebApplicationName()));
+
+        // replace the "magic" names                 
+        String servletName = configuration.getString("servlet.mapping"); 
+        String contextName = "/" + OpenCms.getSystemInfo().getWebApplicationName(); 
+        if ("/ROOT".equals(contextName)) {
+            contextName = "";
+        }
+        
+        // set the "magic" names in the extended properties
+        configuration.setProperty("CONTEXT_NAME", contextName);
+        configuration.setProperty("SERVLET_NAME", servletName);
+        
+        // get the export prefix variables for rfs and vfs
+        String rfsPrefix = configuration.getString("staticexport.prefix_rfs", contextName + "/export");
+        String vfsPrefix = configuration.getString("staticexport.prefix_vfs", contextName + servletName);
+        
+        // set the export prefix variables for rfs and vfs
+        exportManager.setRfsPrefix(rfsPrefix);
+        exportManager.setVfsPrefix(vfsPrefix);    
+        
+        // set if links in the export should be relative or not
+        exportManager.setExportRelativeLinks(configuration.getBoolean("staticexport.relative_links", false)); 
+
+        // initialize "exportname" folders
+        exportManager.setExportnames();
+        
+        if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+            OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Static export        : " + (exportManager.isStaticExportEnabled()?"enabled":"disabled"));
+            if (exportManager.isStaticExportEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export default       : " + exportManager.getExportPropertyDefault());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export path          : " + exportManager.getExportPath());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export rfs prefix    : " + exportManager.getRfsPrefix());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export vfs prefix    : " + exportManager.getVfsPrefix());
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export link style    : " + (exportManager.relativLinksInExport()?"relative":"absolute"));                
+            }
+        }               
+        
+        // initialize specific static export headers
+        String[] exportHeaders = null;
+        try {
+            exportHeaders = configuration.getStringArray("staticexport.headers");
+            for (int i = 0; i < exportHeaders.length; i++) {
+                if (CmsStringSubstitution.split(exportHeaders[i], ":").length == 2) {
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export headers       : " + exportHeaders[i]);
+                    }
+                } else {
+                    if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                        OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : " + "invalid header: " + exportHeaders[i] + ", using default headers");
+                    }
+                    exportHeaders = null;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isWarnEnabled()) {
+                OpenCms.getLog(CmsLog.CHANNEL_INIT).warn(". Export headers       : non-critical error " + e.toString());
+            }
+        }
+        exportManager.setExportHeaders(exportHeaders);
+        
+        return exportManager;
+    }
+    
+    /**
      * Caches a calculated export uri.<p>
      * 
      * @param rfsName the name of the resource in the "real" file system
@@ -180,24 +270,23 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
     
     /**
-     * Deletes a directory in the file system and all subfolders of the directory.<p>
+     * Clears the caches in the export manager.<p>
      * 
-     * @param d the directory to delete
+     * @param event the event that requested to clear the caches
      */
-    private void purgeDirectory(File d) {
-        if (d.canRead() && d.isDirectory()) {
-            java.io.File[] files = d.listFiles();             
-            for (int i = 0; i<files.length; i++) {
-                File f = files[i];
-                if (f.isDirectory()) {
-                    purgeDirectory(f);
-                }
-                if (f.canWrite()) {
-                    f.delete();
-                }
+    private void clearCaches(CmsEvent event) {
+        // flush all caches   
+        m_cacheOnlineLinks.clear();
+        m_cacheExportUris.clear();        
+        setExportnames();                
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            String eventType = "EVENT_CLEAR_CACHES";
+            if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
+                eventType = "EVENT_PUBLISH_PROJECT";
             }
-        }      
-    }    
+            OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
+        }        
+    }
     
     /**
      * Implements the CmsEvent interface,
@@ -228,152 +317,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // no operation
         }
     }    
-    
-    /**
-     * Clears the caches in the export manager.<p>
-     * 
-     * @param event the event that requested to clear the caches
-     */
-    private void clearCaches(CmsEvent event) {
-        // flush all caches   
-        m_cacheOnlineLinks.clear();
-        m_cacheExportUris.clear();        
-        setExportnames();                
-        if (OpenCms.getLog(this).isDebugEnabled()) {
-            String eventType = "EVENT_CLEAR_CACHES";
-            if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
-                eventType = "EVENT_PUBLISH_PROJECT";
-            }
-            OpenCms.getLog(this).debug("Static export manager flushed caches after recieving event " + eventType);
-        }        
-    }
-    
-    /**
-     * Scrubs the "export" folder.<p>
-     */
-    private void scrubExportFolder() {
-        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath());
-        try {
-            File exportFolder = new File(exportFolderName);
-            // check if export file exists, if so delete it
-            if (exportFolder.exists() && exportFolder.canWrite()) {
-                purgeDirectory(exportFolder);
-                // write log message
-                if (OpenCms.getLog(this).isInfoEnabled()) {
-                    OpenCms.getLog(this).info("Static export deleted main export folder '" + exportFolderName + "'");
-                }
-            }
-        } catch (Throwable t) {
-            // ignore, nothing to do about this
-            if (OpenCms.getLog(this).isWarnEnabled()) {
-                OpenCms.getLog(this).warn("Error deleting static export folder rfsName='" + exportFolderName + "'", t);
-            }
-        }       
-    }
-    
-    /**
-     * Scrubs all files from the export folder that might have been changed,
-     * so that the export is newly created after the next request to the resource.<p>
-     * 
-     * @param publishHistoryId id of the last published project
-     */
-    private void scrubExportFolders(CmsUUID publishHistoryId) {
-        Set scrubedFolders = new HashSet();
-        Set scrubedFiles = new HashSet();
-        // get a export user cms context        
-        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
-        List publishedResources;
-        try {
-            publishedResources = cms.readPublishedResources(publishHistoryId);
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Static export manager could not read list of changes resources for project ID " + publishHistoryId);
-            }                    
-            return;
-        }                
-        Iterator it = publishedResources.iterator();
-        while (it.hasNext()) {
-            CmsPublishedResource res = (CmsPublishedResource)it.next();                    
-            if (res.isUnChanged() || !res.isVfsResource()) {
-                // unchanged resources and non vfs resources don't need to be deleted
-                continue;
-            }
-            
-            List siblings = Collections.singletonList(res.getRootPath());
-            if (res.getLinkCount() > 1) {
-                // ensure all siblings are scrubbed if the resource has one 
-                try {
-                    List li = cms.getAllVfsLinks(res.getRootPath());
-                    siblings = new ArrayList();
-                    for (int i=0, l=li.size(); i < l; i++) {
-                        siblings.add(cms.readAbsolutePath((CmsResource)li.get(i)));
-                    }
-                } catch (CmsException e) {
-                    siblings = Collections.singletonList(res.getRootPath());
-                }
-            }
-            
-            for (int i=0, l=siblings.size(); i < l; i++) {      
-                String vfsName = (String)siblings.get(i);    
-                // get the link name for the published file 
-                String rfsName = getRfsName(cms, vfsName);
-                if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
-                }
-                if (rfsName.startsWith(getRfsPrefix()) && (!scrubedFiles.contains(vfsName)) && (!scrubedFolders.contains(CmsResource.getFolderPath(vfsName)))) {
-                    scrubedFiles.add(vfsName);
-                    // this file could have been exported
-                    String exportFileName;
-                    if (res.isFolder()) {
-                        if (res.isDeleted()) {
-                            String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(getRfsPrefix().length()+1));
-                            try {
-                                File exportFolder = new File(exportFolderName);
-                                // check if export file exists, if so delete it
-                                if (exportFolder.exists() && exportFolder.canWrite()) {
-                                    purgeDirectory(exportFolder);
-                                    exportFolder.delete();
-                                    // write log message
-                                    if (OpenCms.getLog(this).isInfoEnabled()) {
-                                        OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
-                                    }
-                                    scrubedFolders.add(vfsName);
-                                    continue;
-                                }
-                            } catch (Throwable t) {
-                                // ignore, nothing to do about this
-                                if (OpenCms.getLog(this).isWarnEnabled()) {
-                                    OpenCms.getLog(this).warn("Error deleting static export folder vfsName='" + vfsName + "' rfsName='" + exportFolderName + "'", t);
-                                }
-                            }    
-                        }                            
-                        // add index.html to folder name
-                        rfsName += C_EXPORT_DEFAULT_FILE;
-                        if (OpenCms.getLog(this).isDebugEnabled()) {
-                            OpenCms.getLog(this).debug("Static export folder index file rfsName='" + rfsName + "'");
-                        } 
-                    }                          
-                    exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(getRfsPrefix().length()+1));
-                    try {
-                        File exportFile = new File(exportFileName);
-                        // check if export file exists, if so delete it
-                        if (exportFile.exists() && exportFile.canWrite()) {
-                            exportFile.delete();
-                            // write log message
-                            if (OpenCms.getLog(this).isInfoEnabled()) {
-                                OpenCms.getLog(this).info("Static export deleted exported rfs file '" + rfsName + "'");
-                            }
-                        }    
-                    } catch (Throwable t) {
-                        // ignore, nothing to do about this
-                        if (OpenCms.getLog(this).isWarnEnabled()) {
-                            OpenCms.getLog(this).warn("Error deleting static export file vfsName='" + vfsName + "' rfsName='" + exportFileName + "'", t);
-                        }
-                    }      
-                }
-            } 
-        }       
-    }
     
     /**
      * Exports the requested uri and at the same time writes the uri to the response output stream
@@ -595,6 +538,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             cms.getRequestContext().restoreSiteRoot();
         }
     }
+
+    /**
+     * Returns specific http headers for the static export.<p>
+     * 
+     * If the header <code>Cache-Control</code> is set, OpenCms will not use its default headers.<p>
+     * 
+     * @return the list of http export headers from opencms.properties
+     */
+    public List getExportHeaders() {
+        return Collections.unmodifiableList(Arrays.asList(m_exportHeaders));
+    }
     
     /**
      * Returns the list of all resources that have the "exportname" property set.<p>
@@ -713,6 +667,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         return false;
     } 
+    
+    /**
+     * Deletes a directory in the file system and all subfolders of the directory.<p>
+     * 
+     * @param d the directory to delete
+     */
+    private void purgeDirectory(File d) {
+        if (d.canRead() && d.isDirectory()) {
+            java.io.File[] files = d.listFiles();             
+            for (int i = 0; i<files.length; i++) {
+                File f = files[i];
+                if (f.isDirectory()) {
+                    purgeDirectory(f);
+                }
+                if (f.canWrite()) {
+                    f.delete();
+                }
+            }
+        }      
+    }    
 
     /**
      * Returns true if the links in the static export should be relative.<p>
@@ -724,9 +698,150 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
     
     /**
+     * Scrubs the "export" folder.<p>
+     */
+    private void scrubExportFolder() {
+        String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath());
+        try {
+            File exportFolder = new File(exportFolderName);
+            // check if export file exists, if so delete it
+            if (exportFolder.exists() && exportFolder.canWrite()) {
+                purgeDirectory(exportFolder);
+                // write log message
+                if (OpenCms.getLog(this).isInfoEnabled()) {
+                    OpenCms.getLog(this).info("Static export deleted main export folder '" + exportFolderName + "'");
+                }
+            }
+        } catch (Throwable t) {
+            // ignore, nothing to do about this
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn("Error deleting static export folder rfsName='" + exportFolderName + "'", t);
+            }
+        }       
+    }
+    
+    /**
+     * Scrubs all files from the export folder that might have been changed,
+     * so that the export is newly created after the next request to the resource.<p>
+     * 
+     * @param publishHistoryId id of the last published project
+     */
+    private void scrubExportFolders(CmsUUID publishHistoryId) {
+        Set scrubedFolders = new HashSet();
+        Set scrubedFiles = new HashSet();
+        // get a export user cms context        
+        CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+        List publishedResources;
+        try {
+            publishedResources = cms.readPublishedResources(publishHistoryId);
+        } catch (CmsException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Static export manager could not read list of changes resources for project ID " + publishHistoryId);
+            }                    
+            return;
+        }                
+        Iterator it = publishedResources.iterator();
+        while (it.hasNext()) {
+            CmsPublishedResource res = (CmsPublishedResource)it.next();                    
+            if (res.isUnChanged() || !res.isVfsResource()) {
+                // unchanged resources and non vfs resources don't need to be deleted
+                continue;
+            }
+            
+            List siblings = Collections.singletonList(res.getRootPath());
+            if (res.getLinkCount() > 1) {
+                // ensure all siblings are scrubbed if the resource has one 
+                try {
+                    List li = cms.getAllVfsLinks(res.getRootPath());
+                    siblings = new ArrayList();
+                    for (int i=0, l=li.size(); i < l; i++) {
+                        siblings.add(cms.readAbsolutePath((CmsResource)li.get(i)));
+                    }
+                } catch (CmsException e) {
+                    siblings = Collections.singletonList(res.getRootPath());
+                }
+            }
+            
+            for (int i=0, l=siblings.size(); i < l; i++) {      
+                String vfsName = (String)siblings.get(i);    
+                // get the link name for the published file 
+                String rfsName = getRfsName(cms, vfsName);
+                if (OpenCms.getLog(this).isDebugEnabled()) {
+                    OpenCms.getLog(this).debug("Static export checking for deletion vfsName='" + vfsName + "' rfsName='" + rfsName + "'");
+                }
+                if (rfsName.startsWith(getRfsPrefix()) && (!scrubedFiles.contains(vfsName)) && (!scrubedFolders.contains(CmsResource.getFolderPath(vfsName)))) {
+                    scrubedFiles.add(vfsName);
+                    // this file could have been exported
+                    String exportFileName;
+                    if (res.isFolder()) {
+                        if (res.isDeleted()) {
+                            String exportFolderName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(getRfsPrefix().length()+1));
+                            try {
+                                File exportFolder = new File(exportFolderName);
+                                // check if export file exists, if so delete it
+                                if (exportFolder.exists() && exportFolder.canWrite()) {
+                                    purgeDirectory(exportFolder);
+                                    exportFolder.delete();
+                                    // write log message
+                                    if (OpenCms.getLog(this).isInfoEnabled()) {
+                                        OpenCms.getLog(this).info("Static export deleted export folder '" + exportFolderName + "'");
+                                    }
+                                    scrubedFolders.add(vfsName);
+                                    continue;
+                                }
+                            } catch (Throwable t) {
+                                // ignore, nothing to do about this
+                                if (OpenCms.getLog(this).isWarnEnabled()) {
+                                    OpenCms.getLog(this).warn("Error deleting static export folder vfsName='" + vfsName + "' rfsName='" + exportFolderName + "'", t);
+                                }
+                            }    
+                        }                            
+                        // add index.html to folder name
+                        rfsName += C_EXPORT_DEFAULT_FILE;
+                        if (OpenCms.getLog(this).isDebugEnabled()) {
+                            OpenCms.getLog(this).debug("Static export folder index file rfsName='" + rfsName + "'");
+                        } 
+                    }                          
+                    exportFileName = CmsLinkManager.normalizeRfsPath(getExportPath() + rfsName.substring(getRfsPrefix().length()+1));
+                    try {
+                        File exportFile = new File(exportFileName);
+                        // check if export file exists, if so delete it
+                        if (exportFile.exists() && exportFile.canWrite()) {
+                            exportFile.delete();
+                            // write log message
+                            if (OpenCms.getLog(this).isInfoEnabled()) {
+                                OpenCms.getLog(this).info("Static export deleted exported rfs file '" + rfsName + "'");
+                            }
+                        }    
+                    } catch (Throwable t) {
+                        // ignore, nothing to do about this
+                        if (OpenCms.getLog(this).isWarnEnabled()) {
+                            OpenCms.getLog(this).warn("Error deleting static export file vfsName='" + vfsName + "' rfsName='" + exportFileName + "'", t);
+                        }
+                    }      
+                }
+            } 
+        }       
+    }
+    
+    /**
+     * Sets specific http headers for the static export.<p>
+     * 
+     * The format of the headers must be "header:value".<p> 
+     *  
+     * @param exportHeaders the list of http export headers to set
+     */    
+    private void setExportHeaders(String[] exportHeaders) {
+        m_exportHeaders = exportHeaders;
+        if (m_exportHeaders == null) {
+            m_exportHeaders = new String[0];
+        }
+    }
+    
+    /**
      * Set the list of all resources that have the "exportname" property set.<p>
      */
-    public synchronized void setExportnames() {        
+    private synchronized void setExportnames() {        
         Vector resources;
         CmsObject cms = null;
         try {
@@ -764,7 +879,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param path the path where the static export is written
      */
-    public void setExportPath(String path) {
+    private void setExportPath(String path) {
         m_staticExportPath = path;
         if (! m_staticExportPath.endsWith("/")) {
             m_staticExportPath += "/";
@@ -777,7 +892,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      *  
      * @param value the default for the "export" resource property
      */
-    public void setExportPropertyDefault(boolean value) {
+    private void setExportPropertyDefault(boolean value) {
         m_exportPropertyDefault = value;
     }
     
@@ -786,7 +901,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param value if true, links in exported files are relative
      */
-    public void setExportRelativeLinks(boolean value) {
+    private void setExportRelativeLinks(boolean value) {
         m_exportRelativeLinks = value;
     }
 
@@ -795,7 +910,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param exportSuffixes the list of export suffixes
      */
-    public void setExportSuffixes(String[] exportSuffixes) {
+    private void setExportSuffixes(String[] exportSuffixes) {
         m_exportSuffixes = exportSuffixes;
     }
 
@@ -804,7 +919,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param rfsPrefix the prefix for exported links in the "real" file system
      */
-    public void setRfsPrefix(String rfsPrefix) {
+    private void setRfsPrefix(String rfsPrefix) {
         m_rfsPrefix = rfsPrefix;
     }
     
@@ -813,7 +928,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param value if true, the static export is enabled
      */
-    public void setStaticExportEnabled(boolean value) {
+    private void setStaticExportEnabled(boolean value) {
         m_staticExportEnabled = value;
     }
 
@@ -822,7 +937,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @param vfsPrefix the prefix for internal links in the vfs
      */
-    public void setVfsPrefix(String vfsPrefix) {
+    private void setVfsPrefix(String vfsPrefix) {
         m_vfsPrefix = vfsPrefix;
     }
 }

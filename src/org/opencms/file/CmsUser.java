@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2004/02/13 13:45:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.workplace.I_CmsWpConstants;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
@@ -257,7 +257,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
             startSettings.put(I_CmsConstants.C_START_PROJECT, new Integer(I_CmsConstants.C_PROJECT_ONLINE_ID));
             startSettings.put(I_CmsConstants.C_START_VIEW, I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/explorer.html");
             startSettings.put(I_CmsConstants.C_START_LOCKDIALOG, "");
-            startSettings.put(I_CmsConstants.C_START_ACCESSFLAGS, new Integer(OpenCms.getUserDefaultAccessFlags()));
             m_additionalInfo.put(key, startSettings);
             value = startSettings;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2004/02/14 00:22:01 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -94,7 +94,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         }
         
         // Overwrite headers if set as default
-        for (Iterator i = OpenCms.getExportHeaders().listIterator(); i.hasNext();) {
+        for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
             String header = (String)i.next();
             
             // set header only if format is "key: value"
