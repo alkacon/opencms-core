@@ -28,6 +28,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.CmsCacheDirectives;
@@ -75,11 +76,11 @@ public class CmsShowMedia extends CmsXmlTemplate {
         String refCD = (String) parameters.get("cd");
         // media id to fetch exactly this media object
         String smId = (String) parameters.get("mid");
-        int id = -1;
+        CmsUUID id = CmsUUID.getNullUUID();
         int pos =-1;  // get first media per default ...
         int mid = -1;
         try {
-            id = Integer.parseInt(sId);
+            id = new CmsUUID(sId);
             if (sPos != null) {
                 pos = Integer.parseInt(sPos);
             }
@@ -92,7 +93,7 @@ public class CmsShowMedia extends CmsXmlTemplate {
 
         try {
             Class c = Class.forName(refCD);
-            Object o = getContentDefinition(cms, c, new Integer(id));
+            Object o = getContentDefinition(cms, c, id);
             cd = (CmsMasterContent)o;
         } catch (ClassNotFoundException e) {
 
@@ -168,10 +169,10 @@ public class CmsShowMedia extends CmsXmlTemplate {
       * Gets the content definition class method constructor
       * @return content definition object
       */
-    protected Object getContentDefinition(CmsObject cms, Class cdClass, Integer id) {
+    protected Object getContentDefinition(CmsObject cms, Class cdClass, CmsUUID id) {
         Object o = null;
         try {
-            Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, Integer.class });
+            Constructor c = cdClass.getConstructor(new Class[] { CmsObject.class, CmsUUID.class });
             o = c.newInstance(new Object[] { cms, id });
         } catch (InvocationTargetException ite) {
             if (OpenCms.getLog(this).isWarnEnabled()) {
