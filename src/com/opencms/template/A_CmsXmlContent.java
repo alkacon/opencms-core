@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/11/27 10:49:31 $
-* Version: $Revision: 1.52 $
+* Date   : $Date: 2001/12/07 14:21:41 $
+* Version: $Revision: 1.53 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.52 $ $Date: 2001/11/27 10:49:31 $
+ * @version $Revision: 1.53 $ $Date: 2001/12/07 14:21:41 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -1007,7 +1007,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     public void init(CmsObject cms, String filename) throws CmsException {
 
         if(!filename.startsWith("/")) {
-            throw new CmsException("--Intruder Alert: A relative path has entered the A_CmsXmlContent class("+filename+"). ");
+            throw new CmsException("A relative path has entered the A_CmsXmlContent class. filename="+filename+"");
         }
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
