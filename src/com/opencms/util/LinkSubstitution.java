@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2002/12/06 23:16:53 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2002/12/12 18:45:24 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -164,7 +164,7 @@ public class LinkSubstitution {
      * @param link. The link to process.
      * @return String The substituded link.
      */
-    public String getLinkSubstitution(CmsObject cms, String link){
+    public static String getLinkSubstitution(CmsObject cms, String link){
         if(link == null || "".equals(link)){
             return "";
         }
@@ -184,7 +184,7 @@ public class LinkSubstitution {
                     link = c_perlUtil.substitute(startRule, link);
                 }catch(Exception e){
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] problems with startrule:\""+startRule+"\" (" + e + "). ");
+                        A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/1] problems with startrule:\""+startRule+"\" (" + e + "). ");
                     }
                 }
             }
@@ -194,9 +194,16 @@ public class LinkSubstitution {
         boolean httpsMode = false;
         if(modus == CmsObject.C_MODUS_ONLINE){
             // https pages are always online
-            String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
-            if("https".equalsIgnoreCase(scheme)){
-                httpsMode = true;
+            try {
+                // HACK: Original request might be unavailable here. 
+                // If you start the export in a Thread (what is done most of the time now)
+                // the original request might be gone here and a NullPointer Exception will raised.
+                String scheme = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getScheme();
+                if("https".equalsIgnoreCase(scheme)){
+                    httpsMode = true;
+                }
+            } catch (Exception e) {
+                httpsMode = false;
             }
         }
         boolean needsScheme = true;
@@ -246,7 +253,7 @@ public class LinkSubstitution {
                 }
             }catch(MalformedPerl5PatternException e){
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] problems with rule:\""+rules[i]+"\" (" + e + "). ");
+                    A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_CRITICAL, "[LinkSubstitution.getLinkSubstitution()/2] problems with rule:\""+rules[i]+"\" (" + e + "). ");
                 }
             }
         }
