@@ -73,10 +73,14 @@
             <name>select.tasks</name>
             <url>/system/workplace/action/tasks.html</url>
         </view>
-		<exportpoint>
-			<source>/pics/system/</source>
-			<destination>pics/system/</destination>
-		</exportpoint>
+        <exportpoint>
+            <source>/pics/system/</source>
+            <destination>pics/system/</destination>
+        </exportpoint>
+        <exportpoint>
+            <source>/system/classes/</source>
+            <destination>WEB-INF/classes/</destination>
+        </exportpoint>
         <smtpserver>my.smtp.server</smtpserver>
         <smtpserver2>alternative.smtp.server</smtpserver2>
         <defaultmailsender>nobody@nowhere.com</defaultmailsender>
@@ -85,9 +89,6 @@
             <mailto>nobody@nowhere.com</mailto>
             <mailtemplate>/system/workplace/templates/urlcheckform</mailtemplate>
         </checklink>
-        <repository>
-            <path>/system/classes/</path>
-        </repository>
         <launchers>
             <launcher1>com.opencms.flex.CmsXmlTemplateLoader</launcher1>
             <launcher2>com.opencms.flex.CmsDumpLoader</launcher2>
@@ -96,7 +97,7 @@
         </launchers>
         <tempfileproject></tempfileproject>
         <UseWpPicturesFromVFS>false</UseWpPicturesFromVFS>
-		<searchbylucene>off</searchbylucene>
+        <searchbylucene>off</searchbylucene>
         <history>
             <enabled>true</enabled>
             <weeks></weeks>
