@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/08/21 11:32:47 $
-* Version: $Revision: 1.27 $
+* Date   : $Date: 2002/08/22 08:45:46 $
+* Version: $Revision: 1.28 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.27 $ $Date: 2002/08/21 11:32:47 $
+ * @version $Revision: 1.28 $ $Date: 2002/08/22 08:45:46 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -138,8 +138,8 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
             m_languagePath = configFile.getLanguagePath();
         }
-        // HACK: I don't want to use any other language then "en" in the LGT project
-        if (0 < 1) return C_DEFAULT_LANGUAGE;
+        // HACK: In case you want only english language (the default), uncomment the following line
+        // if (0 < 1) return C_DEFAULT_LANGUAGE;
         
         // select the right language to use
         String currentLanguage = null;
