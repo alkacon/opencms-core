@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2002/12/06 23:16:47 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2002/12/07 09:28:22 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
     private final String C_VIEW = "view";
     private final String C_ADMINPOINT = "adminpoint";
     private final String C_MAINTENANCE = "maintenance";
+    private final String C_PUBLISHCLASS = "publishclass";    
     private final String C_AUTHOR = "author";
     private final String C_EMAIL = "email";
     private final String C_DATE = "date";
@@ -113,6 +114,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
             templateDocument.setData(C_VIEW, "");
             templateDocument.setData(C_ADMINPOINT, "");
             templateDocument.setData(C_MAINTENANCE, "");
+            templateDocument.setData(C_PUBLISHCLASS, "");            
             templateDocument.setData(C_AUTHOR, "");
             templateDocument.setData(C_EMAIL, "");
             templateDocument.setData(C_MODULE_TYPE, "checked");
@@ -127,6 +129,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                 String view = (String)parameters.get(C_VIEW);
                 String adminpoint = (String)parameters.get(C_ADMINPOINT);
                 String maintenance = (String)parameters.get(C_MAINTENANCE);
+                String publishclass = (String)parameters.get(C_PUBLISHCLASS);
                 String author = (String)parameters.get(C_AUTHOR);
                 String email = (String)parameters.get(C_EMAIL);
                 String createDate = (String)parameters.get(C_DATE);
@@ -146,6 +149,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     sessionData.put(C_VIEW, getStringValue(view));
                     sessionData.put(C_ADMINPOINT, getStringValue(adminpoint));
                     sessionData.put(C_MAINTENANCE, getStringValue(maintenance));
+                    sessionData.put(C_PUBLISHCLASS, getStringValue(publishclass));                    
                     sessionData.put(C_AUTHOR, getStringValue(author));
                     sessionData.put(C_EMAIL, getStringValue(email));
                     sessionData.put(C_DATE, getStringValue(createDate));
@@ -185,6 +189,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     reg.createModule(packagename, getStringValue(modulename), getStringValue(description), getStringValue(author), createDateLong, v);
                     reg.setModuleAuthorEmail(packagename, getStringValue(email));
                     reg.setModuleMaintenanceEventClass(packagename, getStringValue(maintenance));
+                    reg.setModulePublishClass(packagename, getStringValue(publishclass));
                     
                     boolean isSimpleModule = false;
                     if (moduleType!=null && moduleType.equals("checked")) {
@@ -277,6 +282,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
                     templateDocument.setData(C_VIEW, (String)sessionData.get(C_VIEW));
                     templateDocument.setData(C_ADMINPOINT, (String)sessionData.get(C_ADMINPOINT));
                     templateDocument.setData(C_MAINTENANCE, (String)sessionData.get(C_MAINTENANCE));
+                    templateDocument.setData(C_PUBLISHCLASS, (String)sessionData.get(C_PUBLISHCLASS));                    
                     templateDocument.setData(C_AUTHOR, (String)sessionData.get(C_AUTHOR));
                     templateDocument.setData(C_EMAIL, (String)sessionData.get(C_EMAIL));
                     templateDocument.setData(C_DATE, (String)sessionData.get(C_DATE));
