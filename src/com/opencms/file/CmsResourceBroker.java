@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/04 12:23:27 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/04 15:01:51 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -530,8 +530,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public A_CmsUser readUser(A_CmsUser currentUser, A_CmsProject currentProject, 
 							  String username, String password)
 		throws CmsException{
-        System.err.println("RB "+username+":"+password);
-		return( m_userRb.readUser(username, password) );
+ 		return( m_userRb.readUser(username, password) );
 	}
 
 	/**

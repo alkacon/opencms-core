@@ -9,7 +9,7 @@ import java.io.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/23 12:51:45 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 15:01:50 $
  */
 
 public abstract class A_CmsMountPoint implements Serializable {
@@ -138,4 +138,12 @@ public abstract class A_CmsMountPoint implements Serializable {
 	 * or C_UNKNOWN_ID.
 	 */
 	public abstract String getLauncherClass();
+    
+     /**
+	 * Returns the type of this mountpoint.
+	 * 
+	 * @return The type of the mountpoint.
+	 */
+    public abstract int getMountpointType(); 
+    
 }

@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/03 17:16:24 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/04 15:01:50 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -84,7 +84,25 @@ import com.opencms.core.*;
 	 */
 	 public Vector getGroupsOfUser(String username)
          throws CmsException {
-         return m_accessUserGroup.getGroupsOfUser(username);
+         Vector allGroups;
+         Vector subGroups;
+         A_CmsGroup group;
+         // get all groups of the user
+         Vector groups=m_accessUserGroup.getGroupsOfUser(username);
+         allGroups=groups;
+         // now get all childs of the groups
+         Enumeration enu = groups.elements();
+         while (enu.hasMoreElements()) {
+             group=(A_CmsGroup)enu.nextElement();
+             subGroups=getChilds(group.getName());
+             //add the subchilds to the already existing groups
+             Enumeration enusub=subGroups.elements();
+            while (enusub.hasMoreElements()) {
+                group=(A_CmsGroup)enusub.nextElement();
+                allGroups.addElement(group);
+            }    
+         }
+         return allGroups;
        }
      
 
@@ -366,6 +384,40 @@ import com.opencms.core.*;
         return childs;
      }
      
+         /**
+	 * Returns all child groups of a groups<P/>
+	 * This method also returns all sub-child groups of the current group.
+	 * 
+	 * 
+	 * @param groupname The name of the group.
+	 * @return users A Vector of all child groups or null.
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */
+     public Vector getChilds(String groupname)
+      throws CmsException {
+        Vector childs=null;
+        Vector allChilds=null;
+        Vector subchilds=null;
+        A_CmsGroup group=null;
+        
+        // get all child groups if the user group
+        childs=m_accessUserGroup.getChild(groupname);
+        allChilds=childs;
+        // now get all subchilds for each group
+        Enumeration enu=childs.elements();
+        while (enu.hasMoreElements()) {
+            group=(A_CmsGroup)enu.nextElement();
+            subchilds=getChilds(group.getName());
+            //add the subchilds to the already existing groups
+            Enumeration enusub=subchilds.elements();
+            while (enusub.hasMoreElements()) {
+                group=(A_CmsGroup)enusub.nextElement();
+                allChilds.addElement(group);
+            }       
+        }
+        return allChilds;
+     }
+     
 	/** 
 	 * Sets the password for a user.
 	 * 
@@ -384,4 +436,7 @@ import com.opencms.core.*;
         throws CmsException{
          m_accessUserGroup.setPassword(username,newPassword);
        }
+     
+         
+     
  }

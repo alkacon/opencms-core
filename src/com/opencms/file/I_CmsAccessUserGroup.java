@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/04 12:23:27 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/04 15:01:51 $
  */
 interface I_CmsAccessUserGroup {
 
@@ -220,6 +220,7 @@ interface I_CmsAccessUserGroup {
 	 */
 	public Vector getChild(String groupname) 
         throws CmsException;	
+
 
 	/** 
 	 * Sets the password for a user.

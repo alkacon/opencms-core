@@ -147,73 +147,86 @@ public class OpenCms extends HttpServlet implements I_CmsConstants
         
         HttpSession session;
         String user=null;
+        String group=null;
+        String project=null;
+        
         CmsObject cms=new CmsObject();
         
         //set up the default Cms object
         try {
-            cms.init(null,null,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
-             
-            PrintWriter out=res.getWriter();
+            cms.init(req,res,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
+     
             if (req.getParameter("LOGIN") != null) {
                 // hack
                 session=req.getSession(true);
                 String u=req.getParameter("LOGIN");      
                 m_sessionStorage.putUser(session,u);           
-                out.println("Adding user <br><br><br>");
-                out.println(m_sessionStorage.toString()+"<br><br>");
             }
 
             // get the actual session
             session=req.getSession(false);
             // there was a session returned, now check if this user is already authorized
             if (session !=null) {
-                out.println("Got session: "+session.getId()+"<br>");
                 // get the username
                 user=m_sessionStorage.getUserName(session);
-                out.println("Got user: "+user+"<br>");
-            }
-            // there was either no session returned or this session was not found in the
-            // CmsSession storage
-            if (user==null) {
-                out.println("No Session found, trying HTTP Authent<br>");
-                String auth = req.getHeader("Authorization");
- 		        // User is authenticated, check password	
-    		    if (auth != null) {		
-                    // only do basic authentification
-		    	    if (auth.toUpperCase().startsWith("BASIC ")) {
-			    	    // Get encoded user and password, following after "BASIC "
-				        String userpassEncoded = auth.substring(6);
-    				    // Decode it, using any base 64 decoder
-	    			    sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
-		    		    String userstr = new String(dec.decodeBuffer(userpassEncoded));
-				        String username = null;
-				        String password = null;				
-				        StringTokenizer st = new StringTokenizer(userstr, ":");	
-                        if (st.hasMoreTokens()) {
-                            username = st.nextToken();
+                //check if a user was returned, i.e. the user is authenticated
+                if (user != null) {
+                    group=m_sessionStorage.getCurrentGroup(session);
+                    project=m_sessionStorage.getCurrentProject(session);
+                    cms.init(req,res,user,group,project);
+                } else {
+                            
+                    // there was either no session returned or this session was not 
+                    // found in the CmsSession storage
+       
+                    String auth = req.getHeader("Authorization");
+ 		            // User is authenticated, check password	
+    		        if (auth != null) {		
+                        // only do basic authentification
+		    	        if (auth.toUpperCase().startsWith("BASIC ")) {
+    			    	    // Get encoded user and password, following after "BASIC "
+	    			        String userpassEncoded = auth.substring(6);
+    	    			    // Decode it, using any base 64 decoder
+	    	    		    sun.misc.BASE64Decoder dec = new sun.misc.BASE64Decoder();
+		    		        String userstr = new String(dec.decodeBuffer(userpassEncoded));
+				            String username = null;
+				            String password = null;				
+				            StringTokenizer st = new StringTokenizer(userstr, ":");	
+                            if (st.hasMoreTokens()) {
+                                username = st.nextToken();
+                            }
+                            if (st.hasMoreTokens()) {
+                                password = st.nextToken();
+                            }
+				            // autheification in the DB
+                            user=cms.loginUser(username,password); 
+                            // check if the user is authenticated
+                            if (user != null) {
+                                cms.init(req,res,user,C_GROUP_GUEST, C_PROJECT_ONLINE);
+                            } else {
+                               // authentification failed, so display a login screen
+                               requestAuthorization(req, res);
+			    			 }
                         }
-                        if (st.hasMoreTokens()) {
-                            password = st.nextToken();
-                        }
-				        // autheification in the DB
-                        user=cms.loginUser(username,password);          
-                        out.println(user);                
-                        if (user == null) {
-                            out.println("Unknown user");
-						    requestAuthorization(req, res);
-						 }
                     }
                 }
             }
            // user was not loged in, so set it to the default user
            if (user==null) {
-               out.println("User not logged in");
+              
             }
        } catch (CmsException e) {
             errorHandling(req,res,e);
        }
     }
 
+    /**
+     * This method sends a request to the client to display a login form.
+     * It is needed for HTTP-Authentification.
+     * 
+     * @param req   The clints request.
+	 * @param res   The servlets response.
+     */
  	public void requestAuthorization(HttpServletRequest req, HttpServletResponse res) 
 		throws IOException	{
 		res.setHeader("WWW-Authenticate", "BASIC realm=\"OpenCmst\"");

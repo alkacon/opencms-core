@@ -15,7 +15,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.7 $ $Date: 2000/01/04 12:38:45 $ 
+ * @version $Revision: 1.8 $ $Date: 2000/01/04 15:01:50 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -924,8 +924,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public A_CmsUser readUser(String username, String password) 
 		throws CmsException { 
-          System.err.println("Cms readuser "+username+":"+password);
-		return( c_rb.readUser(m_context.currentUser(), m_context.getCurrentProject(),
+        return( c_rb.readUser(m_context.currentUser(), m_context.getCurrentProject(),
 							  username, password) );
 	}	
 
@@ -940,8 +939,7 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	 */
 	public String loginUser(String username, String password) 
 		throws CmsException { 
-        System.err.println("Cms login "+username+":"+password);
-		A_CmsUser newUser = readUser(username, password);
+   		A_CmsUser newUser = readUser(username, password);
 		
 		// is the user enabled?
 		if( ! ( ( newUser.getFlags() & C_FLAG_DISABLED ) == C_FLAG_DISABLED ) ) {

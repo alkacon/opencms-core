@@ -14,21 +14,12 @@ import javax.servlet.http.*;
  * When the session gets destroyed, the user will remived from the storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/04 12:23:27 $  
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 15:01:50 $  
  */
 
 public class CmsSession implements I_CmsConstants,I_CmsSession    
 {
-    
-    /**
-     * The key for storing the username in the user information hashtable.
-     */
-    static final String C_SESSION_USERNAME="USERNAME";
-    
-    /**
-     * The key for storing the current usergroup the user information hashtable.
-     */
-    static final String C_SESSION_CURRENTGROUP="CURRENTGROUP";    
+ 
     
     /**
      * Hashtable storage to store all active users.
@@ -150,6 +141,33 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
         return currentGroup;
     }
     
+     /**
+     * Gets the current project of a user from the session storage.
+     * 
+     * @param sessionID The actual session.
+     * @return The name of the project of the user or the default project;
+     */
+    public String getCurrentProject(HttpSession session) {
+        Hashtable userinfo=null;
+        String currentProject=C_PROJECT_ONLINE;
+        
+        userinfo=getUser(session);
+        // this user does exist, so get his current Project.
+        if (userinfo != null) {
+            currentProject=(String)userinfo.get(C_SESSION_PROJECT);
+            if (currentProject==null) {
+                currentProject=C_PROJECT_ONLINE;
+            }
+        }
+        return currentProject;
+    }
+    
+    /**
+	 * Returns a string-representation for this object.
+	 * This can be used for debugging.
+	 * 
+	 * @return string-representation for this object.
+	 */
     public String toString(){
         StringBuffer output=new StringBuffer();
         String key;

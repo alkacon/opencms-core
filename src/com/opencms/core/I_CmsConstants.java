@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/01/04 12:23:27 $
+ * @version $Revision: 1.13 $ $Date: 2000/01/04 15:01:50 $
  */
 public interface I_CmsConstants
 {
@@ -324,5 +324,21 @@ public interface I_CmsConstants
       * The name of the rood folder
       */
      static final String C_ROOT="/";
+     
+        
+    /**
+     * The key for the username in the user information hashtable.
+     */
+    static final String C_SESSION_USERNAME="USERNAME";
+    
+    /**
+     * The key for the current usergroup the user information hashtable.
+     */
+    static final String C_SESSION_CURRENTGROUP="CURRENTGROUP";    
+    
+     /**
+     * The key for the project in the user information hashtable.
+     */
+    static final String C_SESSION_PROJECT="PROJECT";
      
 }

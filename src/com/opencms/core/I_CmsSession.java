@@ -14,7 +14,7 @@ import javax.servlet.http.*;
  * When the session gets destroyed, the user will remived from the storage.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/01/04 12:23:27 $  
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 15:01:50 $  
  */
 
 public interface I_CmsSession
@@ -69,4 +69,12 @@ public interface I_CmsSession
      * @return The name of the current group of the user or the default guest group;
      */
     public String getCurrentGroup(HttpSession session) ;
+    
+     /**
+     * Gets the current project of a user from the session storage.
+     * 
+     * @param sessionID The actual session.
+     * @return The name of the project of the user or the default project;
+     */
+    public String getCurrentProject(HttpSession session) ;
 }
