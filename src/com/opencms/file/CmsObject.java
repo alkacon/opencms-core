@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/02/12 10:49:03 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2001/02/19 13:01:16 $
+ * Version: $Revision: 1.153 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -48,7 +48,7 @@ import com.opencms.launcher.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.152 $ $Date: 2001/02/12 10:49:03 $
+ * @version $Revision: 1.153 $ $Date: 2001/02/19 13:01:16 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -225,6 +225,40 @@ public CmsResourceType addResourceType(String resourceType, int launcherType, St
 public CmsUser addUser(String name, String password, String group, String description, Hashtable additionalInfos, int flags) throws CmsException {
 	return (m_rb.addUser(m_context.currentUser(), m_context.currentProject(), name, password, group, description, additionalInfos, flags));
 }
+
+/**
+ * Adds a user to the Cms by import.
+ * <p>
+ * <b>Security:</b>
+ * Only members of the group administrators are allowed to add a user.
+ *
+ * @param name the new name for the user.
+ * @param password the new password for the user.
+ * @param recoveryPassword the new password for the user.
+ * @param description the description for the user.
+ * @param firstname the firstname of the user.
+ * @param lastname the lastname of the user.
+ * @param email the email of the user.
+ * @param flags the flags for a user (e.g. C_FLAG_ENABLED).
+ * @param additionalInfos a Hashtable with additional infos for the user. These
+ * Infos may be stored into the Usertables (depending on the implementation).
+ * @param defaultGroup the default groupname for the user.
+ * @param address the address of the user.
+ * @param section the section of the user.
+ * @param type the type of the user.
+ *
+ * @return a <code>CmsUser</code> object representing the added user.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public CmsUser addImportUser(String name, String password, String recoveryPassword, String description,
+        String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
+        String defaultGroup, String address, String section, int type) throws CmsException {
+	return (m_rb.addImportUser(m_context.currentUser(), m_context.currentProject(), name, password,
+            recoveryPassword, description, firstname, lastname, email, flags, additionalInfos,
+            defaultGroup, address, section, type));
+}
+
 /**
  * Adds a user to a group.
  * <p>
@@ -745,6 +779,22 @@ public void exportResources(String exportFile, String[] exportPaths, boolean inc
 	// export the resources
 	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged);
 }
+
+/**
+ * Exports cms-resources to a zip-file.
+ *
+ * @param exportFile the name (absolute Path) of the export resource (zip-file).
+ * @param exportPath the name (absolute Path) of folder from which should be exported.
+ * @param includeSystem indicates if the system resources will be included in the export.
+ * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+ *
+ * @exception CmsException if operation was not successful.
+ */
+public void exportResources(String exportFile, String[] exportPaths, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata) throws CmsException {
+	// export the resources
+	m_rb.exportResources(m_context.currentUser(), m_context.currentProject(), exportFile, exportPaths, this, includeSystem, excludeUnchanged, exportUserdata);
+}
+
 /**
  * Forwards a task to a new user.
  *

@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2001/02/12 10:49:18 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2001/02/19 13:00:31 $
+ * Version: $Revision: 1.140 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.139 $ $Date: 2001/02/12 10:49:18 $
+ * @version $Revision: 1.140 $ $Date: 2001/02/19 13:00:31 $
  *
  */
 
@@ -208,6 +208,42 @@ public interface I_CmsResourceBroker {
 					  String group, String description,
 					  Hashtable additionalInfos, int flags)
 		throws CmsException;
+
+	/**
+	 * Adds a user to the Cms by import.
+	 *
+	 * Only a adminstrator can add users to the cms.<P/>
+	 *
+	 * <B>Security:</B>
+	 * Only users, which are in the group "administrators" are granted.
+	 *
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param name The name for the user.
+	 * @param password The password for the user.
+     * @param recoveryPassword The recoveryPassword for the user.
+	 * @param description The description for the user.
+     * @param firstname The firstname of the user.
+     * @param lastname The lastname of the user.
+     * @param email The email of the user.
+     * @param flags The flags for a user (e.g. C_FLAG_ENABLED)
+	 * @param additionalInfos A Hashtable with additional infos for the user. These
+	 * Infos may be stored into the Usertables (depending on the implementation).
+     * @param defaultGroup The default groupname for the user.
+	 * @param address The address of the user
+     * @param section The section of the user
+     * @param type The type of the user
+	 *
+	 * @return user The added user will be returned.
+	 *
+	 * @exception CmsException Throws CmsException if operation was not succesfull.
+	 */
+	public CmsUser addImportUser(CmsUser currentUser, CmsProject currentProject,
+        String name, String password, String recoveryPassword, String description,
+        String firstname, String lastname, String email, int flags, Hashtable additionalInfos,
+        String defaultGroup, String address, String section, int type)
+		throws CmsException;
+
 	/**
 	 * Adds a user to a group.<BR/>
 	 *
@@ -896,6 +932,25 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
 	 * @exception Throws CmsException if something goes wrong.
 	 */
 	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged)
+		throws CmsException;
+
+	/**
+	 * Exports cms-resources to zip.
+	 *
+	 * <B>Security:</B>
+	 * only Administrators can do this;
+	 *
+	 * @param currentUser user who requestd themethod
+	 * @param currentProject current project of the user
+	 * @param exportFile the name (absolute Path) of the export resource (zip)
+	 * @param exportPaths the name (absolute Path) of folders from which should be exported
+	 * @param includeSystem, desides if to include the system resources to the export.
+	 * @param excludeUnchanged <code>true</code>, if unchanged files should be excluded.
+	 * @param cms the cms-object to use for the export.
+	 *
+	 * @exception Throws CmsException if something goes wrong.
+	 */
+	public void exportResources(CmsUser currentUser,  CmsProject currentProject, String exportFile, String[] exportPaths, CmsObject cms, boolean includeSystem, boolean excludeUnchanged, boolean exportUserdata)
 		throws CmsException;
 	 /**
 	  * Forwards a task to a new user.
