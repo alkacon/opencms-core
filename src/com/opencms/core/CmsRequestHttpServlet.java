@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2003/11/14 10:09:15 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/12/19 14:50:34 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpSession;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * 
- * @version $Revision: 1.45 $ $Date: 2003/11/14 10:09:15 $
+ * @version $Revision: 1.46 $ $Date: 2003/12/19 14:50:34 $
  */
 public class CmsRequestHttpServlet implements I_CmsRequest {
 
@@ -111,7 +111,11 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * Storage for all uploaded name values
      */
     private Hashtable m_parameters = new Hashtable();
-    int filecounter = 0;
+    
+    /**
+     * File counter
+     */
+    int m_filecounter = 0;
 
     /**
      * The data from the original request. We save them to get them after the
@@ -131,7 +135,9 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     /**
      * Constructor, creates a new CmsRequestHttpServlet object.
      *
-     * @param req The original HttpServletRequest used to create this CmsRequest.
+     * @param req The original HttpServletRequest used to create this CmsRequest
+     * @param translator the translator
+     * @throws IOException if something goes wrong
      */
     public CmsRequestHttpServlet(HttpServletRequest req, CmsResourceTranslator translator) throws IOException {
         m_req = req;
@@ -140,7 +146,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // get the webAppUrl and the servletUrl
         try {
             m_webAppUrl = m_req.getContextPath();
-        } catch(NoSuchMethodError err) {
+        } catch (NoSuchMethodError err) {
             // this is the old servlet-api without this method
             // ignore this missing method and the context-path
         }
@@ -151,7 +157,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = req.getHeader("content-type");
-        if((type != null) && type.startsWith("multipart/form-data") && (req.getContentLength() > -1)) {
+        if ((type != null) && type.startsWith("multipart/form-data") && (req.getContentLength() > -1)) {
             readRequest();
         } else {
             // Encoding project:
@@ -160,8 +166,8 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
             if (encoding == null) {
                 // First try to get current encoding from session
                 HttpSession httpSession = req.getSession(false);
-                I_CmsSession session = (httpSession != null) ?
-                    new CmsSession(httpSession) : null;
+                I_CmsSession session = (httpSession != null) 
+                    ? new CmsSession(httpSession) : null;
                 if (session != null) {
                     encoding = (String)session.getValue(
                         I_CmsConstants.C_SESSION_CONTENT_ENCODING);
@@ -172,20 +178,21 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                 }
                 req.setCharacterEncoding(encoding);
             }
-            if (OpenCms.getLog(this).isDebugEnabled()) 
+            if (OpenCms.getLog(this).isDebugEnabled()) { 
                 OpenCms.getLog(this).debug("Request character encoding is: '" + req.getCharacterEncoding() + "'");
+            }
         }
     }
 
     /**
      * Extracts and returns the boundary token from a line.
      *
-     * @param Line with boundary from input stream.
+     * @param line with boundary from input stream.
      * @return The boundary token.
      */
     private String extractBoundary(String line) {
         int index = line.indexOf("boundary=");
-        if(index == -1) {
+        if (index == -1) {
             return null;
         }
 
@@ -212,16 +219,14 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         line = origline.toLowerCase();
 
         // Get the content type, if any
-        if(line.startsWith("content-type")) {
+        if (line.startsWith("content-type")) {
             int start = line.indexOf(" ");
-            if(start == -1) {
+            if (start == -1) {
                 throw new IOException("Content type corrupt: " + origline);
             }
             contentType = line.substring(start + 1);
-        }
-        else {
-            if(line.length() != 0) {
-
+        } else {
+            if (line.length() != 0) {
                 // no content type, so should be empty
                 throw new IOException("Malformed line after disposition: " + origline);
             }
@@ -251,11 +256,11 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Get the content disposition, should be "form-data"
         int start = line.indexOf("content-disposition: ");
         int end = line.indexOf(";");
-        if(start == -1 || end == -1) {
+        if (start == -1 || end == -1) {
             throw new IOException("Content disposition corrupt: " + origline);
         }
         String disposition = line.substring(start + 21, end);
-        if(!disposition.equals("form-data")) {
+        if (!disposition.equals("form-data")) {
             throw new IOException("Invalid content disposition: " + disposition);
         }
 
@@ -265,7 +270,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
 
         // skip name=\"
         end = line.indexOf("\"", start + 7);
-        if(start == -1 || end == -1) {
+        if (start == -1 || end == -1) {
             throw new IOException("Content disposition corrupt: " + origline);
         }
         String name = origline.substring(start + 6, end);
@@ -280,15 +285,15 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         end = line.indexOf("\"", start + 10);
 
         // note the !=
-        if(start != -1 && end != -1) {
+        if (start != -1 && end != -1) {
             filename = origline.substring(start + 10, end);
 
             // The filename may contain a full path.  Cut to just the filename.
             int slash = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
-            if(slash > -1) {
+            if (slash > -1) {
                 filename = filename.substring(slash + 1); // past last slash
             }
-            if(filename.equals("")) {
+            if (filename.equals("")) {
                 filename = "unknown"; // sanity check
             }
         }
@@ -337,6 +342,8 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     
     /**
      * Overwrites the original request that was used to create the CmsRequest.
+     * 
+     * @param request the request
      */
     public void setOriginalRequest(Object request) {
         m_req = (HttpServletRequest)request;
@@ -366,10 +373,9 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Test if this is a multipart-request.
         // If it is, extract all files from it.
         String type = m_req.getHeader("content-type");
-        if((type != null) && type.startsWith("multipart/form-data")) {
+        if ((type != null) && type.startsWith("multipart/form-data")) {
             parameter = (String)m_parameters.get(name);
-        }
-        else {
+        } else {
             parameter = m_req.getParameter(name);
         }
         return parameter;
@@ -383,12 +389,11 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      */
     public Enumeration getParameterNames() {
         String type = m_req.getHeader("content-type");
-        if((type != null) && type.startsWith("multipart/form-data")) {
+        if ((type != null) && type.startsWith("multipart/form-data")) {
 
             // add all parameters extreacted in the multipart handling
             return m_parameters.keys();
-        }
-        else {
+        } else {
 
             // add all parameters from the original request
             return m_req.getParameterNames();
@@ -398,6 +403,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     /**
      * Returns all parameter values of a parameter key.
      *
+     * @param key the parameter key
      * @return Aarray of String containing the parameter values.
      */
     public String[] getParameterValues(String key) {
@@ -420,7 +426,9 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      * @return The path to the requested resource.
      */
     public String getRequestedResource() {
-        if (m_requestedResource != null) return m_requestedResource;
+        if (m_requestedResource != null) {
+            return m_requestedResource;
+        }
         m_requestedResource = m_req.getPathInfo();
         if (m_requestedResource == null) {
             m_requestedResource = "/";
@@ -449,6 +457,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      *
      * @param in The stream from which to read the file.
      * @param boundary The boundary signifying the end of this part.
+     * @return the output
      * @throws IOException If there's a problem reading or parsing the request.
      */
     private byte[] readAndSaveFile(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
@@ -469,25 +478,24 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         We decided to read this parts byte by byte here.
         */
         int read = in.read();
-        while(read > -1) {
-            if(read == matchingByte) {
+        while (read > -1) {
+            if (read == matchingByte) {
 
                 // read byte is matching the next byte of the boundary
                 // we should not write to the output stream here.
                 lookaheadBuf[matches] = read;
                 matches++;
-                if(matches == boundary.length()) {
+                if (matches == boundary.length()) {
 
                     // The end of the Boundary has been reached.
                     // Now snip the following line feed.
                     read = in.read();
-                    if(newLineBuf[1] == read) {
+                    if (newLineBuf[1] == read) {
 
                         // New line contains ONE single character.
                         // Write the last byte of the buffer to the output stream.
                         out.write(newLineBuf[0]);
-                    }
-                    else {
+                    } else {
 
                         // new line contains TWO characters, possibly "\r\n"
                         // The bytes in the buffer are not part of the file.
@@ -497,29 +505,27 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
                     break;
                 }
                 matchingByte = new Byte(boundaryBytes[matches]).intValue();
-            }
-            else {
+            } else {
 
                 // read byte does not match the next byte of the boundary
                 // write the first buffer byte to the output stream
-                if(newLineBuf[0] != -1) {
+                if (newLineBuf[0] != -1) {
                     out.write(newLineBuf[0]);
                 }
-                if(matches == 0) {
+                if (matches == 0) {
 
                     // this may be the most propably case.
                     newLineBuf[0] = newLineBuf[1];
-                }
-                else {
+                } else {
 
                     // we have started to read the boundary.
                     // Unfortunately, this was NOT the real boundary.
                     // Fall back to normal read mode.
                     // write the complete buffer to the output stream
-                    if(newLineBuf[1] != -1) {
+                    if (newLineBuf[1] != -1) {
                         out.write(newLineBuf[1]);
                     }
-                    for(int i = 0;i < matches;i++) {
+                    for (int i = 0; i < matches; i++) {
                         out.write(lookaheadBuf[i]);
                     }
 
@@ -564,7 +570,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Read the first line, should look like this:
         // content-disposition: form-data; name="field1"; filename="file1.txt"
         String line = in.readLine();
-        if(line == null || line.equals("")) {
+        if (line == null || line.equals("")) {
 
             // No parts left, we're done
             return true;
@@ -580,7 +586,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Now onto the next line.  This will either be empty
         // or contain a Content-Type and then an empty line.
         line = in.readLine();
-        if(line == null) {
+        if (line == null) {
 
             // No parts left, we're done
             return true;
@@ -588,33 +594,31 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
 
         // Get the content type, or null if none specified
         String contentType = extractContentType(line);
-        if(contentType != null) {
+        if (contentType != null) {
 
             // Eat the empty line
             line = in.readLine();
-            if(line == null || line.length() > 0) { // line should be empty
+            if (line == null || line.length() > 0) { // line should be empty
                 line = in.readLine();
-                if(line == null || line.length() > 0) { // line should be empty
+                if (line == null || line.length() > 0) { // line should be empty
                     throw new IOException("Malformed line after content type: " + line);
                 }
             }
             
-        }
-        else {
+        } else {
 
             // Assume a default content type
             contentType = "application/octet-stream";
         }
 
         // Now, finally, we read the content (end after reading the boundary)
-        if(filename == null) {
+        if (filename == null) {
 
             // This is a parameter
             String value = readParameter(in, boundary);
             m_parameters.put(name, value);
-        }
-        else {
-            filecounter++;
+        } else {
+            m_filecounter++;
             // stroe the filecontent
             m_files.put(filename, readAndSaveFile(in, boundary));
             // store the name of the file to the parameters
@@ -639,15 +643,15 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     private String readParameter(CmsMultipartInputStreamHandler in, String boundary) throws IOException {
         StringBuffer sbuf = new StringBuffer();
         String line;
-        while((line = in.readLine()) != null) {
-            if(line.startsWith(boundary)) {
+        while ((line = in.readLine()) != null) {
+            if (line.startsWith(boundary)) {
                 break;
             }
 
             // add the \r\n in case there are many lines
             sbuf.append(line + "\r\n");
         }
-        if(sbuf.length() == 0) {
+        if (sbuf.length() == 0) {
 
             // nothing read
             return null;
@@ -672,7 +676,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
 
         // Check the content type to make sure it's "multipart/form-data"
         String type = m_req.getContentType();
-        if(type == null || !type.toLowerCase().startsWith("multipart/form-data")) {
+        if (type == null || !type.toLowerCase().startsWith("multipart/form-data")) {
             throw new IOException(C_REQUEST_NOMULTIPART);
         }
 
@@ -681,7 +685,7 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // Get the boundary string; it's included in the content type.
         // Should look something like "------------------------12012133613061"
         String boundary = extractBoundary(type);
-        if(boundary == null) {
+        if (boundary == null) {
             throw new IOException(C_REQUEST_NOBOUNDARY);
         }
 
@@ -690,18 +694,18 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
 
         // Read the first line, should be the first boundary
         String line = in.readLine();
-        if(line == null) {
+        if (line == null) {
             throw new IOException(C_REQUEST_PROMATUREEND);
         }
 
         // Verify that the line is the boundary
-        if(!line.startsWith(boundary)) {
+        if (!line.startsWith(boundary)) {
             throw new IOException(C_REQUEST_NOBOUNDARY);
         }
 
         // Now that we're just beyond the first boundary, loop over each part
         boolean done = false;
-        while(!done) {
+        while (!done) {
             done = readNextPart(in, boundary);
         }
 
@@ -709,17 +713,17 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
         // requests AND URL parameters at the same time, we have to manage
         // the URL params ourself here. So try to read th URL parameters:
         String queryString = m_req.getQueryString();
-        if(queryString != null) {
+        if (queryString != null) {
             StringTokenizer st = new StringTokenizer(m_req.getQueryString(), "&");
-            while(st.hasMoreTokens()) {
+            while (st.hasMoreTokens()) {
 
                 // Loop through all parameters
                 String currToken = st.nextToken();
-                if(currToken != null && !"".equals(currToken)) {
+                if (currToken != null && !"".equals(currToken)) {
 
                     // look for the "=" character to divide parameter name and value
                     int idx = currToken.indexOf("=");
-                    if(idx > -1) {
+                    if (idx > -1) {
                         String key = currToken.substring(0, idx);
                         String value = (idx < (currToken.length() - 1)) ? currToken.substring(idx + 1) : "";
                         m_parameters.put(key, value);
@@ -734,6 +738,8 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
      *
      * E.g: http://www.myserver.com/opencms/engine/index.html returns
      * http://www.myserver.com/opencms
+     * 
+     * @return the web application part of the url
      */
     public String getWebAppUrl() {
         return m_webAppUrl;
@@ -742,27 +748,35 @@ public class CmsRequestHttpServlet implements I_CmsRequest {
     /**
      * Gets the part of the Url that describes the current servlet of this
      * Web-Application.
+     * 
+     * @return the servlet part of the url
      */
-    public String getServletUrl(){
+    public String getServletUrl() {
         return m_servletUrl;
     }
 
     /**
      * Methods to get the data from the original request.
+     * 
+     * @return the server name
      */
-    public String getServerName(){
+    public String getServerName() {
         return m_serverName;
     }
     /**
      * Methods to get the data from the original request.
+     * 
+     * @return the server port
      */
-    public int getServerPort(){
+    public int getServerPort() {
         return m_serverPort;
     }
     /**
      * Methods to get the data from the original request.
+     * 
+     * @return the scheme
      */
-    public String getScheme(){
+    public String getScheme() {
         return m_scheme;
     }
 }
