@@ -12,11 +12,11 @@
 
 top.help_url='Administration/historieVerwaltung.html';
 
-	function doSubmitProperties(step){
-		document.HISTPROP.step.value = step;
-		document.HISTPROP.submit();
-	}
-	
+    function doSubmitProperties(step){
+        document.HISTPROP.step.value = step;
+        document.HISTPROP.submit();
+    }
+    
 //-->
 </script>
 
@@ -32,7 +32,7 @@ top.help_url='Administration/historieVerwaltung.html';
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id="HISTPROP" name="HISTPROP" method="post" >
 <table cellspacing=0 cellpadding=0 border=1 width=450>
     <tr><td>
@@ -57,15 +57,15 @@ top.help_url='Administration/historieVerwaltung.html';
                     <td class=dialogtxt>
                         <table border=0 cellspacing=0 cellpadding=0 width=100%>
                             <tr>
-                            	<td class="dialogtxt">
-                            		<input type="checkbox" name="deleteversions" value="true" ]]><PROCESS>deleteversions</PROCESS><![CDATA[ >]]><LABEL value="input.histweeks1" /><![CDATA[&nbsp;&nbsp;
-                                	<input type="text" name="weeks" class="textfeld" style="WIDTH:40px" maxlength="4" value="]]><PROCESS>weeks</PROCESS><![CDATA[">&nbsp;&nbsp;
-                                	]]><LABEL value="input.histweeks2" /><![CDATA[
+                                <td class="dialogtxt">
+                                    <input type="checkbox" name="deleteversions" value="true" ]]><PROCESS>deleteversions</PROCESS><![CDATA[ >]]><LABEL value="input.histweeks1" /><![CDATA[&nbsp;&nbsp;
+                                    <input type="text" name="weeks" class="textfeld" style="WIDTH:40px" maxlength="4" value="]]><PROCESS>weeks</PROCESS><![CDATA[">&nbsp;&nbsp;
+                                    ]]><LABEL value="input.histweeks2" /><![CDATA[
                                 </td>
                             </tr>
                             <tr>
                                 <td class="dialogtxt">
-                                	<input type="checkbox" name="enabled" value="true" ]]><PROCESS>enabled</PROCESS><![CDATA[ >]]><LABEL value="input.histenabled" /><![CDATA[
+                                    <input type="checkbox" name="enabled" value="true" ]]><PROCESS>enabled</PROCESS><![CDATA[ >]]><LABEL value="input.histenabled" /><![CDATA[
                                 </td>
                             </tr>
                         </table>
@@ -75,10 +75,10 @@ top.help_url='Administration/historieVerwaltung.html';
                     <!-- Beginn Buttonleiste-->
                     <tr>
                     <td class=dialogtxt>
-                    	<input type="hidden" name="step">
+                        <input type="hidden" name="step">
                         <table cellspacing=0 border=0 cellpadding=5 width=100%>
                             <tr>
-                            	<td class="formular" valign="bottom" align="right" width=33%>]]><TEXTBUTTON class="button" name="executedelete" value="executedelete" width="110" action="doSubmitProperties('execute');" /><![CDATA[</td>
+                                <td class="formular" valign="bottom" align="right" width=33%>]]><TEXTBUTTON class="button" name="executedelete" value="executedelete" width="110" action="doSubmitProperties('execute');" /><![CDATA[</td>
                                 <td class="formular" valign="bottom" align="center" width=33%>]]><TEXTBUTTON class="button" name="ok" value="ok" width="110" action="doSubmitProperties('ok');" /><![CDATA[</td>
                                 <td class="formular" valign="bottom" align="left" width=33%>]]><TEXTBUTTON class="button" name="cancel" value="cancel" width="110" action="location.href='index.html?step=cancel'" /><![CDATA[</td>
                             </tr>

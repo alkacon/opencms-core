@@ -129,7 +129,7 @@ function selectAll(theList) {
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
 
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <form id=DBEXPORT name=DBEXPORT action="index.html?action=export" method="post" onSubmit="return checkFormData()">
 <table cellspacing=0 cellpadding=0 border=2 width=450>
     <tr><td>
@@ -367,7 +367,7 @@ location.href="index.html?action=working&time=]]><PROCESS>time</PROCESS><![CDATA
 <!-- Tabelle um vertikal und horizontal zu zentrieren-->
 <table width=100% height=100% border=0 cellspacing=0 cellpadding=0>
 <tr><td align=middle valign=center>
-<!-- Tabellenaufbau für Dialog mit OK und Abbrechen-->
+<!-- Tabellenaufbau fuer Dialog mit OK und Abbrechen-->
 <table cellspacing=0 cellpadding=0 border=1 width=950>
     <tr><td>
         <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>

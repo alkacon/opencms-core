@@ -120,15 +120,7 @@
         <td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="linkto"/><![CDATA[</td>
         --><![CDATA[
                 
-        <script language="JavaScript">                  
-        if (USE_NEWLINKDIALOG) {
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_link\');doEditHTML(41);" onmouseout="ChOff(\'bt_link\')" onmouseover="ChOn(\'bt_link\')" onmouseup="ChOn(\'bt_link\')"><IMG alt="]]><LABEL value="button.linkto"/><![CDATA[" width=32 border=0 name=bt_link src="]]><method name="picsUrl">bt_link_off.gif</method><![CDATA[" ></a></td>');
-        } else {
-            document.write('<td class=menu><A href="#" onmousedown="ChPush(\'bt_link\');doEditHTML(49);" onmouseout="ChOff(\'bt_link\')" onmouseover="ChOn(\'bt_link\')" onmouseup="ChOn(\'bt_link\')"><IMG alt="]]><LABEL value="button.linkto"/><![CDATA[" width=32 border=0 name=bt_link src="]]><method name="picsUrl">bt_link_off.gif</method><![CDATA[" ></a></td>');
-        }       
-        </script>
-
-        <td class=menu>]]><BUTTON href="#" name="bt_vfslink" action="doEditHTML(46);" alt="linkinternal"/><![CDATA[</td>
+        <td class=menu>]]><BUTTON href="#" name="bt_vfslink" action="doEditHTML(46);" alt="linkto"/><![CDATA[</td>
                 
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
@@ -154,9 +146,7 @@
         <td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_details" action="doEditHTML(47);" alt="toggledetails"/><![CDATA[</td>
         <td class=menu>]]><BUTTON href="#" name="bt_chars" action="doEditHTML(48);" alt="specialchars"/><![CDATA[</td>
-                
-        ]]><PROCESS>linklist</PROCESS><![CDATA[
-                
+                                
         <td class=menu width="100%">&nbsp;</td>
     </tr>
 </table>
