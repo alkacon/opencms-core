@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<XMLTEMPLATE>
+<TEMPLATE>
+<![CDATA[
+    
+    <!-- Editor options: -->
+    var USE_FONTSIZE = true;
+    var USE_FONTFACE = true;
+    var USE_FONTCOLOR = true;
+    var USE_BGCOLOR = true;
+    var USE_PRINTBUTTON = true;
+    var USE_IMPORTBUTTONS = true;
+    var USE_HELPBUTTON = true;
+    var USE_BODYSELECTOR = true;
+    var USE_TEMPLATESELECTOR = true;
+    var USE_DOWNLOADGALS = true;
+    var USE_EXTERNLINKGALS = true;
+    var USE_IMAGEGALS = true;
+    var USE_NEWLINKDIALOG = true;
+    
+]]>
+</TEMPLATE>
+</XMLTEMPLATE>
