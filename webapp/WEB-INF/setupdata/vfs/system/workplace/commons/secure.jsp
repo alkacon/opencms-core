@@ -72,7 +72,7 @@ wp.setParamAction("secure");
   function checkNoSecureNorExport() {
 
     if (document.secure.elements['intern'] != null && document.secure.elements['intern'].checked) {
-
+      checkedExportOrSecure = true;
       if (document.secure.elements['secure'] !=null && document.secure.elements['secure'][0].checked) {
         checkedExportOrSecure = true;
         document.secure.elements['secure'][0].checked = false;
