@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/03/02 13:21:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/04/05 20:06:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,12 +49,12 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsFlexController {
     
     /** Constant for the controller request attribute name. */
-    public static final String ATTRIBUTE_NAME = "__com.opencms.flex.cache.CmsFlexController";
+    public static final String ATTRIBUTE_NAME = "org.opencms.flex.CmsFlexController";
     
     /** The CmsFlexCache where the result will be cached in, required for the dispatcher. */    
     private CmsFlexCache m_cache;   

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/03/29 18:21:42 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2005/04/05 20:06:44 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,6 +52,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -79,7 +80,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -106,7 +107,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Marker for externally redirected 404 uri's. */
     public static final String C_EXPORT_MARKER = "exporturi";
-    
+
     /** Time given (in seconds) to the static export handler to finish a publish task. */
     public static final int C_HANDLER_FINISH_TIME = 60;
 
@@ -127,7 +128,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Cache for the online links. */
     private Map m_cacheOnlineLinks;
-    
+
     /** Cache for the secure links. */
     private Map m_cacheSecureLinks;
 
@@ -226,7 +227,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_cacheOnlineLinks.put(linkName, vfsName);
     }
-    
+
     /**
      * Caches the secure information of a link.<p>
      * 
@@ -237,34 +238,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_cacheSecureLinks.put(linkName, isSecure);
     }
-    
-    /**
-     * Returns true, if the link points to a secure resource.<p>
-     * 
-     * @param cms the cms object
-     * @param link the link
-     * @param siteRoot the site root of the link
-     * @return true, if the link is secure
-     * @throws CmsException if the reading of the resource property goes wrong
-     */    
-    public boolean isSecureLink(CmsObject cms, String link, String siteRoot) throws CmsException {
-        Boolean secureResource = getCachedSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link));
-        if (secureResource == null) {
-            // the site root of the cms object has to be changed so that the property can be read            
-            String reqSiteRoot = cms.getRequestContext().getSiteRoot();
-            if (siteRoot != null) {
-                cms.getRequestContext().setSiteRoot(siteRoot);
-            }                    
-            String secureProp = cms.readPropertyObject(link, I_CmsConstants.C_PROPERTY_SECURE, true).getValue();
-            secureResource = Boolean.valueOf(secureProp);
-            cacheSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link), secureResource);
-            cms.getRequestContext().setSiteRoot(reqSiteRoot);
-        }
-        return secureResource.booleanValue();
-        
-    }
 
-    
     /**
      * Implements the CmsEvent interface,
      * the static export properties uses the events to clear 
@@ -365,6 +339,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // if no request and result stream are available, it was called during "export on publish"
         boolean exportOnDemand = ((req != null) && (res != null));
 
+        CmsStaticExportResponseWrapper wrapRes = null;
+        if (res != null) {
+            wrapRes = new CmsStaticExportResponseWrapper(res);
+        }
+
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Static export starting for resource " + data);
         }
@@ -373,7 +352,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (resource.isFile()) {
             file = cms.readFile(vfsName);
         } else {
-            file = CmsFile.upgrade(OpenCms.initResource(cms, vfsName, req, res), cms);
+            file = CmsFile.upgrade(OpenCms.initResource(cms, vfsName, req, wrapRes), cms);
             try {
                 cms.readResource(vfsName + file.getName());
                 vfsName = vfsName + file.getName();
@@ -417,13 +396,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             String mimetype = OpenCms.getResourceManager().getMimeType(
                 file.getName(),
                 cms.getRequestContext().getEncoding());
-            res.setContentType(mimetype);
+            wrapRes.setContentType(mimetype);
             oldUri = cms.getRequestContext().getUri();
             cms.getRequestContext().setUri(vfsName);
         }
 
         // do the export
-        byte[] result = loader.export(cms, file, req, res);
+        byte[] result = loader.export(cms, file, req, wrapRes);
 
         // release unused resources
         file = null;
@@ -435,8 +414,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     exportStream = new FileOutputStream(exportFile);
                     exportStream.write(result);
                     exportStream.close();
-                    // the resource was exported, so return status ok
-                    status = HttpServletResponse.SC_OK;
 
                 } catch (Throwable t) {
                     throw new CmsException("Creation of static export output stream failed for RFS file "
@@ -460,6 +437,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     // otherweise take the last modification date form the OpenCms resource
                     exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
                 }
+            }
+            // get the status that was set 
+            status = wrapRes.getStatus();
+            if (status < 0) {
+                // the status was not set, assume everything is o.k.
+                status = HttpServletResponse.SC_OK;
             }
         } else {
             // the resource was not written because it was not modified. 
@@ -784,18 +767,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return (String)m_cacheOnlineLinks.get(vfsName);
     }
-    
-    /**
-     * Returns the key for the online, export and secure cache.<p>
-     * 
-     * @param siteRoot the site root of the resource
-     * @param uri the URI of the resource
-     * @return a key for the cache 
-     */    
-    public String getCacheKey(String siteRoot, String uri) {
-        return new StringBuffer(siteRoot).append(':').append(uri).toString();
-    }
-    
+
     /**
      * Returns if the link points to a secure Resource.<p>
      * 
@@ -805,7 +777,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public Boolean getCachedSecureLink(Object vfsName) {
 
         return (Boolean)m_cacheSecureLinks.get(vfsName);
-    }    
+    }
+
+    /**
+     * Returns the key for the online, export and secure cache.<p>
+     * 
+     * @param siteRoot the site root of the resource
+     * @param uri the URI of the resource
+     * @return a key for the cache 
+     */
+    public String getCacheKey(String siteRoot, String uri) {
+
+        return new StringBuffer(siteRoot).append(':').append(uri).toString();
+    }
 
     /**
      * Gets the default property value as a string representation.<p>
@@ -1086,7 +1070,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the static export rfs name for a give vfs resoure.<p>
+     * Returns the static export rfs name for a given vfs resoure.<p>
      * 
      * @param cms an initialized cms context
      * @param vfsName the name of the vfs resource
@@ -1098,19 +1082,19 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         try {
             // check if the resource folder (or a parent folder) has the "exportname" property set
-            CmsProperty exportProperty = cms.readPropertyObject(
+            CmsProperty exportNameProperty = cms.readPropertyObject(
                 CmsResource.getFolderPath(vfsName),
                 I_CmsConstants.C_PROPERTY_EXPORTNAME,
                 true);
 
-            if (exportProperty != null && !exportProperty.isNullProperty()) {
-                String exportname = exportProperty.getValue();
+            if (exportNameProperty != null && !exportNameProperty.isNullProperty()) {
+                String exportname = exportNameProperty.getValue();
                 // "exportname" property set
-                if (!exportname.endsWith("/")) {
-                    exportname = exportname + "/";
+                if (!(exportname.charAt(0) == '/')) {
+                    exportname = '/' + exportname;
                 }
-                if (!exportname.startsWith("/")) {
-                    exportname = "/" + exportname;
+                if (!(exportname.charAt(exportname.length() - 1) == '/')) {
+                    exportname = exportname + '/';
                 }
                 String value;
                 boolean cont;
@@ -1119,10 +1103,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     try {
                         value = cms.readPropertyObject(resourceName, I_CmsConstants.C_PROPERTY_EXPORTNAME, false)
                             .getValue();
-                        cont = ((value == null) && (!"/".equals(resourceName)));
+                        cont = (value == null) && (resourceName.length() > 1);
                     } catch (CmsVfsResourceNotFoundException e) {
                         // this is for publishing deleted resources 
-                        cont = (!"/".equals(resourceName));
+                        cont = (resourceName.length() > 1);
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;
@@ -1156,8 +1140,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } catch (CmsException e) {
             // ignore exception, leave vfsName unmodified
         }
-        // add export rfs prefix and return result         
-        return OpenCms.getStaticExportManager().getRfsPrefix() + vfsName;
+        // add export rfs prefix, normalize path and return result         
+        return getRfsPrefix().concat(vfsName);
     }
 
     /**
@@ -1250,6 +1234,27 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void initialize(CmsObject cms) {
 
+        // initialize static export RFS path (relative to web application)
+        m_staticExportPath = m_staticExportPathUnmodified;
+        if (!m_staticExportPath.endsWith(File.separator)) {
+            m_staticExportPath += File.separator;
+        }
+        m_staticExportPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_staticExportPath);
+
+        // initialize prefix variables
+        m_rfsPrefix = insertContextStrings(m_rfsPrefixUnsubstituted);
+        m_rfsPrefix = CmsFileUtil.normalizePath(m_rfsPrefix, '/');
+        if (CmsResource.isFolder(m_rfsPrefix)) {
+            // ensure prefix does NOT end with a folder '/'
+            m_rfsPrefix = m_rfsPrefix.substring(0, m_rfsPrefix.length() - 1);
+        }
+        m_vfsPrefix = insertContextStrings(m_vfsPrefixUnsubstituted);
+        m_vfsPrefix = CmsFileUtil.normalizePath(m_vfsPrefix, '/');
+        if (CmsResource.isFolder(m_vfsPrefix)) {
+            // ensure prefix does NOT end with a folder '/'
+            m_vfsPrefix = m_vfsPrefix.substring(0, m_vfsPrefix.length() - 1);
+        }
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isDebugEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).debug(
                 "Created static export manager" + ((cms != null) ? (" with CmsObject " + cms) : ""));
@@ -1268,13 +1273,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // map must be of type "LRUMap" so that memory monitor can acecss all information
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheExportUris", lruMap2);
         }
-        
+
         LRUMap lruMap3 = new LRUMap(2048);
         m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
         if (OpenCms.getMemoryMonitor().enabled()) {
             // map must be of type "LRUMap" so that memory monitor can acecss all information
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheSecureUris", lruMap3);
-        }        
+        }
 
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -1310,6 +1315,33 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Export testresource  : " + (getTestResource()));
             }
         }
+    }
+
+    /**
+     * Returns true, if the link points to a secure resource.<p>
+     * 
+     * @param cms the cms object
+     * @param link the link
+     * @param siteRoot the site root of the link
+     * @return true, if the link is secure
+     * @throws CmsException if the reading of the resource property goes wrong
+     */
+    public boolean isSecureLink(CmsObject cms, String link, String siteRoot) throws CmsException {
+
+        Boolean secureResource = getCachedSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link));
+        if (secureResource == null) {
+            // the site root of the cms object has to be changed so that the property can be read            
+            String reqSiteRoot = cms.getRequestContext().getSiteRoot();
+            if (siteRoot != null) {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }
+            String secureProp = cms.readPropertyObject(link, I_CmsConstants.C_PROPERTY_SECURE, true).getValue();
+            secureResource = Boolean.valueOf(secureProp);
+            cacheSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link), secureResource);
+            cms.getRequestContext().setSiteRoot(reqSiteRoot);
+        }
+        return secureResource.booleanValue();
+
     }
 
     /**
@@ -1433,12 +1465,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setExportPath(String path) {
 
-        m_staticExportPath = path;
-        if (!m_staticExportPath.endsWith(File.separator)) {
-            m_staticExportPath += File.separator;
-        }
-        m_staticExportPathUnmodified = m_staticExportPath;
-        m_staticExportPath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(m_staticExportPath);
+        m_staticExportPathUnmodified = path;
     }
 
     /**
@@ -1514,7 +1541,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setRfsPrefix(String rfsPrefix) {
 
-        m_rfsPrefix = insertContextStrings(rfsPrefix);
         m_rfsPrefixUnsubstituted = rfsPrefix;
     }
 
@@ -1535,7 +1561,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public void setVfsPrefix(String vfsPrefix) {
 
-        m_vfsPrefix = insertContextStrings(vfsPrefix);
         m_vfsPrefixUnsubstituted = vfsPrefix;
     }
 
@@ -1567,11 +1592,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 count = C_HANDLER_FINISH_TIME;
             }
         }
-        
+
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(
                 ". Shutting down        : " + this.getClass().getName() + " ... ok!");
-        }   
+        }
     }
 
     /**
@@ -1811,8 +1836,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         try {
             resource = cms.readResource(cms.getRequestContext().removeSiteRoot(rfsName));
-            if (resource.isFolder() && !rfsName.endsWith("/")) {
-                rfsName += "/";
+            if (resource.isFolder() && !CmsResource.isFolder(rfsName)) {
+                rfsName += '/';
             }
             vfsName = rfsName;
             match = true;
@@ -1834,11 +1859,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     try {
                         resource = cms.readResource(vfsName);
                         if (resource.isFolder()) {
-                            if (!rfsName.endsWith("/")) {
-                                rfsName += "/";
+                            if (!CmsResource.isFolder(rfsName)) {
+                                rfsName += '/';
                             }
-                            if (!vfsName.endsWith("/")) {
-                                vfsName += "/";
+                            if (!CmsResource.isFolder(vfsName)) {
+                                vfsName += '/';
                             }
                         }
                         break;
@@ -1876,16 +1901,15 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     private String insertContextStrings(String path) {
 
-        String value = path;
+        // create a new macro resolver
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance();
 
-        // replace the "magic" names                 
-        String servletName = OpenCms.getSystemInfo().getServletPath();
-        String contextName = OpenCms.getSystemInfo().getContextPath();
+        // add special mappings for macros 
+        resolver.addMacro("CONTEXT_NAME", OpenCms.getSystemInfo().getContextPath());
+        resolver.addMacro("SERVLET_NAME", OpenCms.getSystemInfo().getServletPath());
 
-        value = CmsStringUtil.substitute(value, "${CONTEXT_NAME}", contextName);
-        value = CmsStringUtil.substitute(value, "${SERVLET_NAME}", servletName);
-
-        return value;
+        // resolve the macros
+        return resolver.resolveMacros(path);
     }
 
     /**

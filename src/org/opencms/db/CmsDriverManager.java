@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.480 $
+ * Date   : $Date: 2005/04/05 20:06:44 $
+ * Version: $Revision: 1.481 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.480 $ $Date: 2005/03/19 13:58:19 $
+ * @version $Revision: 1.481 $ $Date: 2005/04/05 20:06:44 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5599,13 +5599,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     throws CmsException {
 
         // check if we have the result already cached
-        String cacheKey = getCacheKey(key + search, dbc.currentProject().getId(), resource.getRootPath());
+        String cacheKey = getCacheKey(key.concat(String.valueOf(search)), dbc.currentProject().getId(), resource.getRootPath());
         CmsProperty value = (CmsProperty)m_propertyCache.get(cacheKey);
 
         if (value == null) {
             // check if the map of all properties for this resource is already cached
             String cacheKey2 = getCacheKey(
-                C_CACHE_ALL_PROPERTIES + search, 
+                C_CACHE_ALL_PROPERTIES.concat(String.valueOf(search)),
                 dbc.currentProject().getId(), 
                 resource.getRootPath());
             
@@ -5622,7 +5622,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
-                String cacheKey3 = getCacheKey(key + false, dbc.currentProject().getId(), resource.getRootPath());
+                String cacheKey3 = getCacheKey(key.concat(String.valueOf(false)), dbc.currentProject().getId(), resource.getRootPath());
                 value = (CmsProperty)m_propertyCache.get(cacheKey3);
 
                 if ((value == null) || value.isNullProperty()) {
@@ -5630,7 +5630,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     do {
                         try {
                             value = readPropertyObject(dbc, resource, key, false);
-                            cont = (value.isNullProperty() && (!"/".equals(resource.getRootPath())));
+                            cont = value.isNullProperty() && (resource.getRootPath().length() > 1);
                         } catch (CmsSecurityException se) {
                             // a security exception (probably no read permission) we return the current result                      
                             cont = false;
@@ -5678,7 +5678,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // check if we have the result already cached
         String cacheKey = getCacheKey(
-            C_CACHE_ALL_PROPERTIES + search, 
+            C_CACHE_ALL_PROPERTIES.concat(String.valueOf(search)),
             dbc.currentProject().getId(), 
             resource.getRootPath());
         
@@ -5702,7 +5702,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                         properties.clear();
                         properties.addAll(parentProperties);
 
-                        cont = !"/".equals(resource.getRootPath());
+                        cont = resource.getRootPath().length() > 1;
                     } catch (CmsSecurityException se) {
                         // a security exception (probably no read permission) we return the current result                      
                         cont = false;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/03/23 19:08:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/04/05 20:06:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -139,6 +139,9 @@ public final class CmsFileUtil {
     /**
      * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
      * 
+     * Can also handle Windows like path information containing a drive letter, 
+     * like <code>C:\path\..\</code>.<p>
+     * 
      * @param path the path to normalize
      * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
      * @return the normalized path
@@ -148,24 +151,28 @@ public final class CmsFileUtil {
         if (path != null) {
             // ensure all File separators are '/'
             path = path.replace('\\', '/');
-            String drive;
+            String drive = null;
             if ((path.length() > 1) && (path.charAt(1) == ':')) {
                 // windows path like C:\home\
                 drive = path.substring(0, 2);
                 path = path.substring(2);
-            } else {
-                drive = "";
             }
             if (path.charAt(0) == '/') {
                 // trick to resolve all ../ inside a path
-                path = "." + path;
+                path = '.' + path;
             }
             // resolve all '../' or './' elements in the path
             path = CmsLinkManager.getAbsoluteUri(path, "/");
+            // re-append drive if required
+            if (drive != null) {                
+                path = drive.concat(path);
+            }
             // still some '//' elements might persist
-            path = CmsStringUtil.substitute(drive.concat(path), "//", "/");
-            // switch '/' back to OS dependend File separator
-            path = path.replace('/', separatorChar);
+            path = CmsStringUtil.substitute(path, "//", "/");
+            // switch '/' back to OS dependend File separator if required
+            if (separatorChar != '/') {
+                path = path.replace('/', separatorChar);
+            }
         }
         return path;
     }
