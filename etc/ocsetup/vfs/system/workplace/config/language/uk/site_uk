@@ -27,6 +27,7 @@
 				<title>		
 					<newsite>New site</newsite>
 					<editsite>Edit site</editsite>
+					<sitecopy>Copy site</sitecopy>
 				</title>
 				
 				<message>
@@ -34,6 +35,7 @@
 					<editsite>Sorry, the site could not be changed.</editsite>
 					<datamissing>Sorry, the new site could not be created.</datamissing>
 					<deletesite>The site could not be deleted</deletesite>
+					<sitecopy>The site could not be copied</sitecopy>
 				</message>
 				
 				<reason>
@@ -43,14 +45,19 @@
 					<deletesite></deletesite>
 					<deletecurrentsite>Cannot delete current site</deletecurrentsite>
 					<cannotdeleteroot>Cannot delete the root site</cannotdeleteroot>
+					<sitecopy>Cannot copy to the onlineproject or copy from the samme project</sitecopy>
 				</reason>
 				
 				<suggestion>
 					<newsite>Please check the entered data or contact your system administrator.</newsite>								
 					<editsite>Please check the entered data or contact your system administrator.</editsite>
 					<deletesite></deletesite>
+					<sitecopy></sitecopy>
 				</suggestion>
 			</error>
+			<text>
+				<sitecopy>Select the site and project to copy from</sitecopy>
+			</text>
 			<sitematrix>
 				<context>
 					<edit>Edit site</edit>

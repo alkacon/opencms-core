@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminSiteCopy.java,v $
- * Date   : $Date: 2000/10/09 15:47:15 $
+ * Date   : $Date: 2000/10/16 12:59:34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,6 +56,43 @@ public class CmsAdminSiteCopy extends CmsWorkplaceDefault {
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException
 {
 	CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+	I_CmsSession session = cms.getRequestContext().getSession(true);
+	
+	//
+	if (parameters.get("initial") != null)
+		session.removeValue("SITECOPY_PROJECT_ID");
+
+	//
+	if (parameters.get("submitform") != null && parameters.get("submitform").equals("true"))
+	{
+		int projectId = Integer.parseInt((String) parameters.get("project"));
+
+		if (projectId == cms.getRequestContext().currentProject().getId() || cms.getRequestContext().currentProject().getId() == cms.onlineProject().getId())
+		{
+			templateSelector = "error";
+			xmlTemplateDocument.setData("details", "");
+			return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+		}
+		session.putValue("SITECOPY_PROJECT_ID", ""+projectId);
+		templateSelector = "wait";
+	}
+
+	//
+	if (parameters.get("action") != null && parameters.get("action").equals("start"))
+	{
+		try
+		{
+			cms.copyProjectToProject(cms.readProject(Integer.parseInt((String) session.getValue("SITECOPY_PROJECT_ID"))));
+			session.removeValue("SITECOPY_PROJECT_ID");
+			templateSelector = "done";
+		}
+		catch (CmsException e)
+		{
+			xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+			templateSelector = "error";
+		}
+	}
+
 	//
 	return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
 }
@@ -86,28 +123,33 @@ public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
 	String newSite = (String) parameters.get("site");
 	int currentSiteId = cms.getSite(cms.onlineProject().getId()).getId();
 	int currentProjectId = currentProject.getId();
-
+	Vector allProjects = null;
 	// Check if the user requested a site change
-	if (newSite != null && !("".equals(newSite)) && currentSiteId != Integer.parseInt(newSite))
-		reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
+	try
+	{
+		if (newSite != null && !("".equals(newSite)) && currentSiteId != Integer.parseInt(newSite))
+			reqCont.setCurrentProject(cms.getSiteBySiteId(Integer.parseInt(newSite)).getOnlineProjectId());
 
-	// Get all project for the site choosen
-	Vector allProjects = cms.getAllAccessibleProjects();
-
-	// set back current project
-	reqCont.setCurrentProject(currentProjectId);
+		// Get all project for the site choosen
+		allProjects = cms.getAllAccessibleProjects();
+	}
+	finally
+	{
+		// set back current project
+		reqCont.setCurrentProject(currentProjectId);
+	}
 
 	// Now loop through all projects and fill the result vectors
-	int currentProjectNum = 0;
 	for (int i = 0; i < allProjects.size(); i++)
 	{
 		CmsProject project = (CmsProject) allProjects.elementAt(i);
-		values.addElement("" + project.getId());
-		names.addElement(project.getName());
-		if (currentProjectId == project.getId())
-			currentProjectNum = i;
+		if (currentProjectId != project.getId())
+		{
+			values.addElement("" + project.getId());
+			names.addElement(project.getName());
+		}
 	}
-	return new Integer(currentProjectNum);
+	return new Integer(0);
 }
 /**
  * Gets all sites

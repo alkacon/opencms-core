@@ -103,7 +103,7 @@
 </SITECOPY_DISABLED>	
 
 <SITECOPY_ENABLED>
-<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','administration_sitecopy.html')" name="bt_copy" action="" alt="Sitecopy"/><![CDATA[</td>]]>
+<![CDATA[<td class=menu nowrap width=32px>]]><BUTTON href="javascript:updateFrame('body.explorer_content.explorer_files','administration_sitecopy.html?initial=true')" name="bt_copy" action="" alt="Sitecopy"/><![CDATA[</td>]]>
 </SITECOPY_ENABLED>	
 
 
