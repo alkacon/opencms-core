@@ -355,6 +355,7 @@
         <icon>
             <currentprojects>Current Projects</currentprojects>
             <channels>Channels</channels>
+            <clock>Scheduled Tasks</clock>
             <database>Database- management</database>
             <datatypes>Resource type- management</datatypes>
             <downloadgallery>Download galleries<![CDATA[<br>]]>management</downloadgallery>
@@ -557,6 +558,8 @@
             <createnewproject>Create new Project</createnewproject>
             <createnewuser>Create new User</createnewuser>
             <createnewgroup>Create new Group</createnewgroup>
+            <cronmanagement>Scheduled Tasks</cronmanagement>
+            <cronsyntax>Syntax: minute(*|0-59) hour(*|0-23) day(*|1-31) month(*|0-11) day of week(*|0-6) user group startclass parameter</cronsyntax>
             <date>Date</date>
             <datecreated>Date created</datecreated>
             <description>Description</description>

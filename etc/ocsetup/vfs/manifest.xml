@@ -3380,7 +3380,7 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>		
+        </file>     
         <file>
             <source>system/workplace/action/administration_head_backoffice.html</source>
             <destination>system/workplace/action/administration_head_backoffice.html</destination>
@@ -3389,7 +3389,7 @@
             <group>Users</group>
             <access>15</access>
             <properties/>
-        </file>				
+        </file>             
         <file>
             <source>system/workplace/action/administration_head.html</source>
             <destination>system/workplace/action/administration_head.html</destination>
@@ -4262,6 +4262,53 @@
                     <value><![CDATA[]]></value>
                 </property>
             </properties>
+        </file>
+        <file>
+            <destination>system/workplace/administration/cronmanagement</destination>
+            <type>folder</type>
+            <user>Admin</user>
+            <group>Administrators</group>
+            <access>383</access>
+            <properties>
+                <property>
+                    <name>visiblemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isAdmin]]></value>
+                </property>
+                <property>
+                    <name>NavText</name>
+                    <type>0</type>
+                    <value><![CDATA[icon.clock]]></value>
+                </property>
+                <property>
+                    <name>Title</name>
+                    <type>0</type>
+                    <value><![CDATA[ic_clock]]></value>
+                </property>
+                <property>
+                    <name>NavPos</name>
+                    <type>0</type>
+                    <value><![CDATA[14]]></value>
+                </property>
+            </properties>
+        </file>
+        <file>
+            <source>system/workplace/administration/cronmanagement/index</source>
+            <destination>system/workplace/administration/cronmanagement/index</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>79</access>
+            <properties/>
+        </file>
+        <file>
+            <source>system/workplace/administration/cronmanagement/index.html</source>
+            <destination>system/workplace/administration/cronmanagement/index.html</destination>
+            <type>XMLTemplate</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
         </file>
         <file>
             <destination>system/workplace/administration/channels</destination>
@@ -10035,7 +10082,7 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>		
+        </file>     
         <file>
             <source>system/workplace/templates/administration_head_backoffice</source>
             <destination>system/workplace/templates/administration_head_backoffice</destination>
@@ -10044,7 +10091,7 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>			
+        </file>         
         <file>
             <source>system/workplace/templates/administration_picgalleries</source>
             <destination>system/workplace/templates/administration_picgalleries</destination>
@@ -10077,7 +10124,7 @@
             <group>Users</group>
             <access>79</access>
             <properties/>
-        </file>		
+        </file>     
         <file>
             <source>system/workplace/templates/ButtonTemplate</source>
             <destination>system/workplace/templates/ButtonTemplate</destination>

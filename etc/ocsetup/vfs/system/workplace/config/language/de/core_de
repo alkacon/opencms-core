@@ -354,6 +354,7 @@
         <icon>
             <currentprojects>Aktuelle Projekte</currentprojects>
             <channels>Channels</channels>
+            <clock>Vorgangsverwaltung</clock>
             <database>Datenbankverwaltung</database>
             <datatypes>Dateityp- verwaltung</datatypes>
             <downloadgallery>Downloadgalerien<![CDATA[<br>]]>verwalten</downloadgallery>
@@ -558,6 +559,8 @@
             <createnewproject>Neues Projekt anlegen</createnewproject>
             <createnewuser>Benutzer neu anlegen</createnewuser>
             <createnewgroup>Gruppe neu anlegen</createnewgroup>
+            <cronmanagement>Vorgangsverwaltung</cronmanagement>
+            <cronsyntax>Syntax: Minute(*|0-59) Stunde(*|0-23) Tag(*|1-31) Monat(*|0-11) Wochentag(*|0-6) Benutzer Gruppe Startklasse Parameter</cronsyntax>
             <date>Datum</date>
             <datecreated>Angelegt am</datecreated>
             <description>Beschreibung</description>
