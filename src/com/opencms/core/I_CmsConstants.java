@@ -6,7 +6,7 @@ package com.opencms.core;
  * 
  * @author Andreas Schouten
  * @uathor Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/01/31 18:59:50 $
+ * @version $Revision: 1.27 $ $Date: 2000/02/01 08:19:58 $
  */
 public interface I_CmsConstants
 {
@@ -101,6 +101,11 @@ public interface I_CmsConstants
 	 */
 	static final int C_METADEF_TYPE_MANDATORY	= 2;
 
+    /**
+     * Metainformation for resourc etitle
+     */
+    static final String C_METAINFO_TITLE="Title";
+        
 	/**
 	 * This is the group for guests.
 	 */
@@ -172,6 +177,12 @@ public interface I_CmsConstants
 	 * Key for additional info flags.
 	 */
 	 final static String C_ADDITIONAL_INFO_FLAGS	= "USER_FLAGS";
+     
+     /**
+	 * Key for additional info flags.
+	 */
+	 final static String C_ADDITIONAL_INFO_PREFERENCES	= "USER_PREFERENCES";
+     
      
 	/**
 	 * This constant is used to order the tasks by date.

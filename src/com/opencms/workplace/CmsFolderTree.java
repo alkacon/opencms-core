@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/01/28 17:35:37 $
+ * @version $Revision: 1.5 $ $Date: 2000/02/01 08:19:58 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -121,7 +121,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
     private static final String C_FILE_NOTINPROJECT="treefoldernip";     
             
     /**
-     * Overwries the getContent method of the CmsWorkplaceDefault.<br>
+     * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the foldertree template and processe the data input.
      * @param cms The CmsObject.
      * @param templateFile The foldertree template file

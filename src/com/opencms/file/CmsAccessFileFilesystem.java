@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2000/01/28 11:09:43 $
+ * @version $Revision: 1.12 $ $Date: 2000/02/01 08:19:58 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -213,7 +213,7 @@ import com.opencms.core.*;
                               discFile.lastModified(),
                               discFile.lastModified(),
                               new byte[0],
-                              0);
+                              new Long(discFile.length()).intValue());
          } else {
              throw new CmsException("[" + this.getClass().getName() + "] "+filename,CmsException.C_NOT_FOUND);
          }

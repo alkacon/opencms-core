@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.14 $ $Date: 2000/01/28 17:10:17 $
+ * @version $Revision: 1.15 $ $Date: 2000/02/01 08:19:58 $
  */
 public interface I_CmsWpConstants {
 
@@ -213,6 +213,37 @@ public interface I_CmsWpConstants {
     /** Prefix for button texts in the language file */
     public static final String C_LANG_BUTTON = "button";
     
-
+    // Constants for user default preferences
+    
+    /** Name of the filelist preferences */
+    public static final String C_USERPREF_FILELIST ="filelist";
+    
+    /** Flag for displaying the title column */
+    public static final int C_FILELIST_TITLE = 1;
+    
+    /** Flag for displaying the filetype column */
+    public static final int C_FILELIST_TYPE = 2;
+    
+    /** Flag for displaying the changed column */
+    public static final int C_FILELIST_CHANGED = 4;
+    
+    /** Flag for displaying the size column */
+    public static final int C_FILELIST_SIZE = 8;
+    
+    /** Flag for displaying the state column */
+    public static final int C_FILELIST_STATE = 16;
+    
+    /** Flag for displaying the owner column */
+    public static final int C_FILELIST_OWNER = 32;
+    
+    /** Flag for displaying the group column */
+    public static final int C_FILELIST_GROUP = 64;
+    
+    /** Flag for displaying the access column */
+    public static final int C_FILELIST_ACCESS = 128;
+    
+    /** Flag for displaying the locked column */
+    public static final int C_FILELIST_LOCKED = 256;
+    
     
 }

@@ -14,9 +14,10 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2000/01/27 16:54:31 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/01 08:19:58 $
  */
-public class CmsLogin extends CmsWorkplaceDefault {
+public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
+                                                             I_CmsConstants {
            
     /**
      * Indicates if the results of this class are cacheable.
@@ -52,9 +53,11 @@ public class CmsLogin extends CmsWorkplaceDefault {
                              Hashtable parameters, String templateSelector)
         throws CmsException {
         String result = null;     
-        String user=null;
+        String username=null;
+        A_CmsUser user;
         // the template to be displayed
         String template="template";
+        Hashtable preferences=new Hashtable();
         
         // get user name and password
         String name=(String)parameters.get("NAME");
@@ -63,32 +66,40 @@ public class CmsLogin extends CmsWorkplaceDefault {
         // try to read this user
         if ((name != null) && (password != null)){
             try {
-                user=cms.loginUser(name,password);
+                username=cms.loginUser(name,password);
             } catch (CmsException e) {
                 if (e.getType()==CmsException.C_NO_ACCESS) {
                     // there was an authentification error during login
                     // set user to null and switch to error template
-                    user=null;     
+                    username=null;     
                     template="error";
                 } else {
                     throw e;
                 }   
             }   
             // check if a user was found.
-            if (user!= null) {
+            if (username!= null) {
                 // get a session for this user so that he is authentificated at the
                 // end of this request
                 HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
                 if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + user);
+                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsLogin] Login user " + username);
                 }
+                // now get the users preferences
+                user=cms.readUser(username);
+                preferences=(Hashtable)user.getAdditionalInfo(C_ADDITIONAL_INFO_PREFERENCES);
+                // check if preferences are existing, otherwiese use defaults
+                if (preferences == null) {
+                    preferences=getDefaultPreferences();
+                }
+                session.putValue(C_ADDITIONAL_INFO_PREFERENCES,preferences);
             }
         }
         
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
             
         // this is the first time the dockument is selected, so reade the page forwarding
-        if (user == null) {
+        if (username == null) {
             xmlTemplateDocument.clearStartup();
         }
         
@@ -96,5 +107,17 @@ public class CmsLogin extends CmsWorkplaceDefault {
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     
     }
+    
+    /**
+     * Sets the default preferences for the current user if those values are not available.
+     * @return Hashtable with default preferences.
+     */
+    private Hashtable getDefaultPreferences() {
+        Hashtable pref=new Hashtable();
         
+        // set the default columns in the filelist
+        int filelist=C_FILELIST_TITLE+C_FILELIST_TYPE+C_FILELIST_CHANGED;
+        pref.put(C_USERPREF_FILELIST,new Integer(filelist));
+        return pref;
+    }
 }
