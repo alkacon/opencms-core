@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2002/10/23 14:07:04 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2002/11/17 13:55:09 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.38 $ $Date: 2002/10/23 14:07:04 $
+ * @version $Revision: 1.39 $ $Date: 2002/11/17 13:55:09 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -387,23 +387,42 @@ import com.opencms.core.*;
     public int getOwnerId() {
          return m_user;
       }
+      
     /**
-     * Returns the absolute path of the parent.<BR/>
-     * Example: /system/def has the parent /system/<BR/>
-     * / has no parent
-     *
-     * @return the parent absolute path, or null if this is the root-resource.
+     * Return the absolute parent folder name of this resource.<p>
+     * 
+     * The parent resource of a file is the folder of the file.
+     * The parent resource of a folder is the parent folder.
+     * The parent resource of the root folder is <code>null</code>.<p>
+     * 
+     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
+     * 
+     * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
      */
-     public String getParent(){
-         String parent=null;
-         String resourceName = getAbsolutePath();
-         // check if this is the root resource
-         if (!resourceName.equals(C_ROOT)) {
-                parent=resourceName.substring(0,resourceName.length()-1);
-                parent=parent.substring(0,parent.lastIndexOf("/")+1);
-         }
-         return parent;
+     public String getParent() {
+        return getParent(getAbsolutePath());
      }
+     
+    /**
+     * Return the absolute parent folder name of a resource.<p>
+     * 
+     * The parent resource of a file is the folder of the file.
+     * The parent resource of a folder is the parent folder.
+     * The parent resource of the root folder is <code>null</code>.<p>
+     * 
+     * Example: <code>/system/workplace/</code> has the parent <code>/system/</code>.
+     * 
+     * @param resource the resource to find the parent folder for
+     * @return the calculated parent absolute folder path, or <code>null</code> for the root folder 
+     */
+    public static String getParent(String resource) {
+        if (C_ROOT.equals(resource)) return null;
+        // remove the last char, for a folder this will be "/", for a file it does not matter
+        String parent = (resource.substring(0, resource.length() - 1));
+        // now as the name does not end with "/", check for the last "/" which is the parent folder name
+        return parent.substring(0, parent.lastIndexOf("/") + 1);
+    }
+    
      /**
      * Gets the Parent database id for this resource.
      *

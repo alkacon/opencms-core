@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2002/11/16 13:13:39 $
-* Version: $Revision: 1.342 $
+* Date   : $Date: 2002/11/17 13:56:07 $
+* Version: $Revision: 1.343 $
 
 *
 * This library is part of OpenCms -
@@ -56,7 +56,7 @@ import org.w3c.dom.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.342 $ $Date: 2002/11/16 13:13:39 $
+ * @version $Revision: 1.343 $ $Date: 2002/11/17 13:56:07 $
 
  *
  */
@@ -3556,29 +3556,32 @@ public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, String
     }
     return parent;
 }
+
     /**
-     * Returns the parent resource of a resouce.
+     * Returns the parent resource of a resouce.<p>
      *
      * <B>Security:</B>
      * All users are granted.
      *
-     * @param currentUser The user who requested this method.
-     * @param currentProject The current project of the user.
-     * @param filename The name of the file to be read.
+     * @param currentUser the user who requested this method.
+     * @param currentProject the current project of the user.
+     * @param resourcename the name of the resource to find the parent for
      *
-     * @return The file read from the Cms.
+     * @return The parent resource read from the VFS
      *
-     * @exception CmsException  Throws CmsException if operation was not succesful.
+     * @throws CmsException if parent resource could not be read
      */
-    public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject,
-                                         String resourcename)
-        throws CmsException {
-
-        // TODO: this can maybe done via the new parent id'd
-        CmsResource theResource = readFileHeader(currentUser, currentProject, resourcename);
-        String parentresourceName = theResource.getRootName()+theResource.getParent();
-        return readFileHeader(currentUser, currentProject, parentresourceName);
+    public CmsResource getParentResource(CmsUser currentUser, CmsProject currentProject, String resourcename)
+    throws CmsException {
+        // check if this is the root resource
+        if (!resourcename.equals(C_ROOT)) {
+            return readFileHeader(currentUser, currentProject, CmsResource.getParent(resourcename));
+        } else {
+            // just return the root 
+            return readFileHeader(currentUser, currentProject, C_ROOT);
+        }
     }
+    
      /**
      * Gets the Registry.<BR/>
      *
@@ -6260,13 +6263,14 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search)
     throws CmsException {
         if (search) {
-            String f = resource;
-            String prop = readProperty(currentUser, currentProject, f, property);
-            while ((prop == null) && (! siteRoot.equals(f))) {
-                f = f.substring(0, f.lastIndexOf("/"));
-                prop = readProperty(currentUser, currentProject, f + "/", property);
-            }      
-            return prop;
+            String value;
+            boolean cont;
+            do {
+                value = readProperty(currentUser, currentProject, resource, property);
+                cont = (value == null) && (! siteRoot.equals(resource));
+                if (cont) resource = CmsResource.getParent(resource);
+            } while (cont);
+            return value;
         } else {
             return readProperty(currentUser, currentProject, resource, property);
         }         
@@ -6293,11 +6297,11 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      */
     public String readProperty(CmsUser currentUser, CmsProject currentProject, String resource, String siteRoot, String property, boolean search, String propertyDefault)
     throws CmsException{
-        String prop = readProperty(currentUser, currentProject, resource, siteRoot, property, search);
-        if ((prop == null) || "".equals(prop)) {
-            prop = propertyDefault;
+        String value = readProperty(currentUser, currentProject, resource, siteRoot, property, search);
+        if (value == null) {
+            return propertyDefault;
         }
-        return prop;        
+        return value;        
     }    
     
     /**
