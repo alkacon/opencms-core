@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 1999/12/22 12:15:10 $
+ * @version $Revision: 1.5 $ $Date: 1999/12/22 17:56:21 $
  */
  class CmsAccessFileMySql implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -756,6 +756,55 @@ import com.opencms.core.*;
         
     }
 	
+     	
+     /**
+	 * Writes a folder to the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete name of the folder (including pathinformation).
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void writeFolder(A_CmsProject project, CmsFolder folder)
+         throws CmsException {
+         
+           try {   
+               synchronized ( m_statementResourceUpdate) {
+                // update resource in the database
+          
+                //RESOURCE_TYPE
+                m_statementResourceUpdate.setInt(1,folder.getType());
+                //RESOURCE_FLAGS
+                m_statementResourceUpdate.setInt(2,folder.getFlags());
+                //USER_ID
+                m_statementResourceUpdate.setInt(3,folder.getOwnerId());
+                //GROUP_ID
+                m_statementResourceUpdate.setInt(4,folder.getGroupId());
+                //ACCESS_FLAGS
+                m_statementResourceUpdate.setInt(5,folder.getAccessFlags());
+                //STATE
+                m_statementResourceUpdate.setInt(6,folder.getState());
+                //LOCKED_BY
+                m_statementResourceUpdate.setInt(7,folder.isLockedBy());
+                //LAUNCHER_TYPE
+                m_statementResourceUpdate.setInt(8,folder.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                m_statementResourceUpdate.setString(9,folder.getLauncherClassname());
+                //DATE_LASTMODIFIED
+                m_statementResourceUpdate.setLong(10,System.currentTimeMillis());
+                //SIZE
+                m_statementResourceUpdate.setInt(11,0);
+                
+                // set query parameters
+                m_statementResourceUpdate.setString(12,folder.getAbsolutePath());
+                m_statementResourceUpdate.setInt(13,folder.getProjectId());
+                m_statementResourceUpdate.executeUpdate();
+                }
+               } catch (SQLException e){
+            throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }
+     }
+
 	
 	/**
 	 * Renames the folder to the new name.

@@ -7,41 +7,35 @@ import com.opencms.core.*;
 /**
  * This  class describes a resource broker for files and folders in 
  * the Cms.<BR/>
- * <B>All</B> Methods get a first parameter: A_CmsUser. It is the current user. This 
- * is for security-reasons, to check if this current user has the rights to call the
- * method.<BR/>
  * 
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 1999/12/22 12:15:10 $
+ * @version $Revision: 1.3 $ $Date: 1999/12/22 17:56:21 $
  */
- class CmsRbFile implements I_CmsRbFile {
+ class CmsRbFile implements I_CmsRbFile, I_CmsConstants {
+	
+     /**
+     * The file access object which is required to access the file database.
+     */
+    private I_CmsAccessFile m_accessFile;
+    
+     /**
+     * Constructor, creates a new File Resource Broker.
+     * 
+     * @param accessFile The file access object.
+     */
+    public CmsRbFile(I_CmsAccessFile accessFile)
+    {
+        m_accessFile=accessFile;
+    }
+    
 	
 	/**
-	 * Returns the root-folder object.<P/>
+	 * Creates a new file with thegiven content and resourcetype.
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @return the root-folder object.
-	 */
-     public CmsFolder rootFolder(A_CmsUser callingUser) {
-         return null;
-     }
-	
-	/**
-	 * Creates a new file with the overgiven content and resourcetype.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
@@ -49,199 +43,162 @@ import com.opencms.core.*;
 	 * <li>the file dosn't exists</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
+	 * @param user The user who own this file.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder in which the file will be created.
-	 * @param filename The name of the new file (A_CmsUser callingUser, No pathinformation allowed).
+	 * @param filename The name of the new file (including pathinformation).
+	 * @param flags The flags of this resource.
 	 * @param contents The contents of the new file.
 	 * @param type The resourcetype of the new file.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
-	 * 
 	 * @return file The created file.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
-	 * or if resourcetype is set to folder. The CmsException is also thrown, if the 
-	 * filename is not valid. The CmsException will also be thrown, if the user
-	 * has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFile createFile(A_CmsUser callingUser, String project, String folder, String filename, 
-								byte[] contents, A_CmsResourceType type, 
-								Hashtable metainfos)
-         throws CmsException, CmsDuplicateKeyException {
-               return null;
+	 public CmsFile createFile(A_CmsUser user, A_CmsProject project,
+                               String filename, int flags,
+							   byte[] contents, A_CmsResourceType type) 
+						
+         throws CmsException {
+               return m_accessFile.createFile(user,project,filename,flags,contents,type);
      }
+	
 	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read the resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder from which the file will be read.
 	 * @param filename The name of the file to be read.
 	 * 
-	 * @return file The read file.
+	 * @return The file read from the Cms.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	 public CmsFile readFile(A_CmsUser callingUser, String project, String folder, String filename)
-         throws CmsException {
-               return null;
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * */
+	 public CmsFile readFile(A_CmsProject project, String filename)
+		throws CmsException{
+        return m_accessFile.readFile(project,filename);
      }
 	
-	/**
+	 /**
 	 * Reads a file header from the Cms.<BR/>
 	 * The reading excludes the filecontent.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read the resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder from which the file will be read.
 	 * @param filename The name of the file to be read.
 	 * 
-	 * @return file The read file.
+	 * @return The file read from the Cms.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public A_CmsResource readFileHeader(A_CmsUser callingUser, String project, String folder, 
-										String filename)
-         throws CmsException {
-               return null;
+	 public A_CmsResource readFileHeader(A_CmsProject project, String filename)
+		 throws CmsException {
+         return m_accessFile.readFileHeader(project,filename);
      }
 	
-	/**
+	 /**
 	 * Writes a file to the Cms.<BR/>
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be written without
-	 * the mandatory metainformations.<BR/>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param file The file to write.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
-	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
-	 * if the user has not the rights for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFile(A_CmsUser callingUser, String project, 
-				   CmsFile file, Hashtable metainfos)
-         throws CmsException {
+	public void writeFile(A_CmsProject project, CmsFile file)
+		throws CmsException{
+        m_accessFile.writeFile(project,file);
      }
 	
-	/**
+	 /**
 	 * Writes the fileheader to the Cms.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is  locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param resource The resource to write the header of.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param file The file to write the header of.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be wrote. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void writeFileHeader(A_CmsUser callingUser, String project, 
-						 A_CmsResource resource, Hashtable metainfos)
-         throws CmsException {
+	public void writeFileHeader(A_CmsProject project, CmsFile file)
+		throws CmsException{
+        m_accessFile.writeFileHeader(project,file);
      }
 
-	/**
-	 * Renames the file to the new name.
+	 /**
+	 * Renames the file to a new name.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
 	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be renamed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFile(A_CmsUser callingUser, String project, 
-					String oldname, String newname)
-         throws CmsException {
+	public void renameFile(A_CmsProject project, 
+					       String oldname, String newname)
+		throws CmsException {
+        m_accessFile.renameFile(project,oldname,newname);
      }
 	
 	/**
-	 * Deletes the file.
+	 * Deletes a file in the Cms.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is locked by the callinUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete path of the file.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be deleted. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void deleteFile(A_CmsUser callingUser, String project, String filename)
-         throws CmsException {
+	public void deleteFile(A_CmsProject project, String filename)
+		throws CmsException{
+        m_accessFile.deleteFile(project,filename);
      }
 	
+
 	/**
-	 * Copies the file.
+	 * Copies a file in the Cms
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read the sourceresource</li>
@@ -249,23 +206,19 @@ import com.opencms.core.*;
 	 * <li>the destinationresource doesn't exists</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be copied. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFile(A_CmsUser callingUser, String project, String source, String destination)
-         throws CmsException, CmsDuplicateKeyException {
+	public void copyFile(A_CmsProject project, String source, String destination)
+		throws CmsException {
+        m_accessFile.copyFile(project,source,destination);
      }
 	
-	/**
-	 * Moves the file.
+	 /**
+	 * Moves a file in the Cms
 	 * 
 	 * <B>Security:</B>
 	 * Access is cranted, if:
@@ -277,183 +230,87 @@ import com.opencms.core.*;
 	 * <li>the destinationresource dosn't exists</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefile.
 	 * @param destination The complete path of the destinationfile.
 	 * 
-	 * @exception CmsException will be thrown, if the file couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	public void moveFile(A_CmsUser callingUser, String project, String source, 
-				  String destination)
-         throws CmsException, CmsDuplicateKeyException {
-     }
-	
-	/**
-	 * Sets the resource-type of this resource.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the calling user</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path for the resource to be changed.
-	 * @param type The new type for the resource.
-	 * @param metainfos A Hashtable of metainfos, that should be set for this file.
-	 * 
-	 * @exception CmsException will be thrown, if the file type couldn't be changed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 */
-	 public void setResourceType(A_CmsUser callingUser, String project, String resource, 
-								A_CmsResourceType newType, Hashtable metainfos)
-         throws CmsException {
+	public void moveFile(A_CmsProject project, String source,String destination)
+		throws CmsException {
+        m_accessFile.moveFile(project,source,destination);
      }
 
-	/**
-	 * Copies a file and its Metainformations to a new temporary file.<BR/>
-	 * All accessflags will be copied, but all visible flags will be deleted.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read and write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param source The complete path to the sourcefile.
-	 * @return file The new temporary file.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 * @exception CmsDuplicateKeyException Throws CmsDuplicateKeyException if 
-	 * same templfile already exists
-	 */		
-     public CmsFile copyTemporaryFile(A_CmsUser callingUser, String source)
-         throws CmsException, CmsDuplicateKeyException {
-         return null;
-     }
-    
-    /**
-	 * Copies all changes in a temporary file to the original file
-	 * and deletes the temporary file. 
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read and write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param source The complete path to the sourcefile.
-	 * 
-     * @exception CmsException Throws CmsException if operation was not succesful.
-	 */	
-    public void commitTemporaryFile(A_CmsUser callingUser, String source) 
-         throws CmsException {
-         
-     }
-    
-    /**
-	 * Deletes an existing temporary copy of a given file.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read and write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param source The complete path to the sourcefile.
-	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */	
-     public void deleteTemporaryFile(A_CmsUser callingUser, String source) 
-         throws CmsException {
-         
-     }
 	
-	/**
-	 * Creates a new folder with the overgiven resourcetype and metainfos.
-	 * If some mandatory metadefinitions for the resourcetype are missing, a 
-	 * CmsException will be thrown, because the file cannot be created without
-	 * the mandatory metainformations.<BR/>
-	 * If the resourcetype is set to folder, a CmsException will be thrown.<BR/>
-	 * If there is already a file with this filename, a CmsDuplicateKey exception will
-	 * be thrown.
+	 /**
+	 * Creates a new folder in the Cms.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is not locked by another user</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
+	 * @param user The user who owns the new folder.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder in which the new folder will 
-	 * be created.
-	 * @param newFolderName The name of the new folder (A_CmsUser callingUser, No pathinformation allowed).
-	 * @param metainfos A Hashtable of metainfos, that should be set for this folder.
-	 * The keys for this Hashtable are the names for metadefinitions, the values are
-	 * the values for the metainfos.
+	 * @param folder The name of the new folder (including pathinformation).
+	 * @param flags The flags of this resource.
 	 * 
-	 * @return file The created file.
+	 * @return The created folder.
 	 * 
-	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
-	 * or if the filename is not valid. The CmsException will also be thrown, if the 
-	 * user has not the rights for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * this name.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder createFolder(A_CmsUser callingUser, String project, String folder, 
-								  String newFolderName, Hashtable metainfos)
-         throws CmsException, CmsDuplicateKeyException {
-         return null;
+	public CmsFolder createFolder(A_CmsUser user, A_CmsProject project, String folder,
+                                  int flags)						
+		throws CmsException{
+         return m_accessFile.createFolder(user,project,folder,flags);
      }
 
 	/**
 	 * Reads a folder from the Cms.<BR/>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read the resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param folder The complete path to the folder from which the folder will be 
-	 * read.
-	 * @param foldername The name of the folder to be read.
+	 * @param folder The name of the folder to be read.
 	 * 
-	 * @return folder The read folder.
+	 * @return The read folder read from the Cms.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be read. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public CmsFolder readFolder(A_CmsUser callingUser, String project, String folder, String folderName)
-         throws CmsException {
-         return null;
+	public CmsFolder readFolder(A_CmsProject project, String folder)
+		throws CmsException{
+         return m_accessFile.readFolder(project,folder);
      }
 	
+     /**
+	 * Writes a folder to the Cms.<BR/>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param folder The folder to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFolder(A_CmsProject project, CmsFolder folder)
+        throws CmsException {
+        m_accessFile.writeFolder(project, folder);
+    }
+    
 	/**
 	 * Renames the folder to the new name.
 	 * 
@@ -461,66 +318,61 @@ import com.opencms.core.*;
 	 * renamed, too.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write this resource and all subresources</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param oldname The complete path to the resource which will be renamed.
-	 * @param newname The new name of the resource (A_CmsUser callingUser, No path information allowed).
+	 * @param newname The new name of the resource 
 	 * @param force If force is set to true, all sub-resources will be renamed.
 	 * If force is set to false, the folder will be renamed only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be renamed. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */		
-	 public void renameFolder(A_CmsUser callingUser, String project, String oldname, 
+	public void renameFolder(A_CmsProject project, String oldname, 
 							 String newname, boolean force)
-         throws CmsException {
-         
+		throws CmsException {
+        m_accessFile.renameFolder(project,oldname,newname,force);
      }
 	
-	/**
-	 * Deletes the folder.
+     /**
+	 * Deletes a folder in the Cms.
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * delted, too.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write this resource and all subresources</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername The complete path of the folder.
 	 * @param force If force is set to true, all sub-resources will be deleted.
 	 * If force is set to false, the folder will be deleted only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be deleted. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void deleteFolder(A_CmsUser callingUser, String project, String foldername, boolean force)
-         throws CmsException {
+	public void deleteFolder(A_CmsProject project, String foldername, boolean force)
+		throws CmsException {
+        m_accessFile.deleteFolder(project,foldername,force);
      }
 	
-	/**
-	 * Copies a folder.
+	 /**
+	 * Copies a folder in the Cms.
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * copied, too.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read this sourceresource and all subresources</li>
@@ -529,32 +381,28 @@ import com.opencms.core.*;
 	 * <li>the targetresource dosn't exist</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param source The complete path of the sourcefolder.
 	 * @param destination The complete path of the destinationfolder.
 	 * @param force If force is set to true, all sub-resources will be copied.
 	 * If force is set to false, the folder will be copied only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be copied. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination foldername.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void copyFolder(A_CmsUser callingUser, String project, String source, String destination, 
+	public void copyFolder(A_CmsProject project, String source, String destination, 
 						   boolean force)
-         throws CmsException, CmsDuplicateKeyException {
+		throws CmsException {
+        m_accessFile.copyFolder(project,source,destination,force);
      }
 	
-	/**
-	 * Moves a folder.
+	 /**
+	 * Moves a folder in the Cms.
 	 * 
 	 * This is a very complex operation, because all sub-resources may be
 	 * moved, too.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read and write this sourceresource and all subresources</li>
@@ -563,25 +411,21 @@ import com.opencms.core.*;
 	 * <li>the targetresource dosn't exist</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param source The complete path of the sourcefile.
-	 * @param destination The complete path of the destinationfile.
+	 * @param source The complete path of the sourcefolder.
+	 * @param destination The complete path of the destinationfolder.
 	 * @param force If force is set to true, all sub-resources will be moved.
 	 * If force is set to false, the folder will be moved only if it is empty.
 	 * 
-	 * @exception CmsException will be thrown, if the folder couldn't be moved. 
-	 * The CmsException will also be thrown, if the user has not the rights 
-	 * for this resource.
-	 * @exception CmsDuplikateKeyException if there is already a resource with 
-	 * the destination filename.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */	
-	 public void moveFolder(A_CmsUser callingUser, String project, String source, 
+	public void moveFolder(A_CmsProject project, String source, 
 						   String destination, boolean force)
-         throws CmsException, CmsDuplicateKeyException {
+		throws CmsException {
+        m_accessFile.moveFolder(project,source,destination,force);
      }
 
-	/**
+     /**
 	 * Returns a Vector with all subfolders.<BR/>
 	 * 
 	 * <B>Security:</B>
@@ -591,89 +435,40 @@ import com.opencms.core.*;
 	 * <li>the user can read this resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
-	 * @return subfolders A Vector with all subfolders for the overgiven folder.
+	 * @return subfolders A Vector with all subfolders for the given folder.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public Vector getSubFolders(A_CmsUser callingUser, String project, String foldername)
-         throws CmsException {
-         return null;
+	public Vector getSubFolders(A_CmsProject project, String foldername)
+		throws CmsException{
+         return m_accessFile.getSubFolders(project,foldername);
      }
 	
-	/**
-	 * Returns a Vector with all subfiles.<BR/>
+	 /**
+	 * Returns a Vector with all files of a folder.<BR/>
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can read this resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param foldername the complete path to the folder.
 	 * 
 	 * @return subfiles A Vector with all subfiles for the overgiven folder.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public Vector getFilesInFolder(A_CmsUser callingUser, String project, String foldername)
-         throws CmsException {
-         return null;
+	public Vector getFilesInFolder(A_CmsProject project, String foldername)
+		throws CmsException {
+         return m_accessFile.getFilesInFolder(project, foldername);
      }
 	
-	/**
-	 * Tests if the user has full access to a resource.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read write and view this resource</li>
-	 * <li>this resource is not locked, or it is locked by the calling user</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user has full access, else returns false.
-	 */
-     public boolean accessFile(A_CmsUser callingUser, String project, String filename){
-     return true;
-     }
-     
-     
-
-	/**
-	 * Tests if the user may read the resource.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read this resource</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user may read, else returns false.
-	 */
-     public boolean isReadable(A_CmsUser callingUser, String project, String filename) {
-         return true;
-     }
-
 	/**
 	 * Tests if the user may write the resource.
 	 * 
@@ -692,53 +487,20 @@ import com.opencms.core.*;
 	 * 
 	 * @return true, if the user may write, else returns false.
 	 */
-    public boolean isWriteable(A_CmsUser callingUser, String project, String filename) {
-         return true;
-     }
-
-	/**
-	 * Tests if the user may view the resource.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can view this resource</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user may view, else returns false.
-	 */
-     public boolean isViewable(A_CmsUser callingUser, String project, String filename) {
-      return true;
-     }
-
-	/**
-	 * Tests if the resource is an internal resource.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can view this resource</li>
-	 * <li>the resource has set the internal flag</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the resource is internal, else returns false.
-	 */
-     public boolean isInternal(A_CmsUser callingUser, String project, String filename) {
-         return true;
-     }
-
+    public boolean isWriteable(A_CmsProject project, String filename)
+        throws CmsException{
+        boolean isWritable=false;
+        CmsFile file=null;
+        
+        // read the file header
+        file=(CmsFile)readFileHeader(project,filename);
+        // check if the write flags are set
+        if ((file.getAccessFlags() & C_ACCESS_WRITE) >0) {
+            isWritable=true;
+        }
+        return isWritable;
+    }
+    
 	/**
 	 * Tests if the resource exists.
 	 * 
@@ -750,63 +512,66 @@ import com.opencms.core.*;
 	 * <li>the user can view this resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename the complete path to the resource.
 	 * 
 	 * @return true, if the resource exists, else returns false.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-     public boolean fileExists(A_CmsUser callingUser, String project, String filename) {
-         return true;
+	public boolean fileExists(A_CmsProject project, String filename)
+          throws CmsException {
+          boolean fileExists=false;
+          CmsFile file=null;
+          // read the file header
+          file=(CmsFile)readFileHeader(project,filename);
+          // check if the file exsits
+          if (file != null) {
+              fileExists=true;
+          }
+          return fileExists;
      }
 
-	/**
-	 * Tests, if the user has admin-rights to this resource. Admin-rights
-	 * are granted, if the resource is owned by the user or if the user is in
-	 * the administrators-group.<BR/>
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.<BR/>
-	 * <B>returns true, if</B>
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user is owner of the project</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param filename the complete path to the resource.
-	 * 
-	 * @return true, if the user has admin-rights, else returns false.
-	 */
-     public boolean adminResource(A_CmsUser callingUser, String project, String filename) {
-         return true;
-     }
 	
-	/**
+     /**
 	 * Changes the flags for this resource<BR/>
 	 * 
 	 * The user may change the flags, if he is admin of the resource.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user can write the resource</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete path to the resource.
-	 * @param flags The new flags for the resource.
+	 * @param flags The new accessflags for the resource.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource.
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public void chmod(A_CmsUser callingUser, String project, String filename, int flags)
-         throws CmsException {
+	public void chmod(A_CmsProject project, String filename, int flags)
+		throws CmsException {
+        CmsResource resource = null;
+        
+        // check if its a file or a folder
+        if (filename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,filename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,filename);
+        }
+        //set the flags
+        resource.setAccessFlags(flags);
+        //update file
+        if (filename.endsWith("/")) {   
+            writeFolder(project,(CmsFolder)resource);
+        } else {
+            writeFileHeader(project,(CmsFile)resource);
+        }
      }
+	
 	
 	/**
 	 * Changes the owner for this resource<BR/>
@@ -821,41 +586,71 @@ import com.opencms.core.*;
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete path to the resource.
-	 * @param newOwner The name of the new owner for this resource.
+	 * @param newOwner The new owner for this resource.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if the newOwner doesn't exists.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public void chown(A_CmsUser callingUser, String project, String filename, String newOwner)
-         throws CmsException {
+	public void chown(A_CmsProject project, String filename, A_CmsUser newOwner)
+		throws CmsException {
+         CmsResource resource = null;
+        
+        // check if its a file or a folder
+        if (filename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,filename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,filename);
+        }
+        //set the flags
+        resource.setOwnerId(newOwner.getId());
+        //update file
+        if (filename.endsWith("/")) {   
+            writeFolder(project,(CmsFolder)resource);
+        } else {
+            writeFileHeader(project,(CmsFile)resource);
+        }
      }
 
-	/**
+     /**
 	 * Changes the group for this resource<BR/>
 	 * 
 	 * The user may change this, if he is admin of the resource.
 	 * 
 	 * <B>Security:</B>
-	 * Access is cranted, if:
+	 * Access is granted, if:
 	 * <ul>
 	 * <li>the user has access to the project</li>
 	 * <li>the user is owner of the resource</li>
 	 * <li>the resource is locked by the callingUser</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
 	 * @param filename The complete path to the resource.
-	 * @param newGroup The new of the new group for this resource.
+	 * @param newGroup The new group for this resource.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if the newGroup doesn't exists.
+     * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
-	 public void chgrp(A_CmsUser callingUser, String project, String filename, String newGroup)
-         throws CmsException {
+	public void chgrp(A_CmsProject project, String filename, A_CmsGroup newGroup)
+		throws CmsException{
+        CmsResource resource = null;
+        
+        // check if its a file or a folder
+        if (filename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,filename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,filename);
+        }
+        //set the flags
+        resource.setGroupId(newGroup.getId());
+         //update file
+        if (filename.endsWith("/")) {   
+            writeFolder(project,(CmsFolder)resource);
+        } else {
+            writeFileHeader(project,(CmsFile)resource);
+        }
      }
 
 	/**
@@ -872,21 +667,46 @@ import com.opencms.core.*;
 	 * <li>the resource is not locked by another user</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
+	 * @param user The user who wants to lock the file.
 	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource to lock.
+	 * @param resourcename The complete path to the resource to lock.
 	 * @param force If force is true, a existing locking will be oberwritten.
 	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. It will also be thrown, if there is a existing lock
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 * It will also be thrown, if there is a existing lock
 	 * and force was set to false.
 	 */
-	 public void lockFile(A_CmsUser callingUser, String project, String resource, boolean force)
-         throws CmsException {
+	public void lockFile(A_CmsUser user,A_CmsProject project, String resourcename, boolean force)
+		throws CmsException{
+        CmsResource resource = null;
+        
+        // check if its a file or a folder
+        if (resourcename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,resourcename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,resourcename);
+        }
+        // check if the resource is already locked
+        if (resource.isLocked()){
+         // if the force switch is not set, throw an exception
+            if (force==false) {
+              throw new CmsException(CmsException.C_LOCKED); 
+            }
+        }    
+        // lock the resouece
+        resource.setLocked(user.getId());
+        //update resource
+        if (resourcename.endsWith("/")) {   
+            writeFolder(project,(CmsFolder)resource);
+        } else {
+            writeFileHeader(project,(CmsFile)resource);
+        }
      }
 	
+	
 	/**
-	 * Tests, if a resource was locked<BR/>
+	 * Returns the user id, who had locked the resource.<BR/>
 	 * 
 	 * A user can lock a resource, so he is the only one who can write this 
 	 * resource. This methods checks, if a resource was locked.
@@ -898,235 +718,27 @@ import com.opencms.core.*;
 	 * <li>the user can read the resource</li>
 	 * </ul>
 	 * 
-	 * @param callingUser The user who wants to use this method.
 	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource.
+	 * @param resourcename The complete path to the resource.
 	 * 
-	 * @return true, if the resource is locked else it returns false.
+	 * @return The user id of the user who has locked the resource.
 	 * 
 	 * @exception CmsException will be thrown, if the user has not the rights 
 	 * for this resource. 
 	 */
-	 public boolean isLocked(A_CmsUser callingUser, String project, String resource)
-         throws CmsException {
-         return true;
-     }
-	
-	/**
-	 * Returns the user, who had locked the resource.<BR/>
-	 * 
-	 * A user can lock a resource, so he is the only one who can write this 
-	 * resource. This methods checks, if a resource was locked.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resource The complete path to the resource.
-	 * 
-	 * @return true, if the resource is locked else it returns false.
-	 * 
-	 * @exception CmsException will be thrown, if the user has not the rights 
-	 * for this resource. 
-	 */
-	 public A_CmsUser lockedBy(A_CmsUser callingUser, String project, String resource)
-         throws CmsException {
-         return null;
+	public int lockedBy(A_CmsProject project, String resourcename)
+		throws CmsException {
+        CmsResource resource = null;
+                
+        // check if its a file or a folder
+        if (resourcename.endsWith("/")) {          
+            //read the folder
+            resource = readFolder(project,resourcename);
+        } else {
+            resource = (CmsFile)readFileHeader(project,resourcename);
+        }
+        // get the locking user
+        return resource.isLockedBy();
      }
 
-	/**
-	 * Returns a MetaInformation of a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be read.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be read.
-	 * 
-	 * @return metainfo The metainfo as string.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public String readMetaInformation(A_CmsUser callingUser, String project, String name, String meta)
-         throws CmsException {
-         return null;
-     }
-
-	/**
-	 * Writes a MetaInformation for a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be set.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
-	 * @param value The value for the metainfo to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public void writeMetaInformation(A_CmsUser callingUser, String project, String name, 
-									 String meta, String value)
-         throws CmsException {
-         
-     }
-
-	/**
-	 * Writes a couple of MetaInformation for a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be set.
-	 * @param metainfos A Hashtable with metadefinition- metainfo-pairs as strings.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public void writeMetaInformations(A_CmsUser callingUser, String project, String name, 
-									  Hashtable metainfos)
-         throws CmsException {
-     }
-
-	/**
-	 * Returns a list of all MetaInformations of a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can read the resource</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param name The resource-name of which the MetaInformation has to be read
-	 * 
-	 * @return Vector of MetaInformation as Strings.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public Vector readAllMetaInformations(A_CmsUser callingUser, String project, String name)
-         throws CmsException {
-         return null;
-     }
-	
-	/**
-	 * Deletes all MetaInformation for a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public void deleteAllMetaInformations(A_CmsUser callingUser, String project, String resourcename)
-         throws CmsException {
-     }
-
-	/**
-	 * Deletes a MetaInformation for a file or folder.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user has access to the project</li>
-	 * <li>the user can write the resource</li>
-	 * <li>the resource is locked by the callingUser</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The project in which the resource will be used.
-	 * @param resourcename The resource-name of which the MetaInformation has to be delteted.
-	 * @param meta The metadefinition-name of which the MetaInformation has to be set.
-	 * 
-	 * @exception CmsException Throws CmsException if operation was not succesful
-	 */
-	 public void deleteMetaInformation(A_CmsUser callingUser, String project, String resourcename, 
-									  String meta)
-         throws CmsException {
-     }
-
-	/**
-	 * Declines a resource. The resource can be copied to the onlineproject.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user is owner of the project</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public void declineResource(A_CmsUser callingUser, String project, String resource)
-         throws CmsException {
-     }
-
-	/**
-	 * Rejects a resource. The resource will be copied to the following project,
-	 * at publishing time.
-	 * 
-	 * <B>Security:</B>
-	 * Access is cranted, if:
-	 * <ul>
-	 * <li>the user is owner of the project</li>
-	 * </ul>
-	 * 
-	 * @param callingUser The user who wants to use this method.
-	 * @param project The name of the project.
-	 * @param resource The full path to the resource, which will be declined.
-	 * 
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	 public void rejectResource(A_CmsUser callingUser, String project, String resource)
-         throws CmsException {
-     }
-
-	/**
-	 * Returns the actual number of Filesystem-changes since starting the cms.<BR/>
-	 * This can be used to write intelligent caching-operations.
-	 * 
-	 * <B>Security:</B>
-	 * All users are granted.
-	 * 
-	 * @return the actual number of Filesystem-changes since starting the cms.
-	 */
-     public long getNumberOfFsChanges(A_CmsUser callingUser) {
-         return 0;
-     }
 }

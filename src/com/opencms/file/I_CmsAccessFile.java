@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 1999/12/22 12:15:10 $
+ * @version $Revision: 1.6 $ $Date: 1999/12/22 17:56:21 $
  */
 interface I_CmsAccessFile {
 
@@ -170,6 +170,18 @@ interface I_CmsAccessFile {
 	 public CmsFolder readFolder(A_CmsProject project, String foldername)
 		throws CmsException;
 	
+     /**
+	 * Writes a folder to the Cms.<BR/>
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param foldername The complete name of the folder (including pathinformation).
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful.
+	 */	
+	 public void writeFolder(A_CmsProject project, CmsFolder folder)
+		throws CmsException;
+     
+     
 	/**
 	 * Renames the folder to the new name.
 	 * 

@@ -11,7 +11,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.2 $ $Date: 1999/12/22 17:56:21 $
  */
 interface I_CmsAccessGroup {
 		
@@ -31,7 +31,7 @@ interface I_CmsAccessGroup {
 	 * @param groupid The id of the group that is to be read.
 	 * @return Group.
 	 * 
-	 * @exception CmsException  Throws CmsException if operation was not succesful
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
 	 */
 	public A_CmsGroup readGroup(int groupid)
 		throws CmsException;

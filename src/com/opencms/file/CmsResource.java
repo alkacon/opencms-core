@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 1999/12/21 15:11:32 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/22 17:56:21 $
  */
  class CmsResource extends A_CmsResource implements I_CmsConstants {
      
@@ -282,8 +282,8 @@ import com.opencms.core.*;
         output.append(" , User=");
         output.append(m_userId);
         output.append(" , Group=");
-        output.append(m_userId);
-        output.append(" : Flags=");
+        output.append(m_groupId);
+        output.append(" : Accessflags=");
         output.append(m_accessFlags);
         return output.toString();
       }
