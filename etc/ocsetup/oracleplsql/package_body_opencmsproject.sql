@@ -1,4 +1,5 @@
-CREATE OR REPLACE PACKAGE BODY OpenCmsProject IS
+CREATE OR REPLACE
+PACKAGE BODY OpenCmsProject IS
    -- variable/funktions/procedures which are used only in this package
    bList userTypes.numberTable;
    FUNCTION addInList(pId NUMBER) RETURN BOOLEAN;
@@ -564,13 +565,13 @@ CREATE OR REPLACE PACKAGE BODY OpenCmsProject IS
       LOOP
         vOfflineResourceId := vDeletedFolders(element);
         BEGIN
-          delete from cms_properties where resource_id = vOfflineResourceId;
-		  delete from cms_resources where resource_id = vOfflineResourceId;
           select resource_id into vResourceId
                  from cms_online_resources
           		 where resource_name = (select resource_name from cms_resources where resource_id = vOfflineResourceId);
           delete from cms_online_properties where resource_id = vResourceId;
           delete from cms_online_resources where resource_id = vResourceId;
+          delete from cms_properties where resource_id = vOfflineResourceId;
+		  delete from cms_resources where resource_id = vOfflineResourceId;
           commit;
         EXCEPTION
           WHEN NO_DATA_FOUND THEN
@@ -708,4 +709,3 @@ CREATE OR REPLACE PACKAGE BODY OpenCmsProject IS
 ------------------------------------------------------------------------------------------
 END ;
 /
-
