@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsClassLoader.java,v $
- * Date   : $Date: 2000/08/29 09:05:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/30 09:38:29 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -111,7 +111,7 @@ import com.opencms.file.*;
  * with a parent classloader. Normally this should be the classloader 
  * that loaded this loader. 
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/08/29 09:05:22 $
+ * @version $Revision: 1.14 $ $Date: 2000/08/30 09:38:29 $
  * @see java.lang.ClassLoader
  */
 public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
@@ -280,7 +280,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				
 		// first try to load the class using the parent class loader.
 		try {
-			System.err.println("*** Load from parent CL: "+name);
+			
 			c = Class.forName(name);
 		} catch(ClassNotFoundException e) {
 			// to continue set c back to null
@@ -321,7 +321,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 		
 		while( (allRepositories.hasMoreElements()) && (classFile==null)) {
 			filename = (String)allRepositories.nextElement();
-			
+			System.err.println("****Testing repository "+filename);
 			
 			if (isZipOrJarArchive(filename)) {
 				try {
@@ -334,7 +334,7 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 				}
 			}
 			else {
-  				System.err.println("*** Try to load form VFS "+name);
+  			
 				//filename = filename + className;
 				// check if the repository name is just a path.
 				// if so, add the complete classname and the fileextension ".class"
@@ -343,22 +343,23 @@ public class CmsClassLoader extends ClassLoader implements I_CmsLogChannels {
 					filename=filename+classname+".class";
 				}
 				try {
-					System.err.println("*** Load class "+filename);
+					System.err.println("****Try to load file "+filename);
 					classFile = m_cms.readFile(filename);
-					System.err.println("*** Class found "+classFile);
+					System.err.println("****Got classfile "+classFile);
 					myClassData = classFile.getContents();
 				} catch(Exception e) {
 					// File could not be read for any reason
 					classFile = null;
 					myClassData = null;
-				}
+				}				
 				
-				if(classFile == null) {
-					throw new ClassNotFoundException(name);
-				}
 			}
 		}
 
+		if(classFile == null) {
+					throw new ClassNotFoundException(name);
+		}
+		
 		// Class data successfully read. Now define a new class using this data
 		if(myClassData != null) {
 			try {
