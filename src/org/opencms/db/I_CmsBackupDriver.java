@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/06/16 17:20:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/06/17 08:02:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,48 +46,146 @@ import java.util.Vector;
 import source.org.apache.java.util.Configurations;
 
 /**
- * Definitions of all required backup driver methods.
+ * Definitions of all required backup driver methods.<p>
+ * 
+ * A backup driver is a driver to write projects, resources and properties of
+ * resources optionally to a second set of database tables while resources or
+ * projects are published. A unique backup version ID is used to identify a set
+ * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/06/16 17:20:30 $
+ * @version $Revision: 1.3 $ $Date: 2003/06/17 08:02:31 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
-    
-    public CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException;
-    void backupProject(CmsProject project, int versionId, long publishDate, CmsUser currentUser) throws CmsException;
-    void backupResource(int projectId, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
+
+    /**
+     * Creates a valid CmsBackupResource instance from a JDBC ResultSet.<p>
+     * 
+     * @param res the JDBC result set
+     * @param hasContent true if the file content is part of the result set
+     * @return CmsBackupResource the new resource/file instance
+     * @throws SQLException if a requested attribute was not found in the result set
+     */
+    CmsBackupResource createCmsBackupResourceFromResultSet(ResultSet res, boolean hasContent) throws SQLException;
+
+    /**
+     * Deletes all backups that are older then the given date.<p>
+     *
+     * @param maxdate long timestamp of the last version that should remain
+     * @return int the oldest remaining version
+     * @throws CmsException if something goes wrong
+     */
     int deleteBackups(long maxdate) throws CmsException;
-    
+
     /**
      * Destroys this driver.<p>
      * 
-     * @throws Throwable if something goes wrong.
-     */    
+     * @throws Throwable if something goes wrong
+     */
     void destroy() throws Throwable;
-    
+
     /**
      * Returns all projects from the history.
      *
      * @return a Vector of projects
      * @throws CmsException if an error occurs
-     */    
+     */
     Vector getAllBackupProjects() throws CmsException;
-    
-    int getBackupVersionId();
+
+    /**
+     * Initializes this driver.<p>
+     * 
+     * @param config the configurations object (opencms.properties)
+     * @param dbPoolUrl the URL of the JDBC connection pool
+     * @param driverManager the Cms driver manager
+     */
     void init(Configurations config, String dbPoolUrl, CmsDriverManager driverManager);
-    
+
     /**
      * Initializes the SQL manager for this package.<p>
      * 
      * @param dbPoolUrl the URL of the connection pool
      * @return the SQL manager for this package
-     */    
+     */
     org.opencms.db.generic.CmsSqlManager initQueries(String dbPoolUrl);
-    
-    Vector readAllFileHeadersForHist(String resourceName) throws CmsException;
+
+    /**
+     * Gets the next available backup version ID for a resource.<p>
+     * 
+     * @return int the next available backup version ID
+     */
+    int nextBackupVersionId();
+
+    /**
+     * Reads all backup file headers of a file excluding the file content.<p>.
+     *
+     * @param resourceName the name of the file to read
+     * @return Vector with all backup file headers
+     * @throws CmsException if something goes wrong
+     */
+    Vector readAllBackupFileHeaders(String resourceName) throws CmsException;
+
+    /**
+     * Reads a backup file including the file content.<p>
+     *
+     * @param versionId the versionId of the file
+     * @param filename the path/name of the file
+     * @return CmsBackupResource the backup file
+     * @throws CmsException is something goes wrong
+     */
+    CmsBackupResource readBackupFile(int versionId, String filename) throws CmsException;
+
+    /**
+     * Reads a backup file header excluding the file content.<p>
+     *
+     * @param versionId the versionId of the file
+     * @param filename the path/name of the file
+     * @return CmsBackupResource the backup file
+     * @throws CmsException is something goes wrong
+     */
+    CmsBackupResource readBackupFileHeader(int versionId, String filename) throws CmsException;
+
+    /**
+     * Reads a backup project.<p>
+     *
+     * @param versionId the versionId of the project
+     * @return CmsBackupProject the backup project 
+     * @throws CmsException is something goes wrong
+     */
     CmsBackupProject readBackupProject(int versionId) throws CmsException;
-    CmsBackupResource readFileForHist(int versionId, String filename) throws CmsException;
-    CmsBackupResource readFileHeaderForHist(int versionId, String filename) throws CmsException;
-    
+
+    /**
+     * Reads all resources that belong to a given backup version ID.<p>
+     * 
+     * @param versionId the version ID of the backup
+     * @return Vector all resources that belong to the given backup version ID.
+     * @throws CmsException if something goes wrong
+     */
+    Vector readBackupProjectResources(int versionId) throws CmsException;
+
+    /**
+     * Writes a project to the backup.<p>
+     * 
+     * @param currentProject the current project
+     * @param versionId the version ID of the backup
+     * @param publishDate long timestamp when the current project was published 
+     * @param currentUser the current user
+     * @throws CmsException if something goes wrong
+     */
+    void writeBackupProject(CmsProject currentProject, int versionId, long publishDate, CmsUser currentUser) throws CmsException;
+
+    /**
+     * Writes a resource to the backup.<p>
+     * 
+     * @param projectId the ID of the current project
+     * @param resource the resource that is written to the backup
+     * @param content the file content of the resource
+     * @param properties the properties of the resource
+     * @param versionId the version ID of the backup
+     * @param publishDate long timestamp when the resource was published.
+     * @throws CmsException if something goes wrong
+     */
+    void writeBackupResource(int projectId, CmsResource resource, byte[] content, Map properties, int versionId, long publishDate) throws CmsException;
+
 }

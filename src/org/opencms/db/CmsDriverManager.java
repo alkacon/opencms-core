@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/16 16:20:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/17 08:02:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.5 $ $Date: 2003/06/16 16:20:48 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -109,7 +109,7 @@ public class CmsDriverManager implements I_CmsConstants {
     /**
      * Inner class to define the access policy when checking permissions on vfs operations.
      * 
-	 * @version $Revision: 1.5 $ $Date: 2003/06/16 16:20:48 $
+	 * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
     class VfsAccessGuard extends CmsAccessGuard {
@@ -219,7 +219,7 @@ public class CmsDriverManager implements I_CmsConstants {
 	/**
 	 * Inner class to define the access policy when checking permissions on user operations.
 	 * 
-	 * @version $Revision: 1.5 $ $Date: 2003/06/16 16:20:48 $
+	 * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
 	 * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
 	 */
 	class UserAccessGuard extends CmsAccessGuard {
@@ -4666,7 +4666,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 long publishDate = System.currentTimeMillis();
                 
                 if (isHistoryEnabled(cms)) {
-                    versionId = m_backupDriver.getBackupVersionId();
+                    versionId = m_backupDriver.nextBackupVersionId();
                     
                     // get the version_id for the currently published version
                     if (versionId > 1) {
@@ -4854,7 +4854,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
 		 getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_WRITE_ACCESS);
 		 
             // access to all subfolders was granted - return the file-history.
-            return(m_backupDriver.readAllFileHeadersForHist(filename));
+            return(m_backupDriver.readAllBackupFileHeaders(filename));
         }
 
     /**
@@ -5372,7 +5372,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
          CmsBackupResource resource;
          // read the resource from the backup resources
          try {
-            resource = m_backupDriver.readFileHeaderForHist(versionId, filename);
+            resource = m_backupDriver.readBackupFileHeader(versionId, filename);
          } catch(CmsException exc) {
              throw exc;
          }
@@ -5403,7 +5403,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
          CmsBackupResource resource;
          // read the resource from the backup resources
          try {
-             resource = m_backupDriver.readFileForHist(versionId, filename);
+             resource = m_backupDriver.readBackupFile(versionId, filename);
          } catch(CmsException exc) {
              throw exc;
          }
@@ -7834,7 +7834,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      * @return int The new version id
      */
     public int getBackupVersionId(){
-        return m_backupDriver.getBackupVersionId();
+        return m_backupDriver.nextBackupVersionId();
     }
     /**
      * Creates a backup of the published project
@@ -7851,7 +7851,7 @@ protected void validName(String name, boolean blank) throws CmsException {
     public void backupProject(int projectId, int versionId,
                               long publishDate, CmsUser currentUser) throws CmsException{
         CmsProject project = m_projectDriver.readProject(projectId);
-        m_backupDriver.backupProject(project, versionId, publishDate, currentUser);
+        m_backupDriver.writeBackupProject(project, versionId, publishDate, currentUser);
     }
 
     /**

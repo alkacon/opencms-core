@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/06/16 17:20:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/06/17 08:02:31 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.5 $ $Date: 2003/06/16 17:20:30 $
+ * @version $Revision: 1.6 $ $Date: 2003/06/17 08:02:31 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1183,9 +1183,9 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
         if (enableHistory) {
             // get the version id for the backup
-            versionId = m_driverManager.getBackupDriver().getBackupVersionId();
+            versionId = m_driverManager.getBackupDriver().nextBackupVersionId();
             // store the projectdata to the backuptables for history
-            m_driverManager.getBackupDriver().backupProject(currentProject, versionId, publishDate, user);
+            m_driverManager.getBackupDriver().writeBackupProject(currentProject, versionId, publishDate, user);
         }
 
         // read all folders in offlineProject
@@ -1290,7 +1290,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
                 if (enableHistory) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
                 }
 
                 // set the state of current folder in the offline project to unchanged
@@ -1374,7 +1374,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                 }
                 if (enableHistory) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
                 }
                 // set the state of current folder in the offline project to unchanged
                 currentFolder.setState(I_CmsConstants.C_STATE_UNCHANGED);
@@ -1415,7 +1415,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
                     // read the properties for backup
                     Map props = m_driverManager.getVfsDriver().readProperties(projectId, currentFile, currentFile.getType());
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
                 }
                 try {
                     m_driverManager.getVfsDriver().deleteAllProperties(onlineProject.getId(), currentOnlineFile);
@@ -1539,7 +1539,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
                 if (enableHistory) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
                 }
                 // set the file state to unchanged
                 currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
@@ -1637,7 +1637,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
                 if (enableHistory) {
                     // backup the offline resource
-                    m_driverManager.getBackupDriver().backupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
+                    m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFile, currentFile.getContents(), props, versionId, publishDate);
                 }
                 // set the file state to unchanged
                 currentFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
@@ -1657,7 +1657,7 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
             if (enableHistory) {
                 Map props = m_driverManager.getVfsDriver().readProperties(projectId, currentFolder, currentFolder.getType());
                 // backup the offline resource
-                m_driverManager.getBackupDriver().backupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
+                m_driverManager.getBackupDriver().writeBackupResource(projectId, currentFolder, new byte[0], props, versionId, publishDate);
             }
             CmsResource delOnlineFolder = m_driverManager.getVfsDriver().readFolder(onlineProject.getId(), currentFolder.getResourceName());
             try {
