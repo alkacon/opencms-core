@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/02/16 01:30:36 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2004/04/20 12:41:51 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.54 $ $Date: 2004/02/16 01:30:36 $
+ * @version $Revision: 1.55 $ $Date: 2004/04/20 12:41:51 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -807,7 +807,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (res.next()) {
                 group = internalCreateGroup(res, true);
             } else {
-                throw m_sqlManager.getCmsException(this, null, CmsException.C_NO_GROUP, new Exception("No group found with UUID " + groupId), false);
+                throw new CmsException("[" + this.getClass().getName() + "] " + groupId, CmsException.C_NO_GROUP);
             }
 
         } catch (SQLException e) {
