@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/01/28 11:53:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/02/13 11:06:47 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2004/01/28 11:53:52 $
+ * @version $Revision: 1.3 $ $Date: 2004/02/13 11:06:47 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(com.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
@@ -372,6 +372,25 @@ public class CmsPublishList extends Object {
     protected boolean remove(CmsResource resource) {
         // it is essential that this method is only visible within the db package!
         return m_fileList.remove(resource);
+    }
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+        StringBuffer strBuf = new StringBuffer();
+        
+        strBuf.append("\n[\n");
+        strBuf.append("direct publish file or folder: ").append(m_isDirectPublish).append("\n");
+        strBuf.append("direct publish file: ").append(m_isDirectPublishFile).append("\n");
+        strBuf.append("direct publish file name: ").append(m_resourceName).append("\n");
+        strBuf.append("publish history ID: ").append(m_publishHistoryId.toString()).append("\n");
+        strBuf.append("resources: ").append(m_fileList.toString()).append("\n");
+        strBuf.append("folders: ").append(m_folderList.toString()).append("\n");
+        strBuf.append("deleted folders: ").append(m_deletedFolderList.toString()).append("\n");
+        strBuf.append("]\n");
+        
+        return strBuf.toString();
     }
 
 }
