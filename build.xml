@@ -128,7 +128,7 @@
 
     <target name="zip" depends="war">
         <zip
-            zipfile="${zip.home}/opencms_${build.name}_current.zip"
+            zipfile="${zip.home}/opencms_${version.number}_current.zip"
             basedir="${build.home}"
             excludes="**/classes/,**/opencms/" />
     </target>
