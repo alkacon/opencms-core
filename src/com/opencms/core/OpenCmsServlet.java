@@ -37,7 +37,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.5 $ $Date: 2000/01/13 17:41:51 $  
+* @version $Revision: 1.6 $ $Date: 2000/01/13 18:02:16 $  
 * 
 */
 
@@ -110,7 +110,6 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         
         //initalize the session storage
         m_sessionStorage=new CmsSession();
-   
     }
      
     
@@ -129,36 +128,18 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 		throws ServletException, IOException {	
         
         // this method still contains debug information
-        res.setContentType("text/html");
-        PrintWriter out=res.getWriter();
-        
+  
         CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
         CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
-        
-        out.println("<html>");
-        out.println("<body><h1>Hallo Mindfact</h1>");
-        out.println("<br>"+req.getRequestURI());
-        out.println("<br>"+req.getServletPath());
-        out.println("<br>"+req.getPathInfo());
-        
-        Enumeration en=cmsReq.getParameterNames();
-        while (en.hasMoreElements()) {
-            out.println("<br>"+en.nextElement()); 
-        }
-      
+       
        try {
             CmsObject cms=initUser(cmsReq,cmsRes);
-            out.println("<br>"+cms.getRequestContext().currentUser());
-            out.println("<br>"+cms.getRequestContext().getUri());
-            CmsFile file=m_opencms.initResource(cms);
-            out.println("<br><br><h2>"+file+"</h2>");
-            out.println("<br><br><h2>"+new String(file.getContents())+"</h2>");
-            out.println("<br><br>"); 
-       } catch (CmsException e) {
-            out.println("<br>"+e.toString());
+            CmsFile file=m_opencms.initResource(cms); 
+            m_opencms.showResource(cms,file);
+            updateUser(cms,cmsReq,cmsRes);
+        } catch (CmsException e) {
             errorHandling(req,res,e);
         } 
-        
     }
 	
 	/**
@@ -185,7 +166,14 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
          CmsRequestHttpServlet cmsReq= new CmsRequestHttpServlet(req);
          CmsResponseHttpServlet cmsRes= new CmsResponseHttpServlet(res);
          
-         CmsObject cms=initUser(cmsReq,cmsRes);
+       try {
+            CmsObject cms=initUser(cmsReq,cmsRes);
+            CmsFile file=m_opencms.initResource(cms); 
+            m_opencms.showResource(cms,file);
+            updateUser(cms,cmsReq,cmsRes);
+        } catch (CmsException e) {
+            errorHandling(req,res,e);
+        } 
 	}
     
     /**
@@ -216,6 +204,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         String user=null;
         String group=null;
         String project=null;
+        String loginParameter;
         
         // get the original ServletRequest and response
         HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
@@ -227,34 +216,43 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
         try {
             cms.init(cmsReq,cmsRes,C_USER_GUEST,C_GROUP_GUEST, C_PROJECT_ONLINE);
      
-            if (req.getParameter("LOGIN") != null) {
-                // hack
-                session=req.getSession(true);
-                String u=req.getParameter("LOGIN");      
-                m_sessionStorage.putUser(session.getId(),u);           
+            // check if a parameter "opencms=login" was included in the request.
+            // this is used to force the HTTP-Authentification to appear.
+            loginParameter=req.getParameter("opencms");
+            if (loginParameter != null) {
+                // do only show the authentication box if user is not already 
+                // authenticated.
+                if (req.getHeader("Authorization") == null) {
+                    if (loginParameter.equals("login")) {
+                        requestAuthorization(req, res); 
+                    }
+                }
             }
 
             // get the actual session
             session=req.getSession(false);
             // there was a session returned, now check if this user is already authorized
             if (session !=null) {
+             
                 // get the username
                 user=m_sessionStorage.getUserName(session.getId());
                 //check if a user was returned, i.e. the user is authenticated
                 if (user != null) {
+               
                     group=m_sessionStorage.getCurrentGroup(session.getId());
                     project=m_sessionStorage.getCurrentProject(session.getId());
                     cms.init(cmsReq,cmsRes,user,group,project);
-                } else {
-                            
-                    // there was either no session returned or this session was not 
-                    // found in the CmsSession storage
+                }
+              } else {
+                  
+                 // there was either no session returned or this session was not 
+                 // found in the CmsSession storage
        
-                    String auth = req.getHeader("Authorization");
- 		            // User is authenticated, check password	
-    		        if (auth != null) {		
+                 String auth = req.getHeader("Authorization");
+ 		         // User is authenticated, check password	
+    		     if (auth != null) {		
                         // only do basic authentification
-		    	        if (auth.toUpperCase().startsWith("BASIC ")) {
+		    	       if (auth.toUpperCase().startsWith("BASIC ")) {
     			    	    // Get encoded user and password, following after "BASIC "
 	    			        String userpassEncoded = auth.substring(6);
     	    			    // Decode it, using any base 64 decoder
@@ -270,33 +268,63 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
                                 password = st.nextToken();
                             }
 				            // autheification in the DB
+                            try {
                             user=cms.loginUser(username,password); 
-                            // check if the user is authenticated
-                            if (user != null) {
-                                cms.init(cmsReq,cmsRes,user,C_GROUP_GUEST, C_PROJECT_ONLINE);
-                            } else {
-                               // authentification failed, so display a login screen
-                               requestAuthorization(req, res);
+                            // authentification was successful create a session 
+                            session=req.getSession(true);
+                     
+                            } catch (CmsException e) {
+                                if (e.getType() == CmsException.C_NO_ACCESS){
+                                    // authentification failed, so display a login screen
+                                    requestAuthorization(req, res);
+                                } else {
+                                    throw e;               
+                                }                                                                                                    
 			    			 }
                         }
                     }
-                }
             }
-           // user was not loged in, so set it to the default user
-           if (user==null) {
-               // do nothing, the Cms Object is already initalized with the default
-               // user and group
-            }
-     
        } catch (CmsException e) {
             errorHandling(req,res,e);
        }
         return cms;
-        
- 
     }
-
-  
+    
+    
+     /**
+     * Updated the the user data stored in the CmsSession after the requested document
+     * is processed.<br>
+     * 
+     * This is nescessary if the user data (current group or project) was changed in 
+     * the requested dockument. <br>
+     * 
+     * The user data is only updated if the user was authenticated to the system.
+     * 
+     * @param cms The actual CmsObject.
+     * @param cmsReq The clints request.
+	 * @param cmsRes The servlets response.
+	 * @return The CmsObject
+     */
+     private void updateUser(CmsObject cms,I_CmsRequest cmsReq, I_CmsResponse cmsRes)
+      throws IOException{    
+        
+        HttpSession session=null;
+      
+        // get the original ServletRequest and response
+        HttpServletRequest req=(HttpServletRequest)cmsReq.getOriginalRequest();
+        HttpServletResponse res=(HttpServletResponse)cmsRes.getOriginalResponse();
+       
+        //get the session if it is there
+        session=req.getSession(false);
+        // if the user was authenticated via sessions, update the information in the
+        // sesssion stroage
+        if (session!= null) {
+             m_sessionStorage.putUser(session.getId(),
+                                      cms.getRequestContext().currentUser().getName(),
+                                      cms.getRequestContext().currentGroup().getName(),
+                                      cms.getRequestContext().currentProject().getName());
+        }       
+     }
     
     /**
      * This method sends a request to the client to display a login form.
@@ -311,6 +339,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
 		res.setStatus(401);
 	}
 
+    
     /**
      * This method performs the error handling for the OpenCms.
      * All CmsExetions throns in the OpenCms are forwared to this method and are
@@ -345,8 +374,5 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants
            
         }
     }
-           
-
-    
-          
+                 
 }

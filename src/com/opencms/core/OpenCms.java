@@ -21,7 +21,7 @@ import com.opencms.launcher.*;
 * 
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.8 $ $Date: 2000/01/13 17:39:56 $  
+* @version $Revision: 1.9 $ $Date: 2000/01/13 18:02:16 $  
 * 
 */
 
@@ -71,8 +71,8 @@ class OpenCms implements I_CmsConstants, I_CmsLogChannels
      }
      
      /**
-     * This method gets the requested document from the OpenCms and forwards it to the
-     * correct launcher.
+     * This method gets the requested document from the OpenCms and returns it to the 
+     * calling module.
      * 
      * @param cms The CmsObject containing all information about the requested document
      * and the requesting user.
@@ -80,8 +80,7 @@ class OpenCms implements I_CmsConstants, I_CmsLogChannels
      */
      CmsFile initResource(CmsObject cms) 
         throws CmsException, IOException {
-        // this method still contains debug information
-        
+          
         CmsFile file=null;
  
         //read the requested file

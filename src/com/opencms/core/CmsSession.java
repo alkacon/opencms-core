@@ -16,7 +16,7 @@ import javax.servlet.http.*;
  * ToDo: Removal of unused sessions!
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2000/01/05 18:15:22 $  
+ * @version $Revision: 1.4 $ $Date: 2000/01/13 18:02:16 $  
  */
 
 public class CmsSession implements I_CmsConstants,I_CmsSession    
@@ -66,6 +66,26 @@ public class CmsSession implements I_CmsConstants,I_CmsSession
         userinfo.put(C_SESSION_USERNAME,username);
         putUser(sessionId,userinfo);
     }
+    
+     /**
+     * Puts a new user into the sesstion storage. A user is stored with its actual 
+     * session Id after a positive authentification.
+     *
+     * 
+     * @param session  The actual user session Id.
+     * @param username The name of the user to be stored.
+     * @param group The name of the actual group.
+     * @param project The name of the actual project.
+     */
+    public void putUser(String sessionId,String username,
+                        String group, String project){
+        Hashtable userinfo=new Hashtable();
+        userinfo.put(C_SESSION_USERNAME,username);
+        userinfo.put(C_SESSION_CURRENTGROUP,group);
+        userinfo.put(C_SESSION_PROJECT,project);
+        putUser(sessionId,userinfo);
+    }
+    
     
     /**
      * Gets the complete userinformation of a user from the session storage.
