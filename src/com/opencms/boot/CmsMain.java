@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsMain.java,v $
-* Date   : $Date: 2001/07/11 14:32:20 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/07/12 14:08:25 $
+* Version: $Revision: 1.4 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -40,28 +40,50 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.3 $ $Date: 2001/07/11 14:32:20 $
+ * @version $Revision: 1.4 $ $Date: 2001/07/12 14:08:25 $
  */
 public class CmsMain {
 
-/**
+    /**
      * Main entry point when started via the command line.
      *
      * @param args Array of parameters passed to the application
      * via the command line.
      */
     public static void main(String[] args) {
-        if(args.length > 1) {
-
-            // print out usage-information.
-            usage();
-        }
-        else {
-            String base = null;
-            if(args.length == 1) {
-                base = args[0];
+        boolean wrongUsage = false;
+        String base = null;
+        String script = null;
+        if(args.length > 2) {
+            wrongUsage = true;
+        } else {
+            for(int i=0; i < args.length; i++) {
+                String arg = args[i];
+                if(arg.startsWith("-base=") ) {
+                    base = arg.substring(6);
+                } else if(arg.startsWith("-script=") ) {
+                    script = arg.substring(8);
+                } else {
+                    wrongUsage = true;
+                }
             }
-        begin(new FileInputStream(FileDescriptor.in),base);
+        }
+        if(wrongUsage) {
+            usage();
+        } else {
+            FileInputStream stream = null;
+            if(script != null) {
+                try {
+                    stream = new FileInputStream(script);
+                } catch (IOException exc) {
+                    System.out.println("wrong script-file " + script + " using stdin instead");
+                }
+            }
+            if( stream == null) {
+                // no script-file use input-stream
+                stream = new FileInputStream(FileDescriptor.in);
+            }
+            begin(stream, base);
         }
     }
 
@@ -181,7 +203,7 @@ public class CmsMain {
      * Gives the usage-information to the user.
      */
     private static void usage() {
-        System.out.println("Usage: java com.opencms.core.CmsMain properties-file");
+        System.out.println("Usage: java com.opencms.core.CmsMain [-base=<basepath>] [-script=<scriptfile>]");
     }
 
     public static void collectRepositories(String base, CmsClassLoader cl) {

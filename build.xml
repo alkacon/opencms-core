@@ -139,7 +139,7 @@
             classpath="${build.lib}/opencmsboot.jar"
             dir="${build.webinf}"
             fork="true">
-            <arg value="${build.webinf}/ocsetup/cmssetup.txt" />
+            <arg value="-script=ocsetup/cmssetup.txt" />
         </java>
     </target>
     
