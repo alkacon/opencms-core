@@ -81,9 +81,10 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         return templateFile;
     }
     
@@ -95,10 +96,12 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 
@@ -107,10 +110,12 @@ public class CmsJavascriptTemplate implements I_CmsJavascriptTemplate {
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if reload is neccesary, <EM>false</EM> otherwise.
      */    
-    public boolean shouldReload(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }
 }

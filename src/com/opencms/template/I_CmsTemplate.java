@@ -12,7 +12,7 @@ import java.util.*;
  * have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/01/14 15:45:21 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/27 15:03:34 $
  */
 public interface I_CmsTemplate {
     /**
@@ -76,9 +76,10 @@ public interface I_CmsTemplate {
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters);    
+    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector);    
     
     /**
      * Indicates if the results of this class are cacheable.
@@ -88,18 +89,22 @@ public interface I_CmsTemplate {
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters);
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);
 
     /**
      * Indicates if a previous cached result should be reloaded.
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if reload is neccesary, <EM>false</EM> otherwise.
      */    
-    public boolean shouldReload(A_CmsObject cms, String templateFile, Hashtable parameters);	
+    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector);	
 }

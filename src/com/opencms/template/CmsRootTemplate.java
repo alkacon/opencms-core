@@ -14,7 +14,7 @@ import java.util.*;
  * generation of the master template class to be used.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/25 14:02:39 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/27 15:03:34 $
  */
 public class CmsRootTemplate implements I_CmsLogChannels {
     
@@ -37,11 +37,11 @@ public class CmsRootTemplate implements I_CmsLogChannels {
         
         byte[] result;
         //String cacheKey = cms.getUrl();
-        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters);
+        Object cacheKey = templateClass.getKey(cms, masterTemplate.getAbsolutePath(), parameters, null);
         
-        if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), parameters)
+        if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, null)
                 && cache.has(cacheKey) 
-                && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), parameters)) {
+                && ! templateClass.shouldReload(cms, masterTemplate.getAbsolutePath(), null, parameters, null)) {
             result = cache.get(cacheKey);
             if(A_OpenCms.isLogging()) {
                 A_OpenCms.log(C_OPENCMS_INFO, "[CmsRootTemplate] page " + masterTemplate.getAbsolutePath() + " was read from cache.");                                                                 
@@ -56,7 +56,7 @@ public class CmsRootTemplate implements I_CmsLogChannels {
                 }
                 throw e;
             }
-            if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), parameters)) {
+            if(templateClass.isCacheable(cms, masterTemplate.getAbsolutePath(), null, parameters, null)) {
                 cache.put(cacheKey, result);
             }
         }         

@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/26 17:06:50 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/27 15:03:34 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -66,15 +66,17 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameters, String templateSelector) {
         Vector v = new Vector();
         A_CmsRequestContext reqContext = cms.getRequestContext();
         
         v.addElement(reqContext.getUri());
         v.addElement(templateFile);
         v.addElement(parameters);
+        v.addElement(templateSelector);
         return v;
     }
         
@@ -111,9 +113,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * @param templateFile Filename of the template file.
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
-     * @param templateSelector section that should be processed.
-     * @return Content of the template and all subtemplates.
-     * @exception CmsException 
+     * @param templateSelector template section that should be processed.
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
@@ -122,13 +122,27 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
-        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);                       
+        CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
-    }
+    }            
     
-    
-    
-    
+    /**
+     * Starts the processing of the given template file by calling the
+     * <code>getProcessedTemplateContent()</code> method of the content defintition
+     * of the corresponding content type.
+     * <P>
+     * Any exceptions thrown while processing the template will be caught,
+     * printed and and thrown again.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param xmlTemplateDocument XML parsed document of the content type "XML template file" or
+     * any derived content type.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     * @return Content of the template and all subtemplates.
+     * @exception CmsException 
+     */
     protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         String result = null;
         // Try to process the template file
@@ -138,8 +152,8 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             // There were errors while generating output for this template.
             // Clear HTML cache and then throw exception again
             xmlTemplateDocument.clearFileCache(xmlTemplateDocument);
-            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters)) {
-                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters));
+            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), elementName, parameters, templateSelector)) {
+                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters, templateSelector));
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;
@@ -156,6 +170,24 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         }        
         return result.getBytes();
     }
+
+    /**
+     * Reads in the template file and starts the XML parser for the expected
+     * content type.
+     * <P>
+     * Every extending class using not CmsXmlTemplateFile as content type,
+     * but any derived type should override this method.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param templateFile Filename of the template file.
+     * @param elementName Element name of this template in our parent template.
+     * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
+     */
+    public CmsXmlTemplateFile getOwnTemplateFile(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);                       
+        return xmlTemplateDocument;
+    }                
     
     /**
      * Handles any occurence of an <code>&lt;ELEMENT&gt;</code> tag.
@@ -260,10 +292,10 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         }     
         
         // Store the results in the template cache, if cacheable
-        if(subTemplate.isCacheable(cms, templateFilename, parameterHashtable)) {
-            subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable);            
-            if(subTemplate.isCacheable(cms, templateFilename, parameterHashtable) && m_cache.has(subTemplateKey)
-                    && (! subTemplate.shouldReload(cms, templateFilename, parameterHashtable))) {
+        if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null)) {
+            subTemplateKey = subTemplate.getKey(cms, templateFilename, parameterHashtable, null);            
+            if(subTemplate.isCacheable(cms, templateFilename, tagcontent, parameterHashtable, null) && m_cache.has(subTemplateKey)
+                    && (! subTemplate.shouldReload(cms, templateFilename, tagcontent, parameterHashtable, null))) {
                 result = m_cache.get(subTemplateKey);
             }        
             m_cache.put(subTemplateKey, result);
@@ -324,11 +356,13 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
-        boolean cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, parameters));
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+        boolean cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, elementName, parameters, templateSelector));
         if(C_DEBUG && A_OpenCms.isLogging()) {
             String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
             if(cacheable) {
@@ -349,10 +383,12 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * 
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <code>false</code> 
      */    
-    public boolean shouldReload(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
     
@@ -360,15 +396,17 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * Checks if all subtemplates are cacheable.
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
+     * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return <code>true</code> if all subtemplates are cacheable, <code>false</code> otherwise.
      */
-    public boolean subtemplatesCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) { 
+    public boolean subtemplatesCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) { 
         boolean cacheable = true;
         CmsXmlTemplateFile doc = null;
         Enumeration subtemplates = null;
         try {
-            doc = new CmsXmlTemplateFile();
+            doc = this.getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
             doc.init(cms, templateFile);               
             subtemplates = doc.getAllSubElements();
         } catch(Exception e) {
@@ -397,7 +435,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             }
             try {
                 I_CmsTemplate templClass = (I_CmsTemplate)CmsTemplateClassManager.getClassInstance(cms, className);
-                cacheable = cacheable && templClass.isCacheable(cms, templateName, parameters);
+                cacheable = cacheable && templClass.isCacheable(cms, templateName, elName, parameters, null);
             } catch(Exception e) {
                 System.err.println("E: " + e);
             }                

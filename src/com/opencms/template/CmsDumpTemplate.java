@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/25 14:02:39 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/27 15:03:34 $
  */
 public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
     
@@ -57,9 +57,10 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * @param cms A_CmsObject Object for accessing system resources
      * @param templateFile Filename of the template file 
      * @param parameters Hashtable with all template class parameters.
+     * @param templateSelector template section that should be processed.
      * @return key that can be used for caching
      */
-    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameter) {
+    public Object getKey(A_CmsObject cms, String templateFile, Hashtable parameter, String templateSelector) {
         //return templateFile.getAbsolutePath();
         return templateFile;
     }
@@ -117,7 +118,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * any subtemplates. So we can always return <code>true</code> here.
      * @return <code>true</code>
      */
-    public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean isCacheable(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return true;
     }    
     
@@ -126,7 +127,7 @@ public class CmsDumpTemplate implements I_CmsDumpTemplate, I_CmsLogChannels {
      * any subtemplates. So we can always return <code>false</code> here.
      * @return <code>false</code>
      */
-    public boolean shouldReload(A_CmsObject cms, String templateFile, Hashtable parameters) {
+    public boolean shouldReload(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
         return false;
     }
 }
