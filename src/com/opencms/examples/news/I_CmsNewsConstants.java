@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/I_CmsNewsConstants.java,v $
- * Date   : $Date: 2000/05/02 15:58:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/03 10:12:43 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.examples.news;
  * into a <code>news.ini</code> file.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/05/02 15:58:37 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/03 10:12:43 $
  */
 public interface I_CmsNewsConstants {
     
@@ -51,6 +51,7 @@ public interface I_CmsNewsConstants {
 
     /** Name of the news list definition file */
     public static final String C_NEWS_NEWSLISTDEF = "newsListDefinition";     
+
 
     /** Text of the "active" state */
     public static final String C_NEWS_STATE_ACTIVE = "active";     
@@ -122,4 +123,13 @@ public interface I_CmsNewsConstants {
 
     /** Name of the read parameter in the newspage file. */
     public static final String C_NEWS_PARAM_READ = "read";        
+	
+	/** Number of articles displayed on one WML deck. */
+    public static final String C_NEWS_WML_MAXARTICLES = "4";   
+	
+	/** Default title for WML decks */
+    public final static String C_NEWS_WML_STARTWITH = "0";
+	
+	/** Default title for WML decks */
+    public final static String C_NEWS_WML_DECKTITLE = "OpenCms created";
 }
