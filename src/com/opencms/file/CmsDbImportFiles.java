@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsDbImportFiles.java,v $
- * Date   : $Date: 2000/03/24 14:28:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/03/24 14:33:59 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import com.opencms.template.*;
  * imports an generated (with db export) XML file
  * 
  * @author Michaela Schleich
- * @version $Revision: 1.12 $ $Date: 2000/03/24 14:28:34 $
+ * @version $Revision: 1.13 $ $Date: 2000/03/24 14:33:59 $
  */
 class CmsDbImportFiles implements I_CmsConstants {
 	
@@ -201,8 +201,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 					m_RB.chgrp(m_user, m_project, newFolder.getAbsolutePath(), m_fGroup);
 					m_RB.chmod(m_user, m_project, newFolder.getAbsolutePath(), Integer.parseInt(m_fAccess));
 					m_RB.unlockResource(m_user,m_project,newFolder.getAbsolutePath());
-                    System.err.println("Folder access is "+m_fAccess);
-				    System.out.println(" ok");
+         		    System.out.println(" ok");
 				}
 			} catch (CmsException e) {
                 System.out.println(" error: " + e.getMessage());
@@ -227,8 +226,7 @@ class CmsDbImportFiles implements I_CmsConstants {
 				m_RB.chgrp(m_user, m_project, newFile.getAbsolutePath(), m_fGroup);
 				m_RB.chmod(m_user, m_project, newFile.getAbsolutePath(), Integer.parseInt(m_fAccess) );
 				m_RB.unlockResource(m_user,m_project,newFile.getAbsolutePath());
-                System.err.println("File access is "+m_fAccess);
-				System.out.println(" ok");
+       			System.out.println(" ok");
 			} catch (CmsException e) {
 				System.out.println(" error: " + e.getMessage());
 				m_errMsg.addElement(e.getMessage());	
