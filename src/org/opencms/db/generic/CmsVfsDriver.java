@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/26 09:37:57 $
- * Version: $Revision: 1.176 $
+ * Date   : $Date: 2004/05/28 16:01:14 $
+ * Version: $Revision: 1.177 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.176 $ $Date: 2004/05/26 09:37:57 $
+ * @version $Revision: 1.177 $ $Date: 2004/05/28 16:01:14 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2071,7 +2071,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setInt(3, folder.getLoaderId());
             stmt.setLong(4, resourceDateModified);
             stmt.setString(5, userId.toString());
-            stmt.setInt(6, structureState);
+            stmt.setInt(6, resourceState);
             stmt.setInt(7, 0);
             stmt.setString(8, CmsUUID.getNullUUID().toString());
             stmt.setString(9, CmsUUID.getNullUUID().toString());
@@ -2086,7 +2086,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, folder.getParentStructureId().toString());
             stmt.setString(2, folder.getResourceId().toString());
             stmt.setString(3, folder.getName());
-            stmt.setInt(4, resourceState);
+            stmt.setInt(4, structureState);
             stmt.setString(5, folder.getStructureId().toString());
             stmt.setLong(6, folder.getDateReleased());
             stmt.setLong(7, folder.getDateExpired());
