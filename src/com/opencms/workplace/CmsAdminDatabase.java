@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/03/22 07:24:54 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2003/05/21 14:36:20 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -95,7 +95,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
             if(com.opencms.boot.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && (!success)) {
-                A_OpenCms.log(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO, "[CmsAccessFilesystem] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"+ ".");
+                A_OpenCms.log(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"+ ".");
             }
         }
 

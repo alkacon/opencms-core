@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.126 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.127 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@ package com.opencms.core;
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.exceptions.CmsCheckResourceException;
+import com.opencms.db.CmsDriverManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
-import com.opencms.file.CmsRbManager;
 import com.opencms.file.CmsStaticExport;
 import com.opencms.flex.CmsJspLoader;
 import com.opencms.flex.util.CmsResourceTranslator;
@@ -82,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.126 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.127 $ $Date: 2003/05/21 14:35:55 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -252,7 +252,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         try {           
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
-            m_resourceBroker = CmsRbManager.init(conf);
+            m_driverManager = CmsDriverManager.newInstance(conf);
         } catch(Exception e) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) log(C_OPENCMS_CRITICAL, ". Critical init error/3: " + e.getMessage());
             // any exception here is fatal and will cause a stop in processing
@@ -261,7 +261,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         
         try {       
             // initalize the Hashtable with all available mimetypes
-            m_mt = m_resourceBroker.readMimeTypes(null, null);
+            m_mt = m_driverManager.readMimeTypes(null, null);
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Found mime types     : " + m_mt.size() + " entrys");
 
             // Check, if the HTTP streaming should be enabled
@@ -271,7 +271,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             // if the System property opencms.disableScheduler is set to true, don't start scheduling
             if(!new Boolean(System.getProperty("opencms.disableScheduler")).booleanValue()) {
                 // now initialise the OpenCms scheduler to launch cronjobs
-                m_table = new CmsCronTable(m_resourceBroker.readCronTable(null, null));
+                m_table = new CmsCronTable(m_driverManager.readCronTable(null, null));
                 m_scheduler = new CmsCronScheduler(this, m_table);
                 if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". OpenCms scheduler    : enabled");
             } else {
@@ -706,7 +706,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     public void destroy() throws CmsException {
         m_scheduler.shutDown();
         CmsObject cms = new CmsObject();
-        cms.init(m_resourceBroker);
+        cms.init(m_driverManager);
         cms.destroy();
     }
 
@@ -902,9 +902,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             String group, int project, CmsCoreSession sessionStorage) throws CmsException {
 
         if((!m_enableElementCache) || (project == C_PROJECT_ONLINE_ID)){
-            cms.init(m_resourceBroker, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, m_streaming, c_elementCache, sessionStorage, m_directoryTranslator, m_fileTranslator);
         }else{
-            cms.init(m_resourceBroker, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
+            cms.init(m_driverManager, cmsReq, cmsRes, user, group, project, m_streaming, new CmsElementCache(10,200,10), sessionStorage, m_directoryTranslator, m_fileTranslator);
         }
     }
 
@@ -976,7 +976,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // is session-failopver enabled?
         if(m_sessionFailover) {
             // yes
-            return m_resourceBroker.restoreSession(oldSessionId);
+            return m_driverManager.restoreSession(oldSessionId);
         }
         else {
             // no - do nothing
@@ -996,7 +996,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         // is session failover enabled?
         if(m_sessionFailover) {
             // yes
-            m_resourceBroker.storeSession(sessionId, sessionData);
+            m_driverManager.storeSession(sessionId, sessionData);
         }
     }
 
@@ -1025,7 +1025,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      */
     void updateCronTable() {
         try {
-            m_table.update(m_resourceBroker.readCronTable(null, null));
+            m_table.update(m_driverManager.readCronTable(null, null));
         } catch(Exception exc) {
             if(C_LOGGING && isLogging(C_OPENCMS_CRITICAL)) {
                 log(C_OPENCMS_CRITICAL, "[OpenCms] crontable corrupt. Scheduler is now disabled!");

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
-* Date   : $Date: 2002/11/17 16:42:56 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.48 $ $Date: 2002/11/17 16:42:56 $
+ * @version $Revision: 1.49 $ $Date: 2003/05/21 14:35:55 $
  */
 public class CmsException extends Exception {
 
@@ -229,7 +229,7 @@ public class CmsException extends Exception {
         "New password is too short", 
         "Access denied to resource",
         "Resource deleted", 
-        "Resourcebroker-init error", 
+        "DriverManager init error", 
         "Registry error",
         "User already exists", 
         "HTTP streaming error",

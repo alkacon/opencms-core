@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/05/16 11:52:36 $
-* Version: $Revision: 1.76 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.77 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,12 +50,12 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.76 $ $Date: 2003/05/16 11:52:36 $
+ * @version $Revision: 1.77 $ $Date: 2003/05/21 14:35:55 $
  */
 public class CmsShell implements I_CmsConstants {
 
     /**
-     * The resource broker to get access to the cms.
+     * The driver manager to get access to the cms.
      */
     protected CmsObject m_cms;
 

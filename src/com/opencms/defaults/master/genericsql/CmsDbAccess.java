@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/05/21 11:44:07 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/05/21 14:36:06 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@ import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.dbpool.CmsIdGenerator;
+import com.opencms.db.CmsIdGenerator;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
@@ -1008,7 +1008,7 @@ public class CmsDbAccess {
             constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
         } catch(NoSuchMethodException exc) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot locate constructor: " + exc.getMessage());
+                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return retValue;
@@ -1026,7 +1026,7 @@ public class CmsDbAccess {
                 }
             } catch(Exception exc) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot invoce constructor: " + exc.getMessage());
+                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
         }
@@ -1048,7 +1048,7 @@ public class CmsDbAccess {
             constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
         } catch(NoSuchMethodException exc) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot locate constructor: " + exc.getMessage());
+                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return retValue;
@@ -1061,7 +1061,7 @@ public class CmsDbAccess {
                 retValue.add(content);
             } catch(Exception exc) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot invoce constructor: " + exc.getMessage());
+                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
         }
@@ -1230,7 +1230,7 @@ public class CmsDbAccess {
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
-                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1257,7 +1257,7 @@ public class CmsDbAccess {
                 } catch(CmsException exc) {
                     // no channel found - write to logfile
                     if(CmsBase.isLogging()) {
-                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
+                        CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't find channel " + channelToAdd.get(i) + " errormessage: " + exc.getMessage());
                     }
                 }
             }
@@ -1351,7 +1351,7 @@ public class CmsDbAccess {
             constructor = contentDefinitionClass.getConstructor(new Class[]{CmsObject.class, CmsMasterDataSet.class});
         } catch(NoSuchMethodException exc) {
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot locate constructor: " + exc.getMessage());
+                CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot locate constructor: " + exc.getMessage());
             }
             // canno't fill the vector - missing constructor
             return content;
@@ -1362,7 +1362,7 @@ public class CmsDbAccess {
                 content = (CmsMasterContent)constructor.newInstance(new Object[]{cms, dataset});
             } catch(Exception exc) {
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && CmsBase.isLogging()) {
-                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsDbAccess] Cannot invoce constructor: " + exc.getMessage());
+                    CmsBase.log(I_CmsLogChannels.C_MODULE_DEBUG, "[CmsProjectDriver] Cannot invoce constructor: " + exc.getMessage());
                 }
             }
         }
@@ -1612,7 +1612,7 @@ public class CmsDbAccess {
                 changedRessources, changedModuleData, dataset});   
         }
         catch (Exception e) {
-            CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] error calling method beforePublish in class " + contentDefinitionName );
+            CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] error calling method beforePublish in class " + contentDefinitionName );
         }
 
         // backup the data

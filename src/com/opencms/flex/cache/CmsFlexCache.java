@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexCache.java,v $
- * Date   : $Date: 2003/03/31 16:49:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/05/21 14:36:20 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -167,7 +167,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
         }
         
         // make the flex cache available to other classes through the runtime properties
-        openCms.setRuntimeProperty( com.opencms.flex.I_CmsResourceLoader.C_LOADER_CACHENAME, this );
+        A_OpenCms.setRuntimeProperty( com.opencms.flex.I_CmsResourceLoader.C_LOADER_CACHENAME, this );
         
         if (DEBUG > 0) System.err.println("FlexCache: Initializing with parameters enabled=" + m_enabled + " cacheOffline=" + m_cacheOffline);
     }
@@ -818,7 +818,7 @@ public class CmsFlexCache extends java.lang.Object implements com.opencms.flex.I
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.17 $ 
+     * @version $Revision: 1.18 $ 
      */
     class CmsFlexCacheVariation extends Object implements com.opencms.flex.util.I_CmsFlexLruCacheObject {
         

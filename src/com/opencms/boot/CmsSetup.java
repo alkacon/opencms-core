@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2003/04/10 07:33:04 $
-* Version: $Revision: 1.22 $
+* Date   : $Date: 2003/05/21 14:35:47 $
+* Version: $Revision: 1.23 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -231,7 +231,7 @@ public class CmsSetup {
 		return m_setupType;
 	}
 
-	/** Sets the resource broker to the given value */
+	/** Sets the driver manager to the given value */
 	public void setResourceBroker(String resourceBroker) {
 		setExtProperty("resourcebroker", resourceBroker);
 	}

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/05/20 16:36:24 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,10 +30,10 @@ package com.opencms.core;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.db.CmsDriverManager;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.I_CmsRegistry;
-import com.opencms.file.I_CmsResourceBroker;
 import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 
@@ -57,12 +57,12 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.36 $ $Date: 2003/05/20 16:36:24 $
+ * @version $Revision: 1.37 $ $Date: 2003/05/21 14:35:55 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
-    /** The resource-broker to access the database */
-    protected static I_CmsResourceBroker m_resourceBroker = null;
+    /** The driver manager to access the database */
+    protected static CmsDriverManager m_driverManager = null;
     
     /** The filename of the log file */
     private static String m_logfile;
@@ -450,7 +450,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
      * @throws CmsException, if the registry can not be returned.
      */
     public static I_CmsRegistry getRegistry() throws CmsException {
-        if (m_resourceBroker == null) return null;
-        return m_resourceBroker.getRegistry(null, null, null);
+        if (m_driverManager == null) return null;
+        return m_driverManager.getRegistry(null, null, null);
     }    
 }

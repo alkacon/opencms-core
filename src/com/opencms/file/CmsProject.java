@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/05/21 14:34:28 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.sql.Timestamp;
  * @author Michael Emmerich
  * @author Anders Fugmann
  * @author Jan Krag
- * @version $Revision: 1.38 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.39 $ $Date: 2003/05/21 14:34:28 $
  */
 public class CmsProject implements I_CmsConstants, Cloneable{
 
@@ -141,7 +141,7 @@ public class CmsProject implements I_CmsConstants, Cloneable{
  * Creation date: (10/02/00)
  * @param rs java.sql.ResultSet
  */
-public CmsProject(ResultSet res, com.opencms.file.genericSql.CmsQueries m_cq) throws SQLException {
+public CmsProject(ResultSet res, com.opencms.db.generic.CmsSqlManager m_cq) throws SQLException {
                  this(res.getInt(m_cq.get("C_PROJECTS_PROJECT_ID")),
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_NAME")),
                             res.getString(m_cq.get("C_PROJECTS_PROJECT_DESCRIPTION")),

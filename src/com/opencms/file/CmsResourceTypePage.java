@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/05/21 14:34:28 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,13 +42,13 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Vector;
-//import com.opencms.file.genericSql.linkmanagement.*;
+//import com.opencms.db.generic.linkmanagement.*;
 
 /**
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.51 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.52 $ $Date: 2003/05/21 14:34:28 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 

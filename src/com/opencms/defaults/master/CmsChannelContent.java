@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/05/20 11:31:16 $
-* Version: $Revision: 1.21 $
+* Date   : $Date: 2003/05/21 14:36:06 $
+* Version: $Revision: 1.22 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,8 +54,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.21 $
- * $Date: 2003/05/20 11:31:16 $
+ * $Revision: 1.22 $
+ * $Date: 2003/05/21 14:36:06 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -814,7 +814,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Sets the channelId of a new channel
      */
     private void setNewChannelId() throws CmsException{
-        int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+        int newChannelId = com.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
         m_properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, newChannelId+"");
         m_channelId = newChannelId+"";
     }

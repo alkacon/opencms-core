@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/04/16 10:53:53 $
-* Version: $Revision: 1.91 $
+* Date   : $Date: 2003/05/21 14:34:28 $
+* Version: $Revision: 1.92 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.91 $ $Date: 2003/04/16 10:53:53 $
+ * @version $Revision: 1.92 $ $Date: 2003/05/21 14:34:28 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
     
@@ -565,7 +565,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 }
                 if (channelId == null) {
                     // the channel id does not exist, so generate a new one
-                    int newChannelId = com.opencms.dbpool.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
+                    int newChannelId = com.opencms.db.CmsIdGenerator.nextId(C_TABLE_CHANNELID);
                     channelId = "" + newChannelId;
                 }
                 properties.put(I_CmsConstants.C_PROPERTY_CHANNELID, channelId);

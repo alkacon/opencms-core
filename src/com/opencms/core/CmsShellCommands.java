@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.68 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.69 $ $Date: 2003/05/21 14:35:55 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -106,9 +106,6 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void accessCreate(String resource) {
         try {
-
-            //System.out.println(m_cms.accessCreate(m_cms.readFileHeader(resource)));
-            // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessCreate(resource));
         }
         catch(Exception exc) {
@@ -123,9 +120,6 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void accessLock(String resource) {
         try {
-
-            //System.out.println(m_cms.accessLock(m_cms.readFileHeader(resource)));
-            // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessLock(resource));
         }
         catch(Exception exc) {
@@ -155,9 +149,6 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void accessRead(String resource) {
         try {
-
-            //System.out.println(m_cms.accessRead(m_cms.readFileHeader(resource)));
-            // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessRead(resource));
         }
         catch(Exception exc) {
@@ -172,10 +163,6 @@ class CmsShellCommands implements I_CmsConstants {
      */
     public void accessWrite(String resource) {
         try {
-
-            //CmsResource res = m_cms.readFileHeader(resource);
-            //System.out.println( m_cms.accessWrite(res) );
-            // ednfal: resource is read later in resourcebroker
             System.out.println(m_cms.accessWrite(resource));
         }
         catch(Exception exc) {

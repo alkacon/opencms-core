@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/03/04 18:48:06 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/05/21 14:36:20 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -131,7 +131,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                     && (!success)) {
                     A_OpenCms.log(
                         I_CmsLogChannels.C_OPENCMS_INFO,
-                        "[CmsAccessFilesystem] Couldn't create folder "
+                        "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
                             + "/"
                             + I_CmsRegistry.C_MODULE_PATH
@@ -186,7 +186,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault implements I_CmsConst
                     && A_OpenCms.isLogging()
                     && (!success)) {
                     A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO,
-                        "[CmsAccessFilesystem] Couldn't create folder "
+                        "[CmsExportPointDriver] Couldn't create folder "
                             + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
                             + "/"
                             + I_CmsRegistry.C_MODULE_PATH

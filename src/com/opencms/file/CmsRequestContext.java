@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
-* Date   : $Date: 2003/03/07 16:15:49 $
-* Version: $Revision: 1.67 $
+* Date   : $Date: 2003/05/21 14:34:28 $
+* Version: $Revision: 1.68 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.core.I_CmsSession;
+import com.opencms.db.CmsDriverManager;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.template.cache.CmsElementCache;
 import com.opencms.workplace.I_CmsWpConstants;
@@ -60,13 +61,13 @@ import javax.servlet.http.HttpSession;
  * @author Anders Fugmann
  * @author Alexander Lucas
  *
- * @version $Revision: 1.67 $ $Date: 2003/03/07 16:15:49 $
+ * @version $Revision: 1.68 $ $Date: 2003/05/21 14:34:28 $
  *
  */
 public class CmsRequestContext implements I_CmsConstants {
 
     /** The rb to get access to the OpenCms */
-    private I_CmsResourceBroker m_rb;
+    private CmsDriverManager m_driverManager;
 
     /** The current CmsRequest */
     private I_CmsRequest m_req;
@@ -151,7 +152,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     void init(
-        I_CmsResourceBroker rb,
+        CmsDriverManager driverManager,
         I_CmsRequest req,
         I_CmsResponse resp,
         String user,
@@ -162,19 +163,19 @@ public class CmsRequestContext implements I_CmsConstants {
         CmsResourceTranslator directoryTranslator,
         CmsResourceTranslator fileTranslator)
     throws CmsException {
-        m_rb = rb;
+        m_driverManager = driverManager;
         m_req = req;
         m_resp = resp;
         m_links = new Vector();
         m_dependencies = new Vector();
         
         try {
-            m_user = m_rb.readUser(null, null, user);
+            m_user = m_driverManager.readUser(null, null, user);
         } catch (CmsException ex) {
         }
         // if no user found try to read webUser
         if (m_user == null) {
-            m_user = m_rb.readWebUser(null, null, user);
+            m_user = m_driverManager.readWebUser(null, null, user);
         }
 
         // check, if the user is disabled
@@ -189,7 +190,7 @@ public class CmsRequestContext implements I_CmsConstants {
             // there was a problem to set the needed project - using the online one
             setCurrentProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
         }
-        m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
+        m_currentGroup = m_driverManager.readGroup(m_user, m_currentProject, currentGroup);
         m_streaming = streaming;
         m_elementCache = elementCache;
         m_directoryTranslator = directoryTranslator;
@@ -267,7 +268,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public CmsFolder currentFolder() throws CmsException {
         return (
-            m_rb.readFolder(
+            m_driverManager.readFolder(
                 currentUser(),
                 currentProject(),
                 getSiteRoot(getFolderUri())
@@ -403,7 +404,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     public boolean isAdmin() throws CmsException {
-        return (m_rb.isAdmin(m_user, m_currentProject));
+        return (m_driverManager.isAdmin(m_user, m_currentProject));
     }
 
     /**
@@ -415,7 +416,7 @@ public class CmsRequestContext implements I_CmsConstants {
      * @throws CmsException if operation was not successful.
      */
     public boolean isProjectManager() throws CmsException {
-        return (m_rb.isProjectManager(m_user, m_currentProject));
+        return (m_driverManager.isProjectManager(m_user, m_currentProject));
     }
 
     /**
@@ -427,7 +428,7 @@ public class CmsRequestContext implements I_CmsConstants {
     public void setCurrentGroup(String groupname) throws CmsException {
 
         // is the user in that group?
-        if (m_rb
+        if (m_driverManager
             .userInGroup(
                 m_user,
                 m_currentProject,
@@ -435,7 +436,7 @@ public class CmsRequestContext implements I_CmsConstants {
                 groupname)) {
             // Yes - set it to the current Group.
             m_currentGroup =
-                m_rb.readGroup(m_user, m_currentProject, groupname);
+                m_driverManager.readGroup(m_user, m_currentProject, groupname);
         } else {
             // No - throw exception.
             throw new CmsException(
@@ -452,7 +453,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public CmsProject setCurrentProject(int projectId) throws CmsException {
         CmsProject newProject =
-            m_rb.readProject(m_user, m_currentProject, projectId);
+            m_driverManager.readProject(m_user, m_currentProject, projectId);
         if (newProject != null) {
             m_currentProject = newProject;
         }
@@ -578,7 +579,7 @@ public class CmsRequestContext implements I_CmsConstants {
      */
     public void initEncoding() {
         try {
-            m_encoding = m_rb.readProperty(m_user, m_currentProject, getSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
+            m_encoding = m_driverManager.readProperty(m_user, m_currentProject, getSiteRoot(m_req.getRequestedResource()), m_siteRoot, C_PROPERTY_CONTENT_ENCODING, true);
         } catch (CmsException e) {
             m_encoding = null;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2003/05/21 09:56:08 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/05/21 14:36:06 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,9 @@ import java.util.Properties;
 
 /**
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $ $Date: 2003/05/21 09:56:08 $
+ * @version $Revision: 1.2 $ $Date: 2003/05/21 14:36:06 $
  */
-public class CmsQueries extends com.opencms.file.genericSql.CmsQueries {
+public class CmsQueries extends com.opencms.db.generic.CmsSqlManager {
     
     private static Properties m_queries;
     
@@ -91,7 +91,7 @@ public class CmsQueries extends com.opencms.file.genericSql.CmsQueries {
         } catch(Exception exc) {
             // no query.properties found - write to logstream.
             if(CmsBase.isLogging()) {
-                CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsDbAccess] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
+                CmsBase.log(CmsBase.C_MODULE_DEBUG, "[CmsProjectDriver] Couldn't load " + queryFilename + " errormessage: " + exc.getMessage());
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2003/05/21 14:35:55 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.48 $ $Date: 2003/05/15 12:39:34 $
+ * @version $Revision: 1.49 $ $Date: 2003/05/21 14:35:55 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -172,7 +172,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
      *
      * The connection information for the database is read 
      * from the <code>opencms.properties</code> configuration file and all 
-     * resource brokers are initialized via the initalizer, 
+     * driver manager are initialized via the initalizer, 
      * which usually will be an instance of a <code>OpenCms</code> class.
      *
      * @param config configuration of OpenCms from <code>web.xml</code>
