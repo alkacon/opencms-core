@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementCache.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2001/11/05 15:56:01 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ public class CmsElementCache {
      * @param changedResources A vector (of Strings) with the resources that have
      *                          changed during publishing.
      */
-    public void cleanupCache(Vector changedResources){
+    public void cleanupCache(Vector changedResources, Vector changedModuleRes){
 
         // chanchedResources have chanched, first we have to edit them
         Vector resForUpdate = new Vector();
@@ -103,8 +103,9 @@ public class CmsElementCache {
         m_uriLocator.deleteUris(resForUpdate);
         m_elementLocator.cleanupElementCache(resForUpdate);
 
-        // for the dependencies cache we use the original vector
+        // for the dependencies cache we use the original vectors
         m_elementLocator.cleanupDependencies(changedResources);
+        m_elementLocator.cleanupDependencies(changedModuleRes);
     }
 
     /**
