@@ -11,6 +11,9 @@ Legend:
 OpenCms 4.5.33 Chusuk       - xx January 2001
 - Addind mechanism of redirect to the correct ressource based on the current project
   for showing preview of ressources from explorer-view.
+- Removed checkbox "Static export after publish" for new projects. The static export is executed after
+  publishing if it is enabled in the properties (independent of the project).
+* Change current project to online project after publishing a temporary project.
 
 OpenCms 4.5.32 Chusuk       - 18 January 2001
 ! The digest-method for encrypting passwords is now available in the CmsObject.
