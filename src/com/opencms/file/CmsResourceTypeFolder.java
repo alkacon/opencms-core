@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/26 15:02:14 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2001/07/27 08:11:54 $
+ * Version: $Revision: 1.16 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -422,9 +422,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
        // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
+        // first valid the destination name
+        validResourcename(destination);
+
         getAllResources(cms, source, allSubFiles, allSubFolders);
         if (!destination.endsWith("/")){
             destination = destination +"/";
+        }
+        if (!destination.startsWith("/")){
+            destination = "/"+destination ;
         }
         // first the folder
         cms.doCopyFolder(source, destination);
@@ -450,8 +456,10 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 cms.copyResource(curFile.getAbsolutePath(), curDest, keepFlags);
             }
         }
-        // finaly lock the copy in content bodys if it exists.
+        // copy the content bodys
         try{
+            copyResource(cms, C_CONTENTBODYPATH + source.substring(1), C_CONTENTBODYPATH + destination.substring(1), keepFlags);
+            // finaly lock the copy in content bodys if it exists.
             cms.lockResource(C_CONTENTBODYPATH + destination.substring(1));
         }catch(CmsException e){
         }
@@ -776,7 +784,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
 	*/
 	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
         // first of all check the new name
-        validResourcename(newname);
+        validResourcename(newname.replace('/','\n'));
        // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
@@ -785,13 +793,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         if(!cms.accessWrite(oldname)){
             throw new CmsException(oldname, CmsException.C_NO_ACCESS);
         }
+        if(!newname.endsWith("/")){
+            newname = newname+"/";
+        }
         // first copy the folder
-        cms.doCopyFolder(oldname, parent + newname + "/");
+        cms.doCopyFolder(oldname, parent + newname);
         // now copy the subfolders
         for (int i=0; i<allSubFolders.size(); i++){
             CmsFolder curFolder = (CmsFolder) allSubFolders.elementAt(i);
             if(curFolder.getState() != C_STATE_DELETED){
-                String curDestination = parent + newname + "/"
+                String curDestination = parent + newname
                                         + curFolder.getAbsolutePath().substring(oldname.length());
                 cms.doCopyFolder(curFolder.getAbsolutePath(), curDestination );
             }
@@ -800,7 +811,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         for (int i=0; i<allSubFiles.size(); i++){
             CmsFile curFile = (CmsFile)allSubFiles.elementAt(i);
             if(curFile.getState() != C_STATE_DELETED){
-                String curDest = parent + newname + "/"
+                String curDest = parent + newname
                                 + curFile.getAbsolutePath().substring(oldname.length());
                 cms.moveResource(curFile.getAbsolutePath(), curDest);
             }
