@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2004/02/22 13:52:27 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/05/26 09:37:58 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -47,7 +48,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.33 $ $Date: 2004/02/22 13:52:27 $
+ * @version $Revision: 1.34 $ $Date: 2004/05/26 09:37:58 $
  */
 public class CmsChtype extends CmsWorkplaceDefault {
 
@@ -118,7 +119,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
             
             // read all properties of the file, store them in a map and delete them
             Map fileProperties = cms.readProperties(filename);
-            cms.deleteAllProperties(filename);
+            cms.deleteAllProperties(filename, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             
             // change the file type
             cms.chtype(cms.readAbsolutePath(file), type);

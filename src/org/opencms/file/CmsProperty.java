@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2004/05/24 17:22:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/05/26 09:37:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,10 +81,34 @@ import java.util.RandomAccess;
  * control about which resource types support which property definitions.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $ $Date: 2004/05/24 17:22:35 $
+ * @version $Revision: 1.13 $ $Date: 2004/05/26 09:37:57 $
  * @since build_5_1_14
  */
 public class CmsProperty extends Object implements Serializable, Cloneable, Comparable {
+    
+    /**
+     * Signals that both the structure and resource property values of a resource
+     * should be deleted using deleteAllProperties.<p>
+     * 
+     * @see org.opencms.file.CmsObject#deleteAllProperties(String, int)
+     */
+    public static final int C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES = 1;
+    
+    /**
+     * Signals that the structure property values of a resource
+     * should be deleted using deleteAllProperties.<p>
+     * 
+     * @see org.opencms.file.CmsObject#deleteAllProperties(String, int)
+     */  
+    public static final int C_DELETE_OPTION_DELETE_STRUCTURE_VALUES = 2;
+    
+    /**
+     * Signals that the resource property values of a resource
+     * should be deleted using deleteAllProperties.<p>
+     * 
+     * @see org.opencms.file.CmsObject#deleteAllProperties(String, int)
+     */    
+    public static final int C_DELETE_OPTION_DELETE_RESOURCE_VALUES = 3;
 
     /**
      * An empty string to decide that a property value should be deleted when this

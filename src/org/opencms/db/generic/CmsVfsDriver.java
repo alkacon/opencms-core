@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/24 17:16:47 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2004/05/26 09:37:57 $
+ * Version: $Revision: 1.176 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.175 $ $Date: 2004/05/24 17:16:47 $
+ * @version $Revision: 1.176 $ $Date: 2004/05/26 09:37:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -128,7 +128,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(project, res, false);
-                deleteProperties(project.getId(), res);
+                deleteProperties(project.getId(), res, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 removeFile(project, res, true);
 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
@@ -621,7 +621,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(project, res, false);
-                deleteProperties(project.getId(), res);
+                deleteProperties(project.getId(), res, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 removeFile(project, res, true);
 
                 OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_MODIFIED, Collections.singletonMap("resources", modifiedResources)));
@@ -682,9 +682,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#deleteProperties(int, org.opencms.file.CmsResource)
+     * @see org.opencms.db.I_CmsVfsDriver#deleteProperties(int, org.opencms.file.CmsResource, int)
      */
-    public void deleteProperties(int projectId, CmsResource resource) throws CmsException {
+    public void deleteProperties(int projectId, CmsResource resource, int deleteOption) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
         String resourceName = resource.getRootPath();
@@ -696,9 +696,26 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
 
         try {
             conn = m_sqlManager.getConnection(projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETEALL");
-            stmt.setString(1, resource.getResourceId().toString());
-            stmt.setString(2, resource.getStructureId().toString());
+            
+            if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES) {
+                // delete both the structure and resource property values mapped to the specified resource
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE_ALL_STRUCTURE_AND_RESOURCE_VALUES");
+                stmt.setString(1, resource.getResourceId().toString());
+                stmt.setInt(2, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt.setString(3, resource.getStructureId().toString());
+                stmt.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+            } else if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES) {
+                // delete the structure values mapped to the specified resource
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE_ALL_VALUES_FOR_MAPPING_TYPE");
+                stmt.setString(1, resource.getStructureId().toString());
+                stmt.setInt(2, CmsProperty.C_STRUCTURE_RECORD_MAPPING);                
+            } else if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_RESOURCE_VALUES) {
+                // delete the resource property values mapped to the specified resource
+                stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_PROPERTIES_DELETE_ALL_VALUES_FOR_MAPPING_TYPE");
+                stmt.setString(1, resource.getResourceId().toString());
+                stmt.setInt(2, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+            }
+            
             stmt.executeUpdate();
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
@@ -2539,7 +2556,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     // set the vars to be written to the database
                     mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
                     id = resource.getStructureId();
-                    existsPropertyValue = existingProperty.getStructureValue() != null;                    
+                    existsPropertyValue = existingProperty.getStructureValue() != null;
                 } else if (i == 1) {
                     // write/delete the *resource value* on the second cycle
                     if (existingProperty.getResourceValue() != null && property.deleteResourceValue()) {
@@ -2557,7 +2574,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
                     // set the vars to be written to the database
                     mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
                     id = resource.getResourceId();
-                    existsPropertyValue = existingProperty.getResourceValue() != null;                    
+                    existsPropertyValue = existingProperty.getResourceValue() != null;
                 }
                 
                 // 2) execute the SQL query

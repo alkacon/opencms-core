@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/05/24 17:19:43 $
- * Version: $Revision: 1.361 $
+ * Date   : $Date: 2004/05/26 09:37:57 $
+ * Version: $Revision: 1.362 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.361 $ $Date: 2004/05/24 17:19:43 $
+ * @version $Revision: 1.362 $ $Date: 2004/05/26 09:37:57 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -2168,19 +2168,25 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // touchResource(context, resource, System.currentTimeMillis());
         clearAccessControlListCache();
     }
-
+    
     /**
-     * Deletes all property value (both structure and resource values) of a file or folder.<p>
-     *
-     * Only the user is granted, who has the right to write the resource.
+     * Deletes all property values of a file or folder.<p>
+     * 
+     * You may specify which whether just structure or resource property values should
+     * be deleted, or both of them.<p>
      *
      * @param context the current request context
-     * @param resourceName the name of the resource of which the propertyinformations have to be deleted.
-     * @throws CmsException if operation was not succesful
-     */
-    public void deleteAllProperties(CmsRequestContext context, String resourceName) throws CmsException {
+     * @param resourceName the name of the resource for which all properties should be deleted.
+     * @param deleteOption determines which property values should be deleted
+     * @throws CmsException if operation was not successful
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
+     */    
+    public void deleteAllProperties(CmsRequestContext context, String resourceName, int deleteOption) throws CmsException {
 
         CmsResource resource = null;
+        List resources = (List) new ArrayList();
 
         try {
             // read the resource
@@ -2189,17 +2195,20 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             // check the security
             checkPermissions(context, resource, I_CmsConstants.C_WRITE_ACCESS, CmsResourceFilter.ALL);
 
-            //delete all Properties
-            m_vfsDriver.deleteProperties(context.currentProject().getId(), resource);
+            // delete the property values
+            m_vfsDriver.deleteProperties(context.currentProject().getId(), resource, deleteOption);
+            
+            // prepare the resources for the event to be fired
+            resources.add(resource);
+            if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES || deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_RESOURCE_VALUES) {
+                resources.addAll(readSiblings(context, resourceName, false, CmsResourceFilter.ALL));
+            }
         } finally {
             // clear the driver manager cache
             m_propertyCache.clear();
 
             // fire an event that all properties of a resource have been deleted
-            OpenCms.fireCmsEvent(new CmsEvent(
-                new CmsObject(),
-                I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap("resource", resource)));
+            OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED, Collections.singletonMap("resources", resources)));            
         }
     }
 
@@ -2311,8 +2320,6 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsResource resource = null;
         Iterator i = null;
         boolean existsOnline = false;
-        List properties = null;
-        CmsProperty currentProperty = null;
 
         // TODO set the flag deleteOption in all calling methods correct
 
@@ -2368,19 +2375,15 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 if (!existsOnline) {
                     if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
                         // siblings get deleted- delete both structure + resource property values
-                        deleteAllProperties(context, currentResource.getRootPath());                        
+                        deleteAllProperties(context, currentResource.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);                        
                     } else {
-                        // siblings should be preserved- delete only structure property value
-                        properties = readPropertyObjects(context, currentResource.getRootPath(), null, false);
-                        for (int j = 0, n = properties.size(); j < n; j++) {
-                            currentProperty = (CmsProperty)properties.get(j);
-                            currentProperty.setStructureValue(CmsProperty.C_DELETE_VALUE);
-                            currentProperty.setResourceValue(null);
-                        }
-                        writePropertyObjects(context, currentResource.getRootPath(), properties);
+                        // siblings should be preserved- delete only structure property values
+                        deleteAllProperties(context, currentResource.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES);
                     }
+                    
                     // remove the access control entries
                     m_userDriver.removeAccessControlEntries(context.currentProject(), currentResource.getResourceId());
+                    
                     // the resource doesn't exist online => remove the file
                     if (currentResource.isLabeled() && !labelResource(context, currentResource, null, 2)) {
                         // update the resource flags to "unlabel" the other siblings
@@ -2388,19 +2391,23 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         flags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
                         currentResource.setFlags(flags);
                     }
+                    
                     m_vfsDriver.removeFile(context.currentProject(), currentResource, true);
                 } else {
                     // delete the access control entries
                     deleteAllAccessControlEntries(context, currentResource);
+                    
                     // the resource exists online => mark the file as deleted
                     //m_vfsDriver.deleteFile(context.currentProject(), currentResource);
                     currentResource.setState(I_CmsConstants.C_STATE_DELETED);
                     m_vfsDriver.writeResourceState(context.currentProject(), currentResource, C_UPDATE_STRUCTURE_STATE);
+                    
                     // add the project id as a property, this is later used for publishing
                     CmsProperty property = new CmsProperty();
                     property.setKey(I_CmsConstants.C_PROPERTY_INTERNAL);
                     property.setStructureValue("" + context.currentProject().getId());
                     m_vfsDriver.writePropertyObject(context.currentProject(), currentResource, property);
+                    
                     // TODO: still necessary after we have the property?
                     // update the project ID
                     m_vfsDriver.writeLastModifiedProjectId(context.currentProject(), context.currentProject().getId(), currentResource);
@@ -2411,6 +2418,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         // flush all caches
         clearAccessControlListCache();
         clearResourceCache();
+        m_propertyCache.clear();
 
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
@@ -2458,8 +2466,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // write-acces  was granted - delete the folder and metainfos.
         if (onlineFolder == null) {
-            // the onlinefile dosent exist => remove the file realy!
-            deleteAllProperties(context, foldername);
+            // the onlinefile doesn't exist => remove the file
+            deleteAllProperties(context, foldername, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             m_vfsDriver.removeFolder(context.currentProject(), cmsFolder);
             // remove the access control entries
             m_userDriver.removeAccessControlEntries(context.currentProject(), cmsFolder.getResourceId());
@@ -2555,7 +2563,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                         changeLock(context, currentResourceName);
                     }
                     // delete the properties
-                    m_vfsDriver.deleteProperties(projectId, currentFile);
+                    m_vfsDriver.deleteProperties(projectId, currentFile, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                     // delete the file
                     m_vfsDriver.removeFile(context.currentProject(), currentFile, true);
                     // remove the access control entries
@@ -2594,7 +2602,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 CmsLock lock = getLock(context, currentFolder);
                 if (currentFolder.getState() == I_CmsConstants.C_STATE_NEW) {
                     // delete the properties
-                    m_vfsDriver.deleteProperties(projectId, currentFolder);
+                    m_vfsDriver.deleteProperties(projectId, currentFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                     // add the folder to the vector of folders that has to be deleted
                     deletedFolders.addElement(currentFolder);
                 } else if (currentFolder.getState() == I_CmsConstants.C_STATE_CHANGED) {
@@ -7117,8 +7125,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // now read the backup properties
             List backupProperties = m_backupDriver.readBackupProperties(backupFile);
-            // remove all (structure+resource) property value
-            deleteAllProperties(context, newFile.getRootPath());
+            // remove all (structure+resource) property values
+            deleteAllProperties(context, newFile.getRootPath(), CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             // write them to the restored resource
             writePropertyObjects(context, filename, backupProperties);
 
@@ -7472,7 +7480,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             m_vfsDriver.writeFolder(context.currentProject(), restoredFolder, C_NOTHING_CHANGED, restoredFolder.getUserLastModified());
             // restore the properties in the offline project
             readPath(context, restoredFolder, CmsResourceFilter.ALL);
-            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFolder);
+            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             List propertyInfos = m_vfsDriver.readPropertyObjects(onlineProject, onlineFolder);
             m_vfsDriver.writePropertyObjects(context.currentProject(), restoredFolder, propertyInfos);
         } else {
@@ -7521,7 +7529,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
             // restore the properties in the offline project
             readPath(context, restoredFile, CmsResourceFilter.ALL);
-            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFile);
+            m_vfsDriver.deleteProperties(context.currentProject().getId(), restoredFile, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             List propertyInfos = m_vfsDriver.readPropertyObjects(onlineProject, onlineFile);
             m_vfsDriver.writePropertyObjects(context.currentProject(), restoredFile, propertyInfos);
         }
@@ -8654,7 +8662,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
                 if (currentFileHeader.getName().startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
                     // trash the current resource if it is a temporary file
-                    getVfsDriver().deleteProperties(context.currentProject().getId(), currentFileHeader);
+                    getVfsDriver().deleteProperties(context.currentProject().getId(), currentFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                     getVfsDriver().removeFile(context.currentProject(), currentFileHeader, true);
                 }
 

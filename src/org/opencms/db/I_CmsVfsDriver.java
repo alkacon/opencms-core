@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/05/24 12:38:48 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/05/26 09:37:58 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.74 $ $Date: 2004/05/24 12:38:48 $
+ * @version $Revision: 1.75 $ $Date: 2004/05/26 09:37:58 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -178,15 +178,22 @@ public interface I_CmsVfsDriver {
      * @throws CmsException if something goes wrong
      */
     CmsResource createSibling(CmsProject project, CmsResource resource, CmsUUID userId, CmsUUID parentId, String filename) throws CmsException;
-
+    
     /**
-     * Deletes all property values (both structure and resource values) of a specified resource.<p>
+     * Deletes all property values of a file or folder.<p>
+     * 
+     * You may specify which whether just structure or resource property values should
+     * be deleted, or both of them.<p>
      *
      * @param projectId the id of the project
      * @param resource the resource
-     * @throws CmsException if operation was not succesful
-     */
-    void deleteProperties(int projectId, CmsResource resource) throws CmsException;
+     * @param deleteOption determines which property values should be deleted
+     * @throws CmsException if operation was not successful
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
+     */     
+    void deleteProperties(int projectId, CmsResource resource, int deleteOption) throws CmsException;
 
     /**
      * Deletes a property defintion.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/05/24 17:15:28 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2004/05/26 09:37:57 $
+ * Version: $Revision: 1.166 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.165 $ $Date: 2004/05/24 17:15:28 $
+ * @version $Revision: 1.166 $ $Date: 2004/05/26 09:37:57 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -649,8 +649,8 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             try {
                 // delete the properties online and offline
-                m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder);
-                m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), currentFolder);
+                m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), currentFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error("Error deleting properties of " + currentFolder.toString(), e);
@@ -762,15 +762,15 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
                 try {
                     // delete the properties online and offline
-                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
-                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFileHeader);
+                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
+                    m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), offlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
                     // if the offline file has a resource ID different from the online file
                     // (probably because a (deleted) file was replaced by a new file with the
                     // same name), the properties with the "old" resource ID have to be
                     // deleted also offline
                     if (!onlineFileHeader.getResourceId().equals(offlineFileHeader.getResourceId())) {
-                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFileHeader);
+                        m_driverManager.getVfsDriver().deleteProperties(context.currentProject().getId(), onlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                     }
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -820,7 +820,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     offlineFileHeader.setFlags(flags);                   
 
                     // delete the properties online
-                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader);
+                    m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFileHeader, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
                     // if the offline file has a resource ID different from the online file
                     // (probably because a deleted file was replaced by a new file with the
@@ -1162,7 +1162,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             try {
                 // write the properties online
-                m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder);
+                m_driverManager.getVfsDriver().deleteProperties(onlineProject.getId(), onlineFolder, CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                 offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(context.currentProject(), offlineFolder);
                 CmsProperty.setAutoCreatePropertyDefinitions(offlineProperties, true);
                 m_driverManager.getVfsDriver().writePropertyObjects(onlineProject, onlineFolder, offlineProperties);

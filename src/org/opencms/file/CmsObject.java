@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/05/24 17:22:12 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2004/05/26 09:37:57 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class CmsObject {
 
@@ -781,13 +781,20 @@ public class CmsObject {
     }
     
     /**
-     * Deletes all property value (both structure and resource values) of a file or folder.<p>
+     * Deletes all property values of a file or folder.<p>
+     * 
+     * You may specify which whether just structure or resource property values should
+     * be deleted, or both of them.<p>
      *
      * @param resourcename the name of the resource for which all properties should be deleted.
-     * @throws CmsException if operation was not successful.
+     * @param deleteOption determines which property values should be deleted
+     * @throws CmsException if operation was not successful
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
+     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
      */
-    public void deleteAllProperties(String resourcename) throws CmsException {
-        m_driverManager.deleteAllProperties(m_context, addSiteRoot(resourcename));
+    public void deleteAllProperties(String resourcename, int deleteOption) throws CmsException {
+        m_driverManager.deleteAllProperties(m_context, addSiteRoot(resourcename), deleteOption);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/05/06 08:06:08 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/26 09:37:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -308,6 +308,16 @@ public interface I_CmsEventListener {
      * </ul>
      */
     int EVENT_WORKPLACE_UPDATE = 27;
+    
+    /** 
+     * Event "a list of resources and their properties have been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
+     * </ul>
+     */    
+    int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 28;
     
 }
 
