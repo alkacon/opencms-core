@@ -8,7 +8,7 @@ import com.opencms.core.*;
  * filesystem of  the Cms.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 1999/12/23 12:51:45 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/04 13:46:02 $
  */
 
 public class CmsMountPoint extends A_CmsMountPoint implements I_CmsConstants {
@@ -94,7 +94,7 @@ public class CmsMountPoint extends A_CmsMountPoint implements I_CmsConstants {
      */
     private String m_launcherClass=null;
     
-    
+
     
 	 /**
 	 * Constructs a new CmsMountPoint. 
@@ -282,6 +282,16 @@ public class CmsMountPoint extends A_CmsMountPoint implements I_CmsConstants {
 	public String getLauncherClass() {
 	  return m_launcherClass;
 	}
+    
+     /**
+	 * Returns the type of this mountpoint.
+	 * 
+	 * @return The type of the mountpoint.
+	 */
+    public int getMountpointType() {
+        return m_mountpointType;
+    }
+    
     
     /**
 	 * Returns a string-representation for this object.
