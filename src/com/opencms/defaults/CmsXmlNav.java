@@ -2,8 +2,8 @@ package com.opencms.defaults;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsXmlNav.java,v $
- * Date   : $Date: 2001/01/31 10:23:48 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2001/01/31 11:24:52 $
+ * Version: $Revision: 1.27 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.26 $ $Date: 2001/01/31 10:23:48 $
+ * @version $Revision: 1.27 $ $Date: 2001/01/31 11:24:52 $
  */
 public class CmsXmlNav extends A_CmsNavBase {
 	
@@ -188,7 +188,7 @@ public class CmsXmlNav extends A_CmsNavBase {
 					while (e.hasMoreElements()) {
 						all.addElement(e.nextElement());
 					}
-					result.append(buildNavFold(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath));
+					result.append(buildNavFold(cms,xmlDataBlock,userObject,all,requestedUri,currentFolder,servletPath,level));
 				}
 			}
 			result.append(xmlDataBlock.getProcessedDataValue("navTreeEnd", this, userObject));
