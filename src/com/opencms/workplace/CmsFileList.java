@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2003/02/03 14:42:22 $
-* Version: $Revision: 1.58 $
+* Date   : $Date: 2003/02/03 15:25:20 $
+* Version: $Revision: 1.59 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.58 $ $Date: 2003/02/03 14:42:22 $
+ * @version $Revision: 1.59 $ $Date: 2003/02/03 15:25:20 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -647,27 +647,20 @@ public class CmsFileList extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * @return String containing the complete name of the iconfile.
      * @throws Throws CmsException if something goes wrong.
      */
-
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
-        String icon = null;
-        String filename = config.getWpPicturePath() + C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
-
         // check if this icon is in the cache already
-        icon = (String)m_iconCache.get(type.getResourceTypeName());
-
+        String icon = (String)m_iconCache.get(type.getResourceTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
+            String filename = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
             try {
-
                 // read the icon file
-                cms.readFileHeader(filename);
-
+                cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
                 // add the icon to the cache
-                icon = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
+                icon = filename;
                 m_iconCache.put(type.getResourceTypeName(), icon);
             }
             catch(CmsException e) {
-
                 // no icon was found, so use the default
                 icon = C_ICON_DEFAULT;
                 m_iconCache.put(type.getResourceTypeName(), icon);

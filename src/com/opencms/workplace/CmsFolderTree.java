@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2003/02/02 15:59:52 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/02/03 15:25:20 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/02/02 15:59:52 $
+ * @version $Revision: 1.48 $ $Date: 2003/02/03 15:25:20 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -279,13 +279,12 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
      * @return String containing the complete name of the iconfile.
      * @throws Throws CmsException if something goes wrong.
      */
-
     private String getIcon(CmsObject cms, I_CmsResourceType type, CmsXmlWpConfigFile config) throws CmsException {
         // check if this icon is in the cache already
         String icon = (String)m_iconCache.get(type.getResourceTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
-            String filename = C_ICON_PREFIX + type.getResourceTypeName() + C_ICON_EXTENSION;
+            String filename = C_ICON_PREFIX + type.getResourceTypeName().toLowerCase() + C_ICON_EXTENSION;
             try {
                 // read the icon file
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
