@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdministration.java,v $
- * Date   : $Date: 2000/11/08 11:48:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2001/01/12 12:58:36 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * 
  * Creation date: (09.08.00 14:01:21)
  * @author: Hanjo Riege
- * @version $Name:  $ $Revision: 1.8 $ $Date: 2000/11/08 11:48:34 $
+ * @version $Name:  $ $Revision: 1.9 $ $Date: 2001/01/12 12:58:36 $
  */
 public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConstants {
 
@@ -234,11 +234,14 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 					iconNames[i] = aktIcon.getAbsolutePath();
 					index[i] = i;
 					Hashtable propertyinfos = cms.readAllProperties(iconNames[i]);
-					folderLangKeys[i] = (String) propertyinfos.get(C_PROPERTY_NAVTEXT);
-					folderTitles[i]   = (String) propertyinfos.get(C_PROPERTY_TITLE);
-					folderPos[i]      = (String) propertyinfos.get(C_PROPERTY_NAVPOS);
-					folderVisible[i]  = (String) propertyinfos.get(C_PROPERTY_VISIBLE);
-					folderActiv[i]    = (String) propertyinfos.get(C_PROPERTY_ACTIV);
+					folderLangKeys[i] = getStringValue((String) propertyinfos.get(C_PROPERTY_NAVTEXT));
+					folderTitles[i]   = getStringValue((String) propertyinfos.get(C_PROPERTY_TITLE));
+					folderPos[i]      = getStringValue((String) propertyinfos.get(C_PROPERTY_NAVPOS));
+					if (folderPos[i].equals("")){
+						folderPos[i] = "101";
+					}
+					folderVisible[i]  = getStringValue((String) propertyinfos.get(C_PROPERTY_VISIBLE));
+					folderActiv[i]    = getStringValue((String) propertyinfos.get(C_PROPERTY_ACTIV));
 				} catch( Exception exc ) {
 					throw new CmsException("[" + this.getClass().getName() + "] "+exc.getMessage(),CmsException.C_SQL_ERROR, exc);
 				}	
@@ -271,6 +274,18 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 		}
 		return startProcessing(cms, templateDocument, elementName, parameters, templateSelector);
 	}
+/**
+ * returns the String or "" if it is null.
+ * Creation date: (29.10.00 16:05:38)
+ * @return java.lang.String
+ * @param param java.lang.String
+ */
+private String getStringValue(String param) {
+	if(param == null){
+		return "";
+	}
+	return param;
+}
 	/**
 	 * Indicates if the results of this class are cacheable.
 	 * 
@@ -295,26 +310,29 @@ public class CmsAdministration extends CmsWorkplaceDefault implements I_CmsConst
 		// Sorting algorithm
 		// This method uses an bubble sort, so replace this with something more
 		// efficient
-	 
-		for (int i=max-1;i>0;i--) {
-			for (int j=0;j<i;j++) {
-			  
-				float a=new Float(positions[j]).floatValue();
-				float b=new Float(positions[j+1]).floatValue();
-				if (a > b) {
-					String tempfilename= filenames[j];
-					int tempindex = index[j];
-					String tempposition = positions[j];
-					
-					filenames[j]=filenames[j+1];
-					index[j]=index[j+1];
-					positions[j]=positions[j+1];
-					
-					filenames[j+1]=tempfilename;
-					index[j+1]=tempindex;
-					positions[j+1]=tempposition;                    
+	 	try{
+			for (int i=max-1;i>0;i--) {
+				for (int j=0;j<i;j++) {
+				  
+					float a=new Float(positions[j]).floatValue();
+					float b=new Float(positions[j+1]).floatValue();
+					if (a > b) {
+						String tempfilename= filenames[j];
+						int tempindex = index[j];
+						String tempposition = positions[j];
+						
+						filenames[j]=filenames[j+1];
+						index[j]=index[j+1];
+						positions[j]=positions[j+1];
+						
+						filenames[j+1]=tempfilename;
+						index[j+1]=tempindex;
+						positions[j+1]=tempposition;                    
+					}
 				}
 			}
-		}
+	 	}catch(Exception e){
+			
+	 	}
 	}  // of sort
 }
