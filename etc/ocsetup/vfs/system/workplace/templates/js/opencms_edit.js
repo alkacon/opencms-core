@@ -44,7 +44,7 @@ function getDimensions() {
 
 
 function displayCode() {
-  document.GUIApplet.setCode(unescape(text));
+  document.TextEditorApplet.setCode(unescape(text));
 }
 
 
@@ -54,7 +54,13 @@ function writeAppletTag()
   getDimensions();
   document.open();
   if (NS==true) 
-	document.write('<APPLET name="GUIApplet" CODE="GUIApplet" CODEBASE="/" WIDTH="'+windowWidth+'" HEIGHT="'+(windowHeight-40)+'" mayscript></APPLET>');
+  {
+	str = '<APPLET name="TextEditorApplet" CODE="TextEditorApplet" CODEBASE="/" WIDTH="'+windowWidth+'" HEIGHT="'+(windowHeight-40)+'" mayscript></APPLET>';
+	str= str + '<INPUT TYPE=HIDDEN NAME="CONTENT">';
+	str= str + '<INPUT TYPE=HIDDEN NAME="action">';
+	str= str + '<INPUT TYPE=HIDDEN NAME="file" value="' + filename + '">';	
+	document.write(str);
+  }
   else if (IE==true)
   {
 	str = '<OBJECT classid=clsid:EB3A74C0-5343-101D-BB4D-040224009C02 height=100% id=edit1 name=edit1 onfocus=setTextDelayed(); width=100%><PARAM NAME="_Version" VALUE="131083"><PARAM NAME="_ExtentX" VALUE="22887"><PARAM NAME="_ExtentY" VALUE="7223"><PARAM NAME="_StockProps" VALUE="125"><PARAM NAME="Text" VALUE="Loading ....."><PARAM NAME="ForeColor" VALUE="0"><PARAM NAME="BackColor" VALUE="16777215"><PARAM NAME="BorderStyle" VALUE="1"><PARAM NAME="Enabled" VALUE="-1"><PARAM NAME="AutoIndent" VALUE="-1"><PARAM NAME="BackColorSelected" VALUE="8388608"><PARAM NAME="BookmarksMax" VALUE="16">';
@@ -136,7 +142,10 @@ function setTextDelayed()
 
 function doSubmit()
 {
-	document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+	if(IE == true) 
+	{
+		document.EDITOR.CONTENT.value = escape(document.EDITOR.edit1.Text);
+	}
 }
 
 // Function action on button click
@@ -236,5 +245,8 @@ function doEdit(para)
 		break;
 	}
 }	
-	document.all.edit1.focus();
+	if(IE == true) 
+	{
+		document.all.edit1.focus();
+	}
 }
