@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/09/27 16:06:09 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/09/28 06:38:54 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import source.org.apache.java.util.*;
  * 
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.38 $ $Date: 2000/09/27 16:06:09 $
+ * @version $Revision: 1.39 $ $Date: 2000/09/28 06:38:54 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -1050,6 +1050,24 @@ public void getCurrentSite()
 			printException(exc);
 		}
 	}
+/**
+ * Prints all possible commands.
+ */
+public void helpSearch(String searchString)
+{
+	Method meth[] = getClass().getMethods();
+	for (int z = 0; z < meth.length; z++)
+	{
+		if ((meth[z].getDeclaringClass() == getClass()) && (meth[z].getModifiers() == Modifier.PUBLIC))
+		{
+			if (meth[z].getName().toLowerCase().indexOf(searchString.toLowerCase()) > -1)
+			{
+				System.out.print(meth[z].getName() + "(");
+				System.out.println(meth[z].getParameterTypes().length + ")");
+			}
+		}
+	}
+}
 	/**
 	 * Prints all possible commands.
 	 */
