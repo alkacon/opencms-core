@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.8 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.9 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -72,7 +72,7 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue("copy");
             session.removeValue("lasturl");
         }
@@ -83,11 +83,11 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
             session.putValue("copy", copy);
         }
         copy = (String)session.getValue("copy");
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         String action = (String)parameters.get("action");
 
         CmsResource file = null;
@@ -104,13 +104,13 @@ public class CmsCopyToProject extends CmsWorkplaceDefault implements I_CmsWpCons
                 try{
                     if(isManager(cms)){
                         cms.copyResourceToProject(cms.readAbsolutePath(file));
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         template = "done";
                     } else {
                         throw new CmsException("["+this.getClassName()+"] no management access to project.", CmsException.C_ACCESS_DENIED);
                     }
                 } catch(CmsException e){
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }

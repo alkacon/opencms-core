@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2003/07/16 14:30:03 $
-* Version: $Revision: 1.37 $
+* Date   : $Date: 2003/07/30 16:25:43 $
+* Version: $Revision: 1.38 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Vector;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.37 $ $Date: 2003/07/16 14:30:03 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/30 16:25:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -219,9 +219,9 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                     filename = (String)files.nextElement();
                 }
                 if(filename != null) {
-                    session.putValue(C_PARA_FILE, filename);
+                    session.putValue(C_PARA_RESOURCE, filename);
                 }
-                filename = (String)session.getValue(C_PARA_FILE);
+                filename = (String)session.getValue(C_PARA_RESOURCE);
 
                 // get the filecontent
                 if(filename != null) {
@@ -254,7 +254,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                     if( zip.isValidZipFile() ) {
 
                                         // remove the values form the session
-                                        session.removeValue(C_PARA_FILE);
+                                        session.removeValue(C_PARA_RESOURCE);
                                         session.removeValue(C_PARA_FILECONTENT);
                                         session.removeValue(C_PARA_NEWTYPE);
                                         // return to the filelist
@@ -302,7 +302,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                     cms.createResource(foldername, filename, type, new Hashtable(), filecontent);
                                 }catch(CmsException e){
                                     // remove the values form the session
-                                    session.removeValue(C_PARA_FILE);
+                                    session.removeValue(C_PARA_RESOURCE);
                                     session.removeValue(C_PARA_FILECONTENT);
                                     session.removeValue(C_PARA_NEWTYPE);
                                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
@@ -310,7 +310,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
 
                                 }
                                 // remove the values form the session
-                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_RESOURCE);
                                 session.removeValue(C_PARA_FILECONTENT);
                                 session.removeValue(C_PARA_NEWTYPE);
 
@@ -353,7 +353,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
                                 cms.createResource(foldername, filename, type, prop, filecontent);
 
                                 // remove the values form the session
-                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_RESOURCE);
                                 session.removeValue(C_PARA_FILECONTENT);
                                 session.removeValue(C_PARA_NEWTYPE);
                                 session.removeValue("lasturl");
@@ -405,7 +405,7 @@ public class CmsAdminDownGalleries extends CmsAdminGallery {
      */
     public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         String suffix = filename.substring(filename.lastIndexOf('.') + 1);
         suffix = suffix.toLowerCase(); // file extension of filename
 

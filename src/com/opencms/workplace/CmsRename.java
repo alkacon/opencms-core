@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.51 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -76,7 +76,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_NAME);
             session.removeValue("lasturl");
         }
@@ -84,11 +84,11 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
 
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         String newFile = (String)parameters.get(C_PARA_NAME);
         if(session.getValue(C_PARA_NAME) != null) {
             if(newFile != null) {
@@ -143,7 +143,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        session.removeValue(C_PARA_FILE); //don't delete this. We really need this to try again.
+                        session.removeValue(C_PARA_RESOURCE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
                         xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
                         xmlTemplateDocument.setData("lasturl", lasturl);
@@ -151,7 +151,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     }
 
                     // everything is done, so remove all session parameters
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_NAME);
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
@@ -176,7 +176,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     } catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        session.removeValue(C_PARA_FILE); //don't delete this. We really need this to try again.
+                        session.removeValue(C_PARA_RESOURCE); //don't delete this. We really need this to try again.
                         session.removeValue(C_PARA_NAME);
                         xmlTemplateDocument.setData("details", Utils.getStackTrace(ex));
                         xmlTemplateDocument.setData("lasturl", lasturl);
@@ -184,7 +184,7 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     }
 
                     // everything is done, so remove all session parameters
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_NAME);
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     template = "update";

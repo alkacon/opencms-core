@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.51 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.52 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.51 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -78,7 +78,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
 
             // remove all session values
             session.removeValue(C_PARA_DELETE);
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
@@ -89,11 +89,11 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             session.putValue(C_PARA_DELETE, delete);
         }
         delete = (String)session.getValue(C_PARA_DELETE);
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         String action = (String)parameters.get("action");
         CmsResource file = cms.readFileHeader(filename);
         if(file.isFile()) {
@@ -118,10 +118,10 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     try{
                         cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                         session.removeValue(C_PARA_DELETE);
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
@@ -147,13 +147,13 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                         cms.deleteResource(cms.readAbsolutePath(file), I_CmsConstants.C_DELETE_OPTION_IGNORE_VFS_LINKS);
                     }catch(CmsException e){
                         session.removeValue(C_PARA_DELETE);
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                         xmlTemplateDocument.setData("lasturl", lasturl);
                         return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                     }
                     session.removeValue(C_PARA_DELETE);
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     template = "update";
                 }

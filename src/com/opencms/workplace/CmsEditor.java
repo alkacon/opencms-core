@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2003/07/29 10:43:47 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/30 16:25:43 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2003/07/29 10:43:47 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/30 16:25:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -122,11 +122,11 @@ public class CmsEditor extends CmsWorkplaceDefault {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String saveerror = "";
         // Get all editor parameters
-        String file = (String)parameters.get(C_PARA_FILE);
+        String file = (String)parameters.get(C_PARA_RESOURCE);
         // try to get the value from the session because we might come from the error page
         if((file == null) || ("".equals(file))){
-            file = (String)session.getValue(C_PARA_FILE);
-            session.removeValue(C_PARA_FILE);
+            file = (String)session.getValue(C_PARA_RESOURCE);
+            session.removeValue(C_PARA_RESOURCE);
         }        
         if((file != null) && (! "".equals(file))) {
             session.putValue("te_file", file);
@@ -235,7 +235,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
-        xmlTemplateDocument.setData(C_PARA_FILE, file);
+        xmlTemplateDocument.setData(C_PARA_RESOURCE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);
         xmlTemplateDocument.setData("editorframe", editorframe);
         xmlTemplateDocument.setData("OpenCmsContext", A_OpenCms.getOpenCmsContext());
@@ -248,7 +248,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         String lasturlname = null;
         if(!"".equals(saveerror)){
             if(file != null){
-                session.putValue(C_PARA_FILE, file);
+                session.putValue(C_PARA_RESOURCE, file);
             }
             if(content != null){
                 session.putValue(C_PARA_CONTENT, content);

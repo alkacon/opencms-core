@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.45 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -93,7 +93,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null){
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_LINK);
             session.removeValue(C_PARA_VIEWFILE);
             session.removeValue(C_PARA_NAVPOS);
@@ -106,12 +106,12 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             session.putValue("lasturl", lastUrl);
         }
         // get the linkname and the linkurl
-        filename = cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
+        filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }  else {
             // try to get the value from the session, e.g. after an error
-            filename = (String)session.getValue(C_PARA_FILE)!=null?(String)session.getValue(C_PARA_FILE):"";
+            filename = (String)session.getValue(C_PARA_RESOURCE)!=null?(String)session.getValue(C_PARA_RESOURCE):"";
         }
         targetName = cms.getRequestContext().getRequest().getParameter(C_PARA_LINK);
         if(targetName != null) {
@@ -253,7 +253,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
 
                     // remove values from session
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_VIEWFILE);
                     session.removeValue(C_PARA_LINK);
                     session.removeValue(C_PARA_NAVTEXT);
@@ -280,7 +280,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
                 }
             }
         } else {
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_VIEWFILE);
             session.removeValue(C_PARA_LINK);
             session.removeValue(C_PARA_NAVTEXT);
@@ -295,7 +295,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
             xmlTemplateDocument.setData("folder", foldername);
             xmlTemplateDocument.setData("newlink", notChange);
             session.putValue(C_PARA_LINK, targetName);
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);
             templateSelector = "errorcheckurl";
@@ -303,7 +303,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         if(!"".equals(error.trim())){
             xmlTemplateDocument.setData("errordetails", error);
             session.putValue(C_PARA_LINK, targetName);
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
             session.putValue(C_PARA_NAVTEXT, navtitle);
             session.putValue(C_PARA_NAVPOS, navpos);
             templateSelector = "error";
@@ -342,7 +342,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault implements I_CmsWpCo
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // get a previous value from the session
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename == null) {
             filename = "";
         }

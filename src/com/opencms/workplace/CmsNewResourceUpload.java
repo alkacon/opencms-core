@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.45 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.46 $ $Date: 2003/07/30 16:25:42 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
     
@@ -93,7 +93,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if (initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_FILECONTENT);
             session.removeValue(C_PARA_NEWTYPE);
             session.removeValue(C_PARA_TITLE);
@@ -140,9 +140,9 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             filename = (String)files.nextElement();
         }
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
 
         // get the filecontent
         if(filename != null) {
@@ -182,7 +182,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
             // the resource to upload exists, the user choosed
             // cancel in the warning dialogue... clear the session
             // values now.
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_FILECONTENT);
             session.removeValue(C_PARA_NEWTYPE);
             session.removeValue(C_PARA_TITLE);
@@ -226,7 +226,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                             if( zip.isValidZipFile() ) {
 
                                 // remove the values form the session
-                                session.removeValue(C_PARA_FILE);
+                                session.removeValue(C_PARA_RESOURCE);
                                 session.removeValue(C_PARA_FILECONTENT);
                                 session.removeValue(C_PARA_NEWTYPE);
                                 session.removeValue(C_PARA_TITLE);
@@ -300,7 +300,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         }
 
                         // remove the values form the session
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         session.removeValue(C_PARA_FILECONTENT);
                         session.removeValue(C_PARA_NEWTYPE);
                         session.removeValue(C_PARA_TITLE);
@@ -361,7 +361,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
                         }
 
                         // remove the values form the session
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         session.removeValue(C_PARA_FILECONTENT);
                         session.removeValue(C_PARA_NEWTYPE);
                         session.removeValue(C_PARA_TITLE);
@@ -418,7 +418,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
      */
     public int getResources(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         String suffix = filename.substring(filename.lastIndexOf('.') + 1);
         suffix = suffix.toLowerCase(); // file extension of filename
 

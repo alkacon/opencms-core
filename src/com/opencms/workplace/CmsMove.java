@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.61 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.62 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -81,7 +81,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_NEWFOLDER);
             session.removeValue(C_PARA_FLAGS);
             session.removeValue("lasturl");
@@ -91,12 +91,12 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         String lasturl = getLastUrl(cms, parameters);
 
         // get the file to be copied
-        String sourceFilename = (String)parameters.get(C_PARA_FILE);
+        String sourceFilename = (String)parameters.get(C_PARA_RESOURCE);
         if(sourceFilename != null) {
-            session.putValue(C_PARA_FILE, sourceFilename);
+            session.putValue(C_PARA_RESOURCE, sourceFilename);
         }
         
-        sourceFilename = (String)session.getValue(C_PARA_FILE);
+        sourceFilename = (String)session.getValue(C_PARA_RESOURCE);
         CmsResource source = cms.readFileHeader(sourceFilename);
 
         // read all request parameters
@@ -144,7 +144,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             // ednfal: check if the user try to move the resource into itself
             if(newFolder.equals(cms.readAbsolutePath(source))) {
                  // something went wrong, so remove all session parameters
-                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_RESOURCE);
                 session.removeValue(C_PARA_NEWFOLDER);
                 session.removeValue(C_PARA_FLAGS);
                 template = "error";
@@ -160,7 +160,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
             }
             catch(CmsException ex) {
                 // something went wrong, so remove all session parameters
-                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_RESOURCE);
                 session.removeValue(C_PARA_NEWFOLDER);
                 session.removeValue(C_PARA_FLAGS);
 
@@ -200,7 +200,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     catch(CmsException ex) {
 
                         // something went wrong, so remove all session parameters
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         session.removeValue(C_PARA_NEWFOLDER);
                         session.removeValue(C_PARA_FLAGS);
 
@@ -213,7 +213,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     }
 
                     // everything is done, so remove all session parameters
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_NEWFOLDER);
                     session.removeValue(C_PARA_FLAGS);
 
@@ -240,7 +240,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                         cms.moveResource(cms.readAbsolutePath(source), newFolder + newFile);
                     } catch(CmsException e) {
                         // something went wrong, so remove all session parameters
-                        session.removeValue(C_PARA_FILE);
+                        session.removeValue(C_PARA_RESOURCE);
                         session.removeValue(C_PARA_NEWFOLDER);
                         session.removeValue(C_PARA_FLAGS);
 
@@ -252,7 +252,7 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                     }
 
                     // everything is done, so remove all session parameters
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_NEWFOLDER);
                     session.removeValue(C_PARA_FLAGS);
                     xmlTemplateDocument.setData("lasturl", lasturl);

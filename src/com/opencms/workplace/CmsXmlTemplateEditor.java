@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2003/07/22 17:13:33 $
-* Version: $Revision: 1.110 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.111 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.w3c.dom.Element;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.110 $ $Date: 2003/07/22 17:13:33 $
+ * @version $Revision: 1.111 $ $Date: 2003/07/30 16:25:42 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -280,11 +280,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             body = (String)session.getValue("body");
             session.removeValue("body");
         }
-        String file = (String)parameters.get(C_PARA_FILE);
+        String file = (String)parameters.get(C_PARA_RESOURCE);
         if(file == null){
             // try to get the value from the session because we might come from errorpage
-            file = (String)session.getValue(C_PARA_FILE);
-            session.removeValue(C_PARA_FILE);
+            file = (String)session.getValue(C_PARA_RESOURCE);
+            session.removeValue(C_PARA_RESOURCE);
         }
         String editor = (String)parameters.get("editor");
         if((editor == null) || "".equals(editor)){
@@ -693,7 +693,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                     session.putValue("body", body);
                 }
                 if(file != null){
-                    session.putValue(C_PARA_FILE, file);
+                    session.putValue(C_PARA_RESOURCE, file);
                 }
                 if(editor != null){
                     session.putValue("editor", editor);
@@ -761,7 +761,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // remove all parameters that could be relevant for the
         // included editor.
-        parameters.remove(C_PARA_FILE);
+        parameters.remove(C_PARA_RESOURCE);
         parameters.remove(C_PARA_ACTION);
         int numEditors = C_SELECTBOX_EDITORVIEWS.length;
         for(int i = 0;i < numEditors;i++) {
@@ -793,7 +793,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
 
         // Put the "file" datablock for processing in the template file.
         // It will be inserted in a hidden input field and given back when submitting.
-        xmlTemplateDocument.setData(C_PARA_FILE, file);
+        xmlTemplateDocument.setData(C_PARA_RESOURCE, file);
         if(!"".equals(saveerror)){
             templateSelector = "errorsave";
             xmlTemplateDocument.setData("errordetail", saveerror);

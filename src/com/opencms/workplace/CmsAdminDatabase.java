@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/05/21 14:36:20 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -77,9 +77,9 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault implements I_CmsConsta
             filename = (String)files.nextElement();
         }
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
 
         // get the filecontent
         byte[] filecontent = new byte[0];

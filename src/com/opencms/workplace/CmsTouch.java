@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTouch.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/07/30 16:25:42 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Hashtable;
  * This class is invoked for the workplace "touch" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConstants, I_CmsConstants {
 
@@ -111,15 +111,15 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 		}
 
 		// read the name of the resource
-		m_ResourceName = (String) theParameters.get(I_CmsWpConstants.C_PARA_FILE);
+		m_ResourceName = (String) theParameters.get(I_CmsWpConstants.C_PARA_RESOURCE);
 		if (m_ResourceName != null) {
 			// the form was submitted the first time, put the name of the 
 			// resource (which isnt changed anymore) into the session
-			session.putValue(I_CmsWpConstants.C_PARA_FILE, m_ResourceName);
+			session.putValue(I_CmsWpConstants.C_PARA_RESOURCE, m_ResourceName);
 		}
 		else {
 			// this is a re-submission, get the resource name from the session instead
-			m_ResourceName = (String) session.getValue(I_CmsWpConstants.C_PARA_FILE);
+			m_ResourceName = (String) session.getValue(I_CmsWpConstants.C_PARA_RESOURCE);
 		}
 
 		// create a valid Cms resource for the given resource name
@@ -183,7 +183,7 @@ public final class CmsTouch extends CmsWorkplaceDefault implements I_CmsWpConsta
 	 */
 	private void clearSessionValues(I_CmsSession theSession) {
 		// remove all session values
-		theSession.removeValue(I_CmsWpConstants.C_PARA_FILE);
+		theSession.removeValue(I_CmsWpConstants.C_PARA_RESOURCE);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
-* Date   : $Date: 2003/07/15 12:17:04 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2003/07/15 12:17:04 $
+ * @version $Revision: 1.36 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -79,7 +79,7 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial == null) {
 
-            filename = cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
+            filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
             title = Encoder.redecodeUriComponent(cms.getRequestContext().getRequest().getParameter(C_PARA_TITLE));
             keywords = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_KEYWORDS));
             description = Encoder.redecodeUriComponent((String)parameters.get(C_PARA_DESCRIPTION));

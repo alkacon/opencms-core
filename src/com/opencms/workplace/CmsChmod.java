@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChmod.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2003/07/30 16:25:42 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Hashtable;
  * Template class for displaying the chmod screen of the OpenCms workplace.<P>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.40 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.41 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -69,7 +69,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		String initial = (String)parameters.get(C_PARA_INITIAL);
 		if(initial != null) {
 			// remove all session values
-			session.removeValue(C_PARA_FILE);
+			session.removeValue(C_PARA_RESOURCE);
 			session.removeValue("lasturl");
 		}
 
@@ -79,9 +79,9 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		String newaccess = (String)parameters.get(C_PARA_NEWACCESS);
 
 		// get the filename
-		String filename = (String)parameters.get(C_PARA_FILE);
-		if(filename != null) session.putValue(C_PARA_FILE, filename);
-		filename = (String)session.getValue(C_PARA_FILE);
+		String filename = (String)parameters.get(C_PARA_RESOURCE);
+		if(filename != null) session.putValue(C_PARA_RESOURCE, filename);
+		filename = (String)session.getValue(C_PARA_RESOURCE);
 		CmsResource file = cms.readFileHeader(filename);
 
 		// get all access flags from the request
@@ -146,7 +146,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				// boolean rekursive = (file.isFolder() && allflag.equals("true"));
 				// cms.chmod(cms.readAbsolutePath(file), flag, rekursive);
 
-				session.removeValue(C_PARA_FILE);
+				session.removeValue(C_PARA_RESOURCE);
 
 				// return to filelist
 				try {
@@ -168,7 +168,7 @@ public class CmsChmod extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				"the current user is not allowed to change the file owner");
 				xmlTemplateDocument.setData("lasturl", lasturl);
 				template = "error";
-				session.removeValue(C_PARA_FILE);
+				session.removeValue(C_PARA_RESOURCE);
 			}
 		}
 

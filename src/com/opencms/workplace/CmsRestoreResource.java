@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRestoreResource.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.14 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -72,7 +72,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             //session.removeValue("versionid");
             session.removeValue("restore");
             session.removeValue("lasturl");
@@ -85,11 +85,11 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
             session.putValue("restore", restore);
         }
         restore = (String)session.getValue("restore");
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
 
         String version = (String)session.getValue("version");
         String action = (String)parameters.get("action");
@@ -107,7 +107,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
                 // restore the resource
                 try{
                     cms.restoreResource(Integer.parseInt(version),cms.readAbsolutePath(file));
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     //template = "done";
                     // return to filelist
                     try {
@@ -124,7 +124,7 @@ public class CmsRestoreResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     }
                     return null;
                 } catch(CmsException e){
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");

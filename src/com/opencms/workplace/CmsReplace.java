@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2003/07/15 12:17:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/07/30 16:25:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 
@@ -130,9 +130,9 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 		//////////////////////////////////////////////////////////////////////      
 
 		// save the name of the old resource in the session
-		m_OldResourceName = (String) theParameters.get(I_CmsWpConstants.C_PARA_FILE);
+		m_OldResourceName = (String) theParameters.get(I_CmsWpConstants.C_PARA_RESOURCE);
 		if (m_OldResourceName != null) {
-			session.putValue(I_CmsWpConstants.C_PARA_FILE, m_OldResourceName);
+			session.putValue(I_CmsWpConstants.C_PARA_RESOURCE, m_OldResourceName);
 
 			// preserve the type of the old resource depending on the file extension as well
 			Hashtable fileExtensions = cms.readFileExtensions();
@@ -150,7 +150,7 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 			session.putValue("OLD_TYPE", m_OldResourceType);
 		}
 		else {
-			m_OldResourceName = (String) session.getValue(I_CmsWpConstants.C_PARA_FILE);
+			m_OldResourceName = (String) session.getValue(I_CmsWpConstants.C_PARA_RESOURCE);
 			m_OldResourceType = (String) session.getValue("OLD_TYPE");
 		}
 
@@ -215,7 +215,7 @@ public final class CmsReplace extends CmsWorkplaceDefault implements I_CmsConsta
 	 */
 	private void clearSessionValues(I_CmsSession theSession) {
 		// remove all session values
-		theSession.removeValue(I_CmsWpConstants.C_PARA_FILE); // name of the old resource
+		theSession.removeValue(I_CmsWpConstants.C_PARA_RESOURCE); // name of the old resource
 		theSession.removeValue("OLD_TYPE"); // type of the old resource
 		theSession.removeValue("NEW_RESOURCE"); // name of the new resource
 		theSession.removeValue(I_CmsWpConstants.C_PARA_FILECONTENT); // content of the new resource        

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsHistory.java,v $
-* Date   : $Date: 2003/07/18 14:11:18 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.31 $ $Date: 2003/07/18 14:11:18 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -78,17 +78,17 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue("lasturl");
             session.removeValue("version");
         }
 
         // get the filename
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
 
         // get the version
         String versionId = (String)parameters.get("versionid");
@@ -163,7 +163,7 @@ public class CmsHistory extends CmsWorkplaceDefault implements I_CmsWpConstants,
     public Integer getFiles(CmsObject cms, CmsXmlLanguageFile lang, Vector names,
             Vector values, Hashtable parameters) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             List allFiles = cms.readAllBackupFileHeaders(filename);
             // vector is already sorted by version id

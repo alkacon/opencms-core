@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.10 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.11 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -71,16 +71,16 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
         String lasturl = getLastUrl(cms, parameters);
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         CmsResource file = null;
         if (filename.endsWith("/")){
             file = cms.readFolder(filename, true);
@@ -89,7 +89,7 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
         }
         try{
             cms.undeleteResource(cms.readAbsolutePath(file));
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             //template = "done";
             // return to filelist
             try {
@@ -106,7 +106,7 @@ public class CmsUndelete extends CmsWorkplaceDefault implements I_CmsWpConstants
             }
             return null;
         } catch(CmsException e){
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
             xmlTemplateDocument.setData("lasturl", lasturl);
             return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");

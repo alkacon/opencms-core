@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChnav.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -88,12 +88,12 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
 
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename == null || "".equals(filename)){
-            filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
+            filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_RESOURCE);
         }
         if(filename != null){
-            session.putValue(C_SESSIONHEADER + C_PARA_FILE, filename);
+            session.putValue(C_SESSIONHEADER + C_PARA_RESOURCE, filename);
         }
         CmsResource resource = cms.readFileHeader(filename);
 
@@ -289,9 +289,9 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
         String preselect = (String)session.getValue(C_SESSIONHEADER + C_PARA_NAVPOS);
         int retValue = -1;
         // get the name of the current file
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename == null || "".equals(filename)){
-            filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_FILE);
+            filename = (String)session.getValue(C_SESSIONHEADER + C_PARA_RESOURCE);
         }
 
        // get the nav information
@@ -423,7 +423,7 @@ public class CmsChnav extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
      */
     private void clearSession(I_CmsSession session){
         session.removeValue(C_SESSIONHEADER + C_PARA_NAVPOS);
-        session.removeValue(C_SESSIONHEADER + C_PARA_FILE);
+        session.removeValue(C_SESSIONHEADER + C_PARA_RESOURCE);
     }
 }
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPublishResource.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.24 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.25 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -84,7 +84,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {          
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PUBLISH_THREAD);
             session.removeValue(C_PUBLISH_LINKCHECK_THREAD);   
             session.removeValue(C_PUBLISH_LASTURL);                     
@@ -92,11 +92,11 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         }       
 
         // get the filename parameter
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
 
         // now get the action paramter and perform the requested action
         String action = (String)parameters.get("action");
@@ -162,7 +162,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
         } else if("done".equals(action)){
             // cleanup the session
             session.removeValue(C_PUBLISH_LASTURL);
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             // return to filelist
             String lasturl = getLastUrl(cms, parameters);            
             try {
@@ -227,7 +227,7 @@ public class CmsPublishResource extends CmsWorkplaceDefault implements I_CmsWpCo
                     template = "showresult";
                 
                 } catch(CmsException e){
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
                     xmlTemplateDocument.setData("lasturl", lasturl);
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");

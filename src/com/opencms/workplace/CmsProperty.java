@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.44 $ $Date: 2003/07/30 16:25:42 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -72,7 +72,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     public Integer getAllPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             CmsResource file = cms.readFileHeader(filename);
             I_CmsResourceType type = cms.getResourceType(file.getType());
@@ -113,22 +113,22 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_PROPERTYDEF);
             session.removeValue("lasturl");
         }
         String lasturl = getLastUrl(cms, parameters);
 
         // get all parameters and put them into the session
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
         String propertydef = (String)parameters.get("selectproperty");
         if(propertydef != null) {
             session.putValue(C_PARA_PROPERTYDEF, propertydef);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         propertydef = (String)session.getValue(C_PARA_PROPERTYDEF);
         CmsResource file = cms.readFileHeader(filename);
         String edit = (String)parameters.get("EDIT");
@@ -300,7 +300,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     public Integer getProperty(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             Map properties = cms.readProperties(filename);
             Iterator i = properties.keySet().iterator();
@@ -335,7 +335,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
     public Integer getPropertydef(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
         I_CmsSession session = cms.getRequestContext().getSession(true);
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
             CmsResource file = cms.readFileHeader(filename);
             I_CmsResourceType type = cms.getResourceType(file.getType());
@@ -376,7 +376,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         I_CmsSession session = cms.getRequestContext().getSession(true);
 
         // get the filename
-        String filename = (String)session.getValue(C_PARA_FILE);
+        String filename = (String)session.getValue(C_PARA_RESOURCE);
         if(filename != null) {
 
             //get the propertydefinition

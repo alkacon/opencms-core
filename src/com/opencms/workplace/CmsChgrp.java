@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChgrp.java,v $
- * Date   : $Date: 2003/07/30 13:22:24 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/07/30 16:25:42 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the chgrp screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.37 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.38 $ $Date: 2003/07/30 16:25:42 $
  */
 public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 
@@ -72,21 +72,21 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		String initial = (String)parameters.get(C_PARA_INITIAL);
 		if(initial != null) {
 			// remove all session values
-			session.removeValue(C_PARA_FILE);
+			session.removeValue(C_PARA_RESOURCE);
 			session.removeValue("lasturl");
 		}
 
 		// get the lasturl parameter
 		String lasturl = getLastUrl(cms, parameters);
 		String newgroup = (String)parameters.get(C_PARA_NEWGROUP);
-		String filename = (String)parameters.get(C_PARA_FILE);
+		String filename = (String)parameters.get(C_PARA_RESOURCE);
 		String flags = (String)parameters.get(C_PARA_FLAGS);
 		if(flags == null) flags = "false";
-		if(filename != null) session.putValue(C_PARA_FILE, filename);
+		if(filename != null) session.putValue(C_PARA_RESOURCE, filename);
 
 		// check if the lock parameter was included in the request
 		// if not, the lock page is shown for the first time
-		filename = (String)session.getValue(C_PARA_FILE);
+		filename = (String)session.getValue(C_PARA_RESOURCE);
 		CmsResource file = cms.readFileHeader(filename);
 
 		// select the template to be displayed
@@ -110,7 +110,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				// boolean rekursive = (file.isFolder() && flags.equals("true"));
 				// cms.chgrp(cms.readAbsolutePath(file), newgroup, rekursive);
 
-				session.removeValue(C_PARA_FILE);
+				session.removeValue(C_PARA_RESOURCE);
 
 				// return to filelist
 				try {
@@ -131,7 +131,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 				xmlTemplateDocument.setData("details", "the current user is not allowed to change the file owner");
 				xmlTemplateDocument.setData("lasturl", lasturl);
 				template = "error";
-				session.removeValue(C_PARA_FILE);
+				session.removeValue(C_PARA_RESOURCE);
 			}
 		}
 
@@ -172,7 +172,7 @@ public class CmsChgrp extends CmsWorkplaceDefault implements I_CmsWpConstants {
 		Vector groups = cms.getGroups();
 		int retValue = -1;
 		I_CmsSession session = cms.getRequestContext().getSession(true);
-		String filename = (String)session.getValue(C_PARA_FILE);
+		String filename = (String)session.getValue(C_PARA_RESOURCE);
 		if(filename != null) {
 			CmsResource file = cms.readFileHeader(filename);
 			String group = cms.readGroup(file).getName();

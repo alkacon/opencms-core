@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
-* Date   : $Date: 2003/07/30 13:22:24 $
-* Version: $Revision: 1.62 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.63 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.62 $ $Date: 2003/07/30 13:22:24 $
+ * @version $Revision: 1.63 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -82,7 +82,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue(C_PARA_NEWFILE);
             session.removeValue(C_PARA_NEWFOLDER);
             session.removeValue(C_PARA_FLAGS);
@@ -94,11 +94,11 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
         String lasturl = getLastUrl(cms, parameters);
 
         // get the file to be copied
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         CmsResource file = cms.readFileHeader(filename);
 
         // read all request parameters
@@ -168,7 +168,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                 }
                 catch(CmsException ex) {
                     // something went wrong, so remove all session parameters
-                    session.removeValue(C_PARA_FILE);
+                    session.removeValue(C_PARA_RESOURCE);
                     session.removeValue(C_PARA_NAME);
                     session.removeValue(C_PARA_NEWFILE);
                     session.removeValue(C_PARA_NEWFOLDER);
@@ -182,7 +182,7 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
                 }
 
                 // everything is done, so remove all session parameters
-                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_RESOURCE);
                 session.removeValue(C_PARA_NAME);
                 session.removeValue(C_PARA_NEWFILE);
                 session.removeValue(C_PARA_NEWFOLDER);

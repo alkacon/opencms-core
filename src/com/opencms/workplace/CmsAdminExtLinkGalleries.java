@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2003/07/18 19:03:49 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2003/07/30 16:25:43 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.17 $ $Date: 2003/07/18 19:03:49 $
+ * @version $Revision: 1.18 $ $Date: 2003/07/30 16:25:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -201,7 +201,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 }
 
                 // get the parameters for the link file
-                String filename = cms.getRequestContext().getRequest().getParameter(C_PARA_FILE);
+                String filename = cms.getRequestContext().getRequest().getParameter(C_PARA_RESOURCE);
                 if(filename != null) {
                     session.putValue("extlink.filename", filename);
                 } else {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLockChange.java,v $
-* Date   : $Date: 2003/07/22 00:29:22 $
-* Version: $Revision: 1.42 $
+* Date   : $Date: 2003/07/30 16:25:42 $
+* Version: $Revision: 1.43 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.42 $ $Date: 2003/07/22 00:29:22 $
+ * @version $Revision: 1.43 $ $Date: 2003/07/30 16:25:42 $
  */
 
 public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants{
@@ -72,21 +72,21 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_FILE);
+            session.removeValue(C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         String lock = (String)parameters.get(C_PARA_LOCK);
-        String filename = (String)parameters.get(C_PARA_FILE);
+        String filename = (String)parameters.get(C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_FILE, filename);
+            session.putValue(C_PARA_RESOURCE, filename);
         }
 
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
-        filename = (String)session.getValue(C_PARA_FILE);
+        filename = (String)session.getValue(C_PARA_RESOURCE);
         CmsResource file = cms.readFileHeader(filename);
 
         // select the template to be displayed
@@ -109,7 +109,7 @@ public class CmsLockChange extends CmsWorkplaceDefault implements I_CmsWpConstan
         }
         if(lock != null) {
             if(lock.equals("true")) {
-                session.removeValue(C_PARA_FILE);
+                session.removeValue(C_PARA_RESOURCE);
                 try{
                     //cms.unlockResource(filename, false);
                     cms.lockResource(filename, true);
