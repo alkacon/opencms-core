@@ -329,8 +329,7 @@ function doEditHTML(para)
         break;      
     case 15:
         EDITOR.EDIT_HTML.PrintDocument(true);
-        break;
-        
+        break;        
     case 21:
         ParagraphStyle_onchange();
         break;
@@ -418,13 +417,13 @@ function doEditHTML(para)
         DECMD_HYPERLINK_onclick();
         break;                
     case 50:
-        var winheight = (USE_LINKSTYLEINPUTS?340:275);
+        var winheight = (USE_LINKSTYLEINPUTS?240:190);
         linkEditor = EDITOR.EDIT_HTML;
         linkEditorAll = EDITOR.EDIT_HTML.DOM.all.tags("A"); 
         linkEditorRange = EDITOR.EDIT_HTML.DOM.body.createTextRange();
         linkEditorSelection = EDITOR.EDIT_HTML.DOM.selection;
         linkEditorStyleInputs = USE_LINKSTYLEINPUTS;
-        linkwin = window.open('dialogs/link.html','SetLink', "width=450, height=" + winheight + ", resizable=no, top=300, left=250");        
+        linkwin = window.open('dialogs/link.html','SetLink', "width=480, height=" + winheight + ", resizable=no, top=300, left=250");        
         break;      	         
     case 51:
         checkTableElSelection("TR");

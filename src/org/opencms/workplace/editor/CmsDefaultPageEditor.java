@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2004/01/19 09:13:45 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * Extend this class for all editors that work with the CmsDefaultPage.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.1.12
  */
@@ -394,6 +394,33 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     }
     
     /**
+     * Returns the editor action for a "cancel" button.<p>
+     * 
+     * This overwrites the cancel method of the CmsDialog class.<p>
+     * 
+     * Always use this value, do not write anything directly in the html page.<p>
+     * 
+     * @return the default action for a "cancel" button
+     */
+    public String buttonActionCancel() {
+        String target = null;
+        if ("true".equals(getParamDirectedit())) {
+            // editor is in direct edit mode
+            if (!"".equals(getParamBacklink())) {
+                // set link to the specified back link target
+                target = getParamBacklink();
+            } else {
+                // set link to the edited resource
+                target = getParamResource();
+            }
+        } else {
+            // in workplace mode, show explorer view
+            target = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+        }
+        return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
+    }
+    
+    /**
      * Builds the html to display the special action button for the direct edit mode of the editor.<p>
      * 
      * @param jsFunction the JavaScript function which will be executed on the mouseup event 
@@ -424,28 +451,10 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         if (active) {
             // create the link for the button
             return button("javascript:" + jsFunction, null, image, name, 0, url.substring(0, url.lastIndexOf("/") + 1));
-            //retValue.append("<a href=\"#\" onMouseOver=\"" + nameValue + ".className='over';\" ");
-            //retValue.append("onMouseOut=\"" + nameValue + ".className='norm';\" onMouseDown=\"" + nameValue + ".className='push';\" ");
-            //retValue.append("onMouseUp=\"" + nameValue + ".className='over';" + jsFunction + ";\">");
         } else {
+            // create the inactive button
             return button(null, null, image, name + "_in", 0, url.substring(0, url.lastIndexOf("/") + 1));
         }
-        
-//        // build the button html
-//        retValue.append("<img src=\"" + url + "\" ");
-//        retValue.append("width=\"20\" height=\"20\" ");
-//        if (nameValue != null) {
-//            retValue.append("name=\"" + nameValue + "\" ");
-//        }
-//        retValue.append("alt=\"" + name + "\" ");
-//        retValue.append("title=\"" + name + "\">");
-//        
-//        if (active) {
-//            // close the link
-//            retValue.append("</a>");
-//        }
-//        
-//        return retValue.toString();
     }
     
     /**
@@ -514,18 +523,23 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editor.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException {
+    public void actionExit() throws IOException, JspException {
         // clear temporary file and unlock resource, if in directedit mode
         actionClear(false);
         if ("true".equals(getParamDirectedit())) {
             // editor is in direct edit mode
             if (!"".equals(getParamBacklink())) {
-                // redirect to the specified back link target
-                getJsp().getResponse().sendRedirect(getJsp().link(getParamBacklink()));
+                // set link to the specified back link target
+                setParamOkLink(getParamBacklink());
             } else {
-                // redirect to the edited resource
-                getJsp().getResponse().sendRedirect(getJsp().link(getParamResource()));
+                // set link to the edited resource
+                setParamOkLink(getParamResource());
             }
+            // set the okfunctions parameter to load the common close dialog jsp (to disable history back jump)
+            setParamOkFunctions("var x=null;");
+            // save initialized instance of this class in request attribute for included sub-elements
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            closeDialog();
         } else {
             // redirect to the workplace explorer view 
             getJsp().getResponse().sendRedirect(getJsp().link(CmsWorkplaceAction.C_JSP_WORKPLACE_URI));

@@ -8,11 +8,11 @@ bg.color=true
 button.customized=true
 button.print=false
 
-selector.body=true
+selector.elements=true
 
 gallery.download=true
 gallery.externlink=true
 gallery.image=true
 gallery.html=true
 
-linkstyleinputs=true
+linkstyleinputs=false

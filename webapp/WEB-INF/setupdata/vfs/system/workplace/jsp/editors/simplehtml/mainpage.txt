@@ -47,8 +47,8 @@
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
-if (options.showElement("selector.body")) {
-	out.println(wp.buttonBarLabel("input.body"));
+if (options.showElement("selector.elements")) {
+	out.println(wp.buttonBarLabel("input.element"));
 	out.println("<td>" + wp.buildSelectBodyLanguage("class=\"textfeld\" name=\"bodylanguage\" width=\"150\" onchange=\"doTemplSubmit(3);\"") + "</td>");
 	out.println(wp.buttonBarSpacer(2));
 	out.println("<td>" + wp.buildSelectBodyName("class=\"textfeld\" name=\"bodyname\" width=\"150\" onchange=\"doTemplSubmit(3);\"") + "</td>");
@@ -99,9 +99,8 @@ if (wp.isHelpEnabled()) {%>
 	//-->
 	</script>
 	</td>
-	</tr>
+</tr>
 		
-
 </form>
 
 <form name="ELEMENTS" action="dialogs/elements.html" target="DIALOG" method="post">
@@ -109,15 +108,16 @@ if (wp.isHelpEnabled()) {%>
 <input type="hidden" name="bodylanguage" value="<%= wp.getParamBodylanguage() %>">
 <input type="hidden" name="bodyname" value="<%= wp.getParamBodyname() %>">
 <input type="hidden" name="resource" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="ispopup" value="true">
 </form>
 
 <form name="PROPERTIES" action="../dialogs/property.html" target="DIALOG" method="post">
 <input type="hidden" name="resource" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="okfunctions" value="window.close();">
 <input type="hidden" name="usetempfileproject" value="true">
+<input type="hidden" name="ispopup" value="true">
 </form>
 
 </table>
-
 </body>
 </html>

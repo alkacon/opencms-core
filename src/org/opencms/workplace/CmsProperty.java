@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -351,7 +351,6 @@ public class CmsProperty extends CmsDialog implements I_CmsDialogHandler {
             retValue.append("\t<td class=\"textbold\">"+key("label.value")+"</td>\n");
             retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("input.usedproperty")+"</td>\n");            
             retValue.append("</tr>\n");
-            retValue.append("<tr>\n\t<td>"+dialogSpacer()+"</td>\n</tr>\n");
             for (int i=0; i<propertyDef.size(); i++) {
                 CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
                 String propName = Encoder.escapeXml(curProperty.getName());

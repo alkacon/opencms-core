@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/01/15 16:03:04 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 5.1
  */
@@ -116,6 +116,8 @@ public class CmsDialog extends CmsWorkplace {
     public static final String PARAM_OKLINK = "oklink";
     /** Request parameter name for the ok javascript functions */
     public static final String PARAM_OKFUNCTIONS = "okfunctions";
+    /** Request parameter name for the "is popup" flag */
+    public static final String PARAM_ISPOPUP = "ispopup";
 
     private String m_paramAction;
     private String m_paramResource;
@@ -125,6 +127,7 @@ public class CmsDialog extends CmsWorkplace {
     private String m_paramTitle;
     private String m_paramOklink;
     private String m_paramOkfunctions;
+    private String m_paramIspopup;
 
     private int m_action;  
     
@@ -419,6 +422,26 @@ public class CmsDialog extends CmsWorkplace {
      */
     public void setParamOkFunctions(String value) {
         m_paramOkfunctions = value;
+    }
+    
+    /**
+     * Returns the ispopup parameter.<p>
+     * 
+     * Use this parameter to indicate that the dialog is shown in a popup window.<p>
+     * 
+     * @return the ispopup parameter
+     */
+    public String getParamIsPopup() {
+        return m_paramIspopup;
+    }
+    
+    /**
+     * Sets the ispopup parameter.<p>
+     * 
+     * @param value the ispopup parameter value
+     */
+    public void setParamIsPopup(String value) {
+        m_paramIspopup = value;
     }
 
     /**
@@ -1006,6 +1029,18 @@ public class CmsDialog extends CmsWorkplace {
     }
     
     /**
+     * Builds the start html of the page, including setting of DOCTYPE, 
+     * inserting a header with the content-type and choosing an individual style sheet.<p>
+     * 
+     * @param title the title for the page
+     * @param stylesheet the style sheet to include
+     * @return the start html of the page
+     */
+    public String htmlStartStyle(String title, String stylesheet) {
+        return super.pageHtmlStyle(HTML_START, title, stylesheet);
+    }
+    
+    /**
      * Builds the start html of the page, including setting of DOCTYPE and 
      * inserting a header with the content-type.<p>
      * 
@@ -1067,7 +1102,11 @@ public class CmsDialog extends CmsWorkplace {
      */
     public String pageHtml(int segment, String helpUrl, String title) {        
         if (segment == HTML_START) {
-            StringBuffer result = new StringBuffer(super.pageHtml(segment, title));
+            String stylesheet = null;
+            if ("true".equals(getParamIsPopup())) {
+                stylesheet = "files/css_popup.css";
+            }
+            StringBuffer result = new StringBuffer(super.pageHtmlStyle(segment, title, stylesheet));
             if (getSettings().isViewExplorer()) {
                 result.append("<script type=\"text/javascript\" src=\"");
                 result.append(getSkinUri());

@@ -1,14 +1,14 @@
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 <%@ page import="
-    org.opencms.workplace.*,
-    com.opencms.flex.jsp.*,
-    com.opencms.*,
-    org.opencms.*"
-    buffer="none"
-        session="false"
-            %><%         
-            // Create a JSP action element
-            com.opencms.flex.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	org.opencms.workplace.*,
+	com.opencms.flex.jsp.*,
+	com.opencms.*,
+	org.opencms.*"
+	buffer="none"
+	session="false"%><%         
+            
+// Create a JSP action element
+com.opencms.flex.jsp.CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 String uri = cms.getRequestContext().getUri();  
 CmsDialog wp = new CmsDialog(cms);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 5.1
  */
@@ -698,6 +698,19 @@ public abstract class CmsWorkplace {
      * @return the default html for a workplace page
      */
     public String pageHtml(int segment, String title) {
+        return pageHtmlStyle(segment, title, null);
+    }
+    
+    /**
+     * Returns the default html for a workplace page, including setting of DOCTYPE and 
+     * inserting a header with the content-type, allowing the selection of an individual style sheet.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param title the title of the page, if null no title tag is inserted
+     * @param stylesheet the used style sheet, usually "files/css_workplace.css"
+     * @return the default html for a workplace page
+     */
+    public String pageHtmlStyle(int segment, String title, String stylesheet) {
         if (segment == HTML_START) {
             StringBuffer result = new StringBuffer(512);
             result.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
@@ -712,12 +725,17 @@ public abstract class CmsWorkplace {
             result.append("\">\n");
             result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
             result.append(getSkinUri());
-            result.append("files/css_workplace.css\">\n");
+            if (stylesheet != null) {
+                result.append(stylesheet);
+            } else {
+                result.append("files/css_workplace.css"); 
+            }
+            result.append("\">\n");
             return result.toString();
         } else {
             return "</html>";
         }
-    }   
+    }
     
     /**
      * Builds the start html of the body.<p>

@@ -1,0 +1,401 @@
+/* Default font settings for all standard p, td elements */
+p, td, div, span {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+}
+
+/* Default font settings for all form elements */
+input, select, option, textarea {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+}
+
+/* Button - Normal style (inactive) */
+span.norm {
+	display: block; 
+	border: 1px solid #c0c0c0;
+}
+
+/* Button - Hover style */
+span.over {
+	display: block; 
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #777777;
+	border-right: 1px solid #777777;
+}
+
+/* Button - Push style */
+span.push {
+	display: block;
+	border-top: 1px solid #777777;
+	border-left: 1px solid #777777;
+	border-bottom: 1px solid #ffffff;
+	border-right: 1px solid #ffffff;
+}
+
+/* Button - Disabled style */
+span.disabled {
+	display: block;
+	border: 1px solid #c0c0c0;
+	color: #888888;
+}
+
+/* Button - Tart tab */
+span.starttab {
+	display: block; 
+	height: 16px;
+	width: 1px;
+	border-top: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-bottom: 1px solid #777777;
+	border-right: 1px solid #777777;
+}
+
+/* Button - Separator */
+span.separator {
+	display: block; 
+	height: 18px;
+	width: 0px;
+	border-top: 0px;
+	border-left: 1px solid #777777;
+	border-bottom: 0px;
+	border-right: 1px solid #ffffff;
+}
+
+/* Button - Horizontal Separator line */
+.horseparator {
+	width: 100%;
+	background-color: #ffffff;
+	border-top: 1px solid #777777;
+}
+
+/* Button - Text button wrapper  */
+span.txtbutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;    
+	padding-top: 3px;
+	padding-left: 5px; 
+	padding-right: 5px;
+}
+
+/* Button - Image button wrapper */
+span.imgbutton {
+	padding-left: 1px; 
+	padding-right: 5px;
+}
+
+/* Button - Combined image and text button wrapper */
+span.combobutton {
+	display: block;
+	height: 17px;
+	white-space: nowrap;
+	padding-top: 3px; 
+	padding-left: 21px; 
+	padding-right: 5px;
+	background-repeat: no-repeat;
+}
+
+/* Button - Image buttnin image style */
+img.button {
+	height: 20px;
+	width: 20px;
+	border: 0px none;
+	vertical-align: middle;
+}
+
+/* Button - Link (href) style */
+a.button {
+	color: #000000;
+	text-decoration: none;
+	cursor: hand; 
+}
+
+/* ########## Dialog styles ########## */
+
+body.report {
+	background-color: #C0C0C0;
+}
+
+body.dialog {
+	font-family: verdana, sans-serif;
+	font-size: 11px;
+	padding: 0; 
+	margin: 0; 
+	background-color: #c0c0c0;
+}
+
+body.dialogpopup {
+	margin: 0 auto;
+	background-color: #C0C0C0;
+}
+
+/* outer table of complete dialog window */
+table.dialog {
+	width: 100%;
+}
+
+/* inner table of complete dialog window */
+table.dialogbox {
+	width: 100%;
+	background-color: #C0C0C0;
+}
+
+/* headline of dialog window */
+.dialoghead {
+	visibility: hidden;
+	display: none;
+}
+
+/* Subheadline used in content area */
+.dialogsubheader {
+	font-weight: bold;
+	margin: 12px 0 5px 0;
+}
+
+/* content area of dialog */
+.dialogcontent {
+	border-left: 1px solid #F0F0F0;
+	border-top: 1px solid #F0F0F0;
+	border-right: 2px solid #555;
+	border-bottom: 2px solid #555;	
+	padding: 15px;
+	margin: 8px;
+}
+
+/* one content line of dialog (e.g. text and input field) without breaks */
+.dialogrow {
+	margin-bottom: 5px;
+	display: block;
+	white-space: nowrap;
+}
+
+/* 3D block outer border definition */
+div.dialogblockborderheadline {
+	margin-top: 10px; 
+}
+
+/* 3D block outer border definition without headline */
+div.dialogblockborder {
+	border-left: 1px solid #555; 
+	border-top: 1px solid #555; 
+	border-right: 1px solid #F0F0F0; 
+	border-bottom: 1px solid #F0F0F0;
+}
+
+/* 3D block main style */
+div.dialogblock {
+	position: relative; 
+	padding: 8px;
+	border-left: 1px solid #F0F0F0; 
+	border-top: 1px solid #F0F0F0; 
+	border-right: 1px solid #555; 
+	border-bottom: 1px solid #555;
+}
+
+/* 3D block headline, positioned "inside" border */
+span.dialogblockhead {
+	font-weight: bold;
+	position:absolute; 
+	top: -7px; 
+	left: 5px; 
+	background: #c0c0c0; 
+	padding: 0 3px; 
+	white-space: nowrap;
+}
+
+/* outer border of white inner box */
+.dialoginnerboxborder {
+	border-left: 1px solid #777;
+	border-top: 1px solid #777;
+	border-right: 1px solid #F0F0F0;
+	border-bottom: 1px solid #F0F0F0;
+	padding: 0;
+}
+
+/* white inner box for dialogs */
+.dialoginnerbox {
+	background-color: #FFF;
+	border-left: 1px solid #333;
+	border-top: 1px solid #333;
+	border-right: 1px solid #C0C0C0;
+	border-bottom: 1px solid #C0C0C0;
+	padding: 2px;
+}
+
+/* separator line */
+.dialogseparator {
+	border-top: 1px solid #555;
+	border-bottom: 1px solid #F0F0F0;
+	margin: 5px 0;
+}
+
+/* separator line */
+.dialogspacer {
+	height: 10px;
+}
+
+/* error messages style */
+.dialogerror {
+	color: #c03;
+}
+
+/* final button row of dialog window */
+.dialogbuttons {
+	padding: 3px 8px 5px;
+	text-align: center;
+}
+
+/* Submit and other buttons */
+input.dialogbutton {
+    font-family: verdana, sans-serif;
+	font-size: 11px;
+	background-color: #C0C0C0;
+	width: 100px;
+	padding: 0 5px;
+	margin-left: 12px;
+	overflow: visible;
+}
+
+/* row marked as selected */
+.dialogmarked {
+	background-color: #008;
+	color: #fff;
+	display: block;
+	cursor: hand;
+	white-space: nowrap;
+}
+
+/* row marked as selected */
+.dialogmarkednew {
+	background-color: #603;
+	color: #fff;
+	display: block;
+	cursor: hand;
+	white-space: nowrap;
+}
+
+/* an unmarked row */
+.dialogunmarked {
+	display: block;
+	cursor: hand;
+	white-space: nowrap;
+}
+
+/* empty dummy style */
+.empty {}
+
+/* bold text */
+.textbold {
+	font-weight: bold;
+}
+
+/* centered text */
+.textcenter {
+	text-align: center;
+}
+
+/* maximum width for td, input field, etc. */
+.maxwidth {
+	width: 100%;
+}
+
+/* no border for elements */
+.noborder {
+	border-style: none;
+}
+
+/* element without margin and padding */
+.nomargin {
+	padding: 0;
+	margin: 0;
+}
+
+/* hide a block */
+.hide {
+	display: none;
+	visibility: hidden;
+}
+
+/* show a block */
+.show {
+	display: inline;
+	visibility: visible;
+}
+
+/* special definitions for permission dialog */
+table.dialogpermissiondetails {
+	table-layout: fixed;
+	width: 420px;
+	margin-left: 15px;
+}
+
+td.dialogpermissioncell {
+	width: 140px;
+	overflow: hidden;
+}
+
+div.dialogpermissioninherit {
+	width: 420px;
+	overflow: auto;
+	margin-left: 17px;
+}
+
+/* definitions for "tab-style" dialogs */
+.dialogtab {
+	border-top: 1px solid #fff;
+	border-left: 1px solid #fff;
+	border-right: 2px solid #555;
+	background: #c0c0c0;
+	text-align: center;
+	color: #000;
+	white-space: nowrap; 
+}
+
+.dialogtabactive {
+	border-top: 2px solid #fff;
+	border-left: 2px solid #fff;
+	border-right: 2px solid #555;
+	background: #c0c0c0;
+	text-align: center;
+	color: #fff;
+	font-weight: bold;
+	white-space: nowrap;
+}
+
+.dialogtabstart {
+	padding: 15px;
+	margin: 8px;
+}
+
+.dialogtabrow {
+	height: 1px;
+	background: #fff;
+}
+
+.dialogtabcontent {
+	border-left: 1px solid #F0F0F0;
+	border-right: 2px solid #555;
+	border-bottom: 2px solid #555;	
+	padding: 15px;
+	margin-top: -1px;
+}
+
+a.tab { 
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}
+
+a.tab:hover { 
+	color: #fff;
+}
+
+span.tabactive { 
+	color: #000;
+	text-decoration: none;
+	display: block;
+	padding: 4px;
+}

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/16 15:43:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -145,7 +145,16 @@ public class CmsDialogProperty extends CmsProperty {
         retValue.append("\t<td class=\"textbold\">"+key("label.value")+"</td>\n");   
         retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("input.usedproperty")+"</td>\n");    
         retValue.append("</tr>\n");
-        retValue.append("<tr>\n\t<td>"+dialogSpacer()+"</td>\n</tr>\n");
+        
+        // create template select box row
+        retValue.append(buildTableRowStart(key("input.template")));
+        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\" style=\"width: 400px;\""));
+        retValue.append("</td>\n");
+        retValue.append("\t<td class=\"textcenter\">");       
+        retValue.append("&nbsp;");
+        retValue.append(buildTableRowEnd());
+        
+        // create the text property input rows
         retValue.append(buildTextInput(editable, activeProperties));
         
         retValue.append(buildPageProperties(editable, activeProperties));
@@ -202,14 +211,6 @@ public class CmsDialogProperty extends CmsProperty {
             navPos = "";
         }
         retValue.append("<input type=\"hidden\" name=\"" + PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS +  "\" value=\"" + navPos + "\">");
-        retValue.append("</td>\n");
-        retValue.append("\t<td class=\"textcenter\">");       
-        retValue.append("&nbsp;");
-        retValue.append(buildTableRowEnd());
-        
-        // create template select box row
-        retValue.append(buildTableRowStart(key("input.template")));
-        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\" style=\"width: 400px;\""));
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");       
         retValue.append("&nbsp;");

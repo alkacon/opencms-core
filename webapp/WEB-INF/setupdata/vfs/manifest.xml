@@ -14819,6 +14819,25 @@
             <accesscontrol/>
         </file>
         <file>
+		<source>system/workplace/skins/modern/files/css_popup.css</source>
+		<destination>system/workplace/skins/modern/files/css_popup.css</destination>
+		<type>plain</type>
+		<uuidresource>d7903af4-4a5c-11d8-b978-ccab369a18fe</uuidresource>
+		<uuidcontent>d7903af5-4a5c-11d8-b978-ccab369a18fe</uuidcontent>
+		<datelastmodified>1074502622000</datelastmodified>
+		<userlastmodified>Admin</userlastmodified>
+		<datecreated>1074502362000</datecreated>
+		<usercreated>Admin</usercreated>
+		<flags>0</flags>
+		<properties>
+			<property>
+				<name>Title</name>
+				<value><![CDATA[Popup dialog stylesheet]]></value>
+			</property>
+		</properties>
+		<accesscontrol/>
+	</file> 
+        <file>
             <source>system/workplace/skins/modern/files/css_workplace.css</source>
             <destination>system/workplace/skins/modern/files/css_workplace.css</destination>
             <type>plain</type>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/16 16:52:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/01/19 16:00:16 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.3.0
  */
@@ -302,7 +302,6 @@ public class CmsDialogElements extends CmsDialog {
         retValue.append("\t<td class=\"textbold\">"+key("editor.dialog.elements.enabled")+"</td>\n");
         retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"+key("editor.dialog.elements.deletecontent")+"</td>\n");            
         retValue.append("</tr>\n");
-        retValue.append("<tr>\n\t<td>"+dialogSpacer()+"</td>\n</tr>\n");
         
         try {
             
