@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsFlexLruCache.java,v $
- * Date   : $Date: 2003/08/26 15:59:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/08/28 11:19:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import com.opencms.boot.I_CmsLogChannels;
  *
  * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class CmsFlexLruCache extends java.lang.Object {
     
@@ -423,8 +423,10 @@ public class CmsFlexLruCache extends java.lang.Object {
         
         if (m_forceFinalization) {
             // force a finalization/system garbage collection optionally
+            System.runFinalization();
             Runtime.getRuntime().runFinalization();
             System.gc();
+            Runtime.getRuntime().gc();            
         }
     }
     

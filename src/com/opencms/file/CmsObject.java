@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/27 09:52:43 $
-* Version: $Revision: 1.388 $
+* Date   : $Date: 2003/08/28 11:19:15 $
+* Version: $Revision: 1.389 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import com.opencms.core.CmsExportResponse;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
+import com.opencms.flex.CmsEvent;
 import com.opencms.flex.I_CmsEventListener;
 import com.opencms.flex.util.CmsResourceTranslator;
 import com.opencms.flex.util.CmsUUID;
@@ -78,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.388 $
+ * @version $Revision: 1.389 $
  */
 public class CmsObject {
 
@@ -2809,8 +2810,10 @@ public class CmsObject {
         } else {
             throw new CmsSecurityException("[CmsObject] cannot publish resource in online project", CmsSecurityException.C_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT);
         }
+        
         //this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, res);
-        this.fireEvent(com.opencms.flex.I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res));
+        OpenCms.fireCmsEvent(new CmsEvent(this, I_CmsEventListener.EVENT_PUBLISH_RESOURCE, Collections.singletonMap("resource", res)));
+        
         return retValue;
     }
 

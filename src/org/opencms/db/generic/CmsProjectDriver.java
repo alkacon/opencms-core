@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/27 13:07:02 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2003/08/28 11:19:14 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.69 $ $Date: 2003/08/27 13:07:02 $
+ * @version $Revision: 1.70 $ $Date: 2003/08/28 11:19:14 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1677,8 +1677,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
 
             // force a complete object finalization and garbage collection 
             System.runFinalization();
+            Runtime.getRuntime().runFinalization();
             System.gc();
-            Runtime.getRuntime().gc();
+            Runtime.getRuntime().gc();            
             
             throw o;           
         } finally {
