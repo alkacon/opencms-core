@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/21 06:26:29 $
-* Version: $Revision: 1.275 $
+* Date   : $Date: 2001/09/25 07:47:38 $
+* Version: $Revision: 1.276 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.275 $ $Date: 2001/09/21 06:26:29 $
+ * @version $Revision: 1.276 $ $Date: 2001/09/25 07:47:38 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -4317,37 +4317,46 @@ public void setCmsObjectForStaticExport(CmsObject cms){
                 Vector classFiles = ((CmsClassLoader)loader).getFilenames();
                 shouldReload = shouldReloadClasses(id, classFiles);
             }
-            changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), m_enableHistory);
-            m_resourceCache.clear();
-            m_subresCache.clear();
-            // inform about the file-system-change
-            fileSystemChanged(true);
+            try{
+                changedResources = m_dbAccess.publishProject(currentUser, id, onlineProject(currentUser, currentProject), m_enableHistory);
+            } catch (CmsException e){
+                throw e;
+            } finally {
+                m_resourceCache.clear();
+                m_subresCache.clear();
+                // inform about the file-system-change
+                fileSystemChanged(true);
 
-            // the project was stored in the backuptables for history
-            //new projectmechanism: the project can be still used after publishing
-            // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
-            if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
-                m_dbAccess.deleteProject(publishProject);
-                m_projectCache.remove(id);
-                //deleteProject(currentUser, currentProject, id);
-            }
-
-            // finally set the refrish signal to another server if nescessary
-            if (m_refresh.length() > 0) {
-                try {
-                    URL url = new URL(m_refresh);
-                    URLConnection con = url.openConnection();
-                    con.connect();
-                    InputStream in = con.getInputStream();
-                    in.close();
-                    //System.err.println(in.toString());
-                } catch (Exception ex) {
-                    throw new CmsException(0, ex);
+                // the project was stored in the backuptables for history
+                //new projectmechanism: the project can be still used after publishing
+                // it will be deleted if the project_flag = C_PROJECT_STATE_TEMP
+                if (publishProject.getType() == C_PROJECT_TYPE_TEMPORARY) {
+                    m_dbAccess.deleteProject(publishProject);
+                    try{
+                        m_projectCache.remove(id);
+                    } catch (Exception e){
+                        A_OpenCms.log(A_OpenCms.C_OPENCMS_CACHE,"Could not remove project "+id+" from cache");
+                    }
+                    //deleteProject(currentUser, currentProject, id);
                 }
-            }
-            // inform about the reload classes
-            if(loader instanceof CmsClassLoader) {
-                ((CmsClassLoader)loader).setShouldReload(shouldReload);
+
+                // finally set the refrish signal to another server if nescessary
+                if (m_refresh.length() > 0) {
+                    try {
+                        URL url = new URL(m_refresh);
+                        URLConnection con = url.openConnection();
+                        con.connect();
+                        InputStream in = con.getInputStream();
+                        in.close();
+                        //System.err.println(in.toString());
+                    } catch (Exception ex) {
+                        throw new CmsException(0, ex);
+                    }
+                }
+                // inform about the reload classes
+                if(loader instanceof CmsClassLoader) {
+                    ((CmsClassLoader)loader).setShouldReload(shouldReload);
+                }
             }
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] could not publish project " + id, CmsException.C_NO_ACCESS);
