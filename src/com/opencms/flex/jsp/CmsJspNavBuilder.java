@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/06/05 19:02:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/06/16 09:26:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Vector;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -375,6 +375,69 @@ public class CmsJspNavBuilder {
         }
         
         return result;
+    }
+    
+    /**
+     * This method builds a complete navigation tree with entries of all branches 
+     * from the specified folder.<p>
+     * 
+     * For an unlimited depth of the navigation (i.e. no endLevel), set the endLevel to
+     * a value &lt; 0.<p>
+     * 
+     * 
+     * @param cms the current CmsJspActionElement.
+     * @param folder the root folder of the navigation tree.
+     * @param endLevel the end level of the navigation.
+     * @return ArrayList of CmsJspNavElement, in depth first order.
+     */
+    public static ArrayList getSiteNavigation(CmsObject cms, String folder, int endLevel){
+        // check if a specific end level was given, if not, build the complete navigation
+        boolean noLimit = false;
+        if (endLevel < 0) {
+            noLimit = true;
+        }
+        ArrayList list = new ArrayList();
+        // get the navigation for this folder
+        ArrayList curnav = getNavigationForFolder(cms, folder); 
+        Iterator i = curnav.iterator();
+        // loop through all nav entrys
+        while (i.hasNext()) {
+            CmsJspNavElement ne = (CmsJspNavElement)i.next();
+            // add the naventry to the result list
+            list.add(ne);
+            // check if naventry is a folder and below the max level -> if so, get the navigation from this folder as well
+            if (ne.isFolderLink() && (noLimit || (ne.getNavTreeLevel() < endLevel))) {
+                ArrayList subnav = getSiteNavigation(cms, ne.getResourceName(), endLevel);
+                // copy the result of the subfolder to the result list
+                list.addAll(subnav);
+            }        
+        }
+        return list;
+    }
+    
+    /**
+     * This method builds a complete navigation tree with entries of all branches 
+     * from the specified folder.<p>
+     * 
+     * @see #getSiteNavigation(CmsObject, String, int)
+     * 
+     * @param folder folder the root folder of the navigation tree.
+     * @param endLevel the end level of the navigation.
+     * @return ArrayList of CmsJspNavElement, in depth first order.
+     */
+    public ArrayList getSiteNavigation(String folder, int endLevel) {
+        return getSiteNavigation(m_cms, folder, endLevel);    
+    }
+    
+    /**
+     * This method builds a complete site navigation tree with entries of all branches.<p>
+     *
+     * @see #getSiteNavigation(CmsObject, String, int)
+     * 
+     * @return ArrayList of CmsJspNavElement, in depth first order.
+     */
+    public ArrayList getSiteNavigation() {
+        return getSiteNavigation(m_cms, "/", -1);
     }
     
 
