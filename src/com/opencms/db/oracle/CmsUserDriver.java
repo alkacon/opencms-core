@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/05/22 12:54:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/22 13:10:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingPreparedStatement;
  * Oracle/OCI implementation of the user driver methods.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/22 12:54:59 $
+ * @version $Revision: 1.3 $ $Date: 2003/05/22 13:10:13 $
  * 
  * @see com.opencms.db.generic.CmsUserDriver
  * @see com.opencms.db.generic.I_CmsUserDriver
@@ -240,9 +240,7 @@ public class CmsUserDriver extends com.opencms.db.generic.CmsUserDriver implemen
             stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_USERSFORUPDATE");
             stmt2.setString(1, id.toString());
             conn.setAutoCommit(false);
-            
-            res = ((DelegatingPreparedStatement)stmt2).getDelegate().executeQuery();            
-            //res = stmt2.executeQuery();
+            res = stmt2.executeQuery();
             
             while (res.next()) {
                 oracle.sql.BLOB blob = ((OracleResultSet) res).getBLOB("USER_INFO");

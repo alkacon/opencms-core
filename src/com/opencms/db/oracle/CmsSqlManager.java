@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/oracle/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2003/05/22 10:14:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/05/22 13:10:13 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,21 +31,25 @@
  
 package com.opencms.db.oracle;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import oracle.jdbc.driver.OracleResultSet;
 
+import org.apache.commons.dbcp.DelegatingPreparedStatement;
+
 /**
  * Reads SQL queries from query.properties of this driver package.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ $Date: 2003/05/22 10:14:37 $ 
+ * @version $Revision: 1.3 $ $Date: 2003/05/22 13:10:13 $ 
  */
 public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     
-    private static Properties m_queries = null;    
+    private static Properties c_queries = null;    
     private static final String C_PROPERTY_FILENAME = "com/opencms/db/oracle/query.properties";
     
     /**
@@ -54,8 +58,8 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
     public CmsSqlManager(String dbPoolUrl) {
         super(dbPoolUrl);
         
-        if (m_queries == null) {
-            m_queries = loadProperties(C_PROPERTY_FILENAME);
+        if (c_queries == null) {
+            c_queries = loadProperties(C_PROPERTY_FILENAME);
         }
     }
 
@@ -66,11 +70,11 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
      * @return The value of the property
      */
     public String get(String queryName) {
-        if (m_queries == null) {
-            m_queries = loadProperties(C_PROPERTY_FILENAME);
+        if (c_queries == null) {
+            c_queries = loadProperties(C_PROPERTY_FILENAME);
         }
         
-        String value = m_queries.getProperty(queryName);
+        String value = c_queries.getProperty(queryName);
         if (value == null || "".equals(value)) {
             value = super.get(queryName);
         }
@@ -95,4 +99,31 @@ public class CmsSqlManager extends com.opencms.db.generic.CmsSqlManager {
         return content;
     }
     
+    /**
+     * Receives a PreparedStatement for a JDBC connection specified by the key of a SQL query
+     * and the project-ID.
+     * 
+     * @param con the JDBC connection
+     * @param projectId the ID of the specified CmsProject
+     * @param queryKey the key of the SQL query
+     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * @throws SQLException if a database access error occurs
+     */
+    public PreparedStatement getPreparedStatement(Connection con, int projectId, String queryKey) throws SQLException {
+        String rawSql = get(projectId, queryKey);
+        return ((DelegatingPreparedStatement)con.prepareStatement(rawSql)).getDelegate();
+    }
+    
+    /**
+     * Receives a PreparedStatement for a backup JDBC connection specified by the key of a SQL query.
+     * 
+     * @param con the JDBC connection
+     * @param queryKey the key of the SQL query
+     * @return PreparedStatement a new PreparedStatement containing the pre-compiled SQL statement 
+     * @throws SQLException if a database access error occurs
+     */
+    public PreparedStatement getPreparedStatement(Connection con, String queryKey) throws SQLException {
+        String rawSql = get(Integer.MIN_VALUE, queryKey);
+        return ((DelegatingPreparedStatement)con.prepareStatement(rawSql)).getDelegate();
+    }    
 }
