@@ -590,6 +590,7 @@
             <name>Nome</name>
             <navtext>Testo della Navigazione</navtext>
             <navtitle>Testo nella Navigazione</navtitle>
+			<navpos>Position in Navigation</navpos>
             <newfileothertype>Crea nuovo File di tipo</newfileothertype>
             <newgroup>Nuovo Gruppo</newgroup>
             <newowner>Nuovo Proprietario</newowner>

@@ -587,6 +587,7 @@
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
             <navtext>Navigationtext</navtext>
+			<navpos>Position in Navigation</navpos>
             <newposition>New Position</newposition>
             <newpropertydefvalue>Enter Property Value</newpropertydefvalue>
             <newpropertydef>New Property</newpropertydef>

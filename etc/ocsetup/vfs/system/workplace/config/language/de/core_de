@@ -585,6 +585,7 @@
             <promptgroup>Bitte Verwalter wählen ...</promptgroup>
             <propertydef>Eigenschaft wählen</propertydef>
             <navtext>Navigationstext</navtext>
+			<navpos>Position in Navigation</navpos>
             <newposition>Neue Position</newposition>
             <newpropertydefvalue>Wert der Eigenschaft eingeben</newpropertydefvalue>
             <newpropertydef>Neue Eigenschaft</newpropertydef>
