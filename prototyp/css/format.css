@@ -532,9 +532,10 @@ TD.dateigeloescht
     FONT-SIZE: 8pt;
     TEXT-DECORATION: line-through
 }
-TD.dateigeaendert
+TD.dateineuon
 {
-    COLOR: #ff0000;
+    COLOR: silver;
+	TEXT-DECORATION: line-through;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt
 }
@@ -544,10 +545,41 @@ TD.dateineu
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt
 }
+TD.dateineuoffchon
+{
+    COLOR: #6E0A9B;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.dateichoff
+{
+    COLOR: #008800;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+TD.dateichoffdelon
+{
+    COLOR: #FF6400;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
 TD.dateintprojekt
 {
     COLOR: silver;
-    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+TD.dateichoffchon
+{
+    COLOR: #B40000;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+}
+TD.dateideloffchon
+{
+    COLOR: #B40000;
+	TEXT-DECORATION: line-through;
+	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
 a.dateingeandert
@@ -591,19 +623,82 @@ a:hover.dateigeloescht
     FONT-SIZE: 8pt;
     TEXT-DECORATION: line-through;
 }
-a.dateigeaendert
+a.dateineuon
 {
-    COLOR: #ff0000;
+    COLOR: silver;
+	TEXT-DECORATION: line-through;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt
 }
-a:visited.dateigeaendert
+a:visited.dateineuon
 {
-    COLOR: #ff0000;
+    COLOR: silver;
+	TEXT-DECORATION: line-through;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt
 }
-a:hover.dateigeaendert
+a:hover.dateineuon
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: silver;
+	TEXT-DECORATION: line-through;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateichoffchon
+{
+    COLOR: #B40000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateichoffchon
+{
+    COLOR: #B40000;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateichoffchon
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #00ffff;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateideloffchon
+{
+    COLOR: #B40000;
+	TEXT-DECORATION: line-through;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateideloffchon
+{
+    COLOR: #B40000;
+	TEXT-DECORATION: line-through;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateideloffchon
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #00ffff;
+	TEXT-DECORATION: line-through;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateichoffdelon
+{
+    COLOR: #FF6400;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateichoffdelon
+{
+    COLOR: #FF6400;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateichoffdelon
 {
     BACKGROUND-COLOR: #000066;
 	COLOR: #00ffff;
@@ -629,6 +724,44 @@ a:hover.dateineu
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt
 }
+a.dateineuoffchon
+{
+    COLOR: #6E0A9B;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateineuoffchon
+{
+    COLOR: #6E0A9B;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateineuoffchon
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #ffff00;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a.dateichoff
+{
+    COLOR: #008800;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:visited.dateichoff
+{
+    COLOR: #008800;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
+a:hover.dateichoff
+{
+    BACKGROUND-COLOR: #000066;
+	COLOR: #ffff00;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt
+}
 a.dateintprojekt
 {
     COLOR: silver;
@@ -644,7 +777,6 @@ a:visited.dateintprojekt
 a:hover.dateintprojekt
 {
     BACKGROUND-COLOR: #000066;
-	COLOR: #silver;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }

@@ -78,10 +78,14 @@ var DO_UNLOCKF=36;
 
 var DO_HIST=40;
 var DO_HISTVIEW=41;
+
+var DO_RECOVER=50;
+var DO_TAKEOVER=51;
 //=======================================
 var DO_PUNLOCK=1;
 var DO_PONLINELOCK=2;
 var DO_PONLINE=3;
+var DO_PDELETE=4;
 
 var DO_PTASK=10;
 var DO_TASK=99;
@@ -266,7 +270,8 @@ function doAction(action) // which action on layer is clicked
 		
 		case 14:
 		{
-			top.location.href='edit_text.html';
+			if (ns) top.location.href='edit_text_ns.html';
+			else if (ie) top.location.href='edit_text_ie.html';
 			break;
 		}
 		case 15:
@@ -326,6 +331,16 @@ function doAction(action) // which action on layer is clicked
 			location.href='explorer_files_historyshow.html';
 			break;
 		}
+		case 50:
+		{
+			location.href='explorer_files_recover.html';
+			break;
+		}
+		case 51:
+		{
+			location.href='explorer_files_takeover.html';
+			break;
+		}
 	}
 }
 
@@ -349,6 +364,11 @@ function doPAction(action) // which action on layer Project is clicked
 		case 3:
 		{
 			location.href='administration_content_publish_project.html';
+			break;
+		}
+		case 4:
+		{
+			location.href='administration_content_delete_project.html';
 			break;
 		}
 		case 10:

@@ -10,6 +10,14 @@ function contextHelp()
 {
 	opensmallwin('help/de/help_frameset.html', 'Hilfe', 310, 600);
 }
+function viewSelection() {
+	if (document.head.view.selectedIndex==0)
+		window.top.body.location.href=document.head.project.options[document.head.project.selectedIndex].value;
+	else
+		window.top.body.location.href=document.head.view.options[document.head.view.selectedIndex].value;
+	lastVisited='tasks_content_nafm.html';
+	selectedTask=0;
+}
 
 //-->
 </SCRIPT>
@@ -17,7 +25,7 @@ function contextHelp()
 </head>
 
 <body bgcolor="#C0C0C0">
-<form>
+<form name="head" id="head">
 <table cellspacing=0 cellpadding=0 border=0 width="100%">
 	<tr>
 		<td class=menu><img src="pics/logokunde.gif" border=0 widht=56 height=32></td>
@@ -30,7 +38,7 @@ function contextHelp()
 		</td>
 		<td class=menubold><p class=tab>Ansicht:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			<select class=textfeld name="view" width=100 style="width:100px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value;lastVisited='tasks_content_nafm.html';selectedTask=0;">
+			<select class=textfeld name="view" width=100 style="width:100px" onchange="viewSelection();">
 			<option value="explorer.html">Explorer
 			<option value="tasks.html">Aufgaben
 			<option value="administration.html">Administration
