@@ -20,6 +20,6 @@
 	addMenuEntry(resource_id, "language_key(explorer.context.access)", "chmod.html?initial=true", "''","0111022201110");
 
 	addMenuEntry(resource_id, "-", " ", "''","0222022202220");
-	addMenuEntry(resource_id, "language_key(explorer.context.history)", "history.html?initial=true", "''","2222022202220");
+	addMenuEntry(resource_id, "language_key(explorer.context.history)", "history.html?initial=true", "''","2222222222222");
 	addMenuEntry(resource_id, "language_key(explorer.context.property)", "property.html?initial=true", "''","2222022202220");
     
