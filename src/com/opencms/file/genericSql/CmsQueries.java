@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/14 08:44:29 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/09/15 11:01:18 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $ $Date: 2000/09/14 08:44:29 $
+ * @version $Revision: 1.4 $ $Date: 2000/09/15 11:01:18 $
  */
 public class CmsQueries
 {
@@ -278,9 +278,15 @@ public class CmsQueries
 
 	//
 	public Integer C_PROJECTS_GETONLINEPROJECT_KEY = new Integer(410);
-	public String C_PROJECTS_GETONLINEPROJECT = "SELECT BASEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITE_PROJECTS where PROJECT_ID = ?";
+	public String C_PROJECTS_GETONLINEPROJECT = "SELECT ONLINEPROJECT_ID FROM " + C_DATABASE_PREFIX + "SITE_PROJECTS, " + C_DATABASE_PREFIX + "SITES where PROJECT_ID = ? AND " + C_DATABASE_PREFIX + "SITES.SITE_ID = " + C_DATABASE_PREFIX + "SITE_PROJECTS.SITE_ID";
 	public Integer C_PROJECTS_GETSITEFROMPROJECT_KEY = new Integer(411);
-	public String C_PROJECTS_GETSITEFROMPROJECT = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_PROJECTS WHERE " + C_DATABASE_PREFIX + "SITE_PROJECTS.BASEPROJECT_ID = ? AND " + C_DATABASE_PREFIX + "SITE_PROJECTS.SITE_ID=" + C_DATABASE_PREFIX + "SITES.SITE_ID";
+	public String C_PROJECTS_GETSITEFROMPROJECT = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES WHERE ONLINEPROJECT_ID = ? ";
+	public Integer C_PROJECTS_GETSITEFROMNAME_KEY = new Integer(412);
+	public String C_PROJECTS_GETSITEFROMNAME = "SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES WHERE NAME = ?";
+
+	//Multisite Constants
+	public Integer C_SITES_GETSITEFROMHOST_KEY = new Integer(450);
+	public String C_SITES_GETSITEFROMHOST	= "SELECT " + C_DATABASE_PREFIX + "SITES.SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_URLS WHERE URL = ? AND " + C_DATABASE_PREFIX + "SITE_URLS.SITE_ID = " + C_DATABASE_PREFIX + "SITES.SITE_ID"; 
 
 	// Constants for Users table
 	public String C_USERS_USER_ID = "USER_ID";
