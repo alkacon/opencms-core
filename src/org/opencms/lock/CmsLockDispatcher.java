@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/29 10:43:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/07/29 11:00:17 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.18 $ $Date: 2003/07/29 10:43:47 $
+ * @version $Revision: 1.19 $ $Date: 2003/07/29 11:00:17 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -93,6 +93,8 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Adds a resource to the lock dispatcher.<p>
      * 
+     * @param driverManager the driver manager
+     * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @param userId the ID of the user who locked the resource
      * @param projectId the ID of the project where the resource is locked
@@ -125,7 +127,8 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Returns the lock for a specified resource name.<p>
      * 
-     * @param context the request context
+     * @param driverManager the driver manager
+     * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return the CmsLock if the specified resource is locked, or the shared Null lock if the resource is not locked
      */
@@ -228,7 +231,8 @@ public final class CmsLockDispatcher extends Object {
      * to obtain a CmsLock object for the specified resource to get further information 
      * about how the resource is locked.
      * 
-     * @param context the request context
+     * @param driverManager the driver manager
+     * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return true, if and only if the resource is currently locked, either direct or indirect
      */
@@ -240,7 +244,11 @@ public final class CmsLockDispatcher extends Object {
     /**
      * Removes a resource from the lock dispatcher.<p>
      * 
+     * @param driverManager the driver manager
+     * @param context the current request context
      * @param resourcename the full resource name including the site root
+     * @param forceUnlock true, if a resource is force to get unlocked, no matter by which user and in which project the resource is currently locked
+     * @return the previous CmsLock object of the resource, or null if the resource was unlocked
      * @throws CmsLockException if the user tried to unlock a resource in a locked folder
      */
     public CmsLock removeResource(CmsDriverManager driverManager, CmsRequestContext context, String resourcename, boolean forceUnlock) throws CmsException {
@@ -249,7 +257,7 @@ public final class CmsLockDispatcher extends Object {
 
         if (lock.isNullLock()) {
             return null;
-        } else if (!forceUnlock && (lock.getUserId() != context.currentUser().getId() || lock.getProjectId() != context.currentProject().getId())) {
+        } else if (!forceUnlock && (!lock.getUserId().equals(context.currentUser().getId()) || lock.getProjectId() != context.currentProject().getId())) {
             throw new CmsLockException("Unable to unlock resource, resource is locked by another user and/or in another project", CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER);
         } else if (lock.getType() == CmsLock.C_TYPE_EXCLUSIVE) {
             return (CmsLock) m_exclusiveLocks.remove(resourcename);
@@ -274,19 +282,6 @@ public final class CmsLockDispatcher extends Object {
         }
 
         return null;
-    }
-
-    /**
-     * Returns a list of direct locked sub resources of a folder.<p>
-     * 
-     * Use this method to identify direct locked sub resources of a folder (which gets unlocked)
-     * to unlock these resources in a second step.
-     * 
-     * @param resourcename the full resource name including the site root
-     * @return a list with resource names of direct locked sub resources
-     */
-    public List getLockedSubResources(String resourcename) {
-        return (List) new ArrayList(0);
     }
 
     /**
@@ -317,25 +312,17 @@ public final class CmsLockDispatcher extends Object {
         // bring the list of locked resources into a human readable order first
         List lockedResources = (List) new ArrayList(m_exclusiveLocks.keySet());
         Collections.sort(lockedResources);
+        
         Iterator i = lockedResources.iterator();
         StringBuffer buf = new StringBuffer();
         String lockedPath = null;
         CmsLock currentLock = null;
 
-        buf.append("[").append(this.getClass().getName()).append(":\n");
-
         while (i.hasNext()) {
             lockedPath = (String) i.next();
             currentLock = (CmsLock) m_exclusiveLocks.get(lockedPath);
-            buf.append(currentLock.getResourceName());
-            buf.append(":");
-            buf.append(currentLock.getType());
-            buf.append(":");
-            buf.append(currentLock.getUserId());
-            buf.append("\n");
+            buf.append(currentLock.toString()).append("\n");
         }
-
-        buf.append("]");
 
         return buf.toString();
     }
