@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2000/02/16 10:56:43 $
+ * Version: $Revision: 1.28 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.27 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.28 $ $Date: 2000/02/16 10:56:43 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -1432,4 +1432,32 @@ public class CmsShell implements I_CmsConstants {
 	 public void getFileSystemChanges() {
 		System.out.println( m_cms.getFileSystemChanges() );
 	 }
+
+	/**
+	 * exports database (files, groups, users) into a specified file
+	 * 
+	 * @param exportFile the name (absolute Path) for the XML file
+	 * @param exportPath the name (absolute Path) for the folder to export
+	 */
+	public void exportDb(String exportFile, String exportPath){
+		try {
+			m_cms.exportDb(exportFile, exportPath, C_EXPORTONLYFILES);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
+	
+	/**
+	 * imports a (files, groups, users) XML file into database
+	 * 
+	 * @param importPath the name (absolute Path) of folder in which should be imported
+	 * @param importFile the name (absolute Path) of the XML import file
+	 */
+	public void importDb(String importFile, String importPath ){
+		try {
+			m_cms.importDb(importPath, importFile);
+		} catch( Exception exc ) {
+			printException(exc);
+		}
+	}
 }
