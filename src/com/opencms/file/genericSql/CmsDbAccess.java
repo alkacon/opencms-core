@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/20 15:09:44 $
- * Version: $Revision: 1.190 $
+ * Date   : $Date: 2001/02/22 12:59:04 $
+ * Version: $Revision: 1.191 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.190 $ $Date: 2001/02/20 15:09:44 $ *
+ * @version $Revision: 1.191 $ $Date: 2001/02/22 12:59:04 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -8295,7 +8295,7 @@ public CmsTask readTask(int id) throws CmsException {
 				statement.setInt(3, 1);
 			}
 			statement.setTimestamp(4, starttime);
-			statement.setString(5, comment);
+			statement.setString(5, checkNull(comment));
 			statement.setInt(6, type);
 
 			statement.executeUpdate();
