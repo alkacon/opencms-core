@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.24 $ $Date: 2003/10/29 13:00:42 $ 
+ * @version $Revision: 1.25 $ $Date: 2003/11/03 09:05:52 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -592,10 +592,8 @@ class CmsShellCommands {
      *
      * @param name the name of the propertydefinition to create
      * @param resourcetype the name of the resource type for the property definition
-     *
-     * @throws CmsException if something goes wrong
      */
-    public void createPropertydefinition(String resourcetype, String name) throws CmsException {
+    public void createPropertydefinition(String resourcetype, String name) {
         try {
             System.out.println(m_cms.createPropertydefinition(name, m_cms.getResourceTypeId(resourcetype)));
         } catch (Exception exc) {
@@ -650,10 +648,8 @@ class CmsShellCommands {
 
     /**
      * Creates a new project for the temporary files.
-     *
-     * @throws CmsException if operation was not successful.
      */
-    public void createTempfileProject() throws CmsException {
+    public void createTempfileProject() {
         try {
             System.out.println(m_cms.createTempfileProject());
         } catch (Exception exc) {
@@ -913,10 +909,8 @@ class CmsShellCommands {
      * Exports cms-resources to zip. In the zip-file the system - path will be included.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void exportAllResources(String exportFile) throws CmsException {
+    public void exportAllResources(String exportFile) {
 
         // export the resources
         String[] exportPaths = {I_CmsConstants.C_ROOT};
@@ -932,10 +926,8 @@ class CmsShellCommands {
      * Unchanged resources will be ignored.
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void exportAllResourcesOnlyChanged(String exportFile) throws CmsException {
+    public void exportAllResourcesOnlyChanged(String exportFile) {
 
         // export the resources
         String[] exportPaths = {I_CmsConstants.C_ROOT};
@@ -969,10 +961,8 @@ class CmsShellCommands {
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void exportResources(String exportFile, String pathList) throws CmsException {
+    public void exportResources(String exportFile, String pathList) {
 
         // export the resources
         StringTokenizer tok = new StringTokenizer(pathList, ";");
@@ -1001,10 +991,8 @@ class CmsShellCommands {
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void exportResourcesAndUserdata(String exportFile, String pathList) throws CmsException {
+    public void exportResourcesAndUserdata(String exportFile, String pathList) {
 
         // export the resources
         StringTokenizer tok = new StringTokenizer(pathList, ";");
@@ -1034,10 +1022,8 @@ class CmsShellCommands {
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
      *          separated by semicolons
-     *
-     * @throws CmsException if something goes wrong.
      */
-    public void exportResourcesOnlyChanged(String exportFile, String pathList) throws CmsException {
+    public void exportResourcesOnlyChanged(String exportFile, String pathList) {
 
         // export the resources
         StringTokenizer tok = new StringTokenizer(pathList, ";");
@@ -2746,10 +2732,8 @@ class CmsShellCommands {
      *
      * @param tagId The tag id of the resource
      * @param filename The name of the file to restore
-     *
-     * @throws CmsException  Throws CmsException if operation was not succesful.
      */
-    public void restoreResource(String tagId, String filename) throws CmsException {
+    public void restoreResource(String tagId, String filename) {
         try {
             m_cms.restoreResource(Integer.parseInt(tagId), filename);
         } catch (Exception exc) {
@@ -3128,11 +3112,8 @@ class CmsShellCommands {
      * Undo changes in a file by copying the online file.
      *
      * @param filename the complete path of the file.
-     *
-     * @throws CmsException if the file couldn't be deleted, or if the user
-     * has not the appropriate rights to write the file.
      */
-    public void undoChanges(String filename) throws CmsException {
+    public void undoChanges(String filename) {
         try {
             m_cms.undoChanges(filename);
         } catch (Exception exc) {

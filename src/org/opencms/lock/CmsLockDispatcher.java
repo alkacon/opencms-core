@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.46 $ $Date: 2003/10/28 11:31:27 $
+ * @version $Revision: 1.47 $ $Date: 2003/11/03 09:05:53 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -316,9 +316,8 @@ public final class CmsLockDispatcher extends Object {
      * @param context the current request context
      * @param resourcename the full resource name including the site root
      * @return the CmsResource instance
-     * @throws CmsException if something goes wrong
      */
-    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+    private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) {
         CmsResource resource = null;
 
         // reading resources using readFileHeader while the lock state is checked would

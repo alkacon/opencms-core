@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2003/09/24 14:19:24 $
-* Version: $Revision: 1.61 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.62 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,6 +62,7 @@ public final class Utils {
      * Hides the public constructor.<p>
      */
     private Utils() {
+        // empty
     }
     
     /**
@@ -165,9 +166,8 @@ public final class Utils {
      *
      * @param cms the current cms context object
      * @param changedLinks will be filled with the links (as String) that have changed during the publishing
-     * @throws CmsException if something goes wrong
      */
-    public static void getModulPublishMethods(CmsObject cms, Vector changedLinks) throws CmsException {
+    public static void getModulPublishMethods(CmsObject cms, Vector changedLinks) {
         // now publish the module masters
         Vector publishModules = new Vector();
         cms.getRegistry().getModulePublishables(publishModules, I_CmsConstants.C_PUBLISH_METHOD_LINK);
@@ -191,9 +191,8 @@ public final class Utils {
      * Calls the startup method on all module classes that are registerd in the registry.<p>
      *
      * @param cms the current cms context object
-     * @throws CmsException if something goes wrong
      */
-    public static void getModulStartUpMethods(CmsObject cms) throws CmsException {
+    public static void getModulStartUpMethods(CmsObject cms) {
         Vector startUpModules = new Vector();
         cms.getRegistry().getModuleLifeCycle(startUpModules);
         for (int i = 0; i < startUpModules.size(); i++) {
@@ -201,6 +200,7 @@ public final class Utils {
                 I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
                 lifeClass.startUp(cms);
             } catch (Exception ex) {
+                // ignore
             }
         }
     }
@@ -209,9 +209,8 @@ public final class Utils {
      * Calls the shutdown method on all module classes that are registerd in the registry.<p>
      *
      * @param reg the current registry
-     * @throws CmsException if something goes wrong
      */
-    public static void getModulShutdownMethods(CmsRegistry reg) throws CmsException {
+    public static void getModulShutdownMethods(CmsRegistry reg) {
         Vector startUpModules = new Vector();
         reg.getModuleLifeCycle(startUpModules);
         for (int i = 0; i < startUpModules.size(); i++) {
@@ -219,6 +218,7 @@ public final class Utils {
                 I_CmsLifeCycle lifeClass = (I_CmsLifeCycle)Class.forName((String)startUpModules.elementAt(i)).getConstructor(new Class[] {}).newInstance(new Class[] {});
                 lifeClass.shutDown();
             } catch (Exception ex) {
+                // ignore
             }
         }
     }

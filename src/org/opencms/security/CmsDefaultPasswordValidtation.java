@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Attic/CmsDefaultPasswordValidtation.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.security;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.11 
  */
 public class CmsDefaultPasswordValidtation implements I_CmsPasswordValidation {
@@ -49,6 +49,7 @@ public class CmsDefaultPasswordValidtation implements I_CmsPasswordValidation {
      * The constructor does not perform any operation.<p>
      */
     public CmsDefaultPasswordValidtation() {
+        // empty
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/10/17 14:21:41 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.23 $ $Date: 2003/10/17 14:21:41 $
+ * @version $Revision: 1.24 $ $Date: 2003/11/03 09:05:52 $
  */
 public class CmsExport implements Serializable {
 
@@ -455,11 +455,10 @@ public class CmsExport implements Serializable {
      * Closes the export ZIP file and saves the XML document for the manifest.<p>
      * 
      * @param exportNode the export root node
-     * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      * @throws IOException if something goes wrong while closing the export file
      */
-    protected void closeExportFile(Element exportNode) throws CmsException, IOException, SAXException {
+    protected void closeExportFile(Element exportNode) throws IOException, SAXException {
         // close the <export> Tag
         getSaxWriter().writeClose(exportNode);
 
@@ -885,11 +884,10 @@ public class CmsExport implements Serializable {
      * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
      * 
      * @return the node in the XML document where all files are appended to
-     * @throws CmsException if something goes wrong
      * @throws SAXException if something goes wrong procesing the manifest.xml
      * @throws IOException if something goes wrong while closing the export file
      */
-    protected Element openExportFile() throws CmsException, IOException, SAXException {
+    protected Element openExportFile() throws IOException, SAXException {
         // create the export-zipstream
         setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
         // generate the SAX XML writer 

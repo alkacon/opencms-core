@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyDialogHandler.java,v $
- * Date   : $Date: 2003/08/19 12:04:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import com.opencms.flex.jsp.CmsJspActionElement;
  * Provides a method for selecting the default properties dialog.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -45,7 +45,9 @@ public class CmsPropertyDialogHandler implements I_CmsPropertyDialogHandler {
     /**
      * Default constructor.<p>
      */
-    public CmsPropertyDialogHandler() { }
+    public CmsPropertyDialogHandler() {
+        // empty
+    }
     
     /**
      * Returns the property dialog URI in the OpenCms VFS to the CmsPropertyDialogSelector class.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
- * Date   : $Date: 2003/08/18 10:50:48 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * Does the dynamic link replacement for the link tags.<p> 
  * 
  * @author Hanjo Riege
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public final class LinkSubstitution {
 
@@ -92,7 +92,9 @@ public final class LinkSubstitution {
     /**
      * Hide constructor since this class contains only static methods.<p>
      */
-    private LinkSubstitution() { }
+    private LinkSubstitution() {
+        // empty
+    }
 
     /**
     * Parses the html content for the editor. It replaces the links in <a href=""

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2003/09/12 10:53:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -108,13 +108,9 @@ public class CmsAdminHistorySettings extends CmsDialog {
     public String buildSettingsForm() {
         StringBuffer retValue = new StringBuffer(512);
         CmsRegistry reg = null;
-        int maxVersions = -1;
-        boolean histEnabled = false;
-        try {
-            reg = getCms().getRegistry();
-            histEnabled = reg.getBackupEnabled();
-            maxVersions = reg.getMaximumBackupVersions();
-        } catch (CmsException e) { }
+        reg = getCms().getRegistry();
+        boolean histEnabled = reg.getBackupEnabled();
+        int maxVersions = reg.getMaximumBackupVersions();
         
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");

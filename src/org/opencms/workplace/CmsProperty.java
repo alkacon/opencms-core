@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 5.1
  */
@@ -232,7 +232,9 @@ public class CmsProperty extends CmsDialog {
         Vector propertyDef = new Vector();
         try {
             propertyDef = getPropertyDefinitions();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         
         for (int i=0; i<propertyDef.size(); i++) {
             CmsPropertydefinition curProperty = (CmsPropertydefinition)propertyDef.elementAt(i);
@@ -257,13 +259,17 @@ public class CmsProperty extends CmsDialog {
         Vector propertyDef = new Vector();
         try {
             propertyDef = getPropertyDefinitions();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         
         // get all used properties for the resource
         Map activeProperties = null;
         try {
             activeProperties = getCms().readProperties(getParamResource());
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         boolean present = false;
         if (propertyDef.size() > 0) {
             present = true; 
@@ -370,7 +376,9 @@ public class CmsProperty extends CmsDialog {
             if (file.isFolder()) {
                 resourceName += "/";            
             }
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
     
         try {
             // get the lock for the resource

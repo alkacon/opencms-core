@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -103,7 +103,9 @@ public class CmsUndoChanges extends CmsDialog {
         
         try {
             setCurrentResource(getCms().readFileHeader(getParamResource()));
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // empty
+        }
               
     } 
 

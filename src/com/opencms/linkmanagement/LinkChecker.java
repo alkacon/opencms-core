@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/linkmanagement/Attic/LinkChecker.java,v $
-* Date   : $Date: 2003/09/29 08:32:38 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2003/11/03 09:05:53 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ public class LinkChecker {
      * Constructor.<p> 
      */
     public LinkChecker() {
+        // empty
     }
 
     /**
@@ -140,9 +141,8 @@ public class LinkChecker {
      * @param cms The CmsObject.
      * @param projectId The id of the project to be published.
      * @param report A cmsReport object for logging while the method is still running.
-     * @throws CmsException if something goes wrong
      */
-    public void checkProject(CmsObject cms, int projectId, I_CmsReport report) throws CmsException {
+    public void checkProject(CmsObject cms, int projectId, I_CmsReport report) {
 
         if (OpenCms.getLog(this).isErrorEnabled()) {
             OpenCms.getLog(this).error("cms=" + cms + " projectId=" + projectId + " report=" + report);

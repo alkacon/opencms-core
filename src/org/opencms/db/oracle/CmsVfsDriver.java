@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/09/22 12:34:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.13 $ $Date: 2003/09/22 12:34:33 $
+ * @version $Revision: 1.14 $ $Date: 2003/11/03 09:05:52 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -149,12 +149,14 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 try {
                     res.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             } 
             if (commit != null) {
                 try {
                     commit.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }
             } 
             if (stmt != null) {
@@ -163,10 +165,12 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                     rollback.execute();
                     rollback.close();
                 } catch (SQLException se) {
+                    // ignore
                 }
                 try {
                     stmt.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             }                
             if (conn != null) {
@@ -174,6 +178,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException se) {
+                    // ignore
                 }                   
             }
         }

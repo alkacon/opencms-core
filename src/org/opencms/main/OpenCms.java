@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/10/29 13:00:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
 
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public final class OpenCms {
     
@@ -60,6 +59,7 @@ public final class OpenCms {
      * The public contructor is hidden to prevent generation of instances of this class.<p> 
      */
     private OpenCms() {
+        // empty
     }
 
     /**
@@ -235,9 +235,8 @@ public final class OpenCms {
      * This is useful for modules to read module-parameters.<p>
      *
      * @return the registry
-     * @throws CmsException if the registry can not be returned
      */
-    public static CmsRegistry getRegistry() throws CmsException {
+    public static CmsRegistry getRegistry() {
         return OpenCmsCore.getInstance().getRegistry();
     }
 

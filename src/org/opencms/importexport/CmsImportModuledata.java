@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsImportModuledata.java,v $
-* Date   : $Date: 2003/10/15 09:50:42 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * 
- * @version $Revision: 1.15 $ $Date: 2003/10/15 09:50:42 $
+ * @version $Revision: 1.16 $ $Date: 2003/11/03 09:05:52 $
  */
 public class CmsImportModuledata extends CmsImport implements Serializable {
 
@@ -86,9 +86,8 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
      * @param importFile the file or folder to import from
      * @param importPath the path in the cms VFS to import into
      * @param report a report object to output the progress information to
-     * @throws CmsException if something goes wrong
      */
-    public CmsImportModuledata(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public CmsImportModuledata(CmsObject cms, String importFile, String importPath, I_CmsReport report) {
         // set member variables
         m_cms = cms;
         m_importFile = importFile;
@@ -281,7 +280,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             if ((username != null) && !("".equals(username.trim()))) {
                 userId = m_cms.readUser(username).getId();
             }
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // userId will be current user
+        }
         newDataset.m_userId = userId;
         // get the id of the group or set the group to the current user        
         groupname = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_GROUP);
@@ -294,7 +295,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         } catch (Exception e) {
             try {
                 groupId = m_cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId();
-            } catch (Exception e2) { }
+            } catch (Exception e2) {
+                // ignore
+            }
         }
 
         newDataset.m_groupId = groupId;
@@ -309,27 +312,37 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         publicationDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PUBLICATIONDATE);
         try {
             newDataset.m_publicationDate = convertDate(publicationDate);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         // set the purge date
         purgeDate = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_PURGEDATE);
         try {
             newDataset.m_purgeDate = convertDate(purgeDate);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         // set the flags
         flags = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FLAGS);
         try {
             newDataset.m_flags = Integer.parseInt(flags);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         // set the feedid
         feedId = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDID);
         try {
             newDataset.m_feedId = Integer.parseInt(feedId);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         // set the feedreference
         feedReference = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDREFERENCE);
         try {
             newDataset.m_feedReference = Integer.parseInt(feedReference);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         // set the feedfilenam
         feedFilename = getTextNodeValue(dataset, CmsExportModuledata.C_EXPORT_TAG_MASTER_FEEDFILENAME);
         newDataset.m_feedFilename = feedFilename;
@@ -460,25 +473,35 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         position = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_POSITION);
         try {
             newMedia.setPosition(Integer.parseInt(position));
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         width = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_WIDTH);
         try {
             newMedia.setWidth(Integer.parseInt(width));
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         height = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_HEIGHT);
         try {
             newMedia.setHeight(Integer.parseInt(height));
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         size = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_SIZE);
         try {
             newMedia.setSize(Integer.parseInt(size));
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         mimetype = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_MIMETYPE);
         newMedia.setMimetype(mimetype);
         type = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TYPE);
         try {
             newMedia.setType(Integer.parseInt(type));
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
         title = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_TITLE);
         newMedia.setTitle(title);
         name = getTextNodeValue(media, CmsExportModuledata.C_EXPORT_TAG_MEDIA_NAME);
@@ -549,7 +572,9 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
         long adate = 0;
         try {
             adate = formatterFullTime.parse(date).getTime();
-        } catch (ParseException e) { }
+        } catch (ParseException e) {
+            // ignore
+        }
         return adate;
     }
 

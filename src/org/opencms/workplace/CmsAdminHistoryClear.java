@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2003/10/14 09:00:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.opencms.threads.CmsAdminHistoryClearThread;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 5.1
  */
@@ -119,13 +119,9 @@ public class CmsAdminHistoryClear extends CmsReport {
     public String buildClearForm() {
         StringBuffer retValue = new StringBuffer(512);
         CmsRegistry reg = null;
-        int maxVersions = -1;
-        boolean histEnabled = false;
-        try {
-            reg = getCms().getRegistry();
-            histEnabled = reg.getBackupEnabled();
-            maxVersions = reg.getMaximumBackupVersions();
-        } catch (CmsException e) { }
+        reg = getCms().getRegistry();
+        boolean histEnabled = reg.getBackupEnabled();
+        int maxVersions = reg.getMaximumBackupVersions();
         
         // append settings info or disabled message if history is disabled
         retValue.append(dialogBlockStart(key("label.admin.history.settings")));
@@ -194,10 +190,7 @@ public class CmsAdminHistoryClear extends CmsReport {
      * @return the HTML code for a select box of versions
      */
     public String buildSelectVersions(String attributes) {
-        int versions = 0;
-        try {
-            versions = getCms().getRegistry().getMaximumBackupVersions();
-        } catch (CmsException e) { }
+        int versions = getCms().getRegistry().getMaximumBackupVersions();
         return buildSelectNumbers("versions", attributes, 0 , versions);
     }
     
@@ -218,7 +211,9 @@ public class CmsAdminHistoryClear extends CmsReport {
                 try {
                     getCms().getRequestContext().getResponse().sendCmsRedirect(getAdministrationBackLink());
                     break;
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                    // ignore
+                }
             case ACTION_REPORT_BEGIN:
             case ACTION_SAVE_EDIT:
             default:

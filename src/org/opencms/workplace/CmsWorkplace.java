@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2003/10/16 10:44:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.opencms.site.CmsSiteManager;
  * session handling for all JSP workplace classes.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 5.1
  */
@@ -349,13 +349,7 @@ public abstract class CmsWorkplace {
     public String getResourceUri() {
         if (m_resourceUri != null) return m_resourceUri;
         synchronized (this) {
-            boolean useVfs = true;
-            // check registry for setting of workplace images
-            try {
-                useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
-            } catch (CmsException e) {
-                // by default (useVfs == true) we assume that we want to use exported resources
-            }            
+            boolean useVfs = (new Boolean(OpenCms.getRegistry().getSystemValue("UseWpPicturesFromVFS"))).booleanValue();
             if (useVfs) {
                 m_resourceUri = m_cms.getRequestContext().getRequest().getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
             } else {
@@ -505,7 +499,9 @@ public abstract class CmsWorkplace {
         Map resourceTypes = new HashMap();
         try {
             allResTypes = cms.getAllResourceTypes();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         Iterator i = allResTypes.iterator();
         while (i.hasNext()) {
             // loop through all types and check which types can be displayed for the user
@@ -513,7 +509,9 @@ public abstract class CmsWorkplace {
             try {
                 cms.readFileHeader(I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "restypes/" + curType.getResourceTypeName());
                 resourceTypes.put(new Integer(curType.getResourceType()), curType);               
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // ignore
+            }
         } 
         return resourceTypes;      
     }
@@ -703,7 +701,9 @@ public abstract class CmsWorkplace {
                 if (DEBUG && (value != null)) System.err.println("setting " + m.getName() + " with value '" + value + "'");
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
+                // ignore
             } catch (IllegalAccessException eae) {
+                // ignore
             }
         }        
     }
@@ -723,7 +723,9 @@ public abstract class CmsWorkplace {
             try {
                 o = m.invoke(this, new Object[0]);
             } catch (InvocationTargetException ite) {
+                // ignore
             } catch (IllegalAccessException eae) {
+                // ignore
             }
             if (o != null) {
                 map.put(m.getName().substring(8).toLowerCase(), o);            

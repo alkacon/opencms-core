@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsStringSubstitution.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * with Perl regular expressions.<p>
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public final class CmsStringSubstitution {
@@ -57,7 +57,9 @@ public final class CmsStringSubstitution {
      * Default constructor (empty), private because this class has only 
      * static methods.<p>
      */
-    private CmsStringSubstitution() { }
+    private CmsStringSubstitution() {
+        // empty
+    }
     
     /**
      * Substitutes searchString in content with replaceItem.<p>

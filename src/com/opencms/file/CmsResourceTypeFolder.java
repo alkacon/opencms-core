@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/10/14 15:22:25 $
-* Version: $Revision: 1.94 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.95 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -157,7 +157,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 try {
                     cms.readFolder(bodyFolder);
                     cms.doTouch(bodyFolder, timestamp, user);
-                } catch (CmsException e) { }
+                } catch (CmsException e) {
+                    // ignore
+                }
             }
         }
 
@@ -233,7 +235,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
                 copyResource(cms, I_CmsWpConstants.C_VFS_PATH_BODIES + source.substring(1), I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1), keepFlags, true, copyMode);
                 // finaly lock the copy in content bodys if it exists.
                 cms.lockResource(I_CmsWpConstants.C_VFS_PATH_BODIES + destination.substring(1));
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // ignore
+            }
         }
     }
 
@@ -357,7 +361,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#exportResource(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
-    public CmsFile exportResource(CmsObject cms, CmsFile file) throws CmsException {
+    public CmsFile exportResource(CmsObject cms, CmsFile file) {
         // nothing to do here, because there couldn´t be any Linkmanagement-Tags inside a folder-resource
         return file;
     }
@@ -365,7 +369,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#copyToLostAndFound(com.opencms.file.CmsObject, java.lang.String, boolean)
      */
-    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) throws CmsException {
+    public String copyToLostAndFound(CmsObject cms, String resourcename, boolean copyResource) {
         // nothing to do here,
         return null;
     }
@@ -628,7 +632,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#replaceResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], int)
      */
-    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) throws CmsException {
+    public void replaceResource(CmsObject cms, String resourceName, Map resourceProperties, byte[] resourceContent, int newResType) {
         // folders cannot be replaced yet...
     }
 

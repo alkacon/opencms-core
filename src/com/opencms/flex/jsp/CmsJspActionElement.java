@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspActionElement.java,v $
- * Date   : $Date: 2003/09/25 16:08:00 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import javax.servlet.jsp.PageContext;
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 5.0 beta 2
  */
@@ -337,6 +337,7 @@ public class CmsJspActionElement {
         try {
             include(target, element, null);
         } catch (Throwable t) {
+            // ignore
         }
     }  
         
@@ -356,6 +357,7 @@ public class CmsJspActionElement {
         try {
             include(target, element, parameterMap);
         } catch (Throwable t) {
+            // ignore
         }
     }    
     

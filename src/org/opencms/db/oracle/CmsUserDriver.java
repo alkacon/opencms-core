@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/10/10 11:44:13 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.20 $ $Date: 2003/10/10 11:44:13 $
+ * @version $Revision: 1.21 $ $Date: 2003/11/03 09:05:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -274,12 +274,14 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                 try {
                     res.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             } 
             if (commit != null) {
                 try {
                     commit.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }
             } 
             if (stmt != null) {
@@ -288,10 +290,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                     rollback.execute();
                     rollback.close();
                 } catch (SQLException se) {
+                    // ignore
                 }
                 try {
                     stmt.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             }                
             if (conn != null) {
@@ -299,6 +303,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException se) {
+                    // ignore
                 }                   
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Vector;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.30 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.31 $ $Date: 2003/11/03 09:05:53 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -70,9 +70,8 @@ public interface I_CmsBackupDriver {
      * @param hasContent true if the file content is part of the result set
      * @return CmsBackupResource the new resource/file instance
      * @throws SQLException if a requested attribute was not found in the result set
-     * @throws CmsException if something goes wrong
      */
-    CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException;
+    CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException;
 
     /**
      * Creates a new property defintion in the databse.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/10/20 13:01:01 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -537,7 +537,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 Integer it = null;
                 try {
                     it = (Integer)m.get("action");
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                    // it will be null
+                }
                 if (it == null) break;
                 int i = it.intValue();
                 switch (i) {
@@ -865,7 +867,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.9 $ 
+     * @version $Revision: 1.10 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         

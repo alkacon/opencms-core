@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2003/10/09 16:44:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 5.1
  */
@@ -182,7 +182,9 @@ public class CmsCopy extends CmsDialog {
             if (curRes.isFolder()) {
                 isFolder = true;        
             }
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         
         if (isFolder) {
             // for folders, show an additional option "preserve links", mark "create only links" as default
@@ -242,6 +244,7 @@ public class CmsCopy extends CmsDialog {
                     CmsResource targetRes = getCms().readFileHeader(getParamTarget());
                     targetType = targetRes.getType();
                 } catch (CmsException exc) { 
+                    // ignore
                 } finally {
                     if (restoreSiteRoot) {
                         getCms().getRequestContext().restoreSiteRoot();
@@ -287,7 +290,9 @@ public class CmsCopy extends CmsDialog {
         int copyMode = I_CmsConstants.C_COPY_PRESERVE_LINK;
         try {
             copyMode = Integer.parseInt(getParamCopymode());
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
 
         // calculate the target name
         String target = getParamTarget();

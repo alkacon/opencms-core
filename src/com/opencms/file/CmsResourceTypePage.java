@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2003/08/01 10:33:30 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package com.opencms.file;
 
 import org.opencms.loader.CmsXmlTemplateLoader;
 
-import com.opencms.core.CmsException;
-
 import java.util.Map;
 
 /**
@@ -42,7 +40,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  * @since 5.1
  */
 public class CmsResourceTypePage extends A_CmsResourceType {
@@ -77,7 +75,7 @@ public class CmsResourceTypePage extends A_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
+    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) {
         throw new RuntimeException("createResource(): The resource type 'page' is deprecated and must be transformed to 'newpage'");
     }
 }

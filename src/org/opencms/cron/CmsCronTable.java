@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronTable.java,v $
- * Date   : $Date: 2003/10/29 16:41:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * Describes a complete crontable with cronentries.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.2 $ $Date: 2003/10/29 16:41:21 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/03 09:05:53 $
  * @since 5.1.12
  */
 public class CmsCronTable extends Object {
@@ -64,9 +64,8 @@ public class CmsCronTable extends Object {
      * 
      * @param table a String representing the cron table
      * @throws IOException if the string couldn't be read
-     * @throws CmsException if the string contains an invalid line
      */
-    public CmsCronTable(String table) throws IOException, CmsException {
+    public CmsCronTable(String table) throws IOException {
         m_cronEntries = (List) new ArrayList();
         update(new StringReader(table));        
     }
@@ -85,9 +84,8 @@ public class CmsCronTable extends Object {
      * 
      * @param reader - the Reader to get the new values from.
      * @throws IOException if the reader couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    public void update(Reader reader) throws IOException, CmsException {
+    public void update(Reader reader) throws IOException {
         m_cronEntries.clear();
         LineNumberReader lineReader = new LineNumberReader(reader);
         String line = lineReader.readLine();
@@ -208,9 +206,8 @@ public class CmsCronTable extends Object {
      * 
      * @param table - the String to get the new values from.
      * @throws IOException if the reader couldn't be read
-     * @throws CmsException if the string contains a invalid parameterline.
      */
-    public void update(String table) throws IOException, CmsException {
+    public void update(String table) throws IOException {
         update(new StringReader(table));
     }
 

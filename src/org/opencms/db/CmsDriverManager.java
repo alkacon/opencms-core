@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/29 15:49:39 $
- * Version: $Revision: 1.284 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.285 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.284 $ $Date: 2003/10/29 15:49:39 $
+ * @version $Revision: 1.285 $ $Date: 2003/11/03 09:05:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -4823,9 +4823,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @param principalId the UUID of the principal to lookup
      * @return the principal (group or user) if found, otherwise null
-     * @throws CmsException if something goeas wrong
      */
-    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) throws CmsException {
+    public I_CmsPrincipal lookupPrincipal(CmsUUID principalId) {
 
         try {
             CmsGroup group = m_userDriver.readGroup(principalId);
@@ -4853,9 +4852,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * 
      * @param principalName the name of the principal to lookup
      * @return the principal (group or user) if found, otherwise null
-     * @throws CmsException if something goeas wrong
      */
-    public I_CmsPrincipal lookupPrincipal(String principalName) throws CmsException {
+    public I_CmsPrincipal lookupPrincipal(String principalName) {
 
         try {
             CmsGroup group = m_userDriver.readGroup(principalName);
@@ -5226,10 +5224,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the agent from
      * @return the owner of a task
-     *
-     * @throws CmsException if operation was not succesful.
      */
-    public CmsUser readAgent(CmsTask task) throws CmsException {
+    public CmsUser readAgent(CmsTask task) {
         return readUser(task.getAgentUser());
     }
 
@@ -5927,9 +5923,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param project the project to read from
      * @return the group of a resource
-     * @throws CmsException if operation was not succesful
      */
-    public CmsGroup readGroup(CmsProject project) throws CmsException {
+    public CmsGroup readGroup(CmsProject project) {
 
         // try to read group form cache
         CmsGroup group = (CmsGroup)m_groupCache.get(new CacheId(project.getGroupId()));
@@ -6019,15 +6014,14 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
     }
 
     /**
-     * Reads the managergroup of a project from the OpenCms.<p>
+     * Reads the manager group of a project from the OpenCms.<p>
      *
      * All users are granted.
      *
      * @param project the project to read from
      * @return the group of a resource
-     * @throws CmsException if operation was not succesful
      */
-    public CmsGroup readManagerGroup(CmsProject project) throws CmsException {
+    public CmsGroup readManagerGroup(CmsProject project) {
         CmsGroup group = null;
         // try to read group form cache
         group = (CmsGroup)m_groupCache.get(new CacheId(project.getManagerGroupId()));
@@ -6053,17 +6047,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * All users are garnted.
      *
      * @return the mime-types
-     * @throws CmsException if operation was not succesful
      */
-    public Hashtable readMimeTypes() throws CmsException {
+    public Hashtable readMimeTypes() {
         // read the mimetype-properties as ressource from classloader and convert them
         // to hashtable
         Properties props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("mimetypes.properties"));
-        } catch (Exception exc) {
+        } catch (Throwable t) {
             if (OpenCms.getLog(this).isFatalEnabled()) {
-                OpenCms.getLog(this).fatal("Could not read mimetypes from properties", exc);
+                OpenCms.getLog(this).fatal("Could not read mimetypes from properties", t);
             }
         }
         return props;
@@ -6085,9 +6078,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the original agent from
      * @return the owner of a task
-     * @throws CmsException if operation was not succesful
      */
-    public CmsUser readOriginalAgent(CmsTask task) throws CmsException {
+    public CmsUser readOriginalAgent(CmsTask task) {
         return readUser(task.getOriginalUser());
     }
 
@@ -6096,9 +6088,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param project the project to get the owner from
      * @return the owner of a resource.
-     * @throws CmsException if operation was not succesful
      */
-    public CmsUser readOwner(CmsProject project) throws CmsException {
+    public CmsUser readOwner(CmsProject project) {
         return readUser(project.getOwnerId());
     }
 
@@ -6107,9 +6098,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param task the task to read the owner from
      * @return the owner of a task
-     * @throws CmsException if operation was not succesful.
      */
-    public CmsUser readOwner(CmsTask task) throws CmsException {
+    public CmsUser readOwner(CmsTask task) {
         return readUser(task.getInitiatorUser());
     }
 
@@ -6118,9 +6108,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param log the tasklog
      * @return the owner of a resource
-     * @throws CmsException if operation was not succesful
      */
-    public CmsUser readOwner(CmsTaskLog log) throws CmsException {
+    public CmsUser readOwner(CmsTaskLog log) {
         return readUser(log.getUser());
     }
 
@@ -6825,9 +6814,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      *
      * @param id The id of the user that is to be read.
      * @return user read form the cms
-     * @throws CmsException if operation was not succesful
      */
-    public CmsUser readUser(CmsUUID id) throws CmsException {
+    public CmsUser readUser(CmsUUID id) {
         CmsUser user = null;
         try {
             user = getUserFromCache(id);
@@ -7349,13 +7337,16 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsUser user = null;
         try {
             user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) { }
-
-        if (user == null)
+        } catch (CmsException exc) {
+            // user will be null
+        }
+        if (user == null) {
             try {
                 user = m_userDriver.readUser(username, oldPassword, I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) { }
-
+            } catch (CmsException e) {
+                // TODO: Check what happens if this is caught
+            }
+        }
         m_userDriver.writePassword(username, newPassword);
     }
 
@@ -7396,12 +7387,17 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         CmsUser user = null;
         try {
             user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
-        } catch (CmsException exc) { }
+        } catch (CmsException exc) {
+            // user will be null
+        }
 
-        if (user == null)
+        if (user == null) {
             try {
                 user = m_userDriver.readUser(username, password, I_CmsConstants.C_USER_TYPE_WEBUSER);
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // TODO: Check what happens if this is caught
+            }
+        }
 
         m_userDriver.writeRecoveryPassword(username, newPassword);
     }

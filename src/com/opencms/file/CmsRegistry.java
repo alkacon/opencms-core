@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/10/29 16:41:21 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.106 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -400,9 +400,8 @@ public class CmsRegistry extends A_CmsXmlContent {
      * @param replaceMode if <code>true</code> this is for module replacement, 
      *      if <code>false</code> it is form module deletion
      * @return a Vector with modulenames that depends on the overgiven module
-     * @throws CmsException in case something goes wrong
      */
-    public Vector deleteCheckDependencies(String modulename, boolean replaceMode) throws CmsException {
+    public Vector deleteCheckDependencies(String modulename, boolean replaceMode) {
 
         Vector result = new Vector();
         if (replaceMode)
@@ -802,9 +801,8 @@ public class CmsRegistry extends A_CmsXmlContent {
       * This method gets the maximum number of backup versions for each file.<p>
       *
       * @return  maximum number of backup versions for each file
-      * @throws CmsException if something goes wrong
       */
-    public int getMaximumBackupVersions() throws CmsException {    
+    public int getMaximumBackupVersions() {    
         Hashtable histproperties = getSystemValues(I_CmsConstants.C_REGISTRY_HISTORY);
         String versions = ((String)histproperties.get(I_CmsConstants.C_REGISTRY_HISTORY_VERSIONS));          
         return new Integer(versions).intValue();
@@ -2365,9 +2363,8 @@ public class CmsRegistry extends A_CmsXmlContent {
      *
      * @param modulname the name of the module
      * @param classname the name of the class that contains the publish method of the module
-     * @throws CmsException in case something goes wrong
      */
-    public void setModulePublishClass(String modulname, String classname) throws CmsException {
+    public void setModulePublishClass(String modulname, String classname) {
         try {
             Element module = getModuleElement(modulname);
             Element pubClass = (Element) (module.getElementsByTagName("publishclass").item(0));

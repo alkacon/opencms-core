@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
-* Date   : $Date: 2003/08/14 15:37:25 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -60,7 +60,9 @@ public final class Encoder {
     /**
      * Constructor
      */
-    private Encoder() { }
+    private Encoder() {
+        // empty
+    }
     
     /**
      * This method is a substitute for <code>URLEncoder.encode()</code>.
@@ -87,7 +89,9 @@ public final class Encoder {
         // fallback to default encoding
         try {
             return URLEncoder.encode(source, C_UTF8_ENCODING); 
-        } catch (java.io.UnsupportedEncodingException e) { }
+        } catch (java.io.UnsupportedEncodingException e) {
+            // ignore
+        }
         return source;
     }
     
@@ -127,7 +131,9 @@ public final class Encoder {
         // fallback to default decoding
         try {
             return URLDecoder.decode(source, C_UTF8_ENCODING); 
-        } catch (java.io.UnsupportedEncodingException e) { }
+        } catch (java.io.UnsupportedEncodingException e) {
+            // ignore
+        }
         return source;     
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * the CmsFlexCache.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsFlexRequest extends HttpServletRequestWrapper {
            
@@ -119,7 +119,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_parameters = req.getParameterMap();
         try {
             m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
-        } catch (Exception e) { }        
+        } catch (Exception e) {
+            // m_isOnline will be false
+        }        
         String[] paras = req.getParameterValues("_flex");
         boolean nocachepara = false;
         boolean dorecompile = false;
@@ -127,7 +129,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         if (paras != null) {
             try {
                 isAdmin = cms.getRequestContext().isAdmin();
-            } catch (Exception e) { }
+            } catch (Exception e) {
+                // isAdmin will be false
+            }
             if (isAdmin) {                        
                 List l = Arrays.asList(paras);
                 String context = (String)req.getAttribute(ATTRIBUTE_PROCESSED);

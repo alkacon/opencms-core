@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsByteArrayDataSource.java,v $
-* Date   : $Date: 2003/07/15 16:04:01 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,9 +41,9 @@ import javax.activation.DataSource;
  * This class implements a DataSource from an InputStream, a byte array or a 
  * String and is most often used to create a mail message with the CmsMail object.<p>
  * 
- * @author $Author: c.weinholz $
+ * @author $Author: a.kandzior $
  * 
- * @version $Revision: 1.5 $ $Date: 2003/07/15 16:04:01 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/03 09:05:52 $
  * 
  * @see com.opencms.defaults.CmsMail
  * @see <a href="http://java.sun.com/products/javamail/index.html">http://java.sun.com/products/javamail/index.html</a>
@@ -83,7 +83,7 @@ public class CmsByteArrayDataSource implements DataSource {
             }
             m_data = os.toByteArray();
         } catch (IOException ioex) {
-            
+            // ignore
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/10 11:58:37 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import source.org.apache.java.util.Configurations;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.70 $ $Date: 2003/10/10 11:58:37 $
+ * @version $Revision: 1.71 $ $Date: 2003/11/03 09:05:52 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -84,7 +84,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createCmsBackupResourceFromResultSet(java.sql.ResultSet, boolean)
      */
-    public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException, CmsException {
+    public CmsBackupResource createBackupResource(ResultSet res, boolean hasContent) throws SQLException {
         byte[] content = null;
 
         CmsUUID backupId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_BACKUP_ID")));
@@ -852,13 +852,9 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         String group = new String();
         String managerGroup = new String();
 
-        try {
-            CmsUser owner = m_driverManager.readUser(currentProject.getOwnerId());
-            ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
-        } catch (CmsException e) {
-            // the owner could not be read
-            ownerName = "";
-        }
+        CmsUser owner = m_driverManager.readUser(currentProject.getOwnerId());
+        ownerName = owner.getName() + " " + owner.getFirstname() + " " + owner.getLastname();
+
         try {
             group = m_driverManager.getUserDriver().readGroup(currentProject.getGroupId()).getName();
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/10/02 14:47:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.21 $ $Date: 2003/10/02 14:47:24 $
+ * @version $Revision: 1.22 $ $Date: 2003/11/03 09:05:52 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -245,18 +245,21 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 try {
                     res.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             } 
             if (commit != null) {
                 try {
                     commit.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }
             } 
             if (stmt2 != null) {
                 try {
                     stmt2.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }
             }
             if (stmt != null) {
@@ -265,10 +268,12 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     rollback.execute();
                     rollback.close();
                 } catch (SQLException se) {
+                    // ignore
                 }
                 try {
                     stmt.close();
                 } catch (SQLException exc) {
+                    // ignore
                 }                
             }                
             if (conn != null) {
@@ -276,6 +281,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                     conn.setAutoCommit(true);
                     conn.close();
                 } catch (SQLException se) {
+                    // ignore
                 }                   
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.132 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.131 $ $Date: 2003/10/28 13:28:41 $
+ * @version $Revision: 1.132 $ $Date: 2003/11/03 09:05:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -194,6 +194,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     stmt.setString(2, (String) linkTargets.elementAt(i));
                     stmt.executeUpdate();
                 } catch (SQLException e) {
+                    // ignore
                 }
             }
         } catch (SQLException e) {
@@ -230,6 +231,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     stmt.setString(2, (String) linkTargets.elementAt(i));
                     stmt.executeUpdate();
                 } catch (SQLException e) {
+                    // ignore
                 }
             }
         } catch (SQLException e) {

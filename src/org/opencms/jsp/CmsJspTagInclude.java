@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Used to include another OpenCms managed resource in a JSP.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent { 
     
@@ -213,9 +213,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @return <code>EVAL_BODY_BUFFERED</code>
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
-     * @throws JspException by interface default
      */    
-    public int doStartTag() throws JspException {
+    public int doStartTag() {
         return EVAL_BODY_BUFFERED;
     }    
     
@@ -245,13 +244,17 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     String prop = controller.getCmsObject().readProperty(controller.getCmsObject().getRequestContext().getUri(), m_property, true);
                     if (DEBUG) System.err.println("IncludeTag: property=" + m_property + " is " + prop);                    
                     if (prop != null) target = prop + getSuffix();
-                } catch (Exception e) { } // target will be null
+                } catch (Exception e) { 
+                    // target will be null
+                }
             } else if (m_attribute != null) {            
                 // Option 3: target is set in "attribute" parameter
                 try { 
                     String attr = (String)req.getAttribute(m_attribute);
                     if (attr != null) target = attr + getSuffix();
-                } catch (Exception e) { } // target will be null
+                } catch (Exception e) { 
+                    // target will be null
+                }
             } else {
                 // Option 4: target might be set in body
                 String body = null;

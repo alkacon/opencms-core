@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsVersion.java,v $
- * Date   : $Date: 2003/10/02 14:55:54 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.opencms.main.OpenCms;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -77,7 +77,9 @@ public class CmsVersion {
     /**
      * Default constructor, use the init() method when using this constructor.<p>
      */
-    public CmsVersion() { }
+    public CmsVersion() {
+        // empty
+    }
     
     /**
      * Public constructor.<p>
@@ -107,7 +109,9 @@ public class CmsVersion {
                 String versionString = paramVersion.substring(sepIndex + 1);
                 try {
                     m_version = Integer.parseInt(versionString);
-                } catch (NumberFormatException nf) { }
+                } catch (NumberFormatException nf) {
+                    // ignore
+                }
             }
         }
         m_response = response;

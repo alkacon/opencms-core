@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2003/10/31 17:07:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.1.10
  */
 public class CmsPublishThread extends A_CmsReportThread {
@@ -66,6 +66,7 @@ public class CmsPublishThread extends A_CmsReportThread {
      * 
      * @param cms the current OpenCms context object
      * @param resourceName the name of the resource to publish directly
+     * @param directPublishSiblings if true also publish all siblings directly
      */
     public CmsPublishThread(CmsObject cms, String resourceName, boolean directPublishSiblings) {
         super(cms, "OpenCms: Publishing of resource " + resourceName);

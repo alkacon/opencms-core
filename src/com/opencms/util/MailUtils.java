@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/MailUtils.java,v $
-* Date   : $Date: 2003/07/21 11:05:04 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ public final class MailUtils {
      * Hides the public constructor.<p>
      */
     private MailUtils() {
+        // empty
     }
 
     /**

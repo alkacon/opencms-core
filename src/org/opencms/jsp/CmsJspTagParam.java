@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -133,9 +133,8 @@ public class CmsJspTagParam extends BodyTagSupport {
      * Sets the attribute name.<p>
      * 
      * @param name the name to set 
-     * @throws JspTagException (never thrown, required by interface)
      */
-    public void setName(String name) throws JspTagException {
+    public void setName(String name) {
         this.m_name = name;
     }
 
@@ -143,9 +142,8 @@ public class CmsJspTagParam extends BodyTagSupport {
      * Sets the attribute value.<p>
      * 
      * @param value the name to set 
-     * @throws JspTagException (never thrown, required by interface)
      */
-    public void setValue(String value) throws JspTagException {
+    public void setValue(String value) {
         this.m_value = value;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsTree.java,v $
- * Date   : $Date: 2003/10/21 07:49:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 5.1
  */
@@ -120,7 +120,9 @@ public class CmsTree extends CmsWorkplace {
         List allResTypes = new ArrayList();
         try {
             allResTypes = cms.getAllResourceTypes();
-        } catch (CmsException e) { }
+        } catch (CmsException e) { 
+            // empty
+        }
         Iterator i = allResTypes.iterator();
         while (i.hasNext()) {
             // loop through all types and check which types can be displayed
@@ -136,7 +138,9 @@ public class CmsTree extends CmsWorkplace {
                 }
                 retValue.append("\taddResourceType(");
                 retValue.append(curTypeId + ", \"" + curTypeName + "\",\t\"" + curTypeLocalName + "\",\t\"filetypes/" + curTypeName + ".gif\");\n");
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // empty
+            }
         }       
 
         retValue.append("}\n\n");     

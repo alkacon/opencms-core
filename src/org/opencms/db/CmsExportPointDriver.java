@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,6 @@ package org.opencms.db;
 
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -45,7 +43,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsExportPointDriver {
 
@@ -56,10 +54,8 @@ public class CmsExportPointDriver {
      * Constructor for a CmsExportPointDriver.<p>
      *
      * @param exportpoints the vfs directories to export
-     * @throws CmsException if something goes wrong
-     *
      */
-    public CmsExportPointDriver(Hashtable exportpoints) throws CmsException {
+    public CmsExportPointDriver(Hashtable exportpoints) {
         m_exportpointStorage = exportpoints;
     }
     
@@ -80,9 +76,8 @@ public class CmsExportPointDriver {
      *
      * @param foldername the complete path to the folder
      * @param exportpoint the name of the export point
-     * @throws CmsException if something goes wrong
      */
-    public void createFolder(String foldername, String exportpoint) throws CmsException {
+    public void createFolder(String foldername, String exportpoint) {
         File discFolder = new File(absoluteName(foldername, exportpoint));
         if (!discFolder.exists()) {
             boolean success = discFolder.mkdirs();
@@ -97,9 +92,8 @@ public class CmsExportPointDriver {
      *
      * @param resourcename the complete path to the resource to be deleted
      * @param exportpoint the name of the export point
-     * @throws CmsException if something goes wrong
      */
-    public void removeResource(String resourcename, String exportpoint) throws CmsException {
+    public void removeResource(String resourcename, String exportpoint) {
         File discFile = new File(absoluteName(resourcename, exportpoint));
         if (discFile.exists()) {
             discFile.delete();
@@ -112,9 +106,8 @@ public class CmsExportPointDriver {
      * @param filename the path of the file to write
      * @param exportpoint the name of the export point
      * @param content the contents of the file to write
-     * @throws CmsException if something goes wrong
      */
-    public void writeFile(String filename, String exportpoint, byte[] content) throws CmsException {
+    public void writeFile(String filename, String exportpoint, byte[] content) {
         File discFile = new File(absoluteName(filename, exportpoint));
         try {
             OutputStream s = new FileOutputStream(discFile);

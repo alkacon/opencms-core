@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2003/09/12 12:09:37 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/11/03 09:05:53 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -167,6 +167,7 @@ final class CmsHtmlConverterConfig {
      * default constructor
      */
     protected CmsHtmlConverterConfig() {
+        // empty
     }
 
     /**

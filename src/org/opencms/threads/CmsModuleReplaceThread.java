@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2003/09/07 20:18:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
@@ -117,12 +117,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
             // check if additional resources outside the system/modules/{exportName} folder were 
             // specified as module resources by reading the property {C_MODULE_PROPERTY_ADDITIONAL_RESOURCES}
             // to the module (in the module administration)
-            String additionalResources = null;
-            try {
-                additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
-            } catch (CmsException e) {
-                return resNames;
-            }
+            String additionalResources = OpenCms.getRegistry().getModuleParameterString(moduleName, I_CmsConstants.C_MODULE_PROPERTY_ADDITIONAL_RESOURCES);
             StringTokenizer additionalResourceTokens = null;
 
             if (additionalResources != null && !additionalResources.equals("")) {

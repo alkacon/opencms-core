@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2003/09/29 17:27:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $ $Date: 2003/09/29 17:27:22 $
+ * @version $Revision: 1.3 $ $Date: 2003/11/03 09:05:53 $
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -107,7 +107,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#comment(char[], int, int)
      */
-    public void comment(char[] ch, int start, int length) throws SAXException {
+    public void comment(char[] ch, int start, int length) {
         // NOOP
     }
 
@@ -140,7 +140,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#endDTD()
      */
-    public void endDTD() throws SAXException {
+    public void endDTD() {
         // NOOP
     }
 
@@ -166,7 +166,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#endEntity(java.lang.String)
      */
-    public void endEntity(String name) throws SAXException {
+    public void endEntity(String name) {
         // NOOP
     }
 
@@ -199,7 +199,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
-    public void startCDATA() throws SAXException {
+    public void startCDATA() {
         m_openCdata = true;
     }
 
@@ -216,7 +216,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void startDTD(String name, String publicId, String systemId) throws SAXException {
+    public void startDTD(String name, String publicId, String systemId) {
         // NOOP
     }
 
@@ -250,7 +250,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#startEntity(java.lang.String)
      */
-    public void startEntity(String name) throws SAXException {
+    public void startEntity(String name) {
         // NOOP
     }
 

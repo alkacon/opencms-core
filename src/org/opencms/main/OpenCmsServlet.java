@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2003/10/23 14:49:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     
@@ -81,16 +81,10 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * 
      * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
         String path = req.getPathInfo();
         if ((path != null) && path.startsWith(C_HANDLE)) {
-            
-            try {
-                OpenCmsCore.getInstance().initStartupClasses(req, res);
-            } catch (CmsException e) {
-                // noop
-            }
-            
+            OpenCmsCore.getInstance().initStartupClasses(req, res);            
             invokeHandler(req, res);                                     
         } else {
             OpenCmsCore.getInstance().showResource(req, res);
@@ -103,7 +97,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * 
      * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void doPost (HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {            
+    public void doPost (HttpServletRequest req, HttpServletResponse res) throws IOException {            
         doGet(req, res);
     }
     

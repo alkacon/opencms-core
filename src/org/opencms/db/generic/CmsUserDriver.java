@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/10/10 11:43:11 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.41 $ $Date: 2003/10/10 11:43:11 $
+ * @version $Revision: 1.42 $ $Date: 2003/11/03 09:05:52 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -938,7 +938,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             if (res.next()) {
                 user = internalCreateUser(res, true);
             } else {
-                throw new CmsException("[" + this.getClass().getName() + "]" + name, CmsException.C_NO_USER);
+                throw new CmsException("[" + this.getClass().getName() + "] '" + name + "'", CmsException.C_NO_USER);
             }
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
@@ -1444,7 +1444,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
             stmt.setString(2, userId.toString());
             stmt.executeUpdate();
         } catch (SQLException e) {
-            m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }

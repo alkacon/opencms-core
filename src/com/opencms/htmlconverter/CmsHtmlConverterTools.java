@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/htmlconverter/Attic/CmsHtmlConverterTools.java,v $
-* Date   : $Date: 2003/09/09 15:50:02 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2003/11/03 09:05:53 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -189,6 +189,7 @@ final class CmsHtmlConverterTools {
                         parameter += "#"+reference;
                     }
                 } catch (MalformedURLException exc) {
+                    // ignore
                 }
             }
         }

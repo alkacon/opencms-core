@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,6 @@ package org.opencms.loader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,7 +46,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -59,9 +57,8 @@ public class CmsLoaderManager {
      * Collects all available resource loaders from the registry at startup.<p>
      * 
      * @param conf the OpenCms configuration 
-     * @throws CmsException if something goes wrong
      */
-    public CmsLoaderManager(Configurations conf) throws CmsException {
+    public CmsLoaderManager(Configurations conf) {
         List loaders = OpenCms.getRegistry().getResourceLoaders();
 
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChaccBrowser.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -157,7 +157,9 @@ public class CmsChaccBrowser extends CmsDialog {
         StringBuffer retValue = new StringBuffer(1024);
         try {
             groups = getCms().getGroups();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         
         for (int i=0; i<groups.size(); i++) {
             CmsGroup curGroup = (CmsGroup)groups.elementAt(i);
@@ -176,7 +178,9 @@ public class CmsChaccBrowser extends CmsDialog {
         StringBuffer retValue = new StringBuffer(1024);
         try {
             users = getCms().getUsers();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
 
         for (int i=0; i<users.size(); i++) {
             CmsUser curUser = (CmsUser)users.elementAt(i);

@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.22 $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import java.util.Vector;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.22 $ $Date: 2003/10/15 09:50:42 $
+ * @version $Revision: 1.23 $ $Date: 2003/11/03 09:05:53 $
  */
 public class CmsSynchronize {
 
@@ -414,9 +414,8 @@ public class CmsSynchronize {
      * synchronisation process.<p>
      * 
      * @param res the resource whose entry must be updated
-     * @throws CmsException if something goes wrong
      */
-    private void skipResource(CmsResource res) throws CmsException {
+    private void skipResource(CmsResource res) {
         // add the file to the new sync list...
         String resname = m_cms.readAbsolutePath(res);
         CmsSynchronizeList syncList = (CmsSynchronizeList)m_syncList.get(translate(resname));
@@ -757,7 +756,9 @@ public class CmsSynchronize {
                         if (fIn != null) {
                             fIn.close();
                         }
-                    } catch (IOException e) { }
+                    } catch (IOException e) {
+                        // ignore
+                    }
                 }
             }
         }
@@ -809,7 +810,9 @@ public class CmsSynchronize {
                 if (fOut != null) {
                     fOut.close();
                 }
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 
@@ -896,7 +899,9 @@ public class CmsSynchronize {
             if (fOut != null) {
                 try {
                     fOut.close();
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                    // ignore
+                }
             }
         }
     }
@@ -928,7 +933,9 @@ public class CmsSynchronize {
             try {
                 if (fileStream != null)
                     fileStream.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 
@@ -978,7 +985,9 @@ public class CmsSynchronize {
             try {
                 if (fOut != null)
                     fOut.close();
-            } catch (IOException e) { }
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }       
 }

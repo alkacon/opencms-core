@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.63 $ $Date: 2003/10/28 11:31:27 $
+ * @version $Revision: 1.64 $ $Date: 2003/11/03 09:05:53 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -66,9 +66,8 @@ public interface I_CmsVfsDriver {
      * @param projectId the project id
      * @return the new CmsFile
      * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if something goews wrong
      */
-    CmsFile createFile(ResultSet res, int projectId) throws SQLException, CmsException;
+    CmsFile createFile(ResultSet res, int projectId) throws SQLException;
     
     /**
      * Creates a CmsFile instance from a JDBC ResultSet.<p>
@@ -78,9 +77,8 @@ public interface I_CmsVfsDriver {
      * @param hasFileContentInResultSet flag to include the file content
      * @return the new CmsFile
      * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if something goews wrong
      */
-    CmsFile createFile(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException, CmsException;
+    CmsFile createFile(ResultSet res, int projectId, boolean hasFileContentInResultSet) throws SQLException;
 
     /**
      * Creates a CmsFolder instance from a JDBC ResultSet.<p>
@@ -100,9 +98,8 @@ public interface I_CmsVfsDriver {
      * @param projectId the ID of the current project to adjust the modification date in case the resource is a VFS link
      * @return CmsResource the new CmsResource object
      * @throws SQLException in case the result set does not include a requested table attribute
-     * @throws CmsException if the CmsFile object cannot be created by its constructor
      */
-    CmsResource createResource(ResultSet res, int projectId) throws SQLException, CmsException;
+    CmsResource createResource(ResultSet res, int projectId) throws SQLException;
 
     /**
      * Creates a new file in the database from a specified CmsFile instance.<p>

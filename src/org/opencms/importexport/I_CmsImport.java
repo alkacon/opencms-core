@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImport.java,v $
- * Date   : $Date: 2003/09/05 12:22:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ public interface I_CmsImport {
      */
      void importResources(CmsObject cms,  String importPath, I_CmsReport report, 
                           MessageDigest digest, File importResource, ZipFile importZip, Document docXml, 
-                          Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException ;
+                          Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException;
 
      /**
       * Returns the import version of the import implementation.<p>

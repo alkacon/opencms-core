@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/29 15:49:39 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -830,9 +830,8 @@ public class OpenCmsCore {
      * This is useful for modules to read module-parameters.<p>
      *
      * @return the registry
-     * @throws CmsException if the registry can not be returned
      */
-    protected CmsRegistry getRegistry() throws CmsException {
+    protected CmsRegistry getRegistry() {
         if (m_driverManager == null) {
             return null;
         }
@@ -1888,9 +1887,8 @@ public class OpenCmsCore {
      * 
      * @param req the current request
      * @param res the current response 
-     * @throws CmsException in case something goes wrong
      */
-    protected void initStartupClasses(HttpServletRequest req, HttpServletResponse res) throws CmsException {
+    protected void initStartupClasses(HttpServletRequest req, HttpServletResponse res) {
         if (m_startupClassesInitialized)
             return;
 
@@ -2187,7 +2185,6 @@ public class OpenCmsCore {
      * @param res the current http response
      * @param cms the curren cms context
      * @param file the requested file
-     * @throws CmsException if something goes wrong
      * @throws ServletException if some other things goes wrong
      * @throws IOException if io things go wrong
      */
@@ -2196,7 +2193,7 @@ public class OpenCmsCore {
         HttpServletResponse res, 
         CmsObject cms, 
         CmsFile file
-    ) throws CmsException, ServletException, IOException {
+    ) throws ServletException, IOException {
         I_CmsResourceLoader loader = getLoaderManager().getLoader(file.getLoaderId());
         loader.load(cms, file, req, res);
     }
@@ -2262,9 +2259,8 @@ public class OpenCmsCore {
      *
      * @param cms the current CmsObject initialized with the user data
      * @param cmsReq the current request
-     * @throws IOException if something goes wrong
      */
-    private void updateUser(CmsObject cms, I_CmsRequest cmsReq) throws IOException {
+    private void updateUser(CmsObject cms, I_CmsRequest cmsReq) {
         if (! cms.getRequestContext().isUpdateSessionEnabled()) {
             return;
         }

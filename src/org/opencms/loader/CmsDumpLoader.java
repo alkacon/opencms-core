@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2003/10/20 08:55:27 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import source.org.apache.java.util.Configurations;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -86,7 +86,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
-    public void export(CmsObject cms, CmsFile file) throws CmsException {
+    public void export(CmsObject cms, CmsFile file) {
         try {    
             OutputStream exportStream = cms.getRequestContext().getResponse().getOutputStream();
             exportStream.write(file.getContents());
@@ -101,7 +101,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         if (exportStream != null) {
             exportStream.write(file.getContents());
         }

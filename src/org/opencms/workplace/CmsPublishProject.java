@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPublishProject.java,v $
- * Date   : $Date: 2003/10/31 17:07:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.opencms.threads.CmsPublishThread;
  * Creates the dialogs for publishing a project or a resource.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1.12
  */
@@ -334,7 +334,9 @@ public class CmsPublishProject extends CmsReport {
             id = Integer.parseInt(projectId);
             try {
                 setParamProjectname(getCms().readProject(id).getName());
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // ignore
+            }
         }
     }
     
@@ -347,7 +349,9 @@ public class CmsPublishProject extends CmsReport {
             setParamResourcename(res.getName());
             setParamModifieddate(Utils.getNiceDate(res.getDateLastModified()));
             setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
     }
     
     /**
@@ -368,7 +372,9 @@ public class CmsPublishProject extends CmsReport {
                 int id = Integer.parseInt(getParamProjectid());
                 return (getCms().countLockedResources(id) > 0);
             }
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         return false;
     }
     
@@ -381,7 +387,9 @@ public class CmsPublishProject extends CmsReport {
         CmsResource res = null;
         try {
             res = getCms().readFileHeader(getParamResource());
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // res will be null
+        }
         if (res != null && res.isFile() && res.getLinkCount() > 1) {
             // resource is file and has siblings, so create checkbox
             StringBuffer retValue = new StringBuffer(128);

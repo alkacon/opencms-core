@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1030,7 +1030,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                      content += "\n</XMLTEMPLATE>";
                  }
 
-             } catch (Exception exc) { }
+             } catch (Exception exc) {
+                 // ignore
+             }
          }
          return content;
      }

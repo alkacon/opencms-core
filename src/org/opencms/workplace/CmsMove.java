@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsMove.java,v $
- * Date   : $Date: 2003/10/09 16:44:19 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.opencms.site.CmsSiteManager;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.1
  */
@@ -226,7 +226,9 @@ public class CmsMove extends CmsDialog {
         CmsResource targetRes = null;
         try {
             targetRes = getCms().readFileHeader(target);
-        } catch (CmsException e) { }
+        } catch (CmsException e) { 
+            // ignore
+        }
 
         if (targetRes != null) {
             if (DIALOG_CONFIRMED.equals(getParamAction())) {

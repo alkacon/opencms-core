@@ -107,7 +107,7 @@ import java.util.*;
  *
  * @see source.org.apache.java.util.Configurations
  * @author <a href="mailto:stefano@apache.org">Stefano Mazzocchi</a>
- * @version $Revision: 1.5 $ $Date: 2003/07/12 11:29:22 $
+ * @version $Revision: 1.6 $ $Date: 2003/11/03 09:05:51 $
  */
 public class ExtendedProperties extends ConfigurationsRepository {
 
@@ -204,7 +204,9 @@ public class ExtendedProperties extends ConfigurationsRepository {
     /**
      * Creates an empty extended properties object.
      */
-    public ExtendedProperties() { }
+    public ExtendedProperties() {
+        // empty
+    }
 
     /**
      * Creates and loads the extended properties from the specified file.
@@ -260,9 +262,8 @@ public class ExtendedProperties extends ConfigurationsRepository {
      * Saves to an input stream.<p>
      * @param output the stream to save to
      * @param Header the header
-     * @throws IOException if something goes wrong
      */
-    public synchronized void save(OutputStream output, String Header) throws IOException {
+    public synchronized void save(OutputStream output, String Header) {
         throw new NoSuchMethodError("This method is not yet implemented");
     }
 }

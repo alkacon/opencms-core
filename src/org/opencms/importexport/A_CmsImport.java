@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2003/10/15 09:50:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -151,9 +151,8 @@ public abstract class A_CmsImport implements I_CmsImport {
      * @param cms the current cms object
      * @param importPath the path in the cms VFS to import into
      * @param report a report object to output the progress information to
-     * @throws CmsException if something goes wrong
      */
-    public A_CmsImport(CmsObject cms, String importPath, I_CmsReport report) throws CmsException {
+    public A_CmsImport(CmsObject cms, String importPath, I_CmsReport report) {
         // set member variables
         m_cms = cms;
         m_importPath = importPath;
@@ -443,7 +442,9 @@ public abstract class A_CmsImport implements I_CmsImport {
             if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
                 try {
                     parentGroup = m_cms.readGroup(parentgroupName);
-                } catch (CmsException exc) { }
+                } catch (CmsException exc) {
+                    // parentGroup will be null
+                }
             }
 
             if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
@@ -470,33 +471,6 @@ public abstract class A_CmsImport implements I_CmsImport {
             m_report.println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-    }
-
-    /**
-     * Imports the resources for a module.<p>
-     * 
-     * This is only a dummy implementation, since the abstract class does not implement a real 
-     * OpenCms import. 
-     * 
-     * @param cms the current cms object
-     * @param importPath the path in the cms VFS to import into
-     * @param report a report object to output the progress information to
-     * @param digest digest for taking a fingerprint of the files
-     * @param importResource  the import-resource (folder) to load resources from
-     * @param importZip the import-resource (zip) to load resources from
-     * @param docXml the xml manifest-file 
-     * @param excludeList filenames of files and folders which should not 
-     *      be (over)written in the virtual file system (not used when null)
-     * @param writtenFilenames filenames of the files and folder which have actually been 
-     *      successfully written (not used when null)
-     * @param fileCodes code of the written files (for the registry)
-     *      (not used when null)
-     * @param propertyName name of a property to be added to all resources
-     * @param propertyValue value of that property
-     * @throws CmsException if something goes wrong
-     */
-    public void importResources(CmsObject cms, String importPath, I_CmsReport report, MessageDigest digest, File importResource, ZipFile importZip, Document docXml, Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
-        // only a dummy 
     }
 
     /**
@@ -536,7 +510,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                 for (int i = 0; i < userGroups.size(); i++) {
                     try {
                         m_cms.addUserToGroup(name, (String)userGroups.elementAt(i));
-                    } catch (CmsException exc) { }
+                    } catch (CmsException exc) {
+                        // ignore
+                    }
                 }
                 m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
             } catch (CmsException exc) {

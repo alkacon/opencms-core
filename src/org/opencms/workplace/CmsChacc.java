@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChacc.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2003/11/03 09:05:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.opencms.util.CmsUUID;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 5.1
  */
@@ -231,7 +231,9 @@ public class CmsChacc extends CmsDialog {
             if (resource.isFolder()) {
                 setInherit(true);
             }
-        } catch (CmsException e) { }
+        } catch (CmsException e) { 
+            // ignore
+        }
 
         // check the current users permission to change access control entries
         try {
@@ -239,7 +241,9 @@ public class CmsChacc extends CmsDialog {
                 && !((m_curPermissions.getDeniedPermissions() & I_CmsConstants.C_PERMISSION_CONTROL) > 0))) {
                     setEditable(true);
             }
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
     }
     
     /**
@@ -272,7 +276,9 @@ public class CmsChacc extends CmsDialog {
         int arrayPosition = -1;
         try {
             arrayPosition = Integer.parseInt(type);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            // ignore
+        }
                
         if (checkNewEntry(name, arrayPosition)) {
             try {
@@ -342,12 +348,16 @@ public class CmsChacc extends CmsDialog {
                 param = request.getParameter(value+PERMISSION_ALLOW);
                 paramInt = Integer.parseInt(param);
                 allowValue |= paramInt;
-            } catch (Exception e) { }
+            } catch (Exception e) {
+                // ignore
+            }
             try {           
                 param = request.getParameter(value+PERMISSION_DENY);
                 paramInt = Integer.parseInt(param);
                 denyValue |= paramInt;
-            } catch (Exception e) { }
+            } catch (Exception e) {
+                // ignore
+            }
             
         }
        
@@ -409,7 +419,9 @@ public class CmsChacc extends CmsDialog {
                 try {
                     getCms().readUser(id);
                     flags = I_CmsConstants.C_ACCESSFLAGS_USER;
-                } catch (CmsException exc) { }
+                } catch (CmsException exc) {
+                    // ignore
+                }
             }
             CmsResource res = getCms().readFileHeader(fileName);
             CmsUUID fileId = res.getFileId();
@@ -436,7 +448,9 @@ public class CmsChacc extends CmsDialog {
         String name = "";
         try {
             name = getCms().lookupPrincipal(entry.getPrincipal()).getName();
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         String type = getEntryType(entry.getFlags());
         
         // set the parameters for the hidden fields
@@ -613,7 +627,9 @@ public class CmsChacc extends CmsDialog {
                     // build the list with enabled extended view only
                     retValue.append(buildPermissionEntryForm(principalId, permissions, false, true));
                 }
-            } catch (CmsException e) { }
+            } catch (CmsException e) {
+                // ignore
+            }
         }
         return retValue;
     }
@@ -696,7 +712,9 @@ public class CmsChacc extends CmsDialog {
         Vector allEntries = new Vector();
         try {
             allEntries = getCms().getAccessControlEntries(getParamResource(), true);
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         
         // store all parent folder ids together with path in a map
         Map parents = new HashMap();
@@ -705,7 +723,9 @@ public class CmsChacc extends CmsDialog {
         try {
             // get all parent folders of the current file
             parentResources = getCms().readPath(path, false);
-        } catch (CmsException e) { }
+        } catch (CmsException e) {
+            // ignore
+        }
         Iterator k = parentResources.iterator();
         while (k.hasNext()) {
             // add the current folder to the map

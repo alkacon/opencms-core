@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 5.1
  */
@@ -385,7 +385,9 @@ public class CmsExplorer extends CmsWorkplace {
                 String title = "";
                 try {
                     title = getCms().readProperty(getCms().readAbsolutePath(res), I_CmsConstants.C_PROPERTY_TITLE);
-                } catch (CmsException e) { }
+                } catch (CmsException e) {
+                    // ignore
+                }
                 if (title == null) {
                     title = "";
                 }

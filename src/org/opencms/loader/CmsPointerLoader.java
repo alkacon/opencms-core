@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2003/10/07 16:20:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/11/03 09:05:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.loader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.core.CmsException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
@@ -55,7 +54,7 @@ import source.org.apache.java.util.Configurations;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -85,7 +84,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile)
      */
-    public void export(CmsObject cms, CmsFile file) throws CmsException {
+    public void export(CmsObject cms, CmsFile file) {
         try {
             String pointer = new String(file.getContents());        
             OutputStream exportStream = cms.getRequestContext().getResponse().getOutputStream();
@@ -103,7 +102,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
+    public void export(CmsObject cms, CmsFile file, OutputStream exportStream, HttpServletRequest req, HttpServletResponse res) throws IOException {
         String pointer = new String(file.getContents());          
         exportStream.write(C_EXPORT_PREFIX.getBytes());
         exportStream.write(pointer.getBytes());
@@ -151,8 +150,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#service(com.opencms.file.CmsObject, com.opencms.file.CmsResource, javax.servlet.ServletRequest, javax.servlet.ServletResponse)
      */ 
-    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res)
-    throws ServletException, IOException {
+    public void service(CmsObject cms, CmsResource file, ServletRequest req, ServletResponse res) {
         throw new RuntimeException("service() not a supported operation for resources of type " + this.getClass().getName());  
     }
  }

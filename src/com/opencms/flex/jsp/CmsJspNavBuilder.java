@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/jsp/Attic/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2003/09/12 17:38:05 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  * {@link com.opencms.flex.jsp.CmsJspNavElement}.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @see com.opencms.flex.jsp.CmsJspNavElement
  * 
@@ -64,7 +64,9 @@ public class CmsJspNavBuilder {
      * 
      * @see java.lang.Object#Object()
      */    
-    public CmsJspNavBuilder() { }
+    public CmsJspNavBuilder() {
+        // empty
+    }
 
     /**
      * Default constructor.<p>

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
-* Date   : $Date: 2003/09/18 16:24:55 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2003/11/03 09:05:52 $
+* Version: $Revision: 1.10 $
 *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $ $Date: 2003/09/18 16:24:55 $
+ * @version $Revision: 1.10 $ $Date: 2003/11/03 09:05:52 $
  */
 public class CmsImport implements Serializable {
 
@@ -129,7 +129,9 @@ public class CmsImport implements Serializable {
      * 
      * @see CmsImportModuledata
      */
-    public CmsImport()  { }
+    public CmsImport() {
+        // empty
+    }
 
     /**
      * Constructs a new import object which imports the resources from an OpenCms 
@@ -139,9 +141,8 @@ public class CmsImport implements Serializable {
      * @param importFile the file or folder to import from
      * @param importPath the path in the cms VFS to import into
      * @param report a report object to output the progress information to
-     * @throws CmsException if something goes wrong
      */
-    public CmsImport(CmsObject cms, String importFile, String importPath, I_CmsReport report) throws CmsException {
+    public CmsImport(CmsObject cms, String importFile, String importPath, I_CmsReport report) {
         // set member variables
         m_cms = cms;
         m_importFile = importFile;
@@ -478,7 +479,9 @@ public class CmsImport implements Serializable {
             } finally {
                 try {
                     in.close();
-                } catch (Exception e) { }
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         } catch (Exception exc) {
             m_report.println(exc);

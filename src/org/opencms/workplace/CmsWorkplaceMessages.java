@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2003/09/19 14:42:52 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/11/03 09:05:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Set;
  * Provides access to the localized lables for the workplace.<p>
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -217,7 +217,9 @@ public class CmsWorkplaceMessages {
         if (DEBUG > 2) System.err.println("CmsWorkplaceMessages.key(): looking for " + keyName);
         try {
             return m_messages.getString(keyName);
-        } catch (MissingResourceException e) { }
+        } catch (MissingResourceException e) {
+            // ignore
+        }
 
         // key was not found in default workplace bundles
         if (DEBUG > 1) System.err.println("CmsWorkplaceMessages.key(): '" + keyName + "' not found in workplace messages");
