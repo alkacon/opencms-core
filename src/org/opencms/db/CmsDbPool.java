@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2003/08/22 14:54:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2003/08/22 16:12:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.db;
 
-import java.sql.DriverManager;
-
 import org.apache.commons.dbcp.AbandonedConfig;
 import org.apache.commons.dbcp.AbandonedObjectPool;
 import org.apache.commons.dbcp.ConnectionFactory;
@@ -52,7 +50,7 @@ import source.org.apache.java.util.Configurations;
  * based pools might be added probably later.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2003/08/22 14:54:43 $
+ * @version $Revision: 1.7 $ $Date: 2003/08/22 16:12:47 $
  * @since 5.1
  */
 public final class CmsDbPool extends Object {
@@ -65,6 +63,7 @@ public final class CmsDbPool extends Object {
     public static final String C_KEY_DATABASE = "db.";
     public static final String C_KEY_DATABASE_NAME = C_KEY_DATABASE + "name";
     public static final String C_KEY_DATABASE_POOL = C_KEY_DATABASE + "pool";
+    public static final String C_KEY_DATABASE_STATEMENTS = C_KEY_DATABASE + "statements";
     public static final String C_KEY_POOL_DEFAULT = "default";
     public static final String C_KEY_POOL_USER = "user";
     public static final String C_KEY_POOL_VFS = "vfs";
@@ -83,6 +82,7 @@ public final class CmsDbPool extends Object {
     protected static final String C_KEY_REMOVE_ABANDONED_TIMEOUT = "removeAbandonedTimeout";
     protected static final String C_KEY_WHEN_EXHAUSTED_ACTION = "whenExhaustedAction";
     protected static final String C_KEY_TEST_ON_BORROW = "testOnBorrow";
+    protected static final String C_KEY_POOLING = "pooling";
 
     /**
      * Default constructor.<p>
@@ -104,7 +104,8 @@ public final class CmsDbPool extends Object {
      * @throws Exception if the pool could not be initialized
      */
     public static final String createDriverConnectionPool(Configurations config, String key) throws Exception {
-        // read the values of the pool configuration specified by the given key
+
+        // read the values of the connection pool configuration specified by the given key
         String jdbcDriver = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_DRIVER);
         String jdbcUrl = config.getString(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_JDBC_URL);
         int maxActive = config.getInteger(C_KEY_DATABASE_POOL + "." + key + "." + C_KEY_MAX_ACTIVE, 10);
@@ -141,6 +142,21 @@ public final class CmsDbPool extends Object {
             password = "";
         }
 
+        // read the values of the statement pool configuration specified by the given key
+        boolean poolingStmts = "true".equalsIgnoreCase(config.getString(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_POOLING, "true").trim());
+        int maxActiveStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_ACTIVE, 25);
+        int maxWaitStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_WAIT, 250);
+        int maxIdleStmts = config.getInteger(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_MAX_IDLE, 15);
+        String whenStmtsExhaustedActionValue = config.getString(C_KEY_DATABASE_STATEMENTS + "." + key + "." + C_KEY_WHEN_EXHAUSTED_ACTION);
+        byte whenStmtsExhaustedAction = GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
+        if (whenStmtsExhaustedActionValue != null) {
+            whenStmtsExhaustedActionValue = whenStmtsExhaustedActionValue.trim();
+            whenStmtsExhaustedAction = 
+            ("block".equalsIgnoreCase(whenStmtsExhaustedActionValue)) ? GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK
+            : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue))? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
+            : GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
+        }  
+            
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
 
@@ -182,18 +198,9 @@ public final class CmsDbPool extends Object {
         //KeyedObjectPoolFactory statementFactory = new StackKeyedObjectPoolFactory(null, 5000, 0);
 
         // Set up statement pool, if desired
-        boolean poolingStatements = true;
-        int maxOpenStatements = 5;
-        int maxStatements = 100;
         GenericKeyedObjectPoolFactory statementFactory = null;
-        if (poolingStatements) {
-            statementFactory = new GenericKeyedObjectPoolFactory(null, 
-                maxOpenStatements,
-                // If statements are unlimited, then always grow
-                (maxOpenStatements == 0 || maxStatements == 0) ?
-                    GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW : 
-                    GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL, 
-                0, maxStatements); 
+        if (poolingStmts) {
+            statementFactory = new GenericKeyedObjectPoolFactory(null, maxActiveStmts, whenStmtsExhaustedAction, maxWaitStmts, maxIdleStmts);
         }
         
         // initialize a factory to obtain pooled connections and prepared statements
@@ -202,8 +209,6 @@ public final class CmsDbPool extends Object {
         // initialize a new pooling driver using the pool
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
-
-// DriverManager.setLogStream(System.err);
 
         return poolUrl;
     }
