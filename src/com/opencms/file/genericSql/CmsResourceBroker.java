@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/09/28 10:07:40 $
-* Version: $Revision: 1.278 $
+* Date   : $Date: 2001/10/02 13:05:48 $
+* Version: $Revision: 1.279 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.278 $ $Date: 2001/09/28 10:07:40 $
+ * @version $Revision: 1.279 $ $Date: 2001/10/02 13:05:48 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -1069,11 +1069,11 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 if (resource.getState()==C_STATE_UNCHANGED) {
                      resource.setState(C_STATE_CHANGED);
                 }
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             } else {
-                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
+                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true, currentUser.getId());
                 if (resource.getState()==C_STATE_UNCHANGED) {
                      resource.setState(C_STATE_CHANGED);
                 }
@@ -1139,11 +1139,11 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
                 if (resource.getState()==C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
                 }
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,true, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             } else {
-                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true);
+                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,true, currentUser.getId());
                 if (resource.getState()==C_STATE_UNCHANGED) {
                     resource.setState(C_STATE_CHANGED);
                 }
@@ -1203,11 +1203,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             if (resource.getState() == C_STATE_UNCHANGED) {
                 resource.setState(C_STATE_CHANGED);
             }
-            m_dbAccess.writeFolder(currentProject, (CmsFolder) resource, true);
+            m_dbAccess.writeFolder(currentProject, (CmsFolder) resource, true, currentUser.getId());
             // update the cache
             m_resourceCache.remove(filename);
         } else {
-            m_dbAccess.writeFileHeader(currentProject, (CmsFile) resource, true);
+            m_dbAccess.writeFileHeader(currentProject, (CmsFile) resource, true, currentUser.getId());
             if (resource.getState() == C_STATE_UNCHANGED) {
                 resource.setState(C_STATE_CHANGED);
             }
@@ -1260,11 +1260,11 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             resource.setState(state);
             // write-acces  was granted - write the file.
             if (filename.endsWith("/")) {
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             } else {
-                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false);
+                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             }
@@ -1317,7 +1317,7 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
             // write-acces  was granted - write the file.
             resource.setType(type.getResourceType());
             resource.setLauncherType(type.getLauncherType());
-            m_dbAccess.writeFileHeader(currentProject, (CmsFile)resource,true);
+            m_dbAccess.writeFileHeader(currentProject, (CmsFile)resource,true, currentUser.getId());
             if (resource.getState()==C_STATE_UNCHANGED) {
                 resource.setState(C_STATE_CHANGED);
             }
@@ -1936,19 +1936,7 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                 CmsException.C_NO_ACCESS);
         }
     }
-/**
- * Insert the method's description here.
- * Creation date: (09-10-2000 11:34:15)
- * @param project com.opencms.file.CmsProject
- * @param onlineProject com.opencms.file.CmsProject
- * @param resource com.opencms.file.CmsResource
- * @exception com.opencms.core.CmsException The exception description.
- * @author Martin Langelund
- */
-public void createResource(CmsProject project, CmsProject onlineProject, CmsResource resource) throws com.opencms.core.CmsException
-{
-    m_dbAccess.createResource(project, onlineProject, resource);
-}
+
     /**
      * Creates a new task.
      *
@@ -2112,7 +2100,6 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 // the onlinefile dosent exist => remove the file realy!
                 deleteAllProperties(currentUser,currentProject,file.getAbsolutePath());
                 m_dbAccess.removeFile(currentProject.getId(), filename);
-
             } else {
                 m_dbAccess.deleteFile(currentProject, filename);
 
@@ -2231,11 +2218,11 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
             resource.setLocked(currentUser.getId());
             // write-access  was granted - write the file.
             if (filename.endsWith("/")) {
-                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false);
+                m_dbAccess.writeFolder(currentProject,(CmsFolder)resource,false, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             } else {
-                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false);
+                m_dbAccess.writeFileHeader(currentProject,(CmsFile)resource,false, currentUser.getId());
                 // update the cache
                 m_resourceCache.remove(filename);
             }
@@ -2410,7 +2397,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
             m_dbAccess.deleteProperty(property,currentProject.getId(),res,res.getType());
             // set the file-state to changed
             if(res.isFile()){
-                m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true);
+                m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true, currentUser.getId());
                 if (res.getState()==C_STATE_UNCHANGED) {
                     res.setState(C_STATE_CHANGED);
                 }
@@ -2421,7 +2408,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 if (res.getState()==C_STATE_UNCHANGED) {
                     res.setState(C_STATE_CHANGED);
                 }
-                m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true);
+                m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true, currentUser.getId());
                 // update the cache
                 //m_resourceCache.put(currentProject.getId()+C_FOLDER+resource,(CmsFolder)res);
                 m_resourceCache.remove(resource);
@@ -5908,7 +5895,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
 
         CmsUser user = null;
         // ednfal: don't read user from cache because password may be changed
-        //user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
+        user = (CmsUser)m_userCache.get(username+C_USER_TYPE_WEBUSER);
         // store user in cache
         if (user == null) {
             user = m_dbAccess.readUser(username, password, C_USER_TYPE_WEBUSER);
@@ -6463,7 +6450,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
             // has the user write-access?
             if( accessWrite(currentUser, currentProject, (CmsResource)restoredFolder) ) {
                 // write-access  was granted - write the folder without setting state = changed
-                m_dbAccess.writeFolder(currentProject, restoredFolder, false);
+                m_dbAccess.writeFolder(currentProject, restoredFolder, false, currentUser.getId());
                 // restore the properties in the offline project
                 m_dbAccess.deleteAllProperties(currentProject.getId(),restoredFolder);
                 Hashtable propertyInfos = m_dbAccess.readAllProperties(onlineProject.getId(),onlineFolder,onlineFolder.getType());
@@ -6844,7 +6831,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             // write-acces  was granted - write the file.
 
             m_dbAccess.writeFile(currentProject,
-                               onlineProject(currentUser, currentProject), file,true );
+                               onlineProject(currentUser, currentProject), file, true, currentUser.getId());
 
             if (file.getState()==C_STATE_UNCHANGED) {
                 file.setState(C_STATE_CHANGED);
@@ -6925,7 +6912,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         // has the user write-access?
         if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
             // write-acces  was granted - write the file.
-            m_dbAccess.writeFileHeader(currentProject, file,true );
+            m_dbAccess.writeFileHeader(currentProject, file,true, currentUser.getId());
             if (file.getState()==C_STATE_UNCHANGED) {
                 file.setState(C_STATE_CHANGED);
             }
@@ -6999,12 +6986,12 @@ protected void validName(String name, boolean blank) throws CmsException {
             res.setState(C_STATE_CHANGED);
         }
         if(res.isFile()){
-            m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, false);
+            m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, false, currentUser.getId());
             // update the cache
             m_resourceCache.remove(resource);
             //m_resourceCache.put(currentProject.getId()+C_FILE+resource,res);
         } else {
-            m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false);
+            m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), false, currentUser.getId());
             // update the cache
             m_resourceCache.remove(resource);
             //m_resourceCache.put(currentProject.getId()+C_FOLDER+resource,(CmsFolder)res);
@@ -7043,7 +7030,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         m_propertyCache.clear();
         // set the file-state to changed
         if(res.isFile()){
-            m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true);
+            m_dbAccess.writeFileHeader(currentProject, (CmsFile) res, true, currentUser.getId());
             if (res.getState()==C_STATE_UNCHANGED) {
                 res.setState(C_STATE_CHANGED);
             }
@@ -7054,7 +7041,7 @@ protected void validName(String name, boolean blank) throws CmsException {
             if (res.getState()==C_STATE_UNCHANGED) {
                 res.setState(C_STATE_CHANGED);
             }
-            m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true);
+            m_dbAccess.writeFolder(currentProject, readFolder(currentUser,currentProject, resource), true, currentUser.getId());
             // update the cache
             m_resourceCache.remove(resource);
             //m_resourceCache.put(currentProject.getId()+C_FOLDER+resource,(CmsFolder)res);
