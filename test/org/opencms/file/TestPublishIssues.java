@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2004/09/20 08:20:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/15 17:05:17 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -79,6 +79,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
                 
         suite.addTest(new TestPublishIssues("testPublishScenarioA"));
         suite.addTest(new TestPublishIssues("testPublishScenarioB"));
+        suite.addTest(new TestPublishIssues("testPublishScenarioC"));
         suite.addTest(new TestPublishIssues("testMultipleProjectCreation"));
         
         TestSetup wrapper = new TestSetup(suite) {
@@ -320,5 +321,51 @@ public class TestPublishIssues extends OpenCmsTestCase {
         if (project.getDescription().equals(newProject.getDescription())) { 
             fail("Projects should have differnet descriptions!");
         }
-    }    
+    }
+    
+    /**
+     * Tests publish scenario "B".<p>
+     * 
+     * This scenario is described as follows:
+     * Direct publishing of folders containing subfolders skips all changed subfolders e.g. direct publish of /folder1/ 
+     * publishes /folder1/ and /folder1/index.html/, but not /folder1/subfolder11/.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishScenarioC() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing publish scenario C");
+        
+        long touchTime = System.currentTimeMillis();
+        
+        cms.lockResource("/folder1/");
+        cms.touch("/folder1/", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch("/folder1/index.html", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch("/folder1/subfolder11/", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch("/folder1/subfolder11/index.html", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        
+        cms.unlockResource("/folder1/");
+        cms.publishResource("/folder1/");
+        
+        assertState(cms, "/folder1/", I_CmsConstants.C_STATE_UNCHANGED);        
+        assertState(cms, "/folder1/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder1/subfolder11/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder1/subfolder11/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        
+        cms.createResource("/folder_a/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder_a/file_a.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder_a/folder_b/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/folder_a/folder_b/file_b.txt", CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        
+        cms.unlockResource("/folder_a/");
+        cms.publishResource("/folder_a/");
+        
+        assertState(cms, "/folder_a/", I_CmsConstants.C_STATE_UNCHANGED);        
+        assertState(cms, "/folder_a/file_a.txt", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder_a/folder_b/", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder_a/folder_b/file_b.txt", I_CmsConstants.C_STATE_UNCHANGED);
+        
+    }
+    
 }
