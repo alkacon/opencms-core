@@ -3,7 +3,7 @@
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	// initialize the workplace class
-	CmsGalleryImages wp = new CmsGalleryImages(pageContext, request, response);	
+	CmsGalleryHtmls wp = new CmsGalleryHtmls(pageContext, request, response);	
 %>
 <%= wp.htmlStart(null) %>
 	<style type="text/css">
@@ -15,30 +15,14 @@
 	</style>	
 	<script language="javascript">
 	<!--
-		function pasteResource(uri, title, desc) {
-		<% 	
-			if (wp.MODE_WIDGET.equals(wp.getParamDialogMode())) {
-		%>
-			top.window.opener.document.getElementById("<%= wp.getParamFieldId() %>").value  = uri;
-			try {
-				// toggle preview icon if possible
-				top.window.opener.checkPreview("<%= wp.getParamFieldId() %>");
-			} catch (e) {}
-		<%	
-			} else { 
-		%>
-				var result = "<img src=\"";
-				result += uri;
-				result += "\" title=\"";
-				result += title;
-				result += "\" alt=\"";
-				result += desc;
-				result += "\" border=\"0\">";
-				top.window.opener.insertHtml(result);
-		<%
-			}
-		%>
-			top.window.close();
+		
+		/**
+		 * Pastes the content of the specified resource to the current position of the editor 
+		 */
+		function pasteContent() {
+		
+				top.window.opener.insertHtml(document.getElementById("icontent").innerHTML);		
+				top.window.close();
 		}
 		
 		function deleteResource(uri) {

@@ -10,7 +10,7 @@
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	// initialize the workplace class
-	CmsGalleryImages wp = new CmsGalleryImages(pageContext, request, response);
+	CmsGalleryDownloads wp = new CmsGalleryDownloads(pageContext, request, response);
 	
 %><%= wp.htmlStart(null) %>
 
@@ -22,7 +22,7 @@
 		if (mainForm.gallerypath.options != null) {
 			mainForm.submit();
 		} else {
-			alert("<%=wp.key("picnogallery")%>");
+			alert("<%=wp.key("error.reason.downnogallery")%>");
 			top.window.close();			
 		}
 	}
@@ -33,15 +33,13 @@
 		if (listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value == "") {
 			var mainForm = document.forms["main"];
 			listForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value = mainForm.elements["<%= wp.PARAM_GALLERYPATH %>"].value;
-			//listForm.elements["<%= wp.PARAM_PAGE %>"].value = mainForm.elements["<%= wp.PARAM_PAGE %>"].value;
-			//listForm.elements["<%= wp.PARAM_SEARCHWORD %>"].value = mainForm.elements["<%= wp.PARAM_SEARCHWORD %>"].value;
 			listForm.submit();
 		}
 	}
 	
 	function upload() {
 		var currentfolder = document.main.gallerypath.options[document.main.gallerypath.selectedIndex].value;
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri())%>?<%=CmsNewResourceUpload.PARAM_REDIRECTURL%>=/system/workplace/commons/galleries/img_head.jsp&<%=CmsNewResourceUpload.PARAM_TARGETFRAME%>=gallery_list&<%=CmsNewResource.PARAM_CURRENTFOLDER%>="+currentfolder;
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri())%>?<%=CmsNewResourceUpload.PARAM_REDIRECTURL%>=/system/workplace/commons/galleries/download_head.jsp&<%=CmsNewResourceUpload.PARAM_TARGETFRAME%>=gallery_list&<%=CmsNewResource.PARAM_CURRENTFOLDER%>="+currentfolder;
 	}
 //-->
 </script>
@@ -50,13 +48,13 @@
 
 <body style="background-color: ThreeDFace; margin: 0; padding: 2px;">
 
-<form name="main" action="<%= cms.link("img_fs_sub.jsp") %>" target="gallery_fs" method="post" class="nomargin">
+<form name="main" action="<%= cms.link("download_fs_sub.jsp") %>" target="gallery_fs" method="post" class="nomargin">
 <input type="hidden" name="<%= wp.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">
 <input type="hidden" name="<%= wp.PARAM_FIELDID %>" value="<%= wp.getParamFieldId() %>">
 
 <table border="0" cellpadding="1" cellspacing="0" width="100%">
 <tr>
-	<td colspan="2"><%= wp.key("button.imagelist") %></td>
+	<td colspan="2"><%= wp.key("button.downloadlist") %></td>
 </tr>
 <tr>
 	<td colspan="2"><%= wp.buildGallerySelectBox() %></td>
@@ -84,7 +82,7 @@
 
 </form>
 
-<form name="list" action="<%= cms.link("img_list.jsp") %>" method="post" class="nomargin" target="gallery_list">
+<form name="list" action="<%= cms.link("download_list.jsp") %>" method="post" class="nomargin" target="gallery_list">
 	<input type="hidden" name="<%= wp.PARAM_GALLERYPATH %>" value="<%= wp.getParamGalleryPath() %>">
 	<input type="hidden" name="<%= wp.PARAM_PAGE %>">
 	<input type="hidden" name="<%= wp.PARAM_SEARCHWORD %>">

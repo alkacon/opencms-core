@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2004/11/03 17:20:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/26 17:35:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -87,6 +87,9 @@ public class CmsNewResource extends CmsDialog {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "newresource";
     
+    /** Request parameter name for the current folder name. */
+    public static final String PARAM_CURRENTFOLDER = "currentfolder";
+    
     /** Request parameter name for the new resource edit properties flag. */
     public static final String PARAM_NEWRESOURCEEDITPROPS = "newresourceeditprops";
     
@@ -97,10 +100,12 @@ public class CmsNewResource extends CmsDialog {
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
     
     private String m_page;
+    private String m_paramCurrentFolder;
     private String m_paramNewResourceEditProps; 
     private String m_paramNewResourceType;    
     private String m_paramNewResourceUri;
     private String m_paramPage;
+    
     
     /**
      * Public constructor with JSP action element.<p>
@@ -282,6 +287,22 @@ public class CmsNewResource extends CmsDialog {
     }
     
     /**
+     * Returns the current folder set by the http request.<p>
+     *  
+     * If the request parameter value is null/empty then returns the default computed folder.<p>
+     *
+     * @return the current folder set by the request param or the computed current folder
+     */
+    public String getParamCurrentFolder() {
+
+        if (CmsStringUtil.isEmpty(m_paramCurrentFolder)) {
+            return computeCurrentFolder();
+        }
+        
+        return m_paramCurrentFolder;
+    }
+    
+    /**
      * Returns the new resource edit properties flag parameter.<p>
      * 
      * @return the new resource edit properties flag parameter
@@ -316,6 +337,15 @@ public class CmsNewResource extends CmsDialog {
     public String getParamPage() {
 
         return m_paramPage;
+    }
+    /**
+     * Sets the current folder.<p>
+     *
+     * @param paramCurrentFolder the current folder to set
+     */
+    public void setParamCurrentFolder(String paramCurrentFolder) {
+
+        m_paramCurrentFolder = paramCurrentFolder;
     }
     
     /**
@@ -389,7 +419,12 @@ public class CmsNewResource extends CmsDialog {
     protected String computeFullResourceName() {
        
         // return the full resource name
-        return computeCurrentFolder() + getParamResource();
+        // get the current folder
+        String currentFolder = getParamCurrentFolder();
+        if (CmsStringUtil.isEmpty(currentFolder)) {
+            currentFolder = computeCurrentFolder();
+        }
+        return currentFolder + getParamResource();
     }
     
     /**

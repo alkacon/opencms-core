@@ -623,7 +623,7 @@ function doEditHTML(para) {
 		openWindow.focus();
 		break;
 	case 44:
-		openWindow = window.open(workplacePath + 'action/downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
+		openWindow = window.open(workplacePath + "commons/galleries/download_fs.jsp", "DowloadBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
@@ -691,12 +691,12 @@ function doEditHTML(para) {
 		}
 		break;
 	case 56:
-		openWindow = window.open(workplacePath + 'action/linkbrowser.html?initial=true', 'LinkBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
+		openWindow = window.open(workplacePath + "commons/galleries/link_fs.jsp", "LinkBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;
 	case 57:
-		openWindow = window.open(workplacePath + 'action/htmlbrowser.html?initial=true', 'HtmlBrowser', "width=550, height=500, resizable=no, status=yes, top=300, left=250");
+		openWindow = window.open(workplacePath + "commons/galleries/html_fs.jsp", "PicBrowser", "width=550, height=700, resizable=yes, top=20, left=100");
 		focusCount = 1;
 		openWindow.focus();
 		break;

@@ -6,7 +6,7 @@
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	// initialize the workplace class
-	CmsGalleryImages wp = new CmsGalleryImages(pageContext, request, response);
+	CmsGalleryDownloads wp = new CmsGalleryDownloads(pageContext, request, response);
 	
 %><%= wp.htmlStart(null) %>
 	<style type="text/css">
@@ -22,12 +22,12 @@
 	<!--
 		function validateGalleryPath() {
 			top.gallery_fs.gallery_head.displayGallery();
-			top.gallery_preview.location.href="galleries/img_preview.jsp?resourcepath="+top.gallery_fs.gallery_head.previewUri;
+			top.gallery_preview.location.href="galleries/download_preview.jsp?resourcepath="+top.gallery_fs.gallery_head.previewUri;
 		}
 		
 		function preview(uri) {
 			top.gallery_fs.gallery_head.previewUri = uri;
-			top.gallery_preview.location.href="img_preview.jsp?resourcepath="+uri;			
+			top.gallery_preview.location.href="download_preview.jsp?resourcepath="+uri;			
 		}												
 	//-->
 	</script>

@@ -5772,11 +5772,251 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/galleries/download_fs.jsp</source>
+			<destination>system/workplace/commons/galleries/download_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>3c9a925b-3e32-11d9-95fe-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 17:30:15 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Nov 2004 17:02:27 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/download_fs_sub.jsp</source>
+			<destination>system/workplace/commons/galleries/download_fs_sub.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>45274ae2-3e32-11d9-95fe-2360a85223b9</uuidresource>
+			<datelastmodified>Wed, 24 Nov 2004 17:23:04 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Nov 2004 17:02:41 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery subframeset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/download_head.jsp</source>
+			<destination>system/workplace/commons/galleries/download_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>4a632ab9-3e32-11d9-95fe-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 15:09:21 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Nov 2004 17:02:50 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery head]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/download_list.jsp</source>
+			<destination>system/workplace/commons/galleries/download_list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>50059490-3e32-11d9-95fe-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 14:17:06 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Nov 2004 17:02:59 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery list]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/download_preview.jsp</source>
+			<destination>system/workplace/commons/galleries/download_preview.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>580a5867-3e32-11d9-95fe-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 17:28:16 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Nov 2004 17:03:13 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery preview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/html_fs.jsp</source>
+			<destination>system/workplace/commons/galleries/html_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ee4d592f-3ed6-11d9-a944-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 13:03:57 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 12:41:22 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/html_fs_sub.jsp</source>
+			<destination>system/workplace/commons/galleries/html_fs_sub.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ee593f14-3ed6-11d9-a944-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 12:23:17 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 12:41:22 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/html_head.jsp</source>
+			<destination>system/workplace/commons/galleries/html_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ee62b4f9-3ed6-11d9-a944-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 15:11:46 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 12:41:22 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/html_list.jsp</source>
+			<destination>system/workplace/commons/galleries/html_list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ee6e9bde-3ed6-11d9-a944-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 16:20:43 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 12:41:22 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/html_preview.jsp</source>
+			<destination>system/workplace/commons/galleries/html_preview.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ee75c7d3-3ed6-11d9-a944-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 17:13:34 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 12:41:22 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/galleries/img_fs.jsp</source>
 			<destination>system/workplace/commons/galleries/img_fs.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>4df9ebe4-2cb4-11d9-9ef5-a93dabd07c3b</uuidresource>
-			<datelastmodified>Wed, 03 Nov 2004 14:01:31 CET</datelastmodified>
+			<datelastmodified>Wed, 24 Nov 2004 17:17:59 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 02 Nov 2004 10:48:09 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5828,7 +6068,7 @@
 			<destination>system/workplace/commons/galleries/img_head.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>cf31fd9d-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
-			<datelastmodified>Wed, 03 Nov 2004 13:55:19 CET</datelastmodified>
+			<datelastmodified>Fri, 26 Nov 2004 15:11:16 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 02 Nov 2004 11:06:05 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5854,7 +6094,7 @@
 			<destination>system/workplace/commons/galleries/img_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e3af3313-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
-			<datelastmodified>Wed, 03 Nov 2004 12:42:45 CET</datelastmodified>
+			<datelastmodified>Fri, 26 Nov 2004 17:35:00 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 02 Nov 2004 11:06:39 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5880,7 +6120,7 @@
 			<destination>system/workplace/commons/galleries/img_preview.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ed933e39-2cb6-11d9-9ef5-a93dabd07c3b</uuidresource>
-			<datelastmodified>Wed, 03 Nov 2004 13:46:00 CET</datelastmodified>
+			<datelastmodified>Wed, 24 Nov 2004 14:23:26 CET</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 02 Nov 2004 11:06:56 CET</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5901,6 +6141,116 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/commons/galleries/link_fs.jsp</source>
+			<destination>system/workplace/commons/galleries/link_fs.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f8b95bd8-3eff-11d9-aae3-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 17:31:20 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 17:35:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/link_fs_sub.jsp</source>
+			<destination>system/workplace/commons/galleries/link_fs_sub.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f8c2f8cd-3eff-11d9-aae3-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 17:29:24 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 17:35:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/link_head.jsp</source>
+			<destination>system/workplace/commons/galleries/link_head.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f8cc6eb2-3eff-11d9-aae3-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 15:05:02 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 17:35:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/link_list.jsp</source>
+			<destination>system/workplace/commons/galleries/link_list.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f8dac697-3eff-11d9-aae3-2360a85223b9</uuidresource>
+			<datelastmodified>Thu, 25 Nov 2004 17:54:07 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 17:35:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/galleries/link_preview.jsp</source>
+			<destination>system/workplace/commons/galleries/link_preview.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>f8e43c7c-3eff-11d9-aae3-2360a85223b9</uuidresource>
+			<datelastmodified>Fri, 26 Nov 2004 17:27:23 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 25 Nov 2004 17:35:09 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>system/workplace/commons/includes</destination>
 			<type>folder</type>

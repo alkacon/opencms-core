@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2004/11/05 19:15:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/26 17:35:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsChtype;
@@ -68,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.3.3
  */
@@ -98,13 +99,41 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public static final String PARAM_UPLOADFILE = "uploadfile";
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
+    /** Request parameter name for the redirect target frame name. */
+    public static final String PARAM_TARGETFRAME = "targetframe";
+    /** Request parameter name for the redirect url. */
+    public static final String PARAM_REDIRECTURL = "redirecturl";
     
     private String m_paramNewResourceName;
+    private String m_paramRedirectUrl;
     private String m_paramUnzipFile;
     private String m_paramUploadError;
     private String m_paramUploadFile;
     private String m_paramUploadFolder;
+    private String m_paramTargetFrame;
     
+    /**
+     * Returns the paramTargetFrame.<p>
+     *
+     * @return the paramTargetFrame
+     */
+    public String getParamTargetFrame() {
+
+        if (CmsStringUtil.isEmpty(m_paramTargetFrame)) {
+            return new String("explorer_files");
+        }
+        
+        return m_paramTargetFrame;
+    }
+    /**
+     * Sets the paramTargetFrame.<p>
+     *
+     * @param paramTargetFrame the paramTargetFrame to set
+     */
+    public void setParamTargetFrame(String paramTargetFrame) {
+
+        m_paramTargetFrame = paramTargetFrame;
+    }
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -261,51 +290,12 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
     
     /**
-     * Includes the error dialog if the upload applet has an error.<p>
-     */
-    private void actionUploadError() {
-        // error uploading file, show error dialog
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        setParamErrorstack(getParamUploadError());
-        setParamMessage(key("error.message.upload"));
-        setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
-        try {
-            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-        } catch (JspException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error including error dialog " + C_FILE_DIALOG_SCREEN_ERROR);
-            }
-        }
-    }
-    
-    /**
      * Builds the list of possible types for the uploaded file.<p>
      * 
      * @return the list of possible files for the uploaded resource
      */
     public String buildTypeList() {
         return CmsChtype.buildTypeList(this, false);
-    }
-    
-    /**
-     * Returns the resource type id of the given file.<p>
-     * 
-     * @param fileName the name of the file (needed for JSP recognition)
-     * @param contentType the mime type String of the file
-     * @return the resource type id of the given file
-     */
-    protected int computeFileType(String fileName, String contentType) {
-        fileName = fileName.toLowerCase();
-        contentType = contentType.toLowerCase();
-        if (fileName.endsWith(".jsp")) {
-            return CmsResourceTypeJsp.C_RESOURCE_TYPE_ID;
-        } else if (contentType.indexOf("image") != -1) {
-            return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
-        } else if (contentType.indexOf("text") != -1) {
-            return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
-        } else {
-            return CmsResourceTypeBinary.C_RESOURCE_TYPE_ID;
-        }
     }
     
     /**
@@ -339,7 +329,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms()); 
         
         // get the current folder
-        String currentFolder = computeCurrentFolder();
+        String currentFolder = getParamCurrentFolder();
         
         // get the current session id
         HttpSession session = getJsp().getRequest().getSession(false);
@@ -380,9 +370,17 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(":");
         applet.append(port);
         applet.append(path);
-        applet.append(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
+        // check if the redirect url is given by request parameter. if not use the default
+        if (CmsStringUtil.isEmpty(getParamRedirectUrl())) {
+            applet.append(CmsWorkplace.C_FILE_EXPLORER_FILELIST);            
+        } else {
+            applet.append(getParamRedirectUrl());            
+        }
         // append some parameters to prevent caching of URL by Applet
         applet.append("?time=" + System.currentTimeMillis());
+        applet.append("\">\n");
+        applet.append("<param name=\"targetframe\" value=\"");
+        applet.append(getParamTargetFrame());
         applet.append("\">\n");
         applet.append("<param name=error value=\"");
         applet.append(scheme);
@@ -454,6 +452,15 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public String getParamNewResourceName() {
         return m_paramNewResourceName;
     }
+    /**
+     * Returns the paramRedirectUrl.<p>
+     *
+     * @return the paramRedirectUrl
+     */
+    public String getParamRedirectUrl() {
+
+        return m_paramRedirectUrl;
+    }
 
     /**
      * Returns true if the upload file should be unzipped, otherwise false.<p>
@@ -490,37 +497,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public String getParamUploadFolder() {
         return m_paramUploadFolder;
     }
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);                            
-        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM);
-        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM2);  
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else if (DIALOG_SHOWERROR.equals(getParamAction())) {
-            setAction(ACTION_SHOWERROR);
-            actionUploadError();
-        } else {
-            if (getSettings().getUserSettings().useUploadApplet()) {
-                setAction(ACTION_APPLET);
-            } else {
-                setAction(ACTION_DEFAULT);
-            }
-            // build title for new resource dialog     
-            setParamTitle(key("title.upload"));
-        }   
-    }
 
     /**
      * Sets the new resource name of the uploaded file.<p>
@@ -529,6 +505,15 @@ public class CmsNewResourceUpload extends CmsNewResource {
      */
     public void setParamNewResourceName(String newResourceName) {
         m_paramNewResourceName = newResourceName;
+    }
+    /**
+     * Sets the paramRedirectUrl.<p>
+     *
+     * @param paramRedirectUrl the paramRedirectUrl to set
+     */
+    public void setParamRedirectUrl(String paramRedirectUrl) {
+
+        m_paramRedirectUrl = paramRedirectUrl;
     }
 
     /**
@@ -574,6 +559,76 @@ public class CmsNewResourceUpload extends CmsNewResource {
      */
     public boolean unzipUpload() {
         return Boolean.valueOf(getParamUnzipFile()).booleanValue();
+    }
+    
+    /**
+     * Returns the resource type id of the given file.<p>
+     * 
+     * @param fileName the name of the file (needed for JSP recognition)
+     * @param contentType the mime type String of the file
+     * @return the resource type id of the given file
+     */
+    protected int computeFileType(String fileName, String contentType) {
+        fileName = fileName.toLowerCase();
+        contentType = contentType.toLowerCase();
+        if (fileName.endsWith(".jsp")) {
+            return CmsResourceTypeJsp.C_RESOURCE_TYPE_ID;
+        } else if (contentType.indexOf("image") != -1) {
+            return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
+        } else if (contentType.indexOf("text") != -1) {
+            return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+        } else {
+            return CmsResourceTypeBinary.C_RESOURCE_TYPE_ID;
+        }
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);                            
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);
+        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM2);  
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else if (DIALOG_SHOWERROR.equals(getParamAction())) {
+            setAction(ACTION_SHOWERROR);
+            actionUploadError();
+        } else {
+            if (getSettings().getUserSettings().useUploadApplet()) {
+                setAction(ACTION_APPLET);
+            } else {
+                setAction(ACTION_DEFAULT);
+            }
+            // build title for new resource dialog     
+            setParamTitle(key("title.upload"));
+        }   
+    }
+    
+    /**
+     * Includes the error dialog if the upload applet has an error.<p>
+     */
+    private void actionUploadError() {
+        // error uploading file, show error dialog
+        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        setParamErrorstack(getParamUploadError());
+        setParamMessage(key("error.message.upload"));
+        setParamReasonSuggestion(key("error.reason.upload") + "<br>\n" + key("error.suggestion.upload") + "\n");
+        try {
+            getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
+        } catch (JspException e) {
+            if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Error including error dialog " + C_FILE_DIALOG_SCREEN_ERROR);
+            }
+        }
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2004/11/05 19:20:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/11/26 17:35:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,6 +75,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** The URL to return to after uploading the files. */
     private String m_redirectUrl = "";
+    
+    /** The Target Frame to return to after uploading the files. */
+    private String m_redirectTargetFrame = "";
 
     /** The URL to return to after an error. */
     private String m_errorUrl = "";
@@ -147,6 +150,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_opencms = getParameter("opencms");
         m_targetUrl = getParameter("target");
         m_redirectUrl = getParameter("redirect");
+        m_redirectTargetFrame = getParameter("targetframe");
+        if (m_redirectTargetFrame == null || m_redirectTargetFrame.equals("")) {
+            m_redirectTargetFrame = "explorer_files";
+        }
         m_errorUrl = getParameter("error");
         m_uploadFolder = getParameter("filelist");
         String tmpSize = getParameter("maxsize");
@@ -234,7 +241,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (ok) {
                 ok = true;
                 
-                // System.out.println("Version 1.40");
+                // System.out.println("Version 1.50");
                                 
                 m_message = "";
                 m_resources = 0;
@@ -307,7 +314,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 } else {
                     //the cancel button was used, so go back to the workplace
                     ok = false;
-                    getAppletContext().showDocument(new URL(m_redirectUrl), "explorer_files");
+                    getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
                 }
             }
         } catch (Exception e) {
@@ -583,8 +590,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
             int status = client.executeMethod(filePost);
 
             if (status == HttpStatus.SC_OK) {
-                //return to the workplace
-                getAppletContext().showDocument(new URL(m_redirectUrl), "explorer_files");
+                //return to the specified url and frame target
+                getAppletContext().showDocument(new URL(m_redirectUrl), m_redirectTargetFrame);
             } else {
                 // create the error text
                 String error = m_errorLine1 + "\n" + filePost.getStatusLine();

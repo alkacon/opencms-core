@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/11/08 09:04:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/11/26 17:35:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * Extend this class for every gallery type (e.g. image gallery) to build.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.2
  */
@@ -67,6 +68,14 @@ public abstract class CmsGallery extends CmsDialog {
     public static final int ACTION_SEARCH = 103;
     /** Value for the action: upload a new gallery item. */
     public static final int ACTION_UPLOAD = 104;
+    /** resource type name of the download gallery. */
+    public static final String C_DOWNLOADGALLERY = "downloadgallery";
+    /** resource type name of the html gallery. */
+    public static final String C_HTMLGALLERY = "htmlgallery";
+    /** resource type name of the image gallery. */    
+    public static final String C_IMAGEGALLERY = "imagegallery";
+    /** resource type name of the external link gallery. */
+    public static final String C_LINKGALLERY = "linkgallery";
     
     /** Constant for the galleries path in the Workplace. */
     public static final String C_PATH_GALLERIES = C_PATH_DIALOGS + "galleries/";
@@ -94,18 +103,18 @@ public abstract class CmsGallery extends CmsDialog {
     public static final String PARAM_FIELDID = "fieldid";
     /** Request parameter name for the gallery path. */
     public static final String PARAM_GALLERYPATH = "gallerypath";
-    /** Request parameter name for the gallery type. */
-    public static final String PARAM_GALLERYTYPE = "gallerytype";
     /** Request parameter name for the gallery list page. */
     public static final String PARAM_PAGE = "page";
+    /** Request parameter name for the resourcepath. */
+    public static final String PARAM_RESOURCEPATH = "resourcepath";
     /** Request parameter name for the search word. */
     public static final String PARAM_SEARCHWORD = "searchword";
     
     private String m_paramDialogMode;
     private String m_paramFieldId;
     private String m_paramGalleryPath;
-    private String m_paramGalleryType;
     private String m_paramPage;
+    private String m_paramResourcePath;
     private String m_paramSearchWord;
     
     /**
@@ -127,22 +136,87 @@ public abstract class CmsGallery extends CmsDialog {
     public CmsGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }
+      
+    /**
+     * Builds the html String for the preview frame.<p>
+     * 
+     * @return the html String for the preview frame
+     */
+    public abstract String buildGalleryItemPreview();
     
     /**
      * Builds the html for the gallery list items.<p>
      * 
      * @return the html for the gallery list items
      */
-    public abstract String buildGalleryList();
+    public String buildGalleryItems() {
+        StringBuffer result = new StringBuffer(64);
+        int limitFrom = 0;
+        int limitTo = 0; 
+        String pageno = getParamPage();        
+        if (pageno == null) {
+            pageno = "1";  
+        }
+        int maxperpage = getSettings().getUserSettings().getExplorerFileEntries();
+        List items = getGalleryItems();
+        // check if search is activated and get matched item list
+        if (items != null && items.size() > 0) {
+            Iterator i = items.iterator();
+            limitFrom = (Integer.parseInt(pageno) * maxperpage) - maxperpage;
+            limitTo = limitFrom + maxperpage;            
+            int current = 0;
+            while (i.hasNext()) {
+                current++;
+                CmsResource res = (CmsResource)i.next(); 
+                if (current > limitFrom && current <= limitTo) {
+                    try {
+                        String resPath = getCms().getSitePath(res);
+                        String resName = CmsResource.getName(resPath);
+                        String title = getCms().readPropertyObject(resPath, I_CmsConstants.C_PROPERTY_TITLE, false).getValue(resName);
+                        // String description = getCms().readPropertyObject(resPath, I_CmsConstants.C_PROPERTY_DESCRIPTION, false).getValue("");
+                        String resType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+                                       
+                        result.append("<tr>\n");
+                        // file type
+                        result.append("\t<td>");
+                        result.append("<img src=\"");
+                        result.append(getSkinUri());
+                        result.append("filetypes/");
+                        result.append(resType);
+                        result.append(".gif\">");                
+                        result.append("</td>\n");
+                        result.append("\t<td class=\"list\"><a href=\"javascript: preview(\'");
+                        result.append(resPath);
+                        result.append("\');\" title=\"");
+                        result.append(key("button.preview"));
+                        result.append("\">");
+                        result.append(title);
+                        result.append("</a></td>\n");
+                        result.append("\t<td class=\"list\">");
+                        result.append(resName);
+                        result.append("</td>\n");
+                        result.append("\t<td class=\"list\" style=\"text-align: right;\">");
+                        result.append(res.getLength() / 1024);
+                        result.append(" ");
+                        result.append(key("label.kilobytes"));
+                        result.append("</td>\n");
+                        result.append("</tr>\n");
+                    } catch (CmsException e) {
+                        // ignore this exception
+                    }
+                }
+            }
+        }
+        return result.toString();
+    }
     
     /**
      * Returns the html for the gallery select box.<p>
      * 
-     * @param resTypeId the gallery resource type id to display
      * @return the html for the gallery select box
      */
-    public String buildSelectGallery(int resTypeId) {
-        List galleries = getGalleries(resTypeId);
+    public String buildGallerySelectBox() {
+        List galleries = getGalleries();
         if (galleries != null && galleries.size() > 0) {
             // at least one gallery present
             int galleryCount = galleries.size();
@@ -179,40 +253,80 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
-     * Returns the html for the gallery select box.<p>
+     * Builds the HTML String for the paging select box.<p>
      * 
-     * @param resTypeName the gallery resource type name to display
-     * @return the html for the gallery select box
+     * @return the HTML String for the paging select box
      */
-    public String buildSelectGallery(String resTypeName) {
-        int resTypeId = 0;
-        try {
-            resTypeId = OpenCms.getResourceManager().getResourceType(resTypeName).getTypeId();
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);    
-            }
+    public String buildPageSelectBox() {
+        
+        StringBuffer html = new StringBuffer();
+        // get the page no
+        String pageno = getParamPage();
+        if (pageno == null) {
+            pageno = "1";  
+        }    
+        int count = 0;
+        int pages = 1;
+        int rest = 0;
+        // get the mayentries from the usersettings
+        int maxentries = getSettings().getUserSettings().getExplorerFileEntries();
+                          
+        List items = getGalleryItems();
+        if (items != null) {
+            count = items.size();
         }
-        return buildSelectGallery(resTypeId);
+        // calculate the number of pages
+        if (count > maxentries) {
+            pages = count / maxentries;
+            rest = count % maxentries;
+            if (rest > 0) {
+                rest = 1;
+            } else {
+                rest = 0;
+            }
+            pages += rest;
+        }       
+        // display the select box if the no of pages > 1
+        if (pages>1) {
+            html.append("<select name=\"page\" class=\"location\" onchange=\"displayGallery();\">");
+            String selected = "";
+            for (int i=1; i<pages+1; i++) { 
+                if (i == Integer.parseInt(pageno)) {
+                    selected = " selected";                     
+                } 
+                html.append("<option value='");
+                html.append(i);
+                html.append("'"+selected+">");
+                html.append(i);
+                html.append("</option>");
+                selected = "";
+            }
+            html.append("</select>");
+        }  
+        
+        return html.toString();
     }
     
     /**
-     * Returns a list of gallery items (resources) for the currently selected gallery.<p>
+     * Returns a list of gallery items (resources) for the currently selected gallery and resource type id.<p>
      * 
      * @return a list of gallery items (resources)
      */
     public List getGalleryItems() {
         List items = null;
-        if (! "".equals(getParamGalleryPath())) {
+        int resTypeId = getGalleryItemsTypeId();
+        if (CmsStringUtil.isNotEmpty(getParamGalleryPath())) {
             try {
-                List resourceList = getCms().readResources(getParamGalleryPath(), CmsResourceFilter.ONLY_VISIBLE_NO_DELETED, false);
-                items = new ArrayList(resourceList.size()); 
-                for (int i = 0; i < resourceList.size(); i++) {
-                    CmsResource res = (CmsResource)resourceList.get(i);
-                    if (! res.isFolder()) {
-                        items.add(res);    
-                    }
+                CmsResourceFilter filter;
+                if (resTypeId == -1) {
+                    filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile();                    
+                } else {
+                    filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resTypeId);                    
                 }
+                items = getCms().readResources(getParamGalleryPath(), filter, false);                
+                if (CmsStringUtil.isNotEmpty(getParamSearchWord())) {
+                    items = getSearchHits(items);
+                }                
             } catch (CmsException e) {
                 if (OpenCms.getLog(this).isErrorEnabled()) {
                     OpenCms.getLog(this).error(e);    
@@ -223,6 +337,22 @@ public abstract class CmsGallery extends CmsDialog {
         }
         return items;
     }
+    
+    /**
+     * Returns the type id of the gallery items that should be listed.<p>
+     * 
+     * In case of downloadgallery use '-1' for list all resources excluding folders.<p>
+     * 
+     * @return the type id of the gallery items that should be listed
+     */
+    public abstract int getGalleryItemsTypeId();
+    
+    /**
+     * Returns the type id of the gallery.<p>
+     * 
+     * @return the type id of the gallery
+     */
+    public abstract int getGalleryTypeId();
     
     /**
      * Returns the current mode of the dialog.<p>
@@ -254,19 +384,14 @@ public abstract class CmsGallery extends CmsDialog {
     public String getParamGalleryPath() {
         
         if (CmsStringUtil.isEmpty(m_paramGalleryPath)) {
-            m_paramGalleryPath = "";    
+            // set gallery path of the first gallery for the first time
+//            List galleries = getGalleries();
+//            CmsResource firstGallery = (CmsResource)galleries.get(0);
+//            m_paramGalleryPath = getCms().getSitePath(firstGallery);    
+            m_paramGalleryPath = "";
         }
+        
         return m_paramGalleryPath;
-    }
-    
-    /**
-     * Returns the type of the galleries to display.<p>
-     *
-     * @return the type of the galleries to display
-     */
-    public String getParamGalleryType() {
-
-        return m_paramGalleryType;
     }
     
     /**
@@ -277,6 +402,16 @@ public abstract class CmsGallery extends CmsDialog {
     public String getParamPage() {
 
         return m_paramPage;
+    }
+    
+    /**
+     * Returns the resourcePath.<p>
+     *
+     * @return the resourcePath
+     */
+    public String getParamResourcePath() {
+        
+        return m_paramResourcePath;
     }
     
     /**
@@ -325,16 +460,6 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
-     * Sets the type of the galleries to display.<p>
-     *
-     * @param galleryType the type of the galleries to display
-     */
-    public void setParamGalleryType(String galleryType) {
-
-        m_paramGalleryType = galleryType;
-    }
-    
-    /**
      * Sets the current page to display in the item list.<p>
      *
      * @param page the current page to display in the item list
@@ -342,6 +467,16 @@ public abstract class CmsGallery extends CmsDialog {
     public void setParamPage(String page) {
 
         m_paramPage = page;
+    }
+    
+    /**
+     * Sets the resourcePath.<p>
+     *
+     * @param resourcePath the resourcePath to set
+     */
+    public void setParamResourcePath(String resourcePath) {
+
+        m_paramResourcePath = resourcePath;
     }
     
     /**
@@ -355,20 +490,48 @@ public abstract class CmsGallery extends CmsDialog {
     }
     
     /**
-     * Returns a list of resources which have the required gallery resource type.<p>
+     * Returns a list of galleries which have the required gallery type id.<p>
      * 
-     * @param resourceType the resource type ID of the galleries to read
-     * @return a list of gallery resources
+     * @return a list of galleries
      */
-    protected List getGalleries(int resourceType) {
+    protected List getGalleries() {
         List galleries = null;
+        int galleryTypeId = getGalleryTypeId();
         try {
-            galleries = getCms().readResources(I_CmsConstants.C_ROOT, CmsResourceFilter.requireType(resourceType));
+            galleries = getCms().readResources(I_CmsConstants.C_ROOT, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(e);    
             }
         }
         return galleries;
+    }
+    
+    /**
+     * Returns a list of hit items.<p>
+     * 
+     * Searching by the title and resourcename.<p> 
+     * 
+     * @param items a list of resource items
+     * @return a list of hit items
+     */
+    protected List getSearchHits(List items) {
+        
+        String searchword = getParamSearchWord().toLowerCase();
+        List hitlist = new ArrayList();
+        if (items != null) {
+            Iterator i = items.iterator();
+            while (i.hasNext()) {
+                CmsResource res = (CmsResource)i.next();
+                String resname = res.getName().toLowerCase();
+                String restitle = getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getCms().getSitePath(res), resname).toLowerCase();                
+                if (restitle.indexOf(searchword) != -1 || resname.indexOf(searchword) != -1) {
+                    // add this resource to the hitlist
+                    hitlist.add(res);
+                }
+            }
+        }
+        
+        return hitlist;
     }
 }

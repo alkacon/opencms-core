@@ -6,7 +6,7 @@
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	// initialize the workplace class
-	CmsGalleryImages wp = new CmsGalleryImages(pageContext, request, response);
+	CmsGalleryLinks wp = new CmsGalleryLinks(pageContext, request, response);
 	
 %><%= wp.htmlStart(null) %>
 	<style type="text/css">
@@ -22,12 +22,12 @@
 	<!--
 		function validateGalleryPath() {
 			top.gallery_fs.gallery_head.displayGallery();
-			top.gallery_preview.location.href="galleries/img_preview.jsp?resourcepath="+top.gallery_fs.gallery_head.previewUri;
+			top.gallery_preview.location.href="galleries/link_preview.jsp?resourcepath="+top.gallery_fs.gallery_head.previewUri;
 		}
 		
 		function preview(uri) {
 			top.gallery_fs.gallery_head.previewUri = uri;
-			top.gallery_preview.location.href="img_preview.jsp?resourcepath="+uri;			
+			top.gallery_preview.location.href="link_preview.jsp?resourcepath="+uri;			
 		}												
 	//-->
 	</script>
@@ -39,7 +39,7 @@
 	<td class="headline">&nbsp;</td>
 	<td class="headline maxwidth"><%= wp.key("label.title") %></td>
 	<td class="headline"><%= wp.key("label.name") %></td>
-	<td class="headline" style="text-align: right;"><%= wp.key("label.size") %></td>	
+	<td class="headline"><%= wp.key("input.linkto") %></td>	
 </tr>
 <%= wp.buildGalleryItems() %>
 </table>

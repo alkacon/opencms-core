@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryImages.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsGalleryHtmls.java,v $
  * Date   : $Date: 2004/11/26 17:35:41 $
- * Version: $Revision: 1.3 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,10 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -46,30 +45,29 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Generates the image gallery popup window which can be used in editors or as a dialog widget.<p>
+ * Generates the download gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * The following files use this class:
  * <ul>
- * <li>/commons/galeries/img_fs.jsp
+ * <li>/commons/galeries/download_fs.jsp
  * </ul>
  * 
- * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 5.5.2
  */
-public class CmsGalleryImages extends CmsGallery {
+public class CmsGalleryHtmls extends CmsGallery {
     
     /** URI of the image gallery popup dialog. */
-    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "img_fs.jsp";       
+    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "html_fs.jsp";       
     
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGalleryImages(CmsJspActionElement jsp) {
+    public CmsGalleryHtmls(CmsJspActionElement jsp) {
         super(jsp);
     }
     
@@ -80,7 +78,7 @@ public class CmsGalleryImages extends CmsGallery {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsGalleryImages(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsGalleryHtmls(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }
     
@@ -97,7 +95,6 @@ public class CmsGalleryImages extends CmsGallery {
                 CmsResource res = getCms().readResource(getParamResourcePath());
                 if (res != null) {
                     boolean deleteable = false;
-                    String title = getJsp().property(I_CmsConstants.C_PROPERTY_TITLE, getParamResourcePath(), res.getName());      
                     CmsLock lock = getCms().getLock(res);
                     // may delete resource only if this is unlocked or the lock owner is the current user
                     if (lock.getType() == CmsLock.C_TYPE_UNLOCKED || lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
@@ -106,29 +103,18 @@ public class CmsGalleryImages extends CmsGallery {
                     html.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
                     html.append("<tr align=\"left\">");
                     html.append(buttonBarStartTab(0, 0));  
-                    html.append(button("javascript:pasteResource('"+getJsp().link(getParamResourcePath())+"',document.form.title.value, document.form.title.value);", null, "apply", "button.paste", 0));
+                    html.append(button("javascript:pasteContent()", null, "apply", "button.paste", 0));
                     if (deleteable) {
                         html.append(button("javascript:deleteResource(\'" + getParamResourcePath() + "\');", null, "deletecontent", "title.delete", 0));
                     } else {
                         html.append(button(null, null, "deletecontent_in", "", 0));
                     }
-                    html.append(buttonBarSeparator(5, 5));
-                    
-                    html.append("<td nowrap><b>");
-                    html.append(key("media.mediaAltText"));
-                    html.append("</b>&nbsp;</td>");
-                    html.append("<td width=\"80%\">");
-                    html.append("<input name=\"title\" value=\"");
-                    html.append(title);
-                    html.append("\" style=\"width: 95%\">");
-                    html.append("</td>\r\n"); 
+                    html.append("<td width=\"100%\">&nbsp;</td>\r\n");
                     html.append(buttonBar(HTML_END));
-                    html.append(buttonBarHorizontalLine());
-                    html.append("<center>");
-                    html.append("<p><img src=\"");
-                    html.append(getJsp().link(getParamResourcePath()));
-                    html.append("\" border=\"0\"></p>");  
-                    html.append("</center>");
+                    html.append(buttonBarHorizontalLine());  
+                    html.append("<p><div id=\"icontent\" width=\"100%\" height=\"100%\">");
+                    html.append(getJsp().getContent(getParamResourcePath()));                    
+                    html.append("</div></p>");                    
                 }
             }
         } catch (CmsException e) {
@@ -142,8 +128,8 @@ public class CmsGalleryImages extends CmsGallery {
      */
     public int getGalleryItemsTypeId() {
         
-        return CmsResourceTypeImage.C_RESOURCE_TYPE_ID;
-    }
+        return CmsResourceTypePlain.C_RESOURCE_TYPE_ID;
+    }           
     
     /**
      * @see org.opencms.workplace.commons.CmsGallery#getGalleryTypeId()
@@ -152,7 +138,7 @@ public class CmsGalleryImages extends CmsGallery {
         
         int galleryTypeId = 0;
         try {
-            galleryTypeId = OpenCms.getResourceManager().getResourceType(C_IMAGEGALLERY).getTypeId();
+            galleryTypeId = OpenCms.getResourceManager().getResourceType(C_HTMLGALLERY).getTypeId();
         } catch (CmsException e) {
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error(e);    
