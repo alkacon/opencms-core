@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsTask.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/02/20 16:59:00 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -35,7 +35,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.9 $ $Date: 2000/02/15 17:53:48 $
+ * @version $Revision: 1.10 $ $Date: 2000/02/20 16:59:00 $
  */
 public abstract class A_CmsTask
 {
@@ -53,31 +53,145 @@ public abstract class A_CmsTask
 	 */
 	abstract public String getName();
 	
+
 	/**
-	 * Returns a string-representation for this object.
-	 * This can be used for debugging.
+	 * Returns the state of this task.
 	 * 
-	 * @return string-representation for this object.
+	 * @return the state of this task.
 	 */
-	
 	abstract public int getState();
+	
+	/**
+	 * Returns the state of this task as an String.
+	 * 
+	 * @return the state of this task.
+	 */
+	abstract public String getStateString();
+	
+	/**
+	 * Returns the type of this task.
+	 * 
+	 * @return the type of this task.
+	 */
 	abstract public int getTaskType();
+	
+	/**
+	 * Returns the root id of this task.
+	 * 
+	 * @return the root id of this task.
+	 */
 	abstract public int getRoot();
+	
+	/**
+	 * Returns the parent id of this task.
+	 * 
+	 * @return the parent id of this task.
+	 */
 	abstract public int getParent();
+	
+	/**
+	 * Returns the initiator user id of this task.
+	 * 
+	 * @return the initiator user id of this task.
+	 */
 	abstract public int getInitiatorUser();
+	
+	/**
+	 * Returns the role group id of this task.
+	 * 
+	 * @return the role group id of this task.
+	 */
 	abstract public int getRole();
+	
+	/**
+	 * Returns the agent user id of this task.
+	 * 
+	 * @return the agent user id of this task.
+	 */
 	abstract public int getAgentUser();
+	
+	/**
+	 * Returns the original agent user id of this task.
+	 * 
+	 * @return the original agent user id of this task.
+	 */
 	abstract public int getOriginalUser();
+	
+	/**
+	 * Returns the starttime of this task.
+	 * 
+	 * @return the starttime of this task.
+	 */
 	abstract public java.sql.Timestamp getStartTime();
+	
+	/**
+	 * Returns the wakeuptime of this task.
+	 * 
+	 * @return the wakeuptime of this task.
+	 */
 	abstract public java.sql.Timestamp getWakeupTime();
+	
+	/**
+	 * Returns the timeout of this task.
+	 * 
+	 * @return the timeout of this task.
+	 */
 	abstract public java.sql.Timestamp getTimeOut();
+	
+	/**
+	 * Returns the endtime of this task.
+	 * 
+	 * @return the endtime of this task.
+	 */
 	abstract public java.sql.Timestamp getEndTime();
+	
+	/**
+	 * Returns the percentage of this task.
+	 * 
+	 * @return the percentage of this task.
+	 */
 	abstract public int getPercentage();
+	
+	/**
+	 * Returns the permission of this task.
+	 * 
+	 * @return the permission of this task.
+	 */
 	abstract public String getPermission();
+	
+	/**
+	 * Returns the priority of this task.
+	 * 
+	 * @return the priority of this task.
+	 */
 	abstract public int getPriority();
+	
+	/**
+	 * Returns the escalationtype of this task.
+	 * 
+	 * @return the escalationtype of this task.
+	 */	
 	abstract public int getEscalationType();
+	
+	/**
+	 * Returns the htmllink of this task.
+	 * 
+	 * @return the htmllink of this task.
+	 */	
 	abstract public String getHtmlLink();
+	
+	/**
+	 * Returns the milestone id of this task.
+	 * 
+	 * @return the milestone id of this task.
+	 */
 	abstract public int getMilestone();
+	
+	/**
+	 * Returns the autofinish flag id of this task.
+	 * 
+	 * @return the autofinish flag id of this task.
+	 */
 	abstract public int getAutoFinish();
 
 	abstract void setName(String taskname);

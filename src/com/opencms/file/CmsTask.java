@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/02/20 16:59:00 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.8 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/20 16:59:00 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
@@ -156,11 +156,11 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	 */
 	CmsTask(int id, String name, int state, int tasktype,
 			int root, int parent, int initiatoruser,
-				int role, int agentuser, int originaluser,
-				java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
-				java.sql.Timestamp timeout, java.sql.Timestamp endtime,
-				int percentage, String permission, int priority,
-				int escalationtype, String htmllink, int milestone,int autofinish){
+			int role, int agentuser, int originaluser,
+			java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
+			java.sql.Timestamp timeout, java.sql.Timestamp endtime,
+			int percentage, String permission, int priority,
+			int escalationtype, String htmllink, int milestone,int autofinish){
 
 		m_Id = id;
 		m_Name = name;
@@ -212,78 +212,173 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 		return m_State;	
 	}
 	
+	/**
+	 * Returns the state of this task as an String.
+	 * 
+	 * @return the state of this task.
+	 */
 	public String getStateString() {
 		return State2String(m_State);	
 	}
 
+	/**
+	 * Returns the type of this task.
+	 * 
+	 * @return the type of this task.
+	 */
 	public int getTaskType(){
 		return m_TaskType;
 	}
 	
+	/**
+	 * Returns the root id of this task.
+	 * 
+	 * @return the root id of this task.
+	 */
 	public int getRoot(){
 		return m_Root;
 	}
 	
-	
+	/**
+	 * Returns the parent id of this task.
+	 * 
+	 * @return the parent id of this task.
+	 */
 	public int getParent(){
 		return m_Parent;
 	}
 	
+	/**
+	 * Returns the initiator user id of this task.
+	 * 
+	 * @return the initiator user id of this task.
+	 */	
 	public int getInitiatorUser(){
 		return m_InitiatorUser;
 	}
-	
+
+	/**
+	 * Returns the role group id of this task.
+	 * 
+	 * @return the role group id of this task.
+	 */
 	public int getRole(){
 		return m_Role;
 	}
 	
+	/**
+	 * Returns the agent user id of this task.
+	 * 
+	 * @return the agent user id of this task.
+	 */
 	public int getAgentUser(){
 		return m_AgentUser;
 	}	
 	
+	/**
+	 * Returns the original agent user id of this task.
+	 * 
+	 * @return the original agent user id of this task.
+	 */	
 	public int getOriginalUser(){
 		return m_OriginalUser;
 	}
 	
+	/**
+	 * Returns the starttime of this task.
+	 * 
+	 * @return the starttime of this task.
+	 */
 	public java.sql.Timestamp getStartTime(){
 		return m_StartTime;
 	}
+	
+	/**
+	 * Returns the wakeuptime of this task.
+	 * 
+	 * @return the wakeuptime of this task.
+	 */
 	public java.sql.Timestamp getWakeupTime(){
 		return m_WakeupTime;
 	}
 	
+	/**
+	 * Returns the timeout of this task.
+	 * 
+	 * @return the timeout of this task.
+	 */
 	public java.sql.Timestamp getTimeOut(){
 		return m_TimeOut;
 	}
 	
+	/**
+	 * Returns the endtime of this task.
+	 * 
+	 * @return the endtime of this task.
+	 */
 	public java.sql.Timestamp getEndTime(){
 		return m_EndTime;
 	}
 	
+	/**
+	 * Returns the percentage of this task.
+	 * 
+	 * @return the percentage of this task.
+	 */
 	public int getPercentage(){
 		return m_Percentage;
 	}
 	
+	/**
+	 * Returns the permission of this task.
+	 * 
+	 * @return the permission of this task.
+	 */	
 	public String getPermission(){
 		return m_Permission;
 	}
 	
+	/**
+	 * Returns the priority of this task.
+	 * 
+	 * @return the priority of this task.
+	 */	
 	public int getPriority(){
 		return m_Priority;
 	}
 	
+	/**
+	 * Returns the escalationtype of this task.
+	 * 
+	 * @return the escalationtype of this task.
+	 */	
 	public int getEscalationType(){
 		return m_EscalationType;
 	}
-	
+
+	/**
+	 * Returns the htmllink of this task.
+	 * 
+	 * @return the htmllink of this task.
+	 */
 	public String getHtmlLink(){
 		return m_HtmlLink;
 	}
 	
+	/**
+	 * Returns the milestone id of this task.
+	 * 
+	 * @return the milestone id of this task.
+	 */
 	public int getMilestone(){
 		return m_Milestone;
 	}
 	
+	/**
+	 * Returns the autofinish flag id of this task.
+	 * 
+	 * @return the autofinish flag id of this task.
+	 */
 	public int getAutoFinish(){
 		return m_AutoFinish;
 	}
