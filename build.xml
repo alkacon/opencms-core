@@ -82,6 +82,7 @@
         
        <copy file="${build.inputlib.xerces}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mysql}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.mysql}" todir="${build.lib}"/>
        <copy file="${build.inputlib.activation}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.fop}" todir="${build.oclib}"/>

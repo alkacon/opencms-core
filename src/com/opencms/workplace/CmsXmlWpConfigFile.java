@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2001/07/11 15:17:08 $
+* Version: $Revision: 1.30 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.29 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.30 $ $Date: 2001/07/11 15:17:08 $
  */
 
 public class CmsXmlWpConfigFile {
@@ -117,7 +117,7 @@ public class CmsXmlWpConfigFile {
      * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWpPicturePath() throws CmsException {
-        return "/system/workplace/pics/";
+        return "/system/pics/";
     }
 
     public void getWorkplaceIniData(Vector names, Vector values, String tag, String element) throws CmsException {
