@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package-visibility for security-reasons.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.1 $ $Date: 2000/01/11 17:41:33 $
+ * @version $Revision: 1.2 $ $Date: 2000/01/25 19:11:55 $
  */
 //class CmsAccessTask implements I_CmsAccessTask, I_CmsConstants  {
 class CmsAccessTask implements I_CmsConstants  {
@@ -31,9 +31,6 @@ class CmsAccessTask implements I_CmsConstants  {
 	private static final String C_TASK_TYPE_COPY = "INSERT INTO GlobeTask (" + C_TASK_TYPE_FIELDS + ") " +
 											       "SELECT " + C_TASK_TYPE_FIELDS + 
 												   " FROM GlobeTaskType WHERE id=?";
-	
-//	private static final String C_TASK_TYPE_COPY = "INSERT INTO GlobeTask (name,root) VALUES('testtask',?)";
-	
 	/**
      * SQL Command for updating tasks.
      */
@@ -72,6 +69,18 @@ class CmsAccessTask implements I_CmsConstants  {
 											 "state="+A_CmsTask.C_TASK_STATE_ENDED+", " +
 											 "endtime=? " +
 											 "WHERE id=?";
+	
+	/**
+     * SQL Command for reading all open tasks for a project
+     */
+	
+	private static final String C_TASKLIST_OPEN = "SELECT * FROM GlobeTask " + 
+																 "WHERE agentuserref=? " + 
+																 "AND agentuserref=? " + 
+																 "AND root=? " +
+																 "AND wakeuptime<CURRENT_TIMESTAMP " +
+																 "AND state in (2,7)";
+
 
 	/**
      * SQL Command for tasklog insert.
@@ -147,9 +156,20 @@ class CmsAccessTask implements I_CmsConstants  {
 	private PreparedStatement m_statementInsertTaskLog;
 	
 	/**
+    * Prepared SQL Statement for inserting a tasklog.
+    */
+	private PreparedStatement m_statementReadTaskLog;
+	
+	/**
     * Prepared SQL Statement for reading a task.
     */
-    private PreparedStatement m_statementReadTaskLog;
+    private PreparedStatement m_statement;
+	 
+	 
+	 /**
+    *  SQL Statement for the other duty.
+    */
+	 private Statement  m_Statement=null;
 	
     /**
      * Constructor, creates a new CmsAccessTask object and connects it to the
@@ -240,6 +260,7 @@ class CmsAccessTask implements I_CmsConstants  {
 				 // fill additional task fields
 				 task.setRoot(projectid);
 				 task.setParent(parent);
+				 task.setName(taskname);
 				 task.setTaskType(tasktype);
 				 task.setRole(role.getId());
 				 
@@ -248,7 +269,7 @@ class CmsAccessTask implements I_CmsConstants  {
 				 }
 				 else{
 					 // Try to find an agent for this role
-					 agent= FindAgent(role);
+					 agent= findAgent(role);
 					 if(agent!=null){
 						 task.setAgentUser(agent.getId());
 					 }
@@ -390,8 +411,73 @@ class CmsAccessTask implements I_CmsConstants  {
 			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
 		 }
 	 }
+
+	
+	 /**
+	 * Reads all open tasks for a user.
+	 * 
+	 * @param user User .
+	 * @param Type Type of the wanted Tasks ALL, OPEN, 
+	 * @param orderBy Chooses, how to order the tasks.
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 /*xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
+	 public Vector readTasks(A_CmsUser user, int Type, String orderBy, String sort)
+	 throws CmsException{
+		 
+		 ResultSet result;
+	
+		 try{
+			 synchronized(m_statement) {
+	
+				
+				 String condition =; 
+					 String sqlstr = "SELECT * FROM GlobeTask " + 
+									 "WHERE agentuserref=" + user.getId() + " " +
+									 "AND root<>0 " +
+									 "AND wakeuptime<CURRENT_TIMESTAMP " +
+									 "AND state in (2,7) " +
+									 "ORDER BY " + orderBy + " " + sort
+
+				 
+				 				 
+
+				 result = m_Statement.execute(sqlstr);
+	
+				 while(result.next()) {
+					 
+				 }
+			 }
+			 InsertSytemTaskLog(task, "Task finished by "+user.getName());
+		 } catch( SQLException exc ) {
+			 throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+		 }		 
+	
+	 }
+	*/											  
+		 
+	 /**
+	 * Reads all open tasks of a user in a project.
+	 * 
+	 * @param callingUser The user who wants to use this method.
+	 * @param project The Project in which the tasks are defined.
+	 * @param group The group who has to process the task.
+	 * @param orderBy Chooses, how to order the tasks.
+	 * 
+	 * @return A vector with the tasks
+	 * 
+	 * @exception CmsException Throws CmsException if something goes wrong.
+	 */
+	 public Vector readOpenTasks(A_CmsProject project, A_CmsUser user, int orderBy){
 	 
-	 private A_CmsUser FindAgent(A_CmsGroup role){
+	
+		 return null;
+	 }
+	 
+	 private A_CmsUser findAgent(A_CmsGroup role){
 	 
 		 // todo to be implemented
 		return null;
@@ -516,6 +602,8 @@ class CmsAccessTask implements I_CmsConstants  {
 			// Init Statement's for the tasklog
 			m_statementInsertTaskLog = m_Con.prepareStatement(C_TASKLOG_INSERT);
 			m_statementReadTaskLog = m_Con.prepareStatement(C_TASKLOG_READ);
+			m_Statement= m_Con.createStatement();
+			
 		} catch (SQLException e){
 			throw new CmsException(e.getMessage(),CmsException.C_SQL_ERROR, e);			
 		}

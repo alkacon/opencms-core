@@ -10,7 +10,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.2 $ $Date: 2000/01/11 17:41:33 $
+ * @version $Revision: 1.3 $ $Date: 2000/01/25 19:11:55 $
  */
 public class CmsTask extends A_CmsTask implements I_CmsConstants {
 
@@ -257,6 +257,10 @@ public class CmsTask extends A_CmsTask implements I_CmsConstants {
 	
 	public int getAutoFinish(){
 		return m_AutoFinish;
+	}
+	
+	public void setName(String taskname){
+		m_Name = taskname;
 	}
 	
 	public void setRoot(int root){
