@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2004/01/06 16:40:29 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.26 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.27 $ $Date: 2004/01/06 16:40:29 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -127,7 +127,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
         m_enableServerCopy = "true".equals(configuration.getString("db.oracle.servercopy"));
@@ -135,7 +135,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
     
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
@@ -288,7 +288,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#getAllBackupProjects()
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProjects()
      */
     public Vector readBackupProjects() throws CmsException {
         Vector projects = new Vector();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2004/01/06 16:40:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.18 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.19 $ $Date: 2004/01/06 16:40:29 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -72,7 +72,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     private boolean m_enableServerCopy = false;
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#addSystemProperty(java.lang.String, java.io.Serializable)
+     * @see org.opencms.db.I_CmsProjectDriver#createSystemProperty(java.lang.String, java.io.Serializable)
      */
     public Serializable createSystemProperty(String name, Serializable object) throws CmsException {
 
@@ -181,7 +181,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsDriver#init(source.org.apache.java.util.Configurations, java.util.List, org.opencms.db.CmsDriverManager)
+     * @see org.opencms.db.I_CmsDriver#init(org.apache.commons.collections.ExtendedProperties, java.util.List, org.opencms.db.CmsDriverManager)
      */
     public void init(ExtendedProperties configuration, List successiveDrivers, CmsDriverManager driverManager) {
 
@@ -190,14 +190,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     }
     
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsProjectDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
     }
 
     /**
-     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsRequestContext, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
+     * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(com.opencms.file.CmsProject, com.opencms.file.CmsProject, com.opencms.file.CmsResource, java.util.Set)
      */
     public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
         CmsFile newFile = null;

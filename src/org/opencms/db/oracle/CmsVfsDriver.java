@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/14 16:59:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/01/06 16:40:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,13 +50,13 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/11/14 16:59:35 $
+ * @version $Revision: 1.17 $ $Date: 2004/01/06 16:40:29 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#createFileContent(com.opencms.flex.util.CmsUUID, byte[], int, int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#createFileContent(org.opencms.util.CmsUUID, byte[], int, int, boolean)
      */
     public void createFileContent(CmsUUID fileId, byte[] fileContent, int versionId, int projectId, boolean writeBackup) throws CmsException {
         PreparedStatement stmt = null;
@@ -88,14 +88,14 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#initQueries(java.lang.String)
+     * @see org.opencms.db.I_CmsVfsDriver#initQueries()
      */
     public org.opencms.db.generic.CmsSqlManager initQueries() {
         return new org.opencms.db.oracle.CmsSqlManager();
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#writeFileContent(com.opencms.flex.util.CmsUUID, byte[], int, boolean)
+     * @see org.opencms.db.I_CmsVfsDriver#writeFileContent(org.opencms.util.CmsUUID, byte[], int, boolean)
      */
     public void writeFileContent(CmsUUID fileId, byte[] fileContent, int projectId, boolean writeBackup) throws CmsException {
 

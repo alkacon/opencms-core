@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/page/Attic/CmsPageException.java,v $
- * Date   : $Date: 2003/11/26 15:59:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/06 16:41:01 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import com.opencms.core.CmsException;
  * Signals that a particular action was invoked on resource with an insufficient lock state.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.4
  */
 public class CmsPageException extends CmsException {
@@ -49,8 +49,6 @@ public class CmsPageException extends CmsException {
     
     /** Wizard still enabled error */
     public static final int C_PAGE_DOCUMENT_ERROR = 401; 
-    
-    public static final int C_PAGE_CANT_UNMARSHAL = 402;
         
     /**
      * Default constructor for a CmsInitException.<p>
