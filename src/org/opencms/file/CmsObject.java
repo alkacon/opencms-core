@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/12/15 12:29:45 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2004/12/15 16:09:47 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * @author Michael Moossen (m.mmoossen@alkacon.com)
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  */
 /**
  * Comment for <code>CmsObject</code>.<p>
@@ -105,6 +105,15 @@ public class CmsObject {
     }
     
     /**
+     * Returns the current session info manager object.<p>
+     * 
+     * @return the current session info manager object
+     */
+    public CmsSessionInfoManager getSessionInfoManager() {
+        return m_sessionStorage;
+    }
+    
+    /**
      * Changes the project id of the resource to the current project, indicating that 
      * the resource was last modified in this project.<p>
      * 
@@ -131,11 +140,11 @@ public class CmsObject {
     /**
      * Changes the resource type of a resource.<p>
      * 
-     * OpenCms handles resource according to the resource type,
+     * OpenCms handles resources according to the resource type,
      * not the file suffix. This is e.g. why a JSP in OpenCms can have the 
      * suffix ".html" instead of ".jsp" only. Changing the resource type
      * makes sense e.g. if you want to make a plain text file a JSP resource,
-     * or a binary file an image etc.<p> 
+     * or a binary file an image, etc.<p> 
      *
      * @param resourcename the name of the resource to change the type for (full path)
      * @param type the new resource type for this resource
@@ -158,7 +167,7 @@ public class CmsObject {
      * Changes the resource flags of a resource.<p>
      * 
      * The resource flags are used to indicate various "special" conditions
-     * for a resource. Most notably the "internal only" setting which signals 
+     * for a resource. Most notably, the "internal only" setting which signals 
      * that a resource can not be directly requested with it's URL.<p>
      *
      * @param resourcename the name of the resource to change the flags for (full path)
@@ -206,7 +215,7 @@ public class CmsObject {
      * after the copy operation.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the copy operation.
+     * during the copy operation.<br>
      * Possible values for this parameter are: 
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
@@ -237,7 +246,7 @@ public class CmsObject {
      * Copies a resource to the current project of the user.<p>
      * 
      * This is used to extend the current users project with the
-     * specified resource, in case that resource is not yet part of the project.
+     * specified resource, in case that the resource is not yet part of the project.
      * The resource is not really copied like in a regular copy operation, 
      * it is in fact only "enabled" in the current users project.<p>   
      * 
@@ -273,7 +282,8 @@ public class CmsObject {
        
         return createResource(resourcename, type, new byte[0], Collections.EMPTY_LIST);
     }
-
+    
+/*
     /**
      * Creates a new resource of the given resource type
      * with the provided content and properties.<p>
@@ -286,7 +296,7 @@ public class CmsObject {
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
-     *//*
+     *
     public CmsResource createResource(String resourcename, int type, CmsUUID contentId, byte[] content, List properties) throws CmsException {
         
         return getResourceType(type)
@@ -297,7 +307,8 @@ public class CmsObject {
                 contentId,
                 content, 
                 properties);
-    }*/    
+    }
+*/    
 
     /**
      * Creates a new resource of the given resource type
@@ -324,10 +335,10 @@ public class CmsObject {
     }
     
     /**
-     * Deletes a resource.<p>
+     * Deletes a resource given its name.<p>
      * 
      * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the delete operation.
+     * during the delete operation.<br>
      * Possible values for this parameter are: 
      * <ul>
      * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
@@ -352,12 +363,16 @@ public class CmsObject {
     }      
     
     /**
-     * Returns the name a resource would have it is was moved to the
-     * "lost and found" folder.<p>
+     * Returns the name a resource would have if it were moved to the
+     * "lost and found" folder. <p>
      * 
-     * @param resourcename the name of the resource to get the "loast and found" name for (full path)
+     * In general, it is the same name as the given resource has, the only exception is
+     * if a resource in the "lost and found" folder with the same name already exists. 
+     * In such case, a counter is added to the resource name.<p>
+     * 
+     * @param resourcename the name of the resource to get the "lost and found" name for (full path)
      *
-     * @return the name of the resource inside the "lost and found" folder
+     * @return the tentative name of the resource inside the "lost and found" folder
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -423,7 +438,7 @@ public class CmsObject {
     /**
      * Locks a resource.<p>
      *
-     * The <code>mode</code> parameter controls what kind of lock is used.
+     * The <code>mode</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: 
      * <ul>
      * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
@@ -451,8 +466,8 @@ public class CmsObject {
      * 
      * A move operation in OpenCms is always a copy (as sibling) followed by a delete,
      * this is a result of the online/offline structure of the 
-     * OpenCms VFS. This way you can see the deleted files/folder in the offline
-     * project, and are unable to undelete them.<p>
+     * OpenCms VFS. This way you can see the deleted files/folders in the offline
+     * project, and you will be unable to undelete them.<p>
      * 
      * @param source the name of the resource to move (full path)
      * @param destination the destination resource name (full path)
@@ -479,7 +494,7 @@ public class CmsObject {
      * The "lost and found" folder is a special system folder. 
      * This operation is used e.g. during import of resources
      * when a resource with the same name but a different resource ID
-     * already exists in the VFS. In this case the imported resource is 
+     * already exists in the VFS. In this case, the imported resource is 
      * moved to the "lost and found" folder.<p>
      * 
      * @param resourcename the name of the resource to move to "lost and found" (full path)
@@ -559,7 +574,7 @@ public class CmsObject {
     }    
     
     /**
-     * Change the timestamp information of a resource.<p>
+     * Changes the timestamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
      * of a resource, the "release" date of a resource, 
@@ -593,6 +608,10 @@ public class CmsObject {
      * 
      * Only resources that have already been published once can be undeleted,
      * if a "new" resource is deleted it can not be undeleted.<p>
+     * 
+     * Internally, this method undos all changes to a resource by restoring 
+     * the version from the online project, that is to the state of last 
+     * publishing.<p>
      * 
      * @param resourcename the name of the resource to undelete (full path)
      *
@@ -714,19 +733,18 @@ public class CmsObject {
     }    
     
     /**
-     * Returns a list with all sub resources of a given folder that have set the given property.<p>
-     *
-     * All users are granted.
+     * Returns a list with all sub resources of a given folder that have set the given property, 
+     * matching the current property's value with the given old value and replacing it by a given new value.<p>
      *
      * @param resourcename the name of the resource to change the property value
      * @param propertyDefinition the name of the propertydefinition to change the value
-     * @param oldValue the old value of the propertydefinition
+     * @param oldValue the old value of the propertydefinition, can be a regular expression
      * @param newValue the new value of the propertydefinition
      * @param recursive if true, change recursively all property values on sub-resources (only for folders)
      *
      * @return the resources where the property value has been changed
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List changePropertyValue(String resourcename, String propertyDefinition, String oldValue, String newValue, boolean recursive) throws CmsException {
         
@@ -740,7 +758,7 @@ public class CmsObject {
      * @param property the property to write
      * 
      * @throws CmsException if something goes wrong
-     */   
+     */
     public void writePropertyObject(String resourcename, CmsProperty property) throws CmsException {
         
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);

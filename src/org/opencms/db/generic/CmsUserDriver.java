@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2004/12/15 15:29:57 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2004/12/15 16:09:47 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.74 $ $Date: 2004/12/15 15:29:57 $
+ * @version $Revision: 1.75 $ $Date: 2004/12/15 16:09:47 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -1335,7 +1335,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         // serialize the hashtable
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         ObjectOutputStream oout = new ObjectOutputStream(bout);
-        oout.writeObject(additionalUserInfo);
+        oout.writeObject(new Hashtable(additionalUserInfo));
         oout.close();
 
         return bout.toByteArray();
