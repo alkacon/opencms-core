@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.55 $ $Date: 2000/02/15 07:48:29 $
+ * @version $Revision: 1.56 $ $Date: 2000/02/15 08:39:37 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2026,7 +2026,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 							 String filename)
 		 throws CmsException {
 		 // TODO: delete the following debug message
-		 CmsFile cmsFile;
+		 CmsFile cmsFile = null;
 		 // read the resource from the currentProject, or the online-project
 		 try {
 			 cmsFile = m_fileRb.readFile(currentProject, 
@@ -2038,7 +2038,9 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 				 // this IS the onlineproject - throw the exception
 System.err.println(">>> readFile(1) error for\n" +
 				   currentUser.toString() + "\n" +
-				   currentProject.toString());
+				   currentProject.toString()+ "\n" +
+				   filename + "\n" + 
+				   cmsFile + " <<<");
 				 throw exc;
 			 } else {
 				 // try to read the resource in the onlineproject
@@ -2055,7 +2057,9 @@ System.err.println(">>> readFile(1) error for\n" +
 		} else {
 System.err.println(">>> readFile(2) error for\n" +
 				   currentUser.toString() + "\n" +
-				   currentProject.toString());
+				   currentProject.toString() + "\n" + 
+				   filename + "\n" +
+				   cmsFile + " <<<");
 			throw new CmsException("[" + this.getClass().getName() + "] " + filename, 
 				 CmsException.C_ACCESS_DENIED);
 		}

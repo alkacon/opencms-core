@@ -14,7 +14,7 @@ import com.opencms.core.*;
  * This class has package visibility for security reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/15 07:48:29 $
+ * @version $Revision: 1.17 $ $Date: 2000/02/15 08:39:37 $
  */
  class CmsRbUserGroup implements I_CmsRbUserGroup, I_CmsConstants {
 
@@ -194,22 +194,15 @@ import com.opencms.core.*;
 	 */
 	 public boolean userInGroup(String username, String groupname)
          throws CmsException {
-         boolean userInGroup;
-         A_CmsGroup parent;
-         // check if the user is in the given group
-         userInGroup=m_accessUserGroup.userInGroup(username,groupname);
-         //if not, check if the user is in the parent groups
-         if (!userInGroup) {
-             parent=getParent(groupname);
-             while ((parent!= null) && (userInGroup==false)) {
-                 if  (m_accessUserGroup.userInGroup(username,parent.getName())) {
-                     userInGroup=true;
-                 }
-                 parent=getParent(parent.getName());
-             }
-         }
-         return userInGroup;
-
+		 Vector groups = getGroupsOfUser(username);
+		 A_CmsGroup group;
+		 for(int z = 0; z < groups.size(); z++) {
+			 group = (A_CmsGroup) groups.elementAt(z);
+			 if(m_accessUserGroup.userInGroup(username, group.getName())) {
+				 return true;
+			 }
+		 }
+		 return false;
     }
 
 	/** 
