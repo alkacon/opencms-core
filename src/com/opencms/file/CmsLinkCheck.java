@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsLinkCheck.java,v $
-* Date   : $Date: 2002/05/17 11:17:45 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2002/07/10 07:55:55 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,10 +41,6 @@ import java.io.*;
  */
 public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsConstants{
 
-    /**
-	 * eMail form with the information for creating the eMail
-	 */
-	private String C_MAIL_TEMPLATE = "/system/workplace/templates/urlcheckform";
 
     public CmsLinkCheck() {
     }
@@ -67,25 +63,30 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
      * @param parameter
      */
 	public void linksUrlCheck(CmsObject cms, String parameter) throws CmsException {
-        Vector inList = null; // contains the resourcenames for each url
+        // hashtable that contains the urls that are not available and the resourcenames of the links
+        // where this url is referenced
         Hashtable notAvailable = new Hashtable();
-        Vector linkList = new Vector(); // contains all external links from the database
+        
+        // vector that contains all external links from the database
+        Vector linkList = new Vector();
+        
+        // vector and hashtable that contains the links of an owner that are not available,
+        // so there can be created a mail to the owner with all the broken links
+        Hashtable ownerLinkList = new Hashtable();
 
         // get the hashtable with the last check result from the system table
         Hashtable linkckecktable = cms.readLinkCheckTable();
-        Hashtable newLinkchecktable = new Hashtable();
 
+        Hashtable newLinkchecktable = new Hashtable();       
+        // get the values for email from the registry
+        Hashtable emailValues = cms.getRegistry().getSystemValues("checklink");
         // get templateFile this way because there is no actual file if
         // method is called from scheduler ...
-        CmsXmlTemplateFile template=getOwnTemplateFile(cms, C_MAIL_TEMPLATE, "", null, "");
+        CmsXmlTemplateFile template=getOwnTemplateFile(cms, (String)emailValues.get("mailtemplate"), "", null, "");
+        
         // set the current date and time
         GregorianCalendar actDate = new GregorianCalendar();
-        String actDateString = actDate.get(GregorianCalendar.DATE)+"."
-                                    +(actDate.get(GregorianCalendar.MONTH)+1)+"."
-                                    +actDate.get(GregorianCalendar.YEAR)+" "
-                                    +actDate.get(GregorianCalendar.HOUR_OF_DAY)+":"
-                                    +actDate.get(GregorianCalendar.MINUTE)+":"
-                                    +actDate.get(GregorianCalendar.SECOND);
+        String actDateString = getDateString(actDate);
         template.setData("actdate", actDateString);
         newLinkchecktable.put(C_LINKCHECKTABLE_DATE, actDateString);
 
@@ -110,12 +111,37 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
                 // if the url is not readable add it to the list of not available urls
 			    if (!checkUrl(linkUrl)){
 				    // get the vector of resourcenames from the hashtable of urls
+                    Vector inList = null;
 				    inList = (Vector)notAvailable.get(linkUrl);
 				    if(inList == null){
 					    inList = new Vector();
                     }
 				    inList.addElement(linkName);
                     notAvailable.put(linkUrl, inList);
+                    
+                    // create the hashtable for the owner mails if requested
+                    if((parameter != null) && ("owneremail".equals(parameter.trim()))){
+                        // add the failed link to the links of the owner
+                        // first try to get the email
+                        String ownerEmail = null;
+                        try{
+                            CmsUser owner = cms.readUser(linkElement.getOwnerId());
+                            ownerEmail = owner.getEmail();
+                        } catch (Exception e){
+                        }
+
+                        if((ownerEmail == null) || ("".equals(ownerEmail.trim()))){
+                            ownerEmail = (String)emailValues.get("mailto");
+                        }
+                        Vector ownerLinks = null;
+                        ownerLinks = (Vector)ownerLinkList.get(ownerEmail);
+                        if(ownerLinks == null){
+                            ownerLinks = new Vector();
+                        }
+                        ownerLinks.addElement(linkName+", "+linkUrl);
+                        ownerLinkList.put(ownerEmail, ownerLinks);                  
+                    }
+                    
                     // add the failed link to the new linkchecktable
                     newLinkchecktable.put(linkName+", "+linkUrl, ""+(failedCheck+1));
                 }
@@ -126,36 +152,63 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
 
         // get the information for the output
         if((parameter != null) && (!"".equals(parameter.trim()))){
-            // if there are not readable urls create the content of the eMail
-            // and send it to the specified user(s)
-            if(notAvailable.size() > 0){
-                Enumeration linkKeys = notAvailable.keys();
-                StringBuffer mailUrls = new StringBuffer();
-                while (linkKeys.hasMoreElements()){
-                    String url = (String)linkKeys.nextElement();
-                    template.setData("url", url);
-                    Vector linknames = (Vector)notAvailable.get(url);
-                    StringBuffer mailLinks = new StringBuffer();
-                    for(int j=0; j < linknames.size(); j++){
-                        String nextLink = (String)linknames.elementAt(j);
-                        template.setData("linkname", nextLink);
-                        mailLinks.append(template.getProcessedDataValue("single_link"));
+            // send an email to the owner of the link
+            if("owneremail".equals(parameter.trim())){
+                // get the owners from the owner list
+                if(ownerLinkList.size() > 0){
+                    Enumeration ownerKeys = ownerLinkList.keys();
+                    while (ownerKeys.hasMoreElements()){
+                        StringBuffer ownerContent = new StringBuffer();
+                        ownerContent.append(mailContent.toString());
+                        String mailTo = (String)ownerKeys.nextElement();
+                        Vector linknames = (Vector)ownerLinkList.get(mailTo);
+                        // get all failed links of the owner
+                        for(int i=0; i < linknames.size(); i++){
+                            // set the data for the link
+                            template.setData("linkname", (String)linknames.elementAt(i));
+                            ownerContent.append(template.getProcessedDataValue("single_link"));
+                        }
+                        // get the email data
+                        String mailSubject = template.getProcessedDataValue("emailsubject");
+                        String mailFrom = (String)emailValues.get("mailfrom");
+                        String[] mailCc = getReceiverArray(template.getDataValue("emailcc"));
+                        String[] mailBcc = getReceiverArray(template.getDataValue("emailbcc"));
+                        String mailType = template.getDataValue("emailtype");
+                        generateEmail(mailFrom, getReceiverArray(mailTo), mailCc, mailBcc, mailSubject, ownerContent.toString(), mailType);
                     }
-                    template.setData("links", mailLinks.toString());
-                    mailUrls.append(template.getProcessedDataValue("single_url"));
                 }
-                mailContent.append(mailUrls.toString());
-                if("email".equals(parameter.trim())){
-                    // get the eMail information
-                    String mailSubject = template.getProcessedDataValue("emailsubject");
-                    String mailFrom = template.getDataValue("emailfrom");
-                    String[] mailTo = getReceiverArray(template.getDataValue("emailto"));
-                    String[] mailCc = getReceiverArray(template.getDataValue("emailcc"));
-                    String[] mailBcc = getReceiverArray(template.getDataValue("emailbcc"));
-                    String mailType = template.getDataValue("emailtype");
-                    generateEmail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent.toString(), mailType);
-                } else {
-                    generateFile(mailContent.toString(), parameter, actDate);
+            } else {
+                // if there are not readable urls create the content of the eMail
+                // and send it to the specified user(s)
+                if(notAvailable.size() > 0){
+                    Enumeration linkKeys = notAvailable.keys();
+                    StringBuffer mailUrls = new StringBuffer();
+                    while (linkKeys.hasMoreElements()){
+                        String url = (String)linkKeys.nextElement();
+                        template.setData("url", url);
+                        Vector linknames = (Vector)notAvailable.get(url);
+                        StringBuffer mailLinks = new StringBuffer();
+                        for(int j=0; j < linknames.size(); j++){
+                            String nextLink = (String)linknames.elementAt(j);
+                            template.setData("linkname", nextLink);
+                            mailLinks.append(template.getProcessedDataValue("single_link"));
+                        }
+                        template.setData("links", mailLinks.toString());
+                        mailUrls.append(template.getProcessedDataValue("single_url"));
+                    }
+                    mailContent.append(mailUrls.toString());
+                    if("email".equals(parameter.trim())){
+                        // get the eMail information
+                        String mailSubject = template.getProcessedDataValue("emailsubject");
+                        String mailFrom = (String)emailValues.get("mailfrom");
+                        String[] mailTo = getReceiverArray((String)emailValues.get("mailto"));
+                        String[] mailCc = getReceiverArray(template.getDataValue("emailcc"));
+                        String[] mailBcc = getReceiverArray(template.getDataValue("emailbcc"));
+                        String mailType = template.getDataValue("emailtype");
+                        generateEmail(mailFrom, mailTo, mailCc, mailBcc, mailSubject, mailContent.toString(), mailType);
+                    } else {
+                        generateFile(mailContent.toString(), parameter, actDate);
+                    }
                 }
             }
         }
@@ -311,5 +364,31 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsCronJob,I_CmsCo
             retArray = new String[] {};
         }
         return retArray;
+    }
+    
+    /**
+     * Returns the current date as formatted String
+     * 
+     * @param curDate The current date
+     * @return String The current date as String dd.mm.yyyy hh:min
+     */
+    private String getDateString(GregorianCalendar actDate){
+        String month = (actDate.get(GregorianCalendar.MONTH)+1)+"";
+        if(month.length() == 1){
+            month = "0"+month;
+        }
+        String day = (actDate.get(GregorianCalendar.DATE)+"");
+        if(day.length() == 1){
+            day = "0"+day;
+        }
+        String hour = actDate.get(GregorianCalendar.HOUR_OF_DAY)+"";
+        if(hour.length() == 1){
+            hour = "0"+hour;
+        }
+        String minute = actDate.get(GregorianCalendar.MINUTE)+"";
+        if(minute.length() == 1){
+            minute = "0"+minute;
+        }
+        return (day+"."+month+"."+actDate.get(GregorianCalendar.YEAR)+" "+hour+":"+minute);
     }
 }
