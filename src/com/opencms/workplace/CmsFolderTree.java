@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/03 10:08:49 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/07 10:42:48 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -118,6 +118,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             String foldername=null;
             String filelist=null;
             String currentFolder;
+            String oldFolder;
             String currentFilelist;
             String rootFolder;
             
@@ -147,13 +148,17 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             if (currentFilelist==null) {
                 currentFilelist=cms.getRequestContext().currentFolder().getAbsolutePath();
             }
-            
-    
+
             // get current and root folder
             rootFolder=cms.rootFolder().getAbsolutePath();
             
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
+            if (filelist!=null) {
+                template.setXmlData("PREVIOUS",filelist);
+            } else {
+                template.setXmlData("PREVIOUS",currentFilelist);  
+            }
             
             String tab=template.getProcessedXmlDataValue(C_TREEIMG_EMPTY0,this);
             showTree(cms,rootFolder,currentFolder,currentFilelist,template,output,tab);

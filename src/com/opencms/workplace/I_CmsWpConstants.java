@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/02/03 11:04:13 $
+ * @version $Revision: 1.22 $ $Date: 2000/02/07 10:42:48 $
  */
 public interface I_CmsWpConstants {
 
@@ -17,6 +17,12 @@ public interface I_CmsWpConstants {
    
     /** Parameter for filelist  */
     public static final String C_PARA_FILELIST="filelist";
+
+    /** Parameter for previous filelist  */
+    public static final String C_PARA_PREVIOUSLIST="previous";
+
+    /** Parameter for viewfile  */
+    public static final String C_PARA_VIEWFILE="viewfile";
     
     /** Parameter for view name */
     public static final String C_PARA_VIEW = "view";

@@ -14,7 +14,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/07 10:42:48 $
  */
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -58,17 +58,15 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
         // the template to be displayed
         String template="template";
         Hashtable preferences=new Hashtable();
-        
         // get user name and password
         String name=(String)parameters.get("NAME");
         String password=(String)parameters.get("PASSWORD");
-        
         // try to read this user
         if ((name != null) && (password != null)){
             try {
                 username=cms.loginUser(name,password);
             } catch (CmsException e) {
-                if (e.getType()==CmsException.C_NO_ACCESS) {
+              if (e.getType()==CmsException.C_NO_ACCESS) {
                     // there was an authentification error during login
                     // set user to null and switch to error template
                     username=null;     
@@ -95,14 +93,11 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,
                 session.putValue(C_ADDITIONAL_INFO_PREFERENCES,preferences);
             }
         }
-        
-        CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
-            
+       CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);          
         // this is the first time the dockument is selected, so reade the page forwarding
         if (username == null) {
             xmlTemplateDocument.clearStartup();
-        }
-        
+         }
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     
