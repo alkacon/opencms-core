@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsLoaderManager.java,v $
- * Date   : $Date: 2004/03/22 16:40:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2004/04/05 16:12:53 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * @since 5.1
  */
 public class CmsLoaderManager {
@@ -198,7 +198,7 @@ public class CmsLoaderManager {
      */
     public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource) throws CmsException {        
         String absolutePath = cms.readAbsolutePath(resource);        
-        String templateProp = cms.readProperty(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE);       
+        String templateProp = cms.readPropertyObject(absolutePath, I_CmsConstants.C_PROPERTY_TEMPLATE, false).getValue();       
 
         if (templateProp == null) {
             // no template property defined, this is a must for facade loaders

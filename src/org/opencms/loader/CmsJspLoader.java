@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/03/29 10:39:54 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2004/04/05 16:12:53 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -146,33 +146,6 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     public CmsJspLoader() {
 
         m_configuration = new ExtendedProperties();
-    }
-
-    /**
-     * Translates the JSP file name for a OpenCms VFS resourcn 
-     * to the name used in the "real" file system.<p>
-     * 
-     * The name given must be a absolute URI in the OpenCms VFS,
-     * e.g. CmsFile.getAbsolutePath()
-     *
-     * @param name The file to calculate the JSP name for
-     * @return The JSP name for the file
-     */
-    public static String getJspName(String name) {
-
-        return name + C_JSP_EXTENSION;
-    }
-
-    /**
-     * Returns the absolute path in the "real" file system for a given JSP.
-     *
-     * @param name The name of the JSP file 
-     * @param online Flag to check if this is request is online or not
-     * @return The full path to the JSP
-     */
-    public static String getJspPath(String name, boolean online) {
-
-        return m_jspRepository + (online ? "online" : "offline") + name;
     }
 
     /**
@@ -377,9 +350,10 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         boolean bypass = false;
 
         // read "stream" property from requested VFS resource                                     
-        String streamProperty = cms.readProperty(
+        String streamProperty = cms.readPropertyObject(
             cms.readAbsolutePath(file),
-            I_CmsResourceLoader.C_LOADER_STREAMPROPERTY);
+            I_CmsResourceLoader.C_LOADER_STREAMPROPERTY,
+            false).getValue();
         if (streamProperty != null) {
             if ("yes".equalsIgnoreCase(streamProperty) || "true".equalsIgnoreCase(streamProperty)) {
                 streaming = true;
@@ -545,12 +519,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param online Flag to check if this is request is online or not
      * @return The full uri to the JSP
      */
-    private String getJspUri(String name, boolean online) {
+    private String getJspUri(String repository, String name, boolean online) {
 
         StringBuffer result = new StringBuffer(64);
-        result.append(m_jspWebAppRepository);
+        result.append(repository);
         result.append(online ? "online" : "offline");
-        result.append(getJspName(name));
+        result.append(name);
         return result.toString();
     }
 
@@ -561,10 +535,11 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param encoding the encoding to use for the JSP
      * @param controller the controller for the JSP integration
      * @param includes a Set containing all JSP pages that have been already updated
+     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
      * @return the modified JSP content
      * @throws UnsupportedEncodingException
      */
-    private byte[] parseJsp(byte[] byteContent, String encoding, CmsFlexController controller, Set includes) {
+    private byte[] parseJsp(byte[] byteContent, String encoding, CmsFlexController controller, Set includes, boolean isHardInclude) {
 
         String content;
         // make sure encoding is set correctly
@@ -587,7 +562,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         // parse for included files in tags
         content = parseJspIncludes(content, controller, includes);     
         // parse for <%@page pageEncoding="..." %> tag
-        content = parseJspEncoding(content, encoding);       
+        content = parseJspEncoding(content, encoding, isHardInclude);       
         // convert the result to bytes and return it
         try {
             return content.getBytes(encoding);
@@ -696,9 +671,10 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * 
      * @param content the JSP content to parse
      * @param encoding the encoding to use for the JSP
+     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
      * @return the parsed JSP content
      */    
-    private String parseJspEncoding(String content, String encoding) {
+    private String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
         
         // check if a JSP directive occurs in the file
         int i1 = content.indexOf(C_DIRECTIVE_START);
@@ -777,8 +753,12 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             buf.append(content.substring(p0, content.length()));
             if (found) {
                 content = buf.toString();
-            } else {
-                // encoding setting was not found, add it to top of the page
+            } else if (! isHardInclude) {
+                // encoding setting was not found
+                // if this is not a "hard" include then add the encoding to the top of the page
+                // checking for the hard include is important to prevent errors with 
+                // multiple page encoding settings if a templete is composed from several hard included elements
+                // this is an issue in Tomcat 4.x but not 5.x
                 StringBuffer buf2 = new StringBuffer(buf.length() + 32);
                 buf2.append("<%@ page pageEncoding=\"");
                 buf2.append(encoding);
@@ -900,7 +880,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
      * @param resource the reqested JSP file resource in the VFS
      * @param controller the controller for the JSP integration
      * @param updates a Set containing all JSP pages that have been already updated
-     * @return The file name of the updated JSP in the "real" FS
+     * @return the file name of the updated JSP in the "real" FS
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
@@ -916,16 +896,29 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             cms.getRequestContext().setSiteRoot("");
 
             String jspVfsName = cms.readAbsolutePath(resource);
-            String jspTargetName = getJspName(jspVfsName);
-
-            // check for if page was already updated
+            String extension;
+            boolean isHardInclude;
+            if ((resource.getLoaderId() == CmsJspLoader.C_RESOURCE_LOADER_ID) 
+                && (! jspVfsName.endsWith(C_JSP_EXTENSION))) {
+                // this is a true JSP resource that does not end with ".jsp"
+                extension = C_JSP_EXTENSION;     
+                isHardInclude = false;
+            } else {
+                // not a JSP resource or already ends with ".jsp"
+                extension = "";
+                isHardInclude = true;
+            }            
+            
+            String jspTargetName = getJspUri(m_jspWebAppRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());
+            
+            // check if page was already updated
             if (updates.contains(jspTargetName)) {
                 // no need to write the already included file to the real FS more then once
-                return null;
+                return jspTargetName;
             }
             updates.add(jspTargetName);
 
-            String jspPath = getJspPath(jspTargetName, controller.getCurrentRequest().isOnline());
+            String jspPath = getJspUri(m_jspRepository, jspVfsName + extension, controller.getCurrentRequest().isOnline());
 
             File d = new File(jspPath).getParentFile();
             if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
@@ -954,23 +947,19 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                 mustUpdate = true;
             }
 
-            // calculate real FS name of the JSP
-            String jspRfsName = getJspUri(jspVfsName, controller.getCurrentRequest().isOnline());
-
             if (mustUpdate) {
                 if (OpenCms.getLog(this).isDebugEnabled()) {
-                    OpenCms.getLog(this).debug("JspLoader: Writing JSP file '" + jspRfsName + "'");
+                    OpenCms.getLog(this).debug("JspLoader: Writing JSP file '" + jspTargetName + "'");
                 }
                 byte[] contents;
                 String encoding;
                 try {
                     contents = CmsFile.upgrade(resource, cms).getContents();
                     // check the "content-encoding" property for the JSP
-                    encoding = cms.readProperty(
+                    encoding = cms.readPropertyObject(
                         jspVfsName,
                         I_CmsConstants.C_PROPERTY_CONTENT_ENCODING,
-                        false,
-                        C_DEFAULT_JSP_ENCODING);
+                        false).getValue(C_DEFAULT_JSP_ENCODING);
                     encoding = encoding.trim().toUpperCase();
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);
@@ -979,7 +968,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
                 try {
                     // parse the JSP and modify OpenCms critical directives
-                    contents = parseJsp(contents, encoding, controller, updates);
+                    contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
                     // write the parsed JSP content to the real FS
                     FileOutputStream fs = new FileOutputStream(f);
                     fs.write(contents);
@@ -989,7 +978,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                     if (OpenCms.getLog(this).isInfoEnabled()) {
                         OpenCms.getLog(this).info(
                             "Updated JSP file \""
-                                + jspRfsName
+                                + jspTargetName
                                 + "\" for resource \""
                                 + cms.readAbsolutePath(resource)
                                 + "\"");
@@ -1002,7 +991,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
             // update "last modified" date on controller
             controller.updateDateLastModified(f.lastModified());
 
-            return jspRfsName;
+            return jspTargetName;
         } finally {
             // restore the site root of the request context
             cms.getRequestContext().setSiteRoot(oldSiteRoot);
@@ -1030,10 +1019,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
         try {
             // make sure the jsp referenced file is generated
             CmsResource includeResource = controller.getCmsObject().readFileHeader(jspVfsName);
-            updateJsp(includeResource, controller, includes);
-            jspRfsName = getJspUri(
-                controller.getCmsObject().readAbsolutePath(includeResource), 
-                controller.getCurrentRequest().isOnline());
+            jspRfsName = updateJsp(includeResource, controller, includes);
             if (OpenCms.getLog(this).isDebugEnabled()) {
                 OpenCms.getLog(this).debug("JspLoader: Name of JSP in real FS is '" + jspRfsName + "'");
             }            
