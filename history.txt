@@ -10,6 +10,7 @@ Legend:
 
 OpenCms 4.3.43 Bela Tegeuse - ?? August 2001
 - Added missing system-images.
+- Switched off some debug log-channels.
 
 OpenCms 4.3.42 Bela Tegeuse - 02 August 2001
 - General bugfixing.
