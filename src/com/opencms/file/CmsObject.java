@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/20 11:44:58 $
-* Version: $Revision: 1.383 $
+* Date   : $Date: 2003/08/20 16:01:55 $
+* Version: $Revision: 1.384 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.383 $
+ * @version $Revision: 1.384 $
  */
 public class CmsObject {
 
@@ -2999,14 +2999,14 @@ public class CmsObject {
     }
 
     /**
-     * Reads the export-path of the system.
-     * This path is used for db-export and db-import.
+     * Reads the package path of the system.
+     * This path is used for db-export and db-import and all module packages.
      *
-     * @return the exportpath.
-     * @throws CmsException if operation was not successful.
+     * @return the package path
+     * @throws CmsException if operation was not successful
      */
-    public String readExportPath() throws CmsException {
-        return m_driverManager.readExportPath();
+    public String readPackagePath() throws CmsException {
+        return m_driverManager.readPackagePath();
     }
 
     /**
@@ -4131,16 +4131,15 @@ public class CmsObject {
     }
 
     /**
-     * Writes the export-path for the system.
-     * <br>
-     * This path is used for db-export and db-import.
+     * Writes the package for the system.<p>
+     * 
+     * This path is used for db-export and db-import as well as module packages.<p>
      *
-     * @param mountpoint the mount point in the Cms filesystem.
-     *
-     * @throws CmsException if operation ws not successful.
+     * @param path the package path
+     * @throws CmsException if operation ws not successful
      */
-    public void writeExportPath(String path) throws CmsException {
-        m_driverManager.writeExportPath(m_context, path);
+    public void writePackagePath(String path) throws CmsException {
+        m_driverManager.writePackagePath(m_context, path);
     }
 
     /**

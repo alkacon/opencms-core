@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/08/20 13:16:17 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2003/08/20 16:01:55 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.60 $ $Date: 2003/08/20 13:16:17 $
+ * @version $Revision: 1.61 $ $Date: 2003/08/20 16:01:55 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1039,7 +1039,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
      */
     public I_CmsSqlManager initQueries(String dbPoolUrl) {
         //return new org.opencms.db.generic.CmsSqlManager(dbPoolUrl);
-        return (I_CmsSqlManager) org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
+        return org.opencms.db.generic.CmsSqlManager.getInstance(dbPoolUrl);
     }
 
     /**

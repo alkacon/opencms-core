@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2003/08/19 16:04:17 $
-* Version: $Revision: 1.264 $
+* Date   : $Date: 2003/08/20 16:01:55 $
+* Version: $Revision: 1.265 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.264 $ $Date: 2003/08/19 16:04:17 $
+ * @version $Revision: 1.265 $ $Date: 2003/08/20 16:01:55 $
  */
 public interface I_CmsConstants {
 
@@ -458,7 +458,7 @@ public interface I_CmsConstants {
     /**
      * The name of the exportpath-systemproperty.
      */
-    String C_SYSTEMPROPERTY_EXPORTPATH = "EXPORTPATH";
+    String C_SYSTEMPROPERTY_PACKAGEPATH = "PACKAGEPATH";
 
     /**
      * The name of the mountpoint-systemproperty.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2003/08/20 16:01:55 $
+ * Version: $Revision: 1.173 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.172 $ $Date: 2003/08/20 11:44:58 $
+ * @version $Revision: 1.173 $ $Date: 2003/08/20 16:01:55 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -5226,18 +5226,16 @@ public class CmsDriverManager extends Object {
         }
     }
 
+
     /**
-     * Reads the export-m_path for the system.
-     * This m_path is used for db-export and db-import.
+     * Reads the package path of the system.
+     * This path is used for db-export and db-import and all module packages.
      *
-     * <B>Security:</B>
-     * All users are granted.<BR/>
-     *
-     * @param context the current request context
-     * @return the exportpath.
+     * @return the package path
+     * @throws CmsException if operation was not successful
      */
-    public String readExportPath() throws CmsException {
-        return (String) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXPORTPATH);
+    public String readPackagePath() throws CmsException {
+        return (String) m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH);
     }
 
     public CmsFile readFile(CmsRequestContext context, CmsUUID structureId, boolean includeDeleted) throws CmsException {
@@ -8004,30 +8002,28 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Writes the export-m_path for the system.
-     * This m_path is used for db-export and db-import.
+     * Writes the package for the system.<p>
+     * 
+     * This path is used for db-export and db-import as well as module packages.<p>
      *
-     * <B>Security:</B>
-     * Users, which are in the group "administrators" are granted.<BR/>
-     *
-     * @param context the current request context
-     * @param mountpoint The mount point in the Cms filesystem.
+     * @param path the package path
+     * @throws CmsException if operation ws not successful
      */
-    public void writeExportPath(CmsRequestContext context, String path) throws CmsException {
+    public void writePackagePath(CmsRequestContext context, String path) throws CmsException {
         // check the security
         if (isAdmin(context)) {
 
             // security is ok - write the exportpath.
-            if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXPORTPATH) == null) {
+            if (m_projectDriver.readSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH) == null) {
                 // the property wasn't set before.
-                m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXPORTPATH, path);
+                m_projectDriver.addSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
             } else {
                 // overwrite the property.
-                m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_EXPORTPATH, path);
+                m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_PACKAGEPATH, path);
             }
 
         } else {
-            throw new CmsSecurityException("[" + this.getClass().getName() + "] writeExportPath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
+            throw new CmsSecurityException("[" + this.getClass().getName() + "] writePackagePath()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);            
         }
     }
 

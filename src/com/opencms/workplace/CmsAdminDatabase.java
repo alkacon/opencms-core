@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.38 $
+* Date   : $Date: 2003/08/20 16:01:56 $
+* Version: $Revision: 1.39 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatabase extends CmsWorkplaceDefault {
@@ -91,16 +91,16 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         }
         filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
         // first create the folder if it doesnt exists
-        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/");
+        File discFolder = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/");
         if(!discFolder.exists()) {
             boolean success = discFolder.mkdir();
             if(OpenCms.isLogging(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO) && (!success)) {
-                OpenCms.log(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"+ ".");
+                OpenCms.log(com.opencms.boot.I_CmsLogChannels.C_OPENCMS_INFO, "[CmsExportPointDriver] Couldn't create folder " + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/"+ ".");
             }
         }
 
         // now write the file into the modules dierectory in the exportpaht
-        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath()) + "/"  + filename);
+        File discFile = new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath()) + "/"  + filename);
         try {
 
             // write the new file to disk
@@ -244,7 +244,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 }
                 // start the thread for: export
                 A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
-                    CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + fileName, 
+                    CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
                     exportPaths, excludeSystem, excludeUnchanged, exportUserdata, contentAge);
                     
                 doExport.start();
@@ -276,7 +276,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 
                 // start the thread for: exportmodules
                 A_CmsReportThread doExport = new CmsAdminDatabaseExportThread(cms, 
-                    CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + fileName, 
+                    CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + fileName, 
                     exportChannels, exportModules);
                             
                 doExport.start();
@@ -297,7 +297,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
                 if ("go".equals(step) ){
                     // start the thread for: import
                     A_CmsReportThread doImport = new CmsAdminDatabaseImportThread(cms, 
-                        CmsBase.getAbsolutePath(cms.readExportPath()) + File.separator + existingFile);
+                        CmsBase.getAbsolutePath(cms.readPackagePath()) + File.separator + existingFile);
                         
                     doImport.start();
                     session.putValue(C_DATABASE_THREAD, doImport);
@@ -341,7 +341,7 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
         Hashtable parameters 
     ) throws CmsException {
         // get the systems-exportpath
-        String exportpath = cms.readExportPath();
+        String exportpath = cms.readPackagePath();
         exportpath = CmsBase.getAbsolutePath(exportpath);
         File folder = new File(exportpath);
         if (!folder.exists()) {

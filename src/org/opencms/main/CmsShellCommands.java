@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/08/20 11:44:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2003/08/20 16:01:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
 
+import com.opencms.boot.CmsBase;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -72,7 +73,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $ $Date: 2003/08/20 11:44:58 $ 
+ * @version $Revision: 1.5 $ $Date: 2003/08/20 16:01:56 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -1851,7 +1852,14 @@ class CmsShellCommands {
      */
     public void importModuleFromDefault(String importFile) {
         // build the complete filename
-        String fileName = com.opencms.boot.CmsBase.getAbsolutePath("export/") + I_CmsRegistry.C_MODULE_PATH + importFile;
+        String exportPath = null;
+        try {
+            exportPath = m_cms.readPackagePath();
+        } catch (CmsException e) {
+            CmsShell.printException(e);
+            return;
+        }
+        String fileName = CmsBase.getAbsolutePath(exportPath) + I_CmsRegistry.C_MODULE_PATH + importFile;
         System.out.println("Importing module: " + fileName);
         // import the module
         try {
@@ -2268,7 +2276,7 @@ class CmsShellCommands {
      */
     public void readExportPath() {
         try {
-            System.out.println(m_cms.readExportPath());
+            System.out.println(m_cms.readPackagePath());
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }
@@ -3338,7 +3346,7 @@ class CmsShellCommands {
      */
     public void writeExportPath(String path) {
         try {
-            m_cms.writeExportPath(path);
+            m_cms.writePackagePath(path);
         } catch (Exception exc) {
             CmsShell.printException(exc);
         }

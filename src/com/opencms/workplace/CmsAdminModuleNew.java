@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2003/08/14 15:37:24 $
-* Version: $Revision: 1.24 $
+* Date   : $Date: 2003/08/20 16:01:56 $
+* Version: $Revision: 1.25 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -121,7 +121,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
         } else if ("server".equals(step)) {
             File modulefolder =
                 new File(
-                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
                         + I_CmsRegistry.C_MODULE_PATH);
             if (!modulefolder.exists()) {
@@ -131,7 +131,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                     OpenCms.log(
                         I_CmsLogChannels.C_OPENCMS_INFO,
                         "[CmsExportPointDriver] Couldn't create folder "
-                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
                             + I_CmsRegistry.C_MODULE_PATH
                             + ".");
@@ -176,7 +176,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             // first create the folder if it doesnt exists
             File discFolder =
                 new File(
-                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
                         + I_CmsRegistry.C_MODULE_PATH);
             if (!discFolder.exists()) {
@@ -185,7 +185,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                     && (!success)) {
                     OpenCms.log(I_CmsLogChannels.C_OPENCMS_INFO,
                         "[CmsExportPointDriver] Couldn't create folder "
-                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                            + com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
                             + I_CmsRegistry.C_MODULE_PATH
                             + ".");
@@ -194,7 +194,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
-                new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                new File(com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                     + "/" + I_CmsRegistry.C_MODULE_PATH + filename);
             try {
 
@@ -208,7 +208,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             session.removeValue(C_MODULE_NAV);
             templateSelector = 
                 importModule(cms, reg, xmlTemplateDocument, session,
-                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                    com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                         + "/"
                         + I_CmsRegistry.C_MODULE_PATH
                         + filename);
@@ -221,7 +221,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             } else {
                 templateSelector = 
                     importModule(cms, reg, xmlTemplateDocument, session,
-                        com.opencms.boot.CmsBase.getAbsolutePath(cms.readExportPath())
+                        com.opencms.boot.CmsBase.getAbsolutePath(cms.readPackagePath())
                             + "/"
                             + I_CmsRegistry.C_MODULE_PATH
                             + filename);
