@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
- * Date   : $Date: 2000/02/17 15:48:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/02/18 17:48:27 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.5 $ $Date: 2000/02/17 15:48:49 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/18 17:48:27 $
  */
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -83,7 +83,19 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
         if (newFile == null) {
             session.putValue("name",file.getName());
         } else {
-             cms.renameFile(file.getAbsolutePath(),newFile);
+             if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
+				String bodyPath = getBodyPath(cms, file);
+				int help = C_CONTENTBODYPATH.lastIndexOf("/");
+				String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
+				if (hbodyPath.equals(bodyPath)){
+					cms.renameFile(bodyPath, newFile);
+					help=bodyPath.lastIndexOf("/")+1;
+					hbodyPath = bodyPath.substring(0,help)+newFile;
+					changeContent(cms, file, hbodyPath);
+				}
+			 }
+			
+	 		 cms.renameFile(file.getAbsolutePath(),newFile);
 			 session.removeValue(C_PARA_FILE);
 			 session.removeValue(C_PARA_NAME);
              try {
@@ -120,5 +132,35 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,
       
       return name;
     }
+	
+	/**
+	 * method to check get the real body path from the content file
+	 * 
+	 * @param cms The CmsObject, to access the XML read file.
+	 * @param file File in which the body path is stored.
+	 */
+	private String getBodyPath(A_CmsObject cms, CmsFile file)
+		throws CmsException{
+		file=cms.readFile(file.getAbsolutePath());
+		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		return hXml.getElementTemplate("body");
+	}
+	
+	  /**
+       * This method changes the path of the body file in the xml conten file
+       * if file type name is page
+       * 
+       * @param cms The CmsObject
+       * @param file The XML content file
+       * @param bodypath the new XML content entry
+       * @exception Exception if something goes wrong.
+       */
+	  private void changeContent(A_CmsObject cms, CmsFile file, String bodypath)
+		  throws CmsException {
+		  file=cms.readFile(file.getAbsolutePath());
+		  CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+		  hXml.setElementTemplate("body", bodypath);
+		  hXml.write();
+	  }
 
 }

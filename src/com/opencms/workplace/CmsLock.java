@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLock.java,v $
- * Date   : $Date: 2000/02/18 13:00:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/02/18 17:48:27 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.7 $ $Date: 2000/02/18 13:00:38 $
+ * @version $Revision: 1.8 $ $Date: 2000/02/18 17:48:27 $
  */
 public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -79,7 +79,6 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         filename=(String)session.getValue(C_PARA_FILE);
 		CmsFile file=(CmsFile)cms.readFileHeader(filename);
 		boolean hlock=true;
-		System.err.println("1."+hlock);
 		
         if (lock != null) {
             if (lock.equals("true")) {
@@ -97,11 +96,8 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 					}
 				}
 				
-				System.err.println("2."+hlock);
-				
 				session.removeValue(C_PARA_FILE);
 				if(hlock){
-					System.err.println(hlock);
 					cms.lockResource(filename);
 				    // TODO: ErrorHandling
 				    // return to filelist
@@ -111,7 +107,6 @@ public class CmsLock extends CmsWorkplaceDefault implements I_CmsWpConstants,
 						throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
 					}
 				}else{
-					System.err.println(hlock);
 					template="error";
 				}
             }
