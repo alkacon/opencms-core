@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
-* Date   : $Date: 2002/10/09 14:42:34 $
-* Version: $Revision: 1.185 $
+* Date   : $Date: 2002/10/17 14:31:03 $
+* Version: $Revision: 1.186 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * police.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.185 $ $Date: 2002/10/09 14:42:34 $
+ * @version $Revision: 1.186 $ $Date: 2002/10/17 14:31:03 $
  *
  */
 
@@ -586,6 +586,48 @@ public interface I_CmsResourceBroker {
                                   CmsProject currentProject,
                                   String folder, String newFolderName,
                                   Hashtable propertyinfos)
+        throws CmsException;
+
+    /**
+     * Creates a new resource.
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can write the resource</li>
+     * <li>the resource is not locked by another user</li>
+     * </ul>
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentGroup The group who requested this method.
+     * @param currentProject The current project of the user.
+     * @param folder The complete path to the folder in which the new resource will
+     * be created.
+     * @param newResourceName The name of the new resource (No pathinformation allowed).
+     * @param resourceType The resourcetype of the new resource
+     * @param propertyinfos A Hashtable of propertyinfos, that should be set for this folder.
+     * The keys for this Hashtable are the names for propertydefinitions, the values are
+     * the values for the propertyinfos.
+     * @param launcherType The launcher type of the new resource
+     * @param launcherClassname The name of the launcherclass of the new resource
+     * @param ownername The name of the owner of the new resource
+     * @param groupname The name of the group of the new resource
+     * @param accessFlags The accessFlags of the new resource
+     * @param filecontent The content of the resource if it is of type file 
+     * 
+     * @return CmsResource The created resource.
+     *
+     * @exception CmsException will be thrown for missing propertyinfos, for worng propertydefs
+     * or if the filename is not valid. The CmsException will also be thrown, if the
+     * user has not the rights for this resource.
+     */
+    public CmsResource createResource(CmsUser currentUser, CmsProject currentProject,
+                                       String folder, String newResourceName,
+                                       int resourceType, Hashtable propertyinfos, int launcherType,
+                                       String launcherClassname,
+                                       String ownername, String groupname, int accessFlags,
+                                       byte[] filecontent)
         throws CmsException;
 /**
  * Creates a project.
@@ -3408,6 +3450,42 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
     public void writeFile(CmsUser currentUser, CmsProject currentProject,
                           CmsFile file)
         throws CmsException ;
+        
+     /**
+     * Writes a resource and its properties to the Cms.<br>
+     *
+     * A resource can only be written to an offline project.<br>
+     * The state of the resource is set to  CHANGED (1). The file content of the file
+     * is either updated (if it is already existing in the offline project), or created
+     * in the offline project (if it is not available there).<br>
+     *
+     * <B>Security:</B>
+     * Access is granted, if:
+     * <ul>
+     * <li>the user has access to the project</li>
+     * <li>the user can write the resource</li>
+     * <li>the resource is locked by the callingUser</li>
+     * <li>the user is the owner of the resource or administrator<li>
+     * </ul>
+     *
+     * @param currentUser The current user.
+     * @param currentProject The project in which the resource will be used.
+     * @param resourcename The name of the resource to write.
+     * @param properties The properties of the resource.
+     * @param username The name of the new owner of the resource
+     * @param groupname The name of the new group of the resource
+     * @param accessFlags The new accessFlags of the resource
+     * @param resourceType The new type of the resource
+     * @param filecontent The new filecontent of the resource
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public void writeResource(CmsUser currentUser, CmsProject currentProject,
+                               String resourcename, Hashtable properties,
+                               String username, String groupname, int accessFlags,
+                               int resourceType, byte[] filecontent)
+        throws CmsException;
+        
     /**
      * Writes the file extensions
      *

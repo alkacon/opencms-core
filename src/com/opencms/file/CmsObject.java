@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2002/10/09 14:43:42 $
-* Version: $Revision: 1.241 $
+* Date   : $Date: 2002/10/17 14:31:13 $
+* Version: $Revision: 1.242 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.opencms.report.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.241 $ $Date: 2002/10/09 14:43:42 $
+ * @version $Revision: 1.242 $ $Date: 2002/10/17 14:31:13 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -992,6 +992,59 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtabl
     return cmsFolder;
 }
 
+	/**
+	 * Creates a new resource.
+	 *
+	 * @param folder the complete path to the folder in which the new resource will
+	 * be created.
+	 * @param newResourceName the name of the new resource.
+     * @param resourceType The resourcetype of the new resource
+     * @param properties A Hashtable of propertyinfos, that should be set for this folder.
+     * The keys for this Hashtable are the names for propertydefinitions, the values are
+     * the values for the propertyinfos.
+     * @param launcherType The launcher type of the new resource
+     * @param launcherClassname The name of the launcherclass of the new resource
+     * @param ownername The name of the owner of the new resource
+     * @param groupname The name of the group of the new resource
+     * @param accessFlags The accessFlags of the new resource
+     * @param filecontent The content of the resource if it is of type file 
+	 *
+	 * @return a <code>CmsFolder</code> object representing the newly created folder.
+	 * @exception CmsException if the resourcename is not valid, or if the user has not the appropriate rights to create
+	 * a new resource.
+	 *
+	 */
+	protected CmsResource doCreateResource(String folder, String newResourceName, int resourceType, Hashtable properties, int launcherType,
+                                        String launcherClassname, String ownername, String groupname, int accessFlags, byte[] filecontent) throws CmsException {
+    	CmsResource cmsResource = m_rb.createResource(m_context.currentUser(), m_context.currentProject(),
+                                            getSiteRoot(folder), newResourceName, resourceType, properties, launcherType,
+                                            launcherClassname, ownername, groupname, accessFlags, filecontent);
+
+	    return cmsResource;
+	}
+
+
+     /**
+     * Writes a resource and its properties to the Cms.<br>
+     *
+     * @param resourcename The name of the resource to write.
+     * @param properties The properties of the resource.
+     * @param username The name of the new owner of the resource
+     * @param groupname The name of the new group of the resource
+     * @param accessFlags The new accessFlags of the resource
+     * @param resourceType The new type of the resource
+     * @param filecontent The new filecontent of the resource
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    protected void doWriteResource(String resourcename, Hashtable properties,
+                               String username, String groupname, int accessFlags,
+                               int resourceType, byte[] filecontent)
+        throws CmsException{
+        m_rb.writeResource(m_context.currentUser(), m_context.currentProject(), getSiteRoot(resourcename),
+                           properties, username, groupname, accessFlags, resourceType,
+                           filecontent);
+    }
 /**
   * Creates a new project for task handling.
   *
@@ -3771,6 +3824,7 @@ public void writeFileExtensions(Hashtable extensions) throws CmsException {
 public void writeFileHeader(CmsFile file) throws CmsException {
     m_rb.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
 }
+    
 /**
  * Writes an already existing group to the Cms.
  *
