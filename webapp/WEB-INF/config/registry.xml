@@ -93,7 +93,7 @@
             </documenttype>
             <documenttype>
                 <name>page</name>
-                <class>org.opencms.search.documents.CmsPageDocument</class>
+                <class>com.opencms.legacy.CmsPageDocument</class>
                 <resourcetype>org.opencms.file.CmsResourceTypePage</resourcetype>
                 <mimetype>text/html</mimetype>
             </documenttype>
