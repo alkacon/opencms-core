@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplateFile.java,v $
-* Date   : $Date: 2001/09/12 08:10:05 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2001/11/21 15:29:33 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package com.opencms.template;
 import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.template.cache.*;
+import com.opencms.util.*;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import java.util.*;
@@ -41,9 +42,12 @@ import java.io.*;
  * Content definition for XML template files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.47 $ $Date: 2001/09/12 08:10:05 $
+ * @version $Revision: 1.48 $ $Date: 2001/11/21 15:29:33 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
+
+    /** Name of the tag for the editable templates */
+    public static final String C_EDIT_TEMPLATE = "edittemplate";
 
     /**
      * Default constructor.
@@ -92,6 +96,10 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         Element newData = getXmlDocument().createElement("template");
         newData.setAttribute("name", tempName);
         setData("template." + tempName, newData);
+        // and now create the section for the editor
+        Element newEditData = getXmlDocument().createElement(C_EDIT_TEMPLATE);
+        newEditData.setAttribute("name", tempName);
+        setData(C_EDIT_TEMPLATE + "."+ tempName, newEditData);
         return loop;
     }
     public Vector getAllSections() throws CmsException {
@@ -179,7 +187,16 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
     public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector, boolean html, String style) throws CmsException {
         Vector cdatas = new Vector();
-        String datablockName = this.getTemplateDatablockName(templateSelector);
+        String editDatablockName = this.getEditTemplateDatablockName(templateSelector);
+        String datablockName = null;
+        String testValue = getDataValue(editDatablockName);
+        // if the editDatablock is empty (or not there) this seems to be an old template,
+        // so we use the original file
+        if(testValue == null || "".equals(testValue)){
+            datablockName = this.getTemplateDatablockName(templateSelector);
+        }else{
+            datablockName = editDatablockName;
+        }
         Element data = getData(datablockName);
         StringBuffer result = new StringBuffer();
         if(style == null) {
@@ -193,7 +210,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         data = (Element)getXmlParser().importNode(tempDoc, data);
         rootElem.appendChild(data);
         if(html) {
-
             // Scan for cdatas
             Node n = data;
             while(n != null) {
@@ -214,8 +230,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         int startClosingBodyTag = xmlString.lastIndexOf("<", startClosingDocTag - 1);
         if(startClosingBodyTag <= endOpeningBodyTag) {
             xmlString = "";
-        }
-        else {
+        }else {
             xmlString = xmlString.substring(endOpeningBodyTag, startClosingBodyTag);
             xmlString = xmlString.trim();
         }
@@ -234,7 +249,6 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             while(cdataStart != -1) {
                 String tempString = xmlString.substring(currentPos, cdataStart);
                 tempString = replaceBack(tempString);
-
                 //result.append(xmlString.substring(currentPos, cdataStart).replace('<', '[').replace('>', ']'));
                 result.append(tempString);
                 result.append((String)cdatas.elementAt(loop++));
@@ -243,18 +257,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             }
             String tempString = xmlString.substring(currentPos);
             tempString = replaceBack(tempString);
-
             //result.append(xmlString.substring(currentPos).replace('<', '[').replace('>', ']'));
             result.append(tempString);
             result.append("\n</BODY>\n</HTML>");
             xmlString = result.toString();
-        }
-        else {
-
+        }else {
             // We are in text mode.
-
             // Check, if there is any content in this body.
-
             // Otherwise, set empty CDATA blocks.
             if(xmlString.trim().equals("")) {
                 xmlString = "<![CDATA[\n]]>";
@@ -659,8 +668,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         if(templateSelector != null && !"".equals(templateSelector)) {
             if(hasData("template." + templateSelector)) {
                 templateDatablockName = "template." + templateSelector;
-            }
-            else {
+            }else {
                 if((I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) && (!"script".equals(templateSelector))) {
                     A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ". Fallback to default section.");
                 }
@@ -669,18 +677,54 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         if(templateDatablockName == null && (!"script".equals(templateSelector))) {
             if(hasData("TEMPLATE")) {
                 templateDatablockName = "TEMPLATE";
-            }
-            else {
+            }else {
                 if(hasData("TEMPLATE.default")) {
                     templateDatablockName = "TEMPLATE.default";
-                }
-                else {
+                }else {
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "template definition file " + getAbsoluteFilename() + " is corrupt. cannot find default section.");
                     }
                     throw new CmsException("Corrupt template file " + getAbsoluteFilename() + ". Cannot find default section.", CmsException.C_XML_TAG_MISSING);
                 }
             }
+        }
+        return templateDatablockName;
+    }
+
+    /**
+     * Utility method to get the correct edit-datablock name for a given selector.<BR>
+     * If no selector is given or the selected section is not found, the template section
+     * with no name will be returned. If even this is not found the section named "default"
+     * will be returned.
+     *
+     * @param templateSelector Name of the template section or null if the default section is requested.
+     * @return Appropriate name of the template datablock.
+     * @exception CmsException
+     */
+    private String getEditTemplateDatablockName(String templateSelector) throws CmsException {
+        String templateDatablockName = null;
+        if(templateSelector != null && !"".equals(templateSelector)) {
+            if(hasData(C_EDIT_TEMPLATE + "." + templateSelector)) {
+                templateDatablockName = C_EDIT_TEMPLATE + "." + templateSelector;
+            }else {
+                if((I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) && (!"script".equals(templateSelector))) {
+                    A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "cannot load selected template file section " + templateSelector + " in template file " + getFilename() + ". Fallback to default section.");
+                }
+            }
+        }
+        if(templateDatablockName == null && (!"script".equals(templateSelector))) {
+            if(hasData(C_EDIT_TEMPLATE)) {
+                templateDatablockName = C_EDIT_TEMPLATE;
+            }else {
+                if(hasData(C_EDIT_TEMPLATE + ".default")) {
+                    templateDatablockName = C_EDIT_TEMPLATE + ".default";
+                }else{
+                    // no default section. file seems to be an old one without the edittemplate section
+                    // so create it.
+                    setData(C_EDIT_TEMPLATE , (String)null);
+                    templateDatablockName = C_EDIT_TEMPLATE;
+                }
+           }
         }
         return templateDatablockName;
     }
@@ -827,11 +871,18 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
             newData.setAttribute("name", newName);
             setData("template." + newName, newData);
             removeData("template." + oldName);
-        }
-        else {
+            // now for the editor copy
+            if(hasData(C_EDIT_TEMPLATE +"."+oldName)){
+                Element newEditData = (Element)getData(C_EDIT_TEMPLATE +"."+oldName).cloneNode(true);
+                newEditData.setAttribute("name", newName);
+                setData(C_EDIT_TEMPLATE +"."+newName, newEditData);
+                removeData(C_EDIT_TEMPLATE +"."+oldName);
+            }
+        }else {
             throw new CmsException("Section already exists: " + newName, CmsException.C_BAD_NAME);
         }
     }
+    /* parameters search and replace are ignored.*/
     private String replace(String s, String search, String replace) {
         StringBuffer tempContent = new StringBuffer();
 
@@ -888,9 +939,9 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         super.setData(tag, data);
     }
     public void setEditedTemplateContent(String content, String templateSelector, boolean html) throws CmsException {
-        String datablockName = this.getTemplateDatablockName(templateSelector);
-
-        // TODO:is this needed? Element data = getData(datablockName);
+        //first the original only used by the editor
+        String editDatablockName = getEditTemplateDatablockName(templateSelector);
+        String copyOfContent = content;
         if(html) {
             int startIndex = content.indexOf("<BODY");
             startIndex = content.indexOf(">", startIndex + 1) + 1;
@@ -902,30 +953,73 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         StringBuffer tempXmlString = new StringBuffer();
         tempXmlString.append("<?xml version=\"1.0\"?>\n");
         tempXmlString.append("<" + getXmlDocumentTagName() + ">");
-        tempXmlString.append("<template>\n");
+        tempXmlString.append("<"+C_EDIT_TEMPLATE +">\n");
         if(html) {
             tempXmlString.append("<![CDATA[");
             content = replace(content, "[", "]]><");
             tempXmlString.append(content.trim());
             tempXmlString.append("]]>");
-        }
-        else {
+        }else {
             tempXmlString.append(content);
         }
-        tempXmlString.append("</template>\n");
+        tempXmlString.append("</"+C_EDIT_TEMPLATE +">\n");
         tempXmlString.append("</" + getXmlDocumentTagName() + ">\n");
         I_CmsXmlParser parser = getXmlParser();
         StringReader parserReader = new StringReader(tempXmlString.toString());
         Document tempDoc = null;
         try {
             tempDoc = parser.parse(parserReader);
+        }catch(Exception e) {
+            throwException("PARSING ERROR!", CmsException.C_XML_PARSING_ERROR);
+        }
+        Element templateNode = (Element)tempDoc.getDocumentElement().getFirstChild();
+        setData(editDatablockName, templateNode);
+
+        // now the parsed content for the templatemechanism
+        String datablockName = this.getTemplateDatablockName(templateSelector);
+        String parsedContent = null;
+        if(!html){
+            // we have to prepare the content for the tidy
+            copyOfContent = "<HTML><HEAD></HEAD><body>" + copyOfContent.substring(9, copyOfContent.lastIndexOf("]]>")) + "</body></HTML>";
+        }else{
+            copyOfContent = replace(copyOfContent, "", "");
+        }
+        // now we have something for the tidy
+        try{
+            LinkSubstitution sub = new LinkSubstitution();
+            copyOfContent = sub.substituteEditorContent(copyOfContent);
+        }catch(CmsException e){
+            throw new CmsException("["+this.getClass().getName()+"] cant parse the content:", e);
+        }
+        int startIndex = copyOfContent.indexOf("<body");
+        startIndex = copyOfContent.indexOf(">", startIndex + 1) + 1;
+        int endIndex = copyOfContent.lastIndexOf("</body>");
+        if(startIndex > 0) {
+            copyOfContent = copyOfContent.substring(startIndex, endIndex);
+        }
+        tempXmlString = new StringBuffer();
+        tempXmlString.append("<?xml version=\"1.0\"?>\n");
+        tempXmlString.append("<" + getXmlDocumentTagName() + ">");
+        tempXmlString.append("<template>\n");
+        tempXmlString.append("<![CDATA[");
+        tempXmlString.append(copyOfContent.trim());
+        tempXmlString.append("]]>");
+        tempXmlString.append("</template>\n");
+        tempXmlString.append("</" + getXmlDocumentTagName() + ">\n");
+        I_CmsXmlParser parser2 = getXmlParser();
+        StringReader parserReader2 = new StringReader(tempXmlString.toString());
+        Document tempDoc2 = null;
+        try {
+            tempDoc2 = parser2.parse(parserReader2);
         }
         catch(Exception e) {
             throwException("PARSING ERROR!", CmsException.C_XML_PARSING_ERROR);
         }
-        Element templateNode = (Element)tempDoc.getDocumentElement().getFirstChild();
-        setData(datablockName, templateNode);
+        Element templateNode2 = (Element)tempDoc2.getDocumentElement().getFirstChild();
+        setData(datablockName, templateNode2);
+
     }
+
     public void setSectionTitle(String sectionName, String title) throws CmsException {
         String datablockName = getTemplateDatablockName(sectionName);
         Element data = null;

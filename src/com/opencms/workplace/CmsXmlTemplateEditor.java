@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.54 $
+* Date   : $Date: 2001/11/21 15:29:33 $
+* Version: $Revision: 1.55 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.54 $ $Date: 2001/10/12 07:46:09 $
+ * @version $Revision: 1.55 $ $Date: 2001/11/21 15:29:33 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -321,8 +321,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             int browserId;
             if(browser.indexOf("MSIE") > -1) {
                 browserId = 0;
-            }
-            else {
+            }else {
                 browserId = 1;
             }
 
@@ -383,11 +382,9 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
             Vector allBodys = bodyTemplateFile.getAllSections();
             if(allBodys == null || allBodys.size() == 0) {
                 body = "";
-            }
-            else {
+            }else {
                 body = (String)allBodys.elementAt(0);
             }
-
             // bodytitle = bodyTemplateFile.getSectionTitle(body);
             bodytitle = body.equals("(default)") ? "" : body;
             temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
@@ -401,25 +398,20 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 if(style != null && !"".equals(style)) {
                     style = hostName + style;
                 }
-            }
-            catch(Exception e) {
+            }catch(Exception e) {
                 style = "";
             }
             session.putValue("te_stylesheet", style);
-        }
-        else {
+        }else {
             // There exists a content parameter.
-
             // We have to check all possible changes requested by the user.
             if(titlechangeRequested) {
-
                 // The user entered a new document title
                 try {
                     cms.getRequestContext().setCurrentProject(tempProject);
                     cms.writeProperty(tempPageFilename, C_PROPERTY_TITLE, title);
                     cms.getRequestContext().setCurrentProject(curProject);
-                }
-                catch(CmsException e) {
+                }catch(CmsException e) {
                     cms.getRequestContext().setCurrentProject(curProject);
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_INFO, getClassName()
@@ -429,24 +421,20 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 }
             }
             if(templatechangeRequested) {
-
                 // The user requested a change of the layout template
                 temporaryControlFile.setMasterTemplate(layoutTemplatFilenameRelative );
-
                 //temporaryControlFile.write();
                 try {
                     style = getStylesheet(cms, null, layoutTemplateFile, null);
                     if(style != null && !"".equals(style)) {
                         style = hostName + style;
                     }
-                }
-                catch(Exception e) {
+                }catch(Exception e) {
                     style = "";
                 }
                 session.putValue("te_stylesheet", style);
             }
             if(bodytitlechangeRequested) {
-
                 // The user entered a new title for the current body
                 //bodyTemplateFile.setSectionTitle(oldBody, bodytitle);
                 if((!oldBody.equals("(default)")) && (!oldBody.equals("script"))) {
@@ -459,8 +447,7 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                         if(!bodychangeRequested) {
                             body = bodytitle;
                         }
-                    }
-                    catch(Exception e) {
+                    }catch(Exception e) {
                         bodytitle = oldBodytitle;
                     }
                     if(bodytitle.equals("script")) {
@@ -468,29 +455,23 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                         editor = C_SELECTBOX_EDITORVIEWS[1];
                         parameters.put("editor", editor);
                     }
-                }
-                else {
+                }else {
                     bodytitle = oldBodytitle;
                 }
             }
             if(bodychangeRequested) {
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
-
                 //temporaryControlFile.write();
                 ////bodytitle = bodyTemplateFile.getSectionTitle(body);
                 bodytitle = body.equals("(default)") ? "" : body;
                 if(body.equals("script")) {
-
                     // User wants to edit javascript code
-
                     // Select text editor
                     session.putValue("te_pageeditor", editor);
                     editor = C_SELECTBOX_EDITORVIEWS[1];
                     parameters.put("editor", editor);
-                }
-                else {
+                }else {
                     if(oldBody.equals("script")) {
-
                         // User wants to switch back from javascript mode
                         // Select old editor
                         editor = (String)session.getValue("te_pageeditor");
@@ -503,20 +484,16 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
                 bodytitle = body;
                 temporaryControlFile.setElementTemplSelector(C_BODY_ELEMENT, body);
                 temporaryControlFile.setElementTemplate(C_BODY_ELEMENT, tempBodyFilename);
-
             //temporaryControlFile.write();
             //bodyTemplateFile.write();
             }
-
             // save file contents to our temporary file.
             content = encoder.unescape(content);
-
             // TODO: Set correct error page here
             //try {
             if((!exitRequested) || saveRequested) {
                 bodyTemplateFile.setEditedTemplateContent(content, oldBody, oldEdit.equals(C_SELECTBOX_EDITORVIEWS[0]));
             }
-
             /*} catch(CmsException e) {
             if(e.getType() == e.C_XML_PARSING_ERROR) {
             CmsXmlWpTemplateFile errorTemplate = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, elementName, parameters, "parseerror");

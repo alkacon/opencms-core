@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2001/11/15 15:43:58 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2001/11/21 15:29:33 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import com.opencms.launcher.*;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.50 $ $Date: 2001/11/15 15:43:58 $
+ * @version $Revision: 1.51 $ $Date: 2001/11/21 15:29:33 $
  */
 public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannels {
 
@@ -842,7 +842,9 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
      */
     private Object handleLinkTag(Element n, Object callingObject, Object userObj) throws CmsException {
         // get the string and call the getLinkSubstitution method
-        String link = getTagValue(n);
+        Element dBlock = (Element)n.cloneNode(true);
+        processNode(dBlock, m_mainProcessTags, null, callingObject, userObj, null);
+        String link = getTagValue(dBlock);
         return m_cms.getLinkSubstitution(link);
     }
 
@@ -1005,7 +1007,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     public void init(CmsObject cms, String filename) throws CmsException {
 
         if(!filename.startsWith("/")) {
-            throw new CmsException("--Intruder Alert: A relative path has entered the A_CmsXmlContent class. ");
+            throw new CmsException("--Intruder Alert: A relative path has entered the A_CmsXmlContent class("+filename+"). ");
         }
         String currentProject = cms.getRequestContext().currentProject().getName();
         Document parsedContent = null;
@@ -1091,35 +1093,26 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     private void insertNewDatablock(String tag, Element data) {
 
         // First check, if this is an extended datablock
-
         // in <NAME1 name="name2>... format, that has to be inserted
-
         // as name1.name2
         String nameAttr = data.getAttribute("name");
         String workTag = null;
         if((!data.getNodeName().toLowerCase().equals("data")) && nameAttr != null && (!"".equals(nameAttr))) {
-
             // this is an extended datablock
             workTag = tag.substring(0, tag.lastIndexOf("."));
-        }
-        else {
+        }else {
             workTag = tag;
         }
-
         // Import the node for later inserting
         Element importedNode = (Element)parser.importNode(m_content, data);
 
         // Check, if this is a simple datablock without hierarchy.
         if(workTag.indexOf(".") == -1) {
-
             // Fine. We can insert the new Datablock at the of the document
             m_content.getDocumentElement().appendChild(importedNode);
             m_blocks.put(tag, importedNode);
-        }
-        else {
-
+        }else {
             // This is a hierachical datablock tag. We have to search for
-
             // an appropriate place to insert first.
             boolean found = false;
             String match = "." + workTag;
@@ -1129,32 +1122,24 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 match = match.substring(0, dotIndex);
                 if(hasData(match.substring(1))) {
                     found = true;
-                }
-                else {
+                }else {
                     dotIndex = match.lastIndexOf(".");
                     newBlocks.addElement(match.substring(dotIndex + 1));
                 }
             }
-
             // newBlocks now contains a (backward oriented) list
-
             // of all datablocks that have to be created, before
-
             // the new datablock named "tag" can be inserted.
             String datablockPrefix = "";
             if(found) {
                 datablockPrefix = match.substring(1) + ".";
             }
-
             // number of new elements to be created
             int numNewBlocks = newBlocks.size();
-
             // used to create the required new elements
             Element newElem = null;
-
             // Contains the last existing Element in the hierarchy.
             Element lastElem = null;
-
             // now create the new elements backwards
             for(int i = numNewBlocks - 1;i >= 0;i--) {
                 newElem = m_content.createElement("DATA");
@@ -1162,37 +1147,28 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 m_blocks.put(datablockPrefix + (String)newBlocks.elementAt(i), newElem);
                 if(lastElem != null) {
                     lastElem.appendChild(newElem);
-                }
-                else {
+                }else {
                     lastElem = newElem;
                 }
             }
-
             // Now all required parent datablocks are created.
-
             // Finally the given datablock can be inserted.
             if(lastElem != null) {
                 lastElem.appendChild(importedNode);
-            }
-            else {
+            }else {
                 lastElem = importedNode;
             }
             m_blocks.put(datablockPrefix + tag, importedNode);
 
             // lastElem now contains the hierarchical tree of all DATA tags to be
-
             // inserted.
-
             // If we have found an existing part of the hierarchy, get
-
             // this part and append the tree. If no part was found, append the
-
             // tree at the end of the document.
             if(found) {
                 Element parent = (Element)m_blocks.get(match.substring(1));
                 parent.appendChild(lastElem);
-            }
-            else {
+            }else {
                 m_content.getDocumentElement().appendChild(lastElem);
             }
         }
@@ -1735,29 +1711,21 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     protected void setData(String tag, String data) {
 
         // create new XML Element to store the data
-
         //Element newElement = m_content.createElement("DATA");
         String attribute = tag;
         int dotIndex = tag.lastIndexOf(".");
         if(dotIndex != -1) {
             attribute = attribute.substring(dotIndex + 1);
         }
-
         //newElement.setAttribute("name", attribute);
         Element newElement = m_content.createElement(attribute);
         if(data == null || "".equals(data)) {
-
             // empty string or null are given.
-
             // put an empty datablock without any text nodes.
             setData(tag, newElement);
-        }
-        else {
-
+        }else {
             // Fine. String is not empty.
-
             // So we can add a new text node containig the string data.
-
             // Leading spaces are removed before creating the text node.
             newElement.appendChild(m_content.createTextNode(data.trim()));
             setData(tag, newElement);
@@ -1773,13 +1741,10 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
     protected void setData(String tag, Element data) {
 
         // If we got a null data, give this request to setData(Strig, String)
-
         // to create a new text node.
         if(data == null) {
             setData(tag, "");
-        }
-        else {
-
+        }else {
             // Now we can be sure to have a correct Element
             tag = tag.toLowerCase();
             Element newElement = (Element)data.cloneNode(true);
@@ -1787,27 +1752,20 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent,I_CmsLogChannel
                 A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Putting datablock " + tag + " into internal Hashtable.");
             }
             if(!(m_blocks.containsKey(tag))) {
-
                 // This is a brand new datablock. It can be inserted directly.
-
                 //m_blocks.put(tag, newElement);
                 insertNewDatablock(tag, newElement);
-            }
-            else {
-
+            }else {
                 // datablock existed before, so the childs of the old
-
                 // one can be replaced.
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && C_DEBUG) {
                     A_OpenCms.log(C_OPENCMS_DEBUG, getClassName() + "Datablock existed before. Replacing.");
                 }
-
                 // Look up the old datablock and remove all its childs.
                 Element originalBlock = (Element)(m_blocks.get(tag));
                 while(originalBlock.hasChildNodes()) {
                     originalBlock.removeChild(originalBlock.getFirstChild());
                 }
-
                 // And now add all childs of the new node
                 NodeList newNodes = data.getChildNodes();
                 int len = newNodes.getLength();

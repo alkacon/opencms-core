@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/LinkSubstitution.java,v $
-* Date   : $Date: 2001/11/20 10:06:10 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2001/11/21 15:29:33 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,9 @@ package com.opencms.util;
 
 import com.opencms.file.CmsObject;
 import com.opencms.core.*;
+import com.opencms.htmlconverter.*;
 import org.apache.oro.text.perl.*;
+import java.io.*;
 
 /**
  * Title:        OpenCms
@@ -50,8 +52,48 @@ public class LinkSubstitution {
         c_perlUtil = new Perl5Util();
     }
 
+    /**
+     * parses the html content from the editor. It replaces the links in <a href=""
+     * and in <image src="". They will be replaced with ]]><LINK> path in opencms <LINK><![CDATA[
+     */
     public String substituteEditorContent(String content)throws CmsException{
-        return content;
+        CmsHtmlConverter converter = new CmsHtmlConverter();
+        String retValue = null;
+        try{
+            //converter.setTidyConfFile("/andzah/projekte/ebk/config.txt");
+            if(converter.hasErrors(content)){
+                String errors = converter.showErrors(content);
+                throw new CmsException(errors);
+            }
+            converter.setConverterConfString("<?xml version=\"1.0\"?>"+
+                        "<converterconfig>"+
+                        "	<defaults>"+
+                        "		<xhtmloutput value=\"false\"/>"+
+                        "		<globalprefix value=\"\"/>"+
+                        "		<globalsuffix value=\"\"/>"+
+                        "		<globaladdeveryline value=\"false\"/>"+
+                        "		<usebrackets value=\"true\" openbracket=\"#(\" closebracket=\")#\"/>"+
+                        "		<encodequotationmarks value=\"false\"/>"+
+                        "	</defaults>"+
+                        "	<inlinetags>"+
+                        "		<tag name=\"img\"/>"+
+                        "		<tag name=\"br\"/>"+
+                        "		<tag name=\"hr\"/>"+
+                        "		<tag name=\"input\"/>"+
+                        "		<tag name=\"frame\"/>"+
+                        "		<tag name=\"meta\"/>"+
+                        "	</inlinetags>"+
+                        "	<replacetags usedefaults=\"true\">"+
+                        "		<tag name=\"img\" attrib=\"src\" replacestarttag=\"]]&gt;&lt;LINK&gt;$parameter$&lt;/LINK&gt;&lt;![CDATA[\" parameter=\"src\" replaceparamattr=\"true\"/>"+
+                        "		<tag name=\"a\" attrib=\"href\" replacestarttag=\"]]&gt;&lt;LINK&gt;$parameter$&lt;/LINK&gt;&lt;![CDATA[\" replaceendtag=\"&lt;/a&gt;\" parameter=\"href\" replaceparamattr=\"true\"/>"+
+                        "	</replacetags>"+
+                        "</converterconfig>");
+            converter.setServletPrefix("/opencms");//Todo:replace this by the aktual servletprefix
+            retValue = converter.convertHTML(content);
+        }catch ( Exception e ){
+            throw new CmsException("["+this.getClass().getName()+"] cant convert the editor content:"+e.toString());
+        }
+        return retValue;
     }
     /**
      * Replaces the link according to the rules and registers it to the
