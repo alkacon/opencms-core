@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/01/13 12:44:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/01/28 09:25:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Andreas Zahner (a.zahner@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.0
  */
 public final class CmsStringUtil {
@@ -411,12 +411,31 @@ public final class CmsStringUtil {
      * @return the List of splitted Substrings
      */
     public static List splitAsList(String source, char delimiter) {
+        return splitAsList(source, delimiter, false);
+    }
+    
+    /**
+     * Splits a String into substrings along the provided char delimiter and returns
+     * the result as a List of Substrings.<p>
+     *
+     * @param source the String to split
+     * @param delimiter the delimiter to split at
+     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     *
+     * @return the List of splitted Substrings
+     */    
+    public static List splitAsList(String source, char delimiter, boolean trim) {
 
         List result = new ArrayList();
         int index = 0;
         int next = source.indexOf(delimiter);
         while (next != -1) {
-            result.add(source.substring(index, next));
+            String item = source.substring(index, next);
+            if (trim) {
+                result.add(item.trim());
+            } else {
+                result.add(item);
+            }
             index = next + 1;
             next = source.indexOf(delimiter, index);
         }
@@ -434,18 +453,38 @@ public final class CmsStringUtil {
      * @return the Array of splitted Substrings
      */
     public static List splitAsList(String source, String delimiter) {
+        return splitAsList(source, delimiter, false);
+    }
+    
+    /**
+     * Splits a String into substrings along the provided String delimiter and returns
+     * the result as List of Substrings.<p>
+     * 
+     * @param source source the String to split
+     * @param delimiter the delimiter to split at
+     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * 
+     * @return the Array of splitted Substrings
+     */
+    public static List splitAsList(String source, String delimiter, boolean trim) {
 
         int len = delimiter.length();
         if (len == 1) {
             // optimize for short strings
-            return splitAsList(source, delimiter.charAt(0));
+            return splitAsList(source, delimiter.charAt(0), trim);
         }
 
         List result = new ArrayList();
         int index = 0;
         int next = source.indexOf(delimiter);
         while (next != -1) {
-            result.add(source.substring(index, next));
+            String item = source.substring(index, next);
+            if (trim) {
+                result.add(item.trim());
+            } else {
+                result.add(item);
+            }
+            
             index = next + len;
             next = source.indexOf(delimiter, index);
         }
