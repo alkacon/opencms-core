@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2001/07/31 15:50:15 $
-* Version: $Revision: 1.31 $
+* Date   : $Date: 2001/09/06 06:06:51 $
+* Version: $Revision: 1.32 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.31 $ $Date: 2001/07/31 15:50:15 $
+ * @version $Revision: 1.32 $ $Date: 2001/09/06 06:06:51 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -108,13 +108,13 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 
-    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
+    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath());
     if (access != null) {
             return access.booleanValue();
     } else {
         com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
         boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
-        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));
+        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getAbsolutePath(),new Boolean(ac));
 
         return ac;
     }
