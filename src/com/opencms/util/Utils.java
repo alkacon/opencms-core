@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/01/24 09:42:57 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/02/09 15:32:52 $
+* Version: $Revision: 1.19 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -36,32 +36,33 @@ import java.io.*;
 
 /**
  * This is a general helper class.
- * 
+ *
  * @author Andreas Schouten
+ * @author Alexander Lucas <alexander.lucas@framfab.de>
+ * @author Stefan Marx <Stefan.Marx@framfab.de>
  */
-
 public class Utils implements I_CmsConstants,I_CmsLogChannels {
-    
-    
+
+
     /** Constant for sorting files upward by name */
     public static final int C_SORT_NAME_UP = 1;
-    
-    
+
+
     /** Constant for sorting files downward by name */
     public static final int C_SORT_NAME_DOWN = 2;
-    
-    
+
+
     /** Constant for sorting files upward by lastmodified date */
     public static final int C_SORT_LASTMODIFIED_UP = 3;
-    
-    
+
+
     /** Constant for sorting files downward by lastmodified date */
     public static final int C_SORT_LASTMODIFIED_DOWN = 4;
-    
-    
+
+
     /** Constant for sorting files downward by publishing date */
     public static final int C_SORT_PUBLISHED_DOWN = 5;
-    
+
     /**
      * This method makes the sorting desicion for the creation of index and archive pages,
      * depending on the sorting method to be used.
@@ -71,10 +72,10 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
      * @param fileB The second of the two CmsFile objects to be compared.
      * @return <code>true</code> or <code>false</code>, depending if the two file objects have to be sorted.
      * @exception CmsException Is thrown when file access failed.
-     * 
+     *
      */
-    
-    private static boolean compare(CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB) 
+
+    private static boolean compare(CmsObject cms, int sorting, CmsFile fileA, CmsFile fileB)
             throws CmsException {
         boolean cmp = false;
         String titleA = fileA.getName();
@@ -87,35 +88,35 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         case C_SORT_NAME_UP:
             cmp = (titleA.compareTo(titleB) > 0);
             break;
-        
+
         case C_SORT_NAME_DOWN:
             cmp = (titleB.compareTo(titleA) > 0);
             break;
-        
+
         case C_SORT_LASTMODIFIED_UP:
             cmp = (lastModifiedA > lastModifiedB);
             break;
-        
+
         case C_SORT_LASTMODIFIED_DOWN:
             cmp = (lastModifiedA < lastModifiedB);
             break;
-        
+
         case C_SORT_PUBLISHED_DOWN:
             cmp = (projectA.getPublishingDate() < projectB.getPublishingDate());
             break;
-        
+
         default:
             cmp = false;
         }
         return cmp;
     }
-    
+
     /**
      * Returns a string representation of the full name of a user.
      * @param user The user to get the full name from
      * @return a string representation of the user fullname.
      */
-    
+
     public static String getFullName(CmsUser user) {
         String retValue = "";
         if(user != null) {
@@ -125,13 +126,13 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
         return retValue;
     }
-    
+
     /**
      * Gets a formated time string form a long time value.
      * @param time The time value as a long.
      * @return Formated time string.
      */
-    
+
     public static String getNiceDate(long time) {
         StringBuffer niceTime = new StringBuffer();
         GregorianCalendar cal = new GregorianCalendar();
@@ -139,7 +140,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         String day = "0" + new Integer(cal.get(Calendar.DAY_OF_MONTH)).intValue();
         String month = "0" + new Integer(cal.get(Calendar.MONTH) + 1).intValue();
         String year = new Integer(cal.get(Calendar.YEAR)).toString();
-        String hour = "0" + new Integer(cal.get(Calendar.HOUR) + 12 
+        String hour = "0" + new Integer(cal.get(Calendar.HOUR) + 12
                 * cal.get(Calendar.AM_PM)).intValue();
         String minute = "0" + new Integer(cal.get(Calendar.MINUTE));
         if(day.length() == 3) {
@@ -161,13 +162,13 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         niceTime.append(minute);
         return niceTime.toString();
     }
-    
+
     /**
      * Gets a formated time string form a long time value.
      * @param time The time value as a long.
      * @return Formated time string.
      */
-    
+
     public static String getNiceShortDate(long time) {
         StringBuffer niceTime = new StringBuffer();
         GregorianCalendar cal = new GregorianCalendar();
@@ -186,15 +187,15 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         niceTime.append(year);
         return niceTime.toString();
     }
-    
+
     /**
      * Gets the stack-trace of a exception, and returns it as a string.
      * @param e The exception to get the stackTrace from.
      * @return the stackTrace of the exception.
      */
-    
+
     public static String getStackTrace(Exception e) {
-        
+
         // print the stack-trace into a writer, to get its content
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -210,22 +211,22 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
             stringWriter.close();
         }
         catch(Exception err) {
-            
-        
-        // ignore 
+
+
+        // ignore
         }
         return stringWriter.toString();
     }
-    
+
     /**
-     * Replaces all line breaks in a given string object by 
+     * Replaces all line breaks in a given string object by
      * white spaces. All lines will be <code>trim</code>ed to
      * delete all unnecessary white spaces.
      * @param s Input string
      * @return Output String
      * @exception CmsException
      */
-    
+
     public static String removeLineBreaks(String s) throws CmsException {
         StringBuffer result = new StringBuffer();
         BufferedReader br = new BufferedReader(new StringReader(s));
@@ -241,7 +242,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
         return result.toString();
     }
-    
+
     /**
      * Sorts a Vector of CmsFile objects according to an included sorting method.
      * @param cms Cms Object for accessign files.
@@ -249,7 +250,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
      * @param sorting The sorting method to be used.
      * @return Vector of sorted CmsFile objects
      */
-    
+
     public static Vector sort(CmsObject cms, Vector unsortedFiles, int sorting) {
         Vector v = new Vector();
         Enumeration enu = unsortedFiles.elements();
@@ -258,16 +259,16 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         String docloader;
         int max = 0;
         try {
-            
-            // create an array with all unsorted files in it. This arre is later sorted in with                                    
+
+            // create an array with all unsorted files in it. This arre is later sorted in with
             // the sorting algorithem.
             while(enu.hasMoreElements()) {
                 file = (CmsFile)enu.nextElement();
                 field[max] = file;
                 max++;
             }
-            
-            // Sorting algorithm                                    
+
+            // Sorting algorithm
             // This method uses an insertion sort algorithem
             int in, out;
             int nElem = max;
@@ -280,7 +281,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
                 }
                 field[in] = temp;
             }
-            
+
             // take sorted array and create a new vector of files out of it
             for(int i = 0;i < max;i++) {
                 v.addElement(field[i]);
@@ -293,16 +294,16 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         }
         return v;
     }
-    
+
     /**
-     * This method splits a overgiven string into substrings. 
-     * 
+     * This method splits a overgiven string into substrings.
+     *
      * @param toSplit the String to split.
      * @param at the delimeter.
-     * 
+     *
      * @return an Array of Strings.
      */
-    
+
     public static final String[] split(String toSplit, String at) {
         Vector parts = new Vector();
         int index = 0;
@@ -317,20 +318,37 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         parts.copyInto((Object[])partsArray);
         return (partsArray);
     }
-    
+
     /**
      * Converts date string to a long value.
      * @param dateString The date as a string.
      * @return long value of date.
      */
-    
+
     public static long splitDate(String dateString) {
         long result = 0;
         if(dateString != null && !"".equals(dateString)) {
             String splittetDate[] = Utils.split(dateString, ".");
-            GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]), 
+            GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
                     Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
             result = cal.getTime().getTime();
+        }
+        return result;
+    }
+
+    /**
+     * Check a given email address for conformness with
+     * RFC822 rules, see http://www.rfc-editor.org/rfc.html
+     * @author Stefan Marx <Stefan.Marx@framfab.de>
+     * @param address EMail address to be checked
+     * @return <code>true</code> if the address is syntactically correct, <code>false</code> otherwise.
+    */
+    public static boolean checkEmail(String address) {
+        boolean result = true;
+        try {
+            javax.mail.internet.InternetAddress IPAdd = new javax.mail.internet.InternetAddress(address);
+        } catch(javax.mail.internet.AddressException e) {
+            result = false;
         }
         return result;
     }
