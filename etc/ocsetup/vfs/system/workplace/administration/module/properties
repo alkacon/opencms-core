@@ -51,16 +51,16 @@ function show_help()
 			</tr>
 			<tr>
 				<td class=dialogtxt valign=top>]]><LABEL value="module.lable.description"/><![CDATA[:</td>
-				<td class=dialogtxt colspan=3>]]><PROCESS>descriptiontext</PROCESS><![CDATA[</td>
+				<td class=dialogtxt colspan=3>]]><PROCESS>descriptiontext</PROCESS><![CDATA[&nbsp;</td>
 				
 			</tr>
 
 			<tr>
 				<td class=dialogtxt>]]><LABEL value="label.author"/><![CDATA[:</td>
-				<td class=dialogtxt>]]><PROCESS>author</PROCESS><![CDATA[</td>
+				<td class=dialogtxt>]]><PROCESS>author</PROCESS><![CDATA[&nbsp;</td>
 
 				<td class=dialogtxt>]]><LABEL value="input.email"/><![CDATA[:</td>
-				<td class=dialogtxt><a href="mailto:]]><PROCESS>email</PROCESS><![CDATA[">]]><PROCESS>email</PROCESS><![CDATA[</a></td>
+				<td class=dialogtxt><a href="mailto:]]><PROCESS>email</PROCESS><![CDATA[">]]><PROCESS>email</PROCESS><![CDATA[</a>&nbsp;</td>
 			</tr>
 
 			<tr>
@@ -70,16 +70,16 @@ function show_help()
 			</tr>
 
 			<tr>
-				<td class=dialogtxt>]]><LABEL value="module.lable.uploadfrom"/><![CDATA[:</td>
-				<td class=dialogtxt>]]><PROCESS>uploadfrom</PROCESS><![CDATA[</td>
+				<td class=dialogtxt>]]><LABEL value="module.lable.uploadfrom"/><![CDATA[: </td>
+				<td class=dialogtxt>]]><PROCESS>uploadfrom</PROCESS><![CDATA[&nbsp;</td>
 
-				<td class=dialogtxt>]]><LABEL value="label.uploaddate"/><![CDATA[:</td>
-				<td class=dialogtxt>]]><PROCESS>uploaddate</PROCESS><![CDATA[</td>
+				<td class=dialogtxt>]]><LABEL value="label.uploaddate"/><![CDATA[:&nbsp;</td>
+				<td class=dialogtxt>]]><PROCESS>uploaddate</PROCESS><![CDATA[&nbsp;</td>
 			</tr>
 
 			<tr>
 				<td class=dialogtxt>]]><LABEL value="label.view"/><![CDATA[:</td>
-				<td class=dialogtxt>]]><PROCESS>view</PROCESS><![CDATA[</td>
+				<td class=dialogtxt>]]><PROCESS>view</PROCESS><![CDATA[&nbsp;</td>
 
 				<td class=dialogtxt>]]><LABEL value="module.lable.documentation"/><![CDATA[:</td>
 				<td class=dialogtxt><a href="]]><METHOD name="getServletPath"/><![CDATA[]]><PROCESS>documentation</PROCESS><![CDATA[" target=_blank>]]><PROCESS>documentation</PROCESS><![CDATA[</a></td>
