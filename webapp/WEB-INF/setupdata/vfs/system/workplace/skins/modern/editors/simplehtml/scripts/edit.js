@@ -42,6 +42,9 @@ var SAVEACTION=55;
 // Indicates if the text of the editor window is already set
 var textSetted = false;
 
+// dialog window
+var dialogWindow = null;
+
 // loads the file content into the editor
 function setText()
 {
