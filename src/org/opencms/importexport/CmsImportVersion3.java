@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/02/26 14:18:10 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2004/02/27 14:36:30 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.page.CmsXmlPage;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsUUID;
-
-import com.opencms.legacy.CmsResourceTypePage;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -501,7 +499,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             // convert to xml page if wanted
             if (m_convertToXmlPage 
-                && (resType == CmsResourceTypePage.C_RESOURCE_TYPE_ID || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
+                && (resType == A_CmsImport.C_RESOURCE_TYPE_PAGE_ID || resType == C_RESOURCE_TYPE_NEWPAGE_ID)) {
                 
                 if (content != null) {
                     CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, new String(content), "body", getLocale(destination, properties));
@@ -519,7 +517,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             res = m_cms.importResource(resource, content, properties, m_importPath + destination);
 
             if (res != null) {
-                if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {
+                if (A_CmsImport.C_RESOURCE_TYPE_PAGE_NAME.equals(type)) {
                     m_importedPages.add(I_CmsConstants.C_FOLDER_SEPARATOR + destination);
                 }
             }
