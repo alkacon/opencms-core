@@ -2,8 +2,8 @@ package com.opencms.file.oracleplsql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/04/17 14:42:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2001/04/25 08:00:49 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.21 $ $Date: 2001/04/17 14:42:03 $
+ * @version $Revision: 1.22 $ $Date: 2001/04/25 08:00:49 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -531,7 +531,12 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
 public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
 	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 	try {
-		CmsUser user = readUser(currentUser, currentProject, username);
+        CmsUser user = null;
+        try {
+		    user = readUser(currentUser, currentProject, username);
+        } catch (CmsException exc){
+            user = readWebUser(currentUser, currentProject, username);
+        }
 		CmsGroup group = readGroup(currentUser, currentProject, groupname);
 		return (dbAccess.userInGroup(user.getId(), group.getId()));
 	} catch (CmsException ex) {
