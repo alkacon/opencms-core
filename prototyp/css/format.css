@@ -233,6 +233,27 @@ INPUT.textfeld4
     FONT-WEIGHT: normal;
 	WIDTH: 500px
 }
+INPUT.textfeld5
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8px;
+    FONT-WEIGHT: normal;
+
+}
+INPUT.textfeld6
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8px;
+    FONT-WEIGHT: normal;
+	HEIGHT: 20px;
+}
+
+
+
 TEXTAREA.textarea
 {
     COLOR: #000000;
