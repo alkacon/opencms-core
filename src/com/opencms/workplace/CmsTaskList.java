@@ -16,7 +16,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;tasklist&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/18 14:28:42 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/19 10:32:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants, I_CmsConstants {
@@ -76,6 +76,7 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 		String priority;
 		String projectname;
 		String stateIcon;
+		String style;
 		long startTime;
 		long timeout;
 		long now = new Date().getTime();
@@ -88,38 +89,46 @@ public class CmsTaskList extends A_CmsWpElement implements I_CmsWpElement, I_Cms
 			startTime = task.getStartTime().getTime();
 			timeout = task.getTimeOut().getTime();
 			
-			System.err.println("~~~ " + task.getName() + " " + task.getState() + " " + task.getPercentage());
-			
 			// choose the right state-icon
 			if(task.getState() == C_TASK_STATE_ENDED) {
-				if(timeout > now ) {
+				if(timeout < now ) {
 					stateIcon = listdef.getProcessedXmlDataValue("alertok", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_alertok", callingObject);
 				} else {
 					stateIcon = listdef.getProcessedXmlDataValue("ok", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_ok", callingObject);
 				}
 			} else if(task.getPercentage() == 0) {
-				stateIcon = listdef.getProcessedXmlDataValue("new", callingObject);
-			} else {
-				if(timeout > now ) {
+				if(timeout < now ) {
 					stateIcon = listdef.getProcessedXmlDataValue("alert", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_alert", callingObject);
+				} else {
+					stateIcon = listdef.getProcessedXmlDataValue("new", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_new", callingObject);
+				}
+			} else {
+				if(timeout < now ) {
+					stateIcon = listdef.getProcessedXmlDataValue("alert", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_alert", callingObject);
 				} else {
 					stateIcon = listdef.getProcessedXmlDataValue("activ", callingObject);
+					style = listdef.getProcessedXmlDataValue("style_activ", callingObject);
 				}
 			}
 			  
 			// get the processed list.
 			listdef.setXmlData("stateicon", stateIcon);
+			listdef.setXmlData("style", style);
 			listdef.setXmlData("priority", priority);
 			listdef.setXmlData("task", task.getName());
 			listdef.setXmlData("foruser", cms.readAgent(task).getName());
 			listdef.setXmlData("forrole", cms.readGroup(task).getName());
 			listdef.setXmlData("actuator", cms.readOwner(task).getName());
-			listdef.setXmlData("due", Utils.getNiceDate(timeout));
-			listdef.setXmlData("from", Utils.getNiceDate(startTime));
+			listdef.setXmlData("due", Utils.getNiceShortDate(timeout));
+			listdef.setXmlData("from", Utils.getNiceShortDate(startTime));
 			listdef.setXmlData("project", projectname);
 			
 			result.append(listdef.getProcessedXmlDataValue("defaulttasklist", callingObject, parameters));
-
 		}		
 		return result.toString();
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
- * Date   : $Date: 2000/02/18 14:28:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/02/19 10:32:16 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import java.util.*;
  * This is a general helper class.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/18 14:28:42 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/19 10:32:16 $
  */
 public class Utils {
 	/**
@@ -95,6 +95,31 @@ public class Utils {
          niceTime.append(year+" ");
          niceTime.append(hour+":");
          niceTime.append(minute);
+         return niceTime.toString();
+     }
+
+     /**
+      * Gets a formated time string form a long time value.
+      * @param time The time value as a long.
+      * @return Formated time string.
+      */
+     public static String getNiceShortDate(long time) {
+         StringBuffer niceTime=new StringBuffer();
+         
+         GregorianCalendar cal = new GregorianCalendar();
+         cal.setTime(new Date(time));
+         String day="0"+new Integer(cal.get(Calendar.DAY_OF_MONTH)).intValue();        
+         String month="0"+new Integer(cal.get(Calendar.MONTH)+1).intValue(); 
+         String year=new Integer(cal.get(Calendar.YEAR)).toString();
+         if (day.length()==3) {
+             day=day.substring(1,3);
+         }
+         if (month.length()==3) {
+             month=month.substring(1,3);
+         }
+         niceTime.append(day+".");
+         niceTime.append(month+".");  
+         niceTime.append(year+" ");
          return niceTime.toString();
      }
 }

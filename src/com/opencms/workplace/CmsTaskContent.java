@@ -14,10 +14,10 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/19 10:32:16 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants {
+public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstants, I_CmsWpConstants {
 	
 	/**
      * Indicates if the results of this class are cacheable.
@@ -67,10 +67,11 @@ public class CmsTaskContent extends CmsWorkplaceDefault implements I_CmsConstant
      */
     public Vector taskList(A_CmsObject cms, CmsXmlLanguageFile lang)
 		throws CmsException {
+		HttpSession session = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
 		// get the tasks...
 		String projectName = cms.getRequestContext().currentProject().getName();
 		String userName = cms.getRequestContext().currentUser().getName();
 
-		return cms.readTasks(projectName, userName, C_TASKS_ALL, "", "");
+		return cms.readTasks((String)session.getValue(C_SESSION_TASK_PROJECTNAME), userName, C_TASKS_ALL, "", "");
     }
 }
