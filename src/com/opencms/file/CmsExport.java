@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExport.java,v $
- * Date   : $Date: 2000/06/05 13:37:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 15:15:04 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,9 +42,9 @@ import com.opencms.util.*;
  * to the filesystem.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:54 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 15:15:04 $
  */
-class CmsExport implements I_CmsImportExport, I_CmsConstants {
+class CmsExport implements I_CmsConstants {
 	
 	/**
 	 * The export-zipfile to store resources to
@@ -158,7 +158,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		try {
 			
 			// creates the document
-			m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_TAG_EXPORT);
+			m_docXml = A_CmsXmlContent.getXmlParser().createEmptyDocument(C_EXPORT_TAG_EXPORT);
 			// abbends the initital tags
 
 			// add some comments here
@@ -166,7 +166,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 			exportNode.appendChild( m_docXml.createComment("Creator   : " + m_cms.getRequestContext().currentUser().getName()));
 			exportNode.appendChild( m_docXml.createComment("Createdate: " + Utils.getNiceDate(new Date().getTime())));
 			
-			m_filesElement = m_docXml.createElement(C_TAG_FILES);
+			m_filesElement = m_docXml.createElement(C_EXPORT_TAG_FILES);
 			m_docXml.getDocumentElement().appendChild(m_filesElement);
 
 		} catch(Exception exc) {
@@ -180,7 +180,7 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 	private void writeXmlConfigFile() 
 		throws CmsException {
 		try {
-			ZipEntry entry = new ZipEntry(C_XMLFILENAME);
+			ZipEntry entry = new ZipEntry(C_EXPORT_XMLFILENAME);
 			m_exportZipStream.putNextEntry(entry);
 			A_CmsXmlContent.getXmlParser().getXmlText(m_docXml, m_exportZipStream);
 			m_exportZipStream.closeEntry();
@@ -275,21 +275,21 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		access = resource.getAccessFlags() + "";
 		
 		// write these informations to the xml-manifest
-		Element file = m_docXml.createElement(C_TAG_FILE);
+		Element file = m_docXml.createElement(C_EXPORT_TAG_FILE);
 		m_filesElement.appendChild(file);
 		
 		// only write source if resource is a file
 		if(resource.isFile()) {
-			addElement(file, C_TAG_SOURCE, source);
+			addElement(file, C_EXPORT_TAG_SOURCE, source);
 		}
-		addElement(file, C_TAG_DESTINATION, source);
-		addElement(file, C_TAG_TYPE, type);
-		addElement(file, C_TAG_USER, user);
-		addElement(file, C_TAG_GROUP, group);
-		addElement(file, C_TAG_ACCESS, access);
+		addElement(file, C_EXPORT_TAG_DESTINATION, source);
+		addElement(file, C_EXPORT_TAG_TYPE, type);
+		addElement(file, C_EXPORT_TAG_USER, user);
+		addElement(file, C_EXPORT_TAG_GROUP, group);
+		addElement(file, C_EXPORT_TAG_ACCESS, access);
 		
 		// append the node for properties
-		Element properties = m_docXml.createElement(C_TAG_PROPERTIES);
+		Element properties = m_docXml.createElement(C_EXPORT_TAG_PROPERTIES);
 		file.appendChild(properties);
 		
 		// read the properties
@@ -299,16 +299,16 @@ class CmsExport implements I_CmsImportExport, I_CmsConstants {
 		// create xml-elements for the properties
 		while(keys.hasMoreElements()) {
 			// append the node for a property
-			Element property = m_docXml.createElement(C_TAG_PROPERTY);
+			Element property = m_docXml.createElement(C_EXPORT_TAG_PROPERTY);
 			properties.appendChild(property);
 
 			String key = (String) keys.nextElement();
 			String value = (String) fileProperties.get(key);
 			String propertyType = m_cms.readPropertydefinition(key, type).getType() + "";
 			
-			addElement(property, C_TAG_NAME, key);
-			addElement(property, C_TAG_TYPE, propertyType);
-			addCdataElement(property, C_TAG_VALUE, value);
+			addElement(property, C_EXPORT_TAG_NAME, key);
+			addElement(property, C_EXPORT_TAG_TYPE, propertyType);
+			addCdataElement(property, C_EXPORT_TAG_VALUE, value);
 		}
 		
 	}

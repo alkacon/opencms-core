@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/02 13:38:56 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2000/06/05 15:15:04 $
+ * Version: $Revision: 1.78 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.77 $ $Date: 2000/06/02 13:38:56 $
+ * @version $Revision: 1.78 $ $Date: 2000/06/05 15:15:04 $
  */
 public interface I_CmsConstants
 {
@@ -771,5 +771,77 @@ public interface I_CmsConstants
 
     /** Template element name used for the canonical root template */
     public static final String C_ROOT_TEMPLATE_NAME = "root";
+
+	// Constants for import/export
+	
+	/**
+	 * The filename of the xml manifest.
+	 */
+	public static String C_EXPORT_XMLFILENAME = "manifest.xml";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_FILE = "file";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_SOURCE = "source";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_DESTINATION= "destination";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_TYPE = "type";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_USER = "user";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_GROUP = "group";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_ACCESS = "access";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_PROPERTY = "property";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_NAME = "name";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_VALUE = "value";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_EXPORT = "export";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_FILES = "files";
+
+	/**
+	 * A tag in the manifest-file.
+	 */
+	public static String C_EXPORT_TAG_PROPERTIES = "properties";
 }
 

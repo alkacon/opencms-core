@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
- * Date   : $Date: 2000/06/05 13:37:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/06/05 15:15:04 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,9 +40,9 @@ import org.w3c.dom.*;
  * into the cms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/06/05 13:37:54 $
+ * @version $Revision: 1.4 $ $Date: 2000/06/05 15:15:04 $
  */
-class CmsImport implements I_CmsImportExport, I_CmsConstants {
+class CmsImport implements I_CmsConstants {
 	
 	/**
 	 * The import-file to load resources from
@@ -124,7 +124,7 @@ class CmsImport implements I_CmsImportExport, I_CmsConstants {
 		
 		try {
 			
-			BufferedReader xmlReader = getFileReader(C_XMLFILENAME);
+			BufferedReader xmlReader = getFileReader(C_EXPORT_XMLFILENAME);
 		
 			m_docXml = A_CmsXmlContent.getXmlParser().parse(xmlReader);
 			
@@ -151,31 +151,31 @@ class CmsImport implements I_CmsImportExport, I_CmsConstants {
 		
 		try {
 			// get all file-nodes
-			fileNodes = m_docXml.getElementsByTagName(C_TAG_FILE);
+			fileNodes = m_docXml.getElementsByTagName(C_EXPORT_TAG_FILE);
 			
 			// walk through all files in manifest
 			for(int i = 0; i < fileNodes.getLength(); i++) {
 				currentElement = (Element) fileNodes.item(i);
 				
 				// get all informations for a file-import
-				source = getTextNodeValue(currentElement, C_TAG_SOURCE);
-				destination = getTextNodeValue(currentElement, C_TAG_DESTINATION);
-				type = getTextNodeValue(currentElement, C_TAG_TYPE);
-				user = getTextNodeValue(currentElement, C_TAG_USER);
-				group = getTextNodeValue(currentElement, C_TAG_GROUP);
-				access = getTextNodeValue(currentElement, C_TAG_ACCESS);
+				source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
+				destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
+				type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
+				user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
+				group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
+				access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
 				
 				// get all properties for this file
-				propertyNodes = currentElement.getElementsByTagName(C_TAG_PROPERTY);
+				propertyNodes = currentElement.getElementsByTagName(C_EXPORT_TAG_PROPERTY);
 				// clear all stores for propertyinformations
 				properties = new Hashtable();
 				// walk through all properties
 				for(int j = 0; j < propertyNodes.getLength(); j++) {
 					currentProperty = (Element) propertyNodes.item(j);
 					// get all information for this property
-					String name = getTextNodeValue(currentProperty, C_TAG_NAME);
-					String propertyType = getTextNodeValue(currentProperty, C_TAG_TYPE);
-					String value = getTextNodeValue(currentProperty, C_TAG_VALUE);
+					String name = getTextNodeValue(currentProperty, C_EXPORT_TAG_NAME);
+					String propertyType = getTextNodeValue(currentProperty, C_EXPORT_TAG_TYPE);
+					String value = getTextNodeValue(currentProperty, C_EXPORT_TAG_VALUE);
 					// store these informations
 					if( (name != null) && (value != null) ) {
 						properties.put(name, value);
