@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShell.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.75 $
+* Date   : $Date: 2003/06/16 11:18:43 $
+* Version: $Revision: 1.75.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,9 +31,7 @@ package com.opencms.core;
 import com.opencms.boot.CmsBase;
 import com.opencms.file.CmsObject;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.StreamTokenizer;
@@ -44,13 +42,6 @@ import java.util.Vector;
 
 import source.org.apache.java.util.Configurations;
 import source.org.apache.java.util.ExtendedProperties;
-import FESI.Exceptions.EcmaScriptException;
-import FESI.Interpreter.Evaluator;
-import FESI.jslib.JSException;
-import FESI.jslib.JSFunctionAdapter;
-import FESI.jslib.JSGlobalObject;
-import FESI.jslib.JSObject;
-import FESI.jslib.JSUtil;
 
 /**
  * This class is a commad line interface to OpenCms which 
@@ -59,7 +50,7 @@ import FESI.jslib.JSUtil;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.75 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.75.2.1 $ $Date: 2003/06/16 11:18:43 $
  */
 public class CmsShell implements I_CmsConstants {
 
@@ -235,215 +226,6 @@ public class CmsShell implements I_CmsConstants {
                   System.out.println(");");
               }
           }
-    }
-
-    /*
-    *   The ecmaScript input-command
-    */
-    public String ecmaInput(String inputPrompt){
-        String s="";
-        System.out.print(inputPrompt);
-        BufferedReader ins = new BufferedReader(new InputStreamReader(System.in));
-        try{
-            s=ins.readLine();
-        } catch (IOException ef){
-            System.out.println("IOException!!!");
-        }
-        if(s==null)s="";
-        return s;
-    }
-
-    /**
-    *   eval and print the ecmascript-prompt
-    */
-    public void printEcmaPrompt(JSGlobalObject jSGO,String s){
-
-        if(s!=null){
-            try {
-                jSGO.eval("echoNoLF("+s+")");
-            }catch (JSException je) {
-                System.out.println(je.getMessage());
-            }
-        }else System.out.print("\n");
-    }
-
-    /**
-     * the ecmascript interpreter
-     *
-     * @param fis the file input stream for commands
-     */
-    public void ecmacommands(FileInputStream fis) throws Exception {
-
-      boolean lineMode=true;
-      boolean continueReading=true;
-
-      String in="";
-      String input = null;
-
-      // the prompt: "user@projectname>"
-      ecmaPrompt="cms.getRequestContext().currentUser().getName()+\"@\"+cms.getRequestContext().currentProject().getName()+\">\"";
-
-      JSGlobalObject jSGO = null;
-      jSGO = JSUtil.makeEvaluator();
-
-      JSObject jsCMS = jSGO.makeObjectWrapper(m_cms);
-      jSGO.setMember("cms", jsCMS);
-
-      // create a bufferedReader to read the data from
-      BufferedReader ins = new BufferedReader(new InputStreamReader(fis));
-
-      // print the ecmascript welcome-text
-      printEcmaHelpText();
-
-      // new command: echoNoLF (no linefeed)
-      jSGO.setMember("echoNoLF", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            if(args.length==0)System.out.println(" ");
-            else System.out.print(args[0]);
-            return null;
-        }
-      });
-
-      // new command: echo
-      jSGO.setMember("echo", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            if(args.length==0)System.out.print(" ");
-            else {
-                //if m_echo=true all commands are echoed
-                if(args[0].equals("on"))m_echo=true;
-                if(args[0].equals("off"))m_echo=false;
-                System.out.println(args[0]);
-            }
-            return null;
-        }
-      });
-
-      // new command: input
-      // the string-parameter is optional. if given it's used as prompt for the input
-      jSGO.setMember("input", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            String inputPrompt="? ";
-            if(args.length!=0)inputPrompt=args[0].toString();
-            return ecmaInput(inputPrompt);
-        }
-      });
-
-      // new command: setprompt
-      // if there is no string-parameter, there is no prompt
-      jSGO.setMember("setPrompt", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            if(args.length!=0)ecmaPrompt=args[0].toString();
-                else ecmaPrompt=null;
-            System.out.println("");
-            return null;
-        }
-      });
-
-      // new command: help
-      jSGO.setMember("help", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            Method meth[] = m_cms.getClass().getMethods();
-
-            if(args.length==0){
-                for(int z = 0;z < meth.length;z++) {
-                    cmsHelp(meth[z],"cms");
-                }
-                System.out.println("echo(java.lang.String);");
-                System.out.println("exit();");
-                System.out.println("input(String); returns input (int or string)");
-                System.out.println("input(); returns input (int or string)");
-
-            } else {
-                //because for example: user could search for: "cms.readUser", but
-                //the search only processes m_cms methods, so the "cms." must be deleted.
-                if(args[0].toString().startsWith("cms")){
-                    if(args[0].toString().charAt(3)=='.'){
-                        String ar=args[0].toString().substring(4);
-                        args[0]=ar;
-                    }
-                }
-                for(int z = 0;z < meth.length;z++)
-                    if(meth[z].getName().equals(args[0]))cmsHelp(meth[z],"cms");
-                    if(args[0].equals("echo"))System.out.println("echo(java.lang.String);");
-                    if(args[0].equals("exit"))System.out.println("exit();");
-                    if(args[0].equals("input"))System.out.println("input(String); returns input (int or string");
-                    if(args[0].equals("input"))System.out.println("input(); returns input (int or string");
-            }
-            return null;
-        }
-      });
-
-      // new command: exit
-      jSGO.setMember("exit", new JSFunctionAdapter(){
-        public Object doCall(JSObject thisObject, Object args[]) throws JSException
-        {
-            return "exit";
-        }
-      });
-
-      String eol = System.getProperty("line.separator", "\n");
-      
-      Evaluator evaluator = new Evaluator();
-
-      // load fesi extension to access java from javascript
-      try {
-          evaluator.addMandatoryExtension("FESI.Extensions.JavaAccess");
-      } catch (EcmaScriptException e) {
-          System.out.println("Cannot initialize JavaAccess - exiting: " + eol + e);
-          e.printStackTrace();
-      }
-
-      while (continueReading) {               // main input loop
-          in="";
-          while(in.equals("")){
-
-              if(lineMode)printEcmaPrompt(jSGO,ecmaPrompt);
-                  else if(ecmaPrompt!=null)System.out.print("More> ");    // linemode = false if the line is incomplete
-              try{
-                  in=ins.readLine();          // read a line from input
-              } catch (IOException ef){
-                  System.out.println("IOException!!!");
-              }
-
-              if(in==null){                   // reached end of file or control-c was pressed
-                  continueReading=false;
-                  break;
-              }
-          }
-
-          if(lineMode) input = in;
-              else input += in;
-
-          if(continueReading)try {
-                evaluator.evaluate(input);
-              } catch (EcmaScriptException e) {
-                  if (e.isIncomplete()) {
-                      lineMode=false;         // if the entered line is not complete
-                  }else{
-                      if (input == null) break;
-                      try {
-                          if(m_echo)System.out.println(input);
-
-                          Object result = jSGO.eval(input);     // interpret!
-
-                          if (result!=null) {
-                              if (result.toString().equals("exit"))break;
-                              System.out.println(result.toString());
-                          }
-                          lineMode=true;
-                      }catch (JSException je) {
-                          System.out.println(je.getMessage());
-                          lineMode=true;
-                          input="";
-                      }
-                  }// else
-              } // catch
-        } // while
     }
 
     /**
