@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
-* Date   : $Date: 2003/03/18 01:50:51 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2003/03/19 08:43:10 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.33 $ $Date: 2003/03/18 01:50:51 $
+ * @version $Revision: 1.34 $ $Date: 2003/03/19 08:43:10 $
  */
 public abstract class A_OpenCms implements I_CmsLogChannels {
 
@@ -74,9 +74,12 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     /** Default encoding, can be overwritten in "opencms.properties" */
     private static String m_defaultEncoding = "ISO-8859-1";    
 
-    /** The version number of this OpenCms installation */
-    private static String c_versionNumber = null;
+    /** The version name (including version number) of this OpenCms installation */
+    private static String m_versionName = null;
     
+    /** The version number of this OpenCms installation */
+    private static String m_versionNumber = null;
+        
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code> */   
 	private static String m_openCmsContext = null;
     
@@ -332,17 +335,28 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
     
     
     /**
-     * Returns a String containing version information for this OpenCms.
+     * Returns a String containing the version information (version name and version number) 
+     * of this OpenCms system.<p>
      *
-     * @return version a String containnig the version of OpenCms.
+     * @return version a String containnig the version information
      */
-    public static String version() {
-        return c_versionNumber;
+    public static String getVersionName() {
+        return m_versionName;
     }        
     
     /**
-     * Initialized the version for this OpenCms, will be called by 
-     * CmsHttpServlet or CmsShell upon system startup.
+     * Returns a String containing the version number 
+     * of this OpenCms system.<p>
+     *
+     * @return version a String containnig the version number
+     */    
+    public static String getVersionNumber() {
+        return m_versionNumber;
+    }
+    
+    /**
+     * Initializes the version for this OpenCms, will be called by 
+     * CmsHttpServlet or CmsShell upon system startup.<p>
      * 
      * @param o instance of calling object
      */
@@ -353,12 +367,11 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
             props.load(o.getClass().getClassLoader().getResourceAsStream("com/opencms/core/version.properties"));
         } catch(java.io.IOException exc) {
             // ignore this exception - no properties found
-            c_versionNumber = "unknown";
+            m_versionName = "unknown";
             return;
         }
-        c_versionNumber =
-            props.getProperty("version.number", "??") + " " +
-            props.getProperty("version.name", "??");
+        m_versionNumber = props.getProperty("version.number", "5.x");
+        m_versionName = m_versionNumber + " " + props.getProperty("version.name", "??");
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2003/02/26 10:30:36 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2003/03/19 08:43:10 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * @author Michael Emmerich
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.44 $ $Date: 2003/02/26 10:30:36 $
+ * @version $Revision: 1.45 $ $Date: 2003/03/19 08:43:10 $
  */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
 
@@ -136,14 +136,14 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         String copy[] = C_COPYRIGHT;
 
         // log to error-stream
-        System.err.println("\n\nStarting OpenCms, version " + A_OpenCms.version());
+        System.err.println("\n\nStarting OpenCms, version " + A_OpenCms.getVersionName());
         for(int i = 0;i < copy.length;i++) {
             System.err.println(copy[i]);
         }
 
         // log with opencms-logger
         if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version " + A_OpenCms.version());
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version " + A_OpenCms.getVersionName());
             for(int i = 0;i < copy.length;i++) {
                 A_OpenCms.log(C_OPENCMS_INIT, ". " + copy[i]);
             }
@@ -226,7 +226,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
             A_OpenCms.log(C_OPENCMS_INIT, ". Startup time         : " + (new Date(System.currentTimeMillis())));        
             A_OpenCms.log(C_OPENCMS_INIT, ". Servlet container    : " + config.getServletContext().getServerInfo());        
-            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version      : " + A_OpenCms.version()); 
+            A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms version      : " + A_OpenCms.getVersionName()); 
             A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms base path    : " + CmsBase.getBasePath());        
             A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms property file: " + CmsBase.getPropertiesPath(true));        
             A_OpenCms.log(C_OPENCMS_INIT, ". OpenCms logfile      : " + CmsBase.getAbsolutePath(logFile));        

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsExportModuledata.java,v $
-* Date   : $Date: 2003/03/04 17:26:28 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2003/03/19 08:43:10 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.w3c.dom.Text;
  * to the filesystem.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.13 $ $Date: 2003/03/04 17:26:28 $
+ * @version $Revision: 1.14 $ $Date: 2003/03/19 08:43:10 $
  */
 public class CmsExportModuledata implements I_CmsConstants, Serializable{
 
@@ -280,7 +280,7 @@ public class CmsExportModuledata implements I_CmsConstants, Serializable{
             Element info = m_docXml.createElement(C_EXPORT_TAG_INFO);
             m_docXml.getDocumentElement().appendChild(info);
             addElement(m_docXml, info, C_EXPORT_TAG_CREATOR, m_cms.getRequestContext().currentUser().getName());
-            addElement(m_docXml, info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.version());
+            addElement(m_docXml, info, C_EXPORT_TAG_OC_VERSION, A_OpenCms.getVersionName());
             addElement(m_docXml, info, C_EXPORT_TAG_DATE, Utils.getNiceDate(new Date().getTime()));
             addElement(m_docXml, info, C_EXPORT_TAG_PROJECT, m_cms.getRequestContext().currentProject().getName());
             addElement(m_docXml, info, C_EXPORT_TAG_VERSION, C_EXPORT_VERSION);

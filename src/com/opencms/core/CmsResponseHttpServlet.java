@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
-* Date   : $Date: 2003/02/01 19:14:45 $
-* Version: $Revision: 1.28 $
+* Date   : $Date: 2003/03/19 08:43:10 $
+* Version: $Revision: 1.29 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.28 $ $Date: 2003/02/01 19:14:45 $
+ * @version $Revision: 1.29 $ $Date: 2003/03/19 08:43:10 $
  */
 public class CmsResponseHttpServlet implements I_CmsResponse {
 
@@ -86,6 +86,8 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         m_res = res;
         m_req = req;
         m_clusterurl = clusterurl;
+        // write OpenCms server identification in the response header
+        m_res.setHeader("Server", "OpenCms/" + A_OpenCms.getVersionNumber());
     }
     
     /**

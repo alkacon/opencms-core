@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2003/03/04 17:24:55 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/03/19 08:43:10 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.66 $ $Date: 2003/03/04 17:24:55 $
+ * @version $Revision: 1.67 $ $Date: 2003/03/19 08:43:10 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -3342,7 +3342,7 @@ class CmsShellCommands implements I_CmsConstants {
      * Returns a version-string for this OpenCms.
      */
     public void version() {
-        System.out.println(A_OpenCms.version());
+        System.out.println(A_OpenCms.getVersionName());
     }
 
     /**

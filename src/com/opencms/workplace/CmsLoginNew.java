@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2003/02/16 02:23:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/03/19 08:43:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  */
 
 public class CmsLoginNew extends CmsXmlTemplate {
@@ -315,7 +315,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         String title = (String)super.getTitle(cms, tagcontent, doc, userObject);
         if(title == null) title = "";
-        title += " - " + A_OpenCms.version();
+        title += " - " + A_OpenCms.getVersionName();
         return title;
     }
 
@@ -331,7 +331,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
      */
     public Object version(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
-        return A_OpenCms.version();
+        return A_OpenCms.getVersionName();
     }
 
     /**
