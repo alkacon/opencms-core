@@ -8,7 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.15 Chusuk       - xx October 2001
+OpenCms 4.5.15 Chusuk       - 05 November 2001
+! Added generic master for modules in projectcycle.
 ! It is now easier to add a new page resource type that gets its templates 
   in a different way.
 ! All resources get a siteroot (/default/vfs). When filling the defaults
