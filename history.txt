@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/05/08 03:25:29 $
- * Version: $Revision: 1.542 $
+ * Date   : $Date: 2004/05/14 15:26:40 $
+ * Version: $Revision: 1.543 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,10 @@ OpenCms 5.3.5 Ix - xx, 2004
 * Fixed issue with NPE in CmsXmlPage.initBookmarks() method
 * If a xmlPage is read from a CmsFile, the byte array is now directly used for the
   generation of the xml document (fixing an encoding issue)
+! All user Workplace preferences are now fully configurable 
+  in the opencms-workplace.xml file
+* The "internal use only" flag has been placed on the permission dialog again
+- Refactored package org.opencms.page to org.opencms.xml.page
   
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
