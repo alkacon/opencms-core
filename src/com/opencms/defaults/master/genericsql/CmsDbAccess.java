@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/10/06 14:46:21 $
-* Version: $Revision: 1.66 $
+* Date   : $Date: 2003/10/20 13:01:01 $
+* Version: $Revision: 1.67 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,21 +28,15 @@
 
 package com.opencms.defaults.master.genericsql;
 
-import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsPublishedResource;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsSecurityException;
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.master.CmsMasterContent;
 import com.opencms.defaults.master.CmsMasterDataSet;
 import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsGroup;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
-import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
 
 import java.io.ByteArrayInputStream;
@@ -54,6 +48,12 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Vector;
+
+import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsPublishedResource;
+import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsUUID;
 
 /**
  * This class provides methods to access the database in a generic way.
@@ -807,14 +807,14 @@ public class CmsDbAccess {
      * @param cms the CmsObject
      * @param dataset the dataSet
      * @return int the project id
-     * @throws SQLException
+     * @throws SQLException if something goes wrong
      */
     protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException {
-        int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
+        //int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
         int offlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
 
         offlineProjectId = cms.getRequestContext().currentProject().getId();
-        onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        //onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
 
         if (!isOnlineProject(cms)) {
             // this is an offline project -> compute if we have to return the
@@ -828,47 +828,51 @@ public class CmsDbAccess {
             } catch (CmsException exc) {
                 // ignore the exception -> we are not admin
             }
+            
+            return offlineProjectId;
 
-            String statement_key = "read_channel_offline";
-
-            PreparedStatement stmt = null;
-            ResultSet res = null;
-            Connection conn = null;
-            cms.getRequestContext().saveSiteRoot();
-            try {
-                cms.setContextToCos();
-                conn = m_sqlManager.getConnection();
-                stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
-                stmt.setString(1, dataset.m_masterId.toString());
-                res = stmt.executeQuery();
-                while (res.next()) {
-                    // get the channel id
-                    int channeldId = res.getInt(1);
-                    // read the resource by property "channelid"
-                    Vector resources = new Vector();
-                    try {
-                        resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channeldId + "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
-                    } catch (CmsException exc) {
-                        // ignore the exception - read the next one
-                    }
-                    if (resources.size() >= 1) {
-                        int resProjectId = ((CmsResource)resources.get(0)).getProjectLastModified();
-                        if (resProjectId == offlineProjectId) {
-                            // yes - we have found a chanel that belongs to
-                            // the current offlineproject -> we can return the
-                            // offline project id as computed project id
-                            return offlineProjectId;
-                        }
-                    }
-                }
-            } finally {
-                cms.getRequestContext().restoreSiteRoot();
-                m_sqlManager.closeAll(conn, stmt, res);
-            }
+            // DISABLED: always return current offline project ID!
+            //            String statement_key = "read_channel_offline";
+            //
+            //            PreparedStatement stmt = null;
+            //            ResultSet res = null;
+            //            Connection conn = null;
+            //            cms.getRequestContext().saveSiteRoot();
+            //            try {
+            //                cms.setContextToCos();
+            //                conn = m_sqlManager.getConnection();
+            //                stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
+            //                stmt.setString(1, dataset.m_masterId.toString());
+            //                res = stmt.executeQuery();
+            //                while (res.next()) {
+            //                    // get the channel id
+            //                     String channelId = res.getString(1);
+            //                    // read the resource by property "channelid"
+            //                    CmsFolder channelFolder = null;
+            //                    try {
+            //                        channelFolder = cms.readFolder(new CmsUUID(channelId), false);
+            //                        //resources = cms.getResourcesWithPropertyDefintion(I_CmsConstants.C_PROPERTY_CHANNELID, channelId + "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            //                    } catch (CmsException exc) {
+            //                        // ignore the exception - read the next one
+            //                    }
+            //                    if (channelFolder != null) {
+            //                        int resProjectId = channelFolder.getProjectLastModified();
+            //                        if (resProjectId == offlineProjectId) {
+            //                            // yes - we have found a channel that belongs to
+            //                            // the current offlineproject -> we can return the
+            //                            // offline project id as computed project id
+            //                            return offlineProjectId;
+            //                        }
+            //                    }
+            //                }
+            //            } finally {
+            //                cms.getRequestContext().restoreSiteRoot();
+            //                m_sqlManager.closeAll(conn, stmt, res);
+            //            }
         }
         // no channel found that belongs to the offlineproject ->
         // return the online project id.
-        return onlineProjectId;
+        return offlineProjectId;
     }
 
     /**

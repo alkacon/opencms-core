@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2003/09/15 10:51:15 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/10/20 13:01:01 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Vector;
  * Creation date: (27.10.00 10:04:42)
  * 
  * @author Michael Knoll
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public abstract class A_CmsContentDefinition implements I_CmsContent {
 
@@ -339,14 +339,16 @@ protected boolean accessOwner(CmsObject cms, CmsUser currentUser,
     if (cms.isAdmin()) {
         return true;
     }
-    // is the resource owned by this user?
-    if (getOwner().equals(currentUser.getId())) {
-        if ((getAccessFlags() & flags) == flags) {
-            return true;
-        }
-    }
-    // the resource isn't accesible by the user.
-    return false;
+    // access rights on CD currently not available
+    return true;
+    //    // is the resource owned by this user?
+    //    if (getOwner().equals(currentUser.getId())) {
+    //        if ((getAccessFlags() & flags) == flags) {
+    //            return true;
+    //        }
+    //    }
+    //    // the resource isn't accesible by the user.
+    //    return false;
 }
 
 /**
@@ -361,14 +363,16 @@ protected boolean accessOwner(CmsObject cms, CmsUser currentUser,
  */
 protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
                               int flags) throws CmsException {
-    // is the user in the group for the resource?
-    if (cms.userInGroup(currentUser.getName(), getGroup())) {
-        if ((getAccessFlags() & flags) == flags) {
-            return true;
-        }
-    }
-    // the resource isn't accesible by the user.
-    return false;
+    // access rights on CD currently not available
+    return true;
+    //    // is the user in the group for the resource?
+    //    if (cms.userInGroup(currentUser.getName(), getGroup())) {
+    //        if ((getAccessFlags() & flags) == flags) {
+    //            return true;
+    //        }
+    //    }
+    //    // the resource isn't accesible by the user.
+    //    return false;
 }
 
 /**
@@ -379,7 +383,9 @@ protected boolean accessGroup(CmsObject cms, CmsUser currentUser,
  * @throws CmsException if something goes wrong
  */
 protected boolean accessOther(int flags) throws CmsException {
-    return ((getAccessFlags() & flags) == flags);
+    // access rights on CD currently not available
+    return true;
+    //return ((getAccessFlags() & flags) == flags);
 }
 
 /**

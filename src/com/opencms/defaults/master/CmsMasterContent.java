@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2003/09/30 08:26:53 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/10/20 13:01:01 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,6 @@
 
 package com.opencms.defaults.master;
 
-import org.opencms.loader.CmsXmlTemplateLoader;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsUUID;
-
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
@@ -41,9 +37,16 @@ import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsUser;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 import java.util.Vector;
+
+import org.opencms.loader.CmsXmlTemplateLoader;
+import org.opencms.main.CmsEvent;
+import org.opencms.main.I_CmsEventListener;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 /**
  * This class is the master of several Modules. It carries a lot of generic
@@ -53,8 +56,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.47 $
- * $Date: 2003/09/30 08:26:53 $
+ * $Revision: 1.48 $
+ * $Date: 2003/10/20 13:01:01 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -435,7 +438,10 @@ public abstract class CmsMasterContent
      * Gets the groupname
      */
     public String getGroup() {
-        String retValue = m_dataSet.m_groupId + "";
+        String retValue = "";
+        if (m_dataSet.m_groupId != null) {
+            retValue = m_dataSet.m_groupId + "";
+        }
         if(m_dataSet.m_groupName == null || "".equals(m_dataSet.m_groupName.trim())) {
             try { // to read the real name of this group
                 retValue = m_cms.readGroup(m_dataSet.m_groupId).getName();
@@ -639,7 +645,7 @@ public abstract class CmsMasterContent
         if (CmsXmlTemplateLoader.isElementCacheEnabled(cms)) {
             CmsXmlTemplateLoader.getOnlineElementCache().cleanupCache(changedResources, changedModuleData);
         }
-        OpenCms.fireCmsEvent(cms, org.opencms.main.I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, new HashMap(0));
+        OpenCms.fireCmsEvent(new CmsEvent(cms, I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE, Collections.EMPTY_MAP));
     }
 
     /**
@@ -737,7 +743,10 @@ public abstract class CmsMasterContent
      * @return String The name of the user who has modified the cd
      */
     public String getLastModifiedByName() {
-        String retValue = m_dataSet.m_lastModifiedBy + "";
+        String retValue = "";
+        if (m_dataSet.m_lastModifiedBy != null) {
+            retValue = m_dataSet.m_lastModifiedBy + "";
+        }
         if(m_dataSet.m_lastModifiedByName == null) {
             try {
                 retValue = m_cms.readUser(m_dataSet.m_lastModifiedBy).getName();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2003/10/20 13:01:01 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @see com.opencms.flex.cache.CmsFlexCacheKey
  * @see com.opencms.flex.cache.CmsFlexCacheEntry
@@ -173,6 +173,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             this.m_resourceMap = java.util.Collections.synchronizedMap(new CmsLruHashMap(CmsFlexCache.C_INITIAL_CAPACITY_CACHE, maxKeys));     
             OpenCms.addCmsEventListener(this, new int[] {
                 I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+                I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE,
                 I_CmsEventListener.EVENT_CLEAR_CACHES,
                 I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                 I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR       
@@ -520,6 +521,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
+            case I_CmsEventListener.EVENT_PUBLISH_BO_RESOURCE:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (DEBUG > 0) System.err.println("FlexCache: Recieved event, clearing cache!");
                 clear();
@@ -863,7 +865,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @see com.opencms.flex.util.I_CmsFlexLruCacheObject
      * @author Alexander Kandzior (a.kandzior@alkacon.com)
      * @author Thomas Weckert (t.weckert@alkacon.com)
-     * @version $Revision: 1.8 $ 
+     * @version $Revision: 1.9 $ 
      */
     class CmsFlexCacheVariation extends Object implements org.opencms.cache.I_CmsLruCacheObject {
         
