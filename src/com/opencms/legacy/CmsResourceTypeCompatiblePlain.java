@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2004/02/13 13:41:44 $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
+ * Date   : $Date: 2004/02/27 14:26:11 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,12 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.file;
+package com.opencms.legacy;
 
 
+import org.opencms.file.A_CmsResourceType;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.loader.CmsDumpLoader;
-import org.opencms.lock.CmsLock;
-import org.opencms.main.CmsException;
 
 import java.util.Map;
 
@@ -75,21 +76,9 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     }      
     
     /**
-     * @see org.opencms.file.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean, boolean, int)
-     */
-    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags, boolean lockCopy, int copyMode) throws CmsException {
-        cms.doCopyFile(source, destination, true, copyMode);
-        cms.doChtype(destination, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
-    }
-    
-    /**
      * @see org.opencms.file.I_CmsResourceType#createResource(org.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
-    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
-        CmsResource res = cms.doCreateFile(resourcename, contents, getResourceTypeName(), properties);
-        contents = null;
-        // TODO: Move locking of resource to CmsObject or CmsDriverManager
-        cms.doLockResource(cms.readAbsolutePath(res), CmsLock.C_MODE_COMMON);
-        return res;
+    public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) {
+        throw new RuntimeException("createResource(): The resource type 'compatiblePlain' is deprecated and not longer supported");
     }      
 }

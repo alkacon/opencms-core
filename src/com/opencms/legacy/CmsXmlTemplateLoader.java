@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2004/02/27 11:35:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/02/27 14:26:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceTypePage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspTagInclude;
@@ -92,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderIncludeExtension {
     

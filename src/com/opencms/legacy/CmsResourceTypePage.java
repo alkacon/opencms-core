@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2004/02/26 14:17:31 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/02/27 14:26:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package com.opencms.legacy;
 import org.opencms.file.A_CmsResourceType;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.I_CmsResourceType;
 
 import java.util.Map;
 
@@ -43,13 +42,11 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1
  */
 public class CmsResourceTypePage extends A_CmsResourceType {
 
-    private int warning = 0;
-    
     /** The type id of this resource */
     public static final int C_RESOURCE_TYPE_ID = 1;
     
