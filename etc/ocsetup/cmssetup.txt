@@ -5,7 +5,6 @@ createPropertydefinition Title compatiblePlain
 createPropertydefinition Title page
 createPropertydefinition Title XMLTemplate
 createPropertydefinition Title binary
-createPropertydefinition Title script
 createPropertydefinition Title image
 createPropertydefinition Title link
 createPropertydefinition NavText page
@@ -32,8 +31,6 @@ createPropertydefinition Description plain
 createPropertydefinition Keywords plain
 createPropertydefinition Description compatiblePlain
 createPropertydefinition Keywords compatiblePlain
-createPropertydefinition Description script
-createPropertydefinition Keywords script
 createPropertydefinition module compatiblePlain
 createPropertydefinition Description binary
 createPropertydefinition Keywords binary
@@ -47,7 +44,6 @@ addFileExtension htm plain
 addFileExtension jpeg image
 addFileExtension jpg image
 addFileExtension gif image
-addFileExtension js script
 setCurrentProject 2
 importResources "ocsetup/vfs"
 publishProject "2"
