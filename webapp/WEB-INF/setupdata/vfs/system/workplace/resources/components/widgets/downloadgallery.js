@@ -30,40 +30,27 @@
  */
  
 /*
- * When using this script to open the image gallery dialog, be sure to
- * initialize the context prefix (e.g. "/opencms/opencms") and gallery path in the opener properly:
+ * When using this script to open the download gallery dialog, be sure to
+ * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - imContentPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
- * - imgGalleryPath = "<%= CmsGalleryImages.C_URI_GALLERY %>";
+ * - downGalleryPath = "<%= CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
  */
 
-var imgContextPrefix;
-var imgGalleryPath;
+var downGalleryPath;
 
-// opens the image gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
-function openImageSelector(dialogMode, fieldId) {
+// opens the download gallery popup window, dialog mode has to be "widget" (as defined in CmsGallery.MODE_WIDGET)
+function openDownloadSelector(dialogMode, fieldId) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	var treewin = window.open(imgContextPrefix + imgGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=700');
+	var treewin = window.open(contextPath + downGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
-// opens a preview popup window to display the currently selected image
-function previewImage(fieldId) {
-	var imgUri = document.getElementById(fieldId).value;
-	imgUri = imgUri.replace(/ /, "");
-	if ((imgUri != "") && (imgUri.charAt(0) == "/")) {
-		var treewin = window.open(imgContextPrefix + imgUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=550,height=550');
-	}
-}
-
-// checks if the preview button is shown in the form
-function checkPreview(fieldId) {
-	var imgUri = document.getElementById(fieldId).value;
-	imgUri = imgUri.replace(/ /, "");
-	if ((imgUri != "") && (imgUri.charAt(0) == "/")) {
-		document.getElementById("preview" + fieldId).className = "show";
-	} else {
-		document.getElementById("preview" + fieldId).className = "hide";
+// opens a preview popup window to display the currently selected download
+function previewDownload(fieldId) {
+	var downUri = document.getElementById(fieldId).value;
+	downUri = downUri.replace(/ /, "");
+	if ((downUri != "") && (downUri.charAt(0) == "/")) {
+		var treewin = window.open(contextPath + downUri, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=750,height=700');
 	}
 }
 

@@ -59,7 +59,7 @@ var actionSave = "<%= wp.EDITOR_SAVE %>";
 var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
 
 // OpenCms context prefix, required for page editor because no link replacement is done here
-var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() %>";
+var linkEditorPrefix = "<%= wp.getOpenCmsContext() %>";
 
 // Sets the Document Source-Code for later including into the editor
 var text="<%= wp.getParamContent() %>";

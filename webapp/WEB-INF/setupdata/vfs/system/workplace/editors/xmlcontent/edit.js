@@ -153,3 +153,18 @@ function submitSaveAction() {
 		buttonAction(9);
 	}
 }
+
+// checks if the preview button is shown in the form for download or image galleries
+function checkPreview(fieldId) {
+	try {
+		var theUri = document.getElementById(fieldId).value;
+		theUri = theUri.replace(/ /, "");
+		if ((theUri != "") && (theUri.charAt(0) == "/" || theUri.indexOf("http://") == 0)) {
+			document.getElementById("preview" + fieldId).className = "show";
+		} else {
+			document.getElementById("preview" + fieldId).className = "hide";
+		}
+	} catch (e) {
+		document.getElementById("preview" + fieldId).className = "hide";
+	}
+}

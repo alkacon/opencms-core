@@ -6955,7 +6955,7 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<source>system/workplace/galleries/gallery_buttonbar.jsp</source>
 			<destination>system/workplace/galleries/gallery_buttonbar.jsp</destination>
@@ -13788,13 +13788,31 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/components/widgets/imageselector.js</source>
-			<destination>system/workplace/resources/components/widgets/imageselector.js</destination>
+			<source>system/workplace/resources/components/widgets/linkgallery.js</source>
+			<destination>system/workplace/resources/components/widgets/linkgallery.js</destination>
+			<type>plain</type>
+			<uuidresource>1aa7a8f9-49f9-11d9-8440-fde3acebd9fa</uuidresource>
+			<datelastmodified>Thu, 09 Dec 2004 17:31:25 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 16:43:42 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open external link gallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/imagegallery.js</source>
+			<destination>system/workplace/resources/components/widgets/imagegallery.js</destination>
 			<type>plain</type>
 			<uuidresource>0488a5d0-2d83-11d9-bb12-a93dabd07c3b</uuidresource>
-			<datelastmodified>Wed, 03 Nov 2004 13:35:58 CET</datelastmodified>
+			<datelastmodified>Thu, 09 Dec 2004 16:30:56 GMT+01:00</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 03 Nov 2004 11:27:52 CET</datecreated>
+			<datecreated>Wed, 03 Nov 2004 11:27:52 GMT+01:00</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -13804,7 +13822,25 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file> 
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/downloadgallery.js</source>
+			<destination>system/workplace/resources/components/widgets/downloadgallery.js</destination>
+			<type>plain</type>
+			<uuidresource>d6a4f81f-49ee-11d9-814d-fde3acebd9fa</uuidresource>
+			<datelastmodified>Thu, 09 Dec 2004 16:30:42 GMT+01:00</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 15:30:13 GMT+01:00</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open download gallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/resources/editors</destination>
 			<type>folder</type>
@@ -14352,7 +14388,7 @@
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<destination>system/workplace/resources/tree</destination>
 			<type>folder</type>

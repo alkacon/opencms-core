@@ -116,6 +116,9 @@ default:
 <script type="text/javascript">
 <!--
 
+// the OpenCms context path
+var contextPath = "<%= wp.getOpenCmsContext() %>";
+
 // needed when strings are filled in delayed
 var stringsPresent = false;
 var stringsInserted = false;

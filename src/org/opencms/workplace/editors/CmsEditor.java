@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2004/10/22 15:53:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/12/09 17:04:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 5.1.12
  */
@@ -318,6 +318,18 @@ public abstract class CmsEditor extends CmsDialog {
             // create the inactive button
             return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
         }
+    }
+    
+    /**
+     * Returns the OpenCms request context path.<p>
+     * 
+     * This is a convenience method to use in the editor.<p>
+     * 
+     * @return the OpenCms request context path
+     */ 
+    public String getOpenCmsContext() {
+        
+        return OpenCms.getSystemInfo().getOpenCmsContext();
     }
     
     /**

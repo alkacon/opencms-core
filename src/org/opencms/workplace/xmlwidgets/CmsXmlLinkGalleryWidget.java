@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlVfsImageWidget.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlLinkGalleryWidget.java,v $
+ * Date   : $Date: 2004/12/09 17:04:19 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.xmlwidgets;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.CmsGallery;
@@ -42,19 +41,19 @@ import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 /**
- * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlVfsFileValue}.<p>
+ * Provides an editor widget for {@link org.opencms.xml.types.CmsXmlStringValue} and accesses the available external links galleries.<p>
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * @since 5.5.3
  */
-public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
+public class CmsXmlLinkGalleryWidget extends A_CmsXmlWidget {
 
     /**
      * Creates a new editor widget.<p>
      */
-    public CmsXmlVfsImageWidget() {
+    public CmsXmlLinkGalleryWidget() {
 
         // empty constructor is required for class registration
     }
@@ -67,7 +66,7 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         I_CmsWidgetDialog widgetDialog,
         CmsXmlContentDefinition contentDefinition) {
         
-        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/imageselector.js");
+        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/linkgallery.js");
     }
     
     /**
@@ -75,7 +74,7 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
      */
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
     
-        return "\tinitVfsImageSelector();\n";
+        return "\tinitLinksSelector();\n";
     }
     
     /**
@@ -87,12 +86,9 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         I_CmsXmlDocument document) {
         
         StringBuffer result = new StringBuffer(16);
-        result.append("function initVfsImageSelector() {\n");
-        result.append("\timgContextPrefix = \"");
-        result.append(OpenCms.getSystemInfo().getOpenCmsContext());
-        result.append("\";\n");
-        result.append("\timgGalleryPath = \"");
-        result.append(CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=imagegallery");
+        result.append("function initLinksSelector() {\n");
+        result.append("\tlinkGalleryPath = \"");
+        result.append(CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=linkgallery");
         result.append("\";\n");
         result.append("}\n");        
         return result.toString();
@@ -117,11 +113,11 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\" onkeyup=\"checkPreview('");
+        result.append("\" onkeyup=\"checkLinkPreview('");
         result.append(id);
         result.append("');\"></td>");
         result.append(widgetDialog.buttonBarSpacer(1));
-        result.append(widgetDialog.button("javascript:openImageSelector('" + CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "imagegallery", "button.imagelist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append(widgetDialog.button("javascript:openLinkSelector('" + CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "linkgallery", "button.linklist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         // create preview button
         String previewClass = "hide";
         if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.startsWith("/")) {
@@ -134,7 +130,7 @@ public class CmsXmlVfsImageWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\0\"><tr>");
-        result.append(widgetDialog.button("javascript:previewImage('" + id + "');", null, "preview", "button.preview", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append(widgetDialog.button("javascript:previewLink('" + id + "');", null, "preview", "button.preview", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         result.append("</tr></table>");
         result.append("</div></td>");
         result.append("</tr></table>");
