@@ -336,7 +336,6 @@ ${opencms.inputlib.pdfbox}
        			<exclude name="WEB-INF/config/opencms.properties" />
        			<exclude name="WEB-INF/config/registry.xml" />
        			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
-       			<exclude name="WEB-INF/setupdata/cmssetup_fat.txt" />
        			<exclude name="setup/versions.txt" />
        			<exclude name="build.xml,.*,${excludes}" />
        		</fileset>
@@ -420,7 +419,6 @@ ${opencms.inputlib.pdfbox}
        			<exclude name="WEB-INF/config/opencms.properties" />
        			<exclude name="WEB-INF/config/registry.xml" />
        			<exclude name="WEB-INF/setupdata/vfs/system/login/version.js" />
-       			<exclude name="WEB-INF/setupdata/cmssetup_fat.txt" />
        			<exclude name="setup/versions.txt" />
        			<exclude name="build.xml,.*,${excludes}" />
        		</fileset>
@@ -428,8 +426,8 @@ ${opencms.inputlib.pdfbox}
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/setupdata/vfs/system/login" includes="version.js" />
   			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
-            <zipfileset dir="${additional.modules}" prefix="WEB-INF/packages/modules"/>   
-            <zipfileset dir="${additional.export}" prefix="export"/>  			
+            <zipfileset dir="${additional.modules}" prefix="WEB-INF/packages/modules" excludes="${excludes}" />   
+            <!-- zipfileset dir="${additional.export}" prefix="export" //-->		
         </war> 
             	       
     </target>    
