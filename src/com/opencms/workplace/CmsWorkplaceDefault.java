@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/08/25 14:56:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/10/13 08:57:37 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.30 $ $Date: 2000/08/25 14:56:47 $
+ * @version $Revision: 1.31 $ $Date: 2000/10/13 08:57:37 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -160,6 +160,27 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 			}
 		}
 	}
+	/** Gets all fonts available in the workplace screens.
+	 * <P>
+	 * The given vectors <code>names</code> and <code>values</code> will 
+	 * be filled with the appropriate information to be used for building
+	 * a select box.
+	 * <P>
+	 * Used to build font select boxes in editors.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param lang reference to the currently valid language file
+	 * @param names Vector to be filled with the appropriate values in this method.
+	 * @param values Vector to be filled with the appropriate values in this method.
+	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+	 * @return Index representing the user's current workplace view in the vectors.
+	 * @exception CmsException
+	 */
+	public Integer getFontSizes(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+			throws CmsException {
+		getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES, lang);
+		return new Integer(0);
+	}
 	/**
 	 * Gets all fonts available in the workplace screens.
 	 * <P>
@@ -180,27 +201,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	public Integer getFonts(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
 			throws CmsException {
 		getConstantSelectEntries(names, values, C_SELECTBOX_FONTS, lang);
-		return new Integer(0);
-	}
-	/** Gets all fonts available in the workplace screens.
-	 * <P>
-	 * The given vectors <code>names</code> and <code>values</code> will 
-	 * be filled with the appropriate information to be used for building
-	 * a select box.
-	 * <P>
-	 * Used to build font select boxes in editors.
-	 * 
-	 * @param cms CmsObject Object for accessing system resources.
-	 * @param lang reference to the currently valid language file
-	 * @param names Vector to be filled with the appropriate values in this method.
-	 * @param values Vector to be filled with the appropriate values in this method.
-	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
-	 * @return Index representing the user's current workplace view in the vectors.
-	 * @exception CmsException
-	 */
-	public Integer getFontSizes(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
-			throws CmsException {
-		getConstantSelectEntries(names, values, C_SELECTBOX_FONTSIZES, lang);
 		return new Integer(0);
 	}
 	/** Gets all fonts available in the workplace screens.
@@ -395,7 +395,7 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
-		return true;
+		return false;
 	}
 	/**
 	 * Checks if the current project is <STRONG>not</STRONG> the "Online" project.
