@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2004/08/23 15:37:02 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/10/02 10:57:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * Provides a method to perform a user defined action when editing a page.<p> 
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.3.0
  */
@@ -195,12 +195,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
               
             if ((element != null) && (resource.getTypeId() == CmsResourceTypeXmlPage.C_RESOURCE_TYPE_ID)) {
                 // check if the desired element is available (in case of xml page)
-                CmsXmlPage page = (CmsXmlPage)req.getAttribute(filename);                    
-                if (page == null) {
-                    // make sure a page is only read once (not every time for each element)
-                    page = CmsXmlPageFactory.unmarshal(cmsObject, cmsObject.readFile(filename, CmsResourceFilter.IGNORE_EXPIRATION));
-                    req.setAttribute(filename, page);
-                }
+                CmsXmlPage page = CmsXmlPageFactory.unmarshal(cmsObject, filename, req);
                 List locales = page.getLocales();
                 Locale locale;
                 if ((locales == null) || (locales.size() == 0)) {

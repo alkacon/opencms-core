@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2004/09/27 17:14:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/10/02 10:57:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -150,7 +150,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
     public void appendDefaultXml(Element root, int index) {
 
         Element sub = root.addElement(getNodeName());
-        sub.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, "element" + index);
+        sub.addAttribute(CmsXmlPage.ATTRIBUTE_NAME, getNodeName() + index);
         sub.addElement(CmsXmlPage.NODE_LINKS);
         sub.addElement(CmsXmlPage.NODE_CONTENT);
         
