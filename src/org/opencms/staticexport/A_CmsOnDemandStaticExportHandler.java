@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/02/20 18:33:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/02/28 16:35:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.Set;
  * as optimization for non-dynamic content.<p>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * @since 6.0
  * @see I_CmsStaticExportHandler
  */
@@ -285,7 +285,9 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
     private List getSiblingsList(CmsObject cms, String resPath) {
 
         List siblings = new ArrayList();
-
+        // add the resource itself. this has to be done, because if the resource was
+        // deleted during publishing, loop below will produce no results
+        siblings.add(resPath);
         try {
             List li = cms.readSiblings(resPath, CmsResourceFilter.ALL);
             for (int i = 0, l = li.size(); i < l; i++) {
