@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
- * Date   : $Date: 2000/08/08 14:08:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2000/10/24 07:26:39 $
+ * Version: $Revision: 1.12 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.util.*;
  * given launcher id.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2000/08/08 14:08:28 $
+ * @version $Revision: 1.12 $ $Date: 2000/10/24 07:26:39 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 	   
@@ -136,6 +136,19 @@ public class CmsLauncherManager implements I_CmsLogChannels {
 			}
 		}
 	}
+/**
+ * Clears all launchercaches.
+ * @author Finn Nielsen
+ * Creation date: (10/23/00 13:28:38)
+ */
+public void clearCaches()
+{
+	for (Enumeration e = launchers.elements(); e.hasMoreElements();)
+	{
+		I_CmsLauncher l = (I_CmsLauncher) e.nextElement();
+		l.clearCache();
+	}
+}
 	/**
 	 * Looks up the appropriate launcher class instance for the given 
 	 * launcher id in the internal hashtable.

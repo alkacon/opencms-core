@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/10/11 10:09:22 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2000/10/24 07:26:36 $
+ * Version: $Revision: 1.40 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.39 $ $Date: 2000/10/11 10:09:22 $  
+* @version $Revision: 1.40 $ $Date: 2000/10/24 07:26:36 $  
 * 
 * */
 
@@ -330,6 +330,7 @@ public void initUser(CmsObject cms, I_CmsRequest cmsReq, I_CmsResponse cmsRes, S
 			}
 			throw new CmsException(errorMessage, CmsException.C_UNKNOWN_EXCEPTION);
 		}
+		cms.setLauncherManager(m_launcherManager);
 		launcher.initlaunch(cms, file, startTemplateClass, this);
 	}
 	/**

@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
- * Date   : $Date: 2000/10/11 08:06:26 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/10/24 07:26:39 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -59,7 +59,7 @@ import javax.servlet.http.*;
  * </UL>
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.21 $ $Date: 2000/10/11 08:06:26 $
+ * @version $Revision: 1.22 $ $Date: 2000/10/24 07:26:39 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsConstants  {
 		
@@ -99,6 +99,15 @@ abstract class A_CmsLauncher implements I_CmsLauncher, I_CmsLogChannels, I_CmsCo
 		}
 		return null;
 	}
+/**
+ * Method for clearing this launchers template cache.
+ * @author Finn Nielsen
+ * Creation date: (10/23/00 13:27:09)
+ */
+public void clearCache()
+{
+	m_templateCache.clearCache();
+}
 	/**
 	 * Gets the name of the class in the form "[ClassName] "
 	 * This can be used for error logging purposes.

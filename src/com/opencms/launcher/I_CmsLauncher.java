@@ -2,8 +2,8 @@ package com.opencms.launcher;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/I_CmsLauncher.java,v $
- * Date   : $Date: 2000/08/08 14:08:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/10/24 07:26:39 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import javax.servlet.http.*;
  * Classes for each customized launcher have to be implemtented.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:29 $
+ * @version $Revision: 1.10 $ $Date: 2000/10/24 07:26:39 $
  */
 public interface I_CmsLauncher { 
 	
@@ -49,7 +49,7 @@ public interface I_CmsLauncher {
 		C_TYPE_XML = 3,
 		C_TYPE_LINK = 4,
 		C_TYPE_PDF = 5;
-
+public void clearCache();
 	/**
 	 * Gets the ID that indicates the type of the launcher.
 	 * @return launcher ID
