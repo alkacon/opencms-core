@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2004/10/28 14:04:02 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/04 16:37:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 package org.opencms.frontend.templateone;
 
 import org.opencms.main.I_CmsConstants;
-import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -47,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build interactive JSP forms.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class CmsTemplateForm extends CmsTemplateBean {
     
@@ -216,8 +214,17 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      */
     public String getPageUrl() {
         StringBuffer result = new StringBuffer(64);
-        CmsSite site = CmsSiteManager.getCurrentSite(getCmsObject());
-        result.append(site.getUrl());
+        HttpServletRequest request = getRequest();
+        result.append(request.getScheme());
+        result.append("://");
+        result.append(request.getServerName());
+        int port = request.getServerPort();
+        String portString = "";
+        if (port != 80 && port != 443) {
+            // only add port different from standard ports
+            portString = ":" + port;    
+        }
+        result.append(portString);
         result.append(link(m_pageUri));
         return result.toString();
     }
