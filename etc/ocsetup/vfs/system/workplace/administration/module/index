@@ -35,9 +35,10 @@ function show_help()
 
 <body bgcolor="#FFFFFF" background="]]><METHOD name="picsUrl">bg_weiss.gif</METHOD><![CDATA[" bgproperties=fixed onLoad="window.top.body.admin_head.location.href='head_module1.html'; start();">
 
-<table cellspacing=1 cellpadding=1 border=0 width="536">
+<table cellspacing=1 cellpadding=1 border=0 width="686">
 	<tr bgcolor="#c0c0c0">
 		<td valign=bottom width=16  nowrap>&nbsp;</td>
+		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="module.lable.packetname" /><![CDATA[</p></td>
 		<td valign=bottom width=150 nowrap valign=top><p class=einzug>]]><LABEL value="label.modulname" /><![CDATA[</p></td>
 		<td valign=bottom width=60  nowrap valign=top><p class=einzug>]]><LABEL value="label.version" /><![CDATA[</p></td>
 		<td valign=bottom width=120 nowrap valign=top><p class=einzug>]]><LABEL value="label.author" /><![CDATA[</p></td>

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $File$
- * Date   : $Date: 2000/11/03 15:37:18 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/11/06 14:35:57 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,6 +32,7 @@ import com.opencms.file.*;
 import com.opencms.core.*;
 import com.opencms.util.*;
 import com.opencms.template.*;
+import java.text.*;
 
 import java.util.*;
 
@@ -81,6 +82,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 		I_CmsRegistry reg = cms.getRegistry();	
 		I_CmsSession session = cms.getRequestContext().getSession(true);
 		String step = (String)parameters.get(C_STEP);
+ 		SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MM.dd.yyyy");
 
 		if ((step == null) || "".equals(step)){
 	 		templateDocument.setData(C_PACKETNAME, "");
@@ -92,8 +94,8 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 	 		templateDocument.setData(C_MAINTENANCE, "");
 	 		templateDocument.setData(C_AUTHOR, "");
 	 		templateDocument.setData(C_EMAIL, "");
-	 		// TODO: set the current date:
-	 		templateDocument.setData(C_DATE, "");
+	 		//  set the current date:
+	 		templateDocument.setData(C_DATE, dateFormat.format(new Date()));
 
  		}else{
 	 		if ("OK".equals(step)){	
@@ -112,7 +114,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 				try{
 					v=Integer.parseInt(version);
 				}catch(Exception e){}
-				if ((packetname == null) || ("".equals(packetname)) ||(version == null)||("".equals(version))|| moduleExists || (v == -1)){
+				if ((packetname == null) || ("".equals(packetname)) ||(version == null)||("".equals(version))|| moduleExists || (v <0)){
 					Hashtable sessionData = new Hashtable();
 					sessionData.put(C_MODULENAME, getStringValue(modulename));
 					sessionData.put(C_VERSION, getStringValue(version));
@@ -130,10 +132,16 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 						templateSelector = "errornoname";
 					}
 				}else{
-					// TODO: insert for the date: getStringValue(createDate)
+					long createDateLong = 0;
+					try{
+						createDateLong = dateFormat.parse(createDate).getTime();
+					}catch(Exception exc){
+							createDateLong = (new Date()).getTime();
+					}	
+						
 					reg.createModule(packetname, getStringValue(modulename), 
 												getStringValue(description),
-												getStringValue(author), getStringValue(createDate), v);
+												getStringValue(author), createDateLong, v);
 					reg.setModuleAuthorEmail(packetname, getStringValue(email));
 					reg.setModuleMaintenanceEventClass(packetname, getStringValue(maintenance));
 					tryToCreateFolder(cms, "/system/", "modules");
@@ -161,8 +169,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault implements I_CmsCo
 					tryToCreateFolder(cms, modulePath, "language");
 					tryToCreateFolder(cms, modulePath + "language/", "de");
 					tryToCreateFolder(cms, modulePath + "language/", "uk");
+					tryToCreateFolder(cms, modulePath , "doc");
+					reg.setModuleDocumentPath(packetname, modulePath +"doc/index.html");
 					if ("checked".equals(view)){
-						reg.setModuleView(packetname, packetname.replace('.','_'), modulePath+"view/index.html");
+						reg.setModuleView(packetname, packetname.replace('.','_')+".view", modulePath+"view/index.html");
 						tryToCreateFolder(cms, modulePath, "view");
 					}
 					if ("checked".equals(adminpoint)){

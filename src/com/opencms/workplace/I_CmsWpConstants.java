@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/11/03 15:25:04 $
- * Version: $Revision: 1.99 $
+ * Date   : $Date: 2000/11/06 14:35:57 $
+ * Version: $Revision: 1.100 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.99 $ $Date: 2000/11/03 15:25:04 $
+ * @version $Revision: 1.100 $ $Date: 2000/11/06 14:35:57 $
  */
 public interface I_CmsWpConstants {
 
@@ -564,6 +564,9 @@ public interface I_CmsWpConstants {
 	/**  Method of the modulelist field  */
 	public static final String C_MODULELIST_NAME = "name";    
 		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_NICE_NAME = "nicename";    
+
 	/**  Method of the modulelist field  */
 	public static final String C_MODULELIST_VERSION = "version";    
 		

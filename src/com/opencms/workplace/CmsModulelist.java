@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
- * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/11/06 14:35:57 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import java.lang.reflect.*;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author: Hanjo Riege
- * @Version: $Revision: 1.1 $
+ * @Version: $Revision: 1.2 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
@@ -109,6 +109,7 @@ public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_C
 		{
 			String currentModule = (String)list.elementAt(i);
 			listdef.setData(C_MODULELIST_NAME, currentModule);
+			listdef.setData(C_MODULELIST_NICE_NAME, reg.getModuleNiceName(currentModule));
 			listdef.setData(C_MODULELIST_VERSION, reg.getModuleVersion(currentModule)+"");
 			listdef.setData(C_MODULELIST_AUTHOR, reg.getModuleAuthor(currentModule));
 			listdef.setData(C_MODULELIST_DATECREATED, Utils.getNiceDate(reg.getModuleCreateDate(currentModule)));
