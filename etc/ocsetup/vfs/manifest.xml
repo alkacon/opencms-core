@@ -4364,7 +4364,7 @@
 			<properties/>
 		</file>
 		<file>
-			<source>pics/system/_Bg_mitte_links.gif</source>
+			<source>pics/system/_bg_mitte_links.gif</source>
 			<destination>system/workplace/pics/_Bg_mitte_links.gif</destination>
 			<type>image</type>
 			<user>Admin</user>
