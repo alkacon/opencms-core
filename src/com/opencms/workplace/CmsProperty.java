@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/06/30 21:48:40 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.26 $ $Date: 2002/06/30 21:48:40 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
 
@@ -253,7 +253,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                     I_CmsResourceType type = cms.getResourceType(file.getType());
                     try {
                         CmsPropertydefinition def = cms.createPropertydefinition(newValue, type.getResourceTypeName());
-                        cms.writePropertydefinition(def);
+                        // TESTFIX (a.kandzior@alkcacon.com) Depreceated code: cms.writePropertydefinition(def);
                         template = "ownlocked";
 
                     //session.removeValue(C_PARA_FILE);
@@ -321,6 +321,8 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
                 String value = (String)property.get(key);
                 names.addElement(key + ":" + value);
                 values.addElement(key);
+                Collections.sort(names);
+                Collections.sort(values);
             }
         }
 
