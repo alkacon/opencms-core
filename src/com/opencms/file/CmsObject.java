@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 13:43:48 $
-* Version: $Revision: 1.322 $
+* Date   : $Date: 2003/07/15 16:11:24 $
+* Version: $Revision: 1.323 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.322 $
+ * @version $Revision: 1.323 $
  */
 public class CmsObject extends Object {
 
@@ -1286,8 +1286,6 @@ public class CmsObject extends Object {
      * the values for the propertyinfos
      * @param launcherType The launcher type of the new resource
      * @param launcherClassname The name of the launcherclass of the new resource
-     * @param ownername The name of the owner of the new resource
-     * @param groupname The name of the group of the new resource
      * @param accessFlags The accessFlags of the new resource
      * @param lastmodified the last modification date of the resource
      * @param filecontent The content of the resource if it is of type file 
@@ -1297,9 +1295,9 @@ public class CmsObject extends Object {
      * a new resource
      *
      */
-    protected CmsResource doImportResource(String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map properties, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    protected CmsResource doImportResource(String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map properties, int launcherType, String launcherClassname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
     
-        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName), uuid, uuidfile, uuidresource, resourceType, properties, launcherType, launcherClassname, ownername, groupname, accessFlags, lastmodified, filecontent);
+        CmsResource cmsResource = m_driverManager.importResource(m_context, addSiteRoot(newResourceName), uuid, uuidfile, uuidresource, resourceType, properties, launcherType, launcherClassname, accessFlags, lastmodified, filecontent);
 
         return cmsResource;
     }
@@ -2447,8 +2445,6 @@ public class CmsObject extends Object {
      * @param uuidfile  the file uuid of the resource
      * @param uuidresource  the resource uuid of the resource
      * @param type the type of the resource
-     * @param user the owner of the resource
-     * @param group the group of the resource
      * @param access the access flags of the resource
      * @param lastmodified the last modifcation date of the resource
      * @param properties the properties of the resource
@@ -2458,10 +2454,10 @@ public class CmsObject extends Object {
      * @return the imported CmsResource
      * @throws CmsException if operation was not successful
      */
-    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
         I_CmsResourceType rt = getResourceType(type);
       
-        return rt.importResource(this, source, destination, uuid, uuidfile, uuidresource, type, user, group, access, lastmodified, properties, launcherStartClass, content, importPath);
+        return rt.importResource(this, source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, content, importPath);
     }
 
     /**

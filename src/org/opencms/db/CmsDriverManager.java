@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 15:38:01 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2003/07/15 16:11:24 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.51 $ $Date: 2003/07/15 15:38:01 $
+ * @version $Revision: 1.52 $ $Date: 2003/07/15 16:11:24 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4155,7 +4155,7 @@ public class CmsDriverManager extends Object {
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource importResource(CmsRequestContext context, String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map propertyinfos, int launcherType, String launcherClassname, String ownername, String groupname, int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    public CmsResource importResource(CmsRequestContext context, String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map propertyinfos, int launcherType, String launcherClassname,  int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
         // extract folder information
         String folderName = null;
         String resourceName = null;   
@@ -4185,9 +4185,6 @@ public class CmsDriverManager extends Object {
         // check if the user has write access to the destination folder
         checkPermissions(context, parentFolder, I_CmsConstants.C_WRITE_ACCESS);
 
-        // try to read owner and group
-        CmsUser owner = readUser(ownername);
-        CmsGroup group = readGroup(context, groupname);
 
         // create a new CmsResourceObject
         if (filecontent == null) {
@@ -4209,8 +4206,7 @@ public class CmsDriverManager extends Object {
 
         // TODO VFS links: refactor all upper methods to support the VFS link type param
         CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0, /* owner.getId(), group.getId(), */ context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-        //CmsResource newResource = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), parentFolder.getId(), CmsUUID.getNullUUID(), resourceName, resourceType, 0, owner.getId(), group.getId(), context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
-
+       
         // create the folder.
         newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), newResource, filecontent, context.currentUser().getId(), isFolder);
 
@@ -4228,19 +4224,17 @@ public class CmsDriverManager extends Object {
     }
 
     /**
-     * Imports a import-resource (folder or zipfile) to the cms.
+     * Imports a import-resource (folder or zipfile) to the cms.<p>
      *
      * <B>Security:</B>
      * only Administrators can do this;
-     *
-     * @param context.currentUser() user who requestd themethod
-     * @param context.currentProject() current project of the user
+     * @param context the current request context
      * @param importFile the name (absolute Path) of the import resource (zip or folder)
      * @param importPath the name (absolute Path) of folder in which should be imported
      * @param cms the cms-object to use for the import.
      * @param report A report object to provide the loggin messages.
      *
-     * @throws Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public void importResources(CmsObject cms, CmsRequestContext context, String importFile, String importPath, I_CmsReport report) throws CmsException {
         if (isAdmin(context)) {

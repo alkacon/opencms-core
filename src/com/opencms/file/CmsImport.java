@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/15 13:43:48 $
-* Version: $Revision: 1.105 $
+* Date   : $Date: 2003/07/15 16:11:24 $
+* Version: $Revision: 1.106 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.105 $ $Date: 2003/07/15 13:43:48 $
+ * @version $Revision: 1.106 $ $Date: 2003/07/15 16:11:24 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -535,8 +535,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param uuidfile  the file uuid of the resource
      * @param uuidresource  the resource uuid of the resource
      * @param type the resource-type of the file
-     * @param user the owner of the file
-     * @param group the group of the file
      * @param access the access-flags of the file
      * @param lastmodified the timestamp of the file
      * @param properties a hashtable with properties for this resource
@@ -547,7 +545,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      *       not used when null
      * @return imported resource
      */
-    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String user, String group, String access, long lastmodified, Map properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -622,7 +620,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
 
-            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, type, user, group, access, lastmodified, properties, launcherStartClass, content, m_importPath);
+            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, content, m_importPath);
 
             if (res != null) {
                 if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {
@@ -674,7 +672,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
     protected void importAllResources(Vector excludeList, Vector writtenFilenames, Vector fileCodes, String propertyName, String propertyValue) throws CmsException {
         NodeList fileNodes, propertyNodes, acentryNodes;
         Element currentElement, currentProperty, currentEntry;
-        String source, destination, type, user, group, access, launcherStartClass, timestamp, uuid, uuidfile, uuidresource;
+        String source, destination, type, access, launcherStartClass, timestamp, uuid, uuidfile, uuidresource;
         long lastmodified = 0;
         Map properties = null;
 
@@ -728,8 +726,6 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                 source = getTextNodeValue(currentElement, C_EXPORT_TAG_SOURCE);
                 destination = getTextNodeValue(currentElement, C_EXPORT_TAG_DESTINATION);
                 type = getTextNodeValue(currentElement, C_EXPORT_TAG_TYPE);
-                user = getTextNodeValue(currentElement, C_EXPORT_TAG_USER);
-                group = getTextNodeValue(currentElement, C_EXPORT_TAG_GROUP);
                 access = getTextNodeValue(currentElement, C_EXPORT_TAG_ACCESS);
                 uuid = getTextNodeValue(currentElement, C_EXPORT_TAG_UUID);
                 uuidfile = getTextNodeValue(currentElement, C_EXPORT_TAG_UUIDFILE);
@@ -813,7 +809,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     }
 
                     // import the specified file 
-                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, user, group, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
 
                     if (res != null) {
 
@@ -988,19 +984,9 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
             resname="/"+resname+"/";           
             // now check if the folder is really empty. Only delete empty folders
             List files=m_cms.getFilesInFolder(resname, false);
-
-// TODO: Remove debug code when getFilesInFolde is working correctly
-//System.err.println("files: "+files.size()); 
-//Iterator j=files.iterator();
-//while (j.hasNext()) {
-//    CmsResource r=(CmsResource)j.next();
-//System.err.println("++"+r.getName());
-//System.err.println("++"+r.getState());
-//} 
-    
+   
             if (files.size()==0) {
-                List folders=m_cms.getSubFolders(resname, false);   
-//stem.err.println("folders: "+folders.size());                                   
+                List folders=m_cms.getSubFolders(resname, false);                                     
                 if (folders.size()==0) {                                     
                     m_report.print("( " + counter + " / " + size + " ) ", I_CmsReport.C_FORMAT_DEFAULT);
                     m_report.print(m_report.key("report.delfolder")+" "+ resname, I_CmsReport.C_FORMAT_NOTE);
