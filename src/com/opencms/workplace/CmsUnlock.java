@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
- * Date   : $Date: 2000/03/27 10:01:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/03/27 13:04:30 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.util.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.14 $ $Date: 2000/03/27 10:01:52 $
+ * @version $Revision: 1.15 $ $Date: 2000/03/27 13:04:30 $
  */
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants, I_CmsNewsConstants {
@@ -85,6 +85,9 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
         
         // the template to be displayed
         String template=null;
+        
+        // get the lasturl parameter
+        String lasturl = getLastUrl(cms, parameters);
         
         String unlock=(String)parameters.get(C_PARA_UNLOCK);
         String filename=(String)parameters.get(C_PARA_FILE);
@@ -132,7 +135,11 @@ public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,
              // TODO: ErrorHandling
              // return to filelist
             try {
-                cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                if(lasturl == null || "".equals(lasturl)) {
+                    cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
+                } else {
+                    ((HttpServletResponse)(cms.getRequestContext().getResponse().getOriginalResponse())).sendRedirect(lasturl);                       
+                }                            
             } catch (Exception e) {
                   throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
             }
