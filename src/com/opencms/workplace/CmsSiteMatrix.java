@@ -2,7 +2,7 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSiteMatrix.java,v $
- * Date   : $Date: 2000/09/22 14:32:48 $
+ * Date   : $Date: 2000/09/22 16:07:45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,14 +43,13 @@ import javax.servlet.http.*;
  */
 public class CmsSiteMatrix extends com.opencms.template.CmsXmlTemplate {
 /**
- * Creates a matrix from a the categories and sites in the system.
- * called as Object matrix[][] = createMatrix(cms.getAllCategories(), cms.getSiteMatrixInfo());
+ * Creates a matrix from the categories and sites in the system.
  * Creation date: (09/22/00 13:32:01)
  * @return Object[][]
  * @param categories the result of CmsObject.getAllCategories()
  * @param sites the result of CmsObject.getSiteMatrixInfo()
  */
-public static Object[][] createMatrix(Vector categories, Vector sites)
+private static Object[][] createMatrix(Vector categories, Vector sites)
 {
 	/* Reminder of how a site hashtable was created
 	a.put("siteid", new Integer(res.getInt("SITE_ID")));
@@ -79,19 +78,19 @@ public static Object[][] createMatrix(Vector categories, Vector sites)
 		country_key = site.get("countryid").toString() + "x" + site.get("langid").toString();
 		if (country_map.containsKey(country_key))
 		{
-			country_place = ((Integer)country_map.get(country_key)).intValue();
+			country_place = ((Integer) country_map.get(country_key)).intValue();
 		}
 		else
 		{
 			country_place = country_count++;
-			matrix[0][country_place] = country_key;
+			matrix[0][country_place] = (String)site.get("countryname") + "/" + (String)site.get("langname");
 			country_map.put(country_key, new Integer(country_place));
 		}
-		//
+
 		category_place = ((Integer) category_map.get((Integer) site.get("categoryid"))).intValue();
 		matrix[category_place][country_place] = site;
 	}
-	//
+
 	return matrix;
 }
 /**
