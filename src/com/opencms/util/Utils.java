@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2001/10/12 07:46:09 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/11/09 11:23:40 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -357,6 +357,29 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
         String partsArray[] = new String[parts.size()];
         parts.copyInto((Object[])partsArray);
         return (partsArray);
+    }
+
+    /**
+     * This method splits a overgiven string into substrings.
+     *
+     * @param toSplit the String to split.
+     * @param at the delimeter.
+     *
+     * @return an Array of Strings.
+     */
+    public static final String replace(String toReplace, String replaceKey, String replaceWith) {
+        StringBuffer retValue = new StringBuffer();
+
+        int index = 0;
+        int nextIndex = toReplace.indexOf(replaceKey);
+        while(nextIndex != -1) {
+            retValue.append(toReplace.substring(index, nextIndex))
+                    .append(replaceWith );
+            index = nextIndex + replaceKey.length();
+            nextIndex = toReplace.indexOf(replaceKey, index);
+        }
+        retValue.append(toReplace.substring(index));
+        return retValue.toString();
     }
 
     /**

@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/09 07:18:00 $
- * Version: $Revision: 1.8 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/09 11:23:40 $
+ * Version: $Revision: 1.9 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -32,6 +32,7 @@ import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.boot.CmsBase;
 import com.opencms.file.*;
+import com.opencms.util.*;
 import com.opencms.dbpool.CmsIdGenerator;
 import com.opencms.defaults.master.*;
 import com.opencms.boot.*;
@@ -590,6 +591,33 @@ public class CmsDbAccess {
      */
     protected PreparedStatement sqlPrepare(Connection con, String queryKey) throws SQLException {
         return con.prepareStatement(m_queries.getProperty(queryKey, ""));
+    }
+
+    /**
+     * Creates a new connection and prepares a stement.
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @param con the Connection to use.
+     * @param queryKey the key for the query to use. The query will be get
+     * by m_queries.getParameter(key)
+     */
+    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
+        String statement = m_queries.getProperty(queryKey, "");
+        String moduleMaster;
+        String channelRel;
+        String media;
+        if(isOnlineProject(cms)) {
+            moduleMaster = "CMS_MODULE_ONLINE_MASTER";
+            channelRel = "MODULE_ONLINE_CHANNEL_REL";
+            media = "CMS_MODULE_ONLINE_MEDIA";
+        } else {
+            moduleMaster = "CMS_MODULE_MASTER";
+            channelRel = "MODULE_CHANNEL_REL";
+            media = "CMS_MODULE_MEDIA";
+        }
+        statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
+        statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
+        statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
+        return con.prepareStatement(statement);
     }
 
     /**
@@ -1788,5 +1816,22 @@ public class CmsDbAccess {
         } finally {
             sqlClose(con, stmnt, res);
         }
+    }
+
+    /**
+     * Returns the correct connection. If this is the onlineproject it returns
+     * the online connection, else it returns the offline connection.
+     * @param cms the CmsObject to get access to cms-ressources.
+     * @returns the SQLConnection.
+     * @throws SQLException if the connection can not be returned.
+     */
+    public Connection getConnection(CmsObject cms) throws SQLException {
+        String poolToUse;
+        if(isOnlineProject(cms)) {
+            poolToUse = m_onlinePoolName;
+        } else {
+            poolToUse = m_poolName;
+        }
+        return DriverManager.getConnection(poolToUse);
     }
 }

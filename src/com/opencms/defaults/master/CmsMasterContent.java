@@ -1,8 +1,8 @@
 /**
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
- * Author : $Author: e.falkenhan $
- * Date   : $Date: 2001/11/09 07:18:43 $
- * Version: $Revision: 1.5 $
+ * Author : $Author: a.schouten $
+ * Date   : $Date: 2001/11/09 11:23:40 $
+ * Version: $Revision: 1.6 $
  * Release: $Name:  $
  *
  * Copyright (c) 2000 Framfab Deutschland ag.   All Rights Reserved.
@@ -39,8 +39,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.5 $
- * $Date: 2001/11/09 07:18:43 $
+ * $Revision: 1.6 $
+ * $Date: 2001/11/09 11:23:40 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -57,13 +57,13 @@ public abstract class CmsMasterContent
 
     /** A private HashMap to store all data access-objects. */
     private static HashMap c_accessObjects = new HashMap();
-    
+
     /** the root channel for all channels of this module */
     protected static String c_rootChannel = null;
-    
+
     /** Vector of currently selected channels */
     protected Vector m_selectedChannels = null;
-    
+
     /** Vector of currently available channels */
     protected Vector m_availableChannels = null;
 
@@ -676,7 +676,7 @@ public abstract class CmsMasterContent
     public Object getVersionFromHistory(CmsObject cms, int versionId) throws Exception{
         return getDbAccessObject(this.getSubId()).getVersionFromHistory(cms, this.getClass(), m_dataSet.m_masterId, this.getSubId(), versionId);
     }
-    
+
     /**
      * Get the root channel for this module
      * @return name of the root channel for this module
@@ -684,7 +684,7 @@ public abstract class CmsMasterContent
      public static String getRootChannel() {
         return c_rootChannel;
      }
-    
+
     /**
      * Set the root channel for this module
      * @param newRootChannel a new value for the root channel
@@ -692,7 +692,7 @@ public abstract class CmsMasterContent
     public static void setRootChannel(String newRootChannel) {
         c_rootChannel = newRootChannel;
     }
-    
+
     /**
      * Get all currently selected channels
      * @return Vector of all currently selected channels
@@ -701,9 +701,9 @@ public abstract class CmsMasterContent
         if (m_selectedChannels == null) {
             m_selectedChannels = getChannels();
         }
-        return m_selectedChannels;  
+        return m_selectedChannels;
      }
-     
+
      /**
      * set Selected Channels
      * @param channels a String containing the channels names as a comma separated list
@@ -718,10 +718,10 @@ public abstract class CmsMasterContent
             for (int i=0; i<tokens; i++) {
                 v.addElement(tk.nextToken());
             }
-            m_selectedChannels = v;   
-        } 
+            m_selectedChannels = v;
+        }
     }
-     
+
      /**
       * Get all currently available channels
       * @return a Vector of all channels that can be selected
@@ -741,7 +741,7 @@ public abstract class CmsMasterContent
         }
         return m_availableChannels;
       }
-      
+
     /**
      * Set the Available Channels
      * @param channels a String containing the channels to add as a comma separated list
@@ -756,10 +756,10 @@ public abstract class CmsMasterContent
             for (int i=0; i<tokens; i++) {
                 v.addElement(tk.nextToken());
             }
-            m_availableChannels = v;    
+            m_availableChannels = v;
         }
     }
-      
+
     /**
      * Get all subchannels of a channel
      * @param cms object to access system resources
@@ -785,11 +785,11 @@ public abstract class CmsMasterContent
         }
         cms.setContextToVfs();
         return allChannels;
-    }    
-    
-    /** 
-     * Add or remove channels 
-     * compares the currently selected channels with the selected 
+    }
+
+    /**
+     * Add or remove channels
+     * compares the currently selected channels with the selected
      * channels stored in the database and adds or deletes channels if necessary
      */
     protected void updateChannels() throws CmsException{
@@ -806,8 +806,8 @@ public abstract class CmsMasterContent
             if (!found) {
                 deleteChannel((String)dbChannels.elementAt(i));
             }
-        } 
-        
+        }
+
         // mark all channels to be added if existing in m_selectedChannels but not in database
         for (int i=0; i < selectedChannels.size(); i++) {
             boolean found = false;
