@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2003/02/04 09:26:37 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2003/02/04 11:11:49 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2003/02/04 09:26:37 $
+ * @version $Revision: 1.44 $ $Date: 2003/02/04 11:11:49 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -321,10 +321,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
             }
             session.putValue(C_PARA_OLDPANEL, panel);
         }                
-        
-        System.out.println();
-        System.out.println( "button: " + button );   
-        System.out.println( "panel: " + parameters.get(C_PARA_PANEL) );
 
         // if the OK or cancel buttons are pressed return to the explorer and clear
         // the data in the session.
