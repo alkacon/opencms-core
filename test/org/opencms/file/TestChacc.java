@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2004/06/04 09:06:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/06 10:47:28 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import junit.framework.TestSuite;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
@@ -48,7 +49,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -88,7 +89,8 @@ public class TestChacc extends OpenCmsTestCase {
     }     
     
     /**
-     *  Test the chacc method on a file and a group.<p>
+     * Test the chacc method on a file and a group.<p>
+     * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
@@ -101,7 +103,7 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
-        cms.chacc(resource1, "group", group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
 
         // now evaluate the result
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHACC);
@@ -123,8 +125,9 @@ public class TestChacc extends OpenCmsTestCase {
         tc.assertAcl(cms, resource1, group.getId(), permission);
     }
     
-     /**
-     *  Test the chacc method on a file and a group.<p>
+    /**
+     * Test the chacc method on a file and a group.<p>
+     * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
@@ -137,7 +140,7 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
-        cms.chacc(resource1, "group", group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
 
         //cms.chacc(resource1, "group", "Guests", I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
 
@@ -182,8 +185,9 @@ public class TestChacc extends OpenCmsTestCase {
         }  
     }
 
-     /**
-     *  Test the chacc method on a file and a user.<p>
+    /**
+     * Test the chacc method on a file and a user.<p>
+     * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject
      * @param resource1 the resource to change permissions
@@ -196,7 +200,7 @@ public class TestChacc extends OpenCmsTestCase {
        
         tc.storeResources(cms, resource1);
                 
-        cms.chacc(resource1, "user", user.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_USER, user.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
 
         //cms.chacc(resource1, "group", "Guests", I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
 
@@ -232,7 +236,7 @@ public class TestChacc extends OpenCmsTestCase {
         chaccFileGroup(this, cms, "/index.html", cms.readGroup("Users"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_READ, I_CmsConstants.C_ACCESS_WRITE), I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);   
     }  
     
-     /**
+    /**
      * Test the chacc method on a file and a user.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -243,7 +247,7 @@ public class TestChacc extends OpenCmsTestCase {
         chaccFileUser(this, cms, "/folder1/index.html", cms.readUser("Guest"), new CmsPermissionSet(I_CmsConstants.C_ACCESS_WRITE, I_CmsConstants.C_ACCESS_READ), 0);   
     }  
     
-     /**
+    /**
      * Test the chacc method on a folder and a group.<p>
      * 
      * @throws Throwable if something goes wrong
