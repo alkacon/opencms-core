@@ -115,6 +115,7 @@
 				<chtype>Sorry, the file type could not be changed.</chtype>
 				<delete>Sorry, the file could not be deleted.</delete>
 				<deleteuser> Sorry, the user could not be deleted.</deleteuser>
+				<deleteextension>Sorry, the file extension could not be deleted.</deleteextension>
 				<deletegroup>Sorry, the group could not be deleted.</deletegroup>
 				<changeuser>Sorry, the user data could not be changed.</changeuser>
 				<adduser> Sorry, the user could not be created.</adduser>
@@ -145,6 +146,7 @@
 				<chtype>You don't have the needed permissions.</chtype>
 				<delete>The file is locked by</delete>
 				<deleteuser>The users Admin and Guest can not be deleted.</deleteuser>
+				<deleteextension>see details</deleteextension>
 				<deletegroup>There are still users in the group.</deletegroup>
 				<database>There was a system error.</database>
 				<datamissing>The fields User, Name and Email must be filled out.</datamissing> 
@@ -181,6 +183,7 @@
 				<chpwd2>Please enter the old password again.</chpwd2>
 				<chtype>Please contact your system administrator.</chtype>
 				<delete>Please try again later, or contact your system administrator.</delete>
+				<deleteextension>Please contact your system administrator.<deleteextension>
 				<deleteuser>Please contact your system administrator.</deleteuser>
 				<deletegroup>Please contact your system administrator.</deletegroup>
 				<database>You must have Admin permissions to export or import the database.</database>
@@ -211,6 +214,7 @@
 				<chtype>Change File Type</chtype>
 				<delete>Delete File</delete>
 				<deleteuser>Delete User</deleteuser>
+				<deleteextension>Delete file extension</deleteextension>
 				<deletegroup>Delete Group</deletegroup>
 				<database>Database Import/Export</database>
 				<lock>Lock File</lock>

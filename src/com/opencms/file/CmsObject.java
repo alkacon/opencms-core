@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.68 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *  
- * @version $Revision: 1.67 $ $Date: 2000/04/13 21:45:08 $ 
+ * @version $Revision: 1.68 $ $Date: 2000/04/17 10:37:10 $ 
  * 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
@@ -1718,6 +1718,21 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 		c_rb.writeFileExtensions(m_context.currentUser(), m_context.currentProject(), extensions);
 	}
 	 
+	/**
+	 * adds a file extension to the list of known file extensions 
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param extension a file extension like 'html'
+	 * @param resTypeName name of the resource type associated to the extension
+	 */
+	
+	public void addFileExtension(String extension, String resTypeName)
+		throws CmsException {
+		c_rb.addFileExtension(m_context.currentUser(), m_context.currentProject(), 
+							  extension, resTypeName);
+	}
 	
 	/**
 	 * Writes the export-path for the system.

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/setup/Attic/CmsShell.java,v $
- * Date   : $Date: 2000/04/04 10:28:48 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.37 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -39,7 +39,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.36 $ $Date: 2000/04/04 10:28:48 $
+ * @version $Revision: 1.37 $ $Date: 2000/04/17 10:37:10 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -850,7 +850,7 @@ public class CmsShell implements I_CmsConstants {
 	}
 
 	/**
-	 * Adds a CmsResourceTypes.
+	 * Adds a CmsResourceType.
 	 * 
 	 * @param resourceType the name of the resource to get.
 	 * @param launcherType the launcherType-id
@@ -865,6 +865,20 @@ public class CmsShell implements I_CmsConstants {
 		} catch( Exception exc ) {
 			printException(exc);
 		}		
+	}
+	
+	/**
+	* adds a file extension.
+	* @param extension a file extension, e.g. 'html'
+	* @param resourceType, name of a resource type like 'page'
+	*/
+	
+	public void addFileExtension(String extension, String resourceType){
+		try {
+			m_cms.addFileExtension(extension, resourceType);
+		} catch (Exception exc) {
+			printException(exc);	
+		}
 	}
 
 	/**

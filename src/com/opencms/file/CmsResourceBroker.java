@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 22:05:41 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.107 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.106 $ $Date: 2000/04/13 22:05:41 $
+ * @version $Revision: 1.107 $ $Date: 2000/04/17 10:37:10 $
  * 
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2129,12 +2129,39 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 	
+	/**
+	 * adds a file extension to the list of known file extensions 
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extension a file extension like 'html'
+	 * @param resTypeName name of the resource type associated to the extension
+	 */
 	
-	
-	
-	
-	
-	
+	public void addFileExtension(A_CmsUser currentUser, A_CmsProject currentProject,
+								 String extension, String resTypeName)
+		throws CmsException {
+		if (extension != null && resTypeName != null) {
+			if (isAdmin(currentUser, currentProject)) { 
+				Hashtable suffixes=(Hashtable) m_systempropertyRb.readProperty(C_SYSTEMPROPERTY_EXTENSIONS); 
+				if (suffixes == null) {
+					suffixes = new Hashtable();	
+					suffixes.put(extension, resTypeName);
+					m_systempropertyRb.addProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes); 
+				} else {
+					suffixes.put(extension, resTypeName);
+					m_systempropertyRb.writeProperty(C_SYSTEMPROPERTY_EXTENSIONS, suffixes); 
+				}   
+			} else {
+				throw new CmsException("[" + this.getClass().getName() + "] " + extension, 
+					CmsException.C_NO_ACCESS);
+			}
+		} 
+	}
+	 
 	
 	
 	
@@ -2346,7 +2373,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	}
 	
 	/**
-	 * Adds a CmsResourceTypes.
+	 * Adds a CmsResourceType.
 	 * 
 	 * <B>Security:</B>
 	 * Users, which are in the group "administrators" are granted.<BR/>

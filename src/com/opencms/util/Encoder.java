@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Encoder.java,v $
- * Date   : $Date: 2000/04/14 08:33:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * replaxed with <code>%hex</code> where hex is a two digit hex number.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/14 08:33:05 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/17 10:37:10 $
  */
 public class Encoder { 
 	
@@ -89,9 +89,8 @@ public class Encoder {
 	  StringBuffer ret=new StringBuffer();
       // URLEncode the text string. This produces a very similar encoding to JavaSscript
       // encoding, except the blank which is not encoded into a %20.
-	  String enc=URLEncoder.encode(source);
+	  String enc=URLEncoder.encode(source); 
 	  
-	  System.err.println("URLEncoded:"+enc);
 	  for (int z=0; z < enc.length(); z++) {
 		  if (enc.charAt(z) == '+') { 
 			  ret.append("%20"); 

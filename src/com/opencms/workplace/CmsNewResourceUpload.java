@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2000/04/14 11:39:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/04/14 11:39:36 $
+ * @version $Revision: 1.7 $ $Date: 2000/04/17 10:37:10 $
  */
 public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -86,7 +86,7 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, 
                              Hashtable parameters, String templateSelector)
         throws CmsException {
-                      
+	                      
         // the template to be displayed
         String template=null;
 
@@ -208,62 +208,76 @@ public class CmsNewResourceUpload extends CmsWorkplaceDefault implements I_CmsWp
         return startProcessing(cms,xmlTemplateDocument,"",parameters,template);
     }
     
-      /**
-      * Gets the resources displayed in the Radiobutton group on the chtype dialog.
-      * @param cms The CmsObject.
-      * @param lang The langauge definitions.
-      * @param names The names of the new rescources.
-      * @param values The links that are connected with each resource.
-      * @param parameters Hashtable of parameters (not used yet).
-      * @param descriptions Description that will be displayed for the new resource.
-      * @returns The vectors names and values are filled with the information found in the 
-      * workplace.ini.
-      * @exception Throws CmsException if something goes wrong.
-      */
-      public void getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
-            throws CmsException {
-
-           // Check if the list of available resources is not yet loaded from the workplace.ini
-            if(m_names == null || m_values == null) {
-              m_names = new Vector();
-              m_values = new Vector();
-
-            CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
-            configFile.getWorkplaceIniData(m_names, m_values,"RESOURCETYPES","RESOURCE");
-            }
+    /**
+    * Gets the resources displayed in the Radiobutton group on the chtype dialog.
+    * @param cms The CmsObject.
+    * @param lang The langauge definitions.
+    * @param names The names of the new rescources.
+    * @param values The links that are connected with each resource.
+    * @param parameters Hashtable of parameters (not used yet).
+    * @param descriptions Description that will be displayed for the new resource.
+    * @returns The vectors names and values are filled with the information found in the workplace.ini.
+    * @return the number of the preselected item, -1 if none preselected 
+    * @exception Throws CmsException if something goes wrong.
+    */
+    public int getResources(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Vector descriptions, Hashtable parameters) 
+		throws CmsException { 
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+		String filename = (String) session.getValue(C_PARA_FILE); 
+		String suffix = filename.substring(filename.lastIndexOf('.')+1);
+		suffix = suffix.toLowerCase(); // file extension of filename
+		   
+		// read the known file extensions from the database
+		Hashtable extensions = cms.readFileExtensions(); 
+		String resType = new String();
+		if (extensions != null) {
+			resType = (String) extensions.get(suffix);	
+		}
+		if (resType == null) {
+			resType = "";	
+		} 
+		int ret=-1;
+        // Check if the list of available resources is not yet loaded from the workplace.ini
+        if(m_names == null || m_values == null) {
+			m_names = new Vector();
+            m_values = new Vector();
+			CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);            
+			configFile.getWorkplaceIniData(m_names, m_values,"RESOURCETYPES","RESOURCE");
+        }
             
-            // Check if the temportary name and value vectors are not initialized, create 
-            // them if nescessary.
-            if (names == null) {
-                names=new Vector();
-            }
-            if (values == null) {
-                values=new Vector();
-            }
-            if (descriptions == null) {
-                descriptions=new Vector();
-            }
+        // Check if the temportary name and value vectors are not initialized, create 
+        // them if nescessary.
+        if (names == null) {
+           names=new Vector();
+        }
+        if (values == null) {
+			values=new Vector();
+        }
+        if (descriptions == null) {
+			descriptions=new Vector();
+        }
             
-            // OK. Now m_names and m_values contain all available
-            // resource information.
-            // Loop through the vectors and fill the result vectors.
-            int numViews = m_names.size();        
-            for(int i=0; i<numViews; i++) {
-                String loopValue = (String)m_values.elementAt(i);
-                String loopName = (String)m_names.elementAt(i);
-                values.addElement(loopValue);
-                names.addElement("file_" + loopName);
-                String descr;
-                if(lang != null) {
-                    descr = lang.getLanguageValue("fileicon." + loopName);
-                } else {
-                    descr = loopName;
-                }
-                descriptions.addElement(descr);
+        // OK. Now m_names and m_values contain all available
+        // resource information.
+        // Loop through the vectors and fill the result vectors.
+        int numViews = m_names.size();        
+        for(int i=0; i<numViews; i++) {
+			String loopValue = (String)m_values.elementAt(i);
+            String loopName = (String)m_names.elementAt(i);
+            values.addElement(loopValue);
+            names.addElement("file_" + loopName);
+            String descr;
+            if(lang != null) {
+				descr = lang.getLanguageValue("fileicon." + loopName);
+            } else {
+				descr = loopName;
             }
-      }     
-
-
-   
-     
+            descriptions.addElement(descr);
+			if (resType.equals(loopName)) { 
+				// known file extension
+				ret=i;	
+			}
+        }
+		return ret;
+    }     
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.66 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.core.*;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.65 $ $Date: 2000/04/13 21:45:08 $ 
+ * @version $Revision: 1.66 $ $Date: 2000/04/17 10:37:10 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -1346,15 +1346,31 @@ public abstract class A_CmsObject {
 	abstract public Hashtable readMimeTypes()
 		throws CmsException;
 	
+	/**
+	 * adds reads the Hashtable with the file extensions 
+	 */
 	
 	abstract public Hashtable readFileExtensions()
 		throws CmsException;
 
+	/**
+	 * writes the Hashtable with file extensions to the database
+	 * 
+	 * @param extensions a Hashtable with extensions as keys and resourcetypes as values 
+	 */
+	
 	abstract public void writeFileExtensions(Hashtable extensions) 
 		throws CmsException;
 	
-	
-	
+	/**
+	 * adds one file extension to the list of known file extensions  
+	 * 
+	 * @param extension a file extension like 'html'
+	 * @param resTypeName name of the resource type associated to the extension
+	 */
+	 
+	abstract public void addFileExtension (String extension, String resTypeName)
+		throws CmsException;
 	
 	/**
 	 * Writes the export-path for the system.

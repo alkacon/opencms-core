@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsInitMySqlFillDefaults.java,v $
- * Date   : $Date: 2000/04/04 10:28:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.20 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,7 +38,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.19 $ $Date: 2000/04/04 10:28:47 $
+ * @version $Revision: 1.20 $ $Date: 2000/04/17 10:37:10 $
  */
 public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstants {
 	
@@ -72,9 +72,13 @@ public class CmsInitMySqlFillDefaults extends A_CmsInit implements I_CmsConstant
 			new CmsAccessTask(propertyDriver, propertyConnectString ) );
 
 		userRb.addGroup(C_GROUP_GUEST, "the guest-group", C_FLAG_ENABLED, null);
-		A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", C_FLAG_ENABLED, null);
-		userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", C_FLAG_ENABLED, null);
-		userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", C_FLAG_ENABLED, C_GROUP_GUEST);
+		A_CmsGroup adminGroup = userRb.addGroup(C_GROUP_ADMIN, "the admin-group", 
+												C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER, null);
+		userRb.addGroup(C_GROUP_PROJECTLEADER, "the projectmanager-group", 
+						C_FLAG_ENABLED|C_FLAG_GROUP_PROJECTMANAGER|C_FLAG_GROUP_PROJECTCOWORKER|C_FLAG_GROUP_ROLE,
+						null);
+		userRb.addGroup(C_GROUP_USERS, "the users-group to access the workplace", 
+						C_FLAG_ENABLED|C_FLAG_GROUP_ROLE|C_FLAG_GROUP_PROJECTCOWORKER, C_GROUP_GUEST);
 			
 		userRb.addUser(C_USER_GUEST, "", C_GROUP_GUEST, "the guest-user", 
 					   new Hashtable(), C_FLAG_ENABLED);

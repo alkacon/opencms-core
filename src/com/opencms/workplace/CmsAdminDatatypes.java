@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
- * Date   : $Date: 2000/04/14 08:33:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.6 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/04/14 08:33:05 $
+ * @version $Revision: 1.6 $ $Date: 2000/04/17 10:37:10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -154,7 +154,8 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
 					cms.writeFileExtensions(h);
 					templateSelector="";
 				} catch (CmsException e) {
-						templateSelector="errordelete"; 
+					xmlTemplateDocument.setData("DELETEDETAILS", Utils.getStackTrace(e));
+					templateSelector="errordelete"; 
 				}
 			} else { 
 				templateSelector="RUsuredelete";	

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/04/13 21:45:08 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2000/04/17 10:37:10 $
+ * Version: $Revision: 1.62 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import com.opencms.core.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.61 $ $Date: 2000/04/13 21:45:08 $
+ * @version $Revision: 1.62 $ $Date: 2000/04/17 10:37:10 $
  * 
  */
 interface I_CmsResourceBroker {
@@ -1175,6 +1175,23 @@ interface I_CmsResourceBroker {
 	public void writeFileExtensions(A_CmsUser currentUser, A_CmsProject currentProject,
 									Hashtable extensions)
 		throws CmsException;
+	
+	/**
+	 * adds a file extension to the list of known file extensions 
+	 * 
+	 * <B>Security:</B>
+	 * Users, which are in the group "administrators" are granted.<BR/>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param extension a file extension like 'html'
+	 * @param resTypeName name of the resource type associated to the extension
+	 */
+	
+	public void addFileExtension(A_CmsUser currentUser, A_CmsProject currentProject,
+								 String extension, String resTypeName)
+		throws CmsException;
+	
 	
     /**
 	 * Adds a new CmsMountPoint. 

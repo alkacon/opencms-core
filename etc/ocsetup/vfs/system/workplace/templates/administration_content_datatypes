@@ -217,7 +217,7 @@ function show_help()
  
  
 <TEMPLATE name="errordelete">
-<ERRORPAGE title="error.title.newextension" message="error.message.newextension" reason="error.reason.newextension" suggestion="error.suggestion.newextension" ref="administration_content_datatypes.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE>
+<ERRORPAGE title="error.title.deleteextension" message="error.message.deleteextension" reason="error.reason.deleteextension" suggestion="error.suggestion.deleteextension" ref="administration_content_datatypes.html" ><PROCESS>DELETEDETAILS</PROCESS></ERRORPAGE>
 </TEMPLATE> 
 
 
