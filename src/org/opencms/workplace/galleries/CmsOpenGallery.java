@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -96,15 +96,15 @@ public class CmsOpenGallery extends CmsDialog {
                     galleryPath += "/";
                 }
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=" + galleryType;
+                String galleryUri = A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=" + galleryType;
                 jsOpener.append("window.open('");
                 jsOpener.append(getJsp().link(galleryUri));
                 jsOpener.append("&");
-                jsOpener.append(CmsGallery.PARAM_DIALOGMODE);
+                jsOpener.append(A_CmsGallery.PARAM_DIALOGMODE);
                 jsOpener.append("=");
-                jsOpener.append(CmsGallery.MODE_VIEW);
+                jsOpener.append(A_CmsGallery.MODE_VIEW);
                 jsOpener.append("&");
-                jsOpener.append(CmsGallery.PARAM_GALLERYPATH);
+                jsOpener.append(A_CmsGallery.PARAM_GALLERYPATH);
                 jsOpener.append("=");
                 jsOpener.append(galleryPath);
                 jsOpener.append("', '");

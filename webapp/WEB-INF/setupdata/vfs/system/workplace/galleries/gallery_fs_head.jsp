@@ -3,7 +3,7 @@
 	// initialize action element for link substitution
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	
-	CmsGallery wp = CmsGallery.createInstance(cms);
+	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
 	
 	String params = "?" + wp.paramsAsRequest();
 	

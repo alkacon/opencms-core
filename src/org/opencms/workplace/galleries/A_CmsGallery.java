@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsGallery.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
+ * Date   : $Date: 2004/12/10 11:42:20 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpSession;
  * 
  * @since 5.5.2
  */
-public abstract class CmsGallery extends CmsDialog {
+public abstract class A_CmsGallery extends CmsDialog {
     
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
@@ -136,9 +136,9 @@ public abstract class CmsGallery extends CmsDialog {
     private String m_paramSearchWord;
 
     /**
-     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
-    public CmsGallery() {
+    public A_CmsGallery() {
         this(null);
     }
     
@@ -147,7 +147,7 @@ public abstract class CmsGallery extends CmsDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsGallery(CmsJspActionElement jsp) {
+    public A_CmsGallery(CmsJspActionElement jsp) {
         super(jsp);
     }
 
@@ -158,13 +158,13 @@ public abstract class CmsGallery extends CmsDialog {
      * 
      * @return a new gallery instance
      */
-    public static CmsGallery createInstance(CmsJspActionElement jsp) {
+    public static A_CmsGallery createInstance(CmsJspActionElement jsp) {
         String galleryTypeName = null;
         if (jsp != null) {
             galleryTypeName = jsp.getRequest().getParameter(PARAM_GALLERY_TYPENAME);
         }
         
-        return CmsGallery.createInstance(galleryTypeName, jsp);
+        return A_CmsGallery.createInstance(galleryTypeName, jsp);
     }
     
     /**
@@ -175,7 +175,7 @@ public abstract class CmsGallery extends CmsDialog {
      * 
      * @return a new gallery instance of the given gallery type name
      */
-    public static CmsGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
+    public static A_CmsGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
 
         if (jsp != null) {
             
@@ -200,7 +200,7 @@ public abstract class CmsGallery extends CmsDialog {
                 + galleryTypeName
                 + "' requested"
                 + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
-            OpenCms.getLog(CmsGallery.class).error(message);
+            OpenCms.getLog(A_CmsGallery.class).error(message);
             throw new RuntimeException(message);
         }
 
@@ -208,7 +208,7 @@ public abstract class CmsGallery extends CmsDialog {
             // first get the class for the gallery
             Class galleryClass = Class.forName(className);
             // create a new instance and cast to a gallery
-            CmsGallery galleryInstance = (CmsGallery)galleryClass.newInstance();
+            A_CmsGallery galleryInstance = (A_CmsGallery)galleryClass.newInstance();
             // set the type name and id
             galleryInstance.m_galleryTypeName = galleryTypeName;
             galleryInstance.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(galleryTypeName).getTypeId();
@@ -224,7 +224,7 @@ public abstract class CmsGallery extends CmsDialog {
                 + galleryTypeName
                 + "'"
                 + (jsp != null ? " on JSP " + jsp.info("opencms.request.element.uri") : "");
-            OpenCms.getLog(CmsGallery.class).error(message);
+            OpenCms.getLog(A_CmsGallery.class).error(message);
             throw new RuntimeException(message, e);
         }
     }
@@ -630,17 +630,20 @@ public abstract class CmsGallery extends CmsDialog {
                 OpenCms.getLog(this).error(e);    
             }
         }
-        List systemGalleries = null;
-        try {
-            systemGalleries = getCms().readResources(I_CmsWpConstants.C_VFS_PATH_SYSTEM, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));            
-        } catch (CmsException e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);    
+        // if the current site is NOT the root site - add all other galleries from the system path up down  
+        if (!getCms().getRequestContext().getSiteRoot().equals("")) {
+            List systemGalleries = null;
+            try {
+                systemGalleries = getCms().readResources(I_CmsWpConstants.C_VFS_PATH_SYSTEM, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));            
+            } catch (CmsException e) {
+                if (OpenCms.getLog(this).isErrorEnabled()) {
+                    OpenCms.getLog(this).error(e);    
+                }
             }
-        }
-        
-        if (systemGalleries != null && systemGalleries.size() > 0) {
-            galleries.addAll(systemGalleries);
+            
+            if (systemGalleries != null && systemGalleries.size() > 0) {
+                galleries.addAll(systemGalleries);
+            }
         }
         
         return galleries;

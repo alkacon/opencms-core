@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2004/12/10 10:49:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,8 +47,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsWpConstants;
-import org.opencms.workplace.galleries.CmsGallery;
 import org.opencms.workplace.commons.CmsTouch;
+import org.opencms.workplace.galleries.A_CmsGallery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,7 +67,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 5.1
  */
@@ -725,7 +725,7 @@ public class CmsExplorer extends CmsWorkplace {
         }  else if (C_VIEW_GALLERY.equals(getSettings().getExplorerMode())) { 
         
             // select galleries
-            CmsGallery gallery = CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
+            A_CmsGallery gallery = A_CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
             return gallery.getGalleries();
         } else {
             // default is to return a list of all files in the folder

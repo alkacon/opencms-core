@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/TestWorkplace.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.workplace.galleries.CmsGallery;
+import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.workplace.galleries.CmsDownloadGallery;
 import org.opencms.workplace.galleries.CmsHtmlGallery;
 import org.opencms.workplace.galleries.CmsImageGallery;
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 
 /**
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.5.4
  */
@@ -98,31 +98,31 @@ public class TestWorkplace extends OpenCmsTestCase {
      */
     public void testGalleryClassCreation() throws Exception {
 
-        CmsGallery gallery;
+        A_CmsGallery gallery;
 
-        gallery = CmsGallery.createInstance("imagegallery", null);
+        gallery = A_CmsGallery.createInstance("imagegallery", null);
         assertEquals(gallery.getClass().getName(), CmsImageGallery.class.getName());
         assertEquals("imagegallery", gallery.getGalleryTypeName());
         assertEquals(15, gallery.getGalleryTypeId());        
         
-        gallery = CmsGallery.createInstance("downloadgallery", null);
+        gallery = A_CmsGallery.createInstance("downloadgallery", null);
         assertEquals(gallery.getClass().getName(), CmsDownloadGallery.class.getName());
         assertEquals("downloadgallery", gallery.getGalleryTypeName());
         assertEquals(18, gallery.getGalleryTypeId());     
         
-        gallery = CmsGallery.createInstance("linkgallery", null);
+        gallery = A_CmsGallery.createInstance("linkgallery", null);
         assertEquals(gallery.getClass().getName(), CmsLinkGallery.class.getName());
         assertEquals("linkgallery", gallery.getGalleryTypeName());
         assertEquals(16, gallery.getGalleryTypeId());     
         
-        gallery = CmsGallery.createInstance("htmlgallery", null);
+        gallery = A_CmsGallery.createInstance("htmlgallery", null);
         assertEquals(gallery.getClass().getName(), CmsHtmlGallery.class.getName());
         assertEquals("htmlgallery", gallery.getGalleryTypeName());
         assertEquals(17, gallery.getGalleryTypeId());     
         
         boolean error = true;
         try {
-            CmsGallery.createInstance("unknowngallery", null);
+            A_CmsGallery.createInstance("unknowngallery", null);
         } catch (RuntimeException e) {
             error = false;
         }
@@ -132,7 +132,7 @@ public class TestWorkplace extends OpenCmsTestCase {
 
         error = true;
         try {
-            CmsGallery.createInstance(null, null);
+            A_CmsGallery.createInstance(null, null);
         } catch (RuntimeException e) {
             error = false;
         }

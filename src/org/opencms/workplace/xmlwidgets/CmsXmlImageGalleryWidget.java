@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/xmlwidgets/Attic/CmsXmlImageGalleryWidget.java,v $
- * Date   : $Date: 2004/12/09 17:04:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.workplace.xmlwidgets;
 import org.opencms.file.CmsObject;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.CmsGallery;
+import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -45,7 +45,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  *
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.5.3
  */
 public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
@@ -88,7 +88,7 @@ public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
         StringBuffer result = new StringBuffer(16);
         result.append("function initVfsImageSelector() {\n");
         result.append("\timgGalleryPath = \"");
-        result.append(CmsGallery.C_PATH_GALLERIES + CmsGallery.C_OPEN_URI_SUFFIX + "?" + CmsGallery.PARAM_GALLERY_TYPENAME + "=imagegallery");
+        result.append(A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=imagegallery");
         result.append("\";\n");
         result.append("}\n");        
         return result.toString();
@@ -117,7 +117,7 @@ public class CmsXmlImageGalleryWidget extends A_CmsXmlWidget {
         result.append(id);
         result.append("');\"></td>");
         result.append(widgetDialog.buttonBarSpacer(1));
-        result.append(widgetDialog.button("javascript:openImageSelector('" + CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "imagegallery", "button.imagelist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
+        result.append(widgetDialog.button("javascript:openImageSelector('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');", null, "imagegallery", "button.imagelist", widgetDialog.getSettings().getUserSettings().getEditorButtonStyle()));
         // create preview button
         String previewClass = "hide";
         if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.startsWith("/")) {

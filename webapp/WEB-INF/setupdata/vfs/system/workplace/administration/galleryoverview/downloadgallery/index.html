@@ -1,0 +1,39 @@
+<%@ page import="
+	org.opencms.workplace.CmsDialog,
+	org.opencms.main.OpenCms,
+	org.opencms.file.CmsResource"
+    buffer="none" 
+%>
+<%	
+	// initialize the workplace class
+	CmsDialog wp = new CmsDialog(pageContext, request, response);	
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= OpenCms.getWorkplaceManager().getDefaultEncoding() %>">
+
+<title>Gallery Overview</title>
+<link rel=stylesheet type="text/css" href="<%=wp.getJsp().link("/system/workplace/resources/format.css")%>">
+
+</head>
+<body
+    bgcolor="#ffffff"
+    background="<%=wp.getJsp().link("/system/workplace/resources/bg_weiss.gif")%>"
+    bgproperties=fixed
+    onLoad="window.top.body.admin_head.location.href='<%=wp.getJsp().link("/system/workplace/action/administration_head.html")%>';">
+
+<%	
+    // 1. get "gallerytypename" by reading the folderpath
+    String galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getJsp().getRequestContext().getUri()));
+    if (galleryTypeName.endsWith("/")) {
+    	galleryTypeName = galleryTypeName.substring(0, galleryTypeName.length()-1);
+    }
+    // 2. Set in user settings
+    wp.getSettings().setGalleryType(galleryTypeName);
+    // 3. Change code in CmsExplorer to read setting
+	response.sendRedirect(wp.getJsp().link("/system/workplace/views/explorer/explorer_files.jsp?resource=/system/workplace/&mode=galleryview"));
+%>
+
+</body>
+</html>

@@ -7,7 +7,7 @@
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	
 	// get gallery instance
-	CmsGallery wp = CmsGallery.createInstance(cms);
+	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
 	
 %><%= wp.htmlStart(null) %>
 

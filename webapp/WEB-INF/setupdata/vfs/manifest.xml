@@ -2245,181 +2245,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/administration/downloadgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-100]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isProjectManager]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.downloadgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_downloadgallery]]></value>
-				</property>
-				<property>
-					<name>activemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminDownGalleries.isNotOnlineProject]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_content_downgalleries</source>
-			<destination>system/workplace/administration/downloadgallery/administration_content_downgalleries</destination>
-			<type>plain</type>
-			<uuidresource>1c2c3e46-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_content_downgallery_new</source>
-			<destination>system/workplace/administration/downloadgallery/administration_content_downgallery_new</destination>
-			<type>plain</type>
-			<uuidresource>1c31204c-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_content_downgallery_new.html</source>
-			<destination>system/workplace/administration/downloadgallery/administration_content_downgallery_new.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1c382432-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_content_downgallery_upload</source>
-			<destination>system/workplace/administration/downloadgallery/administration_content_downgallery_upload</destination>
-			<type>plain</type>
-			<uuidresource>1c3f5028-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_content_downgallery_upload.html</source>
-			<destination>system/workplace/administration/downloadgallery/administration_content_downgallery_upload.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1c467c1e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_head_downgalleries1</source>
-			<destination>system/workplace/administration/downloadgallery/administration_head_downgalleries1</destination>
-			<type>plain</type>
-			<uuidresource>1c4b3714-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_head_downgalleries1.html</source>
-			<destination>system/workplace/administration/downloadgallery/administration_head_downgalleries1.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1c52630a-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_head_downgalleries2</source>
-			<destination>system/workplace/administration/downloadgallery/administration_head_downgalleries2</destination>
-			<type>plain</type>
-			<uuidresource>1c598f00-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/administration_head_downgalleries2.html</source>
-			<destination>system/workplace/administration/downloadgallery/administration_head_downgalleries2.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1c60baf6-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/index.html</source>
-			<destination>system/workplace/administration/downloadgallery/index.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1c67e6ec-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/downloadgallery/opencms_kontextmenu.js</source>
-			<destination>system/workplace/administration/downloadgallery/opencms_kontextmenu.js</destination>
-			<type>plain</type>
-			<uuidresource>1c6ca1e2-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/administration/elementcache</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
@@ -2465,168 +2290,6 @@
 			<destination>system/workplace/administration/elementcache/index.html</destination>
 			<type>XMLTemplate</type>
 			<uuidresource>1c8225c3-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/externallinkgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-80]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isProjectManager]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.extlinkgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_extlinkgallery]]></value>
-				</property>
-				<property>
-					<name>activemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminPicGalleries.isNotOnlineProject]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_content_extlinkgalleries</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgalleries</destination>
-			<type>plain</type>
-			<uuidresource>1c92c79e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new</destination>
-			<type>plain</type>
-			<uuidresource>1c99f394-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new.html</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_content_extlinkgallery_new.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1ca11f8a-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_content_link_new</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_content_link_new</destination>
-			<type>plain</type>
-			<uuidresource>1caa9570-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_content_link_new.html</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_content_link_new.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1cb1c166-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1</destination>
-			<type>plain</type>
-			<uuidresource>1cbda84c-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1.html</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries1.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1cc4d442-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2</destination>
-			<type>plain</type>
-			<uuidresource>1cd0bb28-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html</source>
-			<destination>system/workplace/administration/externallinkgallery/administration_head_extlinkgalleries2.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1cd5761e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/externallinkgallery/index.html</source>
-			<destination>system/workplace/administration/externallinkgallery/index.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1cdf1314-c0f9-11d7-8d80-80884c2772a5</uuidresource>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
@@ -2684,7 +2347,228 @@
 				</property>
 			</properties>
 			<accesscontrol/>
+		</file>		
+		<file>
+			<destination>system/workplace/administration/galleryoverview</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 10 Dec 2004 09:34:03 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:36:19 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[-125.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.galleryoverview]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_galleryoverview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/downloadgallery</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 09 Dec 2004 17:58:59 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:57:04 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[20]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.downloadgallery]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_downloadgallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/administration/galleryoverview/downloadgallery/index.html</source>
+			<destination>system/workplace/administration/galleryoverview/downloadgallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 09:36:59 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:37:51 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Gallery overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/htmlgallery</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 09 Dec 2004 17:59:44 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:57:12 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[40]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.htmlgallery]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_htmlgallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/htmlgallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 09:36:59 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:37:51 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Gallery overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/imagegallery</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 09 Dec 2004 17:58:42 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:57:19 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[10]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.imagegallery]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_imagegallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/imagegallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 09:36:59 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:37:51 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Gallery overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/linkgallery</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 09 Dec 2004 17:59:29 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:57:26 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[30]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[icon.linkgallery]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ic_linkgallery]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/administration/galleryoverview/linkgallery/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>ab2e6499-4a00-11d9-b230-7f25ea187dc3</uuidresource>
+			<datelastmodified>Fri, 10 Dec 2004 09:36:59 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Dec 2004 17:37:51 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Gallery overview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>system/workplace/administration/history</destination>
 			<type>folder</type>
@@ -2803,168 +2687,6 @@
 					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/htmlgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-90]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isProjectManager]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.htmlgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_htmlgallery]]></value>
-				</property>
-				<property>
-					<name>activemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminHtmlGalleries.isNotOnlineProject]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_content_htmlgallery</source>
-			<destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery</destination>
-			<type>plain</type>
-			<uuidresource>1d07a9ca-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new</source>
-			<destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new</destination>
-			<type>plain</type>
-			<uuidresource>1d0eaeb0-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new.html</source>
-			<destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1d15daa6-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet</source>
-			<destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet</destination>
-			<type>plain</type>
-			<uuidresource>1d1f779c-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet.html</source>
-			<destination>system/workplace/administration/htmlgallery/administration_content_htmlgallery_new_snippet.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1d26a392-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1</source>
-			<destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1</destination>
-			<type>plain</type>
-			<uuidresource>1d2da878-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1.html</source>
-			<destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries1.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1d37456e-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2</source>
-			<destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2</destination>
-			<type>plain</type>
-			<uuidresource>1d3e7164-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2.html</source>
-			<destination>system/workplace/administration/htmlgallery/administration_head_htmlgalleries2.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1d459d5a-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/htmlgallery/index.html</source>
-			<destination>system/workplace/administration/htmlgallery/index.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1d4cc950-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -3678,168 +3400,6 @@
 			<destination>system/workplace/administration/module/properties.html</destination>
 			<type>XMLTemplate</type>
 			<uuidresource>1f0f3908-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/administration/picgallery</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[-110]]></value>
-				</property>
-				<property>
-					<name>visiblemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminPicGalleries.isProjectManager]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[icon.picgallery]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[ic_picgallery]]></value>
-				</property>
-				<property>
-					<name>activemethod</name>
-					<value><![CDATA[com.opencms.workplace.CmsAdminPicGalleries.isNotOnlineProject]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_content_picgalleries</source>
-			<destination>system/workplace/administration/picgallery/administration_content_picgalleries</destination>
-			<type>plain</type>
-			<uuidresource>1f224be3-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_content_picgallery_new</source>
-			<destination>system/workplace/administration/picgallery/administration_content_picgallery_new</destination>
-			<type>plain</type>
-			<uuidresource>1f2977d9-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_content_picgallery_new.html</source>
-			<destination>system/workplace/administration/picgallery/administration_content_picgallery_new.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1f30a3cf-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_content_picgallery_upload</source>
-			<destination>system/workplace/administration/picgallery/administration_content_picgallery_upload</destination>
-			<type>plain</type>
-			<uuidresource>1f37cfc5-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_content_picgallery_upload.html</source>
-			<destination>system/workplace/administration/picgallery/administration_content_picgallery_upload.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1f3efbbb-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_head_picgalleries1</source>
-			<destination>system/workplace/administration/picgallery/administration_head_picgalleries1</destination>
-			<type>plain</type>
-			<uuidresource>1f4871a1-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_head_picgalleries1.html</source>
-			<destination>system/workplace/administration/picgallery/administration_head_picgalleries1.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1f51e787-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_head_picgalleries2</source>
-			<destination>system/workplace/administration/picgallery/administration_head_picgalleries2</destination>
-			<type>plain</type>
-			<uuidresource>1f56c98d-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/administration_head_picgalleries2.html</source>
-			<destination>system/workplace/administration/picgallery/administration_head_picgalleries2.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1f603f73-c0f9-11d7-8d80-80884c2772a5</uuidresource>
-			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/picgallery/index.html</source>
-			<destination>system/workplace/administration/picgallery/index.html</destination>
-			<type>XMLTemplate</type>
-			<uuidresource>1f676b69-c0f9-11d7-8d80-80884c2772a5</uuidresource>
 			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>

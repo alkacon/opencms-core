@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,17 +45,17 @@ import javax.servlet.jsp.PageContext;
  * Generates the html gallery popup window which can be used in editors or as a dialog widget.<p>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.2
  */
-public class CmsHtmlGallery extends CmsGallery {
+public class CmsHtmlGallery extends A_CmsGallery {
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "html_fs.jsp";
 
     /**
-     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
     public CmsHtmlGallery() {
 
@@ -85,7 +85,7 @@ public class CmsHtmlGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#applyButton()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#applyButton()
      */
     public String applyButton() {
         if (MODE_VIEW.equals(getParamDialogMode())) {
@@ -119,7 +119,7 @@ public class CmsHtmlGallery extends CmsGallery {
     }   
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#getGalleryItemsTypeId()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
         
@@ -127,7 +127,7 @@ public class CmsHtmlGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#getPreviewBodyStyle()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()
      */
     public String getPreviewBodyStyle() {
         
@@ -135,7 +135,7 @@ public class CmsHtmlGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#getPreviewDivStyle()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewDivStyle()
      */
     public String getPreviewDivStyle() {
         
@@ -143,14 +143,14 @@ public class CmsHtmlGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#previewButton()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#previewButton()
      */
     public String previewButton() {
         return "";        
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#targetSelectBox()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#targetSelectBox()
      */
     public String targetSelectBox() {
         return "";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2004/12/09 16:24:01 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/12/10 11:42:20 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,17 +55,17 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Armen Markarian (a.markarian@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.5.2
  */
-public class CmsLinkGallery extends CmsGallery {
+public class CmsLinkGallery extends A_CmsGallery {
     
     /** URI of the image gallery popup dialog. */
     public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
 
     /**
-     * Public empty constructor, required for {@link CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
+     * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
     public CmsLinkGallery() {
 
@@ -95,7 +95,7 @@ public class CmsLinkGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#applyButton()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#applyButton()
      */
     public String applyButton() {
         
@@ -176,7 +176,7 @@ public class CmsLinkGallery extends CmsGallery {
     }           
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#getGalleryItemsTypeId()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getGalleryItemsTypeId()
      */
     public int getGalleryItemsTypeId() {
         
@@ -184,7 +184,7 @@ public class CmsLinkGallery extends CmsGallery {
     } 
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#wizardButton()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#wizardButton()
      */
     public String wizardButton() {
         
@@ -214,7 +214,7 @@ public class CmsLinkGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#buildGalleryItemListHeadline()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListHeadline()
      */
     protected String buildGalleryItemListHeadline() {
         
@@ -236,7 +236,7 @@ public class CmsLinkGallery extends CmsGallery {
     }
     
     /**
-     * @see org.opencms.workplace.galleries.CmsGallery#getHeadFrameSetHeight()
+     * @see org.opencms.workplace.galleries.A_CmsGallery#getHeadFrameSetHeight()
      */
     public String getHeadFrameSetHeight() {
         
