@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/03/29 18:20:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * @since 5.3
  */
 public class CmsLinkProcessor {
@@ -386,15 +386,8 @@ public class CmsLinkProcessor {
                 return OpenCms.getLinkManager().substituteLink(m_cms, link.getUri());
             }
 
-            // check if the link has to be returned with server name (and port) prefix
-            if (m_cms.getRequestContext().getSiteRoot().equals(siteRoot)) {
-                // if we are in the desired site, no server name is added 
-                return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
-            } else {
-                // otherwise, links are generated with protocol, server name and port (if not 80)
-                return CmsSiteManager.getSite(siteRoot).getUrl()
-                    + OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri());
-            }
+            // return the link with the server prefix, if necessary 
+            return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsUri(), siteRoot);
         } else {
 
             // don't touch external links

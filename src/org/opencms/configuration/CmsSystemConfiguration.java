@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/03/19 13:58:18 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/03/29 18:17:36 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,10 +48,12 @@ import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteMatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -77,6 +79,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The name of the default XML file for this configuration. */
     protected static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";  
+    
+    /** The node name for the alias node. */
+    protected static final String N_ALIAS = "alias";
     
     /** The node name for the avgcachebytes node. */
     protected static final String N_AVGCACHEBYTES = "avgcachebytes";
@@ -227,6 +232,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     
     /** The node name for the scheduler. */
     protected static final String N_SCHEDULER = "scheduler";
+    
+    /** The node name for the secure site. */
+    protected static final String N_SECURE = "secure";    
 
     /** The node name for the context site root. */
     protected static final String N_SITEROOT = "siteroot"; 
@@ -494,11 +502,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
-        
+
         // add site configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 2);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, "addSite", 3);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 0, A_SERVER);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE, 1, A_URI);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_SECURE, 2, A_SERVER);
+
+        // add an alias to the currently configured site
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, "addAliasToConfigSite", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
         
         // add compatibility parameter rules 
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
@@ -681,13 +694,25 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         Element sitesElement = systemElement.addElement(N_SITES);
         sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
         sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
-        Iterator siteIterator = m_siteManager.getSites().values().iterator();
+        Iterator siteIterator = new HashSet(m_siteManager.getSites().values()).iterator();
         while (siteIterator.hasNext()) {
-            CmsSite site = (CmsSite) siteIterator.next();
+            CmsSite site = (CmsSite)siteIterator.next();
             // create <site server="" uri=""/> subnode(s)
-            sitesElement.addElement(N_SITE)
-                .addAttribute(A_SERVER, site.getSiteMatcher().toString())
-                .addAttribute(A_URI, site.getSiteRoot().concat("/"));            
+            Element siteElement = sitesElement.addElement(N_SITE);
+
+            siteElement.addAttribute(A_SERVER, site.getSiteMatcher().toString());
+            siteElement.addAttribute(A_URI, site.getSiteRoot().concat("/"));
+            // create <secure server=""/> subnode            
+            if (site.hasSecureServer()) {
+                siteElement.addElement(N_SECURE).addAttribute(A_SERVER, site.getSecureUrl());
+            }
+            // create <alias server=""/> subnode(s)            
+            Iterator aliasIterator = site.getAliases().iterator();
+            while (aliasIterator.hasNext()) {
+                String aliasServerName = ((CmsSiteMatcher)aliasIterator.next()).getUrl();
+                siteElement.addElement(N_ALIAS).addAttribute(A_SERVER, aliasServerName);
+            }
+
         }
         
         // create <runtimeproperties> node

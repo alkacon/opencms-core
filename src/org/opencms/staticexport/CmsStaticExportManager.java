@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/03/21 17:22:54 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/03/29 18:21:42 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -127,6 +127,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Cache for the online links. */
     private Map m_cacheOnlineLinks;
+    
+    /** Cache for the secure links. */
+    private Map m_cacheSecureLinks;
 
     /** OpenCms default charset header. */
     private String m_defaultAcceptCharsetHeader;
@@ -223,7 +226,45 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         m_cacheOnlineLinks.put(linkName, vfsName);
     }
+    
+    /**
+     * Caches the secure information of a link.<p>
+     * 
+     * @param linkName the link
+     * @param isSecure if it is a secure link
+     */
+    public void cacheSecureLink(Object linkName, Boolean isSecure) {
 
+        m_cacheSecureLinks.put(linkName, isSecure);
+    }
+    
+    /**
+     * Returns true, if the link points to a secure resource.<p>
+     * 
+     * @param cms the cms object
+     * @param link the link
+     * @param siteRoot the site root of the link
+     * @return true, if the link is secure
+     * @throws CmsException if the reading of the resource property goes wrong
+     */    
+    public boolean isSecureLink(CmsObject cms, String link, String siteRoot) throws CmsException {
+        Boolean secureResource = getCachedSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link));
+        if (secureResource == null) {
+            // the site root of the cms object has to be changed so that the property can be read            
+            String reqSiteRoot = cms.getRequestContext().getSiteRoot();
+            if (siteRoot != null) {
+                cms.getRequestContext().setSiteRoot(siteRoot);
+            }                    
+            String secureProp = cms.readPropertyObject(link, I_CmsConstants.C_PROPERTY_SECURE, true).getValue();
+            secureResource = Boolean.valueOf(secureProp);
+            cacheSecureLink(getCacheKey(cms.getRequestContext().getSiteRoot(), link), secureResource);
+            cms.getRequestContext().setSiteRoot(reqSiteRoot);
+        }
+        return secureResource.booleanValue();
+        
+    }
+
+    
     /**
      * Implements the CmsEvent interface,
      * the static export properties uses the events to clear 
@@ -743,6 +784,28 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         return (String)m_cacheOnlineLinks.get(vfsName);
     }
+    
+    /**
+     * Returns the key for the online, export and secure cache.<p>
+     * 
+     * @param siteRoot the site root of the resource
+     * @param uri the URI of the resource
+     * @return a key for the cache 
+     */    
+    public String getCacheKey(String siteRoot, String uri) {
+        return new StringBuffer(siteRoot).append(':').append(uri).toString();
+    }
+    
+    /**
+     * Returns if the link points to a secure Resource.<p>
+     * 
+     * @param vfsName the name of the vfs resource to get the cached link for
+     * @return true, if the link points to a secure Resource
+     */
+    public Boolean getCachedSecureLink(Object vfsName) {
+
+        return (Boolean)m_cacheSecureLinks.get(vfsName);
+    }    
 
     /**
      * Gets the default property value as a string representation.<p>
@@ -1205,6 +1268,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             // map must be of type "LRUMap" so that memory monitor can acecss all information
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheExportUris", lruMap2);
         }
+        
+        LRUMap lruMap3 = new LRUMap(2048);
+        m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
+        if (OpenCms.getMemoryMonitor().enabled()) {
+            // map must be of type "LRUMap" so that memory monitor can acecss all information
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheSecureUris", lruMap3);
+        }        
 
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -1514,6 +1584,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // flush all caches   
         m_cacheOnlineLinks.clear();
         m_cacheExportUris.clear();
+        m_cacheSecureLinks.clear();
         setExportnames();
         if (OpenCms.getLog(this).isDebugEnabled()) {
             String eventType = "EVENT_CLEAR_CACHES";

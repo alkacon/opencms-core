@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/03/19 13:58:19 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/03/29 18:20:16 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,15 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.I_CmsWpConstants;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -50,7 +54,7 @@ import java.net.URL;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsLinkManager {
 
@@ -314,17 +318,24 @@ public class CmsLinkManager {
      * servlet name, and in the case of the "online" project also according
      * to the configured static export settings.<p>
      * 
+     * A server prefix is prepended if
+     * <ul>
+     *   <li>the link points to another site</li>
+     *   <li>the link is contained in a normal document and the link references a secure document</li>
+     *   <li>the link is contained in a secure document and the link references a normal document</li>
+     * </ul>
+     * 
      * @param cms the cms context
      * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
+     * @param siteRoot the site root of the link
      * @return the substituted link
      */
-    public String substituteLink(CmsObject cms, String link) {
+    public String substituteLink(CmsObject cms, String link, String siteRoot) {
 
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
             return "";
         }
-
         // make sure we have an absolute link        
         String absoluteLink = CmsLinkManager.getAbsoluteUri(link, cms.getRequestContext().getUri());
 
@@ -344,13 +355,28 @@ public class CmsLinkManager {
         String uriBaseName = null;
         boolean useRelativeLinks = false;
 
+        // determine the target site of the link        
+        CmsSite targetSite;
+        if (CmsStringUtil.isNotEmpty(siteRoot)) {
+            targetSite = CmsSiteManager.getSite(siteRoot);
+        } else {
+            targetSite = CmsSiteManager.getCurrentSite(cms);
+        }
+        String serverPrefix = "";
+        // if the link points to another site, there needs to be a server prefix
+        if (targetSite != CmsSiteManager.getCurrentSite(cms)) {
+            serverPrefix = targetSite.getUrl();
+        }
+
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
 
             // check if we need relative links in the exported pages
             if (OpenCms.getStaticExportManager().relativLinksInExport()) {
                 // try to get base uri from cache  
                 uriBaseName = OpenCms.getStaticExportManager().getCachedOnlineLink(
-                    cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri());
+                    OpenCms.getStaticExportManager().getCacheKey(
+                        cms.getRequestContext().getSiteRoot(),
+                        cms.getRequestContext().getUri()));
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
                     if (exportRequired(cms, cms.getRequestContext().getUri())) {
@@ -364,7 +390,9 @@ public class CmsLinkManager {
                     }
                     // cache export base uri
                     OpenCms.getStaticExportManager().cacheOnlineLink(
-                        cms.getRequestContext().getSiteRoot() + ":" + cms.getRequestContext().getUri(),
+                        OpenCms.getStaticExportManager().getCacheKey(
+                            cms.getRequestContext().getSiteRoot(),
+                            cms.getRequestContext().getUri()),
                         uriBaseName);
                 }
                 // use relative links only on pages that get exported 
@@ -404,8 +432,41 @@ public class CmsLinkManager {
                 // we want relative links in export, so make the absolute link relative
                 resultLink = getRelativeUri(uriBaseName, resultLink);
             }
+            // read only properties, if the current site and the target site both do have a secure server
+            if (targetSite.hasSecureServer() && CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
+                if (!link.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+                    boolean secureLink = false;
+                    boolean secureRequest = false;
 
-            return resultLink;
+                    int linkType = -1;
+                    try {
+                        // read the secure property of the link and the current document
+                        secureLink = OpenCms.getStaticExportManager().isSecureLink(cms, link, siteRoot);
+                        secureRequest = OpenCms.getStaticExportManager().isSecureLink(
+                            cms,
+                            cms.getRequestContext().getUri(),
+                            null);
+                        linkType = cms.readResource(link).getTypeId();
+                    } catch (CmsException e) {
+                        // there are no access rights on the resource
+                        if (OpenCms.getLog(this).isInfoEnabled()) {
+                            OpenCms.getLog(this).info(e);
+                        }
+                    }
+
+                    // images are always referenced without a server prefix
+                    if (linkType != CmsResourceTypeImage.getStaticTypeId()) {
+                        // if we are on a normal server, and the requested resource is secure, 
+                        // the server name has to be prepended                        
+                        if (secureLink && !secureRequest) {
+                            serverPrefix = targetSite.getSecureUrl();
+                        } else if (!secureLink && secureRequest) {
+                            serverPrefix = targetSite.getUrl();
+                        }
+                    }
+                }
+            }
+
         } else {
 
             // offline project, no export required
@@ -416,11 +477,25 @@ public class CmsLinkManager {
 
             // add cut off parameters and return the result
             if (parameters != null) {
-                return resultLink.concat(parameters);
-            } else {
-                return resultLink;
+                resultLink = resultLink.concat(parameters);
             }
+
         }
+        return serverPrefix.concat(resultLink);
+    }
+
+    /**
+     * Substitutes the contents of a link by adding the context path and 
+     * servlet name, and in the case of the "online" project also according
+     * to the configured static export settings.<p>
+     * 
+     * @param cms the cms context
+     * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
+     * @return the substituted link
+     */
+    public String substituteLink(CmsObject cms, String link) {
+
+        return substituteLink(cms, link, null);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/29 18:18:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,16 @@ package org.opencms.site;
 
 import org.opencms.util.CmsUUID;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Describes a configures site in OpenCms.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
+ * @author  Jan Baudisch (j.baudisch@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {
@@ -57,6 +61,12 @@ public final class CmsSite implements Cloneable {
 
     /** Display title of this site. */
     private String m_title;
+
+    /** The Url of the secure server. */
+    private CmsSiteMatcher m_secureServer;
+
+    /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
+    private List m_aliases;
 
     /**
      * Constructs a new site object without title and id information,
@@ -97,6 +107,7 @@ public final class CmsSite implements Cloneable {
         setSiteRootUUID(siteRootUUID);
         setTitle(title);
         setSiteMatcher(siteMatcher);
+        m_aliases = new ArrayList();
     }
 
     /**
@@ -183,6 +194,36 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
+     * Returns the secure server url of this site root.<p>
+     * 
+     * @return the secure server url
+     */
+    public String getSecureUrl() {
+
+        return m_secureServer.getUrl();
+    }
+
+    /**
+     * Returns the aliases for this site.<p>
+     * 
+     * @return a ArrayList with the aliases
+     */
+    public List getAliases() {
+
+        return m_aliases;
+    }
+
+    /**
+     * Returns true, if the site has a secure server.<p>
+     * 
+     * @return true, if the site has a secure server
+     */
+    public boolean hasSecureServer() {
+
+        return m_secureServer != null;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -228,6 +269,36 @@ public final class CmsSite implements Cloneable {
         } else {
             m_siteRoot = siteRoot;
         }
+    }
+
+    /**
+     * Adds an alias for the site.<p>
+     *      
+     * @param aliasServer the sitematcher for the alias
+     */
+    protected void addAlias(CmsSiteMatcher aliasServer) {
+
+        m_aliases.add(aliasServer);
+    }
+
+    /**
+     * Sets the aliases for the site.<p>
+     *      
+     * @param aliases the aliases for the site
+     */
+    protected void setAliases(List aliases) {
+
+        m_aliases = aliases;
+    }
+    
+    /**
+     * Sets the secure server.<p>
+     * 
+     * @param secureServer the sitematcher of the secure server
+     */
+    protected void setSecureServer(CmsSiteMatcher secureServer) {
+
+        m_secureServer = secureServer;
     }
 
     /**

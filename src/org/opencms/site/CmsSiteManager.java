@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:41 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/03/29 18:19:15 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,15 @@
 
 package org.opencms.site;
 
+import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * @since 5.1
  */
 public final class CmsSiteManager implements Cloneable {
@@ -86,7 +87,11 @@ public final class CmsSiteManager implements Cloneable {
 
     /** The site matcher that matches the workplace site. */
     private CmsSiteMatcher m_workplaceSiteMatcher;
-    
+
+    /** The site that is configured at the moment, need to be recorded for the case that
+     * alias server are added during configuration. */
+    private List m_aliases;
+
     /** The log object for this class. */
     private static Log m_log;
 
@@ -98,7 +103,8 @@ public final class CmsSiteManager implements Cloneable {
 
         m_sites = new HashMap();
         m_siteRoots = new HashSet();
-        
+        m_aliases = new ArrayList();
+
         if (m_log == null) {
             m_log = OpenCms.getLog(this);
         }
@@ -262,19 +268,64 @@ public final class CmsSiteManager implements Cloneable {
      * 
      * @param server the Server
      * @param uri the vfs path
+     * @param secureServer a secure server, can be null
+     * @throws CmsConfigurationException if the site contains a servername, that is already assigned
      */
-    public void addSite(String server, String uri) {
+    public void addSite(String server, String uri, String secureServer) throws CmsConfigurationException {
 
         if (m_frozen) {
             throw new RuntimeException(C_MESSAGE_FROZEN);
         }
         CmsSiteMatcher matcher = new CmsSiteMatcher(server);
         CmsSite site = new CmsSite(uri, matcher);
-        m_sites.put(site.getSiteMatcher(), site);
+        addServer(matcher, site);
+        if (CmsStringUtil.isNotEmpty(secureServer)) {
+            matcher = new CmsSiteMatcher(secureServer);
+            site.setSecureServer(matcher);
+            addServer(matcher, site);
+        }
+        
+        // Note that Digester first calls the addAliasToConfigSite method.
+        // Therefore, the aliases are already 
+        site.setAliases(m_aliases);
+        Iterator i = m_aliases.iterator();
+        while (i.hasNext()) {
+            matcher = (CmsSiteMatcher)i.next();
+            addServer(matcher, site);    
+        }
+        m_aliases = new ArrayList();
         m_siteRoots.add(site.getSiteRoot());
         if (OpenCms.getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
             OpenCms.getLog(CmsLog.CHANNEL_INIT).info(". Site root added      : " + site.toString());
         }
+    }
+
+    /**
+     * Adds an alias to the currently configured site.
+     * 
+     * @param alias the url of the alias server
+     */
+    public void addAliasToConfigSite(String alias) {
+        CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias);
+        m_aliases.add(siteMatcher);      
+    }
+
+    /**
+     * Adds a new Sitematcher object to the map of server names.
+     * 
+     * If this method  
+     * a <code>RuntimeException</code> is thrown.<p>
+     * 
+     * @param server, the SiteMatcher of the server
+     * @param site the site to add
+     * @throws CmsConfigurationException, if the site contains a servername, that is already assigned
+     */
+    private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
+
+        if (m_sites.containsKey(server)) {
+            throw new CmsConfigurationException("Duplicate server name " + server.getUrl());
+        }
+        m_sites.put(server, site);
     }
 
     /**
@@ -433,7 +484,7 @@ public final class CmsSiteManager implements Cloneable {
      * the matching site, or the default site if no sites matches.<p>
      * 
      * @param req the request to match 
-     * @return the matching site, or the defaule site if no sites matches
+     * @return the matching site, or the default site if no sites matches
      */
     public CmsSite matchRequest(HttpServletRequest req) {
 
