@@ -6,7 +6,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.26 $ $Date: 2000/02/08 15:45:03 $
+ * @version $Revision: 1.27 $ $Date: 2000/02/08 17:41:55 $
  */
 public interface I_CmsWpConstants {
 
@@ -220,6 +220,12 @@ public interface I_CmsWpConstants {
     
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_METHOD = "method";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_IDX = "idx";    
+	
+    /**  Method of the projectlist field  */
+    public static final String C_PROJECTLIST_MENU = "menu";    
 	
     /**  Method of the projectlist field  */
     public static final String C_PROJECTLIST_LOCKSTATE = "lockstate";    

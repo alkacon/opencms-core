@@ -15,10 +15,20 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2000/02/08 15:45:03 $
+ * @version $Revision: 1.4 $ $Date: 2000/02/08 17:41:55 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
+	
+	/**
+	 * Javascriptmethod, to call for contextlink
+	 */
+	private static final String C_PROJECT_LOCK = "project_lock";
+            
+	/**
+	 * Javascriptmethod, to call for contextlink
+	 */
+	private static final String C_PROJECT_UNLOCK = "project_unlock";
             
     /**
      * Handling of the special workplace <CODE>&lt;PROJECTLIST&gt;</CODE> tags.
@@ -74,25 +84,25 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
 		String state = C_PROJECTLIST_STATE_UNLOCKED;
-		String snaplock = "";
+		String snaplock = listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
+														   callingObject, parameters);
 		
 		for(int i = 0; i < list.size(); i++) {
 			// get the actual project
 			A_CmsProject project = (A_CmsProject) list.elementAt(i);
 			// TODO: get the correct state of the project
 			// state = ???;
-			// TODO: get the correct snaplock of the project
-			try {
-				System.err.println(i);
-				snaplock = listdef.getProcessedXmlDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
-															callingObject, parameters);
-			} catch (Exception exc) {
-				exc.printStackTrace();
-			}
-			
+			  
 			// get the processed list.
 			listdef.setXmlData(C_PROJECTLIST_NAME, project.getName());
-			listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, snaplock);
+			if( state.equals(C_PROJECTLIST_STATE_UNLOCKED) ) {
+				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, "");
+				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
+			} else {
+				listdef.setXmlData(C_PROJECTLIST_LOCKSTATE, snaplock);
+				listdef.setXmlData(C_PROJECTLIST_MENU, C_PROJECT_LOCK);
+			}
+			listdef.setXmlData(C_PROJECTLIST_IDX, new Integer(i).toString());
 			listdef.setXmlData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
 			listdef.setXmlData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
 			listdef.setXmlData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
