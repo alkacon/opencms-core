@@ -836,7 +836,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[locale;params=(headnavfolder,headnavmenudepth,startfolder,showmenus);user]]></value>
+					<value><![CDATA[locale;params=(headnavfolder,headnavmenudepth,startfolder,showmenus,site);user]]></value>
 				</property>
 				<property type="shared">
 					<name>content-encoding</name>
