@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2002/05/06 09:05:27 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/06/07 15:05:39 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import com.opencms.template.*;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.17 $
- * $Date: 2002/05/06 09:05:27 $
+ * $Revision: 1.18 $
+ * $Date: 2002/06/07 15:05:39 $
  */
 public abstract class CmsMasterContent
     extends A_CmsContentDefinition
@@ -854,9 +854,8 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0) {
-                    allChannels.addElement(folder);
-                }else {
+                allChannels.addElement(folder);
+                if (v.size() != 0) {
                     for (int j=0; j < v.size(); j++) {
                         allChannels.addElement(v.elementAt(j));
                     }
@@ -887,9 +886,8 @@ public abstract class CmsMasterContent
             for (int i=0; i < subChannels.size(); i++) {
                 String folder = ((CmsResource)subChannels.elementAt(i)).getAbsolutePath();
                 Vector v = getAllSubChannelsOf(cms, folder);
-                if (v.size() == 0) {
-                    allChannels.addElement(folder.substring(offset));
-                }else {
+                allChannels.addElement(folder.substring(offset));
+                if (v.size() != 0) {
                     for (int j=0; j < v.size(); j++) {
                         allChannels.addElement(((String)v.elementAt(j)).substring(offset));
                     }
