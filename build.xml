@@ -31,6 +31,7 @@
     <property name="build.inputlib.oracle"      value="${build.inputlib}/classes12.zip"/>
     <property name="build.inputlib.fop"         value="${build.inputlib}/fop_bin.jar"/>     
     <property name="build.inputlib.oro"         value="${build.inputlib}/jakarta-oro-2.0.4.jar"/>
+    <property name="build.inputlib.tidy"        value="${build.inputlib}/Tidy.jar"/>
     
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/workplace/templates/js/version.js"/>
@@ -53,6 +54,7 @@
                 <available file="${build.inputlib.mysql}"/>
                 <available file="${build.inputlib.fesi}"/>
                 <available file="${build.inputlib.oro}"/>
+                <available file="${build.inputlib.tidy}"/>
             </and>
         </condition>
 
@@ -90,6 +92,7 @@ ${build.inputlib.xerces}
 ${build.inputlib.mysql}
 ${build.inputlib.fesi}
 ${build.inputlib.oro}
+${build.inputlib.tidy}
 
         </fail>
     </target>
@@ -123,6 +126,7 @@ ${build.inputlib.oro}
                         ${build.inputlib.mysql}:
                         ${build.inputlib.fop}:
                         ${build.inputlib.oro}:
+                        ${build.inputlib.tidy}:
                         ${build.inputlib.fesi}"
             debug="on"
             optimize="on"
@@ -172,6 +176,7 @@ ${build.inputlib.oro}
        <copy file="${build.inputlib.mail}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.fesi}" todir="${build.oclib}"/>
        <copy file="${build.inputlib.oro}" todir="${build.oclib}"/>
+       <copy file="${build.inputlib.tidy}" todir="${build.oclib}"/>
 
        <copy todir="${build.webinf}">
             <fileset dir="etc" excludes="*/CVS/*,MANIFEST.MF"/>
@@ -327,7 +332,8 @@ ${build.inputlib.oro}
         <copy file="${build.inputlib.activation}"   todir="${build.srcdist.libs}"/>
         <copy file="${build.inputlib.mail}"         todir="${build.srcdist.libs}"/>
         <copy file="${build.inputlib.fesi}"         todir="${build.srcdist.libs}"/>
-        <copy file="${build.inputlib.oro}"         todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.oro}"          todir="${build.srcdist.libs}"/>
+        <copy file="${build.inputlib.tidy}"         todir="${build.srcdist.libs}"/>
 
         <copy todir="${build.srcdist.src}">
             <fileset dir="src" excludes="*/CVS/*"/>
