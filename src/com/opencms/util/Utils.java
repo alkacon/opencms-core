@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/Utils.java,v $
-* Date   : $Date: 2002/07/04 09:58:37 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2002/08/29 17:25:29 $
+* Version: $Revision: 1.34 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -313,7 +313,7 @@ public class Utils implements I_CmsConstants,I_CmsLogChannels {
      * @param e The exception to get the stackTrace from.
      * @return the stackTrace of the exception.
      */
-    public static String getStackTrace(Exception e) {
+    public static String getStackTrace(Throwable e) {
 
         // print the stack-trace into a writer, to get its content
         StringWriter stringWriter = new StringWriter();
