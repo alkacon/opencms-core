@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2005/03/25 18:35:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/31 10:32:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Locale;
  * Lucene document factory class to extract index data from a cms resource 
  * of type <code>CmsResourceTypeXmlPage</code>.<p>
  * 
- * @version $Revision: 1.2 $ $Date: 2005/03/25 18:35:09 $
+ * @version $Revision: 1.3 $ $Date: 2005/03/31 10:32:12 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsDocumentXmlPage extends A_CmsVfsDocument {
@@ -102,8 +102,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
                 }
             }
 
-            CmsHtmlExtractor extractor = new CmsHtmlExtractor();
-            result = extractor.extractText(content.toString(), page.getEncoding());
+            result = CmsHtmlExtractor.extractText(content.toString(), page.getEncoding());
 
         } catch (Exception exc) {
             throw new CmsIndexException("Reading resource " + resource.getRootPath() + " failed", exc);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/03/27 20:37:39 $
- * Version: $Revision: 1.619 $
+ * Date   : $Date: 2005/03/31 10:32:12 $
+ * Version: $Revision: 1.620 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
+OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March 31, 2005
 * Fixed SQL statement compatibility issue with MySQL 3.2.x
 * Fixed issues with Oracle 8.1.7
 ! XML content editor now jumps to the last scroll position after element adding/removal
@@ -47,6 +47,11 @@ OpenCms 5.7.2 Corrin (aka 6.0 beta 2) - March xx, 2005
 ! Added sort options to search, default is by score, options are by title or date of last modification
 ! Added search categories feature, for display of a category overview for a search result
 ! Added multiple search root option
+* Fixed issue with editor link replacement and parameter links that contain "&language"
+- Updated HtmlParser component to latest release 1.5 (20050313)
+! New "secure" feature allows for easy re-directing of secure (https) pages "inside" a OpenCms site
+! New "Export/Secure" dialog for easy setting (and controlling) of export and secure property
+! OpenCms sites can now have multiple alias names in the configuration
 
 OpenCms 5.7.1 Corrin (aka 6.0 beta 1) - February 21, 2005
 ! Static export "file scrubbing" can now be customized implementing I_CmsStaticExportHandler

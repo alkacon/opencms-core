@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/03/17 10:32:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/03/31 10:32:12 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 5.5.0
  */
@@ -76,6 +76,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsXmlPageInSystem.class.getName());
         
+        suite.addTest(new TestCmsXmlPageInSystem("testLinkParameterIssue"));
         suite.addTest(new TestCmsXmlPageInSystem("testSchemaCachePublishIssue"));
         suite.addTest(new TestCmsXmlPageInSystem("testLinkReplacement"));
         suite.addTest(new TestCmsXmlPageInSystem("testCommentInSource"));
@@ -165,6 +166,54 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         assertEquals("This is a another test", page.getValue("body", Locale.ENGLISH).getStringValue(cms));
         file.setContents(page.marshal());
         cms.writeFile(file); 
+    }
+    
+    /**
+     * Tests link issue with certain parameters.<p>
+     * 
+     * Description of the issue:
+     * links with parameters <code>&lt;a href="form.jsp?a=b&language=xy"&gt;</code> are replaced by 
+     * <code>&lt;a href="form.jsp?a=b?uage=xy"&gt;</code>.<p>
+     * 
+     * This issue turned out to be a bug in the HtmlParser component, 
+     * updating the component from version 1.4 to version 1.5 solved the issue.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testLinkParameterIssue() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing XML page link parameter issue");
+
+        String filename = "/folder1/subfolder11/test_param_1.html";
+        String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
+        List properties = new ArrayList();
+        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_CONTENT_ENCODING, UTF8, null));
+        properties.add(new CmsProperty(I_CmsConstants.C_PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));        
+        properties.add(new CmsProperty(CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));        
+        cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
+        
+        CmsFile file = cms.readFile(filename);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
+        String element = "test";
+        page.addValue(element, Locale.ENGLISH);
+        String text;
+        
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&someparam=de\">link</a>");                
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&someparam=de\">link</a>", text);
+        
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?language=de\">link</a>");                
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?language=de\">link</a>", text);        
+        
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&language=de\">link</a>");                
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&language=de\">link</a>", text);
+
+        page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&language=de\">link</a>");                
+        text = page.getStringValue(cms, element, Locale.ENGLISH);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&language=de\">link</a>", text);
     }
     
     /**

@@ -2,7 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 beta 1" />    
+    <property name="version.number"             		value="6.0 beta 2" />    
     <property name="version.name"               		value="Corrin" />
     
 	<property name="app.name" 							value="opencms" />
@@ -48,7 +48,7 @@
     <property name="opencms.inputlib.dom4j"     		location="${opencms.input.libs}/dom4j-1.5.2.jar" />
     <property name="opencms.inputlib.quartz"     		location="${opencms.input.libs}/quartz-1.4.4.jar" />
     <property name="opencms.inputlib.jaxen"     		location="${opencms.input.libs}/jaxen-1.1-beta-4.jar" />
-    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.41.jar" />
+    <property name="opencms.inputlib.htmlparser"		location="${opencms.input.libs}/htmlparser-1.5-20050313.jar" />
     <property name="opencms.inputlib.lucene"			location="${opencms.input.libs}/lucene-1.4.3.jar" />
     <property name="opencms.inputlib.poi"				location="${opencms.input.libs}/poi-2.5.1-final-20040804.jar" />
     <property name="opencms.inputlib.snowball"			location="${opencms.input.libs}/snowball-1.0.jar" />

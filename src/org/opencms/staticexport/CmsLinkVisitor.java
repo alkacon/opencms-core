@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLinkVisitor.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/31 10:32:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.staticexport;
 
 import org.htmlparser.Node;
-import org.htmlparser.RemarkNode;
-import org.htmlparser.StringNode;
+import org.htmlparser.Remark;
+import org.htmlparser.Tag;
+import org.htmlparser.Text;
 import org.htmlparser.tags.CompositeTag;
 import org.htmlparser.tags.ImageTag;
 import org.htmlparser.tags.LinkTag;
-import org.htmlparser.tags.Tag;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
@@ -46,7 +46,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.3
  */
 public class CmsLinkVisitor extends NodeVisitor {
@@ -111,8 +111,6 @@ public class CmsLinkVisitor extends NodeVisitor {
      * Visitor method to process a single link.<p>
      * 
      * @param linkTag the tag to process
-     * 
-     * @see org.htmlparser.visitors.NodeVisitor#visitLinkTag(org.htmlparser.tags.LinkTag)
      */
     public void visitLinkTag(LinkTag linkTag) {
 
@@ -124,7 +122,7 @@ public class CmsLinkVisitor extends NodeVisitor {
      * 
      * @param node the node to process
      */
-    public void visitRemarkNode(RemarkNode node) {
+    public void visitRemarkNode(Remark node) {
 
         if (null == node.getParent()) {
             m_result.append(node.toHtml());
@@ -136,7 +134,7 @@ public class CmsLinkVisitor extends NodeVisitor {
      * 
      * @param node the string node to process
      */
-    public void visitStringNode(StringNode node) {
+    public void visitStringNode(Text node) {
 
         if (null == node.getParent()) {
             m_result.append(node.toHtml());
@@ -150,13 +148,19 @@ public class CmsLinkVisitor extends NodeVisitor {
      */
     public void visitTag(Tag tag) {
 
-        // process only those nodes that won't be processed by an end tag,
-        // nodes without parents or parents without an end tag, since
-        // the complete processing of all children should happen before
-        // we turn this node back into html text        
-        if ((tag.getParent() == null)
-        && (!(tag instanceof CompositeTag) || (null == ((CompositeTag)tag).getEndTag()))) {
-            m_result.append(tag.toHtml());
+        if (tag instanceof LinkTag) {
+            visitLinkTag((LinkTag)tag);
+        } else if (tag instanceof ImageTag) {
+            visitImageTag((ImageTag)tag);
+        } else {
+            // process only those nodes that won't be processed by an end tag,
+            // nodes without parents or parents without an end tag, since
+            // the complete processing of all children should happen before
+            // we turn this node back into html text        
+            if ((tag.getParent() == null)
+                && (!(tag instanceof CompositeTag) || (null == ((CompositeTag)tag).getEndTag()))) {
+                m_result.append(tag.toHtml());
+            }
         }
     }
 }

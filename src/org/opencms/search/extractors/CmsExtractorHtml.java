@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorHtml.java,v $
- * Date   : $Date: 2005/03/23 19:08:22 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/31 10:32:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,10 @@
 package org.opencms.search.extractors;
 
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.InputStream;
-
-import org.htmlparser.Parser;
-import org.htmlparser.beans.StringBean;
-import org.htmlparser.lexer.Lexer;
-import org.htmlparser.lexer.Page;
 
 /**
  * Extracts the text form a RTF  document.<p>
@@ -79,19 +75,8 @@ public final class CmsExtractorHtml extends A_CmsTextExtractor {
         if (CmsStringUtil.isEmpty(encoding)) {
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
         }
-      
-        Parser parser = new Parser();
-        Lexer lexer = new Lexer();
-        Page page = new Page(in, encoding);
-        lexer.setPage(page);
-        parser.setLexer(lexer);
-        
-        StringBean stringBean = new StringBean();
-        // stringBean.setParser(parser);
-                       
-        parser.visitAllNodesWith(stringBean);
-        
-        String result = stringBean.getStrings();
+
+        String result = CmsHtmlExtractor.extractText(in, encoding);
         result = removeControlChars(result);
         return new CmsExtractionResult(result);
     }
