@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2004/06/11 19:22:34 $
- * Version: $Revision: 1.551 $
+ * Date   : $Date: 2004/06/18 13:07:08 $
+ * Version: $Revision: 1.552 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,8 +19,9 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 5.3.5 Ix - xx, 2004
+OpenCms 5.3.5 Ix - June 16, 2004
 - Important: This version contains changes to the OpenCms VFS database schema
+  To update you must do a full export and re-import all resources
 ! The content of a xmlPage is now verified with the DTD when saving from any editor
 ! Improved error handling when an error occurs during save in the editors,
   it's now possible to go back and correct the errors
@@ -63,6 +64,12 @@ OpenCms 5.3.5 Ix - xx, 2004
 - Improved locale handling in XmlPage
 - Added "Cache-Control" "must-revalidate" for all Workplace requests to prevent caching, this 
   should allow operation with a browser setting "Check for new version of a page" of "Auto"
+* Better error message when file upload size is exceeded
+! Added setting in user preferences "Start with site" and "Start in folder"
+! Added setting in user preferences to restrict user to a subtree of a site
+! When switching sites, the last used folder in the site is now displayed instead of the root folder
+* Individual and shsred properties are now exported and imported correctly
+- Improvements to the (new) XML handling classes
 
 OpenCms 5.3.4 Ix - April 14, 2004
 - Updated all jars, also added version numbers to all jars
