@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/02 14:59:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.httpclient.util.URIUtil;
+
 /**
  * Provides methods to build interactive JSP forms.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public abstract class CmsTemplateForm extends CmsTemplateBean {
 
@@ -156,7 +158,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
         // store form uri
         String uri = getRequestContext().getUri();
         // set uri to page uri to obtain configuration path
-        getRequestContext().setUri(getPageUri());
+        getRequestContext().setUri(getPageUri(true));
         String path = property(C_PROPERTY_CONFIGPATH, "search", "");
         // reset uri to form uri
         getRequestContext().setUri(uri);
@@ -262,10 +264,10 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
     public String getPageUri(boolean removeParams) {
 
         if (removeParams) {
+            // remove eventual request parameters
             String uri = m_pageUri;
-            if (uri != null && uri.indexOf("?") != -1) {
-                // remove request parameter appendings from uri
-                uri = uri.substring(0, uri.indexOf("?"));
+            if (CmsStringUtil.isNotEmpty(uri)) {
+                uri = URIUtil.getPath(uri);
             }
             return uri;
         } else {

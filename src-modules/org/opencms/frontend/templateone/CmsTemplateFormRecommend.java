@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormRecommend.java,v $
- * Date   : $Date: 2005/02/17 12:45:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/03/02 14:59:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to build the page recommendation form.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsTemplateFormRecommend extends CmsTemplateForm {
     
@@ -159,8 +159,10 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
             // send the mail
             theMail.send();
         } catch (Exception e) {
-            if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error(e);
+            if (OpenCms.getLog(this).isWarnEnabled()) {
+                OpenCms.getLog(this).warn(e);
+            } else if (OpenCms.getLog(this).isErrorEnabled()) {
+                OpenCms.getLog(this).error("Could not send recommend form data from page " + getRequestContext().getUri());
             }
             return false;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/02/26 13:53:31 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/03/02 14:59:38 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods to create the HTML for the frontend output in the main JSP template one.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsTemplateBean extends CmsJspActionElement {
 
@@ -231,7 +231,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
         } catch (Exception e) {
             // problem getting properties, log error
             if (OpenCms.getLog(CmsTemplateBean.class).isErrorEnabled()) {
-                OpenCms.getLog(CmsTemplateBean.class).error(e);
+                String message = "Configuration file " + fileName + " not found for requested resource " + cms.getRequestContext().getUri();
+                OpenCms.getLog(CmsTemplateBean.class).error(message);
             }
         }
         return configuration;
@@ -433,9 +434,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
     public List getHeadLinks() {
 
         List links = new ArrayList(10);
-        // read links to display from property file
-        String propertyFile = getConfigPath() + C_FILE_LINKS_HEAD;
-        CmsXmlContent configuration = getConfigurationFile(propertyFile, getCmsObject());
+        // read links to display from configuration file
+        String configFile = getConfigPath() + C_FILE_LINKS_HEAD;
+        CmsXmlContent configuration = getConfigurationFile(configFile, getCmsObject());
         // this flag determines if the main link should be shown
         boolean showMainLink = true;
         if (configuration != null) {
