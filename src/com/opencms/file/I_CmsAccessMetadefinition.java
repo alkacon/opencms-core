@@ -10,7 +10,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 1999/12/21 15:08:47 $
+ * @version $Revision: 1.4 $ $Date: 1999/12/22 10:24:08 $
  */
 interface I_CmsAccessMetadefinition {
 
@@ -25,7 +25,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition readMetadefinition(String name, int type)
+	public A_CmsMetadefinition readMetadefinition(String name, A_CmsResourceType type)
 		throws CmsException;
 	
 	/**
@@ -38,7 +38,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(int resourcetype)
+	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype)
 		throws CmsException;
 	
 	/**
@@ -52,7 +52,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */	
-	public Vector readAllMetadefinitions(int resourcetype, int type)
+	public Vector readAllMetadefinitions(A_CmsResourceType resourcetype, int type)
 		throws CmsException;
 
 	/**
@@ -66,7 +66,7 @@ interface I_CmsAccessMetadefinition {
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	public A_CmsMetadefinition createMetadefinition(String name, int resourcetype, 
+	public A_CmsMetadefinition createMetadefinition(String name, A_CmsResourceType resourcetype, 
 													  int type)
 		throws CmsException;
 		
