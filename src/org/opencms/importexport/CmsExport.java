@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2003/09/29 09:32:14 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/09/29 17:27:22 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,17 +80,16 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.17 $ $Date: 2003/09/29 09:32:14 $
+ * @version $Revision: 1.18 $ $Date: 2003/09/29 17:27:22 $
  */
 public class CmsExport implements Serializable {
 
     // the tags for the manifest
     public static String C_EXPORT_TAG_CHANNELS = "channels";
     public static String C_EXPORT_TAG_FILES = "files";
-    public static String C_EXPORT_TAG_MASTERS = "masters";
 
     /** The CmsObject to do the operations */
-    protected CmsObject m_cms;
+    private CmsObject m_cms;
 
     /** Max file age of contents to export */
     private long m_contentAge;
@@ -102,7 +101,7 @@ public class CmsExport implements Serializable {
     private boolean m_excludeUnchanged;
 
     /** The channelid and the resourceobject of the exported channels */
-    protected Set m_exportedChannelIds;
+    private Set m_exportedChannelIds;
 
     /** Set of all exported pages, required for later page body file export */
     private Set m_exportedPageFiles;
@@ -111,25 +110,22 @@ public class CmsExport implements Serializable {
     private Set m_exportedResources;
 
     /** The export ZIP file to store resources in */
-    protected String m_exportFileName;
+    private String m_exportFileName;
 
     /** Indicates if module data is exported */
-    protected boolean m_exportingModuleData;
+    private boolean m_exportingCosData;
 
     /** Indicates if the user data and group data should be included to the export */
     private boolean m_exportUserdata;
 
     /** The export ZIP stream to write resources to */
-    protected ZipOutputStream m_exportZipStream;
+    private ZipOutputStream m_exportZipStream;
 
     /** The top level file node where all resources are appended to */
     private Element m_fileNode;
 
-    /** Indicates if the current project it the online project */
-    private boolean m_isOnlineProject;
-
     /** The report for the log messages */
-    protected I_CmsReport m_report;
+    private I_CmsReport m_report;
 
     /** The SAX writer to write the output to */
     private SAXWriter m_saxWriter;
@@ -179,16 +175,15 @@ public class CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      */
     public CmsExport(CmsObject cms, String exportFile, String[] resourcesToExport, boolean excludeSystem, boolean excludeUnchanged, Element moduleElement, boolean exportUserdata, long contentAge, I_CmsReport report) throws CmsException {
-        m_exportFileName = exportFile;
-        m_cms = cms;
+        setCms(cms);
+        setReport(report);
+        setExportFileName(exportFile);
+        setExportingCosData(false);
+
         m_excludeSystem = excludeSystem;
         m_excludeUnchanged = excludeUnchanged;
         m_exportUserdata = exportUserdata;
-        m_isOnlineProject = cms.getRequestContext().currentProject().isOnlineProject();
         m_contentAge = contentAge;
-        m_exportedChannelIds = new HashSet();
-        m_report = report;
-        m_exportingModuleData = false;
 
         try {
             Element exportNode = openExportFile();
@@ -197,8 +192,7 @@ public class CmsExport implements Serializable {
                 // add the module element
                 exportNode.add(moduleElement);                       
                 // write the XML
-                m_saxWriter.write(moduleElement);
-                exportNode.remove(moduleElement);
+                digestElement(exportNode, moduleElement);
             }
 
             exportAllResources(exportNode, resourcesToExport);
@@ -206,26 +200,26 @@ public class CmsExport implements Serializable {
             // export userdata and groupdata if selected
             if (m_exportUserdata) {
                 Element userGroupData = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPDATA);
-                m_saxWriter.writeOpen(userGroupData);
+                getSaxWriter().writeOpen(userGroupData);
 
                 exportGroups(userGroupData);
                 exportUsers(userGroupData);
 
-                m_saxWriter.writeClose(userGroupData);
+                getSaxWriter().writeClose(userGroupData);
                 exportNode.remove(userGroupData);
             }
 
             closeExportFile(exportNode);
         } catch (SAXException se) {
-            m_report.println(se);
+            getReport().println(se);
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error exporting to file " + m_exportFileName, se);
+                OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), se);
             }
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, se);
         } catch (IOException ioe) {
-            m_report.println(ioe);
+            getReport().println(ioe);
             if (OpenCms.getLog(this).isErrorEnabled()) {
-                OpenCms.getLog(this).error("Error exporting to file " + m_exportFileName, ioe);
+                OpenCms.getLog(this).error("Error exporting to file " + getExportFileName(), ioe);
             }
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, ioe);
         }
@@ -283,6 +277,77 @@ public class CmsExport implements Serializable {
     }
 
     /**
+     * Exports the given folder and all child resources.<p>
+     *
+     * @param folderName to complete path to the resource to export
+     * @throws CmsException if something goes wrong
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     */
+    private void addChildResources(String folderName) throws CmsException, SAXException {
+
+        if (isExportingCosData()) {
+            // collect channel id information if required
+            String channelId = getCms().readFolder(folderName).getResourceId().toString();
+            if (channelId != null) {
+                getExportedChannelIds().add(channelId);
+            }
+        }
+
+        // get all subFolders
+        List subFolders = getCms().getSubFolders(folderName);
+        // get all files in folder
+        List subFiles = getCms().getFilesInFolder(folderName);
+
+        // walk through all files and export them
+        for (int i = 0; i < subFiles.size(); i++) {
+            CmsResource file = (CmsResource)subFiles.get(i);
+            int state = file.getState();
+            long age = file.getDateLastModified();
+
+            if (getCms().getRequestContext().currentProject().isOnlineProject() 
+                || (!m_excludeUnchanged) 
+                || state == I_CmsConstants.C_STATE_NEW 
+                || state == I_CmsConstants.C_STATE_CHANGED) {
+                if ((state != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
+                    exportFile(getCms().readFile(getCms().readAbsolutePath(file)));
+                }
+            }
+            // release file header memory
+            subFiles.set(i, null);
+        }
+        // all files are exported, release memory
+        subFiles = null;
+
+        // walk through all subfolders and export them
+        for (int i = 0; i < subFolders.size(); i++) {
+            CmsResource folder = (CmsResource)subFolders.get(i);
+            if (folder.getState() != I_CmsConstants.C_STATE_DELETED) {
+                // check if this is a system-folder and if it should be included.
+                String export = getCms().readAbsolutePath(folder);
+                if (// always export "/system/"
+                export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
+                    || export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
+                    || export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES) // OR option "exclude system folder" selected
+                    || !(m_excludeSystem // AND export folder is a system folder
+                && export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM))) {
+
+                    // export this folder only if age is above selected age
+                    // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
+                    if (folder.getDateLastModified() >= m_contentAge) {
+                        // only export folder data to manifest.xml if it has changed
+                        exportResource(folder, false);
+                    }
+
+                    // export all sub-resources in this folder
+                    addChildResources(getCms().readAbsolutePath(folder));
+                }
+            }
+            // release folder memory
+            subFolders.set(i, null);
+        }
+    }
+
+    /**
      * Adds all files in fileNames to the manifest.xml file.<p>
      * 
      * @param fileNames Vector of path Strings, e.g. <code>/folder/index.html</code>
@@ -294,7 +359,7 @@ public class CmsExport implements Serializable {
             for (int i = 0; i < fileNames.size(); i++) {
                 String fileName = (String)fileNames.elementAt(i);
                 try {
-                    CmsFile file = m_cms.readFile(fileName);
+                    CmsFile file = getCms().readFile(fileName);
                     if ((file.getState() != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
                         addParentFolders(fileName);
                         exportFile(file);
@@ -367,7 +432,7 @@ public class CmsExport implements Serializable {
             String addFolder = (String)superFolders.elementAt(i);
             if (!m_superFolders.contains(addFolder)) {
                 // This super folder was NOT added previously. Add it now!
-                CmsFolder folder = m_cms.readFolder(addFolder);
+                CmsFolder folder = getCms().readFolder(addFolder);
                 exportResource(folder, false);
                 // Remember that this folder was added
                 m_superFolders.addElement(addFolder);
@@ -385,24 +450,37 @@ public class CmsExport implements Serializable {
      */
     protected void closeExportFile(Element exportNode) throws CmsException, IOException, SAXException {
         // close the <export> Tag
-        m_saxWriter.writeClose(exportNode);
+        getSaxWriter().writeClose(exportNode);
 
         // close the XML document 
-        CmsXmlSaxWriter xmlSaxWriter = (CmsXmlSaxWriter)m_saxWriter.getContentHandler();
+        CmsXmlSaxWriter xmlSaxWriter = (CmsXmlSaxWriter)getSaxWriter().getContentHandler();
         xmlSaxWriter.endDocument();
 
         // create zip entry for the manifest XML document
         ZipEntry entry = new ZipEntry(I_CmsConstants.C_EXPORT_XMLFILENAME);
-        m_exportZipStream.putNextEntry(entry);
+        getExportZipStream().putNextEntry(entry);
 
         // write the XML to the zip stream
-        m_exportZipStream.write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getDefaultEncoding()));
+        getExportZipStream().write(xmlSaxWriter.getWriter().toString().getBytes(OpenCms.getDefaultEncoding()));
 
         // close the zip entry for the manifest XML document
-        m_exportZipStream.closeEntry();
+        getExportZipStream().closeEntry();
 
         // finally close the zip stream
-        m_exportZipStream.close();
+        getExportZipStream().close();
+    }
+    
+    /**
+     * Writes the output element to the XML output writer and detaches it 
+     * from it's parent element.<p> 
+     * 
+     * @param parent the parent element
+     * @param output the output element 
+     * @throws SAXException if something goes wrong procesing the manifest.xml
+     */
+    protected void digestElement(Element parent, Element output) throws SAXException {
+        m_saxWriter.write(output);
+        parent.remove(output);
     }
 
     /**
@@ -416,7 +494,7 @@ public class CmsExport implements Serializable {
     protected void exportAllResources(Element parent, String[] resourcesToExport) throws CmsException, SAXException {
         // export all the resources
         String fileNodeName;
-        if (m_exportingModuleData) {
+        if (isExportingCosData()) {
             // module (COS) data is exported
             fileNodeName = C_EXPORT_TAG_CHANNELS;
         } else {
@@ -424,7 +502,7 @@ public class CmsExport implements Serializable {
             fileNodeName = C_EXPORT_TAG_FILES;
         }
         m_fileNode = parent.addElement(fileNodeName);
-        m_saxWriter.writeOpen(m_fileNode);
+        getSaxWriter().writeOpen(m_fileNode);
 
         // distinguish folder and file names   
         Vector folderNames = new Vector();
@@ -458,8 +536,9 @@ public class CmsExport implements Serializable {
         addPageBodyFiles();
         
         // write the XML
-        m_saxWriter.writeClose(m_fileNode);
+        getSaxWriter().writeClose(m_fileNode);
         parent.remove(m_fileNode);
+        m_fileNode = null;
     }
 
     /**
@@ -469,18 +548,18 @@ public class CmsExport implements Serializable {
      * @throws CmsException if something goes wrong
      */
     private void exportFile(CmsFile file) throws CmsException {
-        String source = trimResourceName(m_cms.readAbsolutePath(file));
-        m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-        m_report.print(m_cms.readAbsolutePath(file));
-        m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+        String source = trimResourceName(getCms().readAbsolutePath(file));
+        getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+        getReport().print(getCms().readAbsolutePath(file));
+        getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
         try {
             // store content in zip-file
             // check if the content of this resource was not already exported
             if (!m_exportedResources.contains(file.getResourceId())) {
                 ZipEntry entry = new ZipEntry(source);
-                m_exportZipStream.putNextEntry(entry);
-                m_exportZipStream.write(file.getContents());
-                m_exportZipStream.closeEntry();
+                getExportZipStream().putNextEntry(entry);
+                getExportZipStream().write(file.getContents());
+                getExportZipStream().closeEntry();
                 // add the resource id to the storage to mark that this resource was already exported
                 m_exportedResources.add(file.getResourceId());
                 // create the manifest-entrys
@@ -490,14 +569,14 @@ public class CmsExport implements Serializable {
                 exportResource(file, false);
             }
             // check if the resource is a page of the old style. if so, export the body as well       
-            if (m_cms.getResourceType(file.getType()).getResourceTypeName().equals("page")) {
+            if (getCms().getResourceType(file.getType()).getResourceTypeName().equals("page")) {
                 m_exportedPageFiles.add("/" + source);
             }
         } catch (Exception exc) {
-            m_report.println(exc);
+            getReport().println(exc);
             throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, exc);
         }
-        m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+        getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
     }
 
     /**
@@ -513,7 +592,7 @@ public class CmsExport implements Serializable {
         if (group.getParentId().isNullUUID()) {
             parentgroup = "";
         } else {
-            parentgroup = m_cms.getParent(group.getName()).getName();
+            parentgroup = getCms().getParent(group.getName()).getName();
         }
 
         Element e = parent.addElement(I_CmsConstants.C_EXPORT_TAG_GROUPDATA);
@@ -523,8 +602,7 @@ public class CmsExport implements Serializable {
         e.addElement(I_CmsConstants.C_EXPORT_TAG_PARENTGROUP).addText(parentgroup);
 
         // write the XML
-        m_saxWriter.write(e);
-        parent.remove(e);
+        digestElement(parent, e);
     }
 
     /**
@@ -535,14 +613,14 @@ public class CmsExport implements Serializable {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void exportGroups(Element parent) throws CmsException, SAXException {
-        Vector allGroups = m_cms.getGroups();
+        Vector allGroups = getCms().getGroups();
         for (int i = 0; i < allGroups.size(); i++) {
             CmsGroup group = (CmsGroup)allGroups.elementAt(i);
-            m_report.print(m_report.key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(group.getName());
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.exporting_group"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(group.getName());
+            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
             exportGroup(parent, group);
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
     }
 
@@ -559,23 +637,23 @@ public class CmsExport implements Serializable {
         Element e = m_fileNode.addElement(I_CmsConstants.C_EXPORT_TAG_FILE);
 
         // only write <source> if resource is a file
-        String fileName = trimResourceName(m_cms.readAbsolutePath(resource));
+        String fileName = trimResourceName(getCms().readAbsolutePath(resource));
         if (resource.isFile()) {
             if (source) {
                 e.addElement(I_CmsConstants.C_EXPORT_TAG_SOURCE).addText(fileName);
             }
         } else {
             // output something to the report for the folder
-            m_report.print(m_report.key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(m_cms.readAbsolutePath(resource));
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            getReport().print(getReport().key("report.exporting"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getCms().readAbsolutePath(resource));
+            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
 
         // <destination>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DESTINATION).addText(fileName);
         // <type>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(m_cms.getResourceType(resource.getType()).getResourceTypeName());
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(getCms().getResourceType(resource.getType()).getResourceTypeName());
         //  <uuidresource>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
         //  <uuidcontent>
@@ -583,11 +661,11 @@ public class CmsExport implements Serializable {
         // <datelastmodified>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DATELASTMODIFIED).addText(String.valueOf(resource.getDateLastModified()));
         // <userlastmodified>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(m_cms.readUser(resource.getUserLastModified()).getName());
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERLASTMODIFIED).addText(getCms().readUser(resource.getUserLastModified()).getName());
         // <datecreated>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_DATECREATED).addText(String.valueOf(resource.getDateCreated()));
         // <usercreated>
-        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(m_cms.readUser(resource.getUserCreated()).getName());
+        e.addElement(I_CmsConstants.C_EXPORT_TAG_USERCREATED).addText(getCms().readUser(resource.getUserCreated()).getName());
         // <flags>
         e.addElement(I_CmsConstants.C_EXPORT_TAG_FLAGS).addText(Integer.toString(resource.getFlags()));
 
@@ -595,17 +673,17 @@ public class CmsExport implements Serializable {
         Element p = e.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTIES);
 
         // read the properties
-        Map fileProperties = m_cms.readProperties(m_cms.readAbsolutePath(resource));
+        Map fileProperties = getCms().readProperties(getCms().readAbsolutePath(resource));
         Iterator i = fileProperties.keySet().iterator();
         // create xml-elements for the properties
         while (i.hasNext()) {
             String key = (String)i.next();
             // make sure channel id property is not exported with module data
-            if ((!m_exportingModuleData) || (!I_CmsConstants.C_PROPERTY_CHANNELID.equals(key))) {
+            if ((!isExportingCosData()) || (!I_CmsConstants.C_PROPERTY_CHANNELID.equals(key))) {
                 // append the node for a property
                 Element q = p.addElement(I_CmsConstants.C_EXPORT_TAG_PROPERTY);
                 q.addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(key);
-                q.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(Integer.toString(m_cms.readPropertydefinition(key, resource.getType()).getType()));
+                q.addElement(I_CmsConstants.C_EXPORT_TAG_TYPE).addText(Integer.toString(getCms().readPropertydefinition(key, resource.getType()).getType()));
                 q.addElement(I_CmsConstants.C_EXPORT_TAG_VALUE).addCDATA((String)fileProperties.get(key));
             }
         }
@@ -613,7 +691,7 @@ public class CmsExport implements Serializable {
         Element acl = e.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ENTRIES);
 
         // read the access control entries
-        Vector fileAcEntries = m_cms.getAccessControlEntries(m_cms.readAbsolutePath(resource), false);
+        Vector fileAcEntries = getCms().getAccessControlEntries(getCms().readAbsolutePath(resource), false);
         i = fileAcEntries.iterator();
 
         // create xml elements for each access control entry
@@ -628,11 +706,11 @@ public class CmsExport implements Serializable {
             if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
                 // the principal is a group
                 acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_GROUP;
-                acePrincipalName += m_cms.readGroup(acePrincipal).getName();
+                acePrincipalName += getCms().readGroup(acePrincipal).getName();
             } else {
                 // the principal is a user
                 acePrincipalName = I_CmsConstants.C_EXPORT_ACEPRINCIPAL_USER;
-                acePrincipalName += m_cms.readUser(acePrincipal).getName();
+                acePrincipalName += getCms().readUser(acePrincipal).getName();
             }
 
             a.addElement(I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
@@ -644,78 +722,7 @@ public class CmsExport implements Serializable {
         }
         
         // write the XML
-        m_saxWriter.write(e);
-        m_fileNode.remove(e);
-    }
-
-    /**
-     * Exports the given folder and all child resources.<p>
-     *
-     * @param folderName to complete path to the resource to export
-     * @throws CmsException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
-     */
-    private void addChildResources(String folderName) throws CmsException, SAXException {
-
-        if (m_exportingModuleData) {
-            // collect channel id information if required
-            String channelId = m_cms.readFolder(folderName).getResourceId().toString();
-            if (channelId != null) {
-                if (!m_exportedChannelIds.contains(channelId)) {
-                    m_exportedChannelIds.add(channelId);
-                }
-            }
-        }
-
-        // get all subFolders
-        List subFolders = m_cms.getSubFolders(folderName);
-        // get all files in folder
-        List subFiles = m_cms.getFilesInFolder(folderName);
-
-        // walk through all files and export them
-        for (int i = 0; i < subFiles.size(); i++) {
-            CmsResource file = (CmsResource)subFiles.get(i);
-            int state = file.getState();
-            long age = file.getDateLastModified();
-
-            if (m_isOnlineProject || (!m_excludeUnchanged) || state == I_CmsConstants.C_STATE_NEW || state == I_CmsConstants.C_STATE_CHANGED) {
-                if ((state != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~")) && (age >= m_contentAge)) {
-                    exportFile(m_cms.readFile(m_cms.readAbsolutePath(file)));
-                }
-            }
-            // release file header memory
-            subFiles.set(i, null);
-        }
-        // all files are exported, release memory
-        subFiles = null;
-
-        // walk through all subfolders and export them
-        for (int i = 0; i < subFolders.size(); i++) {
-            CmsResource folder = (CmsResource)subFolders.get(i);
-            if (folder.getState() != I_CmsConstants.C_STATE_DELETED) {
-                // check if this is a system-folder and if it should be included.
-                String export = m_cms.readAbsolutePath(folder);
-                if (// always export "/system/"
-                export.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
-                    || export.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
-                    || export.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES) // OR option "exclude system folder" selected
-                    || !(m_excludeSystem // AND export folder is a system folder
-                && export.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM))) {
-
-                    // export this folder only if age is above selected age
-                    // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
-                    if (folder.getDateLastModified() >= m_contentAge) {
-                        // only export folder data to manifest.xml if it has changed
-                        exportResource(folder, false);
-                    }
-
-                    // export all sub-resources in this folder
-                    addChildResources(m_cms.readAbsolutePath(folder));
-                }
-            }
-            // release folder memory
-            subFolders.set(i, null);
-        }
+        digestElement(m_fileNode, e);
     }
 
     /**
@@ -756,25 +763,24 @@ public class CmsExport implements Serializable {
             byte[] serializedInfo = bout.toByteArray();
             // store the serialized  user info hashtable in the zip-file
             ZipEntry entry = new ZipEntry(datfileName);
-            m_exportZipStream.putNextEntry(entry);
-            m_exportZipStream.write(serializedInfo);
-            m_exportZipStream.closeEntry();
+            getExportZipStream().putNextEntry(entry);
+            getExportZipStream().write(serializedInfo);
+            getExportZipStream().closeEntry();
         } catch (IOException ioe) {
-            m_report.println(ioe);
+            getReport().println(ioe);
             if (OpenCms.getLog(this).isErrorEnabled()) {
                 OpenCms.getLog(this).error("Error writing user data to zip for user " + user.getName(), ioe);
             }
         }
         // append the node for groups of user
-        Vector userGroups = m_cms.getDirectGroupsOfUser(user.getName());        
+        Vector userGroups = getCms().getDirectGroupsOfUser(user.getName());        
         Element g = e.addElement(I_CmsConstants.C_EXPORT_TAG_USERGROUPS);
         for (int i = 0; i < userGroups.size(); i++) {
             String groupName = ((CmsGroup)userGroups.elementAt(i)).getName();
             g.addElement(I_CmsConstants.C_EXPORT_TAG_GROUPNAME).addElement(I_CmsConstants.C_EXPORT_TAG_NAME).addText(groupName);
         }
         // write the XML
-        m_saxWriter.write(e);
-        parent.remove(e);
+        digestElement(parent, e);
     }
 
     /**
@@ -785,15 +791,78 @@ public class CmsExport implements Serializable {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void exportUsers(Element parent) throws CmsException, SAXException {
-        Vector allUsers = m_cms.getUsers();
+        Vector allUsers = getCms().getUsers();
         for (int i = 0; i < allUsers.size(); i++) {
             CmsUser user = (CmsUser)allUsers.elementAt(i);
-            m_report.print(m_report.key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(user.getName());
-            m_report.print(m_report.key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(getReport().key("report.exporting_user"), I_CmsReport.C_FORMAT_NOTE);
+            getReport().print(user.getName());
+            getReport().print(getReport().key("report.dots"), I_CmsReport.C_FORMAT_NOTE);
             exportUser(parent, user);
-            m_report.println(m_report.key("report.ok"), I_CmsReport.C_FORMAT_OK);
+            getReport().println(getReport().key("report.ok"), I_CmsReport.C_FORMAT_OK);
         }
+    }
+
+    /**
+     * Returns the OpenCms context object this export was initialized with.<p>
+     * 
+     * @return the OpenCms context object this export was initialized with
+     */
+    protected CmsObject getCms() {
+        return m_cms;
+    }
+
+    /**
+     * Returns the set of already exported channel Ids.<p>
+     * 
+     * @return the set of already exported channel Ids
+     */
+    protected Set getExportedChannelIds() {
+        return m_exportedChannelIds;
+    }
+
+    /**
+     * Returns the name of the export file.<p>
+     * 
+     * @return the name of the export file
+     */
+    protected String getExportFileName() {
+        return m_exportFileName;
+    }
+
+    /**
+     * Returns the zip output stream to write to.<p>
+     * 
+     * @return the zip output stream to write to
+     */
+    protected ZipOutputStream getExportZipStream() {
+        return m_exportZipStream;
+    }
+
+    /**
+     * Returns the report to write progess messages to.<p>
+     * 
+     * @return the report to write progess messages to
+     */
+    protected I_CmsReport getReport() {
+        return m_report;
+    }
+
+    /**
+     * Returns the SAX baesed xml writer to write the XML output to.<p>
+     * 
+     * @return the SAX baesed xml writer to write the XML output to
+     */
+    protected SAXWriter getSaxWriter() {
+        return m_saxWriter;
+    }
+
+    /**
+     * Returns true if this is a COS data export, false if this is a VFS or module export.<p>
+     * 
+     * @return true if this is a module data export, false if this is a VFS or module export
+     */
+    protected boolean isExportingCosData() {
+        return m_exportingCosData;
     }
 
     /**
@@ -805,26 +874,20 @@ public class CmsExport implements Serializable {
      * @throws IOException if something goes wrong while closing the export file
      */
     protected Element openExportFile() throws CmsException, IOException, SAXException {
-        // ensure the export file name ends with ".zip"
-        if (!m_exportFileName.toLowerCase().endsWith(".zip")) {
-            m_exportFileName += ".zip";
-        }
         // create the export-zipstream
-        m_exportZipStream = new ZipOutputStream(new FileOutputStream(m_exportFileName));
-        // use a StringWriter to generate the XML output, this has less char conversion issues
-        StringWriter out = new StringWriter(4096);
+        setExportZipStream(new ZipOutputStream(new FileOutputStream(getExportFileName())));
         // generate the SAX XML writer 
-        CmsXmlSaxWriter saxWriter = new CmsXmlSaxWriter(out, OpenCms.getDefaultEncoding());
+        CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(new StringWriter(4096), OpenCms.getDefaultEncoding());
         // initialize the dom4j writer object as member variable
-        m_saxWriter = new SAXWriter(saxWriter, saxWriter);
+        setSaxWriter(new SAXWriter(saxHandler, saxHandler));
         // the XML document to write the XMl to
         Document doc = DocumentHelper.createDocument();
         // start the document
-        saxWriter.startDocument();
+        saxHandler.startDocument();
 
         // the node in the XML document where the file entries are appended to        
         String exportNodeName;
-        if (m_exportingModuleData) {
+        if (isExportingCosData()) {
             // module (COS) data is exported
             exportNodeName = I_CmsConstants.C_EXPORT_TAG_MODULEXPORT;
         } else {
@@ -833,21 +896,88 @@ public class CmsExport implements Serializable {
         }
         // add main export node to XML document
         Element exportNode = doc.addElement(exportNodeName);
-        m_saxWriter.writeOpen(exportNode);
+        getSaxWriter().writeOpen(exportNode);
 
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(I_CmsConstants.C_EXPORT_TAG_INFO);
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(m_cms.getRequestContext().currentUser().getName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_OC_VERSION).addText(OpenCms.getVersionName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_DATE).addText(Utils.getNiceDate(System.currentTimeMillis()));
-        info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(m_cms.getRequestContext().currentProject().getName());
+        info.addElement(I_CmsConstants.C_EXPORT_TAG_PROJECT).addText(getCms().getRequestContext().currentProject().getName());
         info.addElement(I_CmsConstants.C_EXPORT_TAG_VERSION).addText(I_CmsConstants.C_EXPORT_VERSION);
         
         // write the XML
-        m_saxWriter.write(info);
-        exportNode.remove(info);
+        digestElement(exportNode, info);
 
         return exportNode;
+    }
+
+    /**
+     * Sets the OpenCms context object this export was initialized with.<p>
+     * 
+     * @param cms the OpenCms context object this export was initialized with
+     */
+    protected void setCms(CmsObject cms) {
+        m_cms = cms;
+    }
+
+    /**
+     * Sets the set of already exported channel Ids.<p>
+     * 
+     * @param exportedChannelIds the set of already exported channel Ids
+     */
+    protected void setExportedChannelIds(Set exportedChannelIds) {
+        m_exportedChannelIds = exportedChannelIds;
+    }
+
+    /**
+     * Sets the name of the export file.<p>
+     * 
+     * @param exportFileName the name of the export file
+     */
+    protected void setExportFileName(String exportFileName) {
+        // ensure the export file name ends with ".zip"
+        if (!exportFileName.toLowerCase().endsWith(".zip")) {
+            m_exportFileName = exportFileName + ".zip";
+        } else {                
+            m_exportFileName = exportFileName;
+        }
+    }
+
+    /**
+     * Sets the flag for indicating if this is a COS data export.<p>
+     * 
+     * @param exportingModuleData the flag for indicating if this is a COS data export
+     */
+    protected void setExportingCosData(boolean exportingModuleData) {
+        m_exportingCosData = exportingModuleData;
+    }
+
+    /**
+     * Sets the zip output stream to write to.<p>
+     * 
+     * @param exportZipStream the zip output stream to write to
+     */
+    protected void setExportZipStream(ZipOutputStream exportZipStream) {
+        m_exportZipStream = exportZipStream;
+    }
+
+    /**
+     * Sets the report to write progess messages to.<p>
+     * 
+     * @param report the report to write progess messages to
+     */
+    protected void setReport(I_CmsReport report) {
+        m_report = report;
+    }
+
+    /**
+     * Sets the SAX baesed xml writer to write the XML output to.<p>
+     * 
+     * @param saxWriter the SAX baesed xml writer to write the XML output to
+     */
+    protected void setSaxWriter(SAXWriter saxWriter) {
+        m_saxWriter = saxWriter;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/09/15 10:51:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2003/09/29 17:27:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -512,7 +512,24 @@ public class CmsImportVersion4 extends A_CmsImport {
             }
 
             // create a new CmsResource                         
-            CmsResource resource = new CmsResource(newUuidstructure, newUuidresource, CmsUUID.getNullUUID(), newUuidcontent, resname, resType, new Integer(flags).intValue(), m_cms.getRequestContext().currentProject().getId(), I_CmsConstants.C_STATE_NEW, m_cms.getResourceType(resType).getLoaderId(), datelastmodified, newUserlastmodified, datecreated, newUsercreated, size, 1);
+            CmsResource resource = new CmsResource(
+                newUuidstructure, 
+                newUuidresource, 
+                CmsUUID.getNullUUID(),
+                newUuidcontent, 
+                resname, 
+                resType, 
+                new Integer(flags).intValue(), 
+                m_cms.getRequestContext().currentProject().getId(), 
+                I_CmsConstants.C_STATE_NEW, 
+                m_cms.getResourceType(resType).getLoaderId(), 
+                datecreated, 
+                newUsercreated, 
+                datelastmodified, 
+                newUserlastmodified, 
+                size, 
+                1
+            );
             // import this resource in the VFS   
 
             res = m_cms.importResource(resource, content, properties, m_importPath + destination);

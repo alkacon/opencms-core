@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2003/09/29 08:30:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/09/29 17:27:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $ $Date: 2003/09/29 08:30:29 $
+ * @version $Revision: 1.2 $ $Date: 2003/09/29 17:27:22 $
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
@@ -63,6 +63,12 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /** The last element name written to the output */
     private String m_lastElementName;
+    
+    /** Indicates if a CDATA node is still open */
+    private boolean m_openCdata;
+    
+    /** Indicates if an element tag is still open */
+    private boolean m_openTag;
 
     /** The Writer to write the output to */
     private Writer m_writer;        
@@ -84,6 +90,17 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
     public void characters(char buf[], int offset, int len) throws SAXException {
+        if (len == 0) {
+            return;
+        }
+        if (m_openTag) {
+            write(">");
+            m_openTag = false;
+        }
+        if (m_openCdata) {
+            write("<![CDATA[");
+            m_openCdata = false;
+        }
         write(new String(buf, offset, len));
     }
 
@@ -98,7 +115,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#endCDATA()
      */
     public void endCDATA() throws SAXException {
-        write("]]>");
+        if (! m_openCdata) {
+            write("]]>");
+        }
+        m_openCdata = false;
     }
 
     /**
@@ -106,6 +126,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      */
     public void endDocument() throws SAXException {
         try {
+            if (m_openTag) {
+                write("/>");
+                m_openTag = false;
+            }            
             writeNewLine();
             m_writer.flush();
         } catch (IOException e) {
@@ -125,12 +149,17 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      */
     public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
         String elementName = resolveName(localName, qualifiedName); 
-        if (!elementName.equals(m_lastElementName)) {
-            writeNewLine();
+        if (m_openTag) {
+            write("/>");
+        } else {
+            if (!elementName.equals(m_lastElementName)) {
+                writeNewLine();
+            }
+            write("</");
+            write(elementName);
+            write(">");
         }
-        write("</");
-        write(elementName);
-        write(">");
+        m_openTag = false;
         m_indentLevel--;
     }
 
@@ -171,7 +200,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
     public void startCDATA() throws SAXException {
-        write("<![CDATA[");
+        m_openCdata = true;
     }
 
     /**
@@ -195,6 +224,10 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+        if (m_openTag) {
+            write(">");
+            m_openTag = false;
+        }
         // increase indent and write linebreak
         m_indentLevel++;
         writeNewLine();
@@ -211,7 +244,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
                 write("\"");
             }
         }
-        write(">");
+        m_openTag = true;
     }
 
     /**
