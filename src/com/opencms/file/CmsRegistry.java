@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/02/28 13:26:50 $
-* Version: $Revision: 1.68 $
+* Date   : $Date: 2003/03/04 17:09:00 $
+* Version: $Revision: 1.69 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.68 $ $Date: 2003/02/28 13:26:50 $
+ * @version $Revision: 1.69 $ $Date: 2003/03/04 17:09:00 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -2570,33 +2570,40 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
     }
     
     /**
-     * Sets the type for a given module.
+     * Sets the type for a given module.<p>
+     * 
      * @param theModuleName the name of the module
      * @param theModuleType the new type of the module
      */
     public void setModuleType( String theModulename, String theModuleType ) {
         if (theModuleType==null || theModuleType.equals("")) {
             theModuleType = CmsRegistry.C_MODULE_TYPE_TRADITIONAL;
-        }
-        
+        }        
         try {
             // for backward compatibility issues: check if the module has already
-            // a type node or not. add a type node in this case...
-            
+            // a type node or not, add a type node in this case...            
             Element moduleElement = getModuleElement( theModulename );
-            Node typeNode = moduleElement.getElementsByTagName("type").item(0);  
-            
+            NodeList list = moduleElement.getChildNodes();            
+            Node typeNode = null;
+            for (int i=0; i<list.getLength(); i++) {
+                Element e = (Element) list.item(i);
+                if ("type".equals(e.getNodeName())) {
+                    typeNode = (Node) e;
+                    i = list.getLength();
+                }
+            }  
+                        
             if (typeNode==null) {
                 Element newTypeNode = m_xmlReg.createElement( "type" );
-                moduleElement.appendChild( newTypeNode );            
+                Node firstNode = moduleElement.getFirstChild();
+                moduleElement.insertBefore(newTypeNode, firstNode);         
             }      
             
-            // now it is save to set the value of the module type node
-                    
+            // now it is save to set the value of the module type node                    
             this.setModuleData( theModulename, "type", theModuleType );
         }
         catch (CmsException e) {
-            // we don't have valid rights for this operation
+            // we don't have valid permissions for this operation
         }
     }    
 }
