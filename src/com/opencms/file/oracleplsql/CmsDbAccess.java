@@ -3,8 +3,8 @@ package com.opencms.file.oracleplsql;
 import oracle.jdbc.driver.*;
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2001/02/20 15:09:46 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2001/03/06 13:00:18 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group
  *
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.22 $ $Date: 2001/02/20 15:09:46 $ *
+ * @version $Revision: 1.23 $ $Date: 2001/03/06 13:00:18 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1539,6 +1539,112 @@ public Vector getUsersOfGroup(CmsUser currentUser, String name, int type) throws
 	}
 	return users;
 }
+
+ /**
+     * Gets all users with a certain Lastname.
+     *
+     * @param Lastname      the start of the users lastname
+     * @param UserType      webuser or systemuser
+     * @param UserStatus    enabled, disabled
+     * @param wasLoggedIn   was the user ever locked in?
+     * @param nMax          max number of results
+     *
+     * @return the users.
+     *
+     * @exception CmsException if operation was not successful.
+     */
+    public Vector getUsersByLastname(String lastname, int userType,
+                                     int userStatus, int wasLoggedIn, int nMax)
+                                     throws CmsException {
+        Vector users = new Vector();
+	    PreparedStatement statement = null;
+		ResultSet res = null;
+		Connection con = null;
+        int i = 0;
+        // "" =  return (nearly) all users
+        if(lastname == null) lastname = "";
+
+		try	{
+			con = DriverManager.getConnection(m_poolName);
+            //con = DriverManager.getConnection("jdbc:opencmspool:oracle");
+
+            if(wasLoggedIn == C_AT_LEAST_ONCE)
+			    statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_ONCE);
+            else if(wasLoggedIn == C_NEVER)
+                statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_NEVER);
+            else // C_WHATEVER or whatever else
+                statement = con.prepareStatement(
+                        m_cq.C_USERS_GETUSERS_BY_LASTNAME_WHATEVER);
+
+            statement.setString(1, lastname + "%");
+            statement.setInt(2, userType);
+            statement.setInt(3, userStatus);
+
+			res = statement.executeQuery();
+			// create new Cms user objects
+			while( res.next() && (i++ < nMax)) {
+				// read the additional infos.
+				oracle.sql.BLOB blob = ((OracleResultSet)res).getBLOB(m_cq.C_USERS_USER_INFO);
+				byte[] value = new byte[(int) blob.length()];
+				value = blob.getBytes(1, (int) blob.length());
+				// now deserialize the object
+				ByteArrayInputStream bin= new ByteArrayInputStream(value);
+				ObjectInputStream oin = new ObjectInputStream(bin);
+				Hashtable info=(Hashtable)oin.readObject();
+
+				CmsUser user = new CmsUser(res.getInt(m_cq.C_USERS_USER_ID),
+										   res.getString(m_cq.C_USERS_USER_NAME),
+										   res.getString(m_cq.C_USERS_USER_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_RECOVERY_PASSWORD),
+										   res.getString(m_cq.C_USERS_USER_DESCRIPTION),
+										   res.getString(m_cq.C_USERS_USER_FIRSTNAME),
+										   res.getString(m_cq.C_USERS_USER_LASTNAME),
+										   res.getString(m_cq.C_USERS_USER_EMAIL),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTLOGIN).getTime(),
+										   SqlHelper.getTimestamp(res,m_cq.C_USERS_USER_LASTUSED).getTime(),
+										   res.getInt(m_cq.C_USERS_USER_FLAGS),
+										   info,
+										   new CmsGroup(res.getInt(m_cq.C_GROUPS_GROUP_ID),
+														res.getInt(m_cq.C_GROUPS_PARENT_GROUP_ID),
+														res.getString(m_cq.C_GROUPS_GROUP_NAME),
+														res.getString(m_cq.C_GROUPS_GROUP_DESCRIPTION),
+														res.getInt(m_cq.C_GROUPS_GROUP_FLAGS)),
+										   res.getString(m_cq.C_USERS_USER_ADDRESS),
+										   res.getString(m_cq.C_USERS_USER_SECTION),
+										   res.getInt(m_cq.C_USERS_USER_TYPE));
+
+				users.addElement(user);
+			}
+
+			//res.close();
+		} catch (SQLException e){
+			throw new CmsException("["+this.getClass().getName()+"]"+e.getMessage(),CmsException.C_SQL_ERROR, e);
+		} catch (Exception e) {
+			throw new CmsException("["+this.getClass().getName()+"]", e);
+		} finally {
+			if (res != null) {
+				try {
+					res.close();
+				} catch (SQLException se) {
+				}
+			}
+			if (statement != null) {
+				try {
+					statement.close();
+				} catch (SQLException exc) {
+				}
+			}
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException se) {
+				}
+			}
+		}
+		return users;
+	}
 
 /**
  * Determines, if the users may manage a project.<BR/>
