@@ -50,8 +50,9 @@ OpenCms Setup Wizard - Finished
 			<tr>
 				<td><img src="resources/ok.gif" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
-				<td style="width: 100%;">
-					To start OpenCms click <a target="OpenCms" href="<%= openLink %>">here</a>.
+				<td style="width: 100%;">					
+				    The OpenCms welcome page should display in a newly opened browser window now.<br>
+					If it does not display, press <a target="OpenCms" href="<%= openLink %>">here</a> to open it.
 				</td>
 			</tr>
 		</table>
@@ -67,7 +68,7 @@ OpenCms Setup Wizard - Finished
 				<td><img src="resources/warning.gif" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td>
-					This setup wizard is now locked.<br>
+					This setup wizard has now been locked.<br>
 					To use the wizard again reset the flag in the "opencms.properties".
 					For security reasons, you should remove the "/setup" folder later when
 					you have your OpenCms installation running.

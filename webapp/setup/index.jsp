@@ -113,12 +113,11 @@ OpenCms Setup Wizard - License Agreement
 				<%= Bean.getHtmlPart("C_BLOCK_START", "Wizard locked") %>
 				<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 					<tr>
-						<td><img src="resources/warning.gif" border="0"></td>
+						<td><img src="resources/error.gif" border="0"></td>
 						<td>&nbsp;&nbsp;</td>
 						<td style="width: 100%;">
-							Sorry, wizard not available.<br>
-							The OpenCms setup wizard has been locked!<br>
-							To use the wizard again, unlock it in "opencms.properties".
+							The OpenCms setup wizard is not available!<br>
+							To enable the wizard, unlock it in "opencms.properties".
 						</td>
 					</tr>
 				</table>
