@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2004/02/25 15:35:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/02/25 16:32:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.dom4j.io.SAXReader;
  * Provides information about how to handle imported resources.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $ $Date: 2004/02/25 15:35:21 $
+ * @version $Revision: 1.6 $ $Date: 2004/02/25 16:32:06 $
  * @since 5.3
  * @see OpenCms#getImportExportManager()
  */
@@ -459,8 +459,9 @@ public class CmsImportExportManager extends Object {
             saxReader = new SAXReader();
             manifest = saxReader.read(reader);
         } catch (Exception e) {
-            System.err.println("Error reading manifest.xml from resource: " + resource + ", " + e.toString());
-            e.printStackTrace(System.err);
+            System.err.println("Error reading manifest.xml from resource: " + resource);
+            System.err.println(e.getMessage());
+            //e.printStackTrace(System.err);
             manifest = null;
         } finally {
             try {
