@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsTask.java,v $
- * Date   : $Date: 2000/06/05 13:37:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/07/14 08:08:22 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ import java.util.*;
  * This abstract class describes a task in the Cms.
  * 
  * @author Ruediger Gutfleisch
- * @version $Revision: 1.10 $ $Date: 2000/06/05 13:37:56 $
+ * @version $Revision: 1.11 $ $Date: 2000/07/14 08:08:22 $
  */
 public class CmsTask implements I_CmsConstants {
 
@@ -154,7 +154,7 @@ public class CmsTask implements I_CmsConstants {
 	 * @param resourceName The name (including complete path) of the resouce.
 	 * 
 	 */
-	CmsTask(int id, String name, int state, int tasktype,
+	public CmsTask(int id, String name, int state, int tasktype,
 			int root, int parent, int initiatoruser,
 			int role, int agentuser, int originaluser,
 			java.sql.Timestamp starttime, java.sql.Timestamp wakeuptime,
@@ -383,63 +383,63 @@ public class CmsTask implements I_CmsConstants {
 		return m_AutoFinish;
 	}
 	
-	void setName(String taskname){
+	public void setName(String taskname){
 		m_Name = taskname;
 	}
 	
-	void setRoot(int root){
+	public void setRoot(int root){
 		m_Root = root;
 	}
 	
-	void setParent(int parent){
+	public void setParent(int parent){
 		m_Parent = parent;
 	}
 	
-	void setTaskType(int tasktype){
+	public void setTaskType(int tasktype){
 		m_TaskType = tasktype;
 	}
 	
-	void setRole(int role){
+	public void setRole(int role){
 		m_Role = role;
 	}
 	
-	void setAgentUser(int agentuser){
+	public void setAgentUser(int agentuser){
 		m_AgentUser = agentuser;
 	}
 	
-	void setOriginalUser(int originaluser){
+	public void setOriginalUser(int originaluser){
 		m_OriginalUser = originaluser;
 	}
 	
-	void setInitiatorUser(int initiatoruser){
+	public void setInitiatorUser(int initiatoruser){
 		m_InitiatorUser = initiatoruser;
 	}
 	
-	void setWakeupTime(java.sql.Timestamp wakeuptime){
+	public void setWakeupTime(java.sql.Timestamp wakeuptime){
 		m_WakeupTime = wakeuptime;
 	}
 	
-	void setTimeOut(java.sql.Timestamp timeout){
+	public void setTimeOut(java.sql.Timestamp timeout){
 		m_TimeOut = timeout;
 	}
 	
-	void setPriority(int priority){
+	public void setPriority(int priority){
 		m_Priority = priority;
 	}
 	
-	void setPercentage(int percentage){
+	public void setPercentage(int percentage){
 		m_Percentage = percentage;
 	}
 	
-	void setState(int state){
+	public void setState(int state){
 		m_State = state;
 	}
 
-	void setStartTime(java.sql.Timestamp starttime){
+	public void setStartTime(java.sql.Timestamp starttime){
 		m_StartTime = starttime;
 	}
 	
-	void setMilestone(int milestone){
+	public void setMilestone(int milestone){
 		m_Milestone = milestone;
 	}
 	

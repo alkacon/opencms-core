@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsProject.java,v $
- * Date   : $Date: 2000/07/03 08:15:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/07/14 08:08:22 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -37,7 +37,7 @@ import java.sql.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.22 $ $Date: 2000/07/03 08:15:30 $
+ * @version $Revision: 1.23 $ $Date: 2000/07/14 08:08:22 $
  */
 public class CmsProject implements I_CmsConstants,
                                                         Cloneable{
@@ -232,7 +232,7 @@ public class CmsProject implements I_CmsConstants,
 	 * 
 	 * @return the taskid of this project.
 	 */
-    int getTaskId() {
+   public  int getTaskId() {
 		return(this.m_taskId);
 	}
 
