@@ -1,0 +1,11 @@
+echo on
+login Admin admin
+createPropertydefinition Title page
+createPropertydefinition NavText page
+createPropertydefinition NavPos page
+createPropertydefinition Description page
+createPropertydefinition Keywords page
+exit
+
+
+
