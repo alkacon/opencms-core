@@ -2,8 +2,8 @@ package com.opencms.modules.search.lucene;
 
 /*
     $RCSfile: HtmlParser.java,v $
-    $Date: 2003/03/25 14:46:01 $
-    $Revision: 1.8 $
+    $Date: 2003/03/25 14:48:28 $
+    $Revision: 1.9 $
     Copyright (C) 2000  The OpenCms Group
     This File is part of OpenCms -
     the Open Source Content Mananagement System
@@ -21,11 +21,16 @@ package com.opencms.modules.search.lucene;
     long with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
   */
-import com.opencms.htmlconverter.*;
-import java.io.*;
-import java.util.*;
-import java.text.*;
-import Entities;
+import java.io.DataInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+
+import com.opencms.htmlconverter.CmsHtmlConverter;
 
 /**
  *  Parses the html-code by using tidy in connection with the HtmlConverter which
