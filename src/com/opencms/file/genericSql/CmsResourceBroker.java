@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/09 14:16:30 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/06/09 16:16:20 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.43 $ $Date: 2000/06/09 14:16:30 $
+ * @version $Revision: 1.44 $ $Date: 2000/06/09 16:16:20 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -855,10 +855,9 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		m_dbAccess.writeProperty(property, value, res.getResourceId(),res.getType());
 		// set the file-state to changed
 		if(res.isFile()){
-            //todo: implement these functions
-			//m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
+            m_dbAccess.writeFileHeader(currentProject, onlineProject(currentUser, currentProject), (CmsFile) res, true);
 		} else {
-			//m_dbAccess.writeFolder(currentProject, m_fileRb.readFolder(currentProject, resource), true);
+			m_dbAccess.writeFolder(currentProject, m_dbAccess.readFolder(currentProject.getId(), resource), true);
 		}
 
     }
@@ -2891,8 +2890,129 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getSubFolders(CmsUser currentUser, CmsProject currentProject,
 								String foldername)
         throws CmsException {
-     return null;
+        Vector folders = new Vector();
+		
+       // try to get the folders in the current project
+	   try {
+			folders = helperGetSubFolders(currentUser, currentProject, foldername);
+    	} catch (CmsException exc) {
+			// no folders, ignoring them
+		}
+		
+		if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+			// this is not the onlineproject, get the files 
+			// from the onlineproject, too
+			try {
+				Vector onlineFolders = 
+					helperGetSubFolders(currentUser, 
+										onlineProject(currentUser, currentProject), 
+										foldername);
+               	// merge the resources
+				folders = mergeResources(folders, onlineFolders);
+			} catch(CmsException exc) {
+				// no onlinefolders, ignoring them
+			}			
+		}
+		// return the folders
+		return(folders);
     }
+    
+    
+    
+	/**
+	 * Merges two resource-vectors into one vector.
+	 * All offline-resources will be putted to the return-vector. All additional 
+	 * online-resources will be putted to the return-vector, too. All online resources,
+	 * which are present in the offline-vector will be ignored.
+	 * 
+	 * The merged-vector is sorted by the complete path, if the two input-vectors were
+	 * sorted correctly.
+	 * 
+	 * @param offline The vector with the offline resources.
+	 * @param online The vector with the online resources.
+	 * @return The merged vector.
+	 */
+	private Vector mergeResources(Vector offline, Vector online) {
+		
+		// create a vector for the merged offline
+        
+        
+		Vector merged = new Vector(offline.size() + online.size());
+		// merge the online to the offline, use the correct sorting
+		while( (offline.size() != 0) && (online.size() != 0) ) {
+            int compare = 
+				((CmsResource)offline.firstElement()).getAbsolutePath().compareTo(
+					((CmsResource)online.firstElement()).getAbsolutePath());
+			if( compare < 0 ) {
+               	merged.addElement(offline.firstElement());
+				offline.removeElementAt(0);
+			} else if( compare == 0) {
+               	merged.addElement(offline.firstElement());
+                offline.removeElementAt(0);
+				online.removeElementAt(0);
+			} else {
+               	merged.addElement(online.firstElement());
+				online.removeElementAt(0);
+			}
+		}
+		while(offline.size() != 0) {
+           	merged.addElement(offline.firstElement());
+			offline.removeElementAt(0);
+		}
+		while(online.size() != 0) {
+           	merged.addElement(online.firstElement());
+			online.removeElementAt(0);
+		}
+		return(merged);
+	}
+	
+   	/**
+   	 * A helper method for this resource-broker.
+	 * Returns a Hashtable with all subfolders.<br>
+	 * 
+	 * Subfolders can be read from an offline project and the online project. <br>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project to read the folders from.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfolders A Hashtable with all subfolders for the given folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private Vector helperGetSubFolders(CmsUser currentUser, 
+									   CmsProject currentProject,
+									   String foldername)
+		throws CmsException{
+		
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
+												  foldername);
+
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// acces to all subfolders was granted - return the sub-folders.
+			Vector folders = m_dbAccess.getSubFolders(cmsFolder);
+			CmsFolder folder;
+			for(int z=0 ; z < folders.size() ; z++) {
+				// read the current folder
+				folder = (CmsFolder)folders.elementAt(z);
+				// check the readability for the folder
+				if( !( accessOther(currentUser, currentProject, (CmsResource)folder, C_ACCESS_PUBLIC_READ) || 
+					   accessOwner(currentUser, currentProject, (CmsResource)folder, C_ACCESS_OWNER_READ) ||
+					   accessGroup(currentUser, currentProject, (CmsResource)folder, C_ACCESS_GROUP_READ) ) ) {
+					// access to the folder was not granted delete him
+					folders.removeElementAt(z);
+					// correct the index
+					z--;
+				}
+			}
+			return folders;
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
+				CmsException.C_ACCESS_DENIED);
+		}
+	}
+    
 							   
 	/**
 	 * Locks a resource.<br>
@@ -3090,8 +3210,8 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
             if(currentGroup != null) {                
                 file.setGroupId(currentGroup.getId());
             }
-            //m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
-             //                          file,false);
+            m_dbAccess.writeFileHeader(currentProject,onlineProject(currentUser,currentProject),
+                                       file,false);
   
 			// write the metainfos
 			writeProperties(currentUser,currentProject,file.getAbsolutePath(), propertyinfos );
@@ -3157,6 +3277,18 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void writeFileHeader(CmsUser currentUser, CmsProject currentProject, 
 								CmsFile file)
         throws CmsException {
+        // has the user write-access?
+		if( accessWrite(currentUser, currentProject, (CmsResource)file) ) {
+				
+			// write-acces  was granted - write the file.
+			m_dbAccess.writeFileHeader(currentProject, 
+									  onlineProject(currentUser, currentProject), file,true );
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3195,6 +3327,31 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public void renameFile(CmsUser currentUser, CmsProject currentProject, 
 					       String oldname, String newname)
         throws CmsException {
+        
+		// check, if the new name is a valid filename
+		validFilename(newname);
+		
+		// read the old file
+		CmsResource file = readFileHeader(currentUser, currentProject, oldname);
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, file) ) {
+				
+			// write-acces  was granted - rename the file.
+			m_dbAccess.renameFile(currentProject, 
+								  onlineProject(currentUser, currentProject), 
+                                  currentUser.getId(),
+								  file.getResourceId(), file.getPath() + newname );
+			// copy the metainfos
+			writeProperties(currentUser,currentProject, file.getPath() + newname, 
+                            readAllProperties(currentUser,currentProject,file.getAbsolutePath()));
+											  	
+			// inform about the file-system-change
+			fileSystemChanged();
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + oldname, 
+				CmsException.C_NO_ACCESS);
+		}
     }
 	
 	/**
@@ -3407,9 +3564,81 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject,
 								   String foldername)
         throws CmsException {
-     return null;
+    	Vector files = new Vector();
+		
+		// try to get the files in the current project
+		try {
+			files = helperGetFilesInFolder(currentUser, currentProject, foldername);
+		} catch (CmsException exc) {
+			// no files, ignoring them
+		}
+		
+		if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+			// this is not the onlineproject, get the files 
+			// from the onlineproject, too
+			try {
+				Vector onlineFiles = 
+					helperGetFilesInFolder(currentUser, 
+										   onlineProject(currentUser, currentProject), 
+										   foldername);
+				// merge the resources
+				files = mergeResources(files, onlineFiles);
+			} catch(CmsException exc) {
+				// no onlinefiles, ignoring them
+			}			
+		}
+		// return the files
+		return files;
     }
 	
+    /**
+	 * A helper method for this resource-broker.
+	 * Returns a Vector with all files of a folder.<br>
+	 * 
+	 * Files of a folder can be read from an offline Project and the online Project.<br>
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param foldername the complete path to the folder.
+	 * 
+	 * @return subfiles A Vector with all subfiles for the overgiven folder.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */
+	private Vector helperGetFilesInFolder(CmsUser currentUser, 
+										  CmsProject currentProject,
+										  String foldername)
+		throws CmsException {
+		// get the folder to read from, to check access
+		CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(), 
+												  foldername);
+
+		if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
+				
+			// acces to the folder was granted - return the files.
+			Vector files = m_dbAccess.getFilesInFolder(cmsFolder);
+			CmsFile file;
+			for(int z=0 ; z < files.size() ; z++) {
+				// read the current folder
+				file = (CmsFile)files.elementAt(z);
+				// check the readability for the file
+				if( ! ( accessOther(currentUser, currentProject, (CmsResource)file, C_ACCESS_PUBLIC_READ) || 
+						accessOwner(currentUser, currentProject, (CmsResource)file, C_ACCESS_OWNER_READ) ||
+						accessGroup(currentUser, currentProject, (CmsResource)file, C_ACCESS_GROUP_READ) ) ) {
+					// no access, remove the file
+					files.removeElementAt(z);
+					// correct the current index
+					z--;
+				}
+			}
+			return(files);
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + foldername, 
+				CmsException.C_ACCESS_DENIED);
+		}
+	}
+    
+    
      /**
 	 * Reads all file headers of a file in the OpenCms.<BR>
 	 * This method returns a vector with the histroy of all file headers, i.e. 
@@ -4243,6 +4472,83 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					CmsException.C_BAD_NAME);
 			}
 		}
+	}
+    
+    	/**
+	 * Checks, if the owner may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessOwner(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource, int flags) 
+		throws CmsException {
+		// The Admin has always access
+		if( isAdmin(currentUser, currentProject) ) {
+			return(true);
+		}
+		// is the resource owned by this user?
+		if(resource.getOwnerId() == currentUser.getId()) {
+			if( (resource.getAccessFlags() & flags) == flags ) {
+				return true ;
+			}
+		}
+		// the resource isn't accesible by the user.
+		return false;
+	}
+
+	/**
+	 * Checks, if the group may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessGroup(CmsUser currentUser, CmsProject currentProject,
+								CmsResource resource, int flags)
+		throws CmsException {
+
+		// is the user in the group for the resource?
+		if(userInGroup(currentUser, currentProject, currentUser.getName(), 
+					   readGroup(currentUser, currentProject, 
+								 resource).getName())) {
+			if( (resource.getAccessFlags() & flags) == flags ) {
+				return true;
+			}
+		}
+		// the resource isn't accesible by the user.
+
+		return false;
+
+	}
+
+	/**
+	 * Checks, if others may access this resource.
+	 * 
+	 * @param currentUser The user who requested this method.
+	 * @param currentProject The current project of the user.
+	 * @param resource The resource to check.
+	 * @param flags The flags to check.
+	 * 
+	 * @return wether the user has access, or not.
+	 */
+	private boolean accessOther(CmsUser currentUser, CmsProject currentProject, 
+								CmsResource resource, int flags)
+		throws CmsException {
+		
+		if( (resource.getAccessFlags() & flags) == flags ) {
+			return true;
+		} else {
+			return false ;
+		}
+		
 	}
 	
 }

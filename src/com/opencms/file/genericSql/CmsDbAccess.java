@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/09 16:02:13 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2000/06/09 16:16:19 $
+ * Version: $Revision: 1.54 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.53 $ $Date: 2000/06/09 16:02:13 $ * 
+ * @version $Revision: 1.54 $ $Date: 2000/06/09 16:16:19 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannels {
 	
@@ -3088,6 +3088,43 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
      }
      
      /**
+	 * Renames the file to the new name.
+	 * 
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param userId The user id
+	 * @param oldfileID The id of the resource which will be renamed.
+	 * @param newname The new name of the resource.
+	 * 
+	 * @exception CmsException Throws CmsException if operation was not succesful.
+	 */		
+	 public void renameFile(CmsProject project,
+                            CmsProject onlineProject,
+                            int userId,
+                            int oldfileID, 
+                            String newname)
+         throws CmsException {
+         
+         PreparedStatement statement = null;
+         try{
+		    statement = m_pool.getPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY);
+            
+            statement.setString(1,newname);
+			statement.setInt(2,userId);
+			statement.setInt(3,oldfileID);
+			statement.executeUpdate();
+		
+			} catch (SQLException e){
+			 
+              throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+		    }finally {
+				if( statement != null) {
+					m_pool.putPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY, statement);
+				}
+			}                
+     }
+     
+     /**
       * Deletes a folder in the database. 
       * This method is used to physically remove a folder form the database.
       * It is internally used by the publish project method.
@@ -3819,8 +3856,10 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys, I_CmsLogChannel
         m_pool.initPreparedStatement(C_RESOURCES_UNLOCK_KEY,C_RESOURCES_UNLOCK);
         m_pool.initPreparedStatement(C_RESOURCES_COUNTLOCKED_KEY,C_RESOURCES_COUNTLOCKED);
         m_pool.initPreparedStatement(C_RESOURCES_READBYPROJECT_KEY,C_RESOURCES_READBYPROJECT);
+        m_pool.initPreparedStatement(C_RESOURCES_RENAMERESOURCE_KEY,C_RESOURCES_RENAMERESOURCE);
 
-		// init statements for groups
+
+        // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);
         m_pool.initPreparedStatement(C_GROUPS_READGROUP_KEY,C_GROUPS_READGROUP);
 	    m_pool.initPreparedStatement(C_GROUPS_READGROUP2_KEY,C_GROUPS_READGROUP2);

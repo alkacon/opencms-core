@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/09 16:02:14 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/06/09 16:16:20 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.34 $ $Date: 2000/06/09 16:02:14 $
+ * @version $Revision: 1.35 $ $Date: 2000/06/09 16:16:20 $
  */
 public interface I_CmsQuerys {
     
@@ -152,6 +152,11 @@ public interface I_CmsQuerys {
 	public static final String C_RESOURCES_GET_FILESINFOLDER = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE PARENT_ID = ? AND RESOURCE_TYPE <> "
 																	+ I_CmsConstants.C_TYPE_FOLDER;
 
+    public static final Integer C_RESOURCES_RENAMERESOURCE_KEY = new Integer(140);
+	public static final String C_RESOURCES_RENAMERESOURCE = "UPDATE " + C_DATABASE_PREFIX + "RESOURCES SET "
+                                                           +"RESOURCE_NAME = ? , "
+                                                           +"RESOURCE_LASTMODIFIED_BY = ? "
+                                                           +"WHERE RESOURCE_ID = ?";
 
 	// Constants for files table
 	public static final String C_FILE_ID="FILE_ID";
