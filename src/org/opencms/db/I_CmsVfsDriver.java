@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2003/08/11 10:11:07 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2003/08/11 15:53:53 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import source.org.apache.java.util.Configurations;
  * Definitions of all required VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2003/08/11 10:11:07 $
+ * @version $Revision: 1.34 $ $Date: 2003/08/11 15:53:53 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -345,6 +345,23 @@ public interface I_CmsVfsDriver {
     void removeTemporaryFile(CmsFile file) throws CmsException;
     int renameResource(CmsUser currentUser, CmsProject currentProject, CmsResource resource, String newResourceName) throws CmsException;
     void updateLockstate(CmsResource res, int projectId) throws CmsException;
+    
+    /**
+     * Updates the resource description and file content of a given resource. <p>
+     * 
+     * The stucture id of the resouce is not modified. Therefore, the structure entry of the resource
+     * points to a different resource description and content after calling this method.
+     *
+     * @param project the current project 
+     * @param oldResource the existing resource to be updated 
+     * @param resource the resource with the updated information
+     * @param content the new resource content
+     * @throws CmsException if something goes wrong.
+     */
+     void updateResource(CmsProject project, CmsResource oldResource, CmsResource resource, byte[] content) throws CmsException ;
+  
+    
+    
     void updateResourceState(CmsProject project, CmsResource resource, int changed) throws CmsException;
     void writeFile(CmsProject project, CmsFile file, int changed) throws CmsException;
     void writeFile(CmsProject project, CmsFile file, int changed, CmsUUID userId) throws CmsException;

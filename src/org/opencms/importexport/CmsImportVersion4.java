@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2003/08/08 14:16:08 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/08/11 15:53:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -241,7 +241,6 @@ public class CmsImportVersion4 extends A_CmsImport {
   /**
     * Imports the resources and writes them to the cms.<p>
     * 
-    * This method is used to import import files with the version 3.
     * 
     * @param excludeList filenames of files and folders which should not 
     *      be (over)written in the virtual file system (not used when null)
@@ -398,8 +397,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
    /**
     * Imports a resource (file or folder) into the cms.<p>
-    * This method id used for imports version 3.
-      * 
+    * 
     * @param source the path to the source-file
     * @param destination the path to the destination-file in the cms
     * @param type the resource-type of the file

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/10 11:49:48 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2003/08/11 15:53:53 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -131,12 +131,12 @@ public interface I_CmsResourceType {
     /**
      * Moves a resource to the lost and found folder
      *
-     * @param source the complete path of the sourcefile.
-     *
-     * @throws CmsException if the user has not the rights to move this resource,
-     * or if the file couldn't be moved.
+     * @param cms the current cms object
+     * @param resourcename the complete path of the sourcefile.
+     * @return string with the name of moved resource inside the lost & found folder
+     * @throws  CmsException if something goes wrong
      */
-    void moveToLostAndFound(CmsObject cms, String resourcename) throws CmsException;
+    String copyToLostAndFound(CmsObject cms, String resourcename) throws CmsException;
 
     /**
      * Renames a file to a new name.<p>

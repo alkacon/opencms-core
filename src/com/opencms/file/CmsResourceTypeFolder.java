@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/08/08 12:50:39 $
-* Version: $Revision: 1.86 $
+* Date   : $Date: 2003/08/11 15:53:53 $
+* Version: $Revision: 1.87 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -365,8 +365,9 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#moveToLoastAndFound(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void moveToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
+    public String copyToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
         // nothing to do here,
+        return null;
     }
 
 

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/10 11:49:48 $
-* Version: $Revision: 1.370 $
+* Date   : $Date: 2003/08/11 15:53:53 $
+* Version: $Revision: 1.371 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.370 $
+ * @version $Revision: 1.371 $
  */
 public class CmsObject {
 
@@ -1370,12 +1370,12 @@ public class CmsObject {
     * Moves a resource to the lost and found folder
     *
     * @param resourcename the complete path of the sourcefile.
-    *
+    * @return location of the moved resource
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    protected void doMoveToLostAndFound(String resourcename) throws CmsException {
-        m_driverManager.moveToLostAndFound(m_context, addSiteRoot(resourcename));
+    protected String doCopyToLostAndFound(String resourcename) throws CmsException {
+        return m_driverManager.copyToLostAndFound(m_context, addSiteRoot(resourcename));
     }
        
 
@@ -2655,12 +2655,12 @@ public class CmsObject {
      * Moves a resource to the lost and found folder
      *
      * @param source the complete path of the sourcefile.
-     *
+     * @return location of the moved resource
      * @throws CmsException if the user has not the rights to move this resource,
      * or if the file couldn't be moved.
      */
-    public void moveToLostAndFound(String source) throws CmsException {
-        getResourceType(readFileHeader(source).getType()).moveToLostAndFound(this, source);
+    public String copyToLostAndFound(String source) throws CmsException {
+        return getResourceType(readFileHeader(source).getType()).copyToLostAndFound(this, source);
     }
 
     /**
@@ -4155,6 +4155,25 @@ public class CmsObject {
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         m_driverManager.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
     }
+
+
+
+   /**
+    * Updates the resource description and file content of a given resource. <p>
+    * 
+    * The stucture id of the resouce is not modified. Therefore, the structure entry of the resource
+    * points to a different resource description and content after calling this method.
+    * 
+    * @param resource the resource with the updated information
+    * @param content the new resource content
+    * @param properties the new resource properties
+    * @param destination the complete pathe of the resource
+    * @throws CmsException if something goes wrong.
+    */
+    public void updateResource(CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
+        m_driverManager.updateResource(m_context, resource, content, properties, addSiteRoot(destination));
+    }
+
 
     /**
      * Tests, if a user is member of the given group.

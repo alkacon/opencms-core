@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/11 10:11:07 $
- * Version: $Revision: 1.150 $
+ * Date   : $Date: 2003/08/11 15:53:53 $
+ * Version: $Revision: 1.151 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.150 $ $Date: 2003/08/11 10:11:07 $
+ * @version $Revision: 1.151 $ $Date: 2003/08/11 15:53:53 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1995,6 +1995,7 @@ public class CmsDriverManager extends Object {
      * @throws CmsException  Throws CmsException if operation was not succesful.
      */
     public void deleteFolder(CmsRequestContext context, String foldername) throws CmsException {
+
         CmsResource onlineFolder;
 
         // TODO: "/" is currently used inconsistent !!! 
@@ -3513,7 +3514,7 @@ public class CmsDriverManager extends Object {
                 retValue = new Vector(resources.size());
 
                 //make sure that we have access to all these.
-                for (Enumeration e = resources.elements(); e.hasMoreElements(); ) {
+                for (Enumeration e = resources.elements(); e.hasMoreElements();) {
                     CmsResource res = (CmsResource) e.nextElement();
                     if (hasPermissions(context, res, I_CmsConstants.C_VIEW_ACCESS, false)) {
                         if (res.isFolder() && !res.getResourceName().endsWith("/")) {
@@ -3763,8 +3764,8 @@ public class CmsDriverManager extends Object {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getResourceName() + "/");
                 } else {
                     currentResource.setFullResourceName(parentFolderName + currentResource.getResourceName());
-                }
             }
+        }
         }
 
         // cache the sub resources
@@ -4637,11 +4638,11 @@ public class CmsDriverManager extends Object {
     *
     * @param context the current request context
     * @param resourcename the complete path of the sourcefile.
-    *
+    * @return location of the moved resource
     * @throws CmsException if the user has not the rights to move this resource,
     * or if the file couldn't be moved.
     */
-    public void moveToLostAndFound(CmsRequestContext context, String resourcename) throws CmsException {
+    public String copyToLostAndFound(CmsRequestContext context, String resourcename) throws CmsException {
 
         String siteRoot=context.getSiteRoot();
         Stack storage=new Stack();
@@ -4665,14 +4666,36 @@ public class CmsDriverManager extends Object {
                     createFolder(context, des, new HashMap());            
                 }                    
             }
-            // now move the resource
-            moveResource(context, resourcename, destination);
-        } catch (CmsException e2) {
+            // check if this resource name does already exist
+            // if so add a psotfix to the name
+            des=destination;
+            int postfix=1;
+            boolean found=true;
+            while (found) {            
+                try {
+                    // try to read the file.....
+                    found=true;
+                    readFileHeader(context, des);
+                    // ....it's there, so add a postfix and try again                  
+                    des=destination.substring(0, destination.lastIndexOf("."));
+                    des += "_"+postfix;
+                    des += destination.substring(destination.lastIndexOf("."), destination.length());
+                    postfix++;                    
+                } catch (CmsException e3) {                         
+                    // the file does not exist, so we can use this filename                               
+                    found=false; 
+                }
+            }
+            destination=des;                     
+            // copy the exsisting resource to the lost and foud folder
+            copyFile(context, resourcename, destination, false, false, I_CmsConstants.C_COPY_PRESERVE_LINK);           
+          } catch (CmsException e2) {
             throw e2;           
         } finally {
             // set the site root to the old value again
             context.setSiteRoot(siteRoot);
         }            
+        return destination;
     }
        
         
@@ -5335,7 +5358,7 @@ public class CmsDriverManager extends Object {
 
         // check if the user has read access to the file
         checkPermissions(context, resource, I_CmsConstants.C_READ_OR_VIEW_ACCESS);
-        
+
         // set full resource name
         resource.setFullResourceName(filename);
 
@@ -5376,10 +5399,10 @@ public class CmsDriverManager extends Object {
         List path = readPathInProject(context, projectId, filename, includeDeleted);
         CmsResource resource = (CmsResource) path.get(path.size() - 1);
         List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
-        
+
         if (isInsideProject(projectResources, resource)) {
-            return resource;
-        }
+                return resource;
+            }
 
         throw new CmsResourceNotFoundException("File " + filename + " is not inside project with ID " + projectId);
     }
@@ -5540,7 +5563,7 @@ public class CmsDriverManager extends Object {
         if ((cmsFolder.getState() == I_CmsConstants.C_STATE_DELETED) && (!includeDeleted)) {
             throw new CmsException("[" + this.getClass().getName() + "]" + context.removeSiteRoot(readPath(context, cmsFolder, includeDeleted)), CmsException.C_RESOURCE_DELETED);
         }
-        
+
         // now set the full resource name
         cmsFolder.setFullResourceName(foldername);
 
@@ -5577,12 +5600,12 @@ public class CmsDriverManager extends Object {
         }
 
         List path = readPathInProject(context, projectId, foldername, false);
-        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);        
+        CmsFolder cmsFolder = (CmsFolder) path.get(path.size() - 1);
         List projectResources = m_vfsDriver.readProjectResources(readProject(context, projectId));
-        
+
         if (isInsideProject(projectResources, (CmsResource) cmsFolder)) {
-            return cmsFolder;
-        }        
+                return cmsFolder;
+            }
 
         throw new CmsResourceNotFoundException("Folder " + foldername + " is not inside project with ID " + projectId);
     }
@@ -7745,6 +7768,31 @@ public class CmsDriverManager extends Object {
     public void updateOnlineProjectLinks(Vector deleted, Vector changed, Vector newRes, int pageType) throws CmsException {
         m_projectDriver.updateOnlineProjectLinks(deleted, changed, newRes, pageType);
     }
+
+    /**
+     * Updates the resource description and file content of a given resource. <p>
+     * 
+     * The stucture id of the resouce is not modified. Therefore, the structure entry of the resource
+     * points to a different resource description and content after calling this method.
+     * 
+     * @param context the current request context
+     * @param resource the resource with the updated information
+     * @param content the new resource content
+     * @param properties the new resource properties
+     * @param destination the complete pathe of the resource
+     * @throws CmsException if something goes wrong.
+     */
+     public void updateResource(CmsRequestContext context, CmsResource resource, byte[] content, Map properties, String destination) throws CmsException {
+         // first remove all old properties
+         deleteAllProperties(context, destination);
+         CmsResource oldResource=readFileHeader(context, destination);
+         m_vfsDriver.updateResource(context.currentProject(), oldResource, resource, content);
+         clearResourceCache();       
+         writeProperties(context, destination, properties);
+         
+     }
+
+
 
     /**
      * Checks if a user is member of a group.<P/>

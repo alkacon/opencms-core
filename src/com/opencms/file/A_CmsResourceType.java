@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsResourceType.java,v $
- * Date   : $Date: 2003/08/08 12:50:40 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2003/08/11 15:53:53 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package com.opencms.file;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.flex.util.CmsUUID;
 
 import java.util.Map;
@@ -41,7 +42,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * @since 5.1
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
@@ -97,8 +98,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#moveToLoastAndFound(com.opencms.file.CmsObject, java.lang.String)
      */
-    public void moveToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
-        cms.doMoveToLostAndFound(resourcename);
+    public String copyToLostAndFound(CmsObject cms, String resourcename) throws CmsException {
+        return cms.doCopyToLostAndFound(resourcename);
     }
 
     /**
@@ -195,7 +196,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             // an exception is thrown if the resource already exists
         }
 
-        if (changed) {
+        if (changed) { 
             // the resource already exists.
             // check if the resource uuids are the same, if so, update the content
             CmsResource existingResource=cms.readFileHeader(destination);
@@ -206,10 +207,14 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 cms.touch(destination, resource.getDateLastModified(), false, resource.getUserLastModified());
             } else {
                 // a resource with the same name but different uuid does exist, so
-                // move the existing resource to the lost&found folder and import the new one
-                cms.moveToLostAndFound(destination); 
-                importedResource = cms.doImportResource(resource, content, properties, destination);
+                // copy the existing resource to the lost&found folder and import the new one
+                cms.copyToLostAndFound(destination); 
+                // update the existing resource with the new content
+                resource.setState(I_CmsConstants.C_STATE_CHANGED);
+                cms.updateResource(resource, content, properties, destination);
+                //cms.replaceResource(destination,resource.getType(),properties,content);
                 cms.lockResource(destination);  
+                importedResource = cms.readFileHeader(destination);
                      
             }       
         }
