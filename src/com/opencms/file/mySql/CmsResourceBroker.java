@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/09/15 13:44:16 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2000/11/20 14:19:55 $
+ * Version: $Revision: 1.42 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.41 $ $Date: 2000/09/15 13:44:16 $
+ * @version $Revision: 1.42 $ $Date: 2000/11/20 14:19:55 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 /**
@@ -64,23 +64,6 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
 public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
 {
 	return new com.opencms.file.mySql.CmsDbAccess(configurations);
-}
-/**
- * Reads the group (role) of a task from the OpenCms.
- * 
- * <B>Security:</B>
- * All users are granted.
- * 
- * @param currentUser The user who requested this method.
- * @param currentProject The current project of the user.
- * @param task The task to read from.
- * @return The group of a resource.
- * 
- * @exception CmsException Throws CmsException if operation was not succesful.
- */
-public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, CmsTask task) throws CmsException
-{
-	return m_dbAccess.readGroup(task.getRole());
 }
 /**
  * Reads a project from the Cms.
