@@ -146,6 +146,14 @@ TD.wizard
     FONT-SIZE: 8pt;
     FONT-WEIGHT: normal
 }
+TD.wizardbold
+{
+    BACKGROUND-COLOR: #ffffff;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: bold;
+}
 TD.leerzeile
 {
     BACKGROUND-COLOR: #c0c0c0;
@@ -195,7 +203,7 @@ TEXTAREA.textarea
     COLOR: #000000;
 	FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
-	WIDTH: 500px
+	WIDTH: 300px
 }
 a.reiterinaktiv
 {
@@ -269,7 +277,7 @@ TD.taskviewhead2
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold;
 }
-TD.taskviewheadblue
+TD.taskviewheadactive
 {
     BACKGROUND-COLOR: blue;
     COLOR: #ffffff;
@@ -277,7 +285,15 @@ TD.taskviewheadblue
     FONT-SIZE: 10pt;
     FONT-WEIGHT: bold;
 }
-TD.taskviewheadred
+TD.taskviewheadnew
+{
+    BACKGROUND-COLOR: #b1c7ff;
+    COLOR: #000000;
+    FONT-FAMILY: MS Sans Serif, Arial, helevitca, sans-serif;
+    FONT-SIZE: 10pt;
+    FONT-WEIGHT: bold;
+}
+TD.taskviewheadalert
 {
     BACKGROUND-COLOR: #ff0000;
     COLOR: #ffffff;
