@@ -11,7 +11,7 @@ import java.lang.reflect.*;
  * the opencms, and for the initial setup. It uses the OpenCms-Object.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/11 10:24:30 $
+ * @version $Revision: 1.7 $ $Date: 2000/01/11 11:46:05 $
  */
 public class CmsShell implements I_CmsConstants {
 	
@@ -909,6 +909,51 @@ public class CmsShell implements I_CmsConstants {
 	public void anonymousUser() {
 		try {
 			System.out.println( m_cms.anonymousUser() );
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns the default group of the current user.
+	 */
+	public void userDefaultGroup() {
+		System.out.println(m_cms.getRequestContext().userDefaultGroup());
+	}
+
+	/**
+	 * Returns the current group of the current user.
+	 */
+	public void userCurrentGroup() {
+		System.out.println(m_cms.getRequestContext().userCurrentGroup());
+	}
+	
+	/**
+	 * Sets the current group of the current user.
+	 */
+	public void setUserCurrentGroup(String groupname) {
+		try {
+			m_cms.getRequestContext().setUserCurrentGroup(groupname);
+		} catch( Exception exc ) {
+			System.err.println(exc);
+		}
+	}
+
+	/**
+	 * Returns the current project for the user.
+	 */
+	public void getCurrentProject() {
+		System.out.println(m_cms.getRequestContext().getCurrentProject());
+	}
+	
+	/**
+	 * Sets the current project for the user.
+	 * 
+	 * @param projectname The name of the project to be set as current.
+	 */
+	public void setCurrentProject(String projectname) {
+		try {
+			System.out.println( m_cms.getRequestContext().setCurrentProject(projectname) );
 		} catch( Exception exc ) {
 			System.err.println(exc);
 		}

@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2000/01/05 18:15:22 $
+ * @version $Revision: 1.6 $ $Date: 2000/01/11 11:46:05 $
  * 
  */
 public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConstants {
@@ -70,7 +70,8 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 			m_user = null;
 		}
 		
-		m_currentProject = m_rb.readProject(m_user, null, currentProject);
+		// set current project and group for this request
+		setCurrentProject(currentProject);
 		m_currentGroup = m_rb.readGroup(m_user, m_currentProject, currentGroup);
 	}
 	
@@ -83,7 +84,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 		if( m_req != null ) {
 			return( translatePath(m_req.getPathInfo()) );
 		} else {
-			return( this.C_ROOT );
+			return( C_ROOT );
 		}
 	}
 	
@@ -146,7 +147,7 @@ public class CmsRequestContext extends A_CmsRequestContext implements I_CmsConst
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	void setUserCurrentGroup(String groupname) 
+	public void setUserCurrentGroup(String groupname) 
 		throws CmsException {
 		
 		// is the user in that group?

@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.15 $ $Date: 2000/01/11 10:24:30 $
+ * @version $Revision: 1.16 $ $Date: 2000/01/11 11:46:05 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1550,7 +1550,7 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			// write-acces  was granted - create and return the folder.
 			return(m_fileRb.createFolder(currentUser, currentProject, 
 										 folder + newFolderName + C_FOLDER_SEPERATOR,
-										 C_ACCESS_DEFAULT_FLAGS));
+										 0));
 		} else {
 			throw new CmsException(CmsException.C_EXTXT[CmsException.C_NO_ACCESS],
 				CmsException.C_NO_ACCESS);

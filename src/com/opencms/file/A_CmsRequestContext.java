@@ -13,7 +13,7 @@ import com.opencms.core.*;
  * <p>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2000/01/03 17:37:23 $ 
+ * @version $Revision: 1.7 $ $Date: 2000/01/11 11:46:05 $ 
  * 
  */
 public abstract class A_CmsRequestContext
@@ -87,7 +87,7 @@ public abstract class A_CmsRequestContext
 	 * 
 	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
-	abstract void setUserCurrentGroup(String groupname) 
+	abstract public void setUserCurrentGroup(String groupname) 
 		throws CmsException;
 
 	/**
