@@ -1,0 +1,2341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 1 Caladan</opencms_version>
+		<createdate>8/27/04 10:23 AM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.editors.htmlarea</name>
+		<nicename><![CDATA[OpenCms 6.0 HtmlArea WYSIWYG editor plugin]]></nicename>
+		<class/>
+		<description><![CDATA[
+<p>This module adds the popular Open Source HTML editor "HtmlArea" to the OpenCms Workplace.</p>
+<p>Install this module if you want a WYSIWYG editor for Mozilla based browsers.
+The version of HtmlArea is 3.0 RC1.</p>
+<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>0.9.0</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.editors.htmlarea/"/>
+			<resource uri="/system/workplace/editors/htmlarea/"/>
+			<resource uri="/system/workplace/resources/editors/htmlarea/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/modules/org.opencms.editors.htmlarea/;/system/workplace/editors/htmlarea/;/system/workplace/resources/editors/htmlarea/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 17:17:01 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 17:17:01 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.htmlarea</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 07 Feb 2004 17:42:52 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 Feb 2004 17:42:51 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.htmlarea/default_bodies</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 07 Feb 2004 17:42:52 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 Feb 2004 17:42:52 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.htmlarea/templates</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 07 Feb 2004 17:42:52 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 Feb 2004 17:42:52 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 08 Aug 2003 15:02:00 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>15</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 15:37:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 17 Aug 2004 15:35:58 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/editors/htmlarea</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 07 Feb 2004 11:24:44 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Aug 2004 12:50:32 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HtmlArea editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/htmlarea/editor.jsp</source>
+			<destination>system/workplace/editors/htmlarea/editor.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>c3101f46-5957-11d8-b478-a1124e09b46f</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:47:14 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 Feb 2004 11:24:07 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HtmlArea WYSIWYG editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/htmlarea/editor_configuration.xml</source>
+			<destination>system/workplace/editors/htmlarea/editor_configuration.xml</destination>
+			<type>plain</type>
+			<uuidresource>c3241c79-5957-11d8-b478-a1124e09b46f</uuidresource>
+			<datelastmodified>Sat, 07 Feb 2004 13:27:37 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 07 Feb 2004 11:24:07 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor configuration file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 17 Aug 2004 12:34:57 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 18 Aug 2004 13:39:29 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/dialog.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/dialog.js</destination>
+			<type>plain</type>
+			<uuidresource>a683a93b-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/htmlarea.css</source>
+			<destination>system/workplace/resources/editors/htmlarea/htmlarea.css</destination>
+			<type>plain</type>
+			<uuidresource>a68ad52e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:54:04 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:24 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/htmlarea.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/htmlarea.js</destination>
+			<type>plain</type>
+			<uuidresource>a68f9021-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:54:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:24 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popupdiv.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/popupdiv.js</destination>
+			<type>plain</type>
+			<uuidresource>a6947224-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:24 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:24 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popupwin.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/popupwin.js</destination>
+			<type>plain</type>
+			<uuidresource>a6992d17-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:24 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:24 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/images</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_about.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_about.gif</destination>
+			<type>image</type>
+			<uuidresource>a2ad742e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_align_center.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_align_center.gif</destination>
+			<type>image</type>
+			<uuidresource>a2b22f21-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_align_justify.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_align_justify.gif</destination>
+			<type>image</type>
+			<uuidresource>a2b95b14-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_align_left.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_align_left.gif</destination>
+			<type>image</type>
+			<uuidresource>a2be3d17-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_align_right.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_align_right.gif</destination>
+			<type>image</type>
+			<uuidresource>a2c541fa-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_blank.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_blank.gif</destination>
+			<type>image</type>
+			<uuidresource>a2ca23fd-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_charmap.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_charmap.gif</destination>
+			<type>image</type>
+			<uuidresource>a2d14ff0-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_color_bg.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_color_bg.gif</destination>
+			<type>image</type>
+			<uuidresource>a2d60ae3-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_color_fg.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_color_fg.gif</destination>
+			<type>image</type>
+			<uuidresource>a2dd36d6-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_copy.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_copy.gif</destination>
+			<type>image</type>
+			<uuidresource>a2e1f1c9-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_custom.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_custom.gif</destination>
+			<type>image</type>
+			<uuidresource>a2e91dbc-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_cut.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_cut.gif</destination>
+			<type>image</type>
+			<uuidresource>a2edd8af-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_delete.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_delete.gif</destination>
+			<type>image</type>
+			<uuidresource>a2f504a2-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:17 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:17 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_bold.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_bold.gif</destination>
+			<type>image</type>
+			<uuidresource>a2f9bf95-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_italic.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_italic.gif</destination>
+			<type>image</type>
+			<uuidresource>a2fe7a88-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_strike.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_strike.gif</destination>
+			<type>image</type>
+			<uuidresource>a305a67b-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_sub.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_sub.gif</destination>
+			<type>image</type>
+			<uuidresource>a30a887e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_sup.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_sup.gif</destination>
+			<type>image</type>
+			<uuidresource>a3118d61-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_format_underline.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_format_underline.gif</destination>
+			<type>image</type>
+			<uuidresource>a3166f64-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_help.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_help.gif</destination>
+			<type>image</type>
+			<uuidresource>a31d9b57-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_hr.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_hr.gif</destination>
+			<type>image</type>
+			<uuidresource>a322564a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_html.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_html.gif</destination>
+			<type>image</type>
+			<uuidresource>a327113d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_image.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_image.gif</destination>
+			<type>image</type>
+			<uuidresource>a32e3d30-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_indent_less.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_indent_less.gif</destination>
+			<type>image</type>
+			<uuidresource>a3356923-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_indent_more.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_indent_more.gif</destination>
+			<type>image</type>
+			<uuidresource>a33a2416-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_left_to_right.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_left_to_right.gif</destination>
+			<type>image</type>
+			<uuidresource>a3415009-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_link.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_link.gif</destination>
+			<type>image</type>
+			<uuidresource>a3460afc-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_list_bullet.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_list_bullet.gif</destination>
+			<type>image</type>
+			<uuidresource>a34ac5ef-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_list_num.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_list_num.gif</destination>
+			<type>image</type>
+			<uuidresource>a351f1e2-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_paste.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_paste.gif</destination>
+			<type>image</type>
+			<uuidresource>a356d3e5-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_redo.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_redo.gif</destination>
+			<type>image</type>
+			<uuidresource>a35dd8c8-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_right_to_left.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_right_to_left.gif</destination>
+			<type>image</type>
+			<uuidresource>a362bacb-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_save.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_save.gif</destination>
+			<type>image</type>
+			<uuidresource>a369e6be-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_show_border.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_show_border.gif</destination>
+			<type>image</type>
+			<uuidresource>a36ea1b1-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_splitcel.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_splitcel.gif</destination>
+			<type>image</type>
+			<uuidresource>a3735ca4-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/ed_undo.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/ed_undo.gif</destination>
+			<type>image</type>
+			<uuidresource>a37a8897-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/fullscreen_maximize.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/fullscreen_maximize.gif</destination>
+			<type>image</type>
+			<uuidresource>a381b48a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/fullscreen_minimize.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/fullscreen_minimize.gif</destination>
+			<type>image</type>
+			<uuidresource>a3866f7d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/insert_table.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/insert_table.gif</destination>
+			<type>image</type>
+			<uuidresource>a38b2a70-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:18 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:18 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:19:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:19:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/exit.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/exit.gif</destination>
+			<type>image</type>
+			<uuidresource>f3795a56-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:19:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:19:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/publish.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/publish.gif</destination>
+			<type>image</type>
+			<uuidresource>f3808649-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:19:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:19:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/save.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/save.gif</destination>
+			<type>image</type>
+			<uuidresource>f387b23c-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:19:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:19:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/images/opencms/save_exit.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/images/opencms/save_exit.gif</destination>
+			<type>image</type>
+			<uuidresource>f38c6d2f-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:19:33 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:19:33 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/b5.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/b5.js</destination>
+			<type>plain</type>
+			<uuidresource>a394c665-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/cz.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/cz.js</destination>
+			<type>plain</type>
+			<uuidresource>a39bf258-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/da.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/da.js</destination>
+			<type>plain</type>
+			<uuidresource>a3a31e4b-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/de.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/de.js</destination>
+			<type>plain</type>
+			<uuidresource>a3aa232e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ee.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ee.js</destination>
+			<type>plain</type>
+			<uuidresource>a3b14f21-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/el.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/el.js</destination>
+			<type>plain</type>
+			<uuidresource>a3b63124-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a3bd3607-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/es.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/es.js</destination>
+			<type>plain</type>
+			<uuidresource>a3c2180a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/fi.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/fi.js</destination>
+			<type>plain</type>
+			<uuidresource>a3c91ced-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/fr.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/fr.js</destination>
+			<type>plain</type>
+			<uuidresource>a3cdfef0-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/gb.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/gb.js</destination>
+			<type>plain</type>
+			<uuidresource>a3d52ae3-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/he.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/he.js</destination>
+			<type>plain</type>
+			<uuidresource>a3d9e5d6-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/hu.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/hu.js</destination>
+			<type>plain</type>
+			<uuidresource>a3e111c9-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/it.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/it.js</destination>
+			<type>plain</type>
+			<uuidresource>a3e5ccbc-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ja-euc.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ja-euc.js</destination>
+			<type>plain</type>
+			<uuidresource>a3ecf8af-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ja-jis.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ja-jis.js</destination>
+			<type>plain</type>
+			<uuidresource>a3f1b3a2-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ja-sjis.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ja-sjis.js</destination>
+			<type>plain</type>
+			<uuidresource>a3f8df95-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ja-utf8.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ja-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>a3fd9a88-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/lt.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/lt.js</destination>
+			<type>plain</type>
+			<uuidresource>a404c67b-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/lv.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/lv.js</destination>
+			<type>plain</type>
+			<uuidresource>a409816e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/nb.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/nb.js</destination>
+			<type>plain</type>
+			<uuidresource>a410ad61-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/nl.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/nl.js</destination>
+			<type>plain</type>
+			<uuidresource>a4156854-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/no.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/no.js</destination>
+			<type>plain</type>
+			<uuidresource>a41c9447-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/pl.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/pl.js</destination>
+			<type>plain</type>
+			<uuidresource>a421764a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:19 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:19 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/pt_br.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/pt_br.js</destination>
+			<type>plain</type>
+			<uuidresource>a4287b2d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ro.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ro.js</destination>
+			<type>plain</type>
+			<uuidresource>a42fa720-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/ru.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/ru.js</destination>
+			<type>plain</type>
+			<uuidresource>a4348923-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/se.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/se.js</destination>
+			<type>plain</type>
+			<uuidresource>a4394416-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/si.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/si.js</destination>
+			<type>plain</type>
+			<uuidresource>a4407009-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/lang/vn.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/lang/vn.js</destination>
+			<type>plain</type>
+			<uuidresource>a4452afc-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/context-menu.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/context-menu.js</destination>
+			<type>plain</type>
+			<uuidresource>a607c241-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/menu.css</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/menu.css</destination>
+			<type>plain</type>
+			<uuidresource>a60c7d34-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/de.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/de.js</destination>
+			<type>plain</type>
+			<uuidresource>a61ad519-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/el.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/el.js</destination>
+			<type>plain</type>
+			<uuidresource>a622010c-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a6292cff-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/nl.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/ContextMenu/lang/nl.js</destination>
+			<type>plain</type>
+			<uuidresource>a63031e2-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/CSS</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/CSS/css.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/CSS/css.js</destination>
+			<type>plain</type>
+			<uuidresource>a5ed8377-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/CSS/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/CSS/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/CSS/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a5f96a5c-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/full-page.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/full-page.js</destination>
+			<type>plain</type>
+			<uuidresource>a5aad60d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/test.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/test.html</destination>
+			<type>plain</type>
+			<uuidresource>a5b1daf0-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/img</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/img/docprop.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/img/docprop.gif</destination>
+			<type>image</type>
+			<uuidresource>a5d0fbbd-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a5bde8e5-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/lang/ro.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/lang/ro.js</destination>
+			<type>plain</type>
+			<uuidresource>a5c4edc8-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/popups</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/FullPage/popups/docprop.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/FullPage/popups/docprop.html</destination>
+			<type>plain</type>
+			<uuidresource>a5df2b92-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/readme-tech.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/readme-tech.html</destination>
+			<type>plain</type>
+			<uuidresource>a46424b9-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-logic.cgi</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-logic.cgi</destination>
+			<type>plain</type>
+			<uuidresource>a4727c9f-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-style.css</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-style.css</destination>
+			<type>plain</type>
+			<uuidresource>a4773792-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-ui.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-ui.html</destination>
+			<type>plain</type>
+			<uuidresource>a46b50ac-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-ui.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-check-ui.js</destination>
+			<type>plain</type>
+			<uuidresource>a4583dd3-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-checker.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/spell-checker.js</destination>
+			<type>plain</type>
+			<uuidresource>a45cf8c6-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/img</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/img/spell-check.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/img/spell-check.gif</destination>
+			<type>image</type>
+			<uuidresource>a4bec7fe-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/cz.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/cz.js</destination>
+			<type>plain</type>
+			<uuidresource>a4858f77-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/da.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/da.js</destination>
+			<type>plain</type>
+			<uuidresource>a48cbb6a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/de.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/de.js</destination>
+			<type>plain</type>
+			<uuidresource>a493e75d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a49aec40-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/hu.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/hu.js</destination>
+			<type>plain</type>
+			<uuidresource>a4a21833-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/it.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/it.js</destination>
+			<type>plain</type>
+			<uuidresource>a4a94426-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/ro.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/SpellChecker/lang/ro.js</destination>
+			<type>plain</type>
+			<uuidresource>a4b07019-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:20 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/table-operations.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/table-operations.js</destination>
+			<type>plain</type>
+			<uuidresource>a4caaee3-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-delete.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-delete.gif</destination>
+			<type>image</type>
+			<uuidresource>a52ec80b-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-insert-after.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-insert-after.gif</destination>
+			<type>image</type>
+			<uuidresource>a535f3fe-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-insert-before.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-insert-before.gif</destination>
+			<type>image</type>
+			<uuidresource>a53d1ff1-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-merge.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-merge.gif</destination>
+			<type>image</type>
+			<uuidresource>a5444be4-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-prop.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-prop.gif</destination>
+			<type>image</type>
+			<uuidresource>a54906d7-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-split.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/cell-split.gif</destination>
+			<type>image</type>
+			<uuidresource>a5527cba-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-delete.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-delete.gif</destination>
+			<type>image</type>
+			<uuidresource>a559a8ad-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-insert-after.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-insert-after.gif</destination>
+			<type>image</type>
+			<uuidresource>a56345a0-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-insert-before.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-insert-before.gif</destination>
+			<type>image</type>
+			<uuidresource>a56a7193-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-split.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/col-split.gif</destination>
+			<type>image</type>
+			<uuidresource>a5719d86-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-delete.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-delete.gif</destination>
+			<type>image</type>
+			<uuidresource>a578a269-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-insert-above.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-insert-above.gif</destination>
+			<type>image</type>
+			<uuidresource>a57fce5c-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-insert-under.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-insert-under.gif</destination>
+			<type>image</type>
+			<uuidresource>a586fa4f-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-prop.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-prop.gif</destination>
+			<type>image</type>
+			<uuidresource>a58e2642-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-split.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/row-split.gif</destination>
+			<type>image</type>
+			<uuidresource>a5955235-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/table-prop.gif</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/img/table-prop.gif</destination>
+			<type>image</type>
+			<uuidresource>a59c7e28-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:22 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:22 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/cz.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/cz.js</destination>
+			<type>plain</type>
+			<uuidresource>a4d906c8-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/da.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/da.js</destination>
+			<type>plain</type>
+			<uuidresource>a4e032bb-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/de.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/de.js</destination>
+			<type>plain</type>
+			<uuidresource>a4e7379e-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/el.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/el.js</destination>
+			<type>plain</type>
+			<uuidresource>a4f0d491-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/en.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/en.js</destination>
+			<type>plain</type>
+			<uuidresource>a4f80084-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/fi.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/fi.js</destination>
+			<type>plain</type>
+			<uuidresource>a4ff2c77-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/hu.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/hu.js</destination>
+			<type>plain</type>
+			<uuidresource>a506315a-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/it.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/it.js</destination>
+			<type>plain</type>
+			<uuidresource>a50d5d4d-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/nl.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/nl.js</destination>
+			<type>plain</type>
+			<uuidresource>a5123f50-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/no.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/no.js</destination>
+			<type>plain</type>
+			<uuidresource>a5194433-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/ro.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/plugins/TableOperations/lang/ro.js</destination>
+			<type>plain</type>
+			<uuidresource>a5207026-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:21 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/popups</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/about.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/about.html</destination>
+			<type>plain</type>
+			<uuidresource>a640faca-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/blank.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/blank.html</destination>
+			<type>plain</type>
+			<uuidresource>a645b5bd-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/custom2.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/custom2.html</destination>
+			<type>plain</type>
+			<uuidresource>a64ce1b0-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/editor_help.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/editor_help.html</destination>
+			<type>plain</type>
+			<uuidresource>a6519ca3-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/fullscreen.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/fullscreen.html</destination>
+			<type>plain</type>
+			<uuidresource>a658c896-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/insert_image.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/insert_image.html</destination>
+			<type>plain</type>
+			<uuidresource>a65ff489-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/insert_table.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/insert_table.html</destination>
+			<type>plain</type>
+			<uuidresource>a664af7c-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/link.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/link.html</destination>
+			<type>plain</type>
+			<uuidresource>a66bdb6f-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/old-fullscreen.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/old-fullscreen.html</destination>
+			<type>plain</type>
+			<uuidresource>a6709662-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/old_insert_image.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/old_insert_image.html</destination>
+			<type>plain</type>
+			<uuidresource>a677c255-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/popup.js</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/popup.js</destination>
+			<type>plain</type>
+			<uuidresource>a639ced7-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/htmlarea/popups/select_color.html</source>
+			<destination>system/workplace/resources/editors/htmlarea/popups/select_color.html</destination>
+			<type>plain</type>
+			<uuidresource>a67eee48-f76a-11d8-8ca3-5f9047d04fcf</uuidresource>
+			<datelastmodified>Thu, 26 Aug 2004 16:17:23 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Aug 2004 16:17:23 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

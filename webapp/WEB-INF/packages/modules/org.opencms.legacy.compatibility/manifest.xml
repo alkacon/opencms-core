@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 1 Caladan</opencms_version>
+		<createdate>9/7/04 5:26 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.legacy.compatibility</name>
+		<nicename><![CDATA[OpenCms 6.0 Compatibility settings for old modules]]></nicename>
+		<class>com.opencms.legacy.CmsLegacyModuleAction</class>
+		<description><![CDATA[
+<p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.0.</p>
+<p>Install this module only if you have to use older modules built for OpenCms 5.0.</p>
+<p><strong>Note:</strong> This module will create additional tables in your database, so the OpenCms database user must have appropriate permissions for DDL operations.</p>
+<p><strong>Note:</strong> For Oracle setup, please specify the index tablespace as module parameter if you are not using the default "users" tablespace.</p>
+<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>0.9.0</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/modules/org.opencms.legacy.compatibility/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/system/modules/org.opencms.legacy.compatibility/</param>
+			<param name="${indexTablespace}">users</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 06 Sep 2004 12:08:25 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 06 Sep 2004 12:08:25 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.legacy.compatibility</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 04 Aug 2004 14:49:11 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 14:49:11 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.legacy.compatibility/setup</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 04 Aug 2004 14:49:52 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 14:49:52 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.legacy.compatibility/setup/generic.sql</source>
+			<destination>system/modules/org.opencms.legacy.compatibility/setup/generic.sql</destination>
+			<type>plain</type>
+			<uuidresource>db250378-e614-11d8-a7a0-b55a670cf783</uuidresource>
+			<datelastmodified>Mon, 06 Sep 2004 16:35:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 14:50:25 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</source>
+			<destination>system/modules/org.opencms.legacy.compatibility/setup/mysql.sql</destination>
+			<type>plain</type>
+			<uuidresource>cf1824e2-e614-11d8-a7a0-b55a670cf783</uuidresource>
+			<datelastmodified>Tue, 07 Sep 2004 10:14:56 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 14:50:05 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.legacy.compatibility/setup/oracle.sql</source>
+			<destination>system/modules/org.opencms.legacy.compatibility/setup/oracle.sql</destination>
+			<type>plain</type>
+			<uuidresource>d4f15625-e614-11d8-a7a0-b55a670cf783</uuidresource>
+			<datelastmodified>Wed, 04 Aug 2004 14:50:15 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 04 Aug 2004 14:50:15 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

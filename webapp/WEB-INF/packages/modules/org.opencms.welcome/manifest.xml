@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0 alpha 1 Caladan</opencms_version>
+		<createdate>8/27/04 5:47 PM</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.welcome</name>
+		<nicename><![CDATA[OpenCms 6.0 Welcome page and release notes]]></nicename>
+		<class/>
+		<description><![CDATA[
+<p>This module contains the OpenCms welcome page and release notes.</p>
+<p>Install this module as a simple demonstration for the template capabilities of OpenCms 6.0.</p>
+<p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
+It will also remove the "default" template.</p>
+<p><i>(c) 2004 by Alkacon Software (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>3.9.0</version>
+		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 20 Sep 2004 18:00:00 CEST</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/index.jsp"/>
+			<resource uri="/release/"/>
+			<resource uri="/system/modules/org.opencms.welcome/"/>
+		</resources>
+		<parameters>
+			<param name="additionalresources">/index.jsp;/release/;/system/modules/org.opencms.welcome/</param>
+		</parameters>
+	</module>
+	<files>
+		<file>
+			<destination>release</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 24 Feb 2004 10:51:41 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.5]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[notes_6.0a1.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/installation.html</source>
+			<destination>release/installation.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:41 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 09 Dec 2003 11:40:10 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[51]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Installation]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Installation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/mailinglist.html</source>
+			<destination>release/mailinglist.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:55 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Apr 2003 14:51:42 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[102.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Mailing list]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_5.0.0.html</source>
+			<destination>release/notes_5.0.0.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>16844011-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:01 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Apr 2003 09:43:44 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[5.0 final release notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[5.0.0 (5.0 final) release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_5.0b2.html</source>
+			<destination>release/notes_5.0b2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>168b44f7-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:35 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Apr 2003 10:27:03 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[5.0 beta 2 notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[5.0 beta 2 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_5.0rc1.html</source>
+			<destination>release/notes_5.0rc1.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>168fffed-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:28 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Apr 2003 10:28:05 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.9]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[5.0 rc 1 notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[5.0 rc 1 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_5.0rc2.html</source>
+			<destination>release/notes_5.0rc2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>16972ae3-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:21 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Apr 2003 10:27:50 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.45]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[5.0 rc 2 notes]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[5.0 rc 2 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_6.0a1.html</source>
+			<destination>release/notes_6.0a1.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>1fd32591-6614-11d8-ab96-cbfb51df5f23</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:46:44 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Feb 2004 16:22:42 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.5]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[6.0 a 1 notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[6.0 a 1 release notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/upgrade.html</source>
+			<destination>release/upgrade.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>169e56d9-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 27 Aug 2004 17:42:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Apr 2003 11:39:14 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[101.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[4.x to 5.0 upgrade info]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[How to upgrade from OpenCms 4.x to 5.0.0]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/welcome.html</source>
+			<destination>release/welcome.html</destination>
+			<type>jsp</type>
+			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Tue, 24 Feb 2004 11:06:41 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Aug 2003 11:49:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[500]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Welcome to OpenCms]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome to OpenCms]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 27 Aug 2004 11:02:49 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 27 Aug 2004 11:02:49 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 02 Aug 2004 18:00:00 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 26 Feb 2003 00:00:00 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.welcome</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 01 Mar 2003 01:29:49 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.welcome/default_bodies</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 13 Feb 2004 10:19:39 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 Feb 2004 10:19:39 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/default_bodies/default</source>
+			<destination>system/modules/org.opencms.welcome/default_bodies/default</destination>
+			<type>plain</type>
+			<uuidresource>c0080cf9-5e05-11d8-865d-ad3adbb53365</uuidresource>
+			<datelastmodified>Thu, 08 Jan 2004 17:15:14 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 Feb 2004 10:19:39 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default body]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.welcome/elements</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 01 Mar 2003 01:29:49 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/elements/login_element.jsp</source>
+			<destination>system/modules/org.opencms.welcome/elements/login_element.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>c70b997b-997c-11d8-9067-cb7004c5994f</uuidresource>
+			<datelastmodified>Thu, 29 Apr 2004 03:45:13 CEST</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 29 Apr 2004 03:30:20 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Simple user login element]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/elements/welcome_nav.jsp</source>
+			<destination>system/modules/org.opencms.welcome/elements/welcome_nav.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>16b86e9f-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 13 Feb 2004 15:17:52 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default template navigation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.welcome/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 01 Mar 2003 01:29:49 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</source>
+			<destination>system/modules/org.opencms.welcome/resources/logo_alkacon.gif</destination>
+			<type>image</type>
+			<uuidresource>5c99ec74-6614-11d8-ab96-cbfb51df5f23</uuidresource>
+			<datelastmodified>Mon, 23 Feb 2004 16:24:29 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 23 Feb 2004 16:24:24 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/resources/logo_opencms_large.gif</source>
+			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_large.gif</destination>
+			<type>image</type>
+			<uuidresource>16d4f765-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 12 Dec 2003 14:29:03 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/resources/logo_opencms_power.gif</source>
+			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_power.gif</destination>
+			<type>image</type>
+			<uuidresource>16dc235b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 12 Dec 2003 14:29:13 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/resources/welcome.css</source>
+			<destination>system/modules/org.opencms.welcome/resources/welcome.css</destination>
+			<type>plain</type>
+			<uuidresource>16e5c051-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Fri, 12 Dec 2003 14:29:22 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Apr 2003 14:54:32 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome template style sheet]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.welcome/templates</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 01 Mar 2003 01:29:49 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:49 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/templates/empty</source>
+			<destination>system/modules/org.opencms.welcome/templates/empty</destination>
+			<type>jsp</type>
+			<uuidresource>a6fa79f4-5e05-11d8-865d-ad3adbb53365</uuidresource>
+			<datelastmodified>Tue, 24 Feb 2004 10:16:40 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 13 Feb 2004 10:18:57 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/resources/welcome.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Empty template]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.welcome/templates/welcome</source>
+			<destination>system/modules/org.opencms.welcome/templates/welcome</destination>
+			<type>jsp</type>
+			<uuidresource>16f1802c-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Tue, 24 Feb 2004 10:52:30 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 01 Mar 2003 01:29:50 CET</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(__element)]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/resources/welcome.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome / Release notes template]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>index.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
+			<datelastmodified>Tue, 24 Feb 2004 11:06:41 CET</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Aug 2003 11:49:13 CEST</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;user]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Welcome to OpenCms]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Welcome to OpenCms]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

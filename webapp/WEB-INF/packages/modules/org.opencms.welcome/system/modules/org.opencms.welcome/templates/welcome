@@ -1,0 +1,62 @@
+<%@ page session="false" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+
+// init
+
+%><cms:template element="head"><%--
+--%><!doctype html public "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<title>OpenCms - <cms:property name="Title" escapeHtml="true" /></title>
+
+<meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; CHARSET=<cms:property name="content-encoding" default="ISO-8859-1" />">
+<meta name="author" content="Alkacon Software">
+<meta name="description" content="<cms:property name="Description" default="OpenCms welcome page and release notes" />">
+<meta name="keywords" content="<cms:property name="Keywords" default="OpenCms, Demo, Application, Content Management" />">
+
+<style type="text/css">
+<!--
+<%@ include file="../resources/welcome.css" %>
+-->
+</style>
+
+<cms:editable />
+
+</head>
+<body>
+<img src="<cms:link>../resources/logo_opencms_large.gif</cms:link>" alt="OpenCms Logo" width="250" height="68" border="0" align="right">
+
+<!-- Navigation starts here -->
+<cms:include file="../elements/welcome_nav.jsp" />
+<!-- Navigation ends here -->
+<br clear="all">
+
+<!-- Main page body starts here -->
+</cms:template>
+
+<cms:template element="body">
+<table>
+<tr>
+	<td>
+		<cms:include element="body" editable="true" />
+	</td>
+</tr>
+</table>
+</cms:template><%--
+
+
+--%><cms:template element="foot"><%--
+--%><!-- Main page body ends here -->
+
+<!-- Login element starts here --><%--
+--%><cms:include file="../elements/login_element.jsp" /><%--
+--%><!-- Login element ends here -->
+
+<p class="small"><img src="<cms:link>../resources/logo_alkacon.gif</cms:link>" alt="Alkacon Software" width="100" height="36" border="0" align="left">
+&copy; 2002-2004 Alkacon Software<br>
+The OpenCms experts<br>
+<a href="http://www.alkacon.com" target="alkacon">http://www.alkacon.com</a></p>
+
+</body>
+</html>
+</cms:template>
