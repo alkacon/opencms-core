@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2003/07/16 16:25:27 $
-* Version: $Revision: 1.111 $
+* Date   : $Date: 2003/07/17 08:39:27 $
+* Version: $Revision: 1.112 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.111 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.112 $ $Date: 2003/07/17 08:39:27 $
  */
 public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable {
 
@@ -537,14 +537,13 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
      * @param access the access-flags of the file
      * @param lastmodified the timestamp of the file
      * @param properties a hashtable with properties for this resource
-     * @param launcherStartClass the launcher class name
      * @param writtenFilenames filenames of the files and folder which have actually been successfully written
      *       not used when null
      * @param fileCodes code of the written files (for the registry)
      *       not used when null
      * @return imported resource
      */
-    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, String launcherStartClass, Vector writtenFilenames, Vector fileCodes) {
+    private CmsResource importResource(String source, String destination, String uuid, String uuidfile, String uuidresource, String type, String access, long lastmodified, Map properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
         byte[] content = null;
@@ -618,7 +617,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
 
             // version 2.0 import (since OpenCms 5.0), no content conversion required                        
 
-            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, m_cms.getResourceTypeId(type), access, lastmodified, properties, launcherStartClass, content, m_importPath);
+            res = m_cms.importResource(source, destination, uuid, uuidfile, uuidresource, m_cms.getResourceTypeId(type), access, lastmodified, properties,  content, m_importPath);
 
             if (res != null) {
                 if (CmsResourceTypePage.C_RESOURCE_TYPE_NAME.equals(type)) {
@@ -807,7 +806,7 @@ public class CmsImport implements I_CmsConstants, I_CmsWpConstants, Serializable
                     }
 
                     // import the specified file 
-                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, launcherStartClass, writtenFilenames, fileCodes);
+                    CmsResource res = importResource(source, destination, uuid, uuidfile, uuidresource, type, access, lastmodified, properties, writtenFilenames, fileCodes);
 
                     if (res != null) {
 

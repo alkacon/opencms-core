@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/07/16 16:25:27 $
-* Version: $Revision: 1.136 $
+* Date   : $Date: 2003/07/17 08:39:27 $
+* Version: $Revision: 1.137 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.136 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.137 $ $Date: 2003/07/17 08:39:27 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -576,6 +576,9 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
        
         // initialize 1 instance per class listed in the checkresource node
         try{
+                       
+           List test=getRegistry().getCheckResource();            
+                         
                        
             
             Hashtable checkresourceNode = getRegistry().getSystemValues( "checkresource" );

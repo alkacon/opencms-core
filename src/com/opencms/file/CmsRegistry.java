@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2003/07/16 16:25:27 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2003/07/17 08:39:27 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.77 $ $Date: 2003/07/16 16:25:27 $
+ * @version $Revision: 1.78 $ $Date: 2003/07/17 08:39:27 $
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_CmsConstants, I_CmsWpConstants {
 
@@ -1608,18 +1608,21 @@ public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry, I_Cms
         try {
             Element systemElement = (Element)m_xmlReg.getElementsByTagName("system").item(0);
             NodeList resTypes = systemElement.getElementsByTagName(node).item(0).getChildNodes();
-            for (int x = 0; x < resTypes.getLength(); x++) {
-                try {
-                    String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
-                    result.add(className);
-                } catch (Exception exc) {
-                    System.err.println(exc);
-                    // ignore the exeption
+            if (resTypes!=null) {
+                for (int x = 0; x < resTypes.getLength(); x++) {
+                    try {
+                        String className = ((Element)resTypes.item(x)).getFirstChild().getNodeValue();
+                        result.add(className);
+                    } catch (Exception exc) {
+                        if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                            A_OpenCms.log(C_OPENCMS_INFO, ". Error getting registry node "+node);
+                    }
                 }
             }
         } catch (Exception e) {
             // no returnvalues
-            System.err.println(e);
+            if (C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INFO))
+                A_OpenCms.log(C_OPENCMS_INFO, ". Error getting registry node "+node);
         }
         return result;
     }

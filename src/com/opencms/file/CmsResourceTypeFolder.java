@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/07/16 18:08:55 $
-* Version: $Revision: 1.65 $
+* Date   : $Date: 2003/07/17 08:39:27 $
+* Version: $Revision: 1.66 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.65 $
+ * @version $Revision: 1.66 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
 
@@ -363,7 +363,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see com.opencms.file.I_CmsResourceType#importResource(com.opencms.file.CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, long, java.util.Map, java.lang.String, byte[], java.lang.String)
      */
-    public CmsResource importResource(CmsObject cms, String source, String destination, String uuid, String uuidfile, String uuidresource, String access, long lastmodified, Map properties, String launcherStartClass, byte[] content, String importPath) throws CmsException {
+    public CmsResource importResource(CmsObject cms, String source, String destination, String uuid, String uuidfile, String uuidresource, String access, long lastmodified, Map properties,  byte[] content, String importPath) throws CmsException {
         CmsResource importedResource = null;
         destination = importPath + destination;
         if (!destination.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR))
@@ -382,7 +382,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
         }
         // try to create the resource
         try {
-            importedResource = cms.doImportResource(destination, uuid, uuidfile, uuidresource,getResourceType(), properties, getLauncherType(), getLauncherClass(), resaccess, lastmodified, new byte[0]);
+            importedResource = cms.doImportResource(destination, uuid, uuidfile, uuidresource,getResourceType(), properties, getLauncherType(), resaccess, lastmodified, new byte[0]);
             if (importedResource != null) {
                 changed = false;
             }

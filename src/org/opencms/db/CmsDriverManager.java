@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/16 18:08:55 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2003/07/17 08:39:27 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.59 $ $Date: 2003/07/16 18:08:55 $
+ * @version $Revision: 1.60 $ $Date: 2003/07/17 08:39:27 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -4116,7 +4116,6 @@ public class CmsDriverManager extends Object {
      * The keys for this Hashtable are the names for propertydefinitions, the values are
      * the values for the propertyinfos
      * @param launcherType the launcher type of the new resource
-     * @param launcherClassname the name of the launcherclass of the new resource
      * @param ownername the name of the owner of the new resource
      * @param groupname the name of the group of the new resource
      * @param accessFlags the accessFlags of the new resource
@@ -4129,7 +4128,7 @@ public class CmsDriverManager extends Object {
      * or if the filename is not valid. The CmsException will also be thrown, if the
      * user has not the rights for this resource.
      */
-    public CmsResource importResource(CmsRequestContext context, String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map propertyinfos, int launcherType, String launcherClassname,  int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
+    public CmsResource importResource(CmsRequestContext context, String newResourceName, String uuid, String uuidfile, String uuidresource, int resourceType, Map propertyinfos, int launcherType,  int accessFlags, long lastmodified, byte[] filecontent) throws CmsException {
         // extract folder information
         String folderName = null;
         String resourceName = null;   
@@ -4176,10 +4175,11 @@ public class CmsDriverManager extends Object {
             newUuidresource = new CmsUUID(uuidresource);
         }
 
-       
+
+        String launcherClassname=getResourceType(launcherType).getResourceTypeName();       
 
         // TODO VFS links: refactor all upper methods to support the VFS link type param
-        CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0, /* owner.getId(), group.getId(), */ context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
+        CmsResource newResource = new CmsResource(newUuid, newUuidresource, parentFolder.getId(), newUuidfile, resourceName, resourceType, 0,  context.currentProject().getId(), accessFlags, I_CmsConstants.C_STATE_NEW, context.currentUser().getId(), launcherType, launcherClassname, lastmodified, context.currentUser().getId(), lastmodified, context.currentUser().getId(), filecontent.length, context.currentProject().getId(), I_CmsConstants.C_VFS_LINK_TYPE_MASTER);
        
         // create the folder.
         newResource = m_vfsDriver.importResource(context.currentProject(), parentFolder.getId(), newResource, filecontent, context.currentUser().getId(), isFolder);
