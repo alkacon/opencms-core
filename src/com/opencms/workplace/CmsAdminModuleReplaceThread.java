@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleReplaceThread.java,v $
- * Date   : $Date: 2003/02/21 15:18:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/02/21 23:30:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.0
  */
 public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
@@ -116,6 +116,7 @@ public class CmsAdminModuleReplaceThread extends A_CmsReportThread {
                 String content;
                 if (m_reportContent != null) {
                     content = m_reportContent;  
+                    m_reportContent = null;
                 } else {
                     content = "";
                 }
