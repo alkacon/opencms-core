@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2004/05/17 10:54:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/10 12:32:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.collections.map.LRUMap;
@@ -51,7 +52,7 @@ import org.xml.sax.InputSource;
  * Resolves XML entities (e.g. external DTDs) in the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener {
 
@@ -66,10 +67,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     
     /** The static default entity resolver for reading / writing xml content */
     private static CmsXmlEntityResolver m_resolver;        
+
+    /** A permanent cache to avoid multiple readings of often used files from the VFS */
+    private Map m_cachePermanent;
     
-    /** A cache to avoid multiple readings of often used files from the VFS */
-    private Map m_cache;
-    
+    /** A temporary cache to avoid multiple readings of often used files from the VFS */
+    private Map m_cacheTemporary;
+
     /** The cms object to use for VFS access (will be initialized with "Guest" permissions) */
     private CmsObject m_cms;
     
@@ -77,21 +81,29 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      * Creates a new entity resolver to read the xmlpage dtd.
      */
     public CmsXmlEntityResolver() {
-        
-        m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
         LRUMap lruMap = new LRUMap(128);
-        m_cache = Collections.synchronizedMap(lruMap);
-        if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
-            // map must be of type "LRUMap" so that memory monitor can acecss all information
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cache", lruMap);
+        m_cacheTemporary = Collections.synchronizedMap(lruMap);
+        
+        HashMap hashMap = new HashMap(32);
+        m_cachePermanent = Collections.synchronizedMap(hashMap);
+        
+        // check required for unit tests where no OpenCms is available
+        if (OpenCms.getRunLevel() > 1) {
+            
+            m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());            
+            if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
+                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cacheTemporary", lruMap);
+                // map must be of type "HashMap" so that memory monitor can acecss all information
+                OpenCms.getMemoryMonitor().register(this.getClass().getName() + "." + "m_cachePermanent", hashMap);
+            }
+            // register this object as event listener
+            OpenCms.addCmsEventListener(this, new int[] {
+                I_CmsEventListener.EVENT_CLEAR_CACHES,
+                I_CmsEventListener.EVENT_PUBLISH_PROJECT
+            });            
         }
-
-        // register this object as event listener
-        OpenCms.addCmsEventListener(this, new int[] {
-            I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT
-        });
     }
     
     /**
@@ -101,6 +113,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      * @return a static default entity resolver
      */
     public static synchronized CmsXmlEntityResolver getResolver() {
+        
         if (m_resolver == null) {
             try {
                 m_resolver = new CmsXmlEntityResolver();
@@ -110,6 +123,23 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             }
         }
         return m_resolver;
+    }
+    
+    /**
+     * Adds a sytem id URL to to internal cache.<p>
+     * 
+     * @param systemId the system id to add
+     * @param content the content of the system id
+     * @param permanent if truethe system id will be stored permanently, if false
+     * it will be cleared after each publish or clear cache event
+     */
+    public void cacheSystemId(String systemId, byte[] content, boolean permanent) {
+        
+        if (permanent) {
+            m_cachePermanent.put(systemId, content);
+        } else {
+            m_cacheTemporary.put(systemId, content);
+        }
     }
 
     /**
@@ -121,7 +151,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 // flush cache   
-                m_cache.clear();
+                m_cacheTemporary.clear();
                 if (OpenCms.getLog(this).isDebugEnabled()) {
                     OpenCms.getLog(this).debug("Xml entity resolver flushed caches after recieving clearcache event");
                 }
@@ -136,6 +166,17 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
      */
     public InputSource resolveEntity(String publicId, String systemId) {
 
+        // lookup the system id caches first
+        byte[] content;        
+        content = (byte[])m_cacheTemporary.get(systemId);
+        if (content != null) {
+            return new InputSource(new ByteArrayInputStream(content));
+        } 
+        content = (byte[])m_cachePermanent.get(systemId);
+        if (content != null) {
+            return new InputSource(new ByteArrayInputStream(content));
+        } 
+        
         if (systemId.equals(CmsXmlPage.C_XMLPAGE_DTD_SYSTEM_ID) || systemId.endsWith(C_XMLPAGE_DTD_OLD_SYSTEM_ID)) {
             // xml page DTD
             try {
@@ -146,21 +187,18 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         } else if (systemId.startsWith(C_OPENCMS_SCHEME)) {
             // opencms VFS reference
             String uri = systemId.substring(C_OPENCMS_SCHEME.length()-1);
-            try {
-                // look up the conent in the cache
-                byte[] content = (byte[])m_cache.get(uri);
-                if (content == null) {            
-                    // content not cached, read from VFS
-                    CmsFile file = m_cms.readFile(uri);                    
-                    content = file.getContents();
-                    // store content in cache
-                    m_cache.put(uri, content);
-                }
+            try {      
+                // content not cached, read from VFS
+                CmsFile file = m_cms.readFile(uri);                    
+                content = file.getContents();
+                // store content in cache
+                cacheSystemId(systemId, content, false);
                 return new InputSource(new ByteArrayInputStream(content));                
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Could not resolve OpenCms xml entity reference '" + systemId + "'", t);
-            }            
+            }      
         }
+        
         // use the default behaviour (i.e. resolve through external URL)
         return null;
     }
