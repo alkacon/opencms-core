@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2003/09/22 10:58:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $ $Date: 2003/09/22 10:58:42 $
+ * @version $Revision: 1.6 $ $Date: 2003/09/24 14:19:24 $
  */
 public class CmsShell {
 
@@ -216,7 +216,7 @@ public class CmsShell {
      */
     public void commands(FileInputStream input) {
         try {
-            this.m_shellCommands = new CmsShellCommands(m_openCms, m_cms, m_driverManager);
+            this.m_shellCommands = new CmsShellCommands(m_openCms, m_driverManager);
             LineNumberReader lnr = new LineNumberReader(new InputStreamReader(input));
             while (!m_exitCalled) {
                 printPrompt();

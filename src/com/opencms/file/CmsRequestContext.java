@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRequestContext.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.HttpSession;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  *
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  */
 public class CmsRequestContext {
 
@@ -636,6 +636,7 @@ public class CmsRequestContext {
      * @deprecated the "current group" concept is not longer used in the ACL permission model
      */
     public void setCurrentGroup(String groupname) throws CmsException {
+        OpenCms.getLog(this).warn("Deprecated method called: setCurrentGroup(" + groupname + ")");                        
         return;
     }
 

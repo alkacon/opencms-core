@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/09/22 10:58:42 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,7 +21,7 @@
  * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
- * For further information about OpenCms, please see the
+ * For further information  about OpenCms, please see the
  * project website: http://www.opencms.org
  * 
  * You should have received a copy of the GNU Lesser General Public
@@ -90,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -283,7 +283,7 @@ public class OpenCmsCore {
                 new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this all we need
-        }
+            }
         }
         return m_instance;
     }

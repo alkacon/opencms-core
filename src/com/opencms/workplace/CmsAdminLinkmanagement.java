@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLinkmanagement.java,v $
-* Date   : $Date: 2003/09/05 12:22:25 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2003/09/24 14:19:24 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Hanjo Riege
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsAdminLinkmanagement extends CmsWorkplaceDefault {
 
@@ -61,7 +61,7 @@ public class CmsAdminLinkmanagement extends CmsWorkplaceDefault {
                         
         if("start".equals(action)){
             // first call - start checking
-            doCheck = new CmsLinkHrefManagementThread(cms, cms.getRequestContext().currentProject().getId());
+            doCheck = new CmsLinkHrefManagementThread(cms);
             doCheck.start();
             session.putValue(C_LINKCHECK_HTML_THREAD, doCheck);
 

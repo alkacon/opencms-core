@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
- * Date   : $Date: 2003/09/15 10:51:14 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package com.opencms.file;
 
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import com.opencms.core.I_CmsConstants;
@@ -44,7 +45,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -583,6 +584,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see com.opencms.file.CmsObject#isInsideCurrentProject(CmsResource)
      */
     public boolean inProject(CmsProject project) {
+        OpenCms.getLog(this).warn("Deprecated method called: inProject(" + project + ")");
         throw new RuntimeException("inProject() not longer supported on CmsResource");
     }
     
@@ -674,6 +676,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @param flags the access flags to set
      */
     public void setAccessFlags(int flags) {
+        OpenCms.getLog(this).warn("Deprecated method called: setAccessFlags(" + flags + ")");
         throw new RuntimeException("setAccessFlags() not longer supported on CmsResource");
     }
 
@@ -728,6 +731,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see org.opencms.lock.CmsLock#getUserId()
      */
     public void setLocked(CmsUUID user) {
+        OpenCms.getLog(this).warn("Deprecated method called: setLocked(" + user + ")");        
         throw new RuntimeException("setLocked() not longer supported on CmsResource");
     }
 
@@ -744,6 +748,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see org.opencms.lock.CmsLock#getProjectId()
      */
     public void setLockedInProject(int projectId) {
+        OpenCms.getLog(this).warn("Deprecated method called: setLockedInProject(" + projectId + ")");                
         throw new RuntimeException("setLockedInProject() not longer supported on CmsResource");
     }
 
@@ -769,6 +774,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see org.opencms.db.generic.CmsVfsDriver#updateResourceState(CmsProject, CmsResource, int)
      */
     public void setProjectId(int projectId) {
+        OpenCms.getLog(this).warn("Deprecated method called: setProjectId(" + projectId + ")");                        
         throw new RuntimeException("setProjectId() not longer supported on CmsResource");
     }
     

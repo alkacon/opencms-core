@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/09/23 07:50:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.21 $ $Date: 2003/09/23 07:50:25 $ 
+ * @version $Revision: 1.22 $ $Date: 2003/09/24 14:19:24 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {
@@ -99,11 +99,10 @@ class CmsShellCommands {
      * Generate a new instance of CmsShellCommands.<p>
      * 
      * @param openCms an initialized OpenCms object (i.e. "operating system")
-     * @param cms an initialized CmsObject (i.e. "command shell")
      * @param driverManager the driver manager
      * @throws Exception if something goes wrong
      */
-    public CmsShellCommands(OpenCmsCore openCms, CmsObject cms, CmsDriverManager driverManager) throws Exception {
+    public CmsShellCommands(OpenCmsCore openCms, CmsDriverManager driverManager) throws Exception {
         m_openCms = openCms;
         m_driverManager = driverManager;
         m_cms = m_openCms.initCmsObject(null, null, OpenCms.getDefaultUsers().getUserGuest(), OpenCms.getSiteManager().getDefaultSite().getSiteRoot(), I_CmsConstants.C_PROJECT_ONLINE_ID, null);

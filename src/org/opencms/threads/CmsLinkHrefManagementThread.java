@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsLinkHrefManagementThread.java,v $
- * Date   : $Date: 2003/09/12 10:01:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/09/24 14:19:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import com.opencms.file.CmsObject;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1.10
  */
 public class CmsLinkHrefManagementThread extends A_CmsReportThread {
@@ -49,9 +49,8 @@ public class CmsLinkHrefManagementThread extends A_CmsReportThread {
      * Checks the validity of internal href tags (i.e. html links) on a set of resources.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param projectId the project id
      */
-    public CmsLinkHrefManagementThread(CmsObject cms, int projectId) {
+    public CmsLinkHrefManagementThread(CmsObject cms) {
         super(cms, "OpenCms: Href link management");
         // NYI
     }
