@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2003/03/02 18:44:17 $
- * Version: $Revision: 1.464 $
+ * Date   : $Date: 2003/03/05 18:46:54 $
+ * Version: $Revision: 1.465 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 5.0 (next version)
+! The file last modified date is now saved when exporting and importing data from the VFS
+! Added links management for VFS links, it's mow possible to find all VFS links that point to a specific file
 ! Added feature to convert content from old export format (4.x) to 5.0 version,
   set "compatibility.support.import.4.x.contents=true" in opencms.properties
 ! Updated the TeX sources of the PDF documentation for the 5.0 release
