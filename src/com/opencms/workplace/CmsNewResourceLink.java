@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceLink.java,v $
-* Date   : $Date: 2003/09/01 09:09:17 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2003/09/09 07:51:10 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.49 $ $Date: 2003/09/01 09:09:17 $
+ * @version $Revision: 1.50 $ $Date: 2003/09/09 07:51:10 $
  */
 
 public class CmsNewResourceLink extends CmsWorkplaceDefault {
@@ -235,7 +235,7 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                             }
 
                             // copy the folder
-                            cms.copyResource(targetName, foldername + filename, keepTargetProperties, true, C_COPY_AS_LINK);
+                            cms.copyResource(targetName, foldername + filename, false, true, C_COPY_AS_LINK);
                             
                             // set the variables that navigation properties can be updated
                             linkResource = cms.readFileHeader(foldername + filename);
@@ -260,7 +260,6 @@ public class CmsNewResourceLink extends CmsWorkplaceDefault {
                                 }
                                 
                                 // TODO VFS links: creates an external HTTP link following the new linking paradigm
-                                //linkResource = cms.createResource(foldername + filename, type, prop, targetName.getBytes(), targetProperties);
                                 linkResource = cms.createVfsLink(foldername + filename, targetName, targetProperties);
                             }
                         
