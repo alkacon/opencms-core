@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2002/08/22 09:58:46 $
-* Version: $Revision: 1.29 $
+* Date   : $Date: 2002/08/29 17:24:21 $
+* Version: $Revision: 1.30 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.29 $ $Date: 2002/08/22 09:58:46 $
+ * @version $Revision: 1.30 $ $Date: 2002/08/29 17:24:21 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -166,7 +166,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append(this.getErrormsg("C_ERRORPART_1"));
         output.append(cms.getRequestContext().getRequest().getWebAppUrl());
         output.append(this.getErrormsg("C_ERRORPART_2"));
+        output.append("\n\n");
         output.append(Utils.getStackTrace(e));
+        output.append("\n\n");
         output.append(this.getErrormsg("C_ERRORPART_3"));
         return output.toString();
     }
