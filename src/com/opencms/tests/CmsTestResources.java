@@ -1,7 +1,7 @@
 /*
 * File: $Source: /alkacon/cvs/opencms/src/com/opencms/tests/Attic/CmsTestResources.java,v $
-* Date: $Date: 2002/06/12 14:53:30 $
-* Version: $Revision: 1.1 $
+* Date: $Date: 2002/06/19 08:56:59 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@
 package com.opencms.tests;
 
 import com.opencms.core.*;
+import com.opencms.boot.*;
+
 import java.util.*;
 import java.io.*;
 
