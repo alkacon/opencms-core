@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/31 14:22:57 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/03/31 14:47:14 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0
  */
@@ -280,6 +280,9 @@ public class CmsSecure extends CmsDialog {
         String secureResource = "";
         String exportedResource = "";
         try {
+            if (resourceIsFolder()) {
+                vfsName = vfsName.concat("/");
+            }          
             secureResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_SECURE, true)
                 .getValue();
             exportedResource = getCms().readPropertyObject(getParamResource(), I_CmsConstants.C_PROPERTY_EXPORT, true)
