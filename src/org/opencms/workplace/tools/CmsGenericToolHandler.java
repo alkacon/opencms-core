@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsGenericToolHandler.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/03/14 13:10:52 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * <ul>
  *  <li><code>name</code>: the name of the admin tool.</li>
  *  <li><code>iconpath</code>: the path to the icon of the admin tool.</li>
- *  <li><code>samlliconpath</code>: the path to the icon to be used in the menu (optional, default: iconpath).</li>
+ *  <li><code>smalliconpath</code>: the path to the icon to be used in the menu (optional, default: iconpath).</li>
  *  <li><code>helptext</code>: the help text of the admin tool.</li>
  *  <li><code>onlyadmin</code>: the admin tool can only be used as administrator (optional, default:false).</li>
  *  <li><code>onlyoffline</code>: the admin tool can only be used in the offline project (optional, default:false).</li>
@@ -64,7 +64,7 @@ import java.util.Map;
  * An example for a full argument is:<p>
  * <code>name:Users|iconpath:/resources/icons/users.gif|helptext:This tool manages user accounts|installpoints:/@Principal Management#2,/groups@User Management#1|onlyadmin:true</code><p>
  * 
- * This mean that the given resource will be named "Users", his display icon is located under the 
+ * This means that the given resource will be named "Users", the display icon is located under the 
  * path "/resources/icons/users.gif", the displayed help text will be "This tool manages user accounts", 
  * and the tool will be installed in 2 different installation points:<p>
  * <ul>
@@ -73,7 +73,7 @@ import java.util.Map;
  * </ul>
  * 
  * @author <a href="mailto:m.moossen@alkacon.com">Michael Moossen</a> 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0
  */
 public class CmsGenericToolHandler extends A_CmsToolHandler {
