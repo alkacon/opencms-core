@@ -76,7 +76,16 @@ In this case the checkbox {\bf Administrationpoint} has to be chosen.
 
 \item[-]In the field {\bf Maintenance class} you can specify a class (with its fully-qualified class name) 
 that handles events like deleting a module, uploading a module and changing of the module parameters. This
-class has to implement certain methods to handle these events.
+class has to implement certain methods to handle these events. There are three methods you may use: 
+
+public static void moduleWasUploaded(CmsObject cms)
+
+public static void moduleParameterWasUpdated(CmsObject cms)
+
+public static void moduleWasDeleted(CmsObject cms).
+
+OpenCms trys to call these methodes when
+the module is imported, a module parameter is changed or the module is deleted from the system. 
 
 \item[-] The fields {\bf Author} and {\bf Email} can be used to provide information about the author
 of the module.
