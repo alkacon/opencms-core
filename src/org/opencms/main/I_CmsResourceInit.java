@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsResourceInit.java,v $
- * Date   : $Date: 2003/07/22 08:40:24 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsResourceInit.java,v $
+ * Date   : $Date: 2004/01/25 12:41:13 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -29,9 +29,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package com.opencms.core;
+package org.opencms.main;
 
-import com.opencms.core.exceptions.CmsResourceInitException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;
 
@@ -44,16 +43,16 @@ import com.opencms.file.CmsObject;
  * @version $Revision: 1.1 $
  */
 public interface I_CmsResourceInit {
-
+    
     /**
      * Possibility to modify or change the CmsFile with the CmsObject.<p>
      * 
      * @param file the requested file
      * @param cms the current CmsObject
      * @return CmsFile a file in the OpenCms VFS
-     * @throws CmsResourceInitException throw this exception if other implementations of the interface should not be executed
+     * @throws CmsResourceInitException if other implementations of the interface should not be executed
      */
-    public CmsFile initResource(CmsFile file, CmsObject cms) throws CmsResourceInitException;
-
+    CmsFile initResource(CmsFile file, CmsObject cms) throws CmsResourceInitException;
+    
 }
 
