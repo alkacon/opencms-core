@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/05 15:18:17 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/06/05 16:40:53 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -30,6 +30,8 @@ package com.opencms.file;
 
 import javax.servlet.http.*;
 import java.util.*;
+import source.org.apache.java.io.*;
+import source.org.apache.java.util.*;
 
 import com.opencms.core.*;
 
@@ -41,12 +43,23 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.70 $ $Date: 2000/06/05 15:18:17 $
+ * @version $Revision: 1.71 $ $Date: 2000/06/05 16:40:53 $
  * 
  */
 interface I_CmsResourceBroker {
 
+
+    // Internal ResourceBroker methods
     
+    
+    /**
+     * Initializes the resource broker and sets up all required modules and connections.
+     * @param config The OpenCms configuration.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void init(Configurations config) 
+        throws CmsException;
+                              
     
     // Methods working with projects
 
@@ -59,8 +72,8 @@ interface I_CmsResourceBroker {
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
 	 * @param projectId the id of the project.
-	 * 
 	 * @return true, if the user has access, else returns false.
+	 * @exception CmsException Throws CmsException if something goes wrong.
 	 */
 	public boolean accessProject(CmsUser currentUser, CmsProject currentProject,
 								 int projectId) 
