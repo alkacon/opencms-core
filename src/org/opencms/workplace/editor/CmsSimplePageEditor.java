@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2004/08/03 07:19:03 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/08/08 08:31:57 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.JspException;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 5.3.0
  */
@@ -118,8 +118,12 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         } else if (EDITOR_CHANGE_ELEMENT.equals(getParamAction())) {
             setAction(ACTION_SHOW);
             actionChangeBodyElement();
+            // prepare the content String for the editor
+            prepareContent(false);                
         } else if (EDITOR_SHOW.equals(getParamAction())) {
             setAction(ACTION_SHOW);
+            // prepare the content String for the editor
+            prepareContent(false);            
         } else if (EDITOR_PREVIEW.equals(getParamAction())) {
             setAction(ACTION_PREVIEW);
         } else {
@@ -159,10 +163,9 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             }
             // initialize the editor content
             initContent();
-        } 
-        
-        // prepare the content String for the editor
-        prepareContent(false);
+            // prepare the content String for the editor
+            prepareContent(false);
+        }       
     }    
     
     /**
