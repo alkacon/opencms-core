@@ -2,6 +2,8 @@
 // global variables und functions
 // m.schleich 03.01.2000
 //------------------------------------------
+var admincontenturl="administration_content_top.html";
+
 // Formularfelder (Textfelder) auf Inhalt überprüfen
 function check_textfeld(formular, feld)
 {
@@ -64,6 +66,16 @@ function ChImg(imgID,src)
 document.images[imgID].src = src;
 }
 
+
+//------------------------------------------------------------------------------------
+// updates a frame
+// m.schleich 01.02.2000
+//------------------------------------------------------------------------------------
+function updateFrame(which, frameurl)
+{
+	eval('window.top.'+which+'.location.href="'+frameurl+'"');
+
+}
 
 //------------------------------------------------------------------------------------
 // open new window
