@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2001/08/02 07:30:16 $
-* Version: $Revision: 1.60 $
+* Date   : $Date: 2001/08/08 13:35:44 $
+* Version: $Revision: 1.61 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import com.opencms.template.cache.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.60 $ $Date: 2001/08/02 07:30:16 $
+ * @version $Revision: 1.61 $ $Date: 2001/08/08 13:35:44 $
  *
  * */
 public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannels {
@@ -233,6 +233,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants,I_CmsLogChannel
         if(resourceName.endsWith("/")) {
             resourceName += C_INDEX;
             cms.getRequestContext().getResponse().sendCmsRedirect(resourceName);
+            return null;
         }
         try {
 
