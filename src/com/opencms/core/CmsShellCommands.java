@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2002/12/06 23:16:51 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2002/12/12 18:48:54 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 package com.opencms.core;
 
 import com.opencms.file.*;
+import com.opencms.report.CmsShellReport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,7 +47,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Anders Fugmann
  * 
- * @version $Revision: 1.56 $ $Date: 2002/12/06 23:16:51 $
+ * @version $Revision: 1.57 $ $Date: 2002/12/12 18:48:54 $
  * 
  * @see com.opencms.file.CmsObject
  */
@@ -801,7 +802,7 @@ class CmsShellCommands implements I_CmsConstants {
     public void deleteModule(String module) {
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
-            reg.deleteModule(module, new Vector());
+            reg.deleteModule(module, new Vector(), new CmsShellReport());
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -997,7 +998,7 @@ class CmsShellCommands implements I_CmsConstants {
                 resource
             };
             I_CmsRegistry reg = m_cms.getRegistry();
-            reg.exportModule(modulename, resources, filename);
+            reg.exportModule(modulename, resources, filename, new CmsShellReport());
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
@@ -1894,7 +1895,7 @@ class CmsShellCommands implements I_CmsConstants {
         // import the module
         try {
             I_CmsRegistry reg = m_cms.getRegistry();
-            reg.importModule(importFile, new Vector());
+            reg.importModule(importFile, new Vector(), new CmsShellReport());
         }
         catch(Exception exc) {
             CmsShell.printException(exc);
