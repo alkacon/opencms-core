@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/04/06 09:26:34 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2000/04/18 13:56:01 $
+ * Version: $Revision: 1.34 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -66,7 +66,7 @@ import com.opencms.util.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.33 $ $Date: 2000/04/06 09:26:34 $  
+* @version $Revision: 1.34 $ $Date: 2000/04/18 13:56:01 $  
 * 
 */
 
@@ -232,7 +232,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
             m_opencms.showResource(cms,file);
             updateUser(cms,cmsReq,cmsRes);
         } catch (CmsException e) {
-            errorHandling(cms,cmsReq,cmsRes,e);
+           errorHandling(cms,cmsReq,cmsRes,e);
         } 
 	}
 
@@ -292,7 +292,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
      
             // check if a parameter "opencms=login" was included in the request.
             // this is used to force the HTTP-Authentification to appear.
-            loginParameter=req.getParameter("opencms");
+            loginParameter=cmsReq.getParameter("opencms");
             if (loginParameter != null) {
                 // do only show the authentication box if user is not already 
                 // authenticated.
