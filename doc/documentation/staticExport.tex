@@ -123,7 +123,98 @@ OpenCms will even export static resource with parameters:
 
 The parameters will be substituted to a consecutive number. There is no relationship between the consecutive number and the URL parameters.
 
-\section{Advanced properties of the static export}
+\section{Advanced properties of the static export: switch standard to dynamic}
 
 As above mentioned there are properties for the static export you may wish to use as a advanced user. 
 
+The static export is controlled by the resource property export. Normaly a resource with no property set (including the parent folders) is handeld as if the property is set to true. This feature is good when most of the side is static and can be exported, but when everthing is dynamic you sure want OpenCms to export only files with the property export=true and let everything withouth the export proptery stay in OpenCms. Therefore you can set the default value for the export property to 'dynamic'.
+
+\texttt{staticexport.default.export=dynamic}
+
+Only 'true'(standard) and 'dynamic' are allowed. There are two set of linkrules defined in the opencms.properties. In the dynamic mode the second ruleset is used. This ruleset includes automatical export of some filetypes like css, js, gif, jpg,... If you want additional filetypes automaticaly exported, just add the corresponding lines to the ruleset.dynamic\_exportrules and the ruleset.dynamic\_externrules:
+
+\begin{quote}
+\begin{verbatim}
+s#(.*\.ppt$)#${url_prefix_export}$1#,\
+s#(.*\.ppt$)#$1#,\
+\end{verbatim}
+\end{quote}
+
+Note that all files will be exported that include the '.ppt' at the end of there name.
+
+\section{Advanced properties of the static export: Configure Https}
+
+If you want to use the ssl protocol you can configure the static export to set the scheme as prefix ahead of the link if the Page has the https property and to set the http scheme ahead of links that reference from a https page to a http page. 
+All this is done automaticaly by OpenCms. You just have to set the property "export" to https on the folder where your ssl pages are. Then you configure the prefixes in the opencms.properties:
+
+\begin{quote}
+\begin{verbatim}
+url_prefix_https=https://server.de/${WEB_APP_NAME}/opencms
+url_prefix_servername=http://server.de
+\end{verbatim}
+\end{quote}
+
+The servername is used in addition to the export resp. the http prefix for links from https to http pages. The https prefix is set ahead of links to the https pages. Note that only link tags will be processed. If you write a template, don't forget to use it consequently.
+
+\section{Advanced properties of the static export: Relative Links in Export}
+
+If you just need a static site with no dynamic content you might want to use the exported pages without OpenCms. Then it could be necessary to have all links in the export relative. 
+
+\begin{quote}
+\begin{verbatim}
+relativelinks_in_export=true
+\end{verbatim}
+\end{quote}
+
+This feature only works with the standard rulesets and it needs some extra performance.
+
+\section{Advanced properties of the static export: The Rulesets}
+
+In the majority of cases you don't need to modify the linkrules. 
+First you can configure which ruleset is used for which situation. OpenCms needs four rulesets. Three for the link replacement for a link on a page that is a) shown in the online project, b) shown in the offline project and c) exported to the filesystem. The fourth rule is used for OpenCms to know under which name a exported page should be saved in the filesystem. Mostly the export and the online rules are the same. 
+
+\begin{quote}
+\begin{verbatim}
+linkrules.true.export=exportrules
+linkrules.true.online=exportrules
+linkrules.true.offline=offlinerules
+linkrules.true.extern=externrules
+linkrules.dynamic.export=dynamic_exportrules
+linkrules.dynamic.online=dynamic_exportrules
+linkrules.dynamic.offline=dynamic_offlinerules
+linkrules.dynamic.extern=dynamic_externrules
+\end{verbatim}
+\end{quote}
+
+Which definition is used depends on the value of the staticexport.default.export parameter: true or dynamic. The value of the linkrules must apear as the name of a ruleset in the opencms.properties. 
+
+A ruleset is a commaseperated list of substitution rules in perl5 standard. 
+In General when a link tag is resolved or the getLinkSubstitution() method is called in a module one rule after the other is executed till a rule matches. Then the result is returned. When it comes the the *dynamic rules* entry the dynamic rules OpenCms has generated with the resource property 'export'. In this case all dynamic rules are executed till one matches. If nothing matches the original is returned. 
+You can use the \$\{WEB\_APP\_NAME\} variable for the webapplication name and the
+four prefix variables defined above (\$\{url\_prefix\_export\}, \$\{url\_prefix\_http\},...).
+They will be replaced befor using the regular expression.
+In addition to this it is possible to define the place where the dynamic
+generated rules should be used instead of a rule use the expression 
+*dynamicRules* (including the *'s). OpenCms replaces this with the dynamic
+generated rules.
+There are two types of dynamic rules. The first one is generated with the 
+resourceproperty "exportname". For each resouce with this property a rule 
+will be generated that replaces the absolute path of this resource with the 
+value of the property. It is principally used to get nice short foldernames 
+on the disc.
+The second kind of dynamic rules are generated with the property "export".
+The value can be 'dynamic' or 'https'. The system generates
+rules so that the links to these resources go back to the opencmssystem from the 
+static content (with protocol https in the second case).
+There is a third value posible: 'false' means the resource is not exported and it 
+will not be created for getting furter links on it like the 'dynamic' ones. 
+New possible values are 'true', 'https\_enabled' and 'dynamic\_https\_enabled'. True 
+is needed for the case when default is set to dynamic. https\_enabled works like true
+but it will not set the http scheme ahead the link. dynamic\_https\_enabled is the same 
+for dynamic resources.
+
+The dynamic rules are only for export, online and extern rules. Don't use them in 
+the offlineruleset.
+The parameterreplacement is done in the dynamic rules. So it works together with
+the exportname rule. If you have a rule befor the dynamic rules that is triggered
+the parameterreplacement will not happen.
