@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/A_CmsObject.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2000/02/16 09:44:01 $
+ * Version: $Revision: 1.43 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import com.opencms.core.*;
  * 
  * @author Andreas Schouten
  * @author Michael Emmerich
- * @version $Revision: 1.42 $ $Date: 2000/02/15 17:53:48 $ 
+ * @version $Revision: 1.43 $ $Date: 2000/02/16 09:44:01 $ 
  */
 public abstract class A_CmsObject {	
 
@@ -351,6 +351,18 @@ public abstract class A_CmsObject {
 	 * if the user has not the rights for this resource.
 	 */	
 	abstract public void writeFile(CmsFile file) 
+		throws CmsException;
+	
+	/**
+	 * Writes a file-header to the Cms.<BR/>
+	 * 
+	 * @param file The file to write.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
+	 * if the user has not the rights for this resource.
+	 */	
+	abstract public void writeFileHeader(CmsFile file) 
 		throws CmsException;
 	
 	/**

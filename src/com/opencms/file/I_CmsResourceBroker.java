@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2000/02/16 09:44:01 $
+ * Version: $Revision: 1.39 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.38 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.39 $ $Date: 2000/02/16 09:44:01 $
  */
 interface I_CmsResourceBroker {
 
@@ -1369,6 +1369,32 @@ interface I_CmsResourceBroker {
 						  CmsFile file)
 		throws CmsException ;
 							
+	 /**
+	 * Writes a fileheader to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFileHeader(A_CmsUser currentUser, A_CmsProject currentProject, 
+								CmsFile file)
+		throws CmsException;
+	
 	/**
 	 * Renames the file to a new name. <br>
 	 * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2000/02/15 17:53:48 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2000/02/16 09:44:01 $
+ * Version: $Revision: 1.44 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import com.opencms.core.*;
  * A_CmsRessourceBroker to ensures user authentification in all operations.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.43 $ $Date: 2000/02/15 17:53:48 $ 
+ * @version $Revision: 1.44 $ $Date: 2000/02/16 09:44:01 $ 
  */
 public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	
@@ -435,6 +435,20 @@ public class CmsObject extends A_CmsObject implements I_CmsConstants {
 	public void writeFile(CmsFile file) 
 		throws CmsException { 
 		c_rb.writeFile(m_context.currentUser(), m_context.currentProject(), file);
+	}
+	
+	/**
+	 * Writes a file-header to the Cms.<BR/>
+	 * 
+	 * @param file The file to write.
+	 * 
+	 * @exception CmsException will be thrown for missing metainfos, for worng metadefs
+	 * or if resourcetype is set to folder. The CmsException will also be thrown, 
+	 * if the user has not the rights for this resource.
+	 */	
+	public void writeFileHeader(CmsFile file) 
+		throws CmsException {
+		c_rb.writeFileHeader(m_context.currentUser(), m_context.currentProject(), file);
 	}
 	
 	/**

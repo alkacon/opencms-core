@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/02/15 17:53:49 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2000/02/16 09:44:01 $
+ * Version: $Revision: 1.59 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.58 $ $Date: 2000/02/15 17:53:49 $
+ * @version $Revision: 1.59 $ $Date: 2000/02/16 09:44:01 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -2681,6 +2681,46 @@ System.err.println(">>> readFile(2) error for\n" +
 			// write-acces  was granted - write the file.
 			m_fileRb.writeFile(currentProject, 
 							   onlineProject(currentUser, currentProject), file );
+			// inform about the file-system-change
+			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
+		} else {
+			throw new CmsException("[" + this.getClass().getName() + "] " + file.getAbsolutePath(), 
+				CmsException.C_ACCESS_DENIED);
+		}
+	}
+	
+	 /**
+	 * Writes a fileheader to the Cms.<br>
+	 * 
+	 * A file can only be written to an offline project.<br>
+	 * The state of the resource is set to  CHANGED (1). The file content of the file
+	 * is either updated (if it is already existing in the offline project), or created
+	 * in the offline project (if it is not available there).<br>
+	 * 
+	 * <B>Security:</B>
+	 * Access is granted, if:
+	 * <ul>
+	 * <li>the user has access to the project</li>
+	 * <li>the user can write the resource</li>
+	 * <li>the resource is locked by the callingUser</li>
+	 * </ul>
+	 * 
+	 * @param currentUser The user who own this file.
+	 * @param currentProject The project in which the resource will be used.
+	 * @param file The file to write.
+	 * 
+	 * @exception CmsException  Throws CmsException if operation was not succesful.
+	 */	
+	public void writeFileHeader(A_CmsUser currentUser, A_CmsProject currentProject, 
+								CmsFile file)
+		throws CmsException {
+		
+		// has the user write-access?
+		if( accessWrite(currentUser, currentProject, (A_CmsResource)file) ) {
+				
+			// write-acces  was granted - write the file.
+			m_fileRb.writeFileHeader(currentProject, 
+									 onlineProject(currentUser, currentProject), file );
 			// inform about the file-system-change
 			fileSystemChanged(currentProject.getName(), file.getAbsolutePath());
 		} else {
