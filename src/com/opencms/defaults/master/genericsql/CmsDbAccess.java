@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/04/09 14:13:02 $
-* Version: $Revision: 1.30 $
+* Date   : $Date: 2003/04/23 08:40:01 $
+* Version: $Revision: 1.31 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,6 +53,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -842,12 +844,30 @@ public class CmsDbAccess {
      * by m_queries.getParameter(key)
      */
     protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey) throws SQLException {
-        String statement = m_queries.getProperty(queryKey, "");
-        String moduleMaster;
-        String channelRel;
-        String media;
-        
-        if(isOnlineProject(cms)) {
+        return this.sqlPrepare(cms, con, queryKey, null);
+    }
+    
+    /**
+     * Replaces in a SQL statement $XXX tokens by strings and returns a prepared statement.
+     * 
+     * @param cms the current user's CmsObject instance
+     * @param con the JDBC connection
+     * @param queryKey the name of the SQL statement (in query.properties)
+     * @param optionalSqlTokens a HashMap with optional SQL tokens to be replaced in the SQL statement
+     * @return a new PreparedStatement
+     * @throws SQLException
+     */
+    protected PreparedStatement sqlPrepare(CmsObject cms, Connection con, String queryKey, HashMap optionalSqlTokens) throws SQLException {
+        String statement = null;
+        String moduleMaster = null;
+        String channelRel = null;
+        String media = null;
+
+        // get the string of the SQL statement
+        statement = m_queries.getProperty(queryKey, "");
+
+        // choose the right tables depending on the online/offline project
+        if (isOnlineProject(cms)) {
             moduleMaster = "CMS_MODULE_ONLINE_MASTER";
             channelRel = "CMS_MODULE_ONLINE_CHANNEL_REL";
             media = "CMS_MODULE_ONLINE_MEDIA";
@@ -856,11 +876,24 @@ public class CmsDbAccess {
             channelRel = "CMS_MODULE_CHANNEL_REL";
             media = "CMS_MODULE_MEDIA";
         }
-        
+
+        // replace in the SQL statement the table names
         statement = Utils.replace(statement, "$CMS_MODULE_MASTER", moduleMaster);
         statement = Utils.replace(statement, "$CMS_MODULE_CHANNEL_REL", channelRel);
         statement = Utils.replace(statement, "$CMS_MODULE_MEDIA", media);
-        
+
+        // replace in the SQL statement further optional SQL tokens
+        if (optionalSqlTokens != null) {
+            Iterator optionalSqlKeys = optionalSqlTokens.keySet().iterator();
+            while (optionalSqlKeys.hasNext()) {
+                String currentKey = (String) optionalSqlKeys.next();
+                String currentValue = (String) optionalSqlTokens.get(currentKey);
+                statement = Utils.replace(statement, currentKey, currentValue);
+            }
+        }
+
+        //System.err.println(statement);
+
         return con.prepareStatement(statement);
     }
 
