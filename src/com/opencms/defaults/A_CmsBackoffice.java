@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/08/07 07:04:01 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/08/09 08:25:40 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -84,6 +84,17 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
   */
   abstract public String getEditUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
                            Object userObject) throws Exception ;
+
+  /**
+  * Gets the edit url of the module.
+  * @returns A string with the edit url
+  */
+  public String getDeleteUrl(CmsObject cms, String tagcontent, A_CmsXmlContent doc,
+                             Object userObject) throws Exception {
+
+    return getBackofficeUrl(cms, tagcontent,doc,userObject);
+  }
+
 
   /**
   * Gets the redirect url of the module. This URL is called, when an entry of the file list is selected

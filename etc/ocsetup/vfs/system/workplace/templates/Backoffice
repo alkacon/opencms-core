@@ -105,6 +105,7 @@ function show_help()
 <SCRIPT LANGUAGE="JavaScript">
 	var editUrl="]]><Method name="getServletPath"/><METHOD name="getEditUrl"/><![CDATA[";
 	var backofficeUrl="]]><Method name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[";
+	var deleteUrl="]]><Method name="getServletPath"/><METHOD name="getDeleteUrl"/><![CDATA[";
 </SCRIPT>
 
 <head>
@@ -144,26 +145,26 @@ start();
 
 <contextmenue name="backofficeedit"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelock"> 
 	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 		
 <contextmenue name="backofficelockuser"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextentry name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
+	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenolock"> 
 	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
-	<contextdisabled name="explorer.context.delete" href="javascript:location.href=backofficeUrl+'?iddelete='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
 </contextmenue>
@@ -316,7 +317,7 @@ onLoad="window.top.body.admin_head.location.href=']]><METHOD name="getServletPat
 			
 			<tr>
 				<td class=dialogtxt colspan=3>
-				<br><br><br>
+				<br>
 				</td>
 			</tr>
 						
