@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2004/08/10 15:46:17 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/08/11 16:53:12 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since FLEX alpha 1
  * 
  * @see CmsEvent
@@ -77,6 +77,9 @@ public interface I_CmsEventListener {
     
     /** Key name for passing a publish history id in the date map. */
     String KEY_PUBLISHID = "publishHistoryId";
+    
+    /** Key name for passing a project id in the date map. */
+    String KEY_PROJECTID = "projectId";
     
     /**
      * Marker for "all events".<p>
