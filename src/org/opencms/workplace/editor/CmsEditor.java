@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditor.java,v $
- * Date   : $Date: 2004/05/21 15:18:54 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/05/24 15:48:24 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * The editor classes have to extend this class and implement action methods for common editor actions.<p>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 5.1.12
  */
@@ -432,6 +432,11 @@ public abstract class CmsEditor extends CmsDialog {
         
         try {
             getCms().copyResource(getCms().readAbsolutePath(file), temporaryFilename, false, true, I_CmsConstants.C_COPY_AS_NEW);
+            CmsResource tempFile = getCms().readFileHeader(temporaryFilename, CmsResourceFilter.ALL);
+            tempFile.setDateReleased(CmsResource.DATE_RELEASED_DEFAULT);
+            tempFile.setDateExpired(CmsResource.DATE_EXPIRED_DEFAULT);
+            getCms().writeFileHeader((CmsFile)tempFile);
+            
         } catch (CmsException e) {
             if ((e.getType() == CmsException.C_FILE_EXISTS) || (e.getType() != CmsException.C_SQL_ERROR)) {
                 try {

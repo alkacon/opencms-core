@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/05/21 15:14:28 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/05/24 15:48:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -718,6 +718,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Sets the expiration date this resource.<p>
+     * 
+     * @param time the date to set
+     */
+    public void setDateExpired(long time) {
+        m_isTouched = true;
+        m_dateExpired = time;
+    }
+    
+    
+    /**
      * Sets the date of the last modification of this resource.<p>
      * 
      * @param time the date to set
@@ -725,6 +736,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public void setDateLastModified(long time) {
         m_isTouched = true;
         m_dateLastModified = time;
+    }
+
+    /**
+     * Sets the release date this resource.<p>
+     * 
+     * @param time the date to set
+     */
+    public void setDateReleased(long time) {
+        m_isTouched = true;
+        m_dateReleased = time;
     }
     
     

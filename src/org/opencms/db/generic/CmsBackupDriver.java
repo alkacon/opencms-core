@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/05/24 14:39:38 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2004/05/24 15:48:24 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.88 $ $Date: 2004/05/24 14:39:38 $
+ * @version $Revision: 1.89 $ $Date: 2004/05/24 15:48:24 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -142,8 +142,6 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             resourceSize, 
             content);
     }
-    int date_warning = 0;
-    // TODO: read / write expiration and release date from / to backup table
     
     /**
      * @see org.opencms.db.I_CmsBackupDriver#createBackupPropertyDefinition(java.lang.String, int)
