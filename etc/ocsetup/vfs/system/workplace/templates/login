@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <WORKPLACE>
-<STARTUP>openwin('index.html', 'opencms', 0, 0); window.close();</STARTUP>
+<STARTUP>openwin('index.html', 'opencms', 0, 0); if(window.name != 'opencms') {window.close();}</STARTUP>
 <TEMPLATE>
 <![CDATA[
 <html>
@@ -56,7 +56,6 @@
         </tr>
         <tr>
             <td colspan=2 align=middle class=formular>]]><SUBMITBUTTON class="button" name="LOGIN" value="login" width="100" action="" /><![CDATA[</td>
-			<!-- <td colspan=2 align=middle class=formular>]]><SUBMITBUTTON class="button" name="LOGIN" value="login" width="100" action="openwin('login.html', 'opencms', 0, 0); window.close(); return false;" /><![CDATA[</td>-->
         </tr>
         </table>
 </td></tr>
