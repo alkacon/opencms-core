@@ -103,7 +103,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.history" href="#"/>
@@ -162,7 +162,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.history" href="#"/>
@@ -221,7 +221,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.history" href="#"/>
@@ -283,7 +283,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.history" href="#"/>
@@ -335,7 +335,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.property" href="#"/>	
@@ -387,7 +387,7 @@
 	<contextspacer/>	
 	<contextentry name="explorer.context.chown" href="javascript:doAction(DO_CHOWN)"/>
 	<contextentry name="explorer.context.chgrp" href="javascript:doAction(DO_CHGRP)"/>
-	<contextentry name="explorer.context.access" href="#"/>
+	<contextentry name="explorer.context.access" href="javascript:doAction(DO_CHMOD)"/>
 	<contextspacer/>	
 	<contextentry name="explorer.context.type" href="#"/>
 	<contextentry name="explorer.context.history" href="#"/>

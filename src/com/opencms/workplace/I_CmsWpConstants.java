@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/08 10:07:21 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/03/08 14:54:54 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2000/03/08 10:07:21 $
+ * @version $Revision: 1.53 $ $Date: 2000/03/08 14:54:54 $
  */
 public interface I_CmsWpConstants {
 
@@ -117,6 +117,9 @@ public interface I_CmsWpConstants {
 
     /** Parameter for a new group*/
     public static final String C_PARA_NEWGROUP = "newgroup";  
+
+    /** Parameter for a new accessflags*/
+    public static final String C_PARA_NEWACCESS = "newaccess";  
     
     // Filenames of workplace files
         

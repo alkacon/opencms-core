@@ -208,10 +208,8 @@ function doAction(action) {
 		} case 9: {
 			location.href='chgrp.html?file='+ kontextparam;
 			break;
-		}
-		case 10:
-		{
-			location.href='explorer_files_right.html';
+		} case 10: {
+			location.href='chmod.html?file='+ kontextparam;
 			break;
 		}
 		case 11:

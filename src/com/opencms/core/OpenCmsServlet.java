@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsServlet.java,v $
- * Date   : $Date: 2000/03/08 10:07:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/03/08 14:54:54 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -65,7 +65,7 @@ import com.opencms.file.*;
 * Http requests.
 * 
 * @author Michael Emmerich
-* @version $Revision: 1.25 $ $Date: 2000/03/08 10:07:21 $  
+* @version $Revision: 1.26 $ $Date: 2000/03/08 14:54:54 $  
 * 
 */
 
@@ -452,7 +452,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                 break;
             // file not found - display 404 error.
             case CmsException.C_NOT_FOUND:
-                res.setContentType("text/plain");
+                res.setContentType("text/HTML");
                 res.getWriter().print(createErrorBox(e));
                 //res.sendError(res.SC_NOT_FOUND);
                 break;
@@ -460,7 +460,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsConstants, I_Cms
                 res.sendError(res.SC_SERVICE_UNAVAILABLE, e.toString());
                 break;
             default:
-                res.setContentType("text/plain");
+                res.setContentType("text/HTML");
                 e.printStackTrace();
                 res.getWriter().print(createErrorBox(e));
                 //res.sendError(res.SC_INTERNAL_SERVER_ERROR);
