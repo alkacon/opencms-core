@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2003/09/25 16:07:46 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/10/29 13:00:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public final class OpenCms {
     
@@ -269,6 +269,18 @@ public final class OpenCms {
     public static CmsStaticExportManager getStaticExportManager() {
         return OpenCmsCore.getInstance().getStaticExportManager();
     }
+    
+    /**
+     * Returns the cron manager.<p>
+     * 
+     * @return the cron manager
+     */
+    /*
+    public static CmsCronManager getCronManager() {
+        // TODO enable the cron manager
+        return OpenCmsCore.getInstance().getCronManager();
+    }
+    */
     
     /**
      * Returns the OpenCms Thread store.<p>

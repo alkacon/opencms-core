@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2003/10/28 13:28:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2003/10/29 13:00:42 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.cron.*;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.flex.CmsFlexCache;
@@ -89,7 +90,7 @@ import source.org.apache.java.util.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * @since 5.1
  */
 public class OpenCmsCore {
@@ -144,6 +145,10 @@ public class OpenCmsCore {
 
     /** The static export manager */
     private CmsStaticExportManager m_exportProperties;
+    
+    /** The cron manager */
+    // TODO enable the cron manager
+    //private CmsCronManager m_cronManager;
 
     /** Filename translator, used only for the creation of new files */
     private CmsResourceTranslator m_fileTranslator;
@@ -883,7 +888,7 @@ public class OpenCmsCore {
     protected CmsStaticExportManager getStaticExportManager() {
         return m_exportProperties;
     }
-
+    
     /**
      * Returns the OpenCms Thread store.<p>
      * 
@@ -1532,6 +1537,10 @@ public class OpenCmsCore {
 
         // initialize static export variables
         m_exportProperties = new CmsStaticExportManager();
+        
+        // initializes the cron manager
+        // TODO enable the cron manager
+        //m_cronManager = new CmsCronManager();
         
         // set if the static export is enabled or not
         m_exportProperties.setStaticExportEnabled("true".equalsIgnoreCase(conf.getString("staticexport.enabled", "false")));

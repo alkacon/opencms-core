@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/util/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2003/10/02 12:10:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/10/29 13:00:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,10 @@
 
 package com.opencms.util;
 
+import org.opencms.cron.I_CmsCronJob;
+
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
-import com.opencms.core.I_CmsCronJob;
 import com.opencms.defaults.CmsMail;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsObject;

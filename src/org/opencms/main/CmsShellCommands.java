@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2003/10/10 13:18:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/10/29 13:00:42 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,12 @@
 
 package org.opencms.main;
 
+import org.opencms.cron.CmsCronEntry;
+import org.opencms.cron.CmsCronTable;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
+import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.I_CmsPrincipal;
@@ -41,8 +44,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
 
 import com.opencms.boot.CmsBase;
-import com.opencms.core.CmsCronEntry;
-import com.opencms.core.CmsCronTable;
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsGroup;
@@ -52,7 +53,6 @@ import com.opencms.file.CmsRegistry;
 import com.opencms.file.CmsResource;
 import com.opencms.file.CmsResourceTypeFolder;
 import com.opencms.file.CmsUser;
-import org.opencms.report.CmsShellReport;
 import com.opencms.workplace.I_CmsWpConstants;
 
 import java.io.File;
@@ -75,7 +75,7 @@ import java.util.Vector;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.23 $ $Date: 2003/10/10 13:18:22 $ 
+ * @version $Revision: 1.24 $ $Date: 2003/10/29 13:00:42 $ 
  * @see com.opencms.file.CmsObject
  */
 class CmsShellCommands {

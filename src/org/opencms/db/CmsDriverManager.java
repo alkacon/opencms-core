@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/10/28 11:31:27 $
- * Version: $Revision: 1.282 $
+ * Date   : $Date: 2003/10/29 13:00:42 $
+ * Version: $Revision: 1.283 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import source.org.apache.java.util.Configurations;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.282 $ $Date: 2003/10/28 11:31:27 $
+ * @version $Revision: 1.283 $ $Date: 2003/10/29 13:00:42 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -7824,6 +7824,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
             } else {
                 m_projectDriver.writeSystemProperty(I_CmsConstants.C_SYSTEMPROPERTY_CRONTABLE, crontable);
             }
+            
+            // TODO enable the cron manager
+            //OpenCms.getCronManager().writeCronTab(crontable);
         } else {
             throw new CmsSecurityException("[" + this.getClass().getName() + "] writeCronTable()", CmsSecurityException.C_SECURITY_ADMIN_PRIVILEGES_REQUIRED);
         }
@@ -8383,8 +8386,10 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 currentExportKey = checkExportPoint(currentPublishedResource.getRootPath(), exportPoints);
 
                 if (currentExportKey != null) {
-                    report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
-                    printReportHeaders = true;
+                    if (!printReportHeaders) {
+                        report.println(report.key("report.export_points_write_begin"), I_CmsReport.C_FORMAT_HEADLINE);
+                        printReportHeaders = true;
+                    }
                                         
                     if (currentPublishedResource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
                         // export the folder                        

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminHistoryProperties.java,v $
-* Date   : $Date: 2003/10/10 13:18:22 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2003/10/29 13:00:42 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,7 +29,6 @@
 package com.opencms.workplace;
 
 import com.opencms.core.CmsException;
-import com.opencms.core.I_CmsCronJob;
 import com.opencms.core.I_CmsSession;
 import com.opencms.file.CmsObject;
 import com.opencms.file.CmsRegistry;
@@ -38,6 +37,7 @@ import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;
 
+import org.opencms.cron.I_CmsCronJob;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 
