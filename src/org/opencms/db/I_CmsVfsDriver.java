@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2004/07/08 15:23:54 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2004/08/11 10:40:26 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.83 $ $Date: 2004/07/08 15:23:54 $
+ * @version $Revision: 1.84 $ $Date: 2004/08/11 10:40:26 $
  * @since 5.1
  */
 public interface I_CmsVfsDriver {
@@ -81,14 +81,13 @@ public interface I_CmsVfsDriver {
      * Creates a resource content with the specified id.<p>
      * 
      * @param project the current project
-     * @param contentId the id of the new content
      * @param content the content to write
      * @param versionId for the content of a backup file you need to insert the versionId of the backup
      * @param writeBackup true if the content should be written to the backup table
      * 
      * @throws CmsException if somethong goes wrong
      */
-    void createContent(CmsProject project, CmsUUID contentId, byte[] content, int versionId, boolean writeBackup) throws CmsException;
+    void createContent(CmsProject project, CmsUUID resourceId, byte[] content, int versionId, boolean writeBackup) throws CmsException;
 
     /**
      * Creates a CmsFolder instance from a JDBC ResultSet.<p>
@@ -456,13 +455,13 @@ public interface I_CmsVfsDriver {
      * Writes the resource content with the specified content id.<p>
      * 
      * @param project the current project
-     * @param contentId the id of the content to update
+     * @param resourceId the id of the resource used to identify the content to update
      * @param content the new content of the file
      * @param writeBackup true if the file content should be written to the backup table
      * 
      * @throws CmsException if something goes wrong
      */
-    void writeContent(CmsProject project, CmsUUID contentId, byte[] content, boolean writeBackup) throws CmsException;
+    void writeContent(CmsProject project, CmsUUID resourceId, byte[] content, boolean writeBackup) throws CmsException;
 
     /**
      * Writes the structure and/or resource record(s) of an existing file.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2004/07/06 12:57:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/08/11 10:42:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsResourceTypeJsp extends A_CmsResourceType {
 
@@ -91,7 +92,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceType {
     public CmsResource createResource(
         CmsObject cms,
         CmsDriverManager driverManager,
-        String resourcename,
+        String resourcename, 
         byte[] content,
         List properties
     ) throws CmsException {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2004/08/11 10:42:59 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -572,8 +572,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             CmsResource resource=new CmsResource(
                 newUuidstructure, 
                 newUuidresource,
-                CmsUUID.getNullUUID(),
-                newUuidcontent, 
+                CmsUUID.getNullUUID(), 
                 resname, 
                 resourceTypeId,
                 0, 

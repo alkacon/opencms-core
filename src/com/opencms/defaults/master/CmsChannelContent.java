@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2004/07/18 16:27:13 $
-* Version: $Revision: 1.77 $
+* Date   : $Date: 2004/08/11 10:40:18 $
+* Version: $Revision: 1.78 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -57,8 +57,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.77 $
- * $Date: 2004/07/18 16:27:13 $
+ * $Revision: 1.78 $
+ * $Date: 2004/08/11 10:40:18 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -190,7 +190,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         m_accessflags = I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
-                                     CmsUUID.getNullUUID(), CmsUUID.getNullUUID(), "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
+                                     CmsUUID.getNullUUID(), /* CmsUUID.getNullUUID(), */ "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID,
                                      0,
                                      m_cms.getRequestContext().currentProject().getId(), 1,
                                      I_CmsConstants.C_UNKNOWN_ID,

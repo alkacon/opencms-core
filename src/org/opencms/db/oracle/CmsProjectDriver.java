@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/07/06 09:33:03 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/08/11 10:42:04 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.27 $ $Date: 2004/07/06 09:33:03 $
+ * @version $Revision: 1.28 $ $Date: 2004/08/11 10:42:04 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -84,7 +85,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
 
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set)
-     */
+     * 
+     * NOTE: does not work stable and has no significant performance effect
+     *//*
     public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
         CmsFile newFile = null;
         PreparedStatement stmt = null, stmt2 = null;
@@ -97,7 +100,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                             
         try {
             // binary content gets only published once while a project is published
-            if (!offlineFileHeader.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getContentId())) {
+            
+            //TODO: -cw- check if correct when using resource id instead of content id
+            if (!publishedContentIds.contains(offlineFileHeader.getResourceId())) {
 
                 // create the file online, but without content              
                 // newFile = (CmsFile) offlineFile.clone();
@@ -105,7 +110,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     offlineFileHeader.getStructureId(),
                     offlineFileHeader.getResourceId(),
                     offlineFileHeader.getParentStructureId(),
-                    offlineFileHeader.getContentId(),
+                    CmsUUID.getNullUUID(),
                     offlineFileHeader.getName(),
                     offlineFileHeader.getTypeId(),
                     offlineFileHeader.getFlags(),
@@ -133,14 +138,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             
                 // read the content blob
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_READCONTENT");
-                stmt.setString(1, offlineFileHeader.getContentId().toString());
+                stmt.setString(1, offlineFileHeader.getResourceId().toString());
                 res = stmt.executeQuery();
                 if (res.next()) {
                     Blob content = res.getBlob(1);
                     // publish the content
                     stmt2 = m_sqlManager.getPreparedStatement(conn, "C_ORACLE_FILES_PUBLISHCONTENT");
                     stmt2.setBlob(1, content);
-                    stmt2.setString(2, offlineFileHeader.getContentId().toString());
+                    stmt2.setString(2, offlineFileHeader.getResourceId().toString());
                     stmt2.executeUpdate();
                     stmt2.close();
                     stmt2 = null;                    
@@ -159,7 +164,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                 // m_driverManager.getVfsDriver().writeResource(onlineProject, newFile, offlineFile, false);
 
                 // add the content ID to the content IDs that got already published
-                publishedContentIds.add(offlineFileHeader.getContentId());
+                publishedContentIds.add(offlineFileHeader.getResourceId());
                 
             } else {
                 // create the sibling online
@@ -183,7 +188,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
         }
         
         return newFile;
-    }
+    }*/
 
     /**
      * Serialize object data to write it as byte array in the database.<p>

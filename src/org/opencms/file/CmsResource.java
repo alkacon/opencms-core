@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/07/03 10:17:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/08/11 10:42:33 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.Serializable;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -56,9 +56,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The size of the content. */
     protected int m_length;
-
-    /** The id of the content database record. */
-    private CmsUUID m_contentId;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
@@ -140,7 +137,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        CmsUUID contentId,
+        // CmsUUID contentId,
         String name,
         int type,
         int flags,
@@ -159,7 +156,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_structureId = structureId;
         m_resourceId = resourceId;
         m_parentId = parentId;
-        m_contentId = contentId;
+        // m_contentId = contentId;
         m_name = name;
         m_typeId = type;
         m_flags = flags;
@@ -327,7 +324,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             m_structureId,
             m_resourceId,
             m_parentId,
-            m_contentId,
+            // m_contentId,
             m_name,
             m_typeId,
             m_flags,
@@ -378,16 +375,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
             return ((CmsResource)obj).getStructureId().equals(getStructureId());
         }
         return false;
-    }
-
-    /**
-     * Gets the id of the content database entry.<p>
-     *
-     * @return the id of the content database entry
-     */
-    public CmsUUID getContentId() {
-
-        return m_contentId;
     }
 
     /**
@@ -793,8 +780,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         result.append(m_resourceId);
         result.append(", parent id: ");
         result.append(m_parentId);
-        result.append(", content id: ");
-        result.append(m_contentId);
         result.append(", type id: ");
         result.append(m_typeId);
         result.append(", flags: ");

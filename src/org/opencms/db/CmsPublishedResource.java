@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2004/07/18 16:31:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/08/11 10:40:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * that is written during each publishing process.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.14 $ $Date: 2004/07/18 16:31:47 $
+ * @version $Revision: 1.15 $ $Date: 2004/08/11 10:40:26 $
  * @since 5.1.11
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(int, CmsUUID)
  */
@@ -61,7 +61,7 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     private String m_contentDefinitionName;
 
     /** The content ID of the published resource.<p> */
-    private CmsUUID m_contentId;
+    // private CmsUUID m_contentId;
     
     /** The content ID of the published module data.<p> */
     private CmsUUID m_masterId;
@@ -96,10 +96,9 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * @param resourceState the state of the resource *before* it was published
      * @param siblingCount count of siblings of the published resource
      */
-    public CmsPublishedResource(CmsUUID structureId, CmsUUID resourceId, CmsUUID contentId, int backupTagId, String rootPath, int resourceType, int resourceState, int siblingCount) {
+    public CmsPublishedResource(CmsUUID structureId, CmsUUID resourceId, int backupTagId, String rootPath, int resourceType, int resourceState, int siblingCount) {
         m_structureId = structureId;
         m_resourceId = resourceId;
-        m_contentId = contentId;
         m_backupTagId = backupTagId;
         m_rootPath = rootPath;
         m_resourceType = resourceType;
@@ -117,7 +116,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
     public CmsPublishedResource(CmsResource resource) {
         m_structureId = resource.getStructureId();
         m_resourceId = resource.getResourceId();
-        m_contentId = CmsUUID.getNullUUID();
         m_backupTagId = -1;
         m_rootPath = resource.getRootPath();
         m_resourceType = resource.getTypeId();
@@ -141,7 +139,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         // TODO: remove this / make this a static factory method in legacy package
         m_structureId = CmsUUID.getNullUUID();
         m_resourceId = CmsUUID.getNullUUID();
-        m_contentId = CmsUUID.getNullUUID();
         m_backupTagId = I_CmsConstants.C_UNKNOWN_ID;
         m_rootPath = "";
         m_resourceType = subId;
@@ -173,7 +170,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         try {
             m_structureId = null;
             m_resourceId = null;
-            m_contentId = null;
             m_rootPath = null;
         } catch (Throwable t) {
             // ignore
@@ -203,10 +199,10 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
      * Returns the content ID of the published resource.<p>
      * 
      * @return the content ID of the published resource
-     */
+     *//*
     public CmsUUID getContentId() {
         return m_contentId;
-    }
+    }*/
 
     /**
      * Returns the count of siblings of the published resource.<p>
@@ -353,7 +349,6 @@ public class CmsPublishedResource extends Object implements Serializable, Clonea
         objInfo += "root path: " + m_rootPath + ", ";
         objInfo += "structure ID: " + m_structureId + ", ";
         objInfo += "resource ID: " + m_resourceId + ", ";
-        objInfo += "content ID: " + m_contentId + ", ";
         objInfo += "backup tag ID: " + m_backupTagId + ", ";
         objInfo += "siblings: " + m_siblingCount + ", ";
         objInfo += "state: " + m_resourceState + ", ";

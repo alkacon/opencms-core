@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/08/10 15:44:19 $
- * Version: $Revision: 1.403 $
+ * Date   : $Date: 2004/08/11 10:40:26 $
+ * Version: $Revision: 1.404 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.403 $ $Date: 2004/08/10 15:44:19 $
+ * @version $Revision: 1.404 $ $Date: 2004/08/11 10:40:26 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -299,7 +299,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
     /** The workflow driver. */
     private I_CmsWorkflowDriver m_workflowDriver;
-    
+
     /** The list of initialized JDBC pools. */
     private List m_connectionPools;
 
@@ -488,8 +488,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsResource newResource = new CmsResource (
             CmsUUID.getNullUUID(), // uuids will be "corrected" later
             CmsUUID.getNullUUID(),                
-            CmsUUID.getNullUUID(),
-            CmsUUID.getNullUUID(),            
+            CmsUUID.getNullUUID(),           
             targetName,
             type,
             0,
@@ -521,6 +520,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * the created resource will be made a sibling of the existing resource,
      * and both will share the new content.<p>
      * 
+     * Note: the id used to identify the content record (pk of the record) is generated
+     * on each call of this method (with valid content) !
+     * 
      * @param context the current request context
      * @param resourcename the name of the resource to create (full path)
      * @param resource the new resource to create
@@ -537,7 +539,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsRequestContext context, 
         String resourcename,
         CmsResource resource,
-        byte[] content, 
+        byte[] content,
         List properties,
         boolean importCase
     ) throws CmsException {
@@ -561,6 +563,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsResource parentFolder;
             String parentFolderName;
             String createdResourceName = resourcename;
+            int contentLength;
             
             if (currentResource != null) {
                 if (currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
@@ -602,55 +605,28 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // extract the name (without path)
             String targetName = CmsResource.getName(createdResourceName);
 
-            // ensure content and content length are set correctly
-            CmsUUID contentId;
-            int contentLength;            
+            // modify target name and content length in case of folder creation
             if (resource.isFolder()) {
                 // folders never have any content
-                contentId = CmsUUID.getNullUUID();
                 contentLength = -1;
                 // must cut of trailing '/' for folder creation (or name check fails)
                 if (targetName.charAt(targetName.length()-1) == '/') {
                     targetName = targetName.substring(0, targetName.length() - 1);
                 }
-            } else {
-                if (currentResource == null) {
-                    // must create new non-folder structure entry
-                    if (! resource.getContentId().isNullUUID()) {
-                        // if content id is set we re-use it
-                        contentId = resource.getContentId();
-                        if (content != null) {
-                            // content is provided, make sure length is correct
-                            contentLength = content.length;
-                        } else {
-                            // keep current content length
-                            contentLength = resource.getLength();
-                        }                        
-                    } else {
-                        // no content id yet - create a new one
-                        contentId = new CmsUUID();
-                        if (content != null) {
-                            // content is provided, make sure length is correct
-                            contentLength = content.length;
-                        } else {
-                            // must make sure that we have at last an empty content
-                            content = new byte[0];
-                            contentLength = 0;
-                        }                           
-                    }
+            } else {            
+                // otherwise ensure content and content length are set correctly
+                if (content != null) {
+                    // if a content is provided, in each case the length is the length of this content
+                    contentLength = content.length;
+                } else if (currentResource != null){
+                    // we have no content, but an already existing resource - length remains unchanged
+                    contentLength = currentResource.getLength();
                 } else {
-                    // structure entry already exists - re-use current resource id 
-                    contentId = currentResource.getContentId();
-                    if (content != null) {
-                        // content is provided, make sure length is correct
-                        contentLength = content.length;
-                    } else {
-                        // keep current content length
-                        contentLength = currentResource.getLength();
-                    }                       
+                    // we have no content - length is used as set in the resource
+                    contentLength = resource.getLength();
                 }
             }
-            
+
             // check if the target name is valid (forbitten chars etc.), 
             // if not throw an exception
             // must do this here since targetName is modified in folder case (see above)
@@ -680,7 +656,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 structureId,
                 resourceId,
                 parentFolder.getStructureId(),
-                contentId,
                 targetName,
                 resource.getTypeId(),
                 resource.getFlags(),
@@ -736,7 +711,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     // also update file content if required
                     m_vfsDriver.writeContent(
                         context.currentProject(), 
-                        newResource.getContentId(), 
+                        currentResource.getResourceId(), 
                         content, 
                         false);
                 }
@@ -809,7 +784,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             new CmsUUID(), 
             source.getResourceId(), 
             destinationFolder.getParentStructureId(), 
-            source.getContentId(),
             destinationResourceName, 
             source.getTypeId(), 
             flags, 
@@ -906,12 +880,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         
         // prepare the content if required
         byte[] content = null;
+        CmsUUID contentId = null;
         if (source.isFile()) {
             CmsFile file;
             if (source instanceof CmsFile) {
                 // resource already is a file
                 file = (CmsFile)source;
                 content = file.getContents();
+                contentId = file.getContentId();
             }
             if ((content == null) || (content.length < 1)) {
                 // no known content yet - read from database
@@ -920,6 +896,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     false, 
                     source.getStructureId());
                 content = file.getContents();
+                contentId = file.getContentId();
             }
         }        
         
@@ -952,7 +929,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             new CmsUUID(), 
             new CmsUUID(), 
             destinationFolder.getParentStructureId(), 
-            new CmsUUID(),  
             destinationResourceName, 
             source.getTypeId(), 
             flags, 
@@ -1919,7 +1895,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 resource.getStructureId(), 
                 resource.getResourceId(), 
                 resource.getParentStructureId(), 
-                resource.getContentId(), 
+                backupFile.getContentId(), 
                 resource.getName(), 
                 backupFile.getTypeId(), 
                 flags, 
@@ -2038,10 +2014,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             context.currentProject(), 
             resource, 
             C_UPDATE_RESOURCE_STATE);
-        
+       
         m_vfsDriver.writeContent(
             context.currentProject(), 
-            resource.getContentId(), 
+            resource.getResourceId(), 
             resource.getContents(), false);
 
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
@@ -7318,7 +7294,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Iterator i = null;
         CmsResource currentResource = null;
         CmsExportPointDriver exportPointDriver = null;
-        
+
         try {
             // export points are always written with the "export" user permissions
             CmsRequestContext context = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport()).getRequestContext();
@@ -7743,27 +7719,27 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             clearcache();
             
             try {
-                m_projectDriver.destroy();
+            m_projectDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing project driver", t);
             }
             try {
-                m_userDriver.destroy();
+            m_userDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing user driver", t);
             }
             try {
-                m_vfsDriver.destroy();
+            m_vfsDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing VFS driver", t);
             }
             try {
-                m_workflowDriver.destroy();
+            m_workflowDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing workflow driver", t);
             }
             try {
-                m_backupDriver.destroy();
+            m_backupDriver.destroy();
             } catch (Throwable t) {
                 OpenCms.getLog(this).error("Error closing backup driver", t);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2004/07/06 09:33:03 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2004/08/11 10:40:26 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.51 $ $Date: 2004/07/06 09:33:03 $
+ * @version $Revision: 1.52 $ $Date: 2004/08/11 10:40:26 $
  * @since 5.1
  */
 public interface I_CmsProjectDriver {
@@ -219,11 +219,11 @@ public interface I_CmsProjectDriver {
      * @param offlineProject the offline project to read data
      * @param onlineProject the online project to write data
      * @param offlineFileHeader the offline header of the file of which the content gets published
-     * @param publishedContentIds a Set with the UUIDs of the already published content records
+     * @param publishedResourceIds a Set with the UUIDs of the already published content records
      * @return the published file (online)
      * @throws Exception if something goes wrong
      */
-    CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception;
+    CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedResourceIds) throws Exception;
 
     /**
      * Publishes a new or changed folder.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/08/11 10:42:59 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.45 $ $Date: 2004/08/10 15:46:18 $
+ * @version $Revision: 1.46 $ $Date: 2004/08/11 10:42:59 $
  */
 public class CmsExport implements Serializable {
 
@@ -733,8 +733,6 @@ public class CmsExport implements Serializable {
         if (resource.isFile()) {
             //  <uuidresource>
             fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDRESOURCE).addText(resource.getResourceId().toString());
-            //  <uuidcontent>
-            fileElement.addElement(I_CmsConstants.C_EXPORT_TAG_UUIDCONTENT).addText(resource.getContentId().toString());
         }
         
         // <datelastmodified>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2004/08/11 10:41:46 $
+ * Version: $Revision: 1.179 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.178 $ $Date: 2004/08/10 15:46:18 $
+ * @version $Revision: 1.179 $ $Date: 2004/08/11 10:41:46 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -818,7 +818,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                     }
 
                     // remove the file online
-                    boolean removeContent = !publishedContentIds.contains(offlineFileHeader.getContentId());
+                    boolean removeContent = !publishedContentIds.contains(offlineFileHeader.getResourceId());
                     m_driverManager.getVfsDriver().removeFile(onlineProject, onlineFileHeader, removeContent);
                 } catch (CmsException e) {
                     if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -913,7 +913,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                             // remove the existing file and ensure that it's content is written 
                             // in any case by removing it's content ID from the set of published content IDs
                             m_driverManager.getVfsDriver().removeFile(onlineProject, offlineFileHeader, true);
-                            publishedContentIds.remove(offlineFileHeader.getContentId());
+                            publishedContentIds.remove(offlineFileHeader.getResourceId());
                             newFile = m_driverManager.getProjectDriver().publishFileContent(context.currentProject(), onlineProject, offlineFileHeader, publishedContentIds);
                         } catch (CmsException e1) {
                             if (OpenCms.getLog(this).isErrorEnabled()) {
@@ -1001,17 +1001,18 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishFileContent(org.opencms.file.CmsProject, org.opencms.file.CmsProject, org.opencms.file.CmsResource, java.util.Set)
      */
-    public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedContentIds) throws Exception {
+    public CmsFile publishFileContent(CmsProject offlineProject, CmsProject onlineProject, CmsResource offlineFileHeader, Set publishedResourceIds) throws Exception {
         CmsFile newFile = null;
         CmsFile offlineFile = null;
 
         try {
             // binary content gets only published once while a project is published
-            if (!offlineFileHeader.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFileHeader.getContentId())) {
-                // read the file offline
+            // if (!offlineFile.getContentId().isNullUUID() && !publishedContentIds.contains(offlineFile.getContentId())) {
+            if (!publishedResourceIds.contains(offlineFileHeader.getResourceId())) {    
+                // read the file content offline
                 offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
                 offlineFile.setRootPath(offlineFileHeader.getRootPath());
-
+                
                 // create the file online              
                 newFile = (CmsFile)offlineFile.clone();
                 newFile.setState(I_CmsConstants.C_STATE_UNCHANGED);
@@ -1026,7 +1027,9 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
                 m_driverManager.getVfsDriver().publishResource(onlineProject, newFile, offlineFile, false);
 
                 // add the content ID to the content IDs that got already published
-                publishedContentIds.add(offlineFileHeader.getContentId());
+                // publishedContentIds.add(offlineFileHeader.getContentId());
+                publishedResourceIds.add(offlineFile.getResourceId());
+                
             } else {
                 // create the sibling online
                 m_driverManager.getVfsDriver().createSibling(
@@ -1785,7 +1788,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
         ResultSet res = null;
         CmsUUID structureId = null;
         CmsUUID resourceId = null;
-        CmsUUID contentId = null;
+        // CmsUUID contentId = null;
         String rootPath = null;
         int resourceType = I_CmsConstants.C_UNKNOWN_ID;
         int resourceState = I_CmsConstants.C_UNKNOWN_ID;
@@ -1802,19 +1805,18 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             res = stmt.executeQuery();
             
             while (res.next()) {
-                structureId = new CmsUUID(res.getString(1));
-                resourceId = new CmsUUID(res.getString(2));
-                contentId = new CmsUUID(res.getString(3));                
-                rootPath = res.getString(4);
-                resourceState = res.getInt(5);
-                resourceType = res.getInt(6);
-                siblingCount = res.getInt(7);
-                masterId = new CmsUUID(res.getString(8));
-                contentDefinitionName = res.getString(9);
-                backupTagId = res.getInt(10);
+                structureId = new CmsUUID(res.getString("STRUCTURE_ID"));
+                resourceId = new CmsUUID(res.getString("RESOURCE_ID"));                
+                rootPath = res.getString("RESOURCE_NAME");
+                resourceState = res.getInt("RESOURCE_STATE");
+                resourceType = res.getInt("RESOURCE_TYPE");
+                siblingCount = res.getInt("SIBLING_COUNT");
+                masterId = new CmsUUID(res.getString("MASTER_ID"));
+                contentDefinitionName = res.getString("CONTENT_DEFINITION_NAME");
+                backupTagId = res.getInt("TAG_ID");
                 
                 if (masterId.equals(CmsUUID.getNullUUID())) {
-                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, contentId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
+                    publishedResources.add(new CmsPublishedResource(structureId, resourceId, backupTagId, rootPath, resourceType, resourceState, siblingCount));
                 } else {
                     publishedResources.add(new CmsPublishedResource(contentDefinitionName, masterId, resourceType, resourceState));
                 }
@@ -1922,14 +1924,13 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             stmt.setInt(1, tagId);
             stmt.setString(2, resource.getStructureId().toString());
             stmt.setString(3, resource.getResourceId().toString());
-            stmt.setString(4, resource.getContentId().toString());
-            stmt.setString(5, resource.getRootPath());
-            stmt.setInt(6, resource.getState());
-            stmt.setInt(7, resource.getTypeId());
-            stmt.setString(8, publishId.toString());
-            stmt.setInt(9, resource.getSiblingCount());
-            stmt.setString(10, CmsUUID.getNullUUID().toString());
-            stmt.setString(11, "");
+            stmt.setString(4, resource.getRootPath());
+            stmt.setInt(5, resource.getState());
+            stmt.setInt(6, resource.getTypeId());
+            stmt.setString(7, publishId.toString());
+            stmt.setInt(8, resource.getSiblingCount());
+            stmt.setString(9, CmsUUID.getNullUUID().toString());
+            stmt.setString(10, "");
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);

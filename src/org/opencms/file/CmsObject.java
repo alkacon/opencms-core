@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/08/10 15:46:18 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2004/08/11 10:42:33 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.65 $
  */
 public class CmsObject {
 
@@ -291,6 +291,31 @@ public class CmsObject {
      * @return the created resource
      * 
      * @throws CmsException if something goes wrong
+     *//*
+    public CmsResource createResource(String resourcename, int type, CmsUUID contentId, byte[] content, List properties) throws CmsException {
+        
+        return getResourceType(type)
+            .createResource(
+                this, 
+                m_driverManager, 
+                resourcename,
+                contentId,
+                content, 
+                properties);
+    }*/    
+
+    /**
+     * Creates a new resource of the given resource type
+     * with the provided content and properties.<p>
+     * 
+     * @param resourcename the name of the resource to create (full path)
+     * @param type the type of the resource to create
+     * @param properties the properties for the new resource
+     * @param content the contents for the new resource
+     * 
+     * @return the created resource
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
         
@@ -301,7 +326,7 @@ public class CmsObject {
                 resourcename,
                 content, 
                 properties);
-    }    
+    }
     
     /**
      * Deletes a resource.<p>
@@ -379,7 +404,7 @@ public class CmsObject {
             this, 
             m_driverManager, 
             resourcename, 
-            resource, 
+            resource,
             content, 
             properties);
     }
@@ -851,7 +876,7 @@ public class CmsObject {
 
     /**
      * Initializes this CmsObject with the provided user context and database connection.<p>
-     *
+     * 
      * @param driverManager the driver manager to access the database
      * @param context the request context that contains the user authentification
      * @param sessionStorage the core session
@@ -2960,8 +2985,8 @@ public class CmsObject {
      */
     public void publishResource(String resourcename, boolean directPublishSiblings, I_CmsReport report) throws Exception {
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        publishProject(report, resource, directPublishSiblings);
-    }
+            publishProject(report, resource, directPublishSiblings);
+        }
     
     /**
      * Returns a list with all project resources for a given project.<p>
@@ -3319,7 +3344,11 @@ public class CmsObject {
     * @throws CmsException if operation was not succesful 
     */
     public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
-        return m_driverManager.getResourcesInTimeRange(m_context, addSiteRoot(folder), starttime, endtime);
+        return m_driverManager.getResourcesInTimeRange(
+            m_context, 
+            addSiteRoot(folder), 
+            starttime, 
+            endtime);
     }
 
     /**

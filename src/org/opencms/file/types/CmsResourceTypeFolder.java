@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/07/18 16:32:08 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/08/11 10:42:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsResourceTypeFolder extends A_CmsResourceType {
 
@@ -98,7 +99,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceType {
     public CmsResource createResource(
         CmsObject cms, 
         CmsDriverManager driverManager, 
-        String resourcename, 
+        String resourcename,
         byte[] content, 
         List properties
     ) throws CmsException {

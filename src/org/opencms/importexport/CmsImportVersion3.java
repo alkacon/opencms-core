@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2004/07/18 16:32:33 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/08/11 10:42:59 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -416,6 +416,7 @@ public class CmsImportVersion3 extends A_CmsImport {
       *       not used when null
       * @return imported resource
       */
+    // TODO: remove unneccessary content id
     private CmsResource importResource(String source, String destination, String type, String uuidstructure, String uuidresource, String uuidcontent, long datelastmodified, String userlastmodified, long datecreated, String usercreated, String flags, List properties, Vector writtenFilenames, Vector fileCodes) {
 
         boolean success = true;
@@ -511,7 +512,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                 newUuidstructure, 
                 newUuidresource, 
                 CmsUUID.getNullUUID(), 
-                newUuidcontent, 
                 resname, 
                 resType, 
                 new Integer(flags).intValue(), 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2004/06/28 11:18:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/08/11 10:42:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,10 +46,13 @@ import java.io.Serializable;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
 
+    /** The id of the content database record. */
+    private CmsUUID m_contentId;
+    
     /** The content of this file. */
     private byte[] m_fileContent;
 
@@ -65,7 +68,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             resource.getStructureId(),
             resource.getResourceId(),
             resource.getParentStructureId(),
-            resource.getContentId(),
+            CmsUUID.getNullUUID(),
             resource.getName(),
             resource.getTypeId(),
             resource.getFlags(),
@@ -87,8 +90,10 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         if (resource instanceof CmsFile) {
             // the resource already was a file, keep contents that might have been read already
             m_fileContent = ((CmsFile)resource).getContents();
+            m_contentId = ((CmsFile)resource).getContentId();
             if (m_fileContent == null) {
                 m_fileContent = new byte[0];
+                m_contentId = CmsUUID.getNullUUID();
             }
         }
     }
@@ -99,7 +104,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param parentId the id of this resources parent folder
-     * @param fileId the id of this resources content record
+     * @param contentId the id of this resources content record
      * @param name the filename of this resouce
      * @param type the type of this resource
      * @param flags the flags of this resource
@@ -120,7 +125,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         CmsUUID structureId,
         CmsUUID resourceId,
         CmsUUID parentId,
-        CmsUUID fileId,
+        CmsUUID contentId,
         String name,
         int type,
         int flags,
@@ -142,7 +147,6 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             structureId,
             resourceId,
             parentId,
-            fileId,
             name,
             type,
             flags,
@@ -158,7 +162,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
             linkCount,
             length);
 
-        // set content and length
+        // set content, id and length
+        m_contentId = contentId;
         m_fileContent = content;
     }
 
@@ -204,6 +209,16 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
         return clone;
     }
 
+    /**
+     * Returns the id of the content database entry.<p>
+     *
+     * @return the id of the content database entry
+     */
+    public CmsUUID getContentId() {
+
+        return m_contentId;
+    } 
+    
     /**
      * Returns the content of this file.<p>
      *

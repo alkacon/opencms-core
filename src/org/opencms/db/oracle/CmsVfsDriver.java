@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/25 16:33:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2004/08/11 10:42:04 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2004/06/25 16:33:15 $
+ * @version $Revision: 1.20 $ $Date: 2004/08/11 10:42:04 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -58,7 +58,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsProject, org.opencms.util.CmsUUID, byte[], int, boolean)
      */
-    public void createContent(CmsProject project, CmsUUID contentId, byte[] content, int versionId, boolean writeBackup) throws CmsException {
+    public void createContent(CmsProject project, CmsUUID resourceId, byte[] content, int versionId, boolean writeBackup) throws CmsException {
         PreparedStatement stmt = null;
         Connection conn = null;
         try {
@@ -71,20 +71,21 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             }
             // first insert new file without file_content, then update the file_content
             // these two steps are necessary because of using BLOBs in the Oracle DB
-            stmt.setString(1, contentId.toString());
+            stmt.setString(1, new CmsUUID().toString());
+            stmt.setString(2, resourceId.toString());
             if (writeBackup) {
-                stmt.setInt(2, versionId);
-                stmt.setString(3, new CmsUUID().toString());
+                stmt.setInt(3, versionId);
+                stmt.setString(4, new CmsUUID().toString());
             }
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "createFileContent fileId=" + contentId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "createFileContent resourceId=" + resourceId.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
             m_sqlManager.closeAll(conn, stmt, null);
         }
 
         // now update the file content
-        writeContent(project, contentId, content, writeBackup);
+        writeContent(project, resourceId, content, writeBackup);
     }
 
     /**
@@ -97,7 +98,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsProject, org.opencms.util.CmsUUID, byte[], boolean)
      */
-    public void writeContent(CmsProject project, CmsUUID contentId, byte[] content, boolean writeBackup) throws CmsException {
+    public void writeContent(CmsProject project, CmsUUID resourceId, byte[] content, boolean writeBackup) throws CmsException {
 
         PreparedStatement stmt = null;
         PreparedStatement commit = null;
@@ -116,10 +117,10 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             conn.setAutoCommit(false);
             
             // update the file content in the FILES database.
-            stmt.setString(1, contentId.toString());
+            stmt.setString(1, resourceId.toString());
             res = ((DelegatingResultSet)stmt.executeQuery()).getInnermostDelegate();
             if (!res.next()) {
-                throw new CmsException("writeFileContent fileId=" + contentId.toString() + " content not found", CmsException.C_NOT_FOUND);
+                throw new CmsException("writeFileContent resourceId=" + resourceId.toString() + " content not found", CmsException.C_NOT_FOUND);
             }
             
             // write file content 
@@ -142,9 +143,9 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             conn.setAutoCommit(true);
                 
         } catch (IOException e) {
-            throw m_sqlManager.getCmsException(this, "writeFileContent fileId=" + contentId.toString(), CmsException.C_SERIALIZATION, e, false);
+            throw m_sqlManager.getCmsException(this, "writeFileContent resourceId=" + resourceId.toString(), CmsException.C_SERIALIZATION, e, false);
         } catch (SQLException e) {
-            throw m_sqlManager.getCmsException(this, "writeFileContent fileId=" + contentId.toString(), CmsException.C_SQL_ERROR, e, false);
+            throw m_sqlManager.getCmsException(this, "writeFileContent resourceId=" + resourceId.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
 
             if (res != null) {

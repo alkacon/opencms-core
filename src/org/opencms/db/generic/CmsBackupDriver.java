@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2004/06/25 16:33:07 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2004/08/11 10:41:46 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com) 
- * @version $Revision: 1.95 $ $Date: 2004/06/25 16:33:07 $
+ * @version $Revision: 1.96 $ $Date: 2004/08/11 10:41:46 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -100,8 +100,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         String resourceName = res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_NAME"));
         int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
         int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
-        int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID"));
-        CmsUUID fileId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
+        int projectID = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PROJECT_ID")); 
         int state = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STATE"));
         int loaderId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LOADER_ID"));
         long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
@@ -114,10 +113,13 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         String userCreatedName = res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED_NAME"));
 
+        CmsUUID contentId;
         if (hasContent) {
             content = m_sqlManager.getBytes(res, m_sqlManager.readQuery("C_RESOURCES_FILE_CONTENT"));
+            contentId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_FILE_ID")));
         } else {
             content = new byte[0];
+            contentId = CmsUUID.getNullUUID();
         }
         return new CmsBackupResource(
             backupId, 
@@ -126,7 +128,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             structureId, 
             resourceId, 
             parentId, 
-            fileId, 
+            contentId, 
             resourceName, 
             resourceType,
             resourceFlags, 
@@ -409,34 +411,40 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
     * 
     * @param backupId the backup id
     * @param resource the resource to backup
-    * @param fileContent the content of the file
     * @param tagId the tag revision
     * @param versionId the version revision
     * @throws CmsException if something goes wrong
     */
-    protected void internalWriteBackupFileContent(CmsUUID backupId, CmsResource resource, byte[] fileContent, int tagId, int versionId) throws CmsException {
+    protected void internalWriteBackupFileContent(CmsUUID backupId, CmsResource resource, int tagId, int versionId) throws CmsException {
         Connection conn = null;
         PreparedStatement stmt = null;
 
-        // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
-        CmsUUID fileId = resource.getContentId();
-        // byte[] fileContent = offlineFile.getContents();
+        CmsUUID contentId;
+        byte[] fileContent;
+        if (resource instanceof CmsFile) {
+            contentId = ((CmsFile)resource).getContentId();
+            fileContent = ((CmsFile)resource).getContents();
+        } else {
+            contentId = CmsUUID.getNullUUID();
+            fileContent = new byte[0];
+        }
         
         try {
             conn = m_sqlManager.getConnectionForBackup();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_FILES_WRITE_BACKUP");
 
-            stmt.setString(1, fileId.toString());
+            stmt.setString(1, contentId.toString());
+            stmt.setString(2, resource.getResourceId().toString());
 
             if (fileContent.length < 2000) {
-                stmt.setBytes(2, fileContent);
+                stmt.setBytes(3, fileContent);
             } else {
-                stmt.setBinaryStream(2, new ByteArrayInputStream(fileContent), fileContent.length);
+                stmt.setBinaryStream(3, new ByteArrayInputStream(fileContent), fileContent.length);
             }
 
-            stmt.setInt(3, tagId);
-            stmt.setInt(4, versionId);
-            stmt.setString(5, backupId.toString());
+            stmt.setInt(4, tagId);
+            stmt.setInt(5, versionId);
+            stmt.setString(6, backupId.toString());
 
             stmt.executeUpdate();
             fileContent = null;
@@ -1090,33 +1098,29 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
                 if (!this.internalValidateBackupResource(resource, tagId)) {
 
-                    // write the file content
-                    if (resource instanceof CmsFile) {
-                        content = ((CmsFile)resource).getContents();
-                    }
-                    internalWriteBackupFileContent(backupPkId, resource/* .getFileId() */, content, tagId, versionId);
+                    // write the file content if any
+                    internalWriteBackupFileContent(backupPkId, resource, tagId, versionId);
 
                     // write the resource
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_WRITE_BACKUP");
                     stmt.setString(1, resource.getResourceId().toString());
                     stmt.setInt(2, resource.getTypeId());
                     stmt.setInt(3, resource.getFlags());
-                    stmt.setString(4, resource.getContentId().toString());
-                    stmt.setInt(5, resource.getLoaderId());
-                    stmt.setLong(6, publishDate);
-                    stmt.setString(7, resource.getUserCreated().toString());
-                    stmt.setLong(8, resource.getDateLastModified());
-                    stmt.setString(9, resource.getUserLastModified().toString());
-                    stmt.setInt(10, resource.getState());
-                    stmt.setInt(11, resource.getLength());
-                    stmt.setString(12, CmsUUID.getNullUUID().toString());
-                    stmt.setInt(13, publishProject.getId());
-                    stmt.setInt(14, 1);
-                    stmt.setInt(15, tagId);
-                    stmt.setInt(16, versionId);
-                    stmt.setString(17, backupPkId.toString());
-                    stmt.setString(18, createdName);
-                    stmt.setString(19, lastModifiedName);
+                    stmt.setInt(4, resource.getLoaderId());
+                    stmt.setLong(5, publishDate);
+                    stmt.setString(6, resource.getUserCreated().toString());
+                    stmt.setLong(7, resource.getDateLastModified());
+                    stmt.setString(8, resource.getUserLastModified().toString());
+                    stmt.setInt(9, resource.getState());
+                    stmt.setInt(10, resource.getLength());
+                    stmt.setString(11, CmsUUID.getNullUUID().toString());
+                    stmt.setInt(12, publishProject.getId());
+                    stmt.setInt(13, 1);
+                    stmt.setInt(14, tagId);
+                    stmt.setInt(15, versionId);
+                    stmt.setString(16, backupPkId.toString());
+                    stmt.setString(17, createdName);
+                    stmt.setString(18, lastModifiedName);
                     stmt.executeUpdate();
 
                     m_sqlManager.closeAll(null, stmt, null);
@@ -1162,19 +1166,11 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(int, org.opencms.file.CmsResource, org.opencms.file.CmsBackupResource)
      */
     public void writeBackupResourceContent(int projectId, CmsResource resource, CmsBackupResource backupResource) throws CmsException {
-        // get the offline file
-        // CmsFile offlineFile = m_driverManager.getVfsDriver().readFile(projectId, false, resource.getStructureId());
-        // write the file content
-        byte[] content = null;
-        if (resource instanceof CmsFile) {
-            content = ((CmsFile)resource).getContents();
-        }
             
         if (!this.internalValidateBackupResource(resource, backupResource.getTagId())) {
             // internalWriteBackupFileContent(backupResource.getBackupId(), resource.getFileId(), offlineFile.getContents(), backupResource.getTagId(), backupResource.getVersionId());
-            internalWriteBackupFileContent(backupResource.getBackupId(), resource, content, backupResource.getTagId(), backupResource.getVersionId());
+            internalWriteBackupFileContent(backupResource.getBackupId(), resource, backupResource.getTagId(), backupResource.getVersionId());
         }
-        content = null;
     }
 
     /**
