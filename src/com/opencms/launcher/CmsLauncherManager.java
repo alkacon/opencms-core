@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsLauncherManager.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2001/06/29 13:56:39 $
+* Version: $Revision: 1.16 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -30,6 +30,7 @@
 package com.opencms.launcher;
 
 import com.opencms.core.*;
+import com.opencms.file.*;
 import java.util.*;
 
 /**
@@ -38,7 +39,7 @@ import java.util.*;
  * given launcher id.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.15 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.16 $ $Date: 2001/06/29 13:56:39 $
  */
 public class CmsLauncherManager implements I_CmsLogChannels {
 
@@ -47,10 +48,10 @@ public class CmsLauncherManager implements I_CmsLogChannels {
      * Not all of these launchers must be integrated into the OpenCms system.
      * Only really relevant launchers are required.
      */
-    private static final String[] C_KNOWN_LAUNCHERS =  {
-        "CmsXmlLauncher", "CmsDumpLauncher", "CmsLinkLauncher",
-        "CmsPdfLauncher"
-    };
+    //private static final String[] C_KNOWN_LAUNCHERS =  {
+    //    "CmsXmlLauncher", "CmsDumpLauncher", "CmsLinkLauncher",
+    //    "CmsPdfLauncher"
+    //};
 
     /**
      * Hashtable to store instances of all launchers.
@@ -70,12 +71,14 @@ public class CmsLauncherManager implements I_CmsLogChannels {
      *
      * @exception CmsException
      */
-    public CmsLauncherManager() throws CmsException {
+    public CmsLauncherManager(OpenCms cms) throws CmsException {
         String launcherPackage = getLauncherPackage();
+        String launcherName = new String();
         Class launcherClass = null;
         I_CmsLauncher launcherInstance = null;
         Integer launcherId = null;
 
+        Hashtable knownLaunchers = getKnownLaunchers(cms);
         // Initialize Hashtable
         launchers = new Hashtable();
 		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -83,9 +86,10 @@ public class CmsLauncherManager implements I_CmsLogChannels {
         }
 
         // try to load launcher classes.
-        for(int i = 0;i < C_KNOWN_LAUNCHERS.length;i++) {
+        for(int i = 0;i < knownLaunchers.size();i++) {
             try {
-                launcherClass = Class.forName(launcherPackage + "." + C_KNOWN_LAUNCHERS[i]);
+                launcherName = (String)knownLaunchers.get(I_CmsConstants.C_REGISTRY_LAUNCHER+i);
+                launcherClass = Class.forName(launcherName);
                 launcherInstance = (I_CmsLauncher)launcherClass.newInstance();
             }
             catch(Throwable e) {
@@ -95,7 +99,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                     // This is no critical error.
                     // We assume the launcher should not be integrated into the OpenCms system.
                     if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" not found. Ignoring.");
+                        A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + launcherName + "\" not found. Ignoring.");
                     }
                     continue;
                 }
@@ -106,14 +110,14 @@ public class CmsLauncherManager implements I_CmsLogChannels {
                         // I_CmsLauncher.
                         // So this class is anything, but NOT a OpenCms launcher.
                         // We have to stop the system.
-                        String errorMessage = "Loaded launcher class \"" + C_KNOWN_LAUNCHERS[i] + "\" is no OpenCms launcher (does not implement I_CmsLauncher). Ignoring";
+                        String errorMessage = "Loaded launcher class \"" + launcherName + "\" is no OpenCms launcher (does not implement I_CmsLauncher). Ignoring";
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                         }
                         continue;
                     }
                     else {
-                        String errorMessage = "Unknown error while initializing launcher \"" + C_KNOWN_LAUNCHERS[i] + "\". Ignoring.";
+                        String errorMessage = "Unknown error while initializing launcher \"" + launcherName + "\". Ignoring.";
                         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                             A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + e);
@@ -127,7 +131,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             // Let's check the launcher ID
             launcherId = new Integer(launcherInstance.getLauncherId());
             if(launchers.containsKey(launcherId)) {
-                String errorMessage = "Duplicate launcher ID " + launcherId + " in launcher \"" + C_KNOWN_LAUNCHERS[i] + "\".";
+                String errorMessage = "Duplicate launcher ID " + launcherId + " in launcher \"" + launcherName + "\".";
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] " + errorMessage);
                 }
@@ -138,7 +142,7 @@ public class CmsLauncherManager implements I_CmsLogChannels {
             // We can store the launcher in our Hashtable.
             launchers.put(launcherId, launcherInstance);
             if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-                A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + C_KNOWN_LAUNCHERS[i] + "\" with launcher ID " + launcherId + " loaded successfully.");
+                A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] OpenCms launcher \"" + launcherName + "\" with launcher ID " + launcherId + " loaded successfully.");
             }
         }
     }
@@ -172,5 +176,23 @@ public class CmsLauncherManager implements I_CmsLogChannels {
     private String getLauncherPackage() {
         String fullClassName = getClass().getName();
         return fullClassName.substring(0, fullClassName.lastIndexOf("."));
+    }
+
+    /**
+     * Gets the known launchers from the registry.
+     * Needed to look up all available launchers.
+     * @return Hashtable with the known launchers.
+     */
+    private Hashtable getKnownLaunchers(OpenCms cms) {
+        Hashtable knownLaunchers = new Hashtable();
+        try{
+            I_CmsRegistry reg = cms.getRegistry();
+            knownLaunchers = reg.getSystemValues(I_CmsConstants.C_REGISTRY_KNOWNLAUNCHERS);
+        } catch (CmsException exc){
+            A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] error getKnownLaunchers: "+exc.getMessage());
+        } catch (Exception e){
+            A_OpenCms.log(C_OPENCMS_INIT, "[CmsLauncherManager] error getKnownLaunchers: "+e.getMessage());
+        }
+        return knownLaunchers;
     }
 }
