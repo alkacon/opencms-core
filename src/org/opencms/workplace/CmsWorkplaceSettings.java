@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/02/25 14:21:04 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * will be stored in the session of a user.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * @since 5.1
  */
 public class CmsWorkplaceSettings {
@@ -57,7 +57,7 @@ public class CmsWorkplaceSettings {
     
     private String m_explorerProjectFilter;
     private int m_explorerProjectId;
-    private String m_explorerResource;
+    private Map m_explorerResource;
     private boolean m_explorerShowLinks;
 
     private CmsWorkplaceMessages m_messages;
@@ -78,6 +78,7 @@ public class CmsWorkplaceSettings {
      */
     CmsWorkplaceSettings() {
         m_explorerPage = 1;
+        m_explorerResource = new HashMap();
         m_treeType = new HashMap();
         m_treeSite = new HashMap();
         m_resourceTypes = new HashMap();
@@ -141,7 +142,17 @@ public class CmsWorkplaceSettings {
      * @return the current resource to be displayed in the explorer
      */
     public String getExplorerResource() {
-        return m_explorerResource;
+        // get the current explorer mode
+        String mode = getExplorerMode();
+        if (mode == null) {
+            mode = "explorerview";
+        }
+        // get the resource for the given mode
+        String resource = (String)m_explorerResource.get(mode);
+        if (resource == null) {
+            resource = "/";
+        }
+        return resource;
     }
 
     /**
@@ -331,11 +342,18 @@ public class CmsWorkplaceSettings {
         if (value == null) {
             return;
         }
+        // get the current explorer mode
+        String mode = getExplorerMode();
+        if (mode == null) {
+            mode = "explorerview";
+        }
+       
+        // set the resource for the given mode
         if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (!value.startsWith(m_currentSite)) && (!"galleryview".equals(getExplorerMode()))) {
             // restrict access to /system/ 
-            m_explorerResource = "/";
+            m_explorerResource.put(mode, "/");
         } else {
-            m_explorerResource = value;
+            m_explorerResource.put(mode, value);
         }
     }
 
