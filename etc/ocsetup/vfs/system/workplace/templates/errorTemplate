@@ -17,7 +17,7 @@
 	           		<td colspan=2 class="leerzeile">&nbsp;</td>
 				</tr>
 				<!-- End empty row-->
-				<tr><td class=dialogtxt rowspan=3 valign=top><img src="../pics/ic_caution.gif" border=0 width=32 height=32></td>
+				<tr><td class=dialogtxt rowspan=3 valign=top><img src="]]><METHOD name="picsUrl">ic_caution.gif</METHOD><![CDATA[" border=0 width=32 height=32></td>
 					<td class=dialogtxt>]]><PROCESS>message</PROCESS><![CDATA[</td>
 				</tr>
 				<tr><td class=dialogtxt>]]><PROCESS>msgreason</PROCESS><![CDATA[:<br>

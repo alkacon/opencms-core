@@ -168,6 +168,15 @@ INPUT.textfeld2
     FONT-WEIGHT: normal;
 	WIDTH: 425px
 }
+INPUT.textfeld3
+{
+    BACKGROUND-COLOR: white;
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    FONT-WEIGHT: normal;
+	WIDTH: 300px
+}
 TEXTAREA.textarea
 {
     COLOR: #000000;
@@ -418,6 +427,13 @@ a:hover.treefoldernip
 }
 
 /* styles for the filelist					*/
+TD.dateingeandert
+{
+    COLOR: black;
+    FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
+    FONT-SIZE: 8pt;
+    TEXT-DECORATION: none
+}
 TD.dateigeloescht
 {
     COLOR: black;
