@@ -1,11 +1,11 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsDelete.java,v $
-* Date   : $Date: 2001/01/24 09:43:26 $
-* Version: $Revision: 1.33 $
+* Date   : $Date: 2001/02/02 16:46:41 $
+* Version: $Revision: 1.34 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
+* Copyright (C) 2000  The OpenCms Group
+*
 * This File is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -13,15 +13,15 @@
 * modify it under the terms of the GNU General Public License
 * as published by the Free Software Foundation; either version 2
 * of the License, or (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * For further information about OpenCms, please see the
 * OpenCms Website: http://www.opencms.com
-* 
+*
 * You should have received a copy of the GNU General Public License
 * long with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
@@ -40,15 +40,15 @@ import java.util.*;
 /**
  * Template class for displaying the delete screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * 
+ *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.33 $ $Date: 2001/01/24 09:43:26 $
+ * @version $Revision: 1.34 $ $Date: 2001/02/02 16:46:41 $
  */
 
 public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants,I_CmsNewsConstants {
-    
-    /** 
+
+    /**
      * Deletes a file.
      * If the file is a page file, its content will be deleted, too.
      * If the file is a news file, the content and folder will be deleted, too.
@@ -56,32 +56,32 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * @param file The file to be deleted.
      * @exception Throws CmsException if something goes wrong.
      */
-    
+
     private void deleteFile(CmsObject cms, CmsResource file) throws CmsException {
         boolean hDelete = true;
-        
+
         //check if the file type name is page
-        
+
         //if so delete the file body and content
         if((cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME)) {
             String bodyPath = getBodyPath(cms, (CmsFile)file);
             try {
                 int help = C_CONTENTBODYPATH.lastIndexOf("/");
-                String hbodyPath = (C_CONTENTBODYPATH.substring(0, help)) 
+                String hbodyPath = (C_CONTENTBODYPATH.substring(0, help))
                         + (file.getAbsolutePath());
                 if(hbodyPath.equals(bodyPath)) {
-                    
-                    // this method was called during the process of deleting a folder,                    
+
+                    // this method was called during the process of deleting a folder,
                     // so lock the content file
                     cms.deleteFile(hbodyPath);
                 }
             }
             catch(CmsException e) {
-                
-            
+
+
             //TODO: ErrorHandling
             }
-        
+
         //
         }
         else {
@@ -89,14 +89,14 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                 String newsContentPath = getNewsContentPath(cms, (CmsFile)file);
                 try {
                     CmsFile newsContentFile = (CmsFile)cms.readFileHeader(newsContentPath);
-                    if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy() 
+                    if((newsContentFile.isLocked()) && (newsContentFile.isLockedBy()
                             == cms.getRequestContext().currentUser().getId())) {
                         cms.deleteFile(newsContentPath);
                     }
                 }
                 catch(CmsException e) {
-                    
-                
+
+
                 //TODO: ErrorHandling
                 }
                 try {
@@ -104,22 +104,22 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     hDelete = false;
                 }
                 catch(CmsException e) {
-                    
-                
+
+
                 //TODO: ErrorHandling
                 }
                 try {
                     String parentFolderName = file.getParent();
                     CmsFolder parentFolder = cms.readFolder(parentFolderName);
-                    if((!parentFolder.isLocked()) || (parentFolder.isLockedBy() 
+                    if((!parentFolder.isLocked()) || (parentFolder.isLockedBy()
                             != cms.getRequestContext().currentUser().getId())) {
                         cms.lockResource(parentFolderName);
                     }
                     cms.deleteFolder(parentFolderName);
                 }
                 catch(CmsException e) {
-                    
-                
+
+
                 //TODO: ErrorHandling
                 }
             }
@@ -128,7 +128,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             cms.deleteFile(file.getAbsolutePath());
         }
     }
-    
+
     /**
      * Gets all resources - files and subfolders - of a given folder.
      * @param cms The CmsObject.
@@ -139,40 +139,40 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * will be added here as well.
      * @exception Throws CmsException if something goes wrong.
      */
-    
-    private void getAllResources(CmsObject cms, String rootFolder, Vector allFiles, 
+
+    private void getAllResources(CmsObject cms, String rootFolder, Vector allFiles,
             Vector allFolders) throws CmsException {
         Vector folders = new Vector();
         Vector files = new Vector();
-        
+
         // get files and folders of this rootFolder
         folders = cms.getSubFolders(rootFolder);
         files = cms.getFilesInFolder(rootFolder);
-        
+
         //copy the values into the allFiles and allFolders Vectors
         for(int i = 0;i < folders.size();i++) {
             allFolders.addElement((CmsFolder)folders.elementAt(i));
-            getAllResources(cms, ((CmsFolder)folders.elementAt(i)).getAbsolutePath(), 
+            getAllResources(cms, ((CmsFolder)folders.elementAt(i)).getAbsolutePath(),
                     allFiles, allFolders);
         }
         for(int i = 0;i < files.size();i++) {
             allFiles.addElement((CmsFile)files.elementAt(i));
         }
     }
-    
+
     /**
      * method to check get the real body path from the content file
-     * 
+     *
      * @param cms The CmsObject, to access the XML read file.
      * @param file File in which the body path is stored.
      */
-    
+
     private String getBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         file = cms.readFile(file.getAbsolutePath());
         CmsXmlControlFile hXml = new CmsXmlControlFile(cms, file);
         return hXml.getElementTemplate("body");
     }
-    
+
     /**
      * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
      * Gets the content of the delete template and processed the data input.
@@ -184,25 +184,25 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * @return Bytearre containgine the processed data of the template.
      * @exception Throws CmsException if something goes wrong.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, 
+
+    public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) throws CmsException {
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-        
+
         // the template to be displayed
         String template = null;
-        
+
         // clear session values on first load
         String initial = (String)parameters.get(C_PARA_INITIAL);
         if(initial != null) {
-            
+
             // remove all session values
             session.removeValue(C_PARA_DELETE);
             session.removeValue(C_PARA_FILE);
             session.removeValue("lasturl");
         }
-        
+
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
         String delete = (String)parameters.get(C_PARA_DELETE);
@@ -223,25 +223,32 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         else {
             template = "folder";
         }
-        
-        //check if the name parameter was included in the request        
+
+        //check if the name parameter was included in the request
         // if not, the delete page is shown for the first time
         if(delete != null) {
             if(action == null) {
                 template = "wait";
             }
             else {
-                
+
                 // check if the resource is a file or a folder
                 if(file.isFile()) {
-                    
+
                     // its a file, so delete it
-                    deleteFile(cms, file);
-                    session.removeValue(C_PARA_DELETE);
-                    session.removeValue(C_PARA_FILE);
+                    try{
+                        deleteFile(cms, file);
+                        session.removeValue(C_PARA_DELETE);
+                        session.removeValue(C_PARA_FILE);
+                    }catch(CmsException e){
+                        session.removeValue(C_PARA_DELETE);
+                        session.removeValue(C_PARA_FILE);
+                        xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                        return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
+                    }
                     try {
                         if(lasturl == null || "".equals(lasturl)) {
-                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() 
+                            cms.getRequestContext().getResponse().sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath()
                                     + C_WP_EXPLORER_FILELIST);
                         }
                         else {
@@ -249,56 +256,56 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                         }
                     }
                     catch(Exception e) {
-                        throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath() 
+                        throw new CmsException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
                                 + C_WP_EXPLORER_FILELIST, CmsException.C_UNKNOWN_EXCEPTION, e);
                     }
                     return null;
                 }
                 else {
-                    
-                    // its a folder, so try to delete the folder and its subfolders                    
+
+                    // its a folder, so try to delete the folder and its subfolders
                     // get all subfolders and files
                     Vector allFolders = new Vector();
                     Vector allFiles = new Vector();
                     getAllResources(cms, filename, allFiles, allFolders);
-                    
-                    // unlock the folder, otherwise the subflders and files could not be                    
-                    // deleted.                    
-                    //cms.unlockResource(filename);                    
+
+                    // unlock the folder, otherwise the subflders and files could not be
+                    // deleted.
+                    //cms.unlockResource(filename);
                     // now delete all files in the subfolders
                     for(int i = 0;i < allFiles.size();i++) {
                         CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                         if(newfile.getState() != C_STATE_DELETED) {
-                            
+
                             //cms.lockResource(newfile.getAbsolutePath());
                             deleteFile(cms, newfile);
                         }
                     }
-                    
+
                     // now delete all subfolders
                     for(int i = 0;i < allFolders.size();i++) {
                         CmsFolder folder = (CmsFolder)allFolders.elementAt(allFolders.size() - i - 1);
                         if(folder.getState() != C_STATE_DELETED) {
-                            
+
                             //cms.lockResource(folder.getAbsolutePath());
                             cms.deleteFolder(folder.getAbsolutePath());
                             try {
                                 cms.deleteFolder(C_CONTENTBODYPATH + folder.getAbsolutePath().substring(1));
                             }
                             catch(CmsException e) {
-                                
+
                             }
                         }
                     }
-                    
-                    // finally delete the selected folder                    
+
+                    // finally delete the selected folder
                     //cms.lockResource(filename);
                     cms.deleteFolder(filename);
                     try {
                         cms.deleteFolder(C_CONTENTBODYPATH + filename.substring(1));
                     }
                     catch(CmsException e) {
-                        
+
                     }
                     session.removeValue(C_PARA_DELETE);
                     session.removeValue(C_PARA_FILE);
@@ -306,10 +313,10 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
                     template = "update";
                 }
             }
-        
+
         // TODO: Error handling
         }
-        
+
         // set the required datablocks
         if(action == null) {
             String title = cms.readProperty(file.getAbsolutePath(), C_PROPERTY_TITLE);
@@ -324,30 +331,30 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
             xmlTemplateDocument.setData("GROUP", cms.readGroup(file).getName());
             xmlTemplateDocument.setData("FILENAME", file.getName());
         }
-        
-        // process the selected template 
+
+        // process the selected template
         return startProcessing(cms, xmlTemplateDocument, "", parameters, template);
     }
-    
+
     /**
      * Get the real path of the news content file.
-     * 
+     *
      * @param cms The CmsObject, to access the XML read file.
      * @param file File in which the body path is stored.
      */
-    
+
     private String getNewsContentPath(CmsObject cms, CmsFile file) throws CmsException {
         String newsContentFilename = null;
-        
+
         // The given file object contains the news page file.
-        
+
         // we have to read out the article
         CmsXmlControlFile newsPageFile = new CmsXmlControlFile(cms, file.getAbsolutePath());
         String readParam = newsPageFile.getElementParameter("body", "read");
         String newsfolderParam = newsPageFile.getElementParameter("body", "folder");
         if(readParam != null && !"".equals(readParam)) {
-            
-            // there is a read parameter given.            
+
+            // there is a read parameter given.
             // so we know which news file should be read.
             if(newsfolderParam == null || "".equals(newsfolderParam)) {
                 newsfolderParam = C_NEWS_FOLDER_CONTENT;
@@ -356,7 +363,7 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         }
         return newsContentFilename;
     }
-    
+
     /**
      * Gets a formated file state string.
      * @param cms The CmsObject.
@@ -365,8 +372,8 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
      * @return Formated state string.
      * @exception Throws CmsException if something goes wrong.
      */
-    
-    private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang) 
+
+    private String getState(CmsObject cms, CmsResource file, CmsXmlLanguageFile lang)
             throws CmsException {
         StringBuffer output = new StringBuffer();
         if(file.inProject(cms.getRequestContext().currentProject())) {
@@ -378,19 +385,19 @@ public class CmsDelete extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         }
         return output.toString();
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
-     * 
+     *
      * @param cms CmsObject Object for accessing system resources
-     * @param templateFile Filename of the template file 
+     * @param templateFile Filename of the template file
      * @param elementName Element name of this template in our parent template.
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
+
+    public boolean isCacheable(CmsObject cms, String templateFile, String elementName,
             Hashtable parameters, String templateSelector) {
         return false;
     }
