@@ -9,7 +9,7 @@
 <!--
 function show_help()
 {
-	return 'help/1.html';
+	return '2_1_2_2.html';
 }
 //-->
 </script>
@@ -192,16 +192,18 @@ function show_help()
 <COLUMN_LOCKED><![CDATA[<td valign=bottom width=100 nowrap><p class=einzug>]]><LABEL value="title.locked" /><![CDATA[</p></td>]]></COLUMN_LOCKED>
 
 <COLUMN_PIC_VALUE><![CDATA[<td>1</td>]]></COLUMN_PIC_VALUE>
-<COLUMN_LOCK_VALUE><![CDATA[<td>2</td>]]></COLUMN_LOCK_VALUE>
-<COLUMN_NAME_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug"><a href="#" class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA[">]]><PROCESS>NAME_VALUE</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_VALUE>
+<COLUMN_LOCK_VALUE><PROCESS>LOCK_VALUE</PROCESS></COLUMN_LOCK_VALUE>
+<COLUMN_LOCK_VALUE_NOLOCK><![CDATA[<td>no</td>]]></COLUMN_LOCK_VALUE_NOLOCK>
+<COLUMN_LOCK_VALUE_OWN><![CDATA[<td valign=bottom><img src="]]><METHOD name="picsUrl">ic_lock.gif</METHOD><![CDATA[" border=0 width=16 height=16</td>]]></COLUMN_LOCK_VALUE_OWN>
+<COLUMN_NAME_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug"><a href="]]><PROCESS>LINK_VALUE</PROCESS><![CDATA[" class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA[">]]><PROCESS>NAME_VALUE</PROCESS><![CDATA[</a></p></td>]]></COLUMN_NAME_VALUE>
 <COLUMN_TITLE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TITLE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TITLE_VALUE>
-<COLUMN_TYPE_VALUE><![CDATA[<td>5</td>]]></COLUMN_TYPE_VALUE>
+<COLUMN_TYPE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>TYPE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_TYPE_VALUE>
 <COLUMN_CHANGED_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>CHANGED_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_CHANGED_VALUE>
 <COLUMN_SIZE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>SIZE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_SIZE_VALUE>
-<COLUMN_STATE_VALUE><![CDATA[<td>8</td>]]></COLUMN_STATE_VALUE>
+<COLUMN_STATE_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>STATE_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_STATE_VALUE>
 <COLUMN_OWNER_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>OWNER_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_OWNER_VALUE>
 <COLUMN_GROUP_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>GROUP_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_GROUP_VALUE>
 <COLUMN_ACCESS_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>ACCESS_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_ACCESS_VALUE>
-<COLUMN_LOCKED_VALUE><![CDATA[<td>12</td>]]></COLUMN_LOCKED_VALUE>
+<COLUMN_LOCKED_VALUE><![CDATA[<td valign=bottom nowrap class="]]><PROCESS>OUTPUT_CLASS</PROCESS><![CDATA["><p class="einzug">]]><PROCESS>LOCKED_VALUE</PROCESS><![CDATA[</p></td>]]></COLUMN_LOCKED_VALUE>
 
 </WORKPLACE>

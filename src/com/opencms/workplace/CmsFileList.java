@@ -15,7 +15,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/02/01 08:19:58 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/01 17:30:40 $
  */
 public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                 I_CmsConstants{    
@@ -52,17 +52,26 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
     /** The locked column*/
     private final static String C_COLUMN_LOCKED="COLUMN_LOCKED";
 
-    /** Thestylesheet class to be used for a file or folder entry */
+    /** The stylesheet class to be used for a file or folder entry */
     private final static String C_CLASS_VALUE="OUTPUT_CLASS";
+    
+    /** The link for a file or folder entry */
+    private final static String C_LINK_VALUE="LINK_VALUE";    
     
     /** The suffic for file list values */
     private final static String C_SUFFIX_VALUE="_VALUE";
 
+    /** The lock value column */
+    private final static String C_LOCK_VALUE="LOCK_VALUE";
+    
     /** The name value column */
     private final static String C_NAME_VALUE="NAME_VALUE";
     
     /** The title value column */
     private final static String C_TITLE_VALUE="TITLE_VALUE";
+    
+    /** The type value column */
+    private final static String C_TYPE_VALUE="TYPE_VALUE";
   
     /** The changed value column */
     private final static String C_CHANGED_VALUE="CHANGED_VALUE";
@@ -70,11 +79,35 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
     /** The size value column */
     private final static String C_SIZE_VALUE="SIZE_VALUE";
 
+    /** The state value column */
+    private final static String C_STATE_VALUE="STATE_VALUE";
+    
     /** The owner value column */
     private final static String C_OWNER_VALUE="OWNER_VALUE";
 
     /** The group value column */
     private final static String C_GROUP_VALUE="GROUP_VALUE";
+
+    /** The access value column */
+    private final static String C_ACCESS_VALUE="ACCESS_VALUE";
+
+    /** The access value column */
+    private final static String C_LOCKED_VALUE="LOCKED_VALUE";
+    
+    /** The style for unchanged files or folders */
+    private final static String C_STYLE_UNCHANGED="dateingeaendert";
+
+    /** The style for files or folders not in project*/
+    private final static String C_STYLE_NOTINPROJECT="dateintproject";
+    
+    /** The style for new files or folders */
+    private final static String C_STYLE_NEW="dateineu";
+    
+    /** The style for deleted files or folders */
+    private final static String C_STYLE_DELETED="dateigeloescht";
+    
+    /** The style for changed files or folders */
+    private final static String C_STYLE_CHANGED="dateigeaendert";
     
     /**
    * Overwrites the getContent method of the CmsWorkplaceDefault.<br>
@@ -106,6 +139,7 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
             
             //get the template
             CmsXmlWpTemplateFile template=(CmsXmlWpTemplateFile)doc;
+            CmsXmlLanguageFile lang=template.getLanguageFile();
             
             // vectors to store all files and folders in the current folder.
             Vector files;
@@ -155,34 +189,50 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
             enum=files.elements();
             while (enum.hasMoreElements()) {
                 file=(CmsFile)enum.nextElement();
-                //set the output style class according to the project and state of the file
-                // HACK
-                template.setXmlData(C_CLASS_VALUE,"dateingeaendert");        
+    
+                
+                // Set output style class according to the project and state of the file.
+                template.setXmlData(C_CLASS_VALUE,getStyle(cms,file));        
+                // set the lock icon if nescessary
+                template.setXmlData(C_LOCK_VALUE,template.getProcessedXmlDataValue(getLock(cms,file,template,lang),this));  
                 
                 // set the filename
                 template.setXmlData(C_NAME_VALUE,file.getName());     
+                // set the link
+                template.setXmlData(C_LINK_VALUE,file.getName());    
                 // set the file title
                 String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
                 if (title==null) {
                     title="";
                 }
                 template.setXmlData(C_TITLE_VALUE,title);   
-                // set the file type
-                // todo
+                // set the file type 
+                A_CmsResourceType type=cms.getResourceType(file.getType());
+                template.setXmlData(C_TYPE_VALUE,type.getResourceName());   
                 // get the file date
                 long time=file.getDateLastModified();
                 template.setXmlData(C_CHANGED_VALUE,getNiceDate(time));   
                 // get the file size
                 template.setXmlData(C_SIZE_VALUE,new Integer(file.getLength()).toString());   
                 // get the file state
-                // todo
+                template.setXmlData(C_STATE_VALUE,getState(cms,file,lang));  
                 // get the owner of the file
                 A_CmsUser owner = cms.readOwner(file);
                 template.setXmlData(C_OWNER_VALUE,owner.getName());
                 // get the group of the file
                 A_CmsGroup group = cms.readGroup(file);
                 template.setXmlData(C_GROUP_VALUE,group.getName());
-                
+                // get the access flags
+                int access=file.getAccessFlags();
+                template.setXmlData(C_ACCESS_VALUE,getAccessFlags(access));
+                // get the locked by
+                int lockedby = file.isLockedBy();
+                if (lockedby == C_UNKNOWN_ID) {
+                    template.setXmlData(C_LOCKED_VALUE,"");
+                } else {
+                    template.setXmlData(C_LOCKED_VALUE,cms.lockedBy(file.getAbsolutePath()).getName());
+                }
+                    
                 // as a last step, check which colums must be displayed and add the file
                 // to the output.
                 template=checkDisplayedColumns(filelist,template,C_SUFFIX_VALUE);
@@ -268,6 +318,132 @@ public class CmsFileList extends CmsWorkplaceDefault implements I_CmsWpConstants
          niceTime.append(hour+":");
          niceTime.append(minute);
          return niceTime.toString();
+     }
+     
+      /**
+      * Gets a formated access right string form a int access value.
+      * @param time The access value as an int.
+      * @return Formated access right string.
+      */
+     private String getAccessFlags(int access) {
+         StringBuffer accessFlags=new StringBuffer();
+         if ((access & C_ACCESS_OWNER_READ) > 0){
+             accessFlags.append("r");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_OWNER_WRITE) > 0){
+             accessFlags.append("w");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_OWNER_VISIBLE) > 0){
+             accessFlags.append("v");
+         } else {
+             accessFlags.append("-");
+         }
+          if ((access & C_ACCESS_GROUP_READ) > 0){
+             accessFlags.append("r");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_GROUP_WRITE) > 0){
+             accessFlags.append("w");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_GROUP_VISIBLE) > 0){
+             accessFlags.append("v");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_PUBLIC_READ) > 0){
+             accessFlags.append("r");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_PUBLIC_WRITE) > 0){
+             accessFlags.append("w");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_PUBLIC_VISIBLE) > 0){
+             accessFlags.append("v");
+         } else {
+             accessFlags.append("-");
+         }
+         if ((access & C_ACCESS_INTERNAL_READ) > 0){
+             accessFlags.append("v");
+         } else {
+             accessFlags.append("-");
+         }
+         return accessFlags.toString();
+     }
+
+     /**
+     * Gets a formated file state string for a entry in the file list.
+     * @param cms The CmsObject.
+     * @param file The CmsResource displayed in the the file list.
+     * @param lang The content definition language file.
+     * @return Formated state string.
+     */
+     private String getState(A_CmsObject cms, CmsResource file,CmsXmlLanguageFile lang)
+         throws CmsException {
+         StringBuffer output=new StringBuffer();
+         
+         if (file.inProject(cms.getRequestContext().currentProject())) {
+            int state=file.getState();
+            output.append(lang.getLanguageValue("explorer.state"+state));
+         } else {
+            output.append(lang.getLanguageValue("explorer.statenip"));
+         }
+         return output.toString();
+     }
+     
+     
+     /**
+     * Select which lock icon (if nescessary) is selected for a entry in the file list.
+     * @param cms The CmsObject.
+     * @param file The CmsResource displayed in the the file list.
+     * @param template The file list template
+     * @param lang The content definition language file.
+     * @return HTML code for selecting a lock icon.
+     */
+     private String getLock(A_CmsObject cms, CmsResource file,CmsXmlWpTemplateFile template,
+                                              CmsXmlLanguageFile lang)
+         throws CmsException {
+         StringBuffer output = new StringBuffer();
+         output.append("COLUMN_LOCK_VALUE_OWN");
+         return output.toString();
+     }
+     
+     
+     /**
+     * Gets the style for a entry in the file list.
+     * @param cms The CmsObject.
+     * @param file The CmsResource displayed in the the file list.
+     * @return The style used for the actual entry.
+     */
+     private String getStyle(A_CmsObject cms, CmsResource file) {
+         StringBuffer output=new StringBuffer();
+         // check if the resource is in the actual project
+         if (file.inProject(cms.getRequestContext().currentProject())) {
+            int style=file.getState();
+            switch (style) {
+            case 0: output.append(C_STYLE_UNCHANGED);
+                     break;
+            case 1: output.append(C_STYLE_CHANGED);
+                     break; 
+            case 2: output.append(C_STYLE_NEW);
+                     break;
+            case 3: output.append(C_STYLE_DELETED);
+                     break;
+            default: output.append(C_STYLE_UNCHANGED);
+            }
+         } else {
+            output.append(C_STYLE_NOTINPROJECT);
+         }
+         return output.toString();
      }
      
      

@@ -427,7 +427,7 @@ a:hover.treefoldernip
 }
 
 /* styles for the filelist					*/
-TD.dateingeandert
+TD.dateingeaendert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
@@ -459,19 +459,19 @@ TD.dateintprojekt
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a.dateingeandert
+a.dateingeaendert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a:visited.dateingeandert
+a:visited.dateingeaendert
 {
     COLOR: black;
     FONT-FAMILY: MS Sans Serif, Arial, helvetica, sans-serif;
     FONT-SIZE: 8pt;
 }
-a:hover.dateingeandert
+a:hover.dateingeaendert
 {
     BACKGROUND-COLOR: #000066;
 	COLOR: white;
