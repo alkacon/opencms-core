@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImport.java,v $
-* Date   : $Date: 2002/10/18 16:54:59 $
-* Version: $Revision: 1.56 $
+* Date   : $Date: 2002/11/05 10:07:44 $
+* Version: $Revision: 1.57 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import source.org.apache.java.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.56 $ $Date: 2002/10/18 16:54:59 $
+ * @version $Revision: 1.57 $ $Date: 2002/11/05 10:07:44 $
  */
 public class CmsImport implements I_CmsConstants, Serializable {
 
@@ -113,6 +113,11 @@ public class CmsImport implements I_CmsConstants, Serializable {
      * The object to report the log-messages.
      */
     private I_CmsReport m_report = null;
+    
+    /**
+     * 
+     */
+    private boolean m_modified = false;
 
     /**
      * This constructs a new CmsImport-object which imports the resources.
@@ -468,6 +473,8 @@ private void importResource(String source, String destination, String type, Stri
     try {
         if (source != null){
             content = getFileBytes(source);
+            // change the filecontent for encoding if necessary
+            content = convertFile(source, content);
         }
         // set invalid files to type compatible_plain
         type = fitFileType(m_importPath + destination, content, type, properties);
@@ -840,5 +847,109 @@ private boolean inExcludeList(Vector excludeList, String path) {
                 m_report.addSeperator(0);
             }
         }
+    }
+    
+	// 
+	// content replacement tool
+	// by Andreas Zahner
+	//
+	/**
+	 * Converts the content of a file
+	 * 
+	 * @param filename The name of the file to convert
+	 * @param byteContent The content of the file
+	 * @return byte[] The converted filecontent
+	 */
+	private byte[] convertFile(String filename, byte[] byteContent){
+    	byte[] returnValue = byteContent;
+      	// set modification flag and path Strings
+        m_modified = false;
+        // get content of the file and store it in String
+        String fileContent = new String(byteContent);
+
+        // check the frametemplates
+        if (filename.indexOf("frametemplates")!=-1) {
+          	fileContent = scanFrameTemplate(fileContent);
+        }
+        // set encoding of xml files
+        fileContent = setEncoding(fileContent, OpenCms.getDefaultEncoding());
+        // create output file if content has changed
+	    if(m_modified){
+	    	returnValue = fileContent.getBytes();
+	    }
+	    return returnValue;
+
+	}	
+    
+    /** scans the given content of frametemplate and returns the result
+     *
+     * @param content The filecontent
+     * @return String with new content
+     */
+    private String scanFrameTemplate(String content) {
+        // no Meta-Tag present, insert it!
+        if (content.toLowerCase().indexOf("http-equiv=\"content-type\"")==-1) {
+            content = replaceString(content,"</head>","<meta http-equiv=\"content-type\" content=\"text/html; charset=]]><method name=\"getEncoding\"/><![CDATA[\">\n</head>");
+        }
+        // Meta-Tag present
+        else {
+            String fileStart = content.substring(0,content.toLowerCase().indexOf("charset=")+8);
+            String editContent = content.substring(content.toLowerCase().indexOf("charset="));
+            editContent = editContent.substring(editContent.indexOf("\""));
+            String newEncoding = "]]><method name=\"getEncoding\"/><![CDATA[";
+            content = fileStart + newEncoding + editContent;
+        }
+        m_modified = true;
+        return content;
+    }
+    
+    /** sets the right encoding and returns the result
+     * 
+     * @param content The filecontent
+     * @param encoding The encoding to use
+     * @return String with new content
+     */
+    private String setEncoding(String content, String encoding) {
+        if (content.toLowerCase().indexOf("<?xml") == -1) {        
+            return content;        
+        }
+        // XML information present, replace encoding
+        else {
+        	// set the encoding only if it does not exist
+        	String xmlTag = content.substring(0,content.indexOf(">")+1);
+        	if(xmlTag.toLowerCase().indexOf("encoding") == -1){
+            	content = content.substring(content.indexOf(">")+1);
+            	content = "<?xml version=\"1.0\" encoding=\""+encoding+"\"?>" + content; 
+            	m_modified = true;
+        	}
+        }       
+        return content;
+    }
+    
+    /**
+     * Method to replace a subString with replaceItem.
+     * @param testString the original String
+     * @param searchString the subString that has to be replaced
+     * @param replaceItem the String that replaces searchString
+     * @return String with replaced subStrings
+     */
+    protected static String replaceString(String testString, String searchString, String replaceItem) {
+    	/* if searchString isn't in testString, return (better performance) */
+        if (testString.toLowerCase().indexOf(searchString.toLowerCase()) == -1) {
+        	return testString;
+        }
+        int tempIndex = 0;
+        int searchLen = searchString.length();
+        int searchIndex = testString.toLowerCase().indexOf(searchString.toLowerCase());
+        StringBuffer returnString = new StringBuffer(testString.length());
+        while (searchIndex != -1) {
+            returnString.append(testString.substring(0,searchIndex));
+            returnString.append(replaceItem);
+            tempIndex = searchIndex+searchLen;
+            testString = testString.substring(tempIndex);
+            searchIndex = testString.toLowerCase().indexOf(searchString.toLowerCase());
+        }
+        returnString.append(testString);
+        return returnString.toString();
     }
 }
