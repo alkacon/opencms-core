@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/04/07 07:38:06 $
- * Version: $Revision: 1.352 $
+ * Date   : $Date: 2004/04/13 11:37:16 $
+ * Version: $Revision: 1.353 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.352 $ $Date: 2004/04/07 07:38:06 $
+ * @version $Revision: 1.353 $ $Date: 2004/04/13 11:37:16 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -5100,7 +5100,8 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 m_projectDriver.publishProject(context, report, readProject(I_CmsConstants.C_PROJECT_ONLINE_ID), publishList, OpenCms.getSystemInfo().isVersionHistoryEnabled(), tagId, maxVersions);
 
                 // don't publish COS module data if a file/folder gets published directly
-                if (!publishList.isDirectPublish()) {
+                // or if the current project is a temporary project (e.g. for a module import)
+                if (!publishList.isDirectPublish() && context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
                     // now publish the module masters
                     Vector publishModules = new Vector();
                     cms.getRegistry().getModulePublishables(publishModules, null);
