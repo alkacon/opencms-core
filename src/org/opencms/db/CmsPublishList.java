@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2004/05/24 17:20:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/13 23:32:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * creates Cms publish lists.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $ $Date: 2004/05/24 17:20:18 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/13 23:32:06 $
  * @since 5.3.0
  * @see org.opencms.db.CmsDriverManager#getPublishList(org.opencms.file.CmsRequestContext, CmsResource, boolean, org.opencms.report.I_CmsReport)
  */
@@ -124,7 +124,7 @@ public class CmsPublishList extends Object {
      * @param resource a deleted Cms folder resource
      * @throws IllegalArgumentException if the specified resource is not a folder or not deleted
      */
-    protected void addDeletedFolder(CmsResource resource) {
+    protected void addDeletedFolder(CmsResource resource) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -145,7 +145,7 @@ public class CmsPublishList extends Object {
      * @param list a list with deleted Cms folder resources to be added to this publish list
      * @throws IllegalArgumentException if one of the resources is not a folder or not deleted
      */
-    protected void addDeletedFolders(List list) {
+    protected void addDeletedFolders(List list) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         Iterator i = list.iterator();
@@ -160,7 +160,7 @@ public class CmsPublishList extends Object {
      * @param resource a new/changed/deleted Cms file resource
      * @throws IllegalArgumentException if the specified resource is not a file or unchanged
      */
-    protected void addFile(CmsResource resource) {
+    protected void addFile(CmsResource resource) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         if (resource.getType() == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -181,7 +181,7 @@ public class CmsPublishList extends Object {
      * @param list a list with new/changed/deleted Cms file resources to be added to this publish list
      * @throws IllegalArgumentException if one of the resources is not a file or unchanged
      */
-    protected void addFiles(List list) {
+    protected void addFiles(List list) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         Iterator i = list.iterator();
@@ -196,7 +196,7 @@ public class CmsPublishList extends Object {
      * @param resource a new/changed Cms folder resource
      * @throws IllegalArgumentException if the specified resource is not a folder or unchanged
      */
-    protected void addFolder(CmsResource resource) {
+    protected void addFolder(CmsResource resource) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         if (resource.getType() != CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
@@ -217,7 +217,7 @@ public class CmsPublishList extends Object {
      * @param list a list with new/changed Cms folder resources to be added to this publish list
      * @throws IllegalArgumentException if one of the resources is not a folder or unchanged
      */
-    protected void addFolders(List list) {
+    protected void addFolders(List list) throws IllegalArgumentException {
         // it is essential that this method is only visible within the db package!
 
         Iterator i = list.iterator();

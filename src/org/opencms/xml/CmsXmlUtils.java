@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2004/06/10 19:36:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:43:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.dom4j.util.XMLErrorHandler;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -56,11 +57,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 
 /**
- * Provides some basix XML handling utilities.<p>
+ * Provides some basic XML handling utilities.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3.5
  */
 public final class CmsXmlUtils {
@@ -104,14 +105,15 @@ public final class CmsXmlUtils {
      * 
      * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
      * 
-     * @param xmlData the xml data in a byte array
+     * @param xmlData the XML data in a byte array
+     * @param resolver the XML entitiy resolver to use
      * @return the base object initialized with the unmarshalled XML document
      * @throws CmsXmlException if something goes wrong
-     * @see CmsXmlUtils#unmarshalHelper(InputSource)
+     * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
      */
-    public static Document unmarshalHelper(byte[] xmlData) throws CmsXmlException {
+    public static Document unmarshalHelper(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
         
-        return CmsXmlUtils.unmarshalHelper(new InputSource(new ByteArrayInputStream(xmlData)));
+        return CmsXmlUtils.unmarshalHelper(new InputSource(new ByteArrayInputStream(xmlData)), resolver);
     }
 
     /**
@@ -123,16 +125,19 @@ public final class CmsXmlUtils {
      * the XML parser will do this on the base of the information in the source String.
      * The encoding is used for initializing the created instance of the document,
      * which means it will be used when marshalling the document again later.<p>
-     * @param source the xml data input source
      *  
+     * @param source the XML input source to use
+     * @param resolver the XML entitiy resolver to use
      * @return the unmarshalled XML document
      * @throws CmsXmlException if something goes wrong
      */    
-    public static Document unmarshalHelper(InputSource source) throws CmsXmlException {
+    public static Document unmarshalHelper(InputSource source, EntityResolver resolver) throws CmsXmlException {
     
         try {
             SAXReader reader = new SAXReader();
-            reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
+            if (resolver != null) {
+                reader.setEntityResolver(resolver);
+            }
             reader.setMergeAdjacentText(true);
             return reader.read(source);
         } catch (DocumentException e) {
@@ -146,13 +151,14 @@ public final class CmsXmlUtils {
      * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
      * 
      * @param xmlData the xml data in a String 
+     * @param resolver the XML entitiy resolver to use
      * @return the base object initialized with the unmarshalled XML document
      * @throws CmsXmlException if something goes wrong
-     * @see CmsXmlUtils#unmarshalHelper(InputSource)
+     * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
      */
-    public static Document unmarshalHelper(String xmlData) throws CmsXmlException {  
+    public static Document unmarshalHelper(String xmlData, EntityResolver resolver) throws CmsXmlException {  
         
-        return CmsXmlUtils.unmarshalHelper(new InputSource(new StringReader(xmlData)));
+        return CmsXmlUtils.unmarshalHelper(new InputSource(new StringReader(xmlData)), resolver);
     }
     
     /**
@@ -166,9 +172,10 @@ public final class CmsXmlUtils {
      * @param xmlData a byte array containing a XML document that should be validated (optional)
      * @param document a XML document that should be validated (optional)
      * @param encoding the encoding to use when marshalling the XML document (required)
+     * @param resolver the XML entitiy resolver to use
      * @throws CmsXmlException if the validation fails
      */    
-    public static void validateXmlStructure(byte[] xmlData, Document document, String encoding) throws CmsXmlException  {
+    public static void validateXmlStructure(byte[] xmlData, Document document, String encoding, EntityResolver resolver) throws CmsXmlException  {
 
         XMLReader reader;
         try {
@@ -209,8 +216,10 @@ public final class CmsXmlUtils {
         XMLErrorHandler errorHandler = new XMLErrorHandler();
         reader.setErrorHandler(errorHandler);
         
-        // set the resolver for the "opencms://" URIs
-        reader.setEntityResolver(CmsXmlEntityResolver.getResolver());
+        if (resolver != null) { 
+            // set the resolver for the "opencms://" URIs
+            reader.setEntityResolver(resolver);
+        }
         
         try {
             if (xmlData == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2004/03/04 11:33:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:31:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ public class CmsConfigurationException extends CmsException {
     }        
     
     /**
-     * Returns the exception description message<p>
+     * Returns the exception description message.<p>
      *
      * @return the exception description message
      */

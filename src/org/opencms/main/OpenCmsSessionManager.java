@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/OpenCmsSessionManager.java,v $
- * Date   : $Date: 2003/11/12 11:33:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,16 +38,16 @@ import javax.servlet.http.HttpSessionListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1
  */
 public class OpenCmsSessionManager implements HttpSessionListener {
 
     /** counter for the active sessions */
-    private static int m_totalSessions = 0;
+    private static int m_totalSessions;
     
     /** counter for all sessions created so far */
-    private static int m_currentSessions = 0;
+    private static int m_currentSessions;
     
     /**
      * Returns the number of active sessions.<p>

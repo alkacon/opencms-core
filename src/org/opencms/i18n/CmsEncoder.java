@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2004/06/08 08:46:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/13 23:33:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ public final class CmsEncoder {
     private static Map m_encodingCache = new HashMap(16);
 
     /**
-     * Constructor
+     * Constructor.<p>
      */
     private CmsEncoder() {
         // empty
@@ -92,7 +92,7 @@ public final class CmsEncoder {
      * @param encoding the charset to encode the result with
      * @return the input with the decoded/encoded HTML entities
      */
-    public static final String adjustHtmlEncoding(String input, String encoding) {
+    public static String adjustHtmlEncoding(String input, String encoding) {
         return encodeHtmlEntities(decodeHtmlEntities(input, encoding), encoding);
     }
     
@@ -131,7 +131,7 @@ public final class CmsEncoder {
      * @param encoding the encoding scheme to use for decoding the bytes
      * @return the bytes decoded to a String
      */
-    public static final String createString(byte[] bytes, String encoding) {
+    public static String createString(byte[] bytes, String encoding) {
         if (encoding.intern() != OpenCms.getSystemInfo().getDefaultEncoding()) {
             encoding = lookupEncoding(encoding, null);
         }
@@ -211,7 +211,7 @@ public final class CmsEncoder {
      * @return the input with the decoded HTML entities
      * @see #encodeHtmlEntities(String, String)
      */
-    public static final String decodeHtmlEntities(String input, String encoding) {
+    public static String decodeHtmlEntities(String input, String encoding) {
                 
         Matcher matcher = C_ENTITIY_PATTERN.matcher(input);        
         StringBuffer result = new StringBuffer(input.length());
@@ -510,7 +510,7 @@ public final class CmsEncoder {
      * 
      * @param encoding the encoding to check and resolve
      * @param fallback the fallback encoding scheme
-     * @return
+     * @return the resolved encoding name, or the fallback value
      */
     public static String lookupEncoding(String encoding, String fallback) {
         

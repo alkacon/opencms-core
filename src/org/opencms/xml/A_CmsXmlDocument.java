@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2004/06/10 19:36:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:43:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dom4j.Document;
+import org.xml.sax.EntityResolver;
 
 /**
  * Provides basic XML document handling functions useful when dealing
@@ -50,30 +51,30 @@ import org.dom4j.Document;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3.5
  */
 public abstract class A_CmsXmlDocument {
 
-    /** Reference for named elements in the document */
+    /** Reference for named elements in the document. */
     protected Map m_bookmarks;
     
-    /** The document object of the document */
+    /** The document object of the document. */
     protected Document m_document;
     
-    /** Maps element names to available locales */
+    /** Maps element names to available locales. */
     protected Map m_elementLocales;
     
-    /** Maps locales to avaliable element names */
+    /** Maps locales to avaliable element names. */
     protected Map m_elementNames;
     
-    /** The encoding to use for this xml document */
+    /** The encoding to use for this xml document. */
     protected String m_encoding;
     
-    /** The file that contains the document data (note: is not set when creating an empty or document based document) */
+    /** The file that contains the document data (note: is not set when creating an empty or document based document). */
     protected CmsFile m_file;
     
-    /** Set of locales contained in this document */
+    /** Set of locales contained in this document. */
     protected Set m_locales;
 
     /**
@@ -186,16 +187,17 @@ public abstract class A_CmsXmlDocument {
      * This is required in case someone modifies the xml structure of a  
      * document using the "edit control code" option.<p>
      * 
+     * @param resolver the XML entitiy resolver to use
      * @throws CmsXmlException if the validation fails
      */    
-    public void validateXmlStructure() throws CmsXmlException {
+    public void validateXmlStructure(EntityResolver resolver) throws CmsXmlException {
 
         byte[] xmlData = null;
         if (m_file != null) {
             // file is set, use bytes from file directly
             xmlData = m_file.getContents();
         }
-        CmsXmlUtils.validateXmlStructure(xmlData, m_document, getEncoding());
+        CmsXmlUtils.validateXmlStructure(xmlData, m_document, getEncoding(), resolver);
     }
     
     
@@ -262,12 +264,13 @@ public abstract class A_CmsXmlDocument {
     protected abstract void initBookmarks();
 
     /**
-     * Initializes an A_CmsXmlDocument based on the provided document and encoding
+     * Initializes an A_CmsXmlDocument based on the provided document and encoding.<p>
      * 
      * @param document the base XML document to use for initializing
      * @param encoding the encoding to use when marshalling the document later
+     * @param resolver the XML entitiy resolver to use
      */    
-    protected abstract void initDocument(Document document, String encoding);
+    protected abstract void initDocument(Document document, String encoding, EntityResolver resolver);
 
     /**
      * Marshals (writes) the content of the current XML document 

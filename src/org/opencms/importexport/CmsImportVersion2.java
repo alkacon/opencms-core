@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2004/06/10 19:37:27 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2004/06/13 23:33:38 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,9 +65,9 @@ import org.dom4j.Node;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
- * the import version 2.</p>
+ * the import version 2.<p>
  * 
- * This import format was used in OpenCms 5.0.0 - 5.1.2.</p>
+ * This import format was used in OpenCms 5.0.0 - 5.1.2.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2004/06/11 19:22:18 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2004/06/13 23:38:13 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * @since FLEX alpha 1
  * 
  * @see I_CmsResourceLoader
@@ -137,7 +137,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
     /** Flag to indicate if error pages are mared a "commited" */
     // TODO: This is a hack, investigate this issue with different runtime environments
-    private boolean m_errorPagesAreNotCommited = false; // should work for Tomcat 4.1
+    private boolean m_errorPagesAreNotCommited; // default false should work for Tomcat > 4.1
 
     /**
      * The constructor of the class is empty, the initial instance will be 
@@ -264,7 +264,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
 
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for JSP"</code>
+     * which is <code>"The OpenCms default resource loader for JSP".</code>
      * 
      * @return a describing String for the ResourceLoader 
      */
@@ -467,6 +467,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
                         if (isWorkplaceUser) {
+                            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
                             res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
                         } else {
                             // set date last modified header                        
@@ -596,7 +597,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * Parses the JSP content for the special &lt;%@cms file="..." %&gt; tag.<p>
+     * Parses the JSP content for the special <code>&lt;%cms file="???" %&gt;</code> tag.<p>
      * 
      * @param content the JSP content to parse
      * @param controller the current JSP controller
@@ -688,7 +689,7 @@ public class CmsJspLoader implements I_CmsResourceLoader {
     }
     
     /**
-     * Parses the JSP content for the  &lt;%@page pageEncoding="..." %&gt; tag
+     * Parses the JSP content for the  <code>&lt;%page pageEncoding="???" %&gt;</code> tag
      * and ensures that the JSP page encoding is set according to the OpenCms 
      * "content-encoding" property value of the JSP.<p>
      * 

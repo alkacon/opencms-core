@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2004/06/08 15:19:25 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2004/06/13 23:39:09 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.map.LRUMap;
 /**
  * Monitors OpenCms memory consumtion.<p>
  * 
- * @version $Revision: 1.27 $ $Date: 2004/06/08 15:19:25 $
+ * @version $Revision: 1.28 $ $Date: 2004/06/13 23:39:09 $
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -83,7 +83,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
     /** max depth for object size recursion */
     private static final int C_MAX_DEPTH = 5;
 
-    private static boolean m_currentlyRunning = false;
+    private static boolean m_currentlyRunning;
     
     /** receivers fro status emails */
     private String[] m_emailReceiver;
@@ -517,7 +517,7 @@ public class CmsMemoryMonitor implements I_CmsCronJob {
         return 8;
     }
     
-    /**a
+    /**
      * @see org.opencms.cron.I_CmsCronJob#launch(org.opencms.file.CmsObject, java.lang.String)
      */
     public String launch(CmsObject cms, String params) throws Exception {

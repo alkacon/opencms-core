@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsExcelExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:39:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.InputStream;
 public class CmsExcelExtractor {
         
         /**
-         * Constructor
+         * Constructor.<p>
          */
         public CmsExcelExtractor() {
             // empty
@@ -101,7 +101,7 @@ public class CmsExcelExtractor {
          */
         // This should really be made 'static' and moved into a utility class,
         // included here to simplify things
-        private final String replace(String line, String oldString, String newString) {
+        private String replace(String line, String oldString, String newString) {
             if (line == null) {
                 return null;
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2004/06/07 15:49:49 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2004/06/13 23:40:15 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.map.LRUMap;
  * to the file system.<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -93,10 +93,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public static final String C_EXPORT_DEFAULT_FILE = "index_export.html";
 
     /** Flag value for links without paramerters */
-    public static int C_EXPORT_LINK_WITH_PARAMETER = 1;
+    public static final int C_EXPORT_LINK_WITH_PARAMETER = 2;
 
     /** Flag value for links without paramerters */
-    public static int C_EXPORT_LINK_WITHOUT_PARAMETER = 0;
+    public static final int C_EXPORT_LINK_WITHOUT_PARAMETER = 1;
 
     /** Marker for externally redirected 404 uri's */
     public static final String C_EXPORT_MARKER = "exporturi";
@@ -629,7 +629,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a cached vfs resource name for the given rfs name
+     * Returns a cached vfs resource name for the given rfs name.<p>
      * 
      * @param rfsName the name of the ref resource to get the cached vfs resource name for
      * @return a cached vfs resource name for the given rfs name, or null 
@@ -640,7 +640,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a cached link for the given vfs name
+     * Returns a cached link for the given vfs name.<p>
      * 
      * @param vfsName the name of the vfs resource to get the cached link for
      * @return a cached link for the given vfs name, or null 

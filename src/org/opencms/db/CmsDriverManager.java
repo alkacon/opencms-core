@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.378 $
+ * Date   : $Date: 2004/06/13 23:32:05 $
+ * Version: $Revision: 1.379 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.378 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.379 $ $Date: 2004/06/13 23:32:05 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -88,12 +88,12 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         /**
          * Name of the object
          */
-        public String m_name = null;
+        public String m_name;
         
         /**
          * Id of the object
          */
-        public CmsUUID m_uuid = null;
+        public CmsUUID m_uuid;
 
         /**
          * Creates a new CacheId for a CmsGroup.<p>
@@ -963,6 +963,9 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 throw new CmsResourceNotFoundException("[" + this.getClass().getName() + "] not found " + resource.getName());
             case 1:
                 throw new CmsSecurityException("[" + this.getClass().getName() + "] denied access to resource " + resource.getName() + ", required permissions are " + requiredPermissions.getPermissionString() + " (required one)", CmsSecurityException.C_SECURITY_NO_PERMISSIONS);
+            default:
+                throw new CmsException("[" + this.getClass().getName() + "] invalid permission switch used");
+                
         }
     }
 
@@ -2220,7 +2223,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
      * @throws CmsException if operation was not succesful.
      */
     public void deleteFile(CmsRequestContext context, String filename, int deleteOption) throws CmsException {
-        List resources = new ArrayList();
+        List resources;
         CmsResource currentResource = null;
         CmsLock currentLock = null;
         CmsResource resource = null;
@@ -2240,10 +2243,11 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
 
         // if selected, add all links pointing to this resource to the list of files that get deleted/removed  
         if (deleteOption == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+            resources = new ArrayList();
             resources.addAll(readSiblings(context, filename, CmsResourceFilter.ALL));
         } else {
             // add the resource itself to the list of all resources that get deleted/removed
-            resources.add(resource);
+            resources = Collections.singletonList(resource);
         }
 
         // ensure that each link pointing to the resource is unlocked or locked by the current user
@@ -2397,8 +2401,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
         clearAccessControlListCache();
         clearResourceCache();
 
-        List resources = new ArrayList();
-        resources.add(cmsFolder);
+        List resources = Collections.singletonList(cmsFolder);
         OpenCms.fireCmsEvent(new CmsEvent(new CmsObject(), I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap("resources", resources)));
     }
 
@@ -3914,7 +3917,7 @@ public class CmsDriverManager extends Object implements I_CmsEventListener {
                 permissions.setPermissions(
                     // modify permissions so that view is allowed
                     permissions.getAllowedPermissions() | I_CmsConstants.C_PERMISSION_VIEW,
-                    permissions.getDeniedPermissions() &~ I_CmsConstants.C_PERMISSION_VIEW
+                    permissions.getDeniedPermissions() & ~I_CmsConstants.C_PERMISSION_VIEW
                 );
             }
         }            

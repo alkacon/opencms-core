@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/threads/Attic/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2004/02/25 14:12:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/13 23:40:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1.10
  */
 public class CmsModuleReplaceThread extends A_CmsReportThread {
@@ -60,7 +60,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     private int m_phase;
     private Vector m_projectFiles;
     private CmsRegistry m_registry;
-    private String m_reportContent = null;
+    private String m_reportContent;
     private String m_zipName;
 
     /**

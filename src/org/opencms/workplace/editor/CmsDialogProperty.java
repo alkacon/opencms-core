@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/04/28 22:34:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2004/06/13 23:42:47 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,14 +60,14 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 5.3.0
  */
 public class CmsDialogProperty extends CmsPropertyCustom {
     
     /** Flag indicating if the template property was changed */
-    private boolean m_templateChanged = false;
+    private boolean m_templateChanged;
     
     /**
      * Public constructor with JSP action element.<p>

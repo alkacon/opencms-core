@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2004/02/17 12:09:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/13 23:39:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.TreeMap;
  * <li>contentdefinition - the name of the content definition class of a cos resource</li>
  * </ul>
  * 
- * @version $Revision: 1.4 $ $Date: 2004/02/17 12:09:57 $
+ * @version $Revision: 1.5 $ $Date: 2004/06/13 23:39:26 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -88,7 +88,7 @@ public class CmsSearch {
     Exception m_exc;
     
     /** The current result page */
-    int m_page = 0;
+    int m_page;
     
     /** The number of matches per page  */
     int m_matchesPerPage = -1;

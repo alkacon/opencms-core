@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2004/06/10 19:37:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/13 23:43:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.DocumentType;
 import org.dom4j.Element;
+import org.xml.sax.EntityResolver;
 
 /**
  * Implementation of a page object used to access and manage xml data.<p>
@@ -74,59 +75,59 @@ import org.dom4j.Element;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class CmsXmlPage extends A_CmsXmlDocument {
     
-    /** Name of the name attribute of the elements node */
+    /** Name of the name attribute of the elements node. */
     private static final String C_ATTRIBUTE_ENABLED = "enabled";    
 
-    /** Name of the internal attribute of the link node */
+    /** Name of the internal attribute of the link node. */
     private static final String C_ATTRIBUTE_INTERNAL = "internal";
 
-    /** Name of the language attribute of the elements node */
+    /** Name of the language attribute of the elements node. */
     private static final String C_ATTRIBUTE_LANGUAGE = "language";
 
-    /** Name of the name attribute of the elements node */
+    /** Name of the name attribute of the elements node. */
     private static final String C_ATTRIBUTE_NAME = "name";
 
-    /** Name of the type attribute of the elements node */
+    /** Name of the type attribute of the elements node. */
     private static final String C_ATTRIBUTE_TYPE = "type";
     
-    /** Name of the root document node */
+    /** Name of the root document node. */
     private static final String C_DOCUMENT_NODE = "page";
 
-    /** Name of the anchor node */
+    /** Name of the anchor node. */
     private static final String C_NODE_ANCHOR = "anchor";
     
-    /** Name of the element node */
+    /** Name of the element node. */
     private static final String C_NODE_CONTENT = "content";
 
-    /** Name of the element node */
+    /** Name of the element node. */
     private static final String C_NODE_ELEMENT = "element";
     
-    /** Name of the elements node */
+    /** Name of the elements node. */
     public static final String C_NODE_ELEMENTS = "elements";
 
-    /** Name of the link node */
+    /** Name of the link node. */
     public static final String C_NODE_LINK = "link";
     
-    /** Name of the links node */
+    /** Name of the links node. */
     public static final String C_NODE_LINKS = "links";
     
-    /** Name of the query node */
+    /** Name of the query node. */
     private static final String C_NODE_QUERY = "query";
     
-    /** Name of the target node */
+    /** Name of the target node. */
     private static final String C_NODE_TARGET = "target";
         
-    /** Property to check if relative links are allowed */
+    /** Property to check if relative links are allowed. */
     private static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
 
-    /** The DTD address of the OpenCms xmlpage */
+    /** The DTD address of the OpenCms xmlpage. */
     public static final String C_XMLPAGE_DTD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.dtd";    
     
-    /** Indicates if relative Links are allowed */
+    /** Indicates if relative Links are allowed. */
     private boolean m_allowRelativeLinks;
     
     /**
@@ -139,7 +140,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public CmsXmlPage(Document document, String encoding) {
         
-        initDocument(document, encoding);
+        initDocument(document, encoding, null);
     }
 
     /**
@@ -152,7 +153,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      */
     public CmsXmlPage(String encoding) {
         
-        initDocument(createValidDocument(), encoding);
+        initDocument(createValidDocument(), encoding, null);
     }
     
     /**
@@ -171,12 +172,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * 
      * @param xmlData the XML data in a byte array
      * @param encoding the encoding to use when marshalling the XML page later
+     * @param resolver the XML entitiy resolver to use
      * @return a XML page instance unmarshalled from the byte array
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding) throws CmsXmlException {
+    public static CmsXmlPage unmarshal(byte[] xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {
         
-        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData), encoding);
+        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
     }
     
     /**
@@ -199,7 +201,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * in the XML file header, or the encoding set in the VFS file property.<p>
      * 
      * If you are not sure about the implications of the encoding issues, 
-     * use {@link #unmarshal(byte[], String)} instead.<p>
+     * use {@link #unmarshal(CmsObject, CmsFile) } instead.<p>
      * 
      * @param cms the current cms object
      * @param file the file with the XML data to unmarshal
@@ -240,13 +242,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             // content is initialized
             if (keepEncoding) {
                 // use the encoding from the content
-                newPage = unmarshal(content, encoding);
+                newPage = unmarshal(content, encoding, new CmsXmlEntityResolver(cms));
             } else {
                 // use the encoding from the file property
                 // this usually only triggered by a save operation                
                 try {
                     String contentStr = new String(content, encoding);
-                    newPage = unmarshal(contentStr, encoding); 
+                    newPage = unmarshal(contentStr, encoding, new CmsXmlEntityResolver(cms)); 
                 } catch (UnsupportedEncodingException e) {
                     // this will not happen since the encodig has already been validated
                     throw new CmsXmlException("Invalid content-encoding property set for xml page '" + fileName + "'", e);
@@ -272,12 +274,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * 
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML page later
+     * @param resolver the XML entitiy resolver to use
      * @return a XML page instance unmarshalled from the String
      * @throws CmsXmlException if something goes wrong
      */
-    public static CmsXmlPage unmarshal(String xmlData, String encoding) throws CmsXmlException {  
+    public static CmsXmlPage unmarshal(String xmlData, String encoding, EntityResolver resolver) throws CmsXmlException {  
         
-        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData), encoding);
+        return new CmsXmlPage(CmsXmlUtils.unmarshalHelper(xmlData, resolver), encoding);
     }
     
     /**
@@ -630,12 +633,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     }
     
     /**
-     * Initializes a CmsXmlPage based on the provided document and encoding
-     * 
-     * @param document the document to create the CmsXmlPage from
-     * @param encoding the encoding of the xml page
+     * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.xml.sax.EntityResolver)
      */
-    protected void initDocument(Document document, String encoding) {
+    protected void initDocument(Document document, String encoding, EntityResolver resolver) {        
         
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_document = document;     

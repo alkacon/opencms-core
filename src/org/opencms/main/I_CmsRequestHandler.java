@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsRequestHandler.java,v $
- * Date   : $Date: 2004/01/06 09:45:59 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Describes an OpenCms request handler
+ * Describes an OpenCms request handler.<p>
  */
 public interface I_CmsRequestHandler {
     

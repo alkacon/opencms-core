@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2004/05/13 11:08:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2004/06/13 23:33:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,13 +45,13 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 
 /**
- * @version $Revision: 1.11 $ $Date: 2004/05/13 11:08:40 $
+ * @version $Revision: 1.12 $ $Date: 2004/06/13 23:33:38 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public final class CmsXmlPageConverter {
 
     /**
-     * Constructor made private to avoid class instanciation
+     * Constructor made private to avoid class instanciation.<p>
      */
     private CmsXmlPageConverter() {
         // noop

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestReadFileheader.java,v $
- * Date   : $Date: 2004/06/02 10:05:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:43:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.test.OpenCmsTestCase;
  * Unit test for the "readFileHeader" method of the CmsObject to test the release and expiration date.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestReadFileheader extends OpenCmsTestCase {
   
@@ -152,7 +152,7 @@ public class TestReadFileheader extends OpenCmsTestCase {
     }
   
     /**
-     * Test readFileHeader of a file in its valid time range<p>
+     * Test readFileHeader of a file in its valid time range.<p>
      * 
      * @param tc the OpenCmsTestCase
      * @param cms the CmsObject

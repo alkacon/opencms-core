@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/06/10 19:35:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/13 23:33:05 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.validation.I_CmsHtmlLinkValidatable;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -53,7 +54,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -199,7 +200,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
         CmsXmlPage xmlPage = CmsXmlPage.unmarshal(cms, file, false);    
         // validate the xml structure before writing the file         
         // an exception will be thrown if the structure is invalid
-        xmlPage.validateXmlStructure();     
+        xmlPage.validateXmlStructure(new CmsXmlEntityResolver(cms));     
         // correct the HTML structure 
         CmsFile correctedFile = xmlPage.correctHtmlStructure(cms);        
         // xml is valid if no exception occured

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2004/05/08 03:12:26 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/06/13 23:42:47 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 5.1.12
  */
@@ -171,7 +171,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
      * @param content the content of the editor
      * @return filtered content
      */
-    private final String filterAnchors(String content) {
+    private String filterAnchors(String content) {
         String anchor = null;
         String newAnchor = null;
         

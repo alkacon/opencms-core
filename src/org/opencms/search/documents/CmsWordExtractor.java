@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsWordExtractor.java,v $
- * Date   : $Date: 2004/02/11 15:58:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:39:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,14 @@ import java.util.*;
 import java.io.*;
 
 /**
- * This class extracts the text from a Word 97/2000/XP word doc
+ * This class extracts the text from a Word 97/2000/XP word doc.<p>
  *
  * @author Ryan Ackley
  */
 public class CmsWordExtractor {
 
   /**
-   * Constructor
+   * Constructor.<p>
    */
   public CmsWordExtractor() {
       // empty

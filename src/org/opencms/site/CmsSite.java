@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2003/12/17 17:46:37 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/13 23:40:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since 5.1
  */
 public final class CmsSite implements Cloneable {   
@@ -212,9 +212,9 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Sets the root directory of this site in the OpenCms VFS
+     * Sets the display title of this site in the OpenCms VFS.<p>
      * 
-     * @param name the root directory of this site in the OpenCms VFS
+     * @param name the display title of this site in the OpenCms VFS
      */
     protected void setTitle(String name) {
         m_title = name;

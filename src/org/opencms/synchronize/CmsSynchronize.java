@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2004/06/06 10:45:25 $
- * Version: $Revision: 1.31 $
- * Date   : $Date: 2004/06/06 10:45:25 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2004/06/13 23:40:25 $
+ * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/13 23:40:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.StringTokenizer;
  * Contains all methods to synchronize the VFS with the "real" FS.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2004/06/06 10:45:25 $
+ * @version $Revision: 1.32 $ $Date: 2004/06/13 23:40:25 $
  */
 public class CmsSynchronize {
 
@@ -80,10 +80,10 @@ public class CmsSynchronize {
     static final String C_SYNCLIST_FILENAME = "#synclist.txt";
 
     /** The path in the "real" file system where the resources have to be synchronized to */
-    private String m_destinationPathInRfs = null;
+    private String m_destinationPathInRfs;
 
     /** The source path in the OpenCms VFS where the resources have to be synchronized from */
-    private String m_sourcePathInVfs = null;
+    private String m_sourcePathInVfs;
 
     /** The CmsObject */
     private CmsObject m_cms;

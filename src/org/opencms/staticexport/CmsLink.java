@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2004/06/01 15:28:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/06/13 23:40:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  */
 public class CmsLink {
     
@@ -167,7 +167,7 @@ public class CmsLink {
     }
     
     /**
-     * Splits the given uri string into its components scheme://authority/path#fragment?query<p>
+     * Splits the given uri string into its components <code>scheme://authority/path#fragment?query</code>.<p>
      * 
      * @param targetUri the uri string to split
      * @return array of component strings

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:40:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.3
  */
 public class CmsSynchronizeSettings {
@@ -102,7 +102,7 @@ public class CmsSynchronizeSettings {
     }
     
     /**
-     * Sets the destination path of the synchronization in the "real" file system
+     * Sets the destination path of the synchronization in the "real" file system.<p>
      * 
      * @param destinationPathInRfs the destination path of the synchronization in the "real" file system to set
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/06/11 19:42:08 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2004/06/13 23:38:13 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -143,7 +143,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for unprocessed files"</code><p>
+     * which is <code>"The OpenCms default resource loader for unprocessed files"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */
@@ -226,6 +226,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         
         if (isWorkplaceUser) {
             // prevent caching for Workplace users
+            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
             res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
         } else {
             // set date last modified header

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/06/10 12:30:27 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  */
 public final class OpenCms {
     
@@ -247,7 +247,7 @@ public final class OpenCms {
      * This is the runlevel the OpenCms shell operates in.</dd>
      * <dt>Runlevel 3:</dt><dd>
      * OpenCms fully initialized. This is the "default" when OpenCms is in normal operation.</dd>
-     * </ol>
+     * </dl>
      * 
      * @return the OpenCms run level
      */
@@ -356,7 +356,6 @@ public final class OpenCms {
      * @return an initialized CmsObject with "Guest" user permissions
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
-     * @throws RuntimeException in case an invalid user name is provided
      */     
     public static CmsObject initCmsObject(String user) {
         return OpenCmsCore.getInstance().initCmsObject(user);

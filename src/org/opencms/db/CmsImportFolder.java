@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2004/06/04 10:48:52 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/13 23:32:06 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsImportFolder {
 
@@ -73,10 +73,10 @@ public class CmsImportFolder {
     private File m_importResource;
 
     /** Will be true if the import resource a valid ZIP file */
-    private boolean m_validZipFile = false;
+    private boolean m_validZipFile;
 
     /** The import resource ZIP stream to load resources from */    
-    private ZipInputStream m_zipStreamIn = null;
+    private ZipInputStream m_zipStreamIn;
     
     /**
      * Constructor for a new CmsImportFolder that will read from a ZIP file.<p>

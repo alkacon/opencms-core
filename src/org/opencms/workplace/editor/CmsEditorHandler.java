@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsEditorHandler.java,v $
- * Date   : $Date: 2004/05/21 15:18:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/06/13 23:42:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * @see org.opencms.workplace.editor.CmsWorkplaceEditorManager
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.3.1
  */
@@ -139,7 +139,8 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
     }
     
     /**
-     * Shows the error dialog when no valid editor is found and returns null for the editor URI
+     * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
+     * 
      * @param jsp the instanciated CmsJspActionElement
      * @param t a throwable object, can be null
      * @return always null

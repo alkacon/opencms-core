@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2004/03/17 09:41:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/13 23:33:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Daniel Rall (dlr@collab.net)
  * @author Alexander Kandzior (a.kandzior@alkacon.com) 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsAcceptLanguageHeaderParser implements Iterator {
 
@@ -213,7 +213,6 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
      * Creates a <code>Locale</code> from the next element of the <code>Accept-Language</code> header.
      * 
      * @return The next highest-rated <code>Locale</code>.
-     * @throws NoSuchElementException No more m_acceptLanguage.
      */
     public Object next() {
         if (m_acceptLanguage.isEmpty()) {

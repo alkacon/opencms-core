@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/Attic/CmsStringSubstitutionTest.java,v $
- * Date   : $Date: 2004/05/08 03:11:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/13 23:43:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.workplace.I_CmsWpConstants;
 import junit.framework.TestCase;
 
 /** 
- * Test cases for the class "CmsStringSubstitution"
+ * Test cases for the class "CmsStringSubstitution".<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 5.0
  */
@@ -179,7 +179,7 @@ public class CmsStringSubstitutionTest extends TestCase {
     }
     
     /**
-     * Tests the xml encoding extraction 
+     * Tests the xml encoding extraction.<p>
      */
     public void testExtractXmlEncoding() {
         String xml, result;

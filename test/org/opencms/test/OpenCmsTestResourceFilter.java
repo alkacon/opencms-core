@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2004/06/04 09:06:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/13 23:43:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * be tested to a new, specified value, the equal test must be disabled in the filter.<p>
  * 
  *  @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class OpenCmsTestResourceFilter {
 
@@ -126,7 +126,7 @@ public class OpenCmsTestResourceFilter {
      * 
      * @return OpenCmsTestResourceFilter filter
      */
-    private static final OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
+    private static OpenCmsTestResourceFilter getFilterExistingAndNewSibling() {
         OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
 
         filter.disableStateTest();
@@ -144,7 +144,7 @@ public class OpenCmsTestResourceFilter {
      * 
      * @return OpenCmsTestResourceFilter filter
      */
-    private static final OpenCmsTestResourceFilter getFilterChacc() {
+    private static OpenCmsTestResourceFilter getFilterChacc() {
         OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
 
         filter.disableStateTest();
@@ -160,7 +160,7 @@ public class OpenCmsTestResourceFilter {
      * 
      * @return OpenCmsTestResourceFilter filter
      */
-    private static final OpenCmsTestResourceFilter getFilterExistingSibling() {
+    private static OpenCmsTestResourceFilter getFilterExistingSibling() {
         OpenCmsTestResourceFilter filter = new OpenCmsTestResourceFilter();
 
         filter.disableProjectLastModifiedTest();

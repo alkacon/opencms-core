@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2004/05/24 17:05:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2004/06/13 23:39:26 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -135,7 +135,7 @@ import org.apache.lucene.index.IndexWriter;
  * <p>The <code>GermanAnalyzer</code> will be used for analyzing the contents of resources
  * when building an index with "de" as specified language.</p>
  * 
- * @version $Revision: 1.13 $ $Date: 2004/05/24 17:05:54 $
+ * @version $Revision: 1.14 $ $Date: 2004/06/13 23:39:26 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -169,7 +169,7 @@ public class CmsSearchManager implements I_CmsCronJob, I_CmsEventListener {
     private String m_timeout;
 
     /** The cache for storing search results */
-    private static Map m_resultCache = null;
+    private static Map m_resultCache;
 
     /** The vfs indexer */
     private I_CmsIndexer m_vfsIndexer;

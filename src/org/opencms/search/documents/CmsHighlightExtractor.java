@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/Attic/CmsHighlightExtractor.java,v $
- * Date   : $Date: 2004/03/29 09:05:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/13 23:39:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -171,7 +171,7 @@ public final class CmsHighlightExtractor {
      *            <code>true</code> to extract "prohibited" m_terms, too
      * @throws IOException if something goes wrong
      */
-    public static final void getTerms(
+    public static void getTerms(
         Query query,
         HashSet terms,
         boolean prohibited)
@@ -207,7 +207,7 @@ public final class CmsHighlightExtractor {
      *            <code>true</code> to extract "prohibited" m_terms, too
      * @throws IOException if something goes wrong
      */
-    private static final void getTermsFromBooleanQuery(
+    private static void getTermsFromBooleanQuery(
         BooleanQuery query,
         HashSet terms,
         boolean prohibited)
@@ -234,7 +234,7 @@ public final class CmsHighlightExtractor {
      * @param prohibited
      *            <code>true</code> to extract "prohibited" m_terms, too
      */
-    private static final void getTermsFromMultiTermQuery(
+    private static void getTermsFromMultiTermQuery(
         MultiTermQuery query,
         HashSet terms,
         boolean prohibited) {
@@ -260,7 +260,7 @@ public final class CmsHighlightExtractor {
      *            HashSet where extracted term texts should be put into
      *            (Elements: String)
      */
-    private static final void getTermsFromPhraseQuery(
+    private static void getTermsFromPhraseQuery(
         PhraseQuery query,
         HashSet terms) {
         Term[] queryTerms = query.getTerms();
@@ -283,7 +283,7 @@ public final class CmsHighlightExtractor {
      * @param prohibited
      *            <code>true</code> to extract "prohibited" m_terms, too
      */
-    private static final void getTermsFromPrefixQuery(
+    private static void getTermsFromPrefixQuery(
         PrefixQuery query,
         HashSet terms,
         boolean prohibited) {
@@ -309,7 +309,7 @@ public final class CmsHighlightExtractor {
      * @param prohibited
      *            <code>true</code> to extract "prohibited" m_terms, too
      */
-    private static final void getTermsFromRangeQuery(
+    private static void getTermsFromRangeQuery(
         RangeQuery query,
         HashSet terms,
         boolean prohibited) {
@@ -332,7 +332,7 @@ public final class CmsHighlightExtractor {
      * 
      * @return the Term's term text
      */
-    private static final String getTermsFromTerm(Term term) {
+    private static String getTermsFromTerm(Term term) {
         return term.text().toLowerCase();
     }
 
@@ -346,7 +346,7 @@ public final class CmsHighlightExtractor {
      *            HashSet where extracted term texts should be put into
      *            (Elements: String)
      */
-    private static final void getTermsFromTermQuery(
+    private static void getTermsFromTermQuery(
         TermQuery query,
         HashSet terms) {
         terms.add(getTermsFromTerm(query.getTerm()));
@@ -370,7 +370,7 @@ public final class CmsHighlightExtractor {
      *         of fragments)
      * @throws IOException if something goes wrong
      */
-    public final String[] getBestFragments(
+    public String[] getBestFragments(
         String text,
         int fragmentSize,
         int maxNumFragments)
@@ -504,7 +504,7 @@ public final class CmsHighlightExtractor {
      * @return highlighted text
      * @throws IOException if something goes wrong
      */
-    public final String getBestFragments(
+    public String getBestFragments(
         String text,
         int fragmentSize,
         int maxNumFragments,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2004/03/25 19:34:22 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2004/06/13 23:38:13 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * Loader for "pointers" to resources in the VFS or to external resources.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
     
@@ -127,7 +127,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     
     /**
      * Return a String describing the ResourceLoader,
-     * which is <code>"The OpenCms default resource loader for pointers"</code><p>
+     * which is <code>"The OpenCms default resource loader for pointers"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */

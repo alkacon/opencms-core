@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/09 15:53:29 $
- * Version: $Revision: 1.184 $
+ * Date   : $Date: 2004/06/13 23:32:19 $
+ * Version: $Revision: 1.185 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.184 $ $Date: 2004/06/09 15:53:29 $
+ * @version $Revision: 1.185 $ $Date: 2004/06/13 23:32:19 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1006,7 +1006,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
     }
 
     /**
-     * Counts the number of siblings of a resource
+     * Counts the number of siblings of a resource.<p>
      * 
      * @param projectId the current project id
      * @param resourceId the resource id to count the number of siblings from

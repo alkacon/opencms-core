@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2004/06/08 15:14:29 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/06/13 23:39:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.xml.sax.InputSource;
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.8 $ $Date: 2004/06/08 15:14:29 $
+ * @version $Revision: 1.9 $ $Date: 2004/06/13 23:39:54 $
  * @since 5.3
  */
 public class CmsSetupTests extends Object implements Serializable, Cloneable {
@@ -391,7 +391,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Sets if one of the tests found a violated condition
+     * Sets if one of the tests found a violated condition.<p>
      */
     protected void setRed() {
         m_green = false;
@@ -400,7 +400,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Sets if one of the tests found a questionable condition
+     * Sets if one of the tests found a questionable condition.<p>
      */
     protected void setYellow() {
         m_green = false;
@@ -427,7 +427,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
     }
 
     /**
-     * Checks if the used JDK is a higher version than the required JDK
+     * Checks if the used JDK is a higher version than the required JDK.<p>
      * 
      * @param usedJDK The JDK version in use
      * @param requiredJDK The required JDK version
@@ -440,7 +440,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
 
     /** 
      * Checks if the used servlet engine is part of the servlet engines OpenCms
-     * does NOT support<p>
+     * does NOT support.<p>
      * 
      * @param thisEngine the servlet engine in use
      * @param unsupportedEngines all known servlet engines OpenCms does NOT support
@@ -497,7 +497,7 @@ public class CmsSetupTests extends Object implements Serializable, Cloneable {
     }
 
     /** 
-     * Checks if the used servlet engine is part of the servlet engines OpenCms supports
+     * Checks if the used servlet engine is part of the servlet engines OpenCms supports.<p>
      * 
      * @param thisEngine The servlet engine in use
      * @param supportedEngines All known servlet engines OpenCms supports

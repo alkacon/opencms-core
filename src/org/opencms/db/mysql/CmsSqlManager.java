@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2004/06/08 16:53:01 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2004/06/13 23:32:36 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,13 +37,13 @@ import java.util.Properties;
  * Handles SQL queries from query.properties of the MySQL driver package.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2004/06/08 16:53:01 $ 
+ * @version $Revision: 1.16 $ $Date: 2004/06/13 23:32:36 $ 
  * @since 5.1
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     
     private static final String C_PROPERTY_FILENAME = "org/opencms/db/mysql/query.properties";
-    private static Properties c_queries = null; 
+    private static Properties c_queries; 
 
     /**
      * Initializes the SQL manager.<p>

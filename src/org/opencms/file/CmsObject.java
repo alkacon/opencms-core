@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2004/06/10 12:21:45 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2004/06/13 23:33:05 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsObject {
 
@@ -2090,7 +2090,7 @@ public class CmsObject {
     /**
      * Checks if the user is a member of the project manager group.<p>
      *
-     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()()} 
+     * Please note: This is NOT the same as the {@link CmsObject#isManagerOfProject()} 
      * check. If the user is a member of the project manager group, 
      * he can create new projects.<p>
      *

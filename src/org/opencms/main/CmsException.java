@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2004/02/18 15:26:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsException extends Exception {
 
@@ -205,16 +205,16 @@ public class CmsException extends Exception {
     protected String m_message = "NO MESSAGE";
 
     /** Stores a forwared exception */
-    protected Throwable m_rootCause = null;
+    protected Throwable m_rootCause;
 
     /** Stores the error code of the CmsException */
-    protected int m_type = 0;
+    protected int m_type;
 
     /** Flag to set processing of a saved forwared root exception */
-    protected boolean m_useRootCause = false;
+    protected boolean m_useRootCause;
 
     /**
-     * Constructs a simple CmsException
+     * Constructs a simple CmsException.<p>
      */
     public CmsException() {
         this("", 0, null, false);
@@ -337,7 +337,7 @@ public class CmsException extends Exception {
     }
 
     /**
-     * Returns the exception description message<p>
+     * Returns the exception description message.<p>
      *
      * @return the exception description message
      */
@@ -346,7 +346,7 @@ public class CmsException extends Exception {
     }
 
     /**
-     * Returns the description message<p>
+     * Returns the description message.<p>
      * 
      * @return the description message
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/06/10 19:36:45 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2004/06/13 23:42:47 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 5.3.0
  */
@@ -87,7 +87,7 @@ public class CmsDialogElements extends CmsDialog {
     public static final String PREFIX_PARAM_BODY = "element-";
     
     /** List used to store information of all possible elements of the page */
-    private List m_elementList = null;
+    private List m_elementList;
 
     /** The element locale */
     private Locale m_elementLocale;

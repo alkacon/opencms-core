@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsListener.java,v $
- * Date   : $Date: 2004/02/16 15:41:54 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,12 @@ import javax.servlet.ServletContextListener;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.1
  */
 public class OpenCmsListener implements ServletContextListener {
 
-    private static boolean DEBUG = false;
+    private static final boolean DEBUG = false;
 
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)

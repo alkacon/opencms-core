@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2004/04/01 04:43:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/13 23:43:58 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
 public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Applet threat */
-    Thread m_runner = null;
+    Thread m_runner;
 
     /** The URL of the opencms */
     private String m_opencms = "";
@@ -86,7 +86,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private long m_maxsize = -1;
 
     /** Number of resources to upload */
-    private int m_resources = 0;
+    private int m_resources;
 
     /** File extensions, used to find the correct icons for the selectbox */
     private String m_fileExtensions = "";
@@ -101,10 +101,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private String m_message = "";
 
     /** Output mode selector */
-    private int m_outputMode = 0;
+    private int m_outputMode;
 
     /** Counter for creating the progress bar */
-    private int m_step = 0;
+    private int m_step;
 
     /** Definition of the images during upload */
     private Image m_source;

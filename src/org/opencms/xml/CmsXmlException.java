@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
- * Date   : $Date: 2004/05/13 11:09:35 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:43:31 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,14 @@ import org.opencms.main.CmsException;
  * Signals that an error occured while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 5.1.4
  */
 public class CmsXmlException extends CmsException {
     
     // the allowed type range for this exception is >=400 and <500    
     
-    /** Generic init error */
+    /** Generic init error. */
     public static final int C_XML_GENERIC_ERROR = 400;
         
     /**

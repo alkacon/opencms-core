@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2004/05/24 17:16:05 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2004/06/13 23:32:19 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Properties;
  * </table>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.33 $ $Date: 2004/05/24 17:16:05 $
+ * @version $Revision: 1.34 $ $Date: 2004/06/13 23:32:19 $
  * @since 5.1
  */
 public class CmsSqlManager extends Object implements Serializable, Cloneable {
@@ -109,7 +109,7 @@ public class CmsSqlManager extends Object implements Serializable, Cloneable {
     /** 
      * The properties hash holding the SQL queries.<p> 
      */
-    private static Properties c_queries = null;
+    private static Properties c_queries;
     
     /** 
      * The backup table ID.<p>

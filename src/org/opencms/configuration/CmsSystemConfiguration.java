@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2004/03/12 16:00:48 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/06/13 23:31:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -308,7 +308,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }    
     
     /**
-     * Sets the locale manager for multi language support
+     * Sets the locale manager for multi language support.<p>
      * 
      * @param localeManager the locale manager to set
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2004/06/08 08:46:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2004/06/13 23:38:58 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since 5.3
  */
 public class CmsSystemInfo {
@@ -193,7 +193,7 @@ public class CmsSystemInfo {
      * is called "opencms".<p>
      * 
      * <i>From the Java Servlet Sepcecification v2.4:</i><br>
-     * <b>Context Path:<b> The path prefix associated with the ServletContext that this
+     * <b>Context Path:</b> The path prefix associated with the ServletContext that this
      * servlet is a part of. If this context is the ?default? context rooted at the base of
      * the web server?s URL namespace, this path will be an empty string. Otherwise,
      * if the context is not rooted at the root of the server?s namespace, the path starts

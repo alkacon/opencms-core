@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2004/03/06 18:51:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/06/13 23:31:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,13 +58,13 @@ import org.w3c.dom.NodeList;
 
 /**
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
- * the import version 1.</p>
+ * the import version 1.<p>
  * 
- * This import format was used in OpenCms 4.3.23 - 5.0.0.</p>
+ * This import format was used in OpenCms 4.3.23 - 5.0.0.<p>
  * 
  * This import class has similar funktions to CmsImportVersion2, but because of the need for a
  * single import class for each import version, a new, inherited class must be used, returning 
- * the correct import version.</p>
+ * the correct import version.<p>
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
