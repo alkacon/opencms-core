@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/03/29 17:58:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/03/30 07:32:19 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0
  */
@@ -261,7 +260,7 @@ public class CmsSecure extends CmsDialog {
      */
     public String getResourceUrl() {
 
-        boolean secure = Boolean.parseBoolean(readProperty(I_CmsConstants.C_PROPERTY_SECURE));
+        boolean secure = Boolean.valueOf(readProperty(I_CmsConstants.C_PROPERTY_SECURE)).booleanValue();
         StringBuffer result = new StringBuffer();
         CmsSite currentSite = CmsSiteManager.getCurrentSite(getCms());
         if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
