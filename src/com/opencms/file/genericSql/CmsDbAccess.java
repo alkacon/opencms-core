@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/06/08 15:50:19 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/06/08 16:00:43 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.utils.*;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Hanjo Riege
- * @version $Revision: 1.34 $ $Date: 2000/06/08 15:50:19 $ * 
+ * @version $Revision: 1.35 $ $Date: 2000/06/08 16:00:43 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 	
@@ -2018,12 +2018,80 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
              throw new CmsException("readResource "+exc.getMessage(), CmsException.C_UNKNOWN_EXCEPTION, exc);
 		}finally {
 			if( statement != null) {
-				m_pool.putPreparedStatement(C_PROPERTYDEF_READ_KEY, statement);
+				m_pool.putPreparedStatement(C_RESOURCES_READ_KEY, statement);
 			}
 		  }
         return file;
        }
-           
+    
+    /**
+	 * Creates a new resource from an given CmsResource object.
+     *
+	 * @param project The project in which the resource will be used.
+	 * @param onlineProject The online project of the OpenCms.
+	 * @param resource The resource to be written to the Cms.
+	 * 
+	 * @return The created resource.
+	 * 
+     * @exception CmsException Throws CmsException if operation was not succesful
+     */    
+	 public CmsResource createResource(CmsProject project,
+                                         CmsProject onlineProject,
+                                         CmsResource resource)
+         throws CmsException {
+			PreparedStatement statement = null;
+            try {   
+                statement=m_pool.getPreparedStatement(C_RESOURCES_WRITE_KEY);
+                // write new resource to the database
+                //RESOURCE_ID
+                statement.setInt(1,nextId(C_TABLE_RESOURCES));
+                //PARENT_ID
+                statement.setInt(2,resource.getParentId());
+                //RESOURCE_NAME
+                statement.setString(3,resource.getAbsolutePath());
+                //RESOURCE_TYPE
+                statement.setInt(4,resource.getType());
+                //RESOURCE_FLAGS
+                statement.setInt(5,resource.getFlags());
+                //USER_ID
+                statement.setInt(6,resource.getOwnerId());
+                //GROUP_ID
+                statement.setInt(7,resource.getGroupId());
+                //PROJECT_ID
+                statement.setInt(8,project.getId());
+                //FILE_ID
+                statement.setInt(9,resource.getFileId());
+                //ACCESS_FLAGS
+                statement.setInt(10,resource.getAccessFlags());
+                //STATE
+                statement.setInt(11,resource.getState());
+                //LOCKED_BY
+                statement.setInt(12,resource.isLockedBy());
+                //LAUNCHER_TYPE
+                statement.setInt(13,resource.getLauncherType());
+                //LAUNCHER_CLASSNAME
+                statement.setString(14,resource.getLauncherClassname());
+                //DATE_CREATED
+                statement.setTimestamp(15,new Timestamp(resource.getDateCreated()));
+                //DATE_LASTMODIFIED
+                statement.setTimestamp(16,new Timestamp(System.currentTimeMillis()));
+                //SIZE
+                statement.setInt(17,resource.getLength());
+                //RESOURCE_LASTMODIFIED_BY
+                statement.setInt(18,resource.getResourceLastModifiedBy());
+                statement.executeUpdate();
+                
+         } catch (SQLException e){
+				throw new CmsException("["+this.getClass().getName()+"] "+e.getMessage(),CmsException.C_SQL_ERROR, e);			
+         }finally {
+			if( statement != null) {
+				m_pool.putPreparedStatement(C_RESOURCES_WRITE_KEY, statement);
+			}
+		  }
+     
+         return readResource(project,resource.getAbsolutePath());
+      } 
+            
      
 
 	 
@@ -2036,6 +2104,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsQuerys {
 		m_pool.initPreparedStatement(C_RESOURCES_MAXID_KEY,C_RESOURCES_MAXID);
         m_pool.initPreparedStatement(C_FILES_MAXID_KEY,C_FILES_MAXID);
         m_pool.initPreparedStatement(C_RESOURCES_READ_KEY,C_RESOURCES_READ);
+        m_pool.initPreparedStatement(C_RESOURCES_WRITE_KEY,C_RESOURCES_WRITE);
         	
         // init statements for groups
 		m_pool.initPreparedStatement(C_GROUPS_MAXID_KEY,C_GROUPS_MAXID);

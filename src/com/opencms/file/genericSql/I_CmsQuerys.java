@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/I_CmsQuerys.java,v $
- * Date   : $Date: 2000/06/08 15:50:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2000/06/08 16:00:43 $
+ * Version: $Revision: 1.23 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -32,7 +32,7 @@ package com.opencms.file.genericSql;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.22 $ $Date: 2000/06/08 15:50:19 $
+ * @version $Revision: 1.23 $ $Date: 2000/06/08 16:00:43 $
  */
 public interface I_CmsQuerys {
     
@@ -66,12 +66,13 @@ public interface I_CmsQuerys {
 	// Constants for resources
 	public static final Integer C_RESOURCES_MAXID_KEY = new Integer(100);
 	public static final String C_RESOURCES_MAXID = "SELECT MAX(RESOURCE_ID) FROM " + C_DATABASE_PREFIX + "RESOURCES";	
-	public static final Integer C_RESOURCES_WRITE_KEY = new Integer(101);
-	public static final String C_RESOURCEES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-    
+	 
     public static final Integer C_RESOURCES_READ_KEY = new Integer(102);
 	public static final String C_RESOURCES_READ = "SELECT * FROM " + C_DATABASE_PREFIX + "RESOURCES WHERE RESOURCE_NAME = ? AND PROJECT_ID = ?";
   
+    public static final Integer C_RESOURCES_WRITE_KEY = new Integer(103);
+	public static final String C_RESOURCES_WRITE = "INSERT INTO " + C_DATABASE_PREFIX + "RESOURCES VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    
 	
 	// Constants for files
 	public static final Integer C_FILES_MAXID_KEY = new Integer(150);
