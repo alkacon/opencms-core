@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/17 19:32:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/02/18 14:22:41 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,13 +47,17 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/02/17 19:32:37 $
+ * @version $Revision: 1.7 $ $Date: 2000/02/18 14:22:41 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
     
      /** Definition of the class */ 
      private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
+    
+     
+     private static final String C_DEFAULTBODY = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE/>\n</XMLTEMPLATE>";
+   
      
      
     /**
@@ -111,7 +115,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                    cms.writeMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE,title);
                    
                    // now create the page content file
-                   CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,new byte[0],"plain");
+                   CmsFile contentfile=cms.createFile(C_CONTENTBODYPATH+currentFilelist.substring(1,currentFilelist.length()),newFile,C_DEFAULTBODY.getBytes(),"plain");
                    
                    // set the flags for the content file to internal use, the content 
                    // should not be loaded 
