@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2004/04/02 15:52:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/04/05 05:41:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 5.1
  */
@@ -878,7 +878,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 }
                 
                 // check if saving the properties is necessary
-                if (!newProperty.equals(oldProperty)) {
+                if (!newProperty.isIdentical(oldProperty)) {
                     // add property to list only if property values have changed
                     propertiesToWrite.add(newProperty);
                 }   
