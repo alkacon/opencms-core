@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2004/04/29 09:41:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/04/30 10:04:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType {
     
@@ -368,7 +368,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
             // update the folder if something has changed
             if (changed) {
                 lockResource(cms, cms.readAbsolutePath(importedResource), true, CmsLock.C_MODE_COMMON);
-                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, null/* new byte[0] */);
+                cms.doWriteResource(cms.readAbsolutePath(importedResource), properties, null);
             } 
         }
         // get the updated folder
@@ -685,9 +685,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType {
     /**
      * @see org.opencms.file.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public void writeFile(CmsObject cms, CmsFile file) throws CmsException {
+    public void writeFile(CmsObject cms, CmsFile file) {
         // nothing has to do there as it is not a file
-        // TODO: throw an exception?
     }
     
     /**
