@@ -8,7 +8,8 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.3.11 Bela Tegeuse - XXX
+OpenCms 4.3.11 Bela Tegeuse - 15 May 2001
+! Added first version of Lru-Cache for the element cache
 * fixed bug in OpenCmsHttpServlet.initUser() WebUsers can use http Authentification now
 - Removed old unused OpenCms-Pool. Use com.opencms.dbpool.* instead.
 
