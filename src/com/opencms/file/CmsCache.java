@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsCache.java,v $
- * Date   : $Date: 2000/05/30 09:41:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2000/06/14 10:00:26 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -29,18 +29,19 @@
 package com.opencms.file;
 
 import java.util.*;
-
+import com.opencms.core.*;
 /**
  * This class implements a LRU cache storing CmsCachedObjects. It is used to  cache 
  * data read from the File DB.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2000/05/30 09:41:28 $
+ * @version $Revision: 1.5 $ $Date: 2000/06/14 10:00:26 $
  */
 
-class CmsCache
+class CmsCache implements I_CmsConstants
 {
 	private Hashtable cache;
+	private Hashtable index;
 	private int max_objects;
 	
 	/**
@@ -56,31 +57,85 @@ class CmsCache
 			max_objects=cacheSize;
 		}
 		cache = new Hashtable(max_objects);
+		index = new Hashtable(max_objects);
 	}
 	
 	/**
 	 * Put a new key/value pair into the CmsCache.
 	 * If the cache is full, the least recently used cache object is removed.
-	 * @param key The key for the new object stroed in the cache.
+	 * @param strKey The key for the new object stroed in the cache.
 	 * @param value The value of the new object stroed in the cache.
 	 */
-	public  void put(Object key, Object value) {
-
-		if (cache.size()<max_objects) {
-			cache.put(key,new CmsCachedObject(value));
+	public void put(Object strKey, Object value) {
+		
+		if (cache.size() < max_objects) {
+			cache.put(strKey,new CmsCachedObject(value));
 	
 		} else {
 			removeLRU();
-			cache.put(key,new CmsCachedObject(value));		
+			cache.put(strKey,new CmsCachedObject(value));		
+		}
+		int id = getId(value);
+		if (id != C_UNKNOWN_INT){
+			index.put(new Integer(id),strKey);
+		}
+		
+	}
+	
+	/**
+	 * Put a new key/value pair into the CmsCache.
+	 * If the cache is full, the least recently used cache object is removed.
+	 * Don't use this for projects.
+	 * @param key The key for the new object stroed in the cache.
+	 * @param value The value of the new object stroed in the cache.
+	 */
+	public void put(int key, Object value) {
+		
+		String strKey = getStrKey(value);
+		if (strKey != null){
+			if (cache.size()<max_objects) {
+				cache.put(new Integer(key),new CmsCachedObject(value));
+	
+			} else {
+				removeLRU();
+				cache.put(new Integer(key),new CmsCachedObject(value));		
+			}
+			index.put(new Integer(key),strKey);
 		}
 	}
 	
+	/** 
+	 * Gets the SringKey of an object
+	 * @param value The object.
+	 * @return The StringKey of the object 
+	 */
+	private String getStrKey(Object value){
+		if(value instanceof CmsFile) {			return C_FILE+((CmsFile)value).getProjectId()+((CmsFile)value).getAbsolutePath();
+		} else if(value instanceof CmsFolder) {			return C_FOLDER+((CmsFolder)value).getProjectId()+((CmsFolder)value).getAbsolutePath();
+		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getName();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getName();		} else {
+			return null;
+		}
+	}
+	
+	/** 
+	 * Gets the Id of an object
+	 * @param value The object.
+	 * @return The Id of the object 
+	 */
+	private int getId(Object value){
+		if(value instanceof CmsFile) {			return ((CmsFile)value).getResourceId();
+		} else if(value instanceof CmsFolder) {			return ((CmsFolder)value).getResourceId();		} else if(value instanceof CmsUser) {			return ((CmsUser)value).getId();		} else if(value instanceof CmsGroup) {			return ((CmsGroup)value).getId();		} else {
+			return C_UNKNOWN_ID;
+		}
+	}
+	 
 	/**
 	 * Removes the least recent used object from the cache.
 	 */
 	private void removeLRU() {
 		long minTimestamp=-1;
 		Object keyLRUObject = null;
+		int indexKeyLRU = C_UNKNOWN_ID;
         // get the keys of all cache objets
 		Enumeration keys = cache.keys(); 
 		while (keys.hasMoreElements()) {
@@ -91,10 +146,12 @@ class CmsCache
 				// this is the new least recent used cache object
                 minTimestamp = value.getTimestamp();  
 				keyLRUObject= key;
+				indexKeyLRU = getId(value);
 			}
 		}
-        // finally remove it from cache
-		cache.remove(keyLRUObject);  		
+        // finally remove it from cache and if necessary from the index
+		cache.remove(keyLRUObject);
+		index.remove(new Integer(indexKeyLRU));  		
 	}
 	
 	/**
@@ -106,7 +163,7 @@ class CmsCache
 	 * @param content Flag for getting the file content.
 	 * @return Contents of the CmsCachedObject stored in the cache
 	 */
-	public  Object get(Object key) {
+	public  Object get(String key) {
 		CmsCachedObject cachedObject=null;
 		CmsCachedObject ret=null;
 	
@@ -124,12 +181,56 @@ class CmsCache
 		   return null;
 		}
 	}
+
+	/**
+	 * Gets the contents of a CmsCachedObject form the cache.
+	 * If the object was found in the cache, it is updated to set its timestamp to the current
+	 * system time.
+	 * 
+	 * @param id The id of the Object to be taken from the cache.
+	 *
+	 * @return Contents of the CmsCachedObject stored in the cache
+	 */
+	public  Object get(int id) {
+		CmsCachedObject cachedObject=null;
+		CmsCachedObject ret=null;
+	
+		// get key for object
+		String key = (String)index.get(new Integer(id));
+		if (key == null) {
+			return null;
+		}
+		// get object from cache
+        cachedObject=(CmsCachedObject)cache.get(key);  
+						
+        // not empty?
+		if (cachedObject != null) {
+            // update  timestamp
+		    cachedObject.setTimestamp(); 
+			ret=(CmsCachedObject)cachedObject.clone();				
+   			return (((CmsCachedObject)ret).getContents());
+
+		} else {
+		   return null;
+		}
+	}
+
 	
 	/**
 	 * Removes a CmsCachedObject from the cache.
 	 * @param key The key of the Object to be removed from the cache.
 	 */
-	public  void remove(Object key)	{
+	public  void remove(String key)	{
+	  cache.remove(key);
+	}
+	
+	/**
+	 * Removes a CmsCachedObject from the cache.
+	 * @param id The Id of the Object to be removed from the cache.
+	 */
+	public  void remove(int id)	{
+	  String key = (String)index.get(new Integer(id));
+	  index.remove(new Integer(id));
 	  cache.remove(key);
 	}
 	
@@ -141,5 +242,6 @@ class CmsCache
 	 */
 	public  void clear() {
       cache.clear();
+      index.clear();
     }	
 }

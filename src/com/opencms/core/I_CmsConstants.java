@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/06/08 17:12:56 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2000/06/14 10:00:26 $
+ * Version: $Revision: 1.85 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.84 $ $Date: 2000/06/08 17:12:56 $
+ * @version $Revision: 1.85 $ $Date: 2000/06/14 10:00:26 $
  */
 public interface I_CmsConstants
 {
@@ -608,7 +608,11 @@ public interface I_CmsConstants
     
     /** state values of task messages when members */
 	public static final int C_TASK_MESSAGES_MEMBERS = 8;
-    
+
+	    
+    public final static String C_FILE="FILE";
+    public final static String C_FOLDER="FOLDER";
+     
     
 
 	/**
