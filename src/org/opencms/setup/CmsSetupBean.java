@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2004/08/08 08:30:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/09/27 17:12:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
     
@@ -728,6 +728,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      * @throws Exception if something goes wrong
      */
     public void importModulesFromSetupBean() throws Exception {
+
         Map module = null;
         String filename = null;
 
@@ -742,11 +743,16 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
         if (m_cms != null && m_installModules != null) {
             for (int i = 0; i < m_installModules.size(); i++) {
-                module = (Map) m_availableModules.get(m_installModules.get(i));
-                filename = (String) module.get("filename");
-                importModuleFromDefault(filename);
+                module = (Map)m_availableModules.get(m_installModules.get(i));
+                filename = (String)module.get("filename");
+                try {
+                    importModuleFromDefault(filename);
+                } catch (Exception e) {
+                    // log a exception during module import, but make sure the next module is still imported
+                    e.printStackTrace(System.err);
+                }
+            }
         }
-    }
     }    
 
     /** 
