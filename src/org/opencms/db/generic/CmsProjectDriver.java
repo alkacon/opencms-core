@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/07/09 11:10:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2003/07/10 13:13:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.14 $ $Date: 2003/07/09 11:10:48 $
+ * @version $Revision: 1.15 $ $Date: 2003/07/10 13:13:07 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1911,15 +1911,15 @@ public class CmsProjectDriver extends Object implements I_CmsProjectDriver {
 
 		// TODO: dangerous - move this somehow into query.properties
         if ("new".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_NEW;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_NEW;
         } else if ("changed".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_CHANGED;
         } else if ("deleted".equalsIgnoreCase(filter)) {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE=" + I_CmsConstants.C_STATE_DELETED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE=" + I_CmsConstants.C_STATE_DELETED;
         } else if ("locked".equalsIgnoreCase(filter)) {
             whereClause = " AND CMS_OFFLINE_RESOURCES.LOCKED_BY!='" + CmsUUID.getNullUUID() + "'";
         } else {
-            whereClause = " AND CMS_OFFLINE_STRUCTURE.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            whereClause = " AND CMS_OFFLINE_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
         }        
 
         try {

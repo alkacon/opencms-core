@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/10 12:28:51 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2003/07/10 13:13:07 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.19 $ $Date: 2003/07/10 12:28:51 $
+ * @version $Revision: 1.20 $ $Date: 2003/07/10 13:13:07 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -399,8 +399,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(5, file.getLauncherType());
             stmt.setString(6, file.getLauncherClassname());
             stmt.setTimestamp(7, new Timestamp(file.getDateCreated()));
-            stmt.setTimestamp(8, new Timestamp(dateModified));
-            stmt.setInt(9, file.getLength());
+			stmt.setString(8, userId.toString());
+            stmt.setTimestamp(9, new Timestamp(dateModified));
+			stmt.setString(10, modifiedByUserId.toString());
+			stmt.setInt(11, state);
+            stmt.setInt(12, file.getLength());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -575,8 +578,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(5, folder.getLauncherType());
             stmt.setString(6, folder.getLauncherClassname());
             stmt.setTimestamp(7, new Timestamp(folder.getDateCreated()));
-            stmt.setTimestamp(8, new Timestamp(dateModified));
-            stmt.setInt(9, folder.getLength());
+			stmt.setString(8, user.getId().toString());
+            stmt.setTimestamp(9, new Timestamp(dateModified));
+			stmt.setString(10, modifiedByUserId.toString());
+			stmt.setInt(11, state);
+            stmt.setInt(12, folder.getLength());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -839,8 +845,11 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(5, newResource.getLauncherType());
             stmt.setString(6, newResource.getLauncherClassname());
             stmt.setTimestamp(7, new Timestamp(newResource.getDateCreated()));
-            stmt.setTimestamp(8, new Timestamp(newResource.getDateLastModified()));
-            stmt.setInt(9, newResource.getLength());
+			stmt.setString(8, userId.toString());
+            stmt.setTimestamp(9, new Timestamp(newResource.getDateLastModified()));
+			stmt.setString(10, modifiedByUserId.toString());
+			stmt.setInt(11, state);
+            stmt.setInt(12, newResource.getLength());
             stmt.executeUpdate();
             m_sqlManager.closeAll(null, stmt, null);
             
@@ -2077,7 +2086,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         if (!includeUnchanged) {
         	// TODO: dangerous - move this to query.properties
-            changedClause = " AND CMS_T_STRUCTURE.RESOURCE_STATE!=" + com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED;
+            changedClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE!=" + com.opencms.core.I_CmsConstants.C_STATE_UNCHANGED;
         } else {
             changedClause = "";
         }
@@ -2268,7 +2277,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         
         if (!includeUnchanged) {
         	// TODO: dangerous - move this to query.properties
-            changedClause = " AND CMS_T_STRUCTURE.RESOURCE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
+            changedClause = " AND CMS_T_STRUCTURE.STRUCTURE_STATE!=" + I_CmsConstants.C_STATE_UNCHANGED;
         } else {
             projectClause = "";
         }        
