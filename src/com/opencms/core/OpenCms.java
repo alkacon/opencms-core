@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
-* Date   : $Date: 2003/04/16 10:53:52 $
-* Version: $Revision: 1.123 $
+* Date   : $Date: 2003/05/05 08:06:24 $
+* Version: $Revision: 1.124 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@ package com.opencms.core;
 
 import com.opencms.boot.CmsBase;
 import com.opencms.boot.I_CmsLogChannels;
+import com.opencms.core.exceptions.CmsCheckResourceException;
 import com.opencms.file.CmsFile;
 import com.opencms.file.CmsFolder;
 import com.opencms.file.CmsObject;
@@ -46,6 +47,7 @@ import com.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -80,7 +82,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Lucas
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.123 $ $Date: 2003/04/16 10:53:52 $
+ * @version $Revision: 1.124 $ $Date: 2003/05/05 08:06:24 $
  */
 public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChannels {
 
@@ -160,7 +162,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
     private static CmsResourceTranslator m_fileTranslator = null;
     
     /**
-     * List of fefault file names (for directories, e.g, "index.html")
+     * List of default file names (for directories, e.g, "index.html")
      */
     private static String[] m_defaultFilenames = null;
 
@@ -168,6 +170,11 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * Flag to indicate if the startup classes have already been initialized
      */
     private boolean m_isInitialized = false;
+    
+   /**
+    * Member variable to store instances to modify resources
+    */
+   private List m_checkFile = new ArrayList();
     
     /**
      * Constructor to create a new OpenCms object.<p>
@@ -564,6 +571,24 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
         }catch(Exception e){
             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Link rules init      : non-critical error " + e.toString());
         }
+        
+        // initialize 1 instance per class listed in the checkresource node
+        try{
+            Hashtable checkresourceNode = getRegistry().getSystemValues( "checkresource" );
+            if (checkresourceNode!=null) {
+                for (int i=1;i<=checkresourceNode.size();i++) {
+                    String currentClass = (String)checkresourceNode.get( "class" + i );
+                    try {
+                        m_checkFile.add(Class.forName(currentClass).newInstance());
+                             if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Checkfile class init : " + currentClass + " instanciated");
+                    } catch (Exception e1){
+                        if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e1.toString());
+                    }
+                }
+            }
+        } catch (Exception e2){
+            if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Checkfile class init : non-critical error " + e2.toString());
+        }
     }
 
     /**
@@ -586,7 +611,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
      * 
      * A startup class has to be configured in the <code>registry.xml</code> 
      * file of OpenCms. Startup classes are a way to create plug-in 
-     * functions that required to be initialized one at OpenCms load time 
+     * functions that required to be initialized once at OpenCms load time 
      * without the need to add initializing code to the constructor of this 
      * class.<p>
      * 
@@ -664,7 +689,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
             } catch (Exception e2){
                 if(C_LOGGING && isLogging(C_OPENCMS_INIT)) log(C_OPENCMS_INIT, ". Startup class init   : non-critical error " + e2.toString());
             }
-    
+            
             if(C_LOGGING && A_OpenCms.isLogging(C_OPENCMS_INIT)) {
                 A_OpenCms.log(C_OPENCMS_INIT, ". Startup class init   : finished");
                 A_OpenCms.log(C_OPENCMS_INIT, ".                      ...............................................................");        
@@ -830,13 +855,23 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 		}
 
 		if (file != null) {
-			// Test if this file is only available for internal access operations
+			// test if this file is only available for internal access operations
 			if ((file.getAccessFlags() & C_ACCESS_INTERNAL_READ) > 0) {
 				throw new CmsException(
 					CmsException.C_EXTXT[CmsException.C_INTERNAL_FILE]
 						+ cms.getRequestContext().getUri(),
 					CmsException.C_INTERNAL_FILE);
 			}
+            // test if this file has to be checked or modified
+            Iterator i = m_checkFile.iterator();
+            while (i.hasNext()) {
+                try {
+                    file = ((I_CmsCheckResource) i.next()).checkResource(file, cms);
+                // the loop has to be interrupted when the exception is thrown!
+                } catch (CmsCheckResourceException e) {
+                    break;
+                }
+            }
 		}
         
         // Return the file read from the VFS
