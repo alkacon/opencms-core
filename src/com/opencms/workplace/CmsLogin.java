@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLogin.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2002/07/24 16:15:01 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Waruschan Babachan
- * @version $Revision: 1.43 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.44 $ $Date: 2002/07/24 16:15:01 $
  */
 
 public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -183,11 +183,24 @@ public class CmsLogin extends CmsWorkplaceDefault implements I_CmsWpConstants,I_
                 }
             }
 
-            // please no GuestUsers in Workplace
             if((username != null) && (username.equals(cms.C_USER_GUEST))) {
+                // please no GuestUsers in Workplace
                 username = null;
                 xmlTemplateDocument.setData("details", "please no guest users here");
                 template = "error";
+            } else if ( (username != null) && 
+                (! cms.userInGroup(username, cms.C_GROUP_USERS)) && 
+                (! cms.userInGroup(username, cms.C_GROUP_PROJECTLEADER)) && 
+                (! cms.userInGroup(username, cms.C_GROUP_ADMIN)) ) {
+                // user MUST be in one of the default groups "Administrators", "Users" or "Projectmanagers"
+                try {
+                    // emulate the same behaviour as if the access was unauthorized
+                    throw new CmsException( "[com.opencms.file.genericSql.CmsResourceBroker]" + username, CmsException.C_NO_USER);
+                } catch (Exception e) {                    
+                    username = null;
+                    xmlTemplateDocument.setData("details", Utils.getStackTrace(e));
+                    template = "error";
+                }
             }
 
             // check if a user was found.
