@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/09 16:47:15 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2000/03/10 14:11:34 $
+ * Version: $Revision: 1.57 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.56 $ $Date: 2000/03/09 16:47:15 $
+ * @version $Revision: 1.57 $ $Date: 2000/03/10 14:11:34 $
  */
 public interface I_CmsWpConstants {
 
@@ -51,6 +51,9 @@ public interface I_CmsWpConstants {
 	
     /** Parameter for foldername  */
     public static final String C_PARA_FOLDER="folder";
+    
+    /** Parameter for foldertree  */
+    public static final String C_PARA_FOLDERTREE="foldertree";
    
     /** Parameter for filelist  */
     public static final String C_PARA_FILELIST="filelist";
@@ -123,11 +126,20 @@ public interface I_CmsWpConstants {
  
     /** Parameter for a new type*/
     public static final String C_PARA_NEWTYPE = "newtype";  
-    
+
+    /** Parameter for a formname*/
+    public static final String C_PARA_FORMNAME = "formname";  
+   
+   /** Parameter for a variable*/
+    public static final String C_PARA_VARIABLE = "variable";  
+
+    /** Parameter for a project*/
+    public static final String C_PARA_PROJECT = "project";  
+
     /** Parameter for a new type*/
     public static final String C_PARA_PANEL = "panel";  
 
-    
+
     // Filenames of workplace files
         
 	/** The filename to the icontemplate */
@@ -150,6 +162,11 @@ public interface I_CmsWpConstants {
 
     /** The explorer file list. */
     public static final String C_WP_EXPLORER_FILELIST="explorer_files.html";    
+
+  	/** The folder tree. */
+    public static final String C_WP_FOLDER_TREE="folder_tree.html";
+
+    
     
     // Filenames of special templates
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsCopy.java,v $
- * Date   : $Date: 2000/03/09 13:40:50 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/03/10 14:11:34 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.10 $ $Date: 2000/03/09 13:40:50 $
+ * @version $Revision: 1.11 $ $Date: 2000/03/10 14:11:34 $
  */
 public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -94,6 +94,15 @@ public class CmsCopy extends CmsWorkplaceDefault implements I_CmsWpConstants,
         String flags=(String)parameters.get(C_PARA_FLAGS);
         
         CmsFile file=(CmsFile)cms.readFileHeader(filename);
+        
+        // modify the folderaname if nescessary (the root folder is always given
+        // as a nice name)
+        if (newFolder!= null) {
+            CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);
+            if (newFolder.equals(lang.getLanguageValue("title.rootfolder"))) {
+                newFolder="/";
+            }
+        }
   
         //check if the newfile parameter was included in the request
         // if not, the copy page is shown for the first time

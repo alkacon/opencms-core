@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/03/10 14:11:34 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -38,12 +38,12 @@ import javax.servlet.http.*;
 import java.util.*;
 
 /**
- * Template class for displaying the folder tree of the OpenCms workplace.<P>
+ * Template class for displaying a folder tree <P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.16 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Revision: 1.17 $ $Date: 2000/03/10 14:11:34 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -59,6 +59,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
     
      /** Definition of the Datablock TREEENTRY */    
     private static final String C_TREEENTRY="TREEENTRY";
+
+    /** Definition of the Datablock TREEVAR */    
+    private static final String C_TREEVAR="TREEVAR";
     
     /** Definition of the Datablock TREEFOLDER */    
     private static final String C_TREEFOLDER="TREEFOLDER";
@@ -68,6 +71,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
 
      /** Definition of the Datablock TREELINE */    
     private static final String C_TREELINE="TREELINE";
+    
+    /** Definition of the Datablock TREELINEDISABLED */    
+    private static final String C_TREELINEDISABLED="TREELINEDISABLED";
     
      /** Definition of the Datablock TREEIMG_EMPTY0 */    
     private static final String C_TREEIMG_EMPTY0="TREEIMG_EMPTY0";
@@ -143,13 +149,32 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
          
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms,templateFile);        
-      
+        HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+       
+        // get the formname
+        String formname=(String)parameters.get(C_PARA_FORMNAME);
+        if (formname != null) {
+            session.putValue(C_PARA_FORMNAME,formname);        
+        }        
+        formname=(String)session.getValue(C_PARA_FORMNAME);
+        
+        // get the varname
+        String varname=(String)parameters.get(C_PARA_VARIABLE);
+        if (varname != null) {
+            session.putValue(C_PARA_VARIABLE,varname);        
+        }        
+        varname=(String)session.getValue(C_PARA_VARIABLE);       
+        
+        //set the required datablocks
+        xmlTemplateDocument.setXmlData("FORMNAME",formname);
+        xmlTemplateDocument.setXmlData("VARIABLE",varname);
+        
         // process the selected template
         return startProcessing(cms,xmlTemplateDocument,"",parameters,"template");
     }
     
     /**
-     * Creates the folder tree in the workplace explorer.
+     * Creates the folder tree i.
      * @exception Throws CmsException if something goes wrong.
      */
      public Object getTree(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
@@ -167,25 +192,18 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
             
             //check if a folder parameter was included in the request.
             // if a foldername was included, overwrite the value in the session for later use.
-            foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDER);
+            foldername=cms.getRequestContext().getRequest().getParameter(C_PARA_FOLDERTREE);
             if (foldername != null) {
-                session.putValue(C_PARA_FOLDER,foldername);
+                session.putValue(C_PARA_FOLDERTREE,foldername);
             }
 
             // get the current folder to be displayed as maximum folder in the tree.
-            currentFolder=(String)session.getValue(C_PARA_FOLDER);
+            currentFolder=(String)session.getValue(C_PARA_FOLDERTREE);
             if (currentFolder == null) {
                  currentFolder=cms.rootFolder().getAbsolutePath();
             }
             
-            
-            //check if a filelist  parameter was included in the request.
-            // if a filelist was included, overwrite the value in the session for later use.
-            filelist=cms.getRequestContext().getRequest().getParameter(C_PARA_FILELIST);
-            if (filelist != null) {
-            session.putValue(C_PARA_FILELIST,filelist);
-            }
-
+           
             // get the current folder to be displayed as maximum folder in the tree.
             currentFilelist=(String)session.getValue(C_PARA_FILELIST);
             if (currentFilelist==null) {
@@ -277,10 +295,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                             // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+curfolder);
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MEND,this);    
                             } else {
-                              template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                              template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+folder.getAbsolutePath());
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PEND,this); 
                             }
                         } else {
@@ -293,10 +311,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         if (subfolders.size() >0) {
                              // test if the + or minus must be displayed
                             if (endfolder.startsWith(folder.getAbsolutePath())) {
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+curfolder);
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+curfolder);
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_MCROSS,this);                          
                             } else {   
-                                template.setXmlData(C_TREELINK,C_WP_EXPLORER_TREE+"?"+C_PARA_FOLDER+"="+folder.getAbsolutePath());
+                                template.setXmlData(C_TREELINK,C_WP_FOLDER_TREE+"?"+C_PARA_FOLDERTREE+"="+folder.getAbsolutePath());
                                 treeswitch=template.getProcessedXmlDataValue(C_TREEIMG_PCROSS,this);
                             }
                         } else {
@@ -310,21 +328,30 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                         newtab=tab+template.getProcessedXmlDataValue(C_TREEIMG_VERT,this);     
                     }
                 
-                    // test if the folder is in the current project
+                   // test if the folder is in the current project
                     if (folder.inProject(cms.getRequestContext().currentProject())) {
                         template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
                     } else {
-                          template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
+                        template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
                     }
-
+ 
                     // set all data for the treeline tag
                     template.setXmlData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
                     template.setXmlData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
                     template.setXmlData(C_TREEENTRY,folder.getName());
+                    template.setXmlData(C_TREEVAR,folder.getAbsolutePath());
                     template.setXmlData(C_TREETAB,tab);
                     template.setXmlData(C_TREEFOLDER,folderimg);
                     template.setXmlData(C_TREESWITCH,treeswitch);
-                    output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
+                    // test if the folder is in the current project
+                    if (folder.inProject(cms.getRequestContext().currentProject())) {
+                        template.setXmlData(C_TREESTYLE,C_FILE_INPROJECT);
+                        output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
+                    } else {
+                        template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
+                        output.append(template.getProcessedXmlDataValue(C_TREELINEDISABLED,this));
+                    }
+                  
                 
                     //finally process all subfolders if nescessary
                     if (endfolder.startsWith(folder.getAbsolutePath())) {
@@ -348,9 +375,10 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
          
          if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
               (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
-              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {
-             access=true;
+              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {    
+              access=true;
          }
+               
          return access;
      }
   }

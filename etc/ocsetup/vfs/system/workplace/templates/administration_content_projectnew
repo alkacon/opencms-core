@@ -67,9 +67,11 @@ function show_help()
 							<tr>
 								<td class=formular valign=top>]]><LABEL value="label.allfolders" /><![CDATA[:</td>
 								<td class=dialogtxt>
-									]]><SELECT class="textfeld3" name="selectallfolders" width="300" method="getAllFolders" onchange="" size="8"/><![CDATA[
+								     <input type="text" name="selectallfolders" class="textfeld3" size=31>	
 								</td>
-								<td class=formular><a href="javascript:alert('Noch nicht implementiert');"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+								
+								<td class=formular><a href="javascript:opensmallwin('folder_tree.html?foldertree=/&formname=PROJECTNEW&variable=selectallfolders', 'explorer_viewer', 150, 300)"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>
+								
 							</tr>
 							<tr>
 								<td colspan=3 class=leerzeile>&nbsp;</td>

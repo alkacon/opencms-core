@@ -3,6 +3,8 @@
 <TEMPLATE>
 <![CDATA[
 <HTML>
+<!-- Include external JavaScripts-->
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 <script language=JavaScript>
 <!--
@@ -33,18 +35,18 @@ function show_help()
 			
 			<!-- Begin tablehead blue -->
 			<tr> 
-           		<td colspan=2 class="head">]]><LABEL value="title.move" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
+           		<td colspan=3 class="head">]]><LABEL value="title.move" /><![CDATA[: ]]><PROCESS>FILENAME</PROCESS><![CDATA[</td>
 			</tr>
 			<!-- Ende tablehead blue -->
 			
 			<!-- Begin empty row -->
 			<tr> 
-           		<td colspan=2 class="leerzeile">&nbsp;</td>
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
 			</tr>
 			<!-- End empty row -->
 			
 			<tr>
-				<td class=dialogtxt colspan=2>
+				<td class=dialogtxt colspan=3>
 					]]><LABEL value="input.title" /><![CDATA[: ]]><PROCESS>TITLE</PROCESS><![CDATA[<br>
 					]]><LABEL value="input.state" /><![CDATA[: ]]><PROCESS>STATE</PROCESS><![CDATA[<br>
 					]]><LABEL value="input.owner" /><![CDATA[: ]]><PROCESS>OWNER</PROCESS><![CDATA[<br>
@@ -55,23 +57,27 @@ function show_help()
 			<!-- Begin dropdown-->
 			<tr>
 				<td class=formular>]]><LABEL value="input.moveto" /><![CDATA[:</td>				
-				<td class=dialogtxt>
+				<!--<td class=dialogtxt>
 					]]><SELECT class="textfeld" name="folder" width="150" method="getFolder" /><![CDATA[
+				</td>-->
+				<td class=dialogtxt>
+					<input type="text" name="folder" class="textfeld" size=31>	
 				</td>
+				<td class=formular><a href="javascript:opensmallwin('folder_tree.html?foldertree=/&formname=MOVE&variable=folder', 'explorer_viewer', 150, 300)"><img src="]]><METHOD name="picsUrl">ic_file_folder.gif</METHOD><![CDATA[" border="0" alt="Durchsuchen"></a></td>			
 			</tr>
 			<!-- End dropdown-->
 			<tr> 
-           		<td colspan=2 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked>]]><LABEL value="input.keeprights" /><![CDATA[</td>
+           		<td colspan=3 class="dialogtxt"><INPUT type="checkbox" id=RIGHT name=RIGHT checked>]]><LABEL value="input.keeprights" /><![CDATA[</td>
 			</tr>
 			
 			<!-- Begin empty row -->
 			<tr> 
-           		<td colspan=2 class="leerzeile">&nbsp;</td>
+           		<td colspan=3 class="leerzeile">&nbsp;</td>
 			</tr>
 			<!-- End empty row -->
 			
 			<!-- Begin buttons -->
-			<tr><td class=dialogtxt colspan=2>
+			<tr><td class=dialogtxt colspan=3>
 				<table cellspacing=0 cellpadding=5 width=100%>
 				<tr>
 					<td class=formular align=right width=50%><INPUT class=button width=100 type="button" value="]]><LABEL value="button.ok" /><![CDATA[" id=OK name=OK onClick="location.href='move.html?&newfolder='+document.MOVE.folder.value+'&flags='+document.MOVE.RIGHT.checked;"></td>
