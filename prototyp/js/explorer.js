@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/prototyp/js/Attic/explorer.js,v $
- * Date   : $Date: 2000/11/15 12:57:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/11/17 14:07:21 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -321,7 +321,7 @@ function aC(id, name, parent) {
     if(theParent != null) { 
         theParent.childs[theParent.childs.length] = tree.nodes[nodeName]; 
     }
-    if (id == 0) { 
+    if (parent == -1) { 
         tree.root = tree.nodes[nodeName]; 
     }
 }
@@ -338,12 +338,28 @@ function rT() {
  *  open a folder via id
  */
 function openFolder(id){
-	var nodeName = '_n'+id;
-    tree.nodes[nodeName].open = 1;
-    
-    //window.frames[1].frames[1].frames[0].document.forms[0].url.value=window.frames[1].frames[1].frames[0].document.forms[0].url.value+tree.nodes[nodeName].name;
-    //TODO: send dirchecksum ( vi.checksum ) and ... to server
-	top.window.body.explorer_content.explorer_files.location = "explorer_files.html";
+
+    var pfad="";
+    top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value="";
+
+    do{
+
+        var nodeName='_n'+id;
+        pfad="/"+tree.nodes[nodeName].name;
+        top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value = pfad +top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value ;
+        id   = tree.nodes[nodeName].parent.id;
+        test = tree.nodes[nodeName].parent.id;
+
+    }while(id!=tree.root.id);
+    openurl();
+}
+
+function openurl(){
+    folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
+    top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum;
+
+    //window.alert("explorer_files.html?folder="+folder+"&check="+vi.checksum);
+
 }
 
 /**
@@ -376,7 +392,9 @@ function dfsToggle(id, node) {
 		tree.dfsToggleFound = true;
 		return;
 	}
+
 	for (var loop1=0; loop1<node.childs.length; loop1++) {
+
 		dfsToggle(id, node.childs[loop1]);
 		if (tree.dfsToggleFound) return;
 	}
@@ -415,6 +433,7 @@ function dfsTree(doc, node, depth, last, shape) {
 				showPic(doc, 0); //nothing
 			}
 		}
+
 		if (last) {
 			if (node.childs.length > 0) {
 				if (node.open) {
@@ -445,8 +464,10 @@ function dfsTree(doc, node, depth, last, shape) {
 		}
 	}
 
-	if (node.parent==null) doc.writeln("<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files' class='treefolder' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
-    	else doc.writeln("<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files'  class='treefolder' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+//	if (node.parent==null) doc.writeln("<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;,"+node+");' target='explorer_files' class='treefolder' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
+//    	else 
+
+    doc.writeln("<a href='javascript:top.openFolder(&quot;"+ node.id +"&quot;);' target='explorer_files'  class='treefolder' ;> &nbsp;"+ node.name + "</a></td></tr><tr valign=bottom><td valign=bottom align=left nowrap>");
 
 	if (node.open || node == tree.root) {
 		for (var loop1=0; loop1<node.childs.length; loop1++) {
@@ -571,12 +592,12 @@ function displayHead(doc){
             "body { margin-left:3px; margin-right:0px; margin-top:4px; margin-bottom:0px; margin-height:0px; marginspace=0; margin-top:3px;}"+
             "/"+"/"+"--></style>"+
             "</head><body bgcolor=#c0c0c0 background="+vi.iconPath+"bg_grau.gif>"+
-            "<form name=urlform>"+
+            "<form name=urlform onSubmit='javascript:top.openurl();return false;'>"+
             "<table cellspacing=0 cellpadding=0 border=0 valign=top>"+
             "<tr valign=center>"+
             "<td class=menu nowrap width=32px>"+
             "<a href=javascript:top.histGoBack(); onmouseover=\"top.chon(document,'bt_back');\" onmouseout=\"top.choff(document,'bt_back');\" >"+
-            "<img alt='back' width=32 height=32  border=0 name='bt_back' ></a></td>"+ 
+            "<img alt='back' width=32 height=32  border=0 name='bt_back'></a></td>"+ 
             "<td class=menu nowrap width=32px>"+
             "<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">"+
             "<img alt=up width=32 height=32 border=0 name=bt_up ></a></td>";
@@ -585,7 +606,8 @@ function displayHead(doc){
             "<td class=menubold nowrap align=right valign=middle><img border=0 id='bt_folder' name='bt_folder' width=16 height=16></td>"+ 
             "<td class=menubold nowrap align=right valign=middle><p class=einzug><font face=arial size=2> adress: </td>"+
             "<td class=menu nowrap align=left valign=middle><p class=einzug>"+
-            "<input class=textfeld2 value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url>"+
+//onChange='javascript:openurl();' 
+            "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url>"+
             "</td></tr></table></form></body></html>";
 
     doc.open();
@@ -777,12 +799,12 @@ function printList(wo){
             "<style type='text/css'>"+
             "<!"+"--"+
             "h1 { font-size:48pt; color:#FF0000; font-style:italic; } "+
-            "td.topic { background:#c0c0c0; font-size:9pt} "+
+            "td.topic { background:#c0c0c0; font-size:8pt} "+
             "a { text-decoration: none; } "+
-            "td{ font-family: arial, helvetica; font-size: 9pt; }; "+
+            "td{ font-family: arial, helvetica; font-size: 8pt; }; "+
 
             "td.filechanged{ color: #aa0000; background:#FFFFFF; } "+
-            "a.filechanged{  color: #aa0000; font-family: arial, helvetica; font-size: 9pt; } "+
+            "a.filechanged{  color: #aa0000; font-family: arial, helvetica; font-size: 8pt; } "+
             "a:visited.filechanged{ color: #aa0000; }"+
             "a:hover.filechanged { background:#000088; color:#FFFFFF; text-decoration: none; } "+
 
@@ -792,7 +814,7 @@ function printList(wo){
             "a:hover.filenew{ background:#000088 ; color:#FFFFFF; text-decoration: none; } "+
 
             "td.filedeleted{ color: #000000; background:#FFFFFF; text-decoration: line-through;} "+
-            "a.filedeleted{ color: #000000; font-family: arial, helvetica; font-size: 9pt; text  -decoration: line-through;} "+
+            "a.filedeleted{ color: #000000; font-family: arial, helvetica; font-size: 8pt; text  -decoration: line-through;} "+
             "a:visited.filedeleted{ color: #000000; text-decoration: line-through;} "+
             "a:hover.filedeleted{ background:#000088; color:#FFFFFF; text-decoration: underline; } "+
 
@@ -883,35 +905,38 @@ function printList(wo){
         for(a=0;a<vi.menus[vi.liste[i].type].items.length;a++){
 
             /* 0:unchanged",1:changed",2:new",3:deleted" */
-
-            if(vr.actProject==1){ /* online project? */
-                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
-                    wo.writeln("");
-                }
-                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
-                    wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-                }
-                if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
-                    wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
-                }
+            if(vi.menus[vi.liste[i].type].items[a].name=="-"){
+                wo.writeln("<tr><td><hr size=1></td></tr>");
             }else{
-                /* if not locked */
-                if(vi.liste[i].lockedBy == ''){
-                    display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+1);
+                if(vr.actProject==1){ /* online project? */
+                    if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='0'){
+                        wo.writeln("");
+                    }
+                    if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='1'){
+                        wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                    }
+                    if(vi.menus[vi.liste[i].type].items[a].rules.charAt(0)=='2'){
+                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                    }
                 }else{
-                    /* if locked by someone else */
-                    if(vi.liste[i].lockedBy != vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+9);
-                    /* if locked by me*/
-                    if(vi.liste[i].lockedBy == vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+5);
-                }
-                if(display == 0){
-                    wo.writeln("");
-                }
-                if(display == 1){
-                    wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
-                }
-                if(display == 2){
-                    wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                    /* if not locked */
+                    if(vi.liste[i].lockedBy == ''){
+                        display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+1);
+                    }else{
+                        /* if locked by someone else */
+                        if(vi.liste[i].lockedBy != vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+9);
+                        /* if locked by me*/
+                        if(vi.liste[i].lockedBy == vr.userName)display=vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].status+5);
+                    }
+                    if(display == 0){
+                        wo.writeln("");
+                    }
+                    if(display == 1){
+                        wo.writeln("<TR><TD class=inactive>"+vi.menus[vi.liste[i].type].items[a].name+"</TD></TR>");
+                    }
+                    if(display == 2){
+                        wo.writeln("<TR><TD><A class=kontextlink href='"+vi.menus[vi.liste[i].type].items[a].link+"'>"+vi.menus[vi.liste[i].type].items[a].name+"</a></td></tr>");
+                    }
                 }
             }
         }
