@@ -213,4 +213,22 @@ public class NewsTemplate extends CmsXmlTemplate {
 		}
 		return ret;
 	}
+    /**
+	 * Indicates if the results of this class are cacheable.
+	 * <P>
+	 * Checks if the templateCache is set and if all subtemplates
+	 * are cacheable.
+	 *
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+     * */
+    /*
+	public boolean isCacheable(CmsObject cms, String templateFile,
+            String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}*/
 }

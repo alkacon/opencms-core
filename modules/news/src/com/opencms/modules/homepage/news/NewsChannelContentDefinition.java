@@ -28,13 +28,13 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 	private static final String  C_INSERT_CHANNEL = "insert into news_channel values(?,?,?,?)";
 	private static final String  C_DELETE_CHANNEL = "delete from news_channel where ID = ?";
 	private static final String  C_COUNT = "select count(*) from news_channel";
-  private static final String  C_SELECT_ID = "select * from news_channel where ID = ?";
+    private static final String  C_SELECT_ID = "select * from news_channel where ID = ?";
 	private static final String  C_GET_ALL = "select * from news_channel order by name";
 	private static final String  C_UPDATE_CHANNEL = "update news_channel set name = ?, description = ?, lockstate = ? where id = ?";
 	private static final String  C_SELECT_NAME = "select * from news_channel where name = ?";
 
 	public static String	  C_TABLE_CHANNELS = "NEWS_CHANNEL";
-  public static final int   C_NOT_LOCKED = -1;
+    public static final int   C_NOT_LOCKED = -1;
 
   /* This code is executed on load-time of this class */
   static {
@@ -71,7 +71,7 @@ public class NewsChannelContentDefinition extends A_CmsContentDefinition impleme
 	 */
 	public NewsChannelContentDefinition(CmsObject cms, Integer ID) throws CmsException {
 		//System.err.println("NewsChannelContentDefinition: will lesen, ID= !"+ID);
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		try {

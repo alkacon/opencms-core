@@ -218,7 +218,7 @@ public class NewsBackoffice extends A_CmsBackoffice {
 		boolean dateError = false;   // could the date-string be parsed?
 		boolean channelError = false;
 		int channelId = 0;
-    String error = "";
+        String error = "";
 
 		//get value of id and the marker parameters.get("id");
 		String id = (String) parameters.get("id");
@@ -229,8 +229,21 @@ public class NewsBackoffice extends A_CmsBackoffice {
 		if (action == null || action.equals("")) {
 			templateSelector = "default";
 			template.setData("setaction", "default");
-			template.setData("date", NewsContentDefinition.date2string(actDate)); // set actual Date
+            // set actual Date
+			template.setData("date", NewsContentDefinition.date2string(actDate));
 			template.setData("link", "http://");
+            String firstname = cms.getRequestContext().currentUser().getFirstname();
+            String lastname = cms.getRequestContext().currentUser().getLastname();
+            String name = cms.getRequestContext().currentUser().getName();
+            if( (firstname != null && !firstname.equals(""))  &&
+                (lastname != null && !lastname.equals("") ))  {
+                template.setData("author", firstname + " " + lastname);
+            } else if(lastname != null && !lastname.equals("") ) {
+                template.setData("author", lastname);
+            } else {
+                template.setData("author", name);
+            }
+
 			//store marker in the session
 			//confirmation button pressed, process data!
 		} else {

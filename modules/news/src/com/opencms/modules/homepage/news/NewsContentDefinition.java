@@ -10,6 +10,9 @@ import java.util.*;
 import java.text.*;
 import java.io.*;
 import java.sql.*;
+import java.net.*;               // URL
+//import javax.servlet.*;
+import javax.servlet.http.*;     // HttpServletRequest
 
 /**
  * This is the Content Definition for the news entries.
@@ -37,6 +40,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	private int m_channel = -1;
 	private int m_lockstate = -1;
 
+    private static Locale m_locale = new Locale("Default", ""+Locale.getDefault());
+    //private static Locale m_locale = new Locale("en", ""+Locale.UK);
+
 	private boolean newElement = false;  // indicates if an element should be written or updated
 
 	private static String c_pool = null;
@@ -53,7 +59,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	private static final String  C_ORDER = "select * from news_entry order by ? desc";
 	private static final String  C_SELECT_CHANNEL_ID = "select count(*) from news_entry where channel = ?";
 	private static final String  C_SELECT_MONTH = "select * from news_entry where month(date)= ? and channel = ? order by date desc";
-	private static final String  C_SELECT_DAY = "select * from news_entry where date = ? and channel = ?";
+	private static final String  C_SELECT_DAY = "select * from news_entry where (date between ? and ?) and (channel = ?)";
 	private static final String  C_SELECT_FIRST_N_OF_CHANNEL = "select * from news_entry where channel = ? order by date desc";
 
     public static final String	 C_TABLE_NEWS = "NEWS_ENTRY";
@@ -91,7 +97,8 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 				m_author = res.getString(5);
 				m_link = res.getString(6);
 				m_linkText = res.getString(7);
-				java.util.Date tempDate = ((java.util.Date)res.getDate(8));
+                java.sql.Timestamp timestamp = res.getTimestamp(8);
+				java.util.Date tempDate = (java.util.Date)timestamp;
 				m_date.setTime( tempDate ); // SQLDate to Date to GregorianCalendar
 				//System.err.println("NewsContentDefinition" + m_date.get(Calendar.DATE)+"." + m_date.get(Calendar.MONTH)+"." + m_date.get(Calendar.YEAR) );
 				m_lockstate = res.getInt(9);
@@ -176,7 +183,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 								  String author,
 								  String link,
 								  String linkText,
-								  java.sql.Date date,
+								  java.sql.Timestamp date,
 								  int lockstate,
 								  int channel,
 								  String a_info1,
@@ -190,7 +197,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		m_link = link;
 		m_linkText = linkText;
 		m_date = new GregorianCalendar();
-		m_date.setTime( (java.util.Date)date ); // SQLDate to Date to GregorianCalendar
+        java.util.Date tmpDate = new java.util.Date(date.getTime());
+		//m_date.setTime( (java.util.Date)date ); // SQLDate to Date to GregorianCalendar
+        m_date.setTime(tmpDate);
 		m_channel = channel;
 		m_a_info1 = a_info1;
 		m_a_info2 = a_info2;
@@ -203,11 +212,14 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @param cms An instance of CmsObject
 	 */
 	public void write(CmsObject cms) throws Exception{
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
 		java.util.Date uDate = m_date.getTime();  	// GregorianCalendar to Date
-		java.sql.Date sqlDate = new java.sql.Date(uDate.getTime());  // Date to SQLDate
+        clearcache(cms); // clear the cache to make changes visible
+		//java.sql.Date sqlDate = new java.sql.Date(uDate.getTime());  // Date to SQLDate
+        java.sql.Timestamp sqlDate = new java.sql.Timestamp(uDate.getTime());
+        //sqlDate.setTime(uDate.getTime());
 		if(newElement == true) {
 			// Element not jet in Database -> insert Statement
 			try {
@@ -221,8 +233,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 				statement.setString(5, m_author);
 				statement.setString(6, m_link);
 				statement.setString(7, m_linkText);
-				statement.setDate(8, sqlDate);
-				statement.setInt(9, m_lockstate);
+				//statement.setDate(8, sqlDate);
+				statement.setTimestamp(8, sqlDate);
+                statement.setInt(9, m_lockstate);
 				statement.setInt(10, m_channel);
 				statement.setString(11, m_a_info1);
 				statement.setString(12, m_a_info2);
@@ -256,7 +269,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @param CmsObject
 	 * @param the new date (java.sql.Date)
 	 */
-	private void update(CmsObject cms, java.sql.Date sqlDate) throws CmsException {
+	private void update(CmsObject cms, java.sql.Timestamp sqlDate) throws CmsException {
         Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
@@ -270,8 +283,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			statement.setString(4, m_author);
 			statement.setString(5, m_link);
 			statement.setString(6, m_linkText);
-			statement.setDate(7, sqlDate);
-			statement.setInt(8, m_lockstate);
+			//statement.setDate(7, sqlDate);
+			statement.setTimestamp(7, sqlDate);
+            statement.setInt(8, m_lockstate);
 			statement.setInt(9, m_channel);
 			statement.setString(10, m_a_info1);
 			statement.setString(11, m_a_info2);
@@ -300,9 +314,10 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @param cms An instance of CmsObject
 	 */
 	public void delete(CmsObject cms) throws CmsException {
-    Connection con = null;
+        Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
+        clearcache(cms); // clear the cache to make changes visible
 		try {
 			// delet data from database
             con = DriverManager.getConnection(c_pool);
@@ -350,9 +365,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 		Vector methods = new Vector();
 		try {
 			methods.addElement(NewsContentDefinition.class.getMethod("getHeadline", new Class[0]));
-			methods.addElement(NewsContentDefinition.class.getMethod("getDescription", new Class[0]));
+			//methods.addElement(NewsContentDefinition.class.getMethod("getDescription", new Class[0]));
 			methods.addElement(NewsContentDefinition.class.getMethod("getAuthor", new Class[0]));
-			methods.addElement(NewsContentDefinition.class.getMethod("getLink", new Class[0]));
+			//methods.addElement(NewsContentDefinition.class.getMethod("getLink", new Class[0]));
 			methods.addElement(NewsContentDefinition.class.getMethod("getDate", new Class[0]));
 			methods.addElement(NewsContentDefinition.class.getMethod("getChannel", new Class[0]));
 		}catch(NoSuchMethodException e) {
@@ -368,9 +383,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	public static Vector getFieldNames(CmsObject cms) {
 		Vector names = new Vector();
 		names.addElement("Headline");
-		names.addElement("Description");
+		//names.addElement("Description");
 		names.addElement("Author");
-		names.addElement("Link");
+		//names.addElement("Link");
 		names.addElement("Date");
 		names.addElement("Channel");
 		return names;
@@ -382,9 +397,11 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static Vector getFilterMethods(CmsObject cms) {
 		Vector filterMethods = new Vector();
-    String showText = "";
+        String showText = "";
 		Integer actChannelId = null;  // has to be Integer because of Reflection!
-    Vector channels = null;
+        Vector channels = null;
+        GregorianCalendar actDate = new GregorianCalendar();
+        int actMonth = actDate.get(Calendar.MONTH) + 1;
     try {
 	  	channels = NewsChannelContentDefinition.getChannelList(); // get all actual channels
     }
@@ -402,9 +419,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			showText = ((NewsChannelContentDefinition)channels.elementAt(i)).getName();
 			actChannelId = new Integer(((NewsChannelContentDefinition)channels.elementAt(i)).getIntId());
 			try {
-				filterMethods.addElement(new CmsFilterMethod(showText +": list first ...", NewsContentDefinition.class.getMethod("getNewsList", new Class[] {Integer.class, String.class}), new Object[] {actChannelId}, "2"));
-				filterMethods.addElement(new CmsFilterMethod(showText +": get day ...", NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_DAY}));
-				filterMethods.addElement(new CmsFilterMethod(showText +": get month ..." ,  NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_MONTH}));
+				filterMethods.addElement(new CmsFilterMethod(showText +": list first ...", NewsContentDefinition.class.getMethod("getNewsList", new Class[] {Integer.class, String.class}), new Object[] {actChannelId}, "15"));
+				//filterMethods.addElement(new CmsFilterMethod(showText +": get day ...", NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_DAY}, date2shortString(actDate) ));
+				filterMethods.addElement(new CmsFilterMethod(showText +": get month ..." ,  NewsContentDefinition.class.getMethod("getDynamicList", new Class[] {Integer.class, Integer.class, String.class}), new Object[] {actChannelId, C_FLAG_MONTH}, ""+actMonth));
 			}catch(NoSuchMethodException e) {
 				System.err.println("Exception in NewsContentDefinition.getFilterMethods(CmsObject)!"+ e.getMessage());
 			}
@@ -448,7 +465,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 														  res.getString(5),  // Author
 														  res.getString(6),  // link
 														  res.getString(7),  // linkText
-														  res.getDate(8),    // Date
+														  res.getTimestamp(8),    // Date
 														  res.getInt(9),  // Lockstate
 														  res.getInt(10),    // Channel
 														  res.getString(11), // a_info
@@ -537,7 +554,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 														  res.getString(5), // Author
 														  res.getString(6), // link
 														  res.getString(7), // linkText
-														  res.getDate(8),   // Date
+														  res.getTimestamp(8),   // Date
 														  res.getInt(9),    // Lockstate
 														  res.getInt(10),   // Channel
 														  res.getString(11),// a_info
@@ -628,7 +645,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 														  res.getString(5), // Author
 														  res.getString(6), // link
 														  res.getString(7), // linkText
-														  res.getDate(8),   // Date
+														  res.getTimestamp(8),   // Date
 														  res.getInt(9), // Lockstate
 														  res.getInt(10),   // Channel
 														  res.getString(11),// a_info
@@ -663,7 +680,8 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static Vector getDynamicList(Integer channelId, Integer flag, String str) throws CmsException {
 		Vector list = new Vector();
-		java.sql.Date day = null;
+		java.sql.Timestamp day = null;
+        GregorianCalendar dayEnd = new GregorianCalendar();
         Connection con = null;
 		PreparedStatement statement = null;
 		ResultSet res = null;
@@ -680,13 +698,21 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			    // "day"
 			if( (str == null) || (str.equals("")) || (str.equals(" "))) {
 				try{
-					day = string2sqlDate("01.01.2000"); // this default value seems to be needed by A_Backoffice
-				}catch(ParseException e) {
+					//day = shortString2sqlTimestamp("01.01.2000"); // this default value seems to be needed by A_Backoffice
+				    day = date2Timestamp(dayEnd);
+                    dayEnd.set(Calendar.HOUR, 23);
+                    dayEnd.set(Calendar.MINUTE, 59);
+                    dayEnd.set(Calendar.SECOND, 59);
+                }catch(Exception e) {
 					System.err.println("[NewsContentDefinition.getDynamicList()] Exception while trying to parse the date: "+e.getMessage());
 				}
 			}else {
 				try{;
-					day = string2sqlDate(str);  // now a real date is parsed
+					day = shortString2sqlTimestamp(str);  // now a real date is parsed
+                    dayEnd = shortString2date(str);
+                    dayEnd.set(Calendar.HOUR, 23);
+                    dayEnd.set(Calendar.MINUTE, 59);
+                    dayEnd.set(Calendar.SECOND, 59);
 				}catch(ParseException e) {
 					System.err.println("[NewsContentDefinition.getDynamicList()] Exception while trying to parse the date: "+e.getMessage());
 				}
@@ -701,8 +727,9 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 			}else{
 				// "day"
 				statement = con.prepareStatement(C_SELECT_DAY);
-				statement.setDate(1, day);
-				statement.setInt(2, channelId.intValue());
+				statement.setTimestamp(1, day);
+                statement.setTimestamp(2, date2Timestamp(dayEnd) );
+				statement.setInt(3, channelId.intValue());
 			}
 			res = statement.executeQuery();
 			while(res.next()){
@@ -715,7 +742,7 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 														  res.getString(5), // Author
 														  res.getString(6), // link
 														  res.getString(7), // linkText
-														  res.getDate(8),   // Date
+														  res.getTimestamp(8),   // Date
 														  res.getInt(9),    // Lockstate
 														  res.getInt(10),   // Channel
 														  res.getString(11),// a_info
@@ -1024,9 +1051,21 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 */
 	public static String date2string(GregorianCalendar cal) {
 		DateFormat df;
-		df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                                            DateFormat.MEDIUM, m_locale);
 		return df.format(cal.getTime());
 	}
+    /**
+	 * method to convert a GregrianCalendar date to a String
+	 * @parame the GregrianCalendar date
+	 * @return the date as a String
+	 */
+	public static String date2shortString(GregorianCalendar cal) {
+		DateFormat df;
+		df = DateFormat.getDateInstance(DateFormat.MEDIUM, m_locale);
+		return df.format(cal.getTime());
+	}
+
 
 	/**
 	 * method to convert a string date to a GregorianCalendar date.
@@ -1037,7 +1076,25 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	public static GregorianCalendar string2date(String sDate) throws ParseException {
 		DateFormat df;
 		GregorianCalendar ret = new GregorianCalendar();
-		df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+                                            DateFormat.MEDIUM, m_locale);
+		java.util.Date date = df.parse(sDate);
+		//System.err.println("string2date " + date.toString());
+		ret.setTime(date);
+		//System.err.println("string2date " + ret.get(Calendar.DATE)+"." + ret.get(Calendar.MONTH)+"." + ret.get(Calendar.YEAR) );
+		return ret;
+	}
+
+    /**
+	 * method to convert a string date to a GregorianCalendar date.
+	 * The method throws a ParseException if the string cannot be converted.
+	 * @param the date as a String
+	 * @return the date as a GregorianCalendar
+	 */
+	public static GregorianCalendar shortString2date(String sDate) throws ParseException {
+		DateFormat df;
+		GregorianCalendar ret = new GregorianCalendar();
+		df = DateFormat.getDateInstance(DateFormat.MEDIUM, m_locale);
 		java.util.Date date = df.parse(sDate);
 		//System.err.println("string2date " + date.toString());
 		ret.setTime(date);
@@ -1051,14 +1108,36 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
 	 * @param the date as a String
 	 * @return the date as a sqlDate
 	 */
-	public static java.sql.Date string2sqlDate(String sDate) throws ParseException {
+	public static java.sql.Timestamp string2sqlTimestamp(String sDate) throws ParseException {
 		DateFormat df;
-		df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		//df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, m_locale);
 		java.util.Date uDate = df.parse(sDate);
 		//System.err.println("string2sqlDate " + uDate.toString());
-		java.sql.Date sqlDate = new java.sql.Date(uDate.getTime());  // Date to SQLDate
-		return sqlDate;
+		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(uDate.getTime());  // Date to SQLDate
+		return sqlTimestamp;
 	}
+
+    /**
+	 * method to convert a string date to a sqlDate date.
+	 * The method throws a ParseException if the string cannot be converted.
+	 * @param the date as a String
+	 * @return the date as a sqlDate
+	 */
+	public static java.sql.Timestamp shortString2sqlTimestamp(String sDate) throws ParseException {
+		DateFormat df;
+		//df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        df = DateFormat.getDateInstance(DateFormat.MEDIUM, m_locale);
+		java.util.Date uDate = df.parse(sDate);
+		//System.err.println("string2sqlDate " + uDate.toString());
+		java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(uDate.getTime());  // Date to SQLDate
+		return sqlTimestamp;
+	}
+
+    public static java.sql.Timestamp date2Timestamp(GregorianCalendar gDate) {
+        java.util.Date date= gDate.getTime();
+        return new java.sql.Timestamp( date.getTime() );
+    }
 
   /**
    * method to update the poolname
@@ -1067,6 +1146,34 @@ public class NewsContentDefinition extends A_CmsContentDefinition implements I_C
    */
   public static void updatePoolName(String pool) {
     c_pool = pool;
+  }
+
+  /**
+   * method to clear the cache
+   * is invoked from write and delete
+   * @param CmsObject cms
+   */
+  private void clearcache(CmsObject cms) {
+    URL u = null;
+    String p = ((HttpServletRequest)
+                cms.getRequestContext().getRequest().getOriginalRequest()
+                ).getServletPath();
+    String s = ((HttpServletRequest)
+                cms.getRequestContext().getRequest().getOriginalRequest()
+                ).getServerName();
+    try {
+        u = new URL("http://" +s +p
+                    +"/system/workplace/action/login.html?_clearcache=all");
+        URLConnection uc = u.openConnection();
+        uc.connect();
+        InputStream in = uc.getInputStream();
+        //System.err.println("clearcache o.k.!");
+    } catch(MalformedURLException e) {
+        System.err.println("Exception1: " +e.getMessage() );
+    } catch (IOException e) {
+        System.err.println("Exception2: " +e.getMessage() );
+    }
+
   }
 
 }
