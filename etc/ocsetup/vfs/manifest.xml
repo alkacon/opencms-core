@@ -16,9 +16,9 @@
             <access>95</access>
             <properties>
                 <property>
-                    <name>dynamic</name>
+                    <name>export</name>
                     <type>0</type>
-                    <value><![CDATA[true]]></value>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
@@ -3273,9 +3273,9 @@
             <access>95</access>
             <properties>
                 <property>
-                    <name>dynamic</name>
+                    <name>export</name>
                     <type>0</type>
-                    <value><![CDATA[true]]></value>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>
@@ -3295,9 +3295,9 @@
             <access>79</access>
             <properties>
                 <property>
-                    <name>dynamic</name>
+                    <name>export</name>
                     <type>0</type>
-                    <value><![CDATA[true]]></value>
+                    <value><![CDATA[false]]></value>
                 </property>
             </properties>
         </file>

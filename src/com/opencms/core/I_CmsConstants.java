@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.192 $
+* Date   : $Date: 2001/12/21 13:19:31 $
+* Version: $Revision: 1.193 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  *
- * @version $Revision: 1.192 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.193 $ $Date: 2001/12/21 13:19:31 $
  */
 public interface I_CmsConstants {
 
@@ -173,7 +173,7 @@ public interface I_CmsConstants {
      * Property for resource export name. When resource is exported
      * by the static export this name is used instead of the realname.
      */
-    static final String C_PROPERTY_DYAMIC = "dynamic";
+    static final String C_PROPERTY_EXPORT = "export";
 
     /**
      * Property for resource navigation title

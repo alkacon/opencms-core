@@ -36,11 +36,11 @@ createPropertydefinition module compatiblePlain
 createPropertydefinition Description binary
 createPropertydefinition Keywords binary
 createPropertydefinition Description image
-createPropertydefinition dynamic compatiblePlain
-createPropertydefinition dynamic folder
-createPropertydefinition dynamic plain
-createPropertydefinition dynamic page
-createPropertydefinition dynamic link
+createPropertydefinition export compatiblePlain
+createPropertydefinition export folder
+createPropertydefinition export plain
+createPropertydefinition export page
+createPropertydefinition export link
 createPropertydefinition exportname compatiblePlain
 createPropertydefinition exportname folder
 createPropertydefinition exportname plain

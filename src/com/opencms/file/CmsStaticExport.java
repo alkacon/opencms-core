@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsStaticExport.java,v $
-* Date   : $Date: 2001/12/20 15:29:37 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/12/21 13:19:31 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.apache.oro.text.perl.*;
  * to the filesystem.
  *
  * @author Hanjo Riege
- * @version $Revision: 1.5 $ $Date: 2001/12/20 15:29:37 $
+ * @version $Revision: 1.6 $ $Date: 2001/12/21 13:19:31 $
  */
 public class CmsStaticExport implements I_CmsConstants{
 
@@ -59,6 +59,11 @@ public class CmsStaticExport implements I_CmsConstants{
      * The export path.
      */
     private String m_exportPath;
+
+    /**
+     * Value for resources with property export = false
+     */
+    static final String C_EXPORT_FALSE = "export value was set to false";
 
     /**
      * Additional rules for the export generated dynamical.
@@ -178,7 +183,7 @@ public class CmsStaticExport implements I_CmsConstants{
         // now the rules for linking between static and dynamic pages
         try{
             // get the resources with the property "dynamic"
-            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_DYAMIC);
+            Vector resWithProp = m_cms.getResourcesWithProperty(C_PROPERTY_EXPORT);
             // generate the rules
             if(resWithProp != null && resWithProp.size() != 0){
                 m_dynamicExportRulesExtern = new Vector();
@@ -186,12 +191,16 @@ public class CmsStaticExport implements I_CmsConstants{
                 for(int i=0; i < resWithProp.size(); i++){
                     CmsResource resource = (CmsResource)resWithProp.elementAt(i);
                     String resName = resource.getAbsolutePath();
-                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_DYAMIC);
-                    if(propertyValue != null && (propertyValue.equalsIgnoreCase("true")
-                              || propertyValue.equalsIgnoreCase("https"))){
-                        // first we can create the dynamic rule for extern (it is the same for true and https
-                        m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
-                        if(propertyValue.equalsIgnoreCase("true")){
+                    String propertyValue = m_cms.readProperty(resName, C_PROPERTY_EXPORT);
+                    if(propertyValue != null && (propertyValue.equalsIgnoreCase("dynamic")
+                              || propertyValue.equalsIgnoreCase("https") || propertyValue.equalsIgnoreCase("false"))){
+                        // first we can create the dynamic rule for extern (it is the same for true and https)
+                        if(propertyValue.equalsIgnoreCase("false")){
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*#export value was set to false#");
+                        }else{
+                            m_dynamicExportRulesExtern.addElement("s#^"+resName+".*##");
+                        }
+                        if(propertyValue.equalsIgnoreCase("dynamic") || propertyValue.equalsIgnoreCase("false")){
                             // create the rules for dynamic pages
                             m_dynamicExportRulesOnline.addElement("s#^("+resName+")#"+ m_cms.getUrlPrefixArray()[1] +"$1#");
                         }else{
@@ -233,6 +242,10 @@ public class CmsStaticExport implements I_CmsConstants{
             boolean writeFile = true;
             if(externLink == null || externLink.equals("")){
                 writeFile = false;
+            }
+            if(C_EXPORT_FALSE.equals(externLink)){
+                // this should not be exported and has no links on it that must be exported
+                return;
             }
             if(paraStart >= 0){
                 Hashtable parameter = javax.servlet.http.HttpUtils.parseQueryString(

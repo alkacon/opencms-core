@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2001/12/20 15:29:38 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2001/12/21 13:19:31 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.apache.oro.text.perl.*;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -95,16 +95,24 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault implements I_CmsCo
                 System.err.println("----------------------------------------");
                 System.err.println("");
                 System.err.println("---- Online ----");
-                for(int i=0; i<CmsStaticExport.m_dynamicExportRulesOnline.size();System.err.println(CmsStaticExport.m_dynamicExportRulesOnline.elementAt(i++)));
+                if(CmsStaticExport.m_dynamicExportRulesOnline != null){
+                    for(int i=0; i<CmsStaticExport.m_dynamicExportRulesOnline.size();System.err.println(CmsStaticExport.m_dynamicExportRulesOnline.elementAt(i++)));
+                }
                 System.err.println("");
                 System.err.println("---- Extern ----");
-                for(int i=0; i<CmsStaticExport.m_dynamicExportRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportRulesExtern.elementAt(i++)));
+                if(CmsStaticExport.m_dynamicExportRulesExtern != null){
+                    for(int i=0; i<CmsStaticExport.m_dynamicExportRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportRulesExtern.elementAt(i++)));
+                }
                 System.err.println("");
                 System.err.println("---- nicename Online ----");
-                for(int i=0; i<CmsStaticExport.m_dynamicExportNameRules.size();System.err.println(CmsStaticExport.m_dynamicExportNameRules.elementAt(i++)));
+                if(CmsStaticExport.m_dynamicExportNameRules != null){
+                    for(int i=0; i<CmsStaticExport.m_dynamicExportNameRules.size();System.err.println(CmsStaticExport.m_dynamicExportNameRules.elementAt(i++)));
+                }
                 System.err.println("");
                 System.err.println("---- nicename  Extern----");
-                for(int i=0; i<CmsStaticExport.m_dynamicExportNameRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportNameRulesExtern.elementAt(i++)));
+                if(CmsStaticExport.m_dynamicExportNameRulesExtern != null){
+                    for(int i=0; i<CmsStaticExport.m_dynamicExportNameRulesExtern.size();System.err.println(CmsStaticExport.m_dynamicExportNameRulesExtern.elementAt(i++)));
+                }
                 System.err.println("");
             }
         }
