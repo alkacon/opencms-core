@@ -1,26 +1,29 @@
 /*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetupUtils.java,v $
+* Date   : $Date: 2001/07/31 15:50:12 $
+* Version: $Revision: 1.13 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.boot;
@@ -597,11 +600,11 @@ public class CmsSetupUtils {
      * @param usedJDK The JDK version in use
      */
     public static void writeVersionInfo(String thisEngine, String usedJDK, String basePath){
-		FileOutputStream fOut = null;
-		DataOutputStream dOut = null;
-		byte[] content = null;
-		FileInputStream fileStream = null;
-		int charsRead;
+        FileOutputStream fOut = null;
+        DataOutputStream dOut = null;
+        byte[] content = null;
+        FileInputStream fileStream = null;
+        int charsRead;
         String newEntry = new String();
         newEntry = "\n############### currently used configuration ################\n"+
                    "Date:                "+DateFormat.getDateTimeInstance().format(new java.util.Date(System.currentTimeMillis()))+'\n'+
@@ -609,25 +612,25 @@ public class CmsSetupUtils {
                    "Used Servlet Engine: "+thisEngine+'\n';
         content = newEntry.getBytes();
         String filename = basePath+"WEB-INF/ocsetup/versions.txt";
-		try {
+        try {
             File file = new File(filename);
             if(file.exists()){
                 // new FileOutputStream of the existing file with parameter append=true
                 fOut = new FileOutputStream(filename, true);
             } else {
-			    fOut = new FileOutputStream(file);
+                fOut = new FileOutputStream(file);
             }
-			// write the content to the file in server filesystem
-			dOut = new DataOutputStream(fOut);
-			dOut.write(content);
-			dOut.flush();
-		} catch (IOException e) {
-		} finally {
-			try {
-				if (fOut != null)
-					fOut.close();
-			} catch (IOException e) {
-			}
-		}
+            // write the content to the file in server filesystem
+            dOut = new DataOutputStream(fOut);
+            dOut.write(content);
+            dOut.flush();
+        } catch (IOException e) {
+        } finally {
+            try {
+                if (fOut != null)
+                    fOut.close();
+            } catch (IOException e) {
+            }
+        }
     }
 }

@@ -1,29 +1,32 @@
-package com.opencms.defaults;
-
 /*
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.12 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.defaults;
 
 import com.opencms.template.*;
 import com.opencms.workplace.*;
@@ -38,12 +41,12 @@ import java.lang.reflect.*;
 /**
  * Abstract class for generic backoffice display. It automatically
  * generates the <ul><li>head section with filters and buttons,</li>
- * 					<li>body section with the table data,</li>
- * 					<li>lock states of the entries. if there are any,</li>
- *					<li>delete dialog,</li>
- *					<li>lock dialog.</li></ul>
+ *                  <li>body section with the table data,</li>
+ *                  <li>lock states of the entries. if there are any,</li>
+ *                  <li>delete dialog,</li>
+ *                  <li>lock dialog.</li></ul>
  * calls the <ul><li>edit dialog of the calling backoffice class</li>
- *				<li>new dialog of the calling backoffice class</li></ul>
+ *              <li>new dialog of the calling backoffice class</li></ul>
  * using the content definition class defined by the getContentDefinition method.
  * The methods and data provided by the content definition class
  * is accessed by reflection. This way it is possible to re-use
@@ -116,30 +119,30 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault implements I_C
 
 public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
 
-	//return var
-	byte[] returnProcess = null;
+    //return var
+    byte[] returnProcess = null;
 
         String error="";
 
         // the CD to be used
          A_CmsContentDefinition cd=null;
 
-	// session will be created or fetched
-	I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
-	//create new workplace templatefile object
-	CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);
-	//get parameters
-	String selectBox = (String) parameters.get("selectbox");
-	String filterParam = (String) parameters.get("filterparameter");
-	String id = (String) parameters.get("id");
-	String idlock = (String) parameters.get("idlock");
-	String iddelete = (String) parameters.get("iddelete");
-	String idedit = (String) parameters.get("idedit");
+    // session will be created or fetched
+    I_CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+    //create new workplace templatefile object
+    CmsXmlWpTemplateFile template = new CmsXmlWpTemplateFile(cms, templateFile);
+    //get parameters
+    String selectBox = (String) parameters.get("selectbox");
+    String filterParam = (String) parameters.get("filterparameter");
+    String id = (String) parameters.get("id");
+    String idlock = (String) parameters.get("idlock");
+    String iddelete = (String) parameters.get("iddelete");
+    String idedit = (String) parameters.get("idedit");
         String idview = (String) parameters.get("idview");
-	String action = (String) parameters.get("action");
+    String action = (String) parameters.get("action");
         String parentId = (String) parameters.get("parentId");
-	String ok = (String) parameters.get("ok");
-	String setaction = (String) parameters.get("setaction");
+    String ok = (String) parameters.get("ok");
+    String setaction = (String) parameters.get("setaction");
 
         // debug-code
         /*
@@ -165,52 +168,52 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         System.err.println("-------------------------------------------------");
         */
 
-	String hasFilterParam = (String) session.getValue("filterparameter");
-	template.setData("filternumber","0");
+    String hasFilterParam = (String) session.getValue("filterparameter");
+    template.setData("filternumber","0");
 
-	//change filter
-	if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
-	  if (selectBox != null) {
-	    session.putValue("filter", selectBox);
-	    template.setData("filternumber",selectBox);
-	  }
-	} else {
-	  template.setData("filternumber", (String)session.getValue("filter"));
-	}
+    //change filter
+    if ((hasFilterParam == null) && (filterParam == null) && (setaction == null)) {
+      if (selectBox != null) {
+        session.putValue("filter", selectBox);
+        template.setData("filternumber",selectBox);
+      }
+    } else {
+      template.setData("filternumber", (String)session.getValue("filter"));
+    }
 
-	//move id values to id, remove old markers
-	if (idlock != null) {
-	  id = idlock;
-	  session.putValue("idlock", idlock);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("iddelete");
-	}
-	if (idedit != null) {
-	  id = idedit;
-	  session.putValue("idedit", idedit);
-	  session.removeValue("idlock");
-	  session.removeValue("idnew");
-	  session.removeValue("iddelete");
-	}
-	if (iddelete != null) {
-	  id = iddelete;
-	  session.putValue("iddelete", iddelete);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("idlock");
-	}
-	if ((id != null) && (id.equals("new"))) {
-	  session.putValue("idnew", id);
-	  session.removeValue("idedit");
-	  session.removeValue("idnew");
-	  session.removeValue("iddelete");
-	  session.removeValue("idlock");
-	}
+    //move id values to id, remove old markers
+    if (idlock != null) {
+      id = idlock;
+      session.putValue("idlock", idlock);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("iddelete");
+    }
+    if (idedit != null) {
+      id = idedit;
+      session.putValue("idedit", idedit);
+      session.removeValue("idlock");
+      session.removeValue("idnew");
+      session.removeValue("iddelete");
+    }
+    if (iddelete != null) {
+      id = iddelete;
+      session.putValue("iddelete", iddelete);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("idlock");
+    }
+    if ((id != null) && (id.equals("new"))) {
+      session.putValue("idnew", id);
+      session.removeValue("idedit");
+      session.removeValue("idnew");
+      session.removeValue("iddelete");
+      session.removeValue("idlock");
+    }
 
-	//get marker id from session
-	String idsave = (String) session.getValue("idsave");
-	if (ok == null) {
+    //get marker id from session
+    String idsave = (String) session.getValue("idsave");
+    if (ok == null) {
           idsave = null;
         }
 
@@ -218,85 +221,85 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
           session.putValue("parentId", parentId);
         }
 
-	//get marker for accessing the new dialog
-	String idnewsave = (String) session.getValue("idnew");
+    //get marker for accessing the new dialog
+    String idnewsave = (String) session.getValue("idnew");
 
 
         // --- This is the part when getContentNew is called ---
-	//access to new dialog
-	if ((id != null) && (id.equals("new")) || ((idsave != null) && (idsave.equals("new")))) {
+    //access to new dialog
+    if ((id != null) && (id.equals("new")) || ((idsave != null) && (idsave.equals("new")))) {
           if (idsave != null) {
-	    parameters.put("id", idsave);
+        parameters.put("id", idsave);
           }
-	  if (id != null) {
-	    parameters.put("id", id);
+      if (id != null) {
+        parameters.put("id", id);
             session.putValue("idsave", id);
           }
           return getContentNewInternal(cms,id,cd,session,template,elementName,parameters,templateSelector);
 
         // --- This was the part when getContentNew is called ---
-	}
+    }
 
-	//go to the appropriate getContent methods
-	if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null))  {
-  	  //process the head frame containing the filter
-	  returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
-	  //finally return processed data
-	  return returnProcess;
-	} else {
-	  //process the body frame containing the table
+    //go to the appropriate getContent methods
+    if ((id == null) && (idsave == null) && (action == null) && (idlock==null) && (iddelete == null) && (idedit == null))  {
+      //process the head frame containing the filter
+      returnProcess = getContentHead(cms, template, elementName, parameters, templateSelector);
+      //finally return processed data
+      return returnProcess;
+    } else {
+      //process the body frame containing the table
           if(action == null) {
             action = "";
           }
           if (action.equalsIgnoreCase("list")){
-	    //process the list output
+        //process the list output
             // clear "idsave" here in case user verification of data failed and input has to be shown again ...
             session.removeValue("idsave");
-	    returnProcess = getContentList(cms, template, elementName, parameters, templateSelector);
-	    //finally return processed data
+        returnProcess = getContentList(cms, template, elementName, parameters, templateSelector);
+        //finally return processed data
             return returnProcess;
-	  } else {
+      } else {
 
            // --- This is the part where getContentEdit is called ---
 
-	    //get marker for accessing the edit dialog
+        //get marker for accessing the edit dialog
             String ideditsave = (String) session.getValue("idedit");
             //go to the edit dialog
-	    if ((idedit != null) || (ideditsave != null)) {
+        if ((idedit != null) || (ideditsave != null)) {
               if (idsave != null) {
-	        parameters.put("id", idsave);
+            parameters.put("id", idsave);
               }
-	      if (id != null) {
-		parameters.put("id", id);
+          if (id != null) {
+        parameters.put("id", id);
                 session.putValue("idsave", id);
               }
               return getContentEditInternal(cms,id,cd,session,template,elementName,parameters,templateSelector);
 
            // --- This was the part where getContentEdit is called ---
 
-	  } else {
-	    //store id parameters for delete and lock
+      } else {
+        //store id parameters for delete and lock
             if (idsave != null) {
-	      parameters.put("id", idsave);
+          parameters.put("id", idsave);
               session.removeValue("idsave");
             } else {
               parameters.put("id", id);
               session.putValue("idsave", id);
-	    }
+        }
             //get marker for accessing the delete dialog
-	    String iddeletesave = (String) session.getValue("iddelete");
-	    //access delete dialog
-	    if (((iddelete != null) || (iddeletesave != null)) && (idlock == null)) {
-	      returnProcess = getContentDelete(cms, template, elementName, parameters, templateSelector);
+        String iddeletesave = (String) session.getValue("iddelete");
+        //access delete dialog
+        if (((iddelete != null) || (iddeletesave != null)) && (idlock == null)) {
+          returnProcess = getContentDelete(cms, template, elementName, parameters, templateSelector);
               return returnProcess;
             }else {
-	      //access lock dialog
-	      returnProcess = getContentLock(cms, template, elementName, parameters, templateSelector);
-	      //finally return processed data
-	      return returnProcess;
-	    }
+          //access lock dialog
+          returnProcess = getContentLock(cms, template, elementName, parameters, templateSelector);
+          //finally return processed data
+          return returnProcess;
+        }
           }
-	}
+    }
       }
 }
 
@@ -318,20 +321,20 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         o = c.newInstance(new Object[] {cms, id});
       } catch (InvocationTargetException ite) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
         }
       } catch (NoSuchMethodException nsm) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
           A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
-	}
+    }
       } catch (InstantiationException ie) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
         }
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
-	}
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
+    }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
          A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
         }
@@ -347,23 +350,23 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     Object o = null;
       try {
         Constructor c = cdClass.getConstructor(new Class[] {CmsObject.class});
-	o = c.newInstance(new Object[] {cms});
+    o = c.newInstance(new Object[] {cms});
       } catch (InvocationTargetException ite) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
-	}
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Invocation target exception!");
+    }
       } catch (NoSuchMethodException nsm) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
-	}
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+    }
       } catch (InstantiationException ie) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
-	}
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+    }
       } catch (Exception e) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
-	}
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Other exception! "+e);
+    }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
         }
@@ -386,11 +389,11 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       }
     } catch (NoSuchMethodException nsm) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
+    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: Requested method was not found!");
       }
     } catch (InstantiationException ie) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
+    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice contentDefinitionConstructor: the reflected class is abstract!");
       }
     } catch (Exception e) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
@@ -443,23 +446,23 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     if (action == null || action.equals("")) {
       if (id != "") {
         //set template section
-	templateSelector = "delete";
+    templateSelector = "delete";
 
-	//create appropriate class name with underscores for labels
-/*	String moduleName = "";
-	moduleName = (String) getClass().toString(); //get name
-	moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
-	moduleName = moduleName.trim();
-	moduleName = moduleName.replace('.', '_'); //replace dots with underscores
+    //create appropriate class name with underscores for labels
+/*  String moduleName = "";
+    moduleName = (String) getClass().toString(); //get name
+    moduleName = moduleName.substring(5); //remove 'class' substring at the beginning
+    moduleName = moduleName.trim();
+    moduleName = moduleName.replace('.', '_'); //replace dots with underscores
 */
         //create new language file object
-	CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+    CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
 
-	//get the dialog from the langauge file and set it in the template
-	template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
-	template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
-	template.setData("newsentry", id);
-	template.setData("setaction", "default");
+    //get the dialog from the langauge file and set it in the template
+    template.setData("deletetitle", lang.getLanguageValue("messagebox.title.delete"));
+    template.setData("deletedialog", lang.getLanguageValue("messagebox.message1.delete"));
+    template.setData("newsentry", id);
+    template.setData("setaction", "default");
       }
       // confirmation button pressed, process data!
     } else {
@@ -472,22 +475,22 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       try {
         idInteger = Integer.valueOf(id);
       } catch (Exception e) {
-	//access content definition constructor by reflection
-	Object o = null;
-	o = getContentDefinition(cms, cdClass, id);
-	//get delete method and delete content definition instance
-	try {
+    //access content definition constructor by reflection
+    Object o = null;
+    o = getContentDefinition(cms, cdClass, id);
+    //get delete method and delete content definition instance
+    try {
          ((A_CmsContentDefinition) o).delete(cms);
-	} catch (Exception e1) {
+    } catch (Exception e1) {
           if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
-	}
-	  templateSelector = "deleteerror";
-	  template.setData("deleteerror", e1.getMessage());
-	}
-	//finally start the processing
-	processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
-	return processResult;
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: delete method throwed an exception!");
+    }
+      templateSelector = "deleteerror";
+      template.setData("deleteerror", e1.getMessage());
+    }
+    //finally start the processing
+    processResult = startProcessing(cms, template, elementName, parameters, templateSelector);
+    return processResult;
       }
 
       //access content definition constructor by reflection
@@ -722,8 +725,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     //create tableheadline
     for (int i = 0; i < columns; i++) {
       tableHead += (template.getDataValue("tabledatabegin"))
-		+ lang.getLanguageValue(moduleName + ".label." + columnsVector.elementAt(i).toString().toLowerCase().trim())
-		+ (template.getDataValue("tabledataend"));
+        + lang.getLanguageValue(moduleName + ".label." + columnsVector.elementAt(i).toString().toLowerCase().trim())
+        + (template.getDataValue("tabledataend"));
     }
     //set template data for table headline content
     template.setData("tableheadline", tableHead);
@@ -739,10 +742,10 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       //loop trough the filter methods and set the chosen one
       for (int i = 0; i < filterMethods.size(); i++) {
         CmsFilterMethod currentFilter = (CmsFilterMethod) filterMethods.elementAt(i);
-	if (currentFilter.getFilterName().equals(filterMethodName)) {
-	  filterMethod = currentFilter;
-	  break;
-	}
+    if (currentFilter.getFilterName().equals(filterMethodName)) {
+      filterMethod = currentFilter;
+      break;
+    }
       }
 
       // the chosen filter does not exist, use the first one!
@@ -814,48 +817,48 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       //set data of single row
       for (int j = 0; j < columns; j++) {
         fieldEntry = "+++ NO VALUE FOUND +++";
-	// call the field methods
-	Method getMethod = null;
-	try {
-	  getMethod = (Method) fieldMethods.elementAt(j);
-	} catch (Exception e) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
-	  }
-	}
-	try {
-	  //apply methods on content definition object
-	  Object fieldEntryObject = null;
-	  fieldEntryObject = getMethod.invoke(entryObject, new Object[0]);
+    // call the field methods
+    Method getMethod = null;
+    try {
+      getMethod = (Method) fieldMethods.elementAt(j);
+    } catch (Exception e) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Could not get field method for "+(String)columnsVector.elementAt(j)+" - check for correct spelling!");
+      }
+    }
+    try {
+      //apply methods on content definition object
+      Object fieldEntryObject = null;
+      fieldEntryObject = getMethod.invoke(entryObject, new Object[0]);
           if (fieldEntryObject != null) {
             fieldEntry = fieldEntryObject.toString();
             } else {
               fieldEntry = null;
             }
         } catch (InvocationTargetException ite) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
-	  }
-	} catch (Exception e) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
-	  }
-	}
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object throwed an InvocationTargetException!");
+      }
+    } catch (Exception e) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice content definition object: Other exception! "+e);
+      }
+    }
 
-	try {
+    try {
           id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
-	} catch (Exception e) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+    } catch (Exception e) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
           }
-	}
+    }
 
-	//insert unique id in contextmenue
-	if (id != null) {
-	  template.setData("uniqueid", id);
+    //insert unique id in contextmenue
+    if (id != null) {
+      template.setData("uniqueid", id);
         }
         //insert table entry
-	if (fieldEntry != null) {
+    if (fieldEntry != null) {
           try{
             Vector v = new Vector();
             v.addElement(new Integer(id));
@@ -871,17 +874,17 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             // disable url
             entry += (template.getDataValue("tabledatabegin")) + fieldEntry + (template.getDataValue("tabledataend"));
           }
-	} else {
-	  entry += (template.getDataValue("tabledatabegin"))  + "" + (template.getDataValue("tabledataend"));
-	}
+    } else {
+      entry += (template.getDataValue("tabledatabegin"))  + "" + (template.getDataValue("tabledataend"));
+    }
       }
       //get the unique id belonging to an entry
       try {
         id = ((A_CmsContentDefinition)entryObject).getUniqueId(cms);
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
-	}
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice: getUniqueId throwed an Exception!");
+    }
       }
 
       //insert unique id in contextmenue
@@ -953,15 +956,15 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
     if (id == null)
     id = "";
 
-	/*if (id != "") {
-		session.putValue("idsave", id);
-	} else {
-		String idsave = (String) session.getValue("idsave");
-		if (idsave == null)
-			idsave = "";
-		id = idsave;
-		session.removeValue("idsave");
-	} */
+    /*if (id != "") {
+        session.putValue("idsave", id);
+    } else {
+        String idsave = (String) session.getValue("idsave");
+        if (idsave == null)
+            idsave = "";
+        id = idsave;
+        session.removeValue("idsave");
+    } */
 
     parameters.put("idlock", id);
 
@@ -977,40 +980,40 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       try {
         idInteger = Integer.valueOf(id);
       } catch (Exception e) {
-	ls = -1;
-	//access content definition object specified by id through reflection
-	String title = "no title";
-	Object o = null;
-	o = getContentDefinition(cms, cdClass, id);
+    ls = -1;
+    //access content definition object specified by id through reflection
+    String title = "no title";
+    Object o = null;
+    o = getContentDefinition(cms, cdClass, id);
         try {
           ls = ((A_CmsContentDefinition) o).getLockstate();
-	  /*Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
-	  ls = (int) getLockstateMethod.invoke(o, new Object[0]); */
-	} catch (Exception exc) {
-	  exc.printStackTrace();
-	}
+      /*Method getLockstateMethod = (Method) cdClass.getMethod("getLockstate", new Class[] {});
+      ls = (int) getLockstateMethod.invoke(o, new Object[0]); */
+    } catch (Exception exc) {
+      exc.printStackTrace();
+    }
       }
       //access content definition object specified by id through reflection
       String title = "no title";
       Object o = null;
       if (idInteger != null) {
         o = getContentDefinition(cms, cdClass, idInteger);
-	try {
+    try {
           ls = ((A_CmsContentDefinition) o).getLockstate();
-	} catch (Exception e) {
+    } catch (Exception e) {
           if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
           }
-	}
+    }
       } else {
-	o = getContentDefinition(cms, cdClass, id);
-	try {
+    o = getContentDefinition(cms, cdClass, id);
+    try {
           ls = ((A_CmsContentDefinition) o).getLockstate();
-	} catch (Exception e) {
-	  if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    } catch (Exception e) {
+      if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, e.getMessage() );
           }
-	}
+    }
       }
       //create appropriate class name with underscores for labels
       String moduleName = "";
@@ -1023,17 +1026,17 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       //get the dialog from the langauge file and set it in the template
       if (ls != C_NOT_LOCKED && ls != actUserId) {
         // "lock"
-	template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
-	template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
+    template.setData("locktitle", lang.getLanguageValue("messagebox.title.lockchange"));
+    template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lockchange"));
       }
       if (ls == C_NOT_LOCKED) {
         // "nolock"
-	template.setData("locktitle", lang.getLanguageValue("messagebox.title.lock"));
-	template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lock"));
+    template.setData("locktitle", lang.getLanguageValue("messagebox.title.lock"));
+    template.setData("lockstate", lang.getLanguageValue("messagebox.message1.lock"));
       }
       if (ls == actUserId) {
         template.setData("locktitle", lang.getLanguageValue("messagebox.title.unlock"));
-	template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
+    template.setData("lockstate", lang.getLanguageValue("messagebox.message1.unlock"));
       }
 
       //set the title of the selected entry
@@ -1105,17 +1108,17 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
       try {
         ((A_CmsContentDefinition) o).setLockstate(C_NOT_LOCKED);
       } catch (Exception e) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
           A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method setLockstate throwed an exception!");
-	}
+    }
       }
       //write to DB
       try {
         ((A_CmsContentDefinition) o).write(cms);   // reflection is not neccessary!
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
-	}
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + " Backoffice getContentLock: Method write throwed an exception!");
+    }
       }
       templateSelector = "done";
     } else {
@@ -1124,34 +1127,34 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
         try {
           ((A_CmsContentDefinition) o).setLockstate(actUserId);
         } catch (Exception e) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
-	  }
-	}
-	//write to DB
-	try {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+      }
+    }
+    //write to DB
+    try {
           ((A_CmsContentDefinition) o).write(cms);
-	} catch (Exception e) {
-	  if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
-	  }
-	}
-	templateSelector = "done";
+    } catch (Exception e) {
+      if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+      }
+    }
+    templateSelector = "done";
       } else {
       //lock (nolock -> userlock)
       try {
         ((A_CmsContentDefinition) o).setLockstate(actUserId);
       } catch (Exception e) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
-	}
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not set lockstate!");
+    }
       }
       //write to DB/VFS
       try {
         ((A_CmsContentDefinition) o).write(cms);
       } catch (Exception e) {
-	if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
+    if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentLock: Could not write to content definition!");
         }
       }
     }
@@ -1168,27 +1171,27 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
 
 private Object getContentMethodObject(CmsObject cms, Class cdClass, String method, Class paramClasses[], Object params[]) {
 
-	//return value
-	Object retObject = null;
-	if (method != "") {
-		try {
-			retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
-		} catch (InvocationTargetException ite) {
-			if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + " throwed an InvocationTargetException!");
-			}
-			ite.getTargetException().printStackTrace();
-		} catch (NoSuchMethodException nsm) {
-			if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Requested method was not found!");
-			}
-		} catch (Exception e) {
-			if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-				A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Other Exception!");
-			}
-		}
-	}
-	return retObject;
+    //return value
+    Object retObject = null;
+    if (method != "") {
+        try {
+            retObject = cdClass.getMethod(method, paramClasses).invoke(null, params);
+        } catch (InvocationTargetException ite) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + " throwed an InvocationTargetException!");
+            }
+            ite.getTargetException().printStackTrace();
+        } catch (NoSuchMethodException nsm) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Requested method was not found!");
+            }
+        } catch (Exception e) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + method + ": Other Exception!");
+            }
+        }
+    }
+    return retObject;
 }
 
 
@@ -1233,51 +1236,51 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
 
         /**
-	 * Used for filling the values of a checkbox.
-	 * <P>
-	 * Gets the resources displayed in the Checkbox group on the new resource dialog.
-	 * @param cms The CmsObject.
-	 * @param lang The langauge definitions.
-	 * @param names The names of the new rescources (used for optional images).
-	 * @param values The links that are connected with each resource.
-	 * @param parameters Hashtable of parameters.
-	 * @returns The vectors names and values are filled with the information found in the
-	 * workplace.ini.
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	/*public Integer setCheckbox(CmsObject cms, Vector names, Vector values, Hashtable parameters)
-		throws CmsException {
-			int returnValue = 0;
-			CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
-			String checkboxValue = (String) session.getValue("checkselect");
-			if (checkboxValue == null){
-				checkboxValue = "";
-			}
-			// add values for the checkbox
-			values.addElement("contents");
-			values.addElement("navigation");
-			values.addElement("design");
-			values.addElement("other");
-			// add corresponding names for the checkboxvalues
-			names.addElement("contents");
-			names.addElement("navigation");
-			names.addElement("design");
-			names.addElement("other");
-			// set the return values
-		    if (checkboxValue.equals("contents")) {
-			    returnValue = 0;
-			}
-			if (checkboxValue.equals("navigation")) {
-				returnValue = 1;
-			}
-			if (checkboxValue.equals("design")) {
-				returnValue = 2;
-			}
-			if (checkboxValue.equals("other")) {
-				returnValue = 3;
-			}
-		return new Integer (returnValue);
-	}*/
+     * Used for filling the values of a checkbox.
+     * <P>
+     * Gets the resources displayed in the Checkbox group on the new resource dialog.
+     * @param cms The CmsObject.
+     * @param lang The langauge definitions.
+     * @param names The names of the new rescources (used for optional images).
+     * @param values The links that are connected with each resource.
+     * @param parameters Hashtable of parameters.
+     * @returns The vectors names and values are filled with the information found in the
+     * workplace.ini.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    /*public Integer setCheckbox(CmsObject cms, Vector names, Vector values, Hashtable parameters)
+        throws CmsException {
+            int returnValue = 0;
+            CmsSession session = (CmsSession) cms.getRequestContext().getSession(true);
+            String checkboxValue = (String) session.getValue("checkselect");
+            if (checkboxValue == null){
+                checkboxValue = "";
+            }
+            // add values for the checkbox
+            values.addElement("contents");
+            values.addElement("navigation");
+            values.addElement("design");
+            values.addElement("other");
+            // add corresponding names for the checkboxvalues
+            names.addElement("contents");
+            names.addElement("navigation");
+            names.addElement("design");
+            names.addElement("other");
+            // set the return values
+            if (checkboxValue.equals("contents")) {
+                returnValue = 0;
+            }
+            if (checkboxValue.equals("navigation")) {
+                returnValue = 1;
+            }
+            if (checkboxValue.equals("design")) {
+                returnValue = 2;
+            }
+            if (checkboxValue.equals("other")) {
+                returnValue = 3;
+            }
+        return new Integer (returnValue);
+    }*/
 
 
 
@@ -1327,11 +1330,11 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       try{
         //the entry is not lockable: use standard contextmenue
         template.setData("backofficecontextmenue", "backofficeedit");
-	template.setData("lockedby", template.getDataValue("nolock"));
+    template.setData("lockedby", template.getDataValue("nolock"));
       } catch  (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
-	}
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates:'not lockable' section hrowed an exception!");
+    }
       }
     } else {
       //...get the lockstate of an entry
@@ -1340,19 +1343,19 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         ls = ((A_CmsContentDefinition) entryObject).getLockstate();
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates: Method getLockstate throwed an exception: "+e.toString());
         }
       }
       try {
         //show the possible cases of a lockstate in the template
-	if (ls == actUserId) {
+    if (ls == actUserId) {
           // lockuser
           isLockedBy = cms.getRequestContext().currentUser().getName();
           template.setData("isLockedBy", isLockedBy);   // set current users name in the template
-	  lockString = template.getProcessedDataValue("lockuser", this, parameters);
-	  template.setData("lockedby", lockString);
-	  template.setData("backofficecontextmenue", "backofficelockuser");
-	} else {
+      lockString = template.getProcessedDataValue("lockuser", this, parameters);
+      template.setData("lockedby", lockString);
+      template.setData("backofficecontextmenue", "backofficelockuser");
+    } else {
           if (ls != C_NOT_LOCKED) {
             // lock
             // set the name of the user who locked the file in the template ...
@@ -1364,20 +1367,20 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
               isLockedBy = cms.readUser(ls).getName();
               template.setData("isLockedBy", isLockedBy);
               lockString = template.getProcessedDataValue("lock", this, parameters);
-  	      template.setData("lockedby", lockString);
-	      template.setData("backofficecontextmenue", "backofficelock");
+          template.setData("lockedby", lockString);
+          template.setData("backofficecontextmenue", "backofficelock");
             }
-  	  } else {
+      } else {
             // nolock
-	    lockString = template.getProcessedDataValue("nolock", this, parameters);
-	    template.setData("lockedby", lockString);
-	    template.setData("backofficecontextmenue", "backofficenolock");
-	  }
-	}
+        lockString = template.getProcessedDataValue("nolock", this, parameters);
+        template.setData("lockedby", lockString);
+        template.setData("backofficecontextmenue", "backofficenolock");
+      }
+    }
       } catch (Exception e) {
         if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	  A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
-	}
+      A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setLockstates throwed an exception: "+e.toString());
+    }
       }
     }
   }
@@ -1439,11 +1442,11 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
       }
     } catch (NoSuchMethodException nsm) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
+    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Requested method was not found!");
       }
     } catch (Exception e) {
       if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
-	A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods: "+e.toString());
+    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice getContentHead: Problem occured with your filter methods: "+e.toString());
       }
     }
    return filterMethods;

@@ -1,30 +1,29 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/CmsPdfLauncher.java,v $
-* Date   : $Date: 2001/05/17 14:10:31 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/07/31 15:50:16 $
+* Version: $Revision: 1.9 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.launcher;
@@ -59,7 +58,7 @@ import java.io.*;
  * be used to create output.
  *
  * @author Matthias Schreiber
- * @version $Revision: 1.8 $ $Date: 2001/05/17 14:10:31 $
+ * @version $Revision: 1.9 $ $Date: 2001/07/31 15:50:16 $
  */
 public class CmsPdfLauncher extends CmsXmlLauncher {
 
@@ -74,29 +73,29 @@ public class CmsPdfLauncher extends CmsXmlLauncher {
         if(parserClassName == null) {
             parserClassName = "org.apache.xerces.parsers.SAXParser";
         }
-		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_INFO, "[CmsPdfLauncher] Using SAX parser: " + parserClassName);
         }
         try {
             return (Parser)Class.forName(parserClassName).newInstance();
         }
         catch(ClassNotFoundException e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not find " + parserClassName);
             }
         }
         catch(InstantiationException e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not instantiate " + parserClassName);
             }
         }
         catch(IllegalAccessException e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] Could not access " + parserClassName);
             }
         }
         catch(ClassCastException e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] " + parserClassName + " is not a SAX driver");
             }
         }
@@ -149,7 +148,7 @@ public class CmsPdfLauncher extends CmsXmlLauncher {
             driver.render();
         }
         catch(Exception e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsPdfLauncher] PDF-Renderer Error: " + e.getMessage());
             }
         }

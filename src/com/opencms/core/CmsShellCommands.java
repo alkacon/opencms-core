@@ -1,30 +1,29 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsShellCommands.java,v $
-* Date   : $Date: 2001/07/23 07:40:55 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/07/31 15:50:12 $
+* Version: $Revision: 1.36 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.core;
@@ -41,7 +40,7 @@ import source.org.apache.java.util.*;
  *
  * @author Andreas Schouten
  * @author Anders Fugmann
- * @version $Revision: 1.35 $ $Date: 2001/07/23 07:40:55 $
+ * @version $Revision: 1.36 $ $Date: 2001/07/31 15:50:12 $
  */
 public class CmsShellCommands implements I_CmsConstants {
 
@@ -682,11 +681,11 @@ public class CmsShellCommands implements I_CmsConstants {
      * @param filename the complete path of the sourcefolder.
      */
     public void deleteResource(String filename) {
-	    try {
-		    m_cms.deleteResource(filename);
-	    } catch (Exception exc) {
-		    CmsShell.printException(exc);
-	    }
+        try {
+            m_cms.deleteResource(filename);
+        } catch (Exception exc) {
+            CmsShell.printException(exc);
+        }
     }
     /**
      * Undeletes the resource.
@@ -932,7 +931,7 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
-     *			separated by semicolons
+     *          separated by semicolons
      *
      * @exception Throws CmsException if something goes wrong.
      */
@@ -965,7 +964,7 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
-     *			separated by semicolons
+     *          separated by semicolons
      *
      * @exception Throws CmsException if something goes wrong.
      */
@@ -999,7 +998,7 @@ public class CmsShellCommands implements I_CmsConstants {
      *
      * @param exportFile the name (absolute Path) of the export resource (zip)
      * @param pathList the names (absolute Path) of folders from which should be exported
-     *			separated by semicolons
+     *          separated by semicolons
      *
      * @exception Throws CmsException if something goes wrong.
      */
@@ -2721,7 +2720,7 @@ public class CmsShellCommands implements I_CmsConstants {
      */
     public void restoreResource(String versionId, String filename) throws CmsException{
         try{
-	        m_cms.restoreResource(Integer.parseInt(versionId), filename);
+            m_cms.restoreResource(Integer.parseInt(versionId), filename);
         } catch(Exception exc){
             CmsShell.printException(exc);
         }

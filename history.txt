@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.3.39 Bela Tegeuse - xx July 2001
 * Fixed bug: when deleting folders all subfolders must be deleted too, starting with the last
   folder in the foldertree
+- Switched the license to LGPL.
 
 OpenCms 4.3.38 Bela Tegeuse - 31 July 2001
 * Fixed bug: A resource can not be locked if one of the parent resources is locked in another project.

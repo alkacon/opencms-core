@@ -1,30 +1,29 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDownGalleries.java,v $
-* Date   : $Date: 2001/07/30 17:03:41 $
-* Version: $ $
+* Date   : $Date: 2001/07/31 15:50:17 $
+* Version: $Revision: 1.18 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.workplace;
@@ -42,7 +41,7 @@ import javax.servlet.http.*;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.17 $ $Date: 2001/07/30 17:03:41 $
+ * @version $Revision: 1.18 $ $Date: 2001/07/31 15:50:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -318,9 +317,9 @@ public class CmsAdminDownGalleries extends CmsWorkplaceDefault implements I_CmsC
         for(int z = 0;z < groups.size();z++) {
             String name = ((CmsGroup)groups.elementAt(z)).getName();
             if(! C_GROUP_GUEST.equals(name)){
-	            names.addElement(name);
-		        values.addElement(name);
-			}
+                names.addElement(name);
+                values.addElement(name);
+            }
         }
         return new Integer(retValue);
     }

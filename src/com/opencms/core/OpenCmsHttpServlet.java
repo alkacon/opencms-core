@@ -1,29 +1,29 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCmsHttpServlet.java,v $
-* Date   : $Date: 2001/07/25 12:51:54 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.14 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.core;
@@ -63,7 +63,7 @@ import com.opencms.util.*;
  * Http requests.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2001/07/25 12:51:54 $
+ * @version $Revision: 1.14 $ $Date: 2001/07/31 15:50:13 $
  *
  * */
 public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_CmsLogChannels {
@@ -368,7 +368,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append("<tr> \n");
         output.append("<td class=\"dialogtxt\" rowspan=3 valign=top><IMG border=0 src=\"" + cms.getRequestContext().getRequest().getWebAppUrl() + "/pics/system/ic_caution.gif\" width=32 height=32></td>\n");
         output.append("<td class=dialogtxt>Ein Systemfehler ist aufgetreten.</td>\n");
-        output.append("</tr>	\n");
+        output.append("</tr>    \n");
         output.append("<tr><td class=dialogtxt>F&uuml;r weitere Informationen klicken Sie auf \"Details anzeigen\" oder kontaktieren Sie Ihren Systemadministrator.</td></tr>\n");
         output.append("<!-- Beginn Leerzeile-->\n");
         output.append("<tr> <td class=\"leerzeile\">&nbsp;</td></tr>\n");
@@ -384,7 +384,7 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
         output.append("</td>\n");
         output.append("</tr>\n");
         output.append("</table>\n");
-        output.append("<!-- Ende Buttonleisete-->	\n");
+        output.append("<!-- Ende Buttonleisete-->   \n");
         output.append("</td></tr>\n");
         output.append("</table>\n");
         output.append("</form>\n");
@@ -421,9 +421,9 @@ public class OpenCmsHttpServlet extends HttpServlet implements I_CmsConstants,I_
             m_opencms.destroy();
         }
         catch(CmsException e) {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-				A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
-			}
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet]" + e.toString());
+            }
         }
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
             A_OpenCms.log(C_OPENCMS_CRITICAL, "[OpenCmsServlet] Shutdown Completed");

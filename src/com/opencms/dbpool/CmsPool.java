@@ -1,33 +1,32 @@
-package com.opencms.dbpool;
-
 /*
- *
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
- * Date   : $Date: 2001/05/17 14:10:31 $
- * Version: $Revision: 1.9 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a  of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPool.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.10 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.dbpool;
 
 import java.sql.*;
 import java.util.*;
@@ -41,82 +40,82 @@ import source.org.apache.java.util.*;
  */
 public class CmsPool extends Thread {
 
-	/**
-	 * The parameters for this pool.
-	 */
-	private String m_driver;
-	private String m_url;
-	private String m_user;
-	private String m_password;
-	private int m_minConn;
-	private int m_maxConn;
-	private int m_increaseRate;
-	private long m_timeout;
-	private long m_maxage;
-	private String m_poolname;
+    /**
+     * The parameters for this pool.
+     */
+    private String m_driver;
+    private String m_url;
+    private String m_user;
+    private String m_password;
+    private int m_minConn;
+    private int m_maxConn;
+    private int m_increaseRate;
+    private long m_timeout;
+    private long m_maxage;
+    private String m_poolname;
     private Driver m_originalDriver;
 
-	/**
-	 * The current amount of connections in this pool.
-	 */
-	private int m_connectionAmount = 0;
+    /**
+     * The current amount of connections in this pool.
+     */
+    private int m_connectionAmount = 0;
 
-	/**
-	 * The Stack to store the connections in.
-	 */
-	private Stack m_availableConnections = new Stack();
+    /**
+     * The Stack to store the connections in.
+     */
+    private Stack m_availableConnections = new Stack();
 
-	/**
-	 * Creates a new Pool.
-	 * @param poolname - the name of this pool.
-	 * @param driver - the classname of the driver.
-	 * @param url - the url to connect to the database.
-	 * @param user - the user to access the db.
-	 * @param password - the password to connect to the db.
-	 * @param minConn - the minimum amount Connections maintained in the pool.
-	 * @param maxConn - the maximum amount Connections maintained in the pool.
-	 * @param increaseRate - the rate to increase the the amount of
-	 * connections in the pool.
-	 * @param timeout - the timout after a unused connection has to be closed.
-	 * @exception SQLException - if a SQL-Error occurs.
-	 */
-	public CmsPool(String poolname, String driver, String url, String user,
-				String password, int minConn, int maxConn, int increasRate, int timeout, int maxage)
-		throws SQLException {
+    /**
+     * Creates a new Pool.
+     * @param poolname - the name of this pool.
+     * @param driver - the classname of the driver.
+     * @param url - the url to connect to the database.
+     * @param user - the user to access the db.
+     * @param password - the password to connect to the db.
+     * @param minConn - the minimum amount Connections maintained in the pool.
+     * @param maxConn - the maximum amount Connections maintained in the pool.
+     * @param increaseRate - the rate to increase the the amount of
+     * connections in the pool.
+     * @param timeout - the timout after a unused connection has to be closed.
+     * @exception SQLException - if a SQL-Error occurs.
+     */
+    public CmsPool(String poolname, String driver, String url, String user,
+                String password, int minConn, int maxConn, int increasRate, int timeout, int maxage)
+        throws SQLException {
         super(poolname);
-		// store the parameters
-		m_poolname = poolname;
-		m_driver = driver;
-		m_url = url;
-		m_user = user;
+        // store the parameters
+        m_poolname = poolname;
+        m_driver = driver;
+        m_url = url;
+        m_user = user;
         if(m_user == null) m_user = "";
-		m_password = password;
+        m_password = password;
         if(m_password == null) m_password = "";
-		m_minConn = minConn;
-		m_maxConn = maxConn;
-		m_increaseRate = increasRate;
-		m_timeout = timeout  * 60 * 1000;
+        m_minConn = minConn;
+        m_maxConn = maxConn;
+        m_increaseRate = increasRate;
+        m_timeout = timeout  * 60 * 1000;
         m_maxage = maxage  * 60 * 1000;
 
-		// register the driver to the driver-manager
-		try {
-			Class.forName(driver);
-		} catch(ClassNotFoundException exc) {
-			throw new SQLException("Driver not found: " + exc.getMessage());
-		}
+        // register the driver to the driver-manager
+        try {
+            Class.forName(driver);
+        } catch(ClassNotFoundException exc) {
+            throw new SQLException("Driver not found: " + exc.getMessage());
+        }
         m_originalDriver = DriverManager.getDriver(m_url);
 
-		// create the initial amount of connections
-		createConnections(m_minConn);
+        // create the initial amount of connections
+        createConnections(m_minConn);
 
         // set this a deamon-thread
         setDaemon(true);
         // start the connection-guard for this pool
         start();
-		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
-		}
-	}
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": created");
+        }
+    }
 
     /**
      * The run-method for the connection-guard
@@ -165,21 +164,21 @@ public class CmsPool extends Thread {
     }
 
 
-	/**
-	 * Try to make a database connection to the given database.
-	 * @return a Connection to the database
-	 * @exception SQLException if a database-access error occurs.
-	 */
-	public Connection connect() throws SQLException {
-		return getConnection();
-	}
+    /**
+     * Try to make a database connection to the given database.
+     * @return a Connection to the database
+     * @exception SQLException if a database-access error occurs.
+     */
+    public Connection connect() throws SQLException {
+        return getConnection();
+    }
 
-	/**
-	 * Gets a connection.
-	 * @exception SQLException if a database-access error occurs.
-	 */
-	private Connection getConnection()
-		throws SQLException {
+    /**
+     * Gets a connection.
+     * @exception SQLException if a database-access error occurs.
+     */
+    private Connection getConnection()
+        throws SQLException {
         Connection con = null;
         while(con == null) {
             synchronized(m_availableConnections) {
@@ -205,23 +204,23 @@ public class CmsPool extends Thread {
         }
         // done it - we have a connection
         return con;
-	}
+    }
 
-	/**
-	 * Puts a connection back to the pool.
-	 */
-	public void putConnection(CmsConnection con) {
-		boolean alive = false;
+    /**
+     * Puts a connection back to the pool.
+     */
+    public void putConnection(CmsConnection con) {
+        boolean alive = false;
         try {
-			// check, if the connection is available
-			if(!con.isClosed()) {
-				con.clearWarnings();
-				// this connection is alive
-				alive = true;
-			}
-		} catch(SQLException exc) {
-			// ignore the exception, alive is false
-		}
+            // check, if the connection is available
+            if(!con.isClosed()) {
+                con.clearWarnings();
+                // this connection is alive
+                alive = true;
+            }
+        } catch(SQLException exc) {
+            // ignore the exception, alive is false
+        }
 
         if((con.getEstablishedTime() + (m_maxage)) < System.currentTimeMillis()) {
             // this connection is to old. destroy it and create a new-one!
@@ -255,30 +254,30 @@ public class CmsPool extends Thread {
                 }
             }
         }
-	}
+    }
 
-	/**
-	 * Creates the needed connections, if possible.
-	 * @param amount - the amount of connections to create.
-	 * @exception SQLException if a database-access error occurs.
-	 */
-	private void createConnections(int amount) throws SQLException {
+    /**
+     * Creates the needed connections, if possible.
+     * @param amount - the amount of connections to create.
+     * @exception SQLException if a database-access error occurs.
+     */
+    private void createConnections(int amount) throws SQLException {
         for(int i = 0; (i < amount) && (m_connectionAmount < m_maxConn); i++) {
             // create another connection
             m_availableConnections.push(createConnection());
             m_connectionAmount++;
         }
-	}
+    }
 
-	/**
-	 * Creates one connection.
-	 * @return the new created connection.
-	 * @exception SQLException if a database-access error occurs.
-	 */
-	private Connection createConnection() throws SQLException {
-		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
-		}
+    /**
+     * Creates one connection.
+     * @return the new created connection.
+     * @exception SQLException if a database-access error occurs.
+     */
+    private Connection createConnection() throws SQLException {
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": creating new connection. Current Amount is:" + m_connectionAmount);
+        }
         Connection con = null;
         Properties props = new Properties();
         props.setProperty("user", m_user);
@@ -286,28 +285,28 @@ public class CmsPool extends Thread {
         con = m_originalDriver.connect(m_url, props);
         CmsConnection retValue = new CmsConnection(con, this);
         return retValue;
-	}
+    }
 
-	/**
-	 * Returns a string representation of this object.
-	 */
-	public String toString() {
-		StringBuffer output=new StringBuffer();
-		output.append("[" + this.getClass().getName() + "]:");
-		output.append(m_driver);
-		output.append(", ");
-		output.append(m_url);
-		output.append(", ");
-		output.append(m_user);
-		output.append(", ");
-		output.append(m_minConn);
-		output.append(", ");
-		output.append(m_maxConn);
-		output.append(", ");
-		output.append(m_increaseRate);
-		output.append(".");
-		return output.toString();
-	}
+    /**
+     * Returns a string representation of this object.
+     */
+    public String toString() {
+        StringBuffer output=new StringBuffer();
+        output.append("[" + this.getClass().getName() + "]:");
+        output.append(m_driver);
+        output.append(", ");
+        output.append(m_url);
+        output.append(", ");
+        output.append(m_user);
+        output.append(", ");
+        output.append(m_minConn);
+        output.append(", ");
+        output.append(m_maxConn);
+        output.append(", ");
+        output.append(m_increaseRate);
+        output.append(".");
+        return output.toString();
+    }
 
     /**
      * Destroys this pool.
@@ -319,8 +318,8 @@ public class CmsPool extends Thread {
                 m_connectionAmount--;
             }
         }
-		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-			A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
-		}
+        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+            A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_POOL, "["+ getClass().getName() +"] " + m_poolname + ": destroyed");
+        }
     }
 }

@@ -1,32 +1,32 @@
-package com.opencms.file;
-
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2001/06/29 13:42:22 $
- * Version: $Revision: 1.22 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
+* Date   : $Date: 2001/07/31 15:50:14 $
+* Version: $Revision: 1.23 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.file;
 
 import java.util.*;
 import com.opencms.core.*;
@@ -35,16 +35,16 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.22 $ $Date: 2001/06/29 13:42:22 $
+ * @version $Revision: 1.23 $ $Date: 2001/07/31 15:50:14 $
  *
  */
 public interface I_CmsRegistry extends Cloneable {
-	public static final int C_ANY_VERSION = -1;
+    public static final int C_ANY_VERSION = -1;
 
-	/**
-	* The name of the folder to extend the exportpath
-	*/
-	public final String C_MODULE_PATH="modules/";
+    /**
+    * The name of the folder to extend the exportpath
+    */
+    public final String C_MODULE_PATH="modules/";
 
 /**
  * This method clones the registry.
@@ -53,30 +53,30 @@ public interface I_CmsRegistry extends Cloneable {
  * @return the cloned registry.
  */
 public I_CmsRegistry clone(CmsObject cms);
-	/**
-	 * This method creates a new module in the repository.
-	 *
-	 * @param String modulename the name of the module.
-	 * @param String niceModulename another name of the module.
-	 * @param String description the description of the module.
-	 * @param String author the name of the author.
-	 * @param long createDate the creation date of the module
-	 * @param int version the version number of the module.
-	 * @throws CmsException if the user has no right to create a new module.
-	 */
-	public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException;
-	/**
-	 * This method creates a new module in the repository.
-	 *
-	 * @param String modulename the name of the module.
-	 * @param String niceModulename another name of the module.
-	 * @param String description the description of the module.
-	 * @param String author the name of the author.
-	 * @param String createDate the creation date of the module in the format: mm.dd.yyyy
-	 * @param int version the version number of the module.
-	 * @throws CmsException if the user has no right to create a new module.
-	 */
-	public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException;
+    /**
+     * This method creates a new module in the repository.
+     *
+     * @param String modulename the name of the module.
+     * @param String niceModulename another name of the module.
+     * @param String description the description of the module.
+     * @param String author the name of the author.
+     * @param long createDate the creation date of the module
+     * @param int version the version number of the module.
+     * @throws CmsException if the user has no right to create a new module.
+     */
+    public void createModule(String modulename, String niceModulename, String description, String author, long createDate, int version) throws CmsException;
+    /**
+     * This method creates a new module in the repository.
+     *
+     * @param String modulename the name of the module.
+     * @param String niceModulename another name of the module.
+     * @param String description the description of the module.
+     * @param String author the name of the author.
+     * @param String createDate the creation date of the module in the format: mm.dd.yyyy
+     * @param int version the version number of the module.
+     * @throws CmsException if the user has no right to create a new module.
+     */
+    public void createModule(String modulename, String niceModulename, String description, String author, String createDate, int version) throws CmsException;
 /**
  * This method checks which modules need this module. If a module depends on this the name
  * will be returned in the vector.
@@ -124,13 +124,13 @@ public void exportModule(String moduleName, String[] resources, String fileName)
  * @return java.lang.String the author of the module.
  */
 public String getModuleAuthor(String modulename);
-	/**
-	 * This method returns the email of author of the module.
-	 *
-	 * @parameter String the name of the module.
-	 * @return java.lang.String the email of author of the module.
-	 */
-	public String getModuleAuthorEmail(String modulename);
+    /**
+     * This method returns the email of author of the module.
+     *
+     * @parameter String the name of the module.
+     * @return java.lang.String the email of author of the module.
+     */
+    public String getModuleAuthorEmail(String modulename);
 /**
  * Gets the create date of the module.
  *
@@ -198,14 +198,14 @@ public Enumeration getModuleNames();
  * @returns String the nice name of the module.
  */
 public String getModuleNiceName(String module);
-	/**
-	 * Gets a parameter for a module.
-	 *
-	 * @param modulename java.lang.String the name of the module.
-	 * @param parameter java.lang.String the name of the parameter to set.
-	 * @return value java.lang.String the value to set for the parameter.
-	 */
-	public String getModuleParameter(String modulename, String parameter);
+    /**
+     * Gets a parameter for a module.
+     *
+     * @param modulename java.lang.String the name of the module.
+     * @param parameter java.lang.String the name of the parameter to set.
+     * @return value java.lang.String the value to set for the parameter.
+     */
+    public String getModuleParameter(String modulename, String parameter);
 /**
  * Returns a parameter for a module.
  *
@@ -397,14 +397,14 @@ public String getModuleParameterString(String modulname, String parameter);
  * @return boolean the value for the parameter in the module.
  */
 public String getModuleParameterString(String modulname, String parameter, String defaultValue);
-	/**
-	 * This method returns the type of a parameter in a module.
-	 *
-	 * @param modulename the name of the module.
-	 * @param parameter the name of the parameter.
-	 * @return the type of the parameter.
-	 */
-	public String getModuleParameterType(String modulename, String parameter);
+    /**
+     * This method returns the type of a parameter in a module.
+     *
+     * @param modulename the name of the module.
+     * @param parameter the name of the parameter.
+     * @return the type of the parameter.
+     */
+    public String getModuleParameterType(String modulename, String parameter);
 /**
  * Returns all repositories for a module.
  *

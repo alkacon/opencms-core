@@ -1,31 +1,31 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsEditor.java,v $
-* Date   : $Date: 2001/07/10 16:05:47 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2001/07/31 15:50:18 $
+* Version: $Revision: 1.26 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 
 package com.opencms.workplace;
 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.25 $ $Date: 2001/07/10 16:05:47 $
+ * @version $Revision: 1.26 $ $Date: 2001/07/31 15:50:18 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -101,7 +101,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         String content = (String)parameters.get(C_PARA_CONTENT);
         String action = (String)parameters.get(C_PARA_ACTION);
         String jsfile = (String)parameters.get(C_ROOT_TEMPLATE_NAME + "." + C_PARA_JSFILE);
-		boolean checkit = false;
+        boolean checkit = false;
         boolean existsFileParam = ((file != null) && (!"".equals(file)));
         boolean saveRequested = ((action != null) && (C_EDIT_ACTION_SAVE.equals(action)
                 || C_EDIT_ACTION_SAVEEXIT.equals(action)));
@@ -122,7 +122,7 @@ public class CmsEditor extends CmsWorkplaceDefault {
         // If the user requested a "save file", also load the file.
         if(existsFileParam && (content == null || saveRequested)) {
             editFile = readFile(cms, file);
- 			checkit = true;
+            checkit = true;
 
             // If there is no content set, this is the first request of the editor.
             // So load the file content and set the "content" parameter.
@@ -173,11 +173,11 @@ public class CmsEditor extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData(C_PARA_FILE, file);
         xmlTemplateDocument.setData(C_PARA_JSFILE, jsfile);
         xmlTemplateDocument.setData("editorframe", (String)parameters.get("root.editorframe"));
-		// Announcement of path and file name in the header of the browser.
-		if(checkit==true){
-		xmlTemplateDocument.setData("fileName", (String) editFile.getName());
-		xmlTemplateDocument.setData("pathName", (String) editFile.getPath());
-  		}
+        // Announcement of path and file name in the header of the browser.
+        if(checkit==true){
+        xmlTemplateDocument.setData("fileName", (String) editFile.getName());
+        xmlTemplateDocument.setData("pathName", (String) editFile.getPath());
+        }
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, sectionName);
     }
 

@@ -1,32 +1,33 @@
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.183 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 package com.opencms.file;
 
-/*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
- * Date   : $Date: 2001/07/30 16:09:52 $
- * Version: $Revision: 1.182 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 
 import java.util.*;
 import javax.servlet.http.*;
@@ -49,7 +50,7 @@ import com.opencms.template.cache.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  *
- * @version $Revision: 1.182 $ $Date: 2001/07/30 16:09:52 $
+ * @version $Revision: 1.183 $ $Date: 2001/07/31 15:50:13 $
  *
  */
 public class CmsObject implements I_CmsConstants {
@@ -314,9 +315,9 @@ public CmsUser anonymousUser() throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chgrp(String filename, String newGroup) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chgrp(this, filename, newGroup, false);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chgrp(this, filename, newGroup, false);
 }
 
 /**
@@ -342,9 +343,9 @@ public void chgrp(String filename, String newGroup) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chgrp(String filename, String newGroup, boolean chRekursive) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chgrp(this, filename, newGroup, chRekursive);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chgrp(this, filename, newGroup, chRekursive);
 }
 
 /**
@@ -369,7 +370,7 @@ public void chgrp(String filename, String newGroup, boolean chRekursive) throws 
  * @exception CmsException if operation was not successful.
  */
 protected void doChgrp(String filename, String newGroup) throws CmsException {
-	m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
+    m_rb.chgrp(m_context.currentUser(), m_context.currentProject(), filename, newGroup);
 }
 
 /**
@@ -396,9 +397,9 @@ protected void doChgrp(String filename, String newGroup) throws CmsException {
  * for this resource.
  */
 public void chmod(String filename, int flags) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chmod(this, filename, flags, false);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chmod(this, filename, flags, false);
 }
 
 /**
@@ -426,9 +427,9 @@ public void chmod(String filename, int flags) throws CmsException {
  * for this resource.
  */
 public void chmod(String filename, int flags, boolean chRekursive) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chmod(this, filename, flags, chRekursive);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chmod(this, filename, flags, chRekursive);
 }
 
 /**
@@ -455,7 +456,7 @@ public void chmod(String filename, int flags, boolean chRekursive) throws CmsExc
  * for this resource.
  */
 protected void doChmod(String filename, int flags) throws CmsException {
-	m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
+    m_rb.chmod(m_context.currentUser(), m_context.currentProject(), filename, flags);
 }
 
 /**
@@ -481,9 +482,9 @@ protected void doChmod(String filename, int flags) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chown(String filename, String newOwner) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chown(this, filename, newOwner, false);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chown(this, filename, newOwner, false);
 }
 
 /**
@@ -510,9 +511,9 @@ public void chown(String filename, String newOwner) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chown(String filename, String newOwner, boolean chRekursive) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chown(this, filename, newOwner, chRekursive);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chown(this, filename, newOwner, chRekursive);
 }
 
 /**
@@ -538,7 +539,7 @@ public void chown(String filename, String newOwner, boolean chRekursive) throws 
  * @exception CmsException if operation was not successful.
  */
 protected void doChown(String filename, String newOwner) throws CmsException {
-	m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
+    m_rb.chown(m_context.currentUser(), m_context.currentProject(), filename, newOwner);
 }
 
 /**
@@ -564,9 +565,9 @@ protected void doChown(String filename, String newOwner) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 public void chtype(String filename, String newType) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.chtype(this, filename, newType);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.chtype(this, filename, newType);
 }
 
 /**
@@ -592,7 +593,7 @@ public void chtype(String filename, String newType) throws CmsException {
  * @exception CmsException if operation was not successful.
  */
 protected void doChtype(String filename, String newType) throws CmsException {
-	m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
+    m_rb.chtype(m_context.currentUser(), m_context.currentProject(), filename, newType);
 }
 
 /**
@@ -613,9 +614,9 @@ public void clearcache() {
  * has not the appropriate rights to copy the file.
  */
 public void copyResource(String source, String destination) throws CmsException {
-	CmsResource res = readFileHeader(source);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.copyResource(this, source, destination, false);
+    CmsResource res = readFileHeader(source);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.copyResource(this, source, destination, false);
 }
 /**
  * Copies a file.
@@ -629,9 +630,9 @@ public void copyResource(String source, String destination) throws CmsException 
  * has not the appropriate rights to copy the file.
  */
 public void copyResource(String source, String destination, boolean keepFlags) throws CmsException {
-	CmsResource res = readFileHeader(source);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.copyResource(this, source, destination, keepFlags);
+    CmsResource res = readFileHeader(source);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.copyResource(this, source, destination, keepFlags);
 }
 /**
  * Copies a file.
@@ -643,17 +644,17 @@ public void copyResource(String source, String destination, boolean keepFlags) t
  * has not the appropriate rights to copy the file.
  */
 protected void doCopyFile(String source, String destination) throws CmsException {
-	m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.copyFile(m_context.currentUser(), m_context.currentProject(), source, destination);
 /*
-   	//Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //Linkmanagement
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
-	if (resId != -1){
-		m_lm.createNewUrl(resId);
+    int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
+    if (resId != -1){
+        m_lm.createNewUrl(resId);
     }
     //End of Linkmanagement
 */
@@ -669,17 +670,17 @@ protected void doCopyFile(String source, String destination) throws CmsException
  * user has not the appropriate rights to copy the folder.
  */
 protected void doCopyFolder(String source, String destination) throws CmsException {
-	m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.copyFolder(m_context.currentUser(), m_context.currentProject(), source, destination);
 /*
     //Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
-	if (resId != -1){
-		m_lm.createNewUrl(resId);
+    int resId = m_lm.getResourceId(destination,m_context.currentProject().getId());
+    if (resId != -1){
+        m_lm.createNewUrl(resId);
     }
     //End of Linkmanagement
 */
@@ -724,9 +725,9 @@ public void copyFolder(String source, String destination) throws CmsException {
      * @exception CmsException if operation was not successful.
  */
 public void copyResourceToProject(String resource) throws CmsException {
-	CmsResource res = readFileHeader(resource);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.copyResourceToProject(this, resource);
+    CmsResource res = readFileHeader(resource);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.copyResourceToProject(this, resource);
 }
 
 /**
@@ -839,16 +840,16 @@ public CmsFolder createFolder(String folder, String newFolderName, Hashtable pro
 }
 
 public CmsResource createResource(String folder, String name, String type) throws CmsException {
-	return createResource(folder, name, type, new Hashtable());
+    return createResource(folder, name, type, new Hashtable());
 }
 
 public CmsResource createResource(String folder, String name, String type, Hashtable properties) throws CmsException {
-	return createResource(folder, name, type, properties, new byte[0]);
+    return createResource(folder, name, type, properties, new byte[0]);
 }
 
 public CmsResource createResource(String folder, String name, String type, Hashtable properties, byte[] contents) throws CmsException {
-	I_CmsResourceType rt = getResourceType(type);
-	return rt.createResource(this, folder, name, properties, contents);
+    I_CmsResourceType rt = getResourceType(type);
+    return rt.createResource(this, folder, name, properties, contents);
 }
 
 /**
@@ -868,8 +869,8 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
     CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, new Hashtable());
 /*
     //Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
@@ -882,7 +883,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
     }
     // End of Linkmanagement
 */
-	return file;
+    return file;
 }
 /**
  * Creates a new file with the given content and resourcetype.
@@ -906,11 +907,11 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
     if(properties == null) {
         properties = new Hashtable();
     }
-	CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties);
+    CmsFile file = m_rb.createFile(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, filename, contents, type, properties);
 /*
     //Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
@@ -923,7 +924,7 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
     }
     // End of Linkmanagement
 */
-	return file;
+    return file;
 }
 
 /**
@@ -939,11 +940,11 @@ protected CmsFile doCreateFile(String folder, String filename, byte[] contents, 
  * a new folder.
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName) throws CmsException {
-	CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable());
+    CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, new Hashtable());
 /*
     //Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
@@ -975,12 +976,12 @@ protected CmsFolder doCreateFolder(String folder, String newFolderName) throws C
  *
  */
 protected CmsFolder doCreateFolder(String folder, String newFolderName, Hashtable properties) throws CmsException {
-	CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties);
+    CmsFolder cmsFolder = m_rb.createFolder(m_context.currentUser(), m_context.currentGroup(), m_context.currentProject(), folder, newFolderName, properties);
 
 /*
     //Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
@@ -1176,9 +1177,9 @@ public void deleteEmptyFolder(String foldername) throws CmsException {
  * has not the appropriate rights to delete the file.
  */
 public void deleteResource(String filename) throws CmsException {
-	CmsResource res = readFileHeader(filename);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.deleteResource(this, filename);
+    CmsResource res = readFileHeader(filename);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.deleteResource(this, filename);
 }
 
 /**
@@ -1191,18 +1192,18 @@ public void deleteResource(String filename) throws CmsException {
  */
 protected void doDeleteFile(String filename) throws CmsException {
 /*
-	//Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //Linkmanagement
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int projectId = m_context.currentProject().getId();
-	CmsFile file = readFile(filename);
-	int resId = file.getResourceId();
-	int urlId = file.getUrlId();
+    int projectId = m_context.currentProject().getId();
+    CmsFile file = readFile(filename);
+    int resId = file.getResourceId();
+    int urlId = file.getUrlId();
 
-	Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
+    Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
         if (!resources.isEmpty()) {
           // there are resources that refer to the resource that should be deleted
           System.err.println("!!! There are resources that refer to the resource that should be deleted: !!!");
@@ -1215,18 +1216,18 @@ protected void doDeleteFile(String filename) throws CmsException {
 //          return;
         }
 
-	//delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
-	m_lm.deleteLinksOfResource(resId);
-	m_lm.deleteExternallinksOfResource(resId);
-	m_lm.deleteAnchorsOfResource(resId);
+    //delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
+    m_lm.deleteLinksOfResource(resId);
+    m_lm.deleteExternallinksOfResource(resId);
+    m_lm.deleteAnchorsOfResource(resId);
 
-	//check Url if it is still needed in CMS_URL. If not, delete it.
-	if (!m_lm.urlStillNeeded(urlId,projectId)) {
-		m_lm.deleteUrl(urlId);
-	}
-	//End of Linkmanagement
+    //check Url if it is still needed in CMS_URL. If not, delete it.
+    if (!m_lm.urlStillNeeded(urlId,projectId)) {
+        m_lm.deleteUrl(urlId);
+    }
+    //End of Linkmanagement
 */
-	m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
+    m_rb.deleteFile(m_context.currentUser(), m_context.currentProject(), filename);
 }
 
 /**
@@ -1242,19 +1243,19 @@ protected void doDeleteFile(String filename) throws CmsException {
  */
 protected void doDeleteFolder(String foldername) throws CmsException {
 /*
-	//Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //Linkmanagement
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-   	int projectId = m_context.currentProject().getId();
-	int urlId = m_lm.getUrlId(foldername, projectId);
+    int projectId = m_context.currentProject().getId();
+    int urlId = m_lm.getUrlId(foldername, projectId);
     //check Url if it is still needed in CMS_URL. If not, delete it.
-	if (!m_lm.urlStillNeeded(urlId,projectId)) {
-		m_lm.deleteUrl(urlId);
-	}
-	//End of Linkmanagement
+    if (!m_lm.urlStillNeeded(urlId,projectId)) {
+        m_lm.deleteUrl(urlId);
+    }
+    //End of Linkmanagement
 */
     m_rb.deleteFolder(m_context.currentUser(), m_context.currentProject(), foldername);
 }
@@ -1269,9 +1270,9 @@ protected void doDeleteFolder(String foldername) throws CmsException {
  */
 public void undeleteResource(String filename) throws CmsException {
     //read the file header including deleted
-	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.undeleteResource(this, filename);
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.undeleteResource(this, filename);
 }
 
 /**
@@ -1284,18 +1285,18 @@ public void undeleteResource(String filename) throws CmsException {
  */
 protected void doUndeleteFile(String filename) throws CmsException {
 /*
-	//Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //Linkmanagement
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int projectId = m_context.currentProject().getId();
-	CmsFile file = readFile(filename);
-	int resId = file.getResourceId();
-	int urlId = file.getUrlId();
+    int projectId = m_context.currentProject().getId();
+    CmsFile file = readFile(filename);
+    int resId = file.getResourceId();
+    int urlId = file.getUrlId();
 
-	Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
+    Vector resources  = m_lm.selectReferencingResources(urlId, projectId, onlineProject().getId());
         if (!resources.isEmpty()) {
           // there are resources that refer to the resource that should be deleted
           System.err.println("!!! There are resources that refer to the resource that should be deleted: !!!");
@@ -1308,18 +1309,18 @@ protected void doUndeleteFile(String filename) throws CmsException {
 //          return;
         }
 
-	//delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
-	m_lm.deleteLinksOfResource(resId);
-	m_lm.deleteExternallinksOfResource(resId);
-	m_lm.deleteAnchorsOfResource(resId);
+    //delete all entries with this resourceId from CMS_LINKS, CMS_EXTERNALLINKS and CMS_ANCHOR
+    m_lm.deleteLinksOfResource(resId);
+    m_lm.deleteExternallinksOfResource(resId);
+    m_lm.deleteAnchorsOfResource(resId);
 
-	//check Url if it is still needed in CMS_URL. If not, delete it.
-	if (!m_lm.urlStillNeeded(urlId,projectId)) {
-		m_lm.deleteUrl(urlId);
-	}
-	//End of Linkmanagement
+    //check Url if it is still needed in CMS_URL. If not, delete it.
+    if (!m_lm.urlStillNeeded(urlId,projectId)) {
+        m_lm.deleteUrl(urlId);
+    }
+    //End of Linkmanagement
 */
-	m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), filename);
+    m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), filename);
 }
 
 /**
@@ -1335,19 +1336,19 @@ protected void doUndeleteFile(String filename) throws CmsException {
  */
 protected void doUndeleteFolder(String foldername) throws CmsException {
 /*
-	//Linkmanagement
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //Linkmanagement
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-   	int projectId = m_context.currentProject().getId();
-	int urlId = m_lm.getUrlId(foldername, projectId);
+    int projectId = m_context.currentProject().getId();
+    int urlId = m_lm.getUrlId(foldername, projectId);
     //check Url if it is still needed in CMS_URL. If not, delete it.
-	if (!m_lm.urlStillNeeded(urlId,projectId)) {
-		m_lm.deleteUrl(urlId);
-	}
-	//End of Linkmanagement
+    if (!m_lm.urlStillNeeded(urlId,projectId)) {
+        m_lm.deleteUrl(urlId);
+    }
+    //End of Linkmanagement
 */
     m_rb.undeleteResource(m_context.currentUser(), m_context.currentProject(), foldername);
 }
@@ -2007,8 +2008,8 @@ public CmsResource importResource(String source, String destination, String type
                                   Hashtable properties, String launcherStartClass,
                                   byte[] content, String importPath)
     throws CmsException {
-	I_CmsResourceType rt = getResourceType(type);
-	return rt.importResource(this, source, destination, type, user, group, access, properties, launcherStartClass, content, importPath);
+    I_CmsResourceType rt = getResourceType(type);
+    return rt.importResource(this, source, destination, type, user, group, access, properties, launcherStartClass, content, importPath);
 }
 
 /**
@@ -2079,9 +2080,9 @@ public boolean isManagerOfProject() throws CmsException {
  *
  */
 public void linkmanagementSaveImportedResource(String importedResource) throws CmsException {
-	CmsResource res = readFileHeader(importedResource);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.linkmanagementSaveImportedResource(this, importedResource);
+    CmsResource res = readFileHeader(importedResource);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.linkmanagementSaveImportedResource(this, importedResource);
 }
 
 /**
@@ -2144,9 +2145,9 @@ public void lockResource(String resource) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 public void lockResource(String resource, boolean force) throws CmsException {
-	CmsResource res = readFileHeader(resource);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.lockResource(this, resource, force);
+    CmsResource res = readFileHeader(resource);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.lockResource(this, resource, force);
 }
 
 /**
@@ -2162,7 +2163,7 @@ public void lockResource(String resource, boolean force) throws CmsException {
  * It will also be thrown, if there is a existing lock and force was set to false.
  */
 protected void doLockResource(String resource, boolean force) throws CmsException {
-	m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
+    m_rb.lockResource(m_context.currentUser(), m_context.currentProject(), resource, force);
 }
 
 /**
@@ -2224,9 +2225,9 @@ public void moveFile(String source, String destination) throws CmsException {
  * or if the file couldn't be moved.
  */
 public void moveResource(String source, String destination) throws CmsException {
-	CmsResource res = readFileHeader(source);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.moveResource(this, source, destination);
+    CmsResource res = readFileHeader(source);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.moveResource(this, source, destination);
 }
 
 /**
@@ -2239,42 +2240,42 @@ public void moveResource(String source, String destination) throws CmsException 
  * or if the file couldn't be moved.
  */
 protected void doMoveFile(String source, String destination) throws CmsException {
-	//Linkmanagement #1
-	//CmsFile oldFile = readFile(source);
-	//end of Linkmanagement #1
+    //Linkmanagement #1
+    //CmsFile oldFile = readFile(source);
+    //end of Linkmanagement #1
 
-	m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
+    m_rb.moveFile(m_context.currentUser(), m_context.currentProject(), source, destination);
 
 /*
-	//Linkmanagement #2
+    //Linkmanagement #2
 
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int oldResId = oldFile.getResourceId();
-	int oldUrlId = oldFile.getUrlId();
+    int oldResId = oldFile.getResourceId();
+    int oldUrlId = oldFile.getUrlId();
 
-	CmsFile newfile = readFile(destination);
-	int newResId = newfile.getResourceId();
-	if (newResId != -1){
-		// check if there is already an entry with this url in CMS_URL
-		int urlId = m_lm.getUrlIdOfCmsUrl(destination);
-		if (urlId == -1){
-			m_lm.createNewUrl(newResId);
-			urlId = m_lm.getUrlIdOfCmsUrl(destination);
-		} else {
-			m_lm.setUrlIdToNewResource(newResId,urlId);
-		}
-		int projectId = newfile.getProjectId();
-		m_lm.moveResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
-		//check if the entry in CMS_URL with the old Url is still needed.
-		if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
-			//Url is not needed, so delete it.
-			m_lm.deleteUrl(oldUrlId);
-		}
-	}
+    CmsFile newfile = readFile(destination);
+    int newResId = newfile.getResourceId();
+    if (newResId != -1){
+        // check if there is already an entry with this url in CMS_URL
+        int urlId = m_lm.getUrlIdOfCmsUrl(destination);
+        if (urlId == -1){
+            m_lm.createNewUrl(newResId);
+            urlId = m_lm.getUrlIdOfCmsUrl(destination);
+        } else {
+            m_lm.setUrlIdToNewResource(newResId,urlId);
+        }
+        int projectId = newfile.getProjectId();
+        m_lm.moveResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
+        //check if the entry in CMS_URL with the old Url is still needed.
+        if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
+            //Url is not needed, so delete it.
+            m_lm.deleteUrl(oldUrlId);
+        }
+    }
 */
 }
 
@@ -2333,9 +2334,9 @@ public void publishResource(String resourcename) throws CmsException {
                                               "Temp Project","","Users",
                                               "Projectmanager", I_CmsConstants.C_PROJECT_TYPE_TEMPORARY).getId();
             getRequestContext().setCurrentProject(newProjectId);
-	        I_CmsResourceType rt = getResourceType(res.getType());
+            I_CmsResourceType rt = getResourceType(res.getType());
             // copy the resource to the
-	        rt.copyResourceToProject(this, resourcename);
+            rt.copyResourceToProject(this, resourcename);
             // lock and unlock resource to set the project_id to the current project
             rt.changeLockedInProject(this, newProjectId, resourcename);
             //rt.lockResource(this, resourcename, true);
@@ -2437,7 +2438,7 @@ public Hashtable readAllProperties(String name) throws CmsException {
  * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
  */
 public Vector readAllPropertydefinitions(int id, int type) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id));
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), id));
 }
 
 /**
@@ -2483,7 +2484,7 @@ public Vector readAllPropertydefinitions(String resourcetype) throws CmsExceptio
  * @deprecated Use the method readAllPropertydefinitions without type of propertydefinition instead
  */
 public Vector readAllPropertydefinitions(String resourcetype, int type) throws CmsException {
-	return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
+    return (m_rb.readAllPropertydefinitions(m_context.currentUser(), m_context.currentProject(), resourcetype));
 }
 
 /**
@@ -3058,9 +3059,9 @@ public void renameFile(String oldname, String newname) throws CmsException {
  * to rename the file, or if the file couldn't be renamed.
  */
 public void renameResource(String oldname, String newname) throws CmsException {
-	CmsResource res = readFileHeader(oldname);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.renameResource(this, oldname, newname);
+    CmsResource res = readFileHeader(oldname);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.renameResource(this, oldname, newname);
 }
 
 /**
@@ -3073,41 +3074,41 @@ public void renameResource(String oldname, String newname) throws CmsException {
  * to rename the file, or if the file couldn't be renamed.
  */
 protected void doRenameFile(String oldname, String newname) throws CmsException {
-	//Linkmanagement #1
-	//CmsFile oldFile = readFile(oldname);
-	//end of Linkmanagement #1
+    //Linkmanagement #1
+    //CmsFile oldFile = readFile(oldname);
+    //end of Linkmanagement #1
 
-	m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
+    m_rb.renameFile(m_context.currentUser(), m_context.currentProject(), oldname, newname);
 /*
-	//Linkmanagement #2
+    //Linkmanagement #2
 
-	//*** für Aufruf mit der Shell
-	if (m_lm == null) {
+    //*** für Aufruf mit der Shell
+    if (m_lm == null) {
         m_lm = m_rb.getLinkManager();
     }
 
-	int oldResId = oldFile.getResourceId();
-	int oldUrlId = oldFile.getUrlId();
+    int oldResId = oldFile.getResourceId();
+    int oldUrlId = oldFile.getUrlId();
 
-	String newFilename = (oldname.substring(0,oldname.lastIndexOf("/")+1) + newname);
+    String newFilename = (oldname.substring(0,oldname.lastIndexOf("/")+1) + newname);
 
-	CmsFile newfile = readFile(newFilename);
-	int newResId = newfile.getResourceId();
-	if (newResId != -1){
-		// check if there is already an entry with this url in CMS_URL
-		int urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
-		if (urlId == -1){
-			m_lm.createNewUrl(newResId);
-			urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
-		}
-		int projectId = newfile.getProjectId();
-		m_lm.renameResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
-		//check if the entry in CMS_URL with the old Url is still needed.
-		if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
-			//Url is not needed, so delete it.
-			m_lm.deleteUrl(oldUrlId);
-		}
-	}
+    CmsFile newfile = readFile(newFilename);
+    int newResId = newfile.getResourceId();
+    if (newResId != -1){
+        // check if there is already an entry with this url in CMS_URL
+        int urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
+        if (urlId == -1){
+            m_lm.createNewUrl(newResId);
+            urlId = m_lm.getUrlIdOfCmsUrl(newFilename);
+        }
+        int projectId = newfile.getProjectId();
+        m_lm.renameResource(oldResId, newResId, oldUrlId, urlId, projectId, onlineProject().getId());
+        //check if the entry in CMS_URL with the old Url is still needed.
+        if(!m_lm.urlStillNeeded(oldUrlId,m_context.currentProject().getId())){
+            //Url is not needed, so delete it.
+            m_lm.deleteUrl(oldUrlId);
+        }
+    }
 */
 }
 
@@ -3120,9 +3121,9 @@ protected void doRenameFile(String oldname, String newname) throws CmsException 
      * @exception CmsException  Throws CmsException if operation was not succesful.
      */
     public void restoreResource(int versionId, String filename) throws CmsException{
-	    CmsResource res = readFileHeader(filename);
-	    I_CmsResourceType rt = getResourceType(res.getType());
-	    rt.restoreResource(this, versionId, filename);
+        CmsResource res = readFileHeader(filename);
+        I_CmsResourceType rt = getResourceType(res.getType());
+        rt.restoreResource(this, versionId, filename);
     }
 
     /**
@@ -3282,9 +3283,9 @@ public void unlockProject(int id) throws CmsException {
  * to unlock this resource.
  */
 public void unlockResource(String resource) throws CmsException {
-	CmsResource res = readFileHeader(resource);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.unlockResource(this, resource);
+    CmsResource res = readFileHeader(resource);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.unlockResource(this, resource);
 }
 
 /**
@@ -3297,9 +3298,9 @@ public void unlockResource(String resource) throws CmsException {
  */
 public void undoChanges(String filename) throws CmsException {
     //read the file header including deleted
-	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
-	I_CmsResourceType rt = getResourceType(res.getType());
-	rt.undoChanges(this, filename);
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), filename, true);
+    I_CmsResourceType rt = getResourceType(res.getType());
+    rt.undoChanges(this, filename);
 }
 
 /**
@@ -3326,7 +3327,7 @@ protected void doUndoChanges(String resource) throws CmsException {
  * to unlock this resource.
  */
 protected void doUnlockResource(String resource) throws CmsException {
-	m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
+    m_rb.unlockResource(m_context.currentUser(), m_context.currentProject(), resource);
 }
 
 /**
@@ -3509,8 +3510,8 @@ public void writeWebUser(CmsUser user) throws CmsException {
  * @param resourcename The name of the resource to change
  */
 protected void changeLockedInProject(int projectId, String resourcename) throws CmsException{
-	CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), resourcename, true);
-	I_CmsResourceType rt = getResourceType(res.getType());
+    CmsResource res = m_rb.readFileHeader(m_context.currentUser(), m_context.currentProject(), resourcename, true);
+    I_CmsResourceType rt = getResourceType(res.getType());
     rt.changeLockedInProject(this, projectId, resourcename);
 }
 

@@ -1,32 +1,32 @@
-package com.opencms.file.oracleplsql;
-
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/30 14:09:14 $
- * Version: $Revision: 1.30 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/oracleplsql/Attic/CmsResourceBroker.java,v $
+* Date   : $Date: 2001/07/31 15:50:15 $
+* Version: $Revision: 1.31 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.file.oracleplsql;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -49,7 +49,7 @@ import com.opencms.template.*;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.30 $ $Date: 2001/07/30 14:09:14 $
+ * @version $Revision: 1.31 $ $Date: 2001/07/31 15:50:15 $
  */
 public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBroker {
 
@@ -63,8 +63,8 @@ public class CmsResourceBroker extends com.opencms.file.genericSql.CmsResourceBr
  * @return wether the user has access, or not.
  */
 public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessCreate(currentUser, currentProject, resource));
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    return (dbAccess.accessCreate(currentUser, currentProject, resource));
 }
 /**
  * Checks, if the user may lock this resource.
@@ -76,8 +76,8 @@ public boolean accessCreate(CmsUser currentUser, CmsProject currentProject, CmsR
  * @return wether the user has access, or not.
  */
 public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessLock(currentUser, currentProject, resource));
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    return (dbAccess.accessLock(currentUser, currentProject, resource));
 }
 // Methods working with projects
 
@@ -94,8 +94,8 @@ public boolean accessLock(CmsUser currentUser, CmsProject currentProject, CmsRes
  * @exception CmsException Throws CmsException if something goes wrong.
  */
 public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int projectId) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessProject(currentUser, projectId));
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    return (dbAccess.accessProject(currentUser, projectId));
 }
 /**
  * Checks, if the user may read this resource.
@@ -108,16 +108,16 @@ public boolean accessProject(CmsUser currentUser, CmsProject currentProject, int
  */
 public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
 
-	Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
-	if (access != null) {
-		    return access.booleanValue();
-	} else {
-		com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-		boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
-		m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));
+    Boolean access=(Boolean)m_accessCache.get(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName());
+    if (access != null) {
+            return access.booleanValue();
+    } else {
+        com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+        boolean ac=dbAccess.accessRead(currentUser, currentProject, resource);
+        m_accessCache.put(currentUser.getId()+":"+currentProject.getId()+":"+resource.getName(),new Boolean(ac));
 
-		return ac;
-	}
+        return ac;
+    }
 }
 /**
  * Checks, if the user may write this resource.
@@ -129,8 +129,8 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
  * @return wether the user has access, or not.
  */
 public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsResource resource) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.accessWrite(currentUser, currentProject, resource));
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    return (dbAccess.accessWrite(currentUser, currentProject, resource));
 }
 /**
  * Copies a file in the Cms. <br>
@@ -152,26 +152,26 @@ public boolean accessWrite(CmsUser currentUser, CmsProject currentProject, CmsRe
  * @exception CmsException  Throws CmsException if operation was not succesful.
  */
 public void copyFile(CmsUser currentUser, CmsProject currentProject, String source, String destination) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 
-	// checks, if the destinateion is valid, if not it throws a exception
-	validFilename(destination.replace('/', 'a'));
+    // checks, if the destinateion is valid, if not it throws a exception
+    validFilename(destination.replace('/', 'a'));
 
     CmsResource sourceFile = readFileHeader(currentUser, currentProject, source);
-	try {
+    try {
         if(accessOther(currentUser, currentProject, sourceFile, C_ACCESS_PUBLIC_WRITE) ||
            accessOwner(currentUser, currentProject, sourceFile, C_ACCESS_OWNER_WRITE) ||
            accessGroup(currentUser, currentProject, sourceFile, C_ACCESS_GROUP_WRITE)){
-		    dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
-		    // inform about the file-system-change
-		    fileSystemChanged(false);
+            dbAccess.copyFile(currentProject, currentUser.getId(), source, destination);
+            // inform about the file-system-change
+            fileSystemChanged(false);
         } else {
             throw new CmsException("[" + this.getClass().getName() + "] " + source,
                 CmsException.C_NO_ACCESS);
         }
-	} catch (CmsException e) {
-		throw e;
-	}
+    } catch (CmsException e) {
+        throw e;
+    }
 }
 
 /**
@@ -184,31 +184,31 @@ public void copyFile(CmsUser currentUser, CmsProject currentProject, String sour
  */
 public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations configurations) throws CmsException
 {
-	return new com.opencms.file.oracleplsql.CmsDbAccess(configurations);
+    return new com.opencms.file.oracleplsql.CmsDbAccess(configurations);
 }
-	/**
-	 * Returns all projects, which are owned by the user or which are accessible
-	 * for the group of the user.
-	 *
-	 * <B>Security</B>
-	 * All users are granted.
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 *
-	 * @return a Vector of projects.
-	 */
-	 public Vector getAllAccessibleProjects(CmsUser currentUser,
-											CmsProject currentProject)
-		 throws CmsException {
+    /**
+     * Returns all projects, which are owned by the user or which are accessible
+     * for the group of the user.
+     *
+     * <B>Security</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * @return a Vector of projects.
+     */
+     public Vector getAllAccessibleProjects(CmsUser currentUser,
+                                            CmsProject currentProject)
+         throws CmsException {
 
-	    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-		// get all projects which are owned by the user.
-		Vector projects = dbAccess.getAllAccessibleProjects(currentUser);
+        com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+        // get all projects which are owned by the user.
+        Vector projects = dbAccess.getAllAccessibleProjects(currentUser);
 
-		// return the vector of projects
-		return(projects);
-	 }
+        // return the vector of projects
+        return(projects);
+     }
 /**
  * Returns a list of groups of a user.<P/>
  *
@@ -222,15 +222,15 @@ public com.opencms.file.genericSql.CmsDbAccess createDbAccess(Configurations con
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, String username) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 
-	Vector allGroups = (Vector) m_usergroupsCache.get(C_USER + username);
-	if ((allGroups == null) || (allGroups.size() == 0)) {
-		Vector groups = dbAccess.getAllGroupsOfUser(username);
-		m_usergroupsCache.put(C_USER + username, groups);
-		return groups;
-	}
-	return allGroups;
+    Vector allGroups = (Vector) m_usergroupsCache.get(C_USER + username);
+    if ((allGroups == null) || (allGroups.size() == 0)) {
+        Vector groups = dbAccess.getAllGroupsOfUser(username);
+        m_usergroupsCache.put(C_USER + username, groups);
+        return groups;
+    }
+    return allGroups;
 }
 /**
  * Returns a list of users in a group.<P/>
@@ -245,23 +245,23 @@ public Vector getGroupsOfUser(CmsUser currentUser, CmsProject currentProject, St
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, String groupname) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
 
-	// check the security
-	if (!anonymousUser(currentUser, currentProject).equals(currentUser)) {
-		return dbAccess.getUsersOfGroup(currentUser, groupname, C_USER_TYPE_SYSTEMUSER);
-	} else {
-		throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
-	}
+    // check the security
+    if (!anonymousUser(currentUser, currentProject).equals(currentUser)) {
+        return dbAccess.getUsersOfGroup(currentUser, groupname, C_USER_TYPE_SYSTEMUSER);
+    } else {
+        throw new CmsException("[" + this.getClass().getName() + "] " + groupname, CmsException.C_NO_ACCESS);
+    }
 }
-	/**
-	 * Initializes the resource broker and sets up all required modules and connections.
-	 * @param config The OpenCms configuration.
-	 * @exception CmsException Throws CmsException if something goes wrong.
-	 */
-	public void init(Configurations config) throws CmsException {
-		super.init(config);
-	}
+    /**
+     * Initializes the resource broker and sets up all required modules and connections.
+     * @param config The OpenCms configuration.
+     * @exception CmsException Throws CmsException if something goes wrong.
+     */
+    public void init(Configurations config) throws CmsException {
+        super.init(config);
+    }
 /**
  * Determines, if the users may manage a project.<BR/>
  * Only the manager of a project may publish it.
@@ -275,8 +275,8 @@ public Vector getUsersOfGroup(CmsUser currentUser, CmsProject currentProject, St
  * @exception CmsException Throws CmsException if operation was not succesful.
  */
 public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	return (dbAccess.isManagerOfProject(currentUser, currentProject));
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    return (dbAccess.isManagerOfProject(currentUser, currentProject));
 }
 /**
  * Locks a resource.<br>
@@ -306,39 +306,39 @@ public boolean isManagerOfProject(CmsUser currentUser, CmsProject currentProject
  * and force was set to false.
  */
 public void lockResource(CmsUser currentUser, CmsProject currentProject, String resourcename, boolean force) throws CmsException {
-	CmsResource cmsResource = null;
-	CmsFolder cmsFolder = null;
-	CmsFile cmsFile = null;
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	Vector resources = dbAccess.lockResource(currentUser, currentProject, resourcename, force);
+    CmsResource cmsResource = null;
+    CmsFolder cmsFolder = null;
+    CmsFile cmsFile = null;
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    Vector resources = dbAccess.lockResource(currentUser, currentProject, resourcename, force);
 
-	for (int i = 0; i < resources.size(); i++) {
-		cmsResource = (CmsResource) resources.elementAt(i);
-		String resourceName = cmsResource.getAbsolutePath();
-		if (resourceName.endsWith("/")) {
-			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
-									cmsResource.getFileId(), resourceName, cmsResource.getType(),
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
+    for (int i = 0; i < resources.size(); i++) {
+        cmsResource = (CmsResource) resources.elementAt(i);
+        String resourceName = cmsResource.getAbsolutePath();
+        if (resourceName.endsWith("/")) {
+            cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
+                                    cmsResource.getFileId(), resourceName, cmsResource.getType(),
+                                    cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+                                    cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+                                    cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
+                                    cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
 
-			m_resourceCache.remove(resourceName);
-		} else {
-			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
-									cmsResource.getFileId(), resourceName, cmsResource.getType(),
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
-									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(),
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
-									new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
+            m_resourceCache.remove(resourceName);
+        } else {
+            cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
+                                    cmsResource.getFileId(), resourceName, cmsResource.getType(),
+                                    cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+                                    cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+                                    cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
+                                    cmsResource.getLauncherClassname(), cmsResource.getDateCreated(),
+                                    cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
+                                    new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
 
-			m_resourceCache.remove(resourceName);
-		}
-	}
-	m_subresCache.clear();
+            m_resourceCache.remove(resourceName);
+        }
+    }
+    m_subresCache.clear();
 }
 
 /**
@@ -367,40 +367,40 @@ public void lockResource(CmsUser currentUser, CmsProject currentProject, String 
  */
 public void unlockResource(CmsUser currentUser, CmsProject currentProject, String resourcename) throws CmsException {
 
-	CmsResource cmsResource = null;
-	CmsFolder cmsFolder = null;
-	CmsFile cmsFile = null;
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	Vector resources = dbAccess.unlockResource(currentUser, currentProject, resourcename);
+    CmsResource cmsResource = null;
+    CmsFolder cmsFolder = null;
+    CmsFile cmsFile = null;
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    Vector resources = dbAccess.unlockResource(currentUser, currentProject, resourcename);
 
-	for (int i=0; i < resources.size(); i++) {
-		cmsResource = (CmsResource)resources.elementAt(i);
-		String resourceName = cmsResource.getAbsolutePath();
-		if (resourceName.endsWith("/")) {
-			cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
-									cmsResource.getFileId(), resourceName, cmsResource.getType(),
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
+    for (int i=0; i < resources.size(); i++) {
+        cmsResource = (CmsResource)resources.elementAt(i);
+        String resourceName = cmsResource.getAbsolutePath();
+        if (resourceName.endsWith("/")) {
+            cmsFolder = new CmsFolder(cmsResource.getResourceId(), cmsResource.getParentId(),
+                                    cmsResource.getFileId(), resourceName, cmsResource.getType(),
+                                    cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+                                    cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+                                    cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getDateCreated(),
+                                    cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
                                     cmsResource.getProjectId());
 
-			m_resourceCache.remove(resourceName);
-		} else {
-			cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
-									cmsResource.getFileId(), resourceName, cmsResource.getType(),
-									cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
-									cmsResource.getProjectId(), cmsResource.getAccessFlags(),
-									cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
-									cmsResource.getLauncherClassname(),	cmsResource.getDateCreated(),
-									cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
-									new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
+            m_resourceCache.remove(resourceName);
+        } else {
+            cmsFile = new CmsFile(cmsResource.getResourceId(), cmsResource.getParentId(),
+                                    cmsResource.getFileId(), resourceName, cmsResource.getType(),
+                                    cmsResource.getFlags(), cmsResource.getOwnerId(), cmsResource.getGroupId(),
+                                    cmsResource.getProjectId(), cmsResource.getAccessFlags(),
+                                    cmsResource.getState(), cmsResource.isLockedBy(), cmsResource.getLauncherType(),
+                                    cmsResource.getLauncherClassname(), cmsResource.getDateCreated(),
+                                    cmsResource.getDateLastModified(), cmsResource.getResourceLastModifiedBy(),
+                                    new byte[0], cmsResource.getLength(),cmsResource.getProjectId());
 
-			m_resourceCache.remove(resourceName);
-		}
-	}
+            m_resourceCache.remove(resourceName);
+        }
+    }
 
-	m_subresCache.clear();
+    m_subresCache.clear();
 }
 /**
  * Checks if a user is member of a group.<P/>
@@ -418,18 +418,18 @@ public void unlockResource(CmsUser currentUser, CmsProject currentProject, Strin
  * @exception CmsException Throws CmsException if operation was not succesful
  */
 public boolean userInGroup(CmsUser currentUser, CmsProject currentProject, String username, String groupname) throws CmsException {
-	com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
-	try {
+    com.opencms.file.oracleplsql.CmsDbAccess dbAccess = (com.opencms.file.oracleplsql.CmsDbAccess) m_dbAccess;
+    try {
         CmsUser user = null;
         try {
-		    user = readUser(currentUser, currentProject, username);
+            user = readUser(currentUser, currentProject, username);
         } catch (CmsException exc){
             user = readWebUser(currentUser, currentProject, username);
         }
-		CmsGroup group = readGroup(currentUser, currentProject, groupname);
-		return (dbAccess.userInGroup(user.getId(), group.getId()));
-	} catch (CmsException ex) {
-		return false;
-	}
+        CmsGroup group = readGroup(currentUser, currentProject, groupname);
+        return (dbAccess.userInGroup(user.getId(), group.getId()));
+    } catch (CmsException ex) {
+        return false;
+    }
 }
 }

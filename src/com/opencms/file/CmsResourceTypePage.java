@@ -1,33 +1,35 @@
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.8 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 package com.opencms.file;
+
 import java.util.zip.*;
 
-/*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
- * Date   : $Date: 2001/07/26 11:42:45 $
- * Version: $Revision: 1.7 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
 
 import com.opencms.core.*;
 import com.opencms.template.*;
@@ -43,295 +45,295 @@ import com.opencms.file.genericSql.*;
  * Access class for resources of the type "Page".
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2001/07/26 11:42:45 $
+ * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:13 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, com.opencms.workplace.I_CmsWpConstants {
 
-	 /** Definition of the class */
-	 private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
+     /** Definition of the class */
+     private final static String C_CLASSNAME="com.opencms.template.CmsXmlTemplate";
 
-	 private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
-	 private static final String C_DEFAULTBODY_END = "]]></TEMPLATE>\n</XMLTEMPLATE>";
+     private static final String C_DEFAULTBODY_START = "<?xml version=\"1.0\"?>\n<XMLTEMPLATE>\n<TEMPLATE>\n<![CDATA[\n";
+     private static final String C_DEFAULTBODY_END = "]]></TEMPLATE>\n</XMLTEMPLATE>";
 
-	 /**
-	  * The id of resource type.
-	  */
- 	private int m_resourceType;
+     /**
+      * The id of resource type.
+      */
+    private int m_resourceType;
 
-	/**
-	 * The id of the launcher used by this resource.
-	 */
-	private int m_launcherType;
+    /**
+     * The id of the launcher used by this resource.
+     */
+    private int m_launcherType;
 
-	/**
-	 * The resource type name.
-	 */
-	private String m_resourceTypeName;
+    /**
+     * The resource type name.
+     */
+    private String m_resourceTypeName;
 
-	/**
-	 * The class name of the Java class launched by the launcher.
-	 */
-	private String m_launcherClass;
+    /**
+     * The class name of the Java class launched by the launcher.
+     */
+    private String m_launcherClass;
 
 
-	/**
-	 * inits a new CmsResourceType object.
-	 *
-	 * @param resourceType The id of the resource type.
-	 * @param launcherType The id of the required launcher.
-	 * @param resourceTypeName The printable name of the resource type.
-	 * @param launcherClass The Java class that should be invoked by the launcher.
-	 * This value is <b> null </b> if the default invokation class should be used.
-	 */
-	public void init(int resourceType, int launcherType,
-						   String resourceTypeName, String launcherClass){
+    /**
+     * inits a new CmsResourceType object.
+     *
+     * @param resourceType The id of the resource type.
+     * @param launcherType The id of the required launcher.
+     * @param resourceTypeName The printable name of the resource type.
+     * @param launcherClass The Java class that should be invoked by the launcher.
+     * This value is <b> null </b> if the default invokation class should be used.
+     */
+    public void init(int resourceType, int launcherType,
+                           String resourceTypeName, String launcherClass){
 
-		m_resourceType=resourceType;
-		m_launcherType=launcherType;
-		m_resourceTypeName=resourceTypeName;
-		m_launcherClass=launcherClass;
-	}
-	 /**
-	 * Returns the name of the Java class loaded by the launcher.
-	 * This method returns <b>null</b> if the default class for this type is used.
-	 *
-	 * @return the name of the Java class.
-	 */
-	 public String getLauncherClass() {
-		 if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
-			return C_UNKNOWN_LAUNCHER;
-		 } else {
-			return m_launcherClass;
-		 }
-	 }
-	 /**
-	 * Returns the launcher type needed for this resource-type.
-	 *
-	 * @return the launcher type for this resource-type.
-	 */
-	 public int getLauncherType() {
-		 return m_launcherType;
-	 }
-	/**
-	 * Returns the name for this resource-type.
-	 *
-	 * @return the name for this resource-type.
-	 */
-	 public String getResourceTypeName() {
-		 return m_resourceTypeName;
-	 }
-	/**
-	 * Returns the type of this resource-type.
-	 *
-	 * @return the type of this resource-type.
-	 */
-	public int getResourceType() {
-		 return m_resourceType;
-	 }
-	/**
-	 * Returns a string-representation for this object.
-	 * This can be used for debugging.
-	 *
-	 * @return string-representation for this object.
-	 */
-	 public String toString() {
-		StringBuffer output=new StringBuffer();
-		output.append("[ResourceType]:");
-		output.append(m_resourceTypeName);
-		output.append(" , Id=");
-		output.append(m_resourceType);
-		output.append(" , launcherType=");
-		output.append(m_launcherType);
-		output.append(" , launcherClass=");
-		output.append(m_launcherClass);
-		return output.toString();
-	  }
+        m_resourceType=resourceType;
+        m_launcherType=launcherType;
+        m_resourceTypeName=resourceTypeName;
+        m_launcherClass=launcherClass;
+    }
+     /**
+     * Returns the name of the Java class loaded by the launcher.
+     * This method returns <b>null</b> if the default class for this type is used.
+     *
+     * @return the name of the Java class.
+     */
+     public String getLauncherClass() {
+         if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
+            return C_UNKNOWN_LAUNCHER;
+         } else {
+            return m_launcherClass;
+         }
+     }
+     /**
+     * Returns the launcher type needed for this resource-type.
+     *
+     * @return the launcher type for this resource-type.
+     */
+     public int getLauncherType() {
+         return m_launcherType;
+     }
+    /**
+     * Returns the name for this resource-type.
+     *
+     * @return the name for this resource-type.
+     */
+     public String getResourceTypeName() {
+         return m_resourceTypeName;
+     }
+    /**
+     * Returns the type of this resource-type.
+     *
+     * @return the type of this resource-type.
+     */
+    public int getResourceType() {
+         return m_resourceType;
+     }
+    /**
+     * Returns a string-representation for this object.
+     * This can be used for debugging.
+     *
+     * @return string-representation for this object.
+     */
+     public String toString() {
+        StringBuffer output=new StringBuffer();
+        output.append("[ResourceType]:");
+        output.append(m_resourceTypeName);
+        output.append(" , Id=");
+        output.append(m_resourceType);
+        output.append(" , launcherType=");
+        output.append(m_launcherType);
+        output.append(" , launcherClass=");
+        output.append(m_launcherClass);
+        return output.toString();
+      }
 
-	/**
-	* Changes the group of a resource.
-	* <br>
-	* Only the group of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newGroup the name of the new group for this resource.
-	* @param chRekursive only used by folders.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
+    /**
+    * Changes the group of a resource.
+    * <br>
+    * Only the group of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newGroup the name of the new group for this resource.
+    * @param chRekursive only used by folders.
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
 
-		CmsFile file = cms.readFile(filename);
+        CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
-		// resource. Only the owner of a file and the admin are allowed to do this.
-		if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
-			(cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
-			cms.doChgrp(filename, newGroup);
-			//check if the file type name is page
-			String bodyPath = checkBodyPath(cms, (CmsFile)file);
-			if (bodyPath != null){
-			    cms.doChgrp(bodyPath, newGroup);
-			}
-    	}
-	}
-
-	/**
-	* Changes the flags of a resource.
-	* <br>
-	* Only the flags of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change the flags, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user can write the resource</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param flags the new flags for the resource.
-	* @param chRekursive only used by folders.
-	*
-	* @exception CmsException if operation was not successful.
-	* for this resource.
-	*/
-	public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
-
-		CmsFile file = cms.readFile(filename);
-	    // check if the current user has the right to change the group of the
-	    // resource. Only the owner of a file and the admin are allowed to do this.
-	    if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
-	       (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
-
-	    	// modify the access flags
-	    	cms.doChmod(filename, flags);
-
-	    	String bodyPath = checkBodyPath(cms, (CmsFile)file);
-	    	if (bodyPath != null){
-	    		// set the internal read flag if nescessary
-	    		if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
-	    			flags += C_ACCESS_INTERNAL_READ;
-	    		}
-	    		cms.doChmod(bodyPath, flags);
-	    	}
-	    }
+        // resource. Only the owner of a file and the admin are allowed to do this.
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
+            (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
+            cms.doChgrp(filename, newGroup);
+            //check if the file type name is page
+            String bodyPath = checkBodyPath(cms, (CmsFile)file);
+            if (bodyPath != null){
+                cms.doChgrp(bodyPath, newGroup);
+            }
+        }
     }
 
-	/**
-	* Changes the owner of a resource.
-	* <br>
-	* Only the owner of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change this, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is cranted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or the user is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newOwner the name of the new owner for this resource.
-	* @param chRekursive only used by folders.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
-		CmsFile file = cms.readFile(filename);
+    /**
+    * Changes the flags of a resource.
+    * <br>
+    * Only the flags of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change the flags, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user can write the resource</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param flags the new flags for the resource.
+    * @param chRekursive only used by folders.
+    *
+    * @exception CmsException if operation was not successful.
+    * for this resource.
+    */
+    public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
+
+        CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
-		// resource. Only the owner of a file and the admin are allowed to do this.
-		if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
-			(cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
-			cms.doChown(filename, newOwner);
-			//check if the file type name is page
-			String bodyPath = checkBodyPath(cms, (CmsFile)file);
-			if (bodyPath != null){
-			    cms.doChown(bodyPath, newOwner);
-			}
-    	}
-	}
+        // resource. Only the owner of a file and the admin are allowed to do this.
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
+           (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
 
-	/**
-	* Changes the resourcetype of a resource.
-	* <br>
-	* Only the resourcetype of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not exisiting in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change this, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newType the name of the new resourcetype for this resource.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
-		CmsFile file = cms.readFile(filename);
+            // modify the access flags
+            cms.doChmod(filename, flags);
+
+            String bodyPath = checkBodyPath(cms, (CmsFile)file);
+            if (bodyPath != null){
+                // set the internal read flag if nescessary
+                if ((flags & C_ACCESS_INTERNAL_READ) ==0 ) {
+                    flags += C_ACCESS_INTERNAL_READ;
+                }
+                cms.doChmod(bodyPath, flags);
+            }
+        }
+    }
+
+    /**
+    * Changes the owner of a resource.
+    * <br>
+    * Only the owner of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change this, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is cranted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or the user is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newOwner the name of the new owner for this resource.
+    * @param chRekursive only used by folders.
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
+        CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
-		// resource. Only the owner of a file and the admin are allowed to do this.
-		if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
-			(cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
-			cms.doChtype(filename, newType);
-			//check if the file type name is page
-			String bodyPath = checkBodyPath(cms, (CmsFile)file);
-			if (bodyPath != null){
-			    cms.doChtype(bodyPath, newType);
-			}
-    	}
-	}
+        // resource. Only the owner of a file and the admin are allowed to do this.
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
+            (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
+            cms.doChown(filename, newOwner);
+            //check if the file type name is page
+            String bodyPath = checkBodyPath(cms, (CmsFile)file);
+            if (bodyPath != null){
+                cms.doChown(bodyPath, newOwner);
+            }
+        }
+    }
+
+    /**
+    * Changes the resourcetype of a resource.
+    * <br>
+    * Only the resourcetype of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not exisiting in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change this, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newType the name of the new resourcetype for this resource.
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
+        CmsFile file = cms.readFile(filename);
+        // check if the current user has the right to change the group of the
+        // resource. Only the owner of a file and the admin are allowed to do this.
+        if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
+            (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
+            cms.doChtype(filename, newType);
+            //check if the file type name is page
+            String bodyPath = checkBodyPath(cms, (CmsFile)file);
+            if (bodyPath != null){
+                cms.doChtype(bodyPath, newType);
+            }
+        }
+    }
 
 
-	/**
-	* Copies a Resource.
-	*
-	* @param source the complete path of the sourcefile.
-	* @param destination the complete path of the destinationfolder.
-	* @param keepFlags <code>true</code> if the copy should keep the source file's flags,
-	*        <code>false</code> if the copy should get the user's default flags.
-	*
-	* @exception CmsException if the file couldn't be copied, or the user
-	* has not the appropriate rights to copy the file.
-	*/
-	public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
+    /**
+    * Copies a Resource.
+    *
+    * @param source the complete path of the sourcefile.
+    * @param destination the complete path of the destinationfolder.
+    * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
+    *        <code>false</code> if the copy should get the user's default flags.
+    *
+    * @exception CmsException if the file couldn't be copied, or the user
+    * has not the appropriate rights to copy the file.
+    */
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
         // Read and parse the source page file
         CmsFile file = cms.readFile(source);
-		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+        CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
 
         // Check the path of the body file.
         // Don't use the checkBodyPath method here to avaoid overhead.
-	    String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
+        String bodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(source);
         if (bodyPath.equals(hXml.getElementTemplate("body"))){
 
             // Evaluate some path information
-			String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
-		    checkFolders(cms, destinationFolder);
-			String newbodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+ destination;
+            String destinationFolder = destination.substring(0,destination.lastIndexOf("/")+1);
+            checkFolders(cms, destinationFolder);
+            String newbodyPath=(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+ destination;
 
             // we don't want to use the changeContent method here
             // to avoid overhead by copying, readig, parsing, setting XML and writing again.
@@ -352,59 +354,59 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             // the default place. Leave it there, don't make
             // a copy and simply make a copy of the page file.
             // So the new page links to the old body.
-		    cms.doCopyFile(source, destination);
+            cms.doCopyFile(source, destination);
         }
 
         // set access flags, if neccessary
         if(!keepFlags) {
             setDefaultFlags(cms, destination);
         }
-	}
+    }
 
 
-	/**
-	* Copies a resource from the online project to a new, specified project.
-	* <br>
-	* Copying a resource will copy the file header or folder into the specified
-	* offline project and set its state to UNCHANGED.
-	*
-	* @param resource the name of the resource.
-	* @exception CmsException if operation was not successful.
-	*/
+    /**
+    * Copies a resource from the online project to a new, specified project.
+    * <br>
+    * Copying a resource will copy the file header or folder into the specified
+    * offline project and set its state to UNCHANGED.
+    *
+    * @param resource the name of the resource.
+    * @exception CmsException if operation was not successful.
+    */
     /*public void copyResourceToProject(CmsObject cms, CmsResourceBroker resBroker, CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-		resBroker.doCopyResourceToProject(cms, currentUser, currentProject, resourceName);
-	}*/
+        resBroker.doCopyResourceToProject(cms, currentUser, currentProject, resourceName);
+    }*/
 //    public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
     public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException {
 
-    	//String resourceName = linkManager.getResourceName(resourceId);
+        //String resourceName = linkManager.getResourceName(resourceId);
         CmsFile file = cms.readFile(resourceName);
-		//check if the file type name is page
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
-		    cms.copyResourceToProject(bodyPath);
-		}
+        //check if the file type name is page
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
+            cms.copyResourceToProject(bodyPath);
+        }
         return content;
     }
 
-	/**
-	* Copies a resource from the online project to a new, specified project.
-	* <br>
-	* Copying a resource will copy the file header or folder into the specified
-	* offline project and set its state to UNCHANGED.
-	*
-	* @param resource the name of the resource.
-	* @exception CmsException if operation was not successful.
-	*/
+    /**
+    * Copies a resource from the online project to a new, specified project.
+    * <br>
+    * Copying a resource will copy the file header or folder into the specified
+    * offline project and set its state to UNCHANGED.
+    *
+    * @param resource the name of the resource.
+    * @exception CmsException if operation was not successful.
+    */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
-    	//String resourceName = linkManager.getResourceName(resourceId);
+        //String resourceName = linkManager.getResourceName(resourceId);
         CmsFile file = cms.readFile(resourceName);
         cms.doCopyResourceToProject(resourceName);
-		//check if the file type name is page
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
-		    cms.doCopyResourceToProject(bodyPath);
-		}
+        //check if the file type name is page
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
+            cms.doCopyResourceToProject(bodyPath);
+        }
     }
 
     /**
@@ -418,7 +420,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
      *
      * @exception CmsException if operation was not successful.
      */
-	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
 
         // Scan for mastertemplates
         Vector allMasterTemplates = cms.getFilesInFolder(C_CONTENTTEMPLATEPATH);
@@ -451,9 +453,9 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         cms.doLockResource(bodyFolder + name, true);
         cms.chmod(bodyFile.getAbsolutePath(), bodyFile.getAccessFlags() + C_ACCESS_INTERNAL_READ);
         return file;
-	}
+    }
 
-	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
+    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents, String masterTemplate) throws CmsException{
         CmsFile resource = (CmsFile)createResource(cms, folder, name, properties, contents);
         CmsXmlControlFile pageXml = new CmsXmlControlFile(cms, resource);
         pageXml.setMasterTemplate(masterTemplate);
@@ -461,51 +463,51 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return resource;
     }
 
-	/**
-	* Deletes a resource.
-	*
-	* @param filename the complete path of the file.
-	*
-	* @exception CmsException if the file couldn't be deleted, or if the user
-	* has not the appropriate rights to delete the file.
-	*/
-	public void deleteResource(CmsObject cms, String filename) throws CmsException{
-		CmsFile file = cms.readFile(filename);
-		cms.doDeleteFile(filename);
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
-		    cms.doDeleteFile(bodyPath);
-		}
+    /**
+    * Deletes a resource.
+    *
+    * @param filename the complete path of the file.
+    *
+    * @exception CmsException if the file couldn't be deleted, or if the user
+    * has not the appropriate rights to delete the file.
+    */
+    public void deleteResource(CmsObject cms, String filename) throws CmsException{
+        CmsFile file = cms.readFile(filename);
+        cms.doDeleteFile(filename);
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
+            cms.doDeleteFile(bodyPath);
+        }
 
         // The page file contains XML.
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
         CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
-	}
+    }
 
-	/**
-	* Undeletes a resource.
-	*
-	* @param filename the complete path of the file.
-	*
-	* @exception CmsException if the file couldn't be undeleted, or if the user
-	* has not the appropriate rights to undelete the file.
-	*/
-	public void undeleteResource(CmsObject cms, String filename) throws CmsException{
-		CmsFile file = cms.readFile(filename);
-		cms.doUndeleteFile(filename);
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
-		    cms.doUndeleteFile(bodyPath);
-		}
+    /**
+    * Undeletes a resource.
+    *
+    * @param filename the complete path of the file.
+    *
+    * @exception CmsException if the file couldn't be undeleted, or if the user
+    * has not the appropriate rights to undelete the file.
+    */
+    public void undeleteResource(CmsObject cms, String filename) throws CmsException{
+        CmsFile file = cms.readFile(filename);
+        cms.doUndeleteFile(filename);
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
+            cms.doUndeleteFile(bodyPath);
+        }
 
         // The page file contains XML.
         // So there could be some data in the parser's cache.
         // Clear it!
         String currentProject = cms.getRequestContext().currentProject().getName();
         CmsXmlControlFile.clearFileCache(currentProject + ":" + filename);
-	}
+    }
 
     /**
      * When a resource has to be exported, the ID´s inside the
@@ -529,8 +531,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         CmsFile file = null;
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
-		int state = C_STATE_NEW;
+        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+        int state = C_STATE_NEW;
         // this is a file
         // first delete the file, so it can be overwritten
         try {
@@ -572,19 +574,19 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return file;
     }
 
-	/**
-	* Locks a given resource.
-	* <br>
-	* A user can lock a resource, so he is the only one who can write this
-	* resource.
-	*
-	* @param resource the complete path to the resource to lock.
-	* @param force if force is <code>true</code>, a existing locking will be overwritten.
-	*
-	* @exception CmsException if the user has not the rights to lock this resource.
-	* It will also be thrown, if there is a existing lock and force was set to false.
-	*/
-	public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
+    /**
+    * Locks a given resource.
+    * <br>
+    * A user can lock a resource, so he is the only one who can write this
+    * resource.
+    *
+    * @param resource the complete path to the resource to lock.
+    * @param force if force is <code>true</code>, a existing locking will be overwritten.
+    *
+    * @exception CmsException if the user has not the rights to lock this resource.
+    * It will also be thrown, if there is a existing lock and force was set to false.
+    */
+    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
@@ -628,33 +630,33 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
 */
     }
 
-	/**
-	* Moves a resource to the given destination.
-	*
-	* @param source the complete path of the sourcefile.
-	* @param destination the complete path of the destinationfile.
-	*
-	* @exception CmsException if the user has not the rights to move this resource,
-	* or if the file couldn't be moved.
-	*/
-	public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
-		CmsFile file = cms.readFile(source);
-		//String bodyPath = readBodyPath(cms, source);
+    /**
+    * Moves a resource to the given destination.
+    *
+    * @param source the complete path of the sourcefile.
+    * @param destination the complete path of the destinationfile.
+    *
+    * @exception CmsException if the user has not the rights to move this resource,
+    * or if the file couldn't be moved.
+    */
+    public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
+        CmsFile file = cms.readFile(source);
+        //String bodyPath = readBodyPath(cms, source);
         String bodyPath = checkBodyPath(cms, file);
         //int help = C_CONTENTBODYPATH.lastIndexOf("/");
-		//String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + source;
+        //String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + source;
         //if(hbodyPath.equals(bodyPath)) {
         if(bodyPath != null) {
-			//help=bodyPath.lastIndexOf("/") + 1;
-			//hbodyPath = bodyPath.substring(0,help) + destination;
-		    //String hbodyPath = bodyPath.substring(0, bodyPath.lastIndexOf("/")) + destination;
-		    String hbodyPath = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + destination;
+            //help=bodyPath.lastIndexOf("/") + 1;
+            //hbodyPath = bodyPath.substring(0,help) + destination;
+            //String hbodyPath = bodyPath.substring(0, bodyPath.lastIndexOf("/")) + destination;
+            String hbodyPath = C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")) + destination;
             checkFolders(cms, destination.substring(0, destination.lastIndexOf("/")));
-			cms.doMoveFile(bodyPath, hbodyPath);
-			changeContent(cms, source, hbodyPath);
-		}
+            cms.doMoveFile(bodyPath, hbodyPath);
+            changeContent(cms, source, hbodyPath);
+        }
         cms.doMoveFile(source, destination);
-	}
+    }
 
     /**
      *
@@ -666,29 +668,29 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return null;
     }
 
-	/**
-	* Renames the file to the new name.
-	*
-	* @param oldname the complete path to the file which will be renamed.
-	* @param newname the new name of the file.
-	*
-	* @exception CmsException if the user has not the rights
-	* to rename the file, or if the file couldn't be renamed.
-	*/
-	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
-		CmsFile file = cms.readFile(oldname);
-		String bodyPath = readBodyPath(cms, file);
-		int help = C_CONTENTBODYPATH.lastIndexOf("/");
-		String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + oldname;
+    /**
+    * Renames the file to the new name.
+    *
+    * @param oldname the complete path to the file which will be renamed.
+    * @param newname the new name of the file.
+    *
+    * @exception CmsException if the user has not the rights
+    * to rename the file, or if the file couldn't be renamed.
+    */
+    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
+        CmsFile file = cms.readFile(oldname);
+        String bodyPath = readBodyPath(cms, file);
+        int help = C_CONTENTBODYPATH.lastIndexOf("/");
+        String hbodyPath=(C_CONTENTBODYPATH.substring(0,help)) + oldname;
         if(hbodyPath.equals(bodyPath)) {
-		    cms.doRenameFile(bodyPath, newname);
-			help=bodyPath.lastIndexOf("/") + 1;
-			hbodyPath = bodyPath.substring(0,help) + newname;
-			changeContent(cms, oldname, hbodyPath);
-		}
+            cms.doRenameFile(bodyPath, newname);
+            help=bodyPath.lastIndexOf("/") + 1;
+            hbodyPath = bodyPath.substring(0,help) + newname;
+            changeContent(cms, oldname, hbodyPath);
+        }
 
-	 	cms.doRenameFile(oldname,newname);
-	}
+        cms.doRenameFile(oldname,newname);
+    }
 
     /**
      * Restores a file in the current project with a version in the backup
@@ -704,23 +706,23 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
             throw new CmsException(filename, CmsException.C_NO_ACCESS);
         }
         CmsFile file = cms.readFile(filename);
-		cms.doRestoreResource(versionId, filename);
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
+        cms.doRestoreResource(versionId, filename);
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
             cms.doRestoreResource(versionId, bodyPath);
-		}
+        }
     }
 
-	/**
-	* Undo changes in a resource.
-	* <br>
-	*
-	* @param resource the complete path to the resource to be restored.
-	*
-	* @exception CmsException if the user has not the rights
-	* to write this resource.
-	*/
-	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+    /**
+    * Undo changes in a resource.
+    * <br>
+    *
+    * @param resource the complete path to the resource to be restored.
+    *
+    * @exception CmsException if the user has not the rights
+    * to write this resource.
+    */
+    public void undoChanges(CmsObject cms, String resource) throws CmsException{
         if(!cms.accessWrite(resource)){
             throw new CmsException(resource, CmsException.C_NO_ACCESS);
         }
@@ -730,19 +732,19 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         if (bodyPath != null){
             cms.doUndoChanges(bodyPath);
         }
-	}
+    }
 
-	/**
-	* Unlocks a resource.
-	* <br>
-	* A user can unlock a resource, so other users may lock this file.
-	*
-	* @param resource the complete path to the resource to be unlocked.
-	*
-	* @exception CmsException if the user has not the rights
-	* to unlock this resource.
-	*/
-	public void unlockResource(CmsObject cms, String resource) throws CmsException{
+    /**
+    * Unlocks a resource.
+    * <br>
+    * A user can unlock a resource, so other users may lock this file.
+    *
+    * @param resource the complete path to the resource to be unlocked.
+    *
+    * @exception CmsException if the user has not the rights
+    * to unlock this resource.
+    */
+    public void unlockResource(CmsObject cms, String resource) throws CmsException{
         // First read the page file.
         CmsFile pageFile = cms.readFile(resource);
 
@@ -781,37 +783,37 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         //if(pageLocker != null || bodyLocker == null) {
             cms.doUnlockResource(resource);
         //}
-	}
+    }
 
     /**
-	 * method to check get the real body path from the content file
-	 *
-	 * @param cms The CmsObject, to access the XML read file.
-	 * @param file File in which the body path is stored. This should really
-	 *      be a CmsFile object an not a file header. This won't be checked for
-	 *      performance reasons.
-	 */
-	private String readBodyPath(CmsObject cms, CmsFile file)
-		throws CmsException{
-		CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+     * method to check get the real body path from the content file
+     *
+     * @param cms The CmsObject, to access the XML read file.
+     * @param file File in which the body path is stored. This should really
+     *      be a CmsFile object an not a file header. This won't be checked for
+     *      performance reasons.
+     */
+    private String readBodyPath(CmsObject cms, CmsFile file)
+        throws CmsException{
+        CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
         String body = "";
         try{
             body = hXml.getElementTemplate("body");
         } catch (CmsException exc){
             // could not read body
         }
-		return body;
-	}
+        return body;
+    }
 
     /**
-	 * method to check get the real body path from the content file
-	 *
-	 * @param cms The CmsObject, to access the XML read file.
-	 * @param file File in which the body path is stored.
-	 */
+     * method to check get the real body path from the content file
+     *
+     * @param cms The CmsObject, to access the XML read file.
+     * @param file File in which the body path is stored.
+     */
     private String checkBodyPath(CmsObject cms, CmsFile file) throws CmsException {
         String result =(C_CONTENTBODYPATH.substring(0, C_CONTENTBODYPATH.lastIndexOf("/")))+(file.getAbsolutePath());
-	    if (!result.equals(readBodyPath(cms, (CmsFile)file))){
+        if (!result.equals(readBodyPath(cms, (CmsFile)file))){
             result = null;
         }
         return result;
@@ -830,81 +832,81 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         return result;
     }
 
-	  /**
-	   * This method changes the path of the body file in the xml conten file
-	   * if file type name is page
-	   *
-	   * @param cms The CmsObject
-	   * @param file The XML content file
-	   * @param bodypath the new XML content entry
-	   * @exception Exception if something goes wrong.
-	   */
-	  private void changeContent(CmsObject cms, String filename, String bodypath)
-		  throws CmsException {
-		  CmsFile file=cms.readFile(filename);
-		  CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
+      /**
+       * This method changes the path of the body file in the xml conten file
+       * if file type name is page
+       *
+       * @param cms The CmsObject
+       * @param file The XML content file
+       * @param bodypath the new XML content entry
+       * @exception Exception if something goes wrong.
+       */
+      private void changeContent(CmsObject cms, String filename, String bodypath)
+          throws CmsException {
+          CmsFile file=cms.readFile(filename);
+          CmsXmlControlFile hXml=new CmsXmlControlFile(cms, file);
           hXml.setElementTemplate("body", bodypath);
-		  hXml.write();
-	  }
+          hXml.write();
+      }
 
-	/**
-	   * This method checks if all nescessary folders are exisitng in the content body
-	   * folder and creates the missing ones. <br>
-	   * All page contents files are stored in the content body folder in a mirrored directory
-	   * structure of the OpenCms filesystem. Therefor it is nescessary to create the
-	   * missing folders when a new page document is createg.
-	   * @param cms The CmsObject
-	   * @param path The path in the CmsFilesystem where the new page should be created.
-	   * @exception CmsException if something goes wrong.
-	   */
-	 private void checkFolders(CmsObject cms, String path)
-		  throws CmsException {
+    /**
+       * This method checks if all nescessary folders are exisitng in the content body
+       * folder and creates the missing ones. <br>
+       * All page contents files are stored in the content body folder in a mirrored directory
+       * structure of the OpenCms filesystem. Therefor it is nescessary to create the
+       * missing folders when a new page document is createg.
+       * @param cms The CmsObject
+       * @param path The path in the CmsFilesystem where the new page should be created.
+       * @exception CmsException if something goes wrong.
+       */
+     private void checkFolders(CmsObject cms, String path)
+          throws CmsException {
 
-		  String completePath=C_CONTENTBODYPATH;
-		  StringTokenizer t=new StringTokenizer(path,"/");
-		  // check if all folders are there
-		  while (t.hasMoreTokens()) {
-			  String foldername=t.nextToken();
-			   try {
-				// try to read the folder. if this fails, an exception is thrown
+          String completePath=C_CONTENTBODYPATH;
+          StringTokenizer t=new StringTokenizer(path,"/");
+          // check if all folders are there
+          while (t.hasMoreTokens()) {
+              String foldername=t.nextToken();
+               try {
+                // try to read the folder. if this fails, an exception is thrown
 
-				cms.readFolder(completePath+foldername+"/");
-			  } catch (CmsException e) {
-				  // the folder could not be read, so create it.
-				  String orgFolder=completePath+foldername+"/";
-				  orgFolder=orgFolder.substring(C_CONTENTBODYPATH.length()-1);
-				  CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
-				  CmsFolder folder=cms.readFolder(orgFolder);
-				  cms.doLockResource(newfolder.getAbsolutePath(),false);
-				  cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
-				  cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
-				  cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
-				  //cms.doUnlockResource(newfolder.getAbsolutePath());
-			  }
-			  completePath+=foldername+"/";
-		  }
-	 }
+                cms.readFolder(completePath+foldername+"/");
+              } catch (CmsException e) {
+                  // the folder could not be read, so create it.
+                  String orgFolder=completePath+foldername+"/";
+                  orgFolder=orgFolder.substring(C_CONTENTBODYPATH.length()-1);
+                  CmsFolder newfolder=cms.doCreateFolder(completePath,foldername);
+                  CmsFolder folder=cms.readFolder(orgFolder);
+                  cms.doLockResource(newfolder.getAbsolutePath(),false);
+                  cms.doChown(newfolder.getAbsolutePath(),cms.readOwner(folder).getName());
+                  cms.doChgrp(newfolder.getAbsolutePath(),cms.readGroup(folder).getName());
+                  cms.doChmod(newfolder.getAbsolutePath(),folder.getAccessFlags());
+                  //cms.doUnlockResource(newfolder.getAbsolutePath());
+              }
+              completePath+=foldername+"/";
+          }
+     }
 
-	/**
-	 * Set the access flags of the copied resource to the default values.
-	 * @param cms The CmsObject.
-	 * @param filename The name of the file.
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	private void setDefaultFlags(CmsObject cms, String filename)
-		throws CmsException {
+    /**
+     * Set the access flags of the copied resource to the default values.
+     * @param cms The CmsObject.
+     * @param filename The name of the file.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void setDefaultFlags(CmsObject cms, String filename)
+        throws CmsException {
 
-		Hashtable startSettings=null;
-		Integer accessFlags=null;
-		startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-		if (startSettings != null) {
-			accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-		}
-		if (accessFlags == null) {
-			accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
-		}
-		chmod(cms, filename, accessFlags.intValue(), false);
-	}
+        Hashtable startSettings=null;
+        Integer accessFlags=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+        if (startSettings != null) {
+            accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+        }
+        if (accessFlags == null) {
+            accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
+        }
+        chmod(cms, filename, accessFlags.intValue(), false);
+    }
 
     /**
      *
@@ -924,10 +926,10 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
         throws CmsException{
         CmsFile file = cms.readFile(resourcename);
         cms.doChangeLockedInProject(newProjectId, resourcename);
-		String bodyPath = checkBodyPath(cms, (CmsFile)file);
-		if (bodyPath != null){
+        String bodyPath = checkBodyPath(cms, (CmsFile)file);
+        if (bodyPath != null){
             cms.doChangeLockedInProject(newProjectId, bodyPath);
-		}
+        }
 
         // The page file contains XML.
         // So there could be some data in the parser's cache.

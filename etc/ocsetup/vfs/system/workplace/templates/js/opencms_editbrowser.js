@@ -1,30 +1,30 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_editbrowser.js,v $
- * Date   : $Date: 2001/01/11 13:32:30 $
- * Version: $Revision: 1.3 $
- *
- * Copyright (C) 2000  The OpenCms Group 
- * 
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- * 
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_editbrowser.js,v $
+* Date   : $Date: 2001/07/31 15:50:12 $
+* Version: $Revision: 1.4 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // ===============================================
 // JAVASCRIPT-FUNCTIONS OPENCMS
@@ -32,11 +32,11 @@
 // Invokes servlet calls in Picture and Download Browser:
 // based on script from old cms version
 //
-// authors:			m.schreiber, m.stanke
-// company:			mindfact interaktive medien ag
-// date:			08.02.2000
-// update:		
-// update author:	
+// authors:         m.schreiber, m.stanke
+// company:         mindfact interaktive medien ag
+// date:            08.02.2000
+// update:      
+// update author:   
 // ===============================================
 
 // variables for customization: download browser or picture browser? (default:picture browser)
@@ -47,14 +47,14 @@ var uploadurl = "administration_content_picgallery_upload.html?type=pic&action=u
 
 function updateSelection()
 { 
-	if(document.form1.galerie.options[document.form1.galerie.selectedIndex].value)
-	{
-		top.selectedGallery = document.form1.galerie.selectedIndex;  
-		var folder= document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
-		parent.frames[0].location.href= ctrl + '.html?folder=' + folder;
-		parent.frames[1].location.href= list + '.html?folder=' + folder;
-		document.form1.FilterInput.value="";
-	}
+    if(document.form1.galerie.options[document.form1.galerie.selectedIndex].value)
+    {
+        top.selectedGallery = document.form1.galerie.selectedIndex;  
+        var folder= document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
+        parent.frames[0].location.href= ctrl + '.html?folder=' + folder;
+        parent.frames[1].location.href= list + '.html?folder=' + folder;
+        document.form1.FilterInput.value="";
+    }
 }
   
 var DO_NEXT=1;
@@ -76,7 +76,7 @@ function doEdit(para)
   case 1: // next page
   {
     //if (parent.frames[0].document.EOL !=true)  // no more pages available? Get this information from the file list frame.
-	if (page < maxpage)
+    if (page < maxpage)
      {
       page++; // increase page number
       filter=document.form1.FilterInput.value; 
@@ -93,7 +93,7 @@ function doEdit(para)
      }
     else
      {
-	  filter=document.form1.FilterInput.value; 
+      filter=document.form1.FilterInput.value; 
       parent.location.href = browser+ '.html?page='+page+'&filter='+filter; //reload complete browser
      }
     break;
@@ -106,15 +106,15 @@ function doEdit(para)
    }
    case 4: // upload image, open the upload dialog.
    {
-	 // filter=document.form1.galerieFilterInput.value;
-	 //gallery=document.form1.galerie.value;
-	 gallery=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
+     // filter=document.form1.galerieFilterInput.value;
+     //gallery=document.form1.galerie.value;
+     gallery=document.form1.galerie.options[document.form1.galerie.selectedIndex].value;
      parent.frames[1].location.href = uploadurl + gallery;
      break;
    }
    default:
    {
-		alert("Unknown Exception");
+        alert("Unknown Exception");
    }
  }
 }

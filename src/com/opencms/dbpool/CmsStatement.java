@@ -1,33 +1,32 @@
-package com.opencms.dbpool;
-
 /*
- *
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsStatement.java,v $
- * Date   : $Date: 2001/02/06 12:42:38 $
- * Version: $Revision: 1.1 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a  of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsStatement.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.2 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.dbpool;
 
 import java.sql.*;
 import java.util.*;
@@ -40,15 +39,15 @@ import source.org.apache.java.util.*;
  */
 public class CmsStatement implements Statement {
 
-	/**
-	 * The original statement
-	 */
-	protected Statement m_originalStatement = null;
+    /**
+     * The original statement
+     */
+    protected Statement m_originalStatement = null;
 
-	/**
-	 * The hook to the connection
-	 */
-	protected CmsConnection m_con = null;
+    /**
+     * The hook to the connection
+     */
+    protected CmsConnection m_con = null;
 
         /**
          * The default-constructor to create a new statement
@@ -205,34 +204,34 @@ public class CmsStatement implements Statement {
           // do nothing, because this statement can be reused
         }
 
-       	/**
-	 * This method calls close, to put the connection back to the pool.
-	 */
-	protected void finalize() throws Throwable {
-		close();
-		super.finalize();
-	}
+        /**
+     * This method calls close, to put the connection back to the pool.
+     */
+    protected void finalize() throws Throwable {
+        close();
+        super.finalize();
+    }
 
 
-	/**
-	 * Try to close this statement without putting it back to the pool.
-	 */
-	void closeOriginalStatement() {
+    /**
+     * Try to close this statement without putting it back to the pool.
+     */
+    void closeOriginalStatement() {
           try {
                   m_originalStatement.close();
           } catch(SQLException exc) {
                   // todo: insert logging here
           }
-	}
+    }
 
-       	/**
-	 * Returns a string representation of this object.
-	 */
-	public String toString() {
-		StringBuffer output=new StringBuffer();
-		output.append("[" + this.getClass().getName() + "]:");
-		output.append(m_originalStatement);
-		return output.toString();
-	}
+        /**
+     * Returns a string representation of this object.
+     */
+    public String toString() {
+        StringBuffer output=new StringBuffer();
+        output.append("[" + this.getClass().getName() + "]:");
+        output.append(m_originalStatement);
+        return output.toString();
+    }
 
 }

@@ -1,32 +1,32 @@
-package com.opencms.file.genericSql;
-
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2001/07/31 14:01:09 $
- * Version: $Revision: 1.263 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
+* Date   : $Date: 2001/07/31 15:50:14 $
+* Version: $Revision: 1.264 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+package com.opencms.file.genericSql;
 
 import javax.servlet.http.*;
 import java.util.*;
@@ -53,7 +53,7 @@ import java.sql.SQLException;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.263 $ $Date: 2001/07/31 14:01:09 $
+ * @version $Revision: 1.264 $ $Date: 2001/07/31 15:50:14 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -454,7 +454,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, CmsRes
         res = m_dbAccess.readFolder(currentProject.getId(), res.getParent());
         if (res == null)
         {
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
             }
             throw new CmsException(this.getClass().getName() + ".accessRead(): Cannot find \'" + resource.getName(), CmsException.C_NOT_FOUND);
@@ -494,7 +494,7 @@ public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String
      */
     public boolean accessUnlock(CmsUser currentUser, CmsProject currentProject,
                                 CmsResource resource)
-        throws CmsException	{
+        throws CmsException {
             // check, if this is the onlineproject
         if(onlineProject(currentUser, currentProject).equals(currentProject)){
             // the online-project is not writeable!
@@ -1483,12 +1483,12 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                                       String resource)
         throws CmsException {
         // read the onlineproject
-	    CmsProject online = onlineProject(currentUser, currentProject);
-	    // is the current project the onlineproject?
-	    // and is the current user the owner of the project?
-	    // and is the current project state UNLOCKED?
-	    if ((!currentProject.equals(online)) && (currentProject.getOwnerId() == currentUser.getId()) && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
-		    // is offlineproject and is owner
+        CmsProject online = onlineProject(currentUser, currentProject);
+        // is the current project the onlineproject?
+        // and is the current user the owner of the project?
+        // and is the current project state UNLOCKED?
+        if ((!currentProject.equals(online)) && (currentProject.getOwnerId() == currentUser.getId()) && (currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
+            // is offlineproject and is owner
             // try to read the resource from the offline project, include deleted
             CmsResource offlineRes = null;
             try{
@@ -1516,14 +1516,14 @@ public void chown(CmsUser currentUser, CmsProject currentProject, String filenam
                 }
                 try {
                     m_dbAccess.createProjectResource(currentProject.getId(), resource);
-			    } catch (CmsException exc) {
-			        // if the subfolder exists already - all is ok
-			    }
+                } catch (CmsException exc) {
+                    // if the subfolder exists already - all is ok
+                }
             }
-	    } else {
-		    // no changes on the onlineproject!
-		    throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
-    	}
+        } else {
+            // no changes on the onlineproject!
+            throw new CmsException("[" + this.getClass().getName() + "] " + currentProject.getName(), CmsException.C_NO_ACCESS);
+        }
     }
     /**
      * Counts the locked resources in this project.
@@ -2250,9 +2250,9 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 CmsFile currentFile = (CmsFile)allFiles.elementAt(i);
                 if(currentFile.getState() == C_STATE_NEW){
                     // delete the properties
-		            m_dbAccess.deleteAllProperties(id, currentFile.getResourceId());
-		            // delete the file
-		            m_dbAccess.removeFile(id, currentFile.getAbsolutePath());
+                    m_dbAccess.deleteAllProperties(id, currentFile.getResourceId());
+                    // delete the file
+                    m_dbAccess.removeFile(id, currentFile.getAbsolutePath());
                 } else if (currentFile.getState() == C_STATE_CHANGED){
                     if(!currentFile.isLocked()){
                         // lock the resource
@@ -2276,8 +2276,8 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                 CmsFolder currentFolder = (CmsFolder)allFolders.elementAt(i);
                 if(currentFolder.getState() == C_STATE_NEW){
                     // delete the properties
-		            m_dbAccess.deleteAllProperties(id, currentFolder.getResourceId());
-		            // add the folder to the vector of folders that has to be deleted
+                    m_dbAccess.deleteAllProperties(id, currentFolder.getResourceId());
+                    // add the folder to the vector of folders that has to be deleted
                     deletedFolders.addElement(currentFolder);
                 } else if (currentFolder.getState() == C_STATE_CHANGED){
                     if(!currentFolder.isLocked()){
@@ -2299,7 +2299,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
             }
             // now delete the folders in the vector
             for (int i = deletedFolders.size() - 1; i > -1; i--){
-			    CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
+                CmsFolder delFolder = ((CmsFolder) deletedFolders.elementAt(i));
                 m_dbAccess.removeFolder(id, delFolder);
             }
             // unlock all resources in the project
@@ -2722,24 +2722,24 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
         return(projects);
      }
 
-	/**
-	 * Returns a Vector with all I_CmsResourceTypes.
-	 *
-	 * <B>Security:</B>
-	 * All users are granted.
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 *
-	 * Returns a Hashtable with all I_CmsResourceTypes.
-	 *
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public Hashtable getAllResourceTypes(CmsUser currentUser,
-										 CmsProject currentProject)
-		throws CmsException {
-		// check, if the resourceTypes were read bevore
-		if(m_resourceTypes == null) {
+    /**
+     * Returns a Vector with all I_CmsResourceTypes.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     *
+     * Returns a Hashtable with all I_CmsResourceTypes.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public Hashtable getAllResourceTypes(CmsUser currentUser,
+                                         CmsProject currentProject)
+        throws CmsException {
+        // check, if the resourceTypes were read bevore
+        if(m_resourceTypes == null) {
             // get the resourceTypes from the registry
             m_resourceTypes = new Hashtable();
             Vector resTypeNames = new Vector();
@@ -2748,7 +2748,7 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
             Vector resourceClass = new Vector();
             int resTypeCount = m_registry.getResourceTypes(resTypeNames, launcherTypes, launcherClass, resourceClass);
             for (int i = 0; i < resTypeCount; i++){
-				// add the resource-type
+                // add the resource-type
                 try{
                     Class c = Class.forName((String)resourceClass.elementAt(i));
                     I_CmsResourceType resTypeClass = (I_CmsResourceType) c.newInstance();
@@ -2761,10 +2761,10 @@ public void createResource(CmsProject project, CmsProject onlineProject, CmsReso
                     throw new CmsException("[" + this.getClass().getName() + "] Error while getting ResourceType: " + (String)resTypeNames.elementAt(i) + " from registry ", CmsException.C_UNKNOWN_EXCEPTION );
                 }
             }
-		}
-		// return the resource-types.
-		return(m_resourceTypes);
-	}
+        }
+        // return the resource-types.
+        return(m_resourceTypes);
+    }
 
     /**
      * Returns informations about the cache<P/>
@@ -2966,32 +2966,32 @@ public Vector getFilesInFolder(CmsUser currentUser, CmsProject currentProject, S
         return new Vector();
     }
     Vector onlineFiles = null;
-	if (!currentProject.equals(onlineProject(currentUser, currentProject)))
-	{
-		// this is not the onlineproject, get the files
-		// from the onlineproject, too
-		try
-		{
-			onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername,includeDeleted);
-			// merge the resources
-		}
-		catch (CmsException exc)
-		{
-			if (exc.getType() != CmsException.C_ACCESS_DENIED)
-				//cant handle it.
-				throw exc;
-			else
-				//access denied.
-				return files;
-		}
-	}
+    if (!currentProject.equals(onlineProject(currentUser, currentProject)))
+    {
+        // this is not the onlineproject, get the files
+        // from the onlineproject, too
+        try
+        {
+            onlineFiles = helperGetFilesInFolder(currentUser, onlineProject(currentUser, currentProject), foldername,includeDeleted);
+            // merge the resources
+        }
+        catch (CmsException exc)
+        {
+            if (exc.getType() != CmsException.C_ACCESS_DENIED)
+                //cant handle it.
+                throw exc;
+            else
+                //access denied.
+                return files;
+        }
+    }
     //m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
     if(onlineFiles == null) //if it was null, the folder was marked deleted -> no files in online project.
- 	return files;
+    return files;
 
-	//m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
+    //m_subresCache.put(C_FILE+currentProject.getId()+foldername,files);
 
-	return files = mergeResources(files, onlineFiles);
+    return files = mergeResources(files, onlineFiles);
 }
 /**
  * Returns a Vector with all resource-names that have set the given property to the given value.
@@ -3280,70 +3280,70 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
     }
     return retValue;
 }
-	/**
-	 * Returns a I_CmsResourceType.
-	 *
-	 * <B>Security:</B>
-	 * All users are granted.
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourceType the id of the resourceType to get.
-	 *
-	 * Returns a I_CmsResourceType.
-	 *
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public I_CmsResourceType getResourceType(CmsUser currentUser,
-											 CmsProject currentProject,
-											 int resourceType)
-		throws CmsException {
-		// try to get the resource-type
-		Hashtable types = getAllResourceTypes(currentUser, currentProject);
-		Enumeration keys = types.keys();
-		I_CmsResourceType currentType;
-		while(keys.hasMoreElements()) {
-			currentType = (I_CmsResourceType) types.get(keys.nextElement());
-			if(currentType.getResourceType() == resourceType) {
-				return(currentType);
-			}
-		}
-		// was not found - throw exception
-		throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-			CmsException.C_NOT_FOUND);
-	}
-	/**
-	 * Returns a I_CmsResourceType.
-	 *
-	 * <B>Security:</B>
-	 * All users are granted.
-	 *
-	 * @param currentUser The user who requested this method.
-	 * @param currentProject The current project of the user.
-	 * @param resourceType the name of the resource to get.
-	 *
-	 * Returns a I_CmsResourceType.
-	 *
-	 * @exception CmsException  Throws CmsException if operation was not succesful.
-	 */
-	public I_CmsResourceType getResourceType(CmsUser currentUser,
-											 CmsProject currentProject,
-											 String resourceType)
-		throws CmsException {
-		// try to get the resource-type
-		try {
-			I_CmsResourceType type = (I_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
-			if(type == null) {
-				throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-					CmsException.C_NOT_FOUND);
-			}
-			return type;
-		} catch(NullPointerException exc) {
-			// was not found - throw exception
-			throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
-				CmsException.C_NOT_FOUND);
-		}
-	}
+    /**
+     * Returns a I_CmsResourceType.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourceType the id of the resourceType to get.
+     *
+     * Returns a I_CmsResourceType.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public I_CmsResourceType getResourceType(CmsUser currentUser,
+                                             CmsProject currentProject,
+                                             int resourceType)
+        throws CmsException {
+        // try to get the resource-type
+        Hashtable types = getAllResourceTypes(currentUser, currentProject);
+        Enumeration keys = types.keys();
+        I_CmsResourceType currentType;
+        while(keys.hasMoreElements()) {
+            currentType = (I_CmsResourceType) types.get(keys.nextElement());
+            if(currentType.getResourceType() == resourceType) {
+                return(currentType);
+            }
+        }
+        // was not found - throw exception
+        throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+            CmsException.C_NOT_FOUND);
+    }
+    /**
+     * Returns a I_CmsResourceType.
+     *
+     * <B>Security:</B>
+     * All users are granted.
+     *
+     * @param currentUser The user who requested this method.
+     * @param currentProject The current project of the user.
+     * @param resourceType the name of the resource to get.
+     *
+     * Returns a I_CmsResourceType.
+     *
+     * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    public I_CmsResourceType getResourceType(CmsUser currentUser,
+                                             CmsProject currentProject,
+                                             String resourceType)
+        throws CmsException {
+        // try to get the resource-type
+        try {
+            I_CmsResourceType type = (I_CmsResourceType)getAllResourceTypes(currentUser, currentProject).get(resourceType);
+            if(type == null) {
+                throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+                    CmsException.C_NOT_FOUND);
+            }
+            return type;
+        } catch(NullPointerException exc) {
+            // was not found - throw exception
+            throw new CmsException("[" + this.getClass().getName() + "] " + resourceType,
+                CmsException.C_NOT_FOUND);
+        }
+    }
 
     /**
      * Returns a Vector with all subfolders.<br>
@@ -3407,21 +3407,21 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             } catch (CmsException exc) {
                 // no folders, ignoring them
             }
-		    if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
-			    // this is not the onlineproject, get the files
-			    // from the onlineproject, too
-			    try {
-				    Vector onlineFolders =
-					helperGetSubFolders(currentUser,
-										onlineProject(currentUser, currentProject),
-										foldername);
-			   	    // merge the resources
-				    folders = mergeResources(folders, onlineFolders);
-			    } catch(CmsException exc) {
-				    // no onlinefolders, ignoring them
-			    }
-		    }
-		    //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
+            if( !currentProject.equals(onlineProject(currentUser, currentProject))) {
+                // this is not the onlineproject, get the files
+                // from the onlineproject, too
+                try {
+                    Vector onlineFolders =
+                    helperGetSubFolders(currentUser,
+                                        onlineProject(currentUser, currentProject),
+                                        foldername);
+                    // merge the resources
+                    folders = mergeResources(folders, onlineFolders);
+                } catch(CmsException exc) {
+                    // no onlinefolders, ignoring them
+                }
+            }
+            //m_subresCache.put(C_FOLDER+currentProject.getId()+foldername,folders);
         }
 
         // return the folders
@@ -6333,7 +6333,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         if (resourceName.endsWith("/")){
             // read the resource from the online project
             CmsFolder onlineFolder = readFolder(currentUser, onlineProject, resourceName);
-	        // read the resource from the offline project and change the data
+            // read the resource from the offline project and change the data
             CmsFolder offlineFolder = readFolder(currentUser, currentProject, resourceName);
             CmsFolder restoredFolder = new CmsFolder(offlineFolder.getResourceId(), offlineFolder.getParentId(),
                                             offlineFolder.getFileId(), offlineFolder.getAbsolutePath(),
@@ -6367,7 +6367,7 @@ public void renameFile(CmsUser currentUser, CmsProject currentProject, String ol
         } else {
             // read the file from the online project
             CmsFile onlineFile = readFile(currentUser, onlineProject, resourceName);
-	        // read the file from the offline project and change the data
+            // read the file from the offline project and change the data
             CmsFile offlineFile = readFile(currentUser, currentProject, resourceName);
             CmsFile restoredFile = new CmsFile(offlineFile.getResourceId(), offlineFile.getParentId(),
                                             offlineFile.getFileId(), offlineFile.getAbsolutePath(),
@@ -6658,7 +6658,7 @@ protected void validName(String name, boolean blank) throws CmsException {
     ((c < '0') || (c > '9')) &&
     ((c < 'A') || (c > 'Z')) &&
     (c != '-') && (c != '.') &&
-    (c != '_') &&	(c != '~')
+    (c != '_') &&   (c != '~')
     ) {
     throw new CmsException("[" + this.getClass().getName() + "] " + name,
     CmsException.C_BAD_NAME);
@@ -7064,7 +7064,7 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     public void writeWebUser(CmsUser currentUser, CmsProject currentProject,
                           CmsUser user)
-        throws CmsException	{
+        throws CmsException {
         // Check the security
         if( user.getType() == C_USER_TYPE_WEBUSER) {
 

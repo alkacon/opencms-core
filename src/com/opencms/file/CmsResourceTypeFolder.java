@@ -1,42 +1,38 @@
+/*
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.18 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 package com.opencms.file;
 
-/*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2001/07/31 15:28:53 $
- * Version: $Revision: 1.17 $
- *
- * Copyright (C) 2000  The OpenCms Group
- *
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- *
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
 import com.opencms.core.*;
-//import com.opencms.template.*;
-//import com.opencms.util.*;
 import java.util.*;
 
 import java.io.*;
-//import org.w3c.dom.*;
 import com.opencms.file.genericSql.*;
-//import com.opencms.file.genericSql.linkmanagement.*;
 
 /**
  * Access class for resources of the type "Folder".
@@ -47,123 +43,123 @@ import com.opencms.file.genericSql.*;
 
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
-	 /**
-	  * The id of resource type.
-	  */
- 	private int m_resourceType;
+     /**
+      * The id of resource type.
+      */
+    private int m_resourceType;
 
-	/**
-	 * The id of the launcher used by this resource.
-	 */
-	private int m_launcherType;
+    /**
+     * The id of the launcher used by this resource.
+     */
+    private int m_launcherType;
 
-	/**
-	 * The resource type name.
-	 */
-	private String m_resourceTypeName;
+    /**
+     * The resource type name.
+     */
+    private String m_resourceTypeName;
 
-	/**
-	 * The class name of the Java class launched by the launcher.
-	 */
-	private String m_launcherClass;
+    /**
+     * The class name of the Java class launched by the launcher.
+     */
+    private String m_launcherClass;
 
 
-	/**
-	 * init a new CmsResourceType object.
-	 *
-	 * @param resourceType The id of the resource type.
-	 * @param launcherType The id of the required launcher.
-	 * @param resourceTypeName The printable name of the resource type.
-	 * @param launcherClass The Java class that should be invoked by the launcher.
-	 * This value is <b> null </b> if the default invokation class should be used.
-	 */
-	public void init(int resourceType, int launcherType,
-						   String resourceTypeName, String launcherClass){
+    /**
+     * init a new CmsResourceType object.
+     *
+     * @param resourceType The id of the resource type.
+     * @param launcherType The id of the required launcher.
+     * @param resourceTypeName The printable name of the resource type.
+     * @param launcherClass The Java class that should be invoked by the launcher.
+     * This value is <b> null </b> if the default invokation class should be used.
+     */
+    public void init(int resourceType, int launcherType,
+                           String resourceTypeName, String launcherClass){
 
-		m_resourceType=resourceType;
-		m_launcherType=launcherType;
-		m_resourceTypeName=resourceTypeName;
-		m_launcherClass=launcherClass;
-	}
-	 /**
-	 * Returns the name of the Java class loaded by the launcher.
-	 * This method returns <b>null</b> if the default class for this type is used.
-	 *
-	 * @return the name of the Java class.
-	 */
-	 public String getLauncherClass() {
-		 if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
-			return C_UNKNOWN_LAUNCHER;
-		 } else {
-			return m_launcherClass;
-		 }
-	 }
-	 /**
-	 * Returns the launcher type needed for this resource-type.
-	 *
-	 * @return the launcher type for this resource-type.
-	 */
-	 public int getLauncherType() {
-		 return m_launcherType;
-	 }
-	/**
-	 * Returns the name for this resource-type.
-	 *
-	 * @return the name for this resource-type.
-	 */
-	 public String getResourceTypeName() {
-		 return m_resourceTypeName;
-	 }
-	/**
-	 * Returns the type of this resource-type.
-	 *
-	 * @return the type of this resource-type.
-	 */
-	public int getResourceType() {
-		 return m_resourceType;
-	 }
-	/**
-	 * Returns a string-representation for this object.
-	 * This can be used for debugging.
-	 *
-	 * @return string-representation for this object.
-	 */
-	 public String toString() {
-		StringBuffer output=new StringBuffer();
-		output.append("[ResourceType]:");
-		output.append(m_resourceTypeName);
-		output.append(" , Id=");
-		output.append(m_resourceType);
-		output.append(" , launcherType=");
-		output.append(m_launcherType);
-		output.append(" , launcherClass=");
-		output.append(m_launcherClass);
-		return output.toString();
-	  }
+        m_resourceType=resourceType;
+        m_launcherType=launcherType;
+        m_resourceTypeName=resourceTypeName;
+        m_launcherClass=launcherClass;
+    }
+     /**
+     * Returns the name of the Java class loaded by the launcher.
+     * This method returns <b>null</b> if the default class for this type is used.
+     *
+     * @return the name of the Java class.
+     */
+     public String getLauncherClass() {
+         if ((m_launcherClass == null) || (m_launcherClass.length()<1)) {
+            return C_UNKNOWN_LAUNCHER;
+         } else {
+            return m_launcherClass;
+         }
+     }
+     /**
+     * Returns the launcher type needed for this resource-type.
+     *
+     * @return the launcher type for this resource-type.
+     */
+     public int getLauncherType() {
+         return m_launcherType;
+     }
+    /**
+     * Returns the name for this resource-type.
+     *
+     * @return the name for this resource-type.
+     */
+     public String getResourceTypeName() {
+         return m_resourceTypeName;
+     }
+    /**
+     * Returns the type of this resource-type.
+     *
+     * @return the type of this resource-type.
+     */
+    public int getResourceType() {
+         return m_resourceType;
+     }
+    /**
+     * Returns a string-representation for this object.
+     * This can be used for debugging.
+     *
+     * @return string-representation for this object.
+     */
+     public String toString() {
+        StringBuffer output=new StringBuffer();
+        output.append("[ResourceType]:");
+        output.append(m_resourceTypeName);
+        output.append(" , Id=");
+        output.append(m_resourceType);
+        output.append(" , launcherType=");
+        output.append(m_launcherType);
+        output.append(" , launcherClass=");
+        output.append(m_launcherClass);
+        return output.toString();
+      }
 
-	/**
-	* Changes the group of a resource.
-	* <br>
-	* Only the group of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newGroup the name of the new group for this resource.
+    /**
+    * Changes the group of a resource.
+    * <br>
+    * Only the group of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newGroup the name of the new group for this resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
 
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the group of the
@@ -219,31 +215,31 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-	/**
-	* Changes the flags of a resource.
-	* <br>
-	* Only the flags of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change the flags, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user can write the resource</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param flags the new flags for the resource.
+    /**
+    * Changes the flags of a resource.
+    * <br>
+    * Only the flags of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change the flags, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user can write the resource</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param flags the new flags for the resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
-	*
-	* @exception CmsException if operation was not successful.
-	* for this resource.
-	*/
-	public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
+    *
+    * @exception CmsException if operation was not successful.
+    * for this resource.
+    */
+    public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
 
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the group of the
@@ -299,30 +295,30 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-	/**
-	* Changes the owner of a resource.
-	* <br>
-	* Only the owner of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not existing in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change this, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is cranted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or the user is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newOwner the name of the new owner for this resource.
+    /**
+    * Changes the owner of a resource.
+    * <br>
+    * Only the owner of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not existing in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change this, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is cranted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or the user is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newOwner the name of the new owner for this resource.
     * @param chRekursive shows if the subResources (of a folder) should be changed too.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
 
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the owner of the
@@ -376,29 +372,29 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-	/**
-	* Changes the resourcetype of a resource.
-	* <br>
-	* Only the resourcetype of a resource in an offline project can be changed. The state
-	* of the resource is set to CHANGED (1).
-	* If the content of this resource is not exisiting in the offline project already,
-	* it is read from the online project and written into the offline project.
-	* The user may change this, if he is admin of the resource.
-	* <p>
-	* <B>Security:</B>
-	* Access is granted, if:
-	* <ul>
-	* <li>the user has access to the project</li>
-	* <li>the user is owner of the resource or is admin</li>
-	* <li>the resource is locked by the callingUser</li>
-	* </ul>
-	*
-	* @param filename the complete path to the resource.
-	* @param newType the name of the new resourcetype for this resource.
-	*
-	* @exception CmsException if operation was not successful.
-	*/
-	public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
+    /**
+    * Changes the resourcetype of a resource.
+    * <br>
+    * Only the resourcetype of a resource in an offline project can be changed. The state
+    * of the resource is set to CHANGED (1).
+    * If the content of this resource is not exisiting in the offline project already,
+    * it is read from the online project and written into the offline project.
+    * The user may change this, if he is admin of the resource.
+    * <p>
+    * <B>Security:</B>
+    * Access is granted, if:
+    * <ul>
+    * <li>the user has access to the project</li>
+    * <li>the user is owner of the resource or is admin</li>
+    * <li>the resource is locked by the callingUser</li>
+    * </ul>
+    *
+    * @param filename the complete path to the resource.
+    * @param newType the name of the new resourcetype for this resource.
+    *
+    * @exception CmsException if operation was not successful.
+    */
+    public void chtype(CmsObject cms, String filename, String newType) throws CmsException{
 
         // it is not possible to change the type of a folder
         throw new CmsException("[" + this.getClass().getName() + "] " + filename,
@@ -406,18 +402,18 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
 
-	/**
-	* Copies a Resource.
-	*
-	* @param source the complete path of the sourcefile.
-	* @param destination the complete path of the destinationfolder.
-	* @param keepFlags <code>true</code> if the copy should keep the source file's flags,
-	*        <code>false</code> if the copy should get the user's default flags.
-	*
-	* @exception CmsException if the file couldn't be copied, or the user
-	* has not the appropriate rights to copy the file.
-	*/
-	public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
+    /**
+    * Copies a Resource.
+    *
+    * @param source the complete path of the sourcefile.
+    * @param destination the complete path of the destinationfolder.
+    * @param keepFlags <code>true</code> if the copy should keep the source file's flags,
+    *        <code>false</code> if the copy should get the user's default flags.
+    *
+    * @exception CmsException if the file couldn't be copied, or the user
+    * has not the appropriate rights to copy the file.
+    */
+    public void copyResource(CmsObject cms, String source, String destination, boolean keepFlags) throws CmsException{
 
        // we have to copy the folder and all resources in the folder
         Vector allSubFolders = new Vector();
@@ -466,29 +462,29 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     }
 
 
-	/**
-	* Copies a resource from the online project to a new, specified project.
-	* <br>
-	* Copying a resource will copy the file header or folder into the specified
-	* offline project and set its state to UNCHANGED.
-	*
-	* @param resource the name of the resource.
+    /**
+    * Copies a resource from the online project to a new, specified project.
+    * <br>
+    * Copying a resource will copy the file header or folder into the specified
+    * offline project and set its state to UNCHANGED.
+    *
+    * @param resource the name of the resource.
     * @exception CmsException if operation was not successful.
-	*/
+    */
     //public byte[] copyResourceToProject(CmsObject cms, I_CmsLinkManager linkManager, int resourceId, byte[] content) throws CmsException {
     public byte[] copyResourceToProject(CmsObject cms, String resourceName, byte[] content) throws CmsException {
         return content;
     }
 
-	/**
-	* Copies a resource from the online project to a new, specified project.
-	* <br>
-	* Copying a resource will copy the file header or folder into the specified
-	* offline project and set its state to UNCHANGED.
-	*
-	* @param resource the name of the resource.
+    /**
+    * Copies a resource from the online project to a new, specified project.
+    * <br>
+    * Copying a resource will copy the file header or folder into the specified
+    * offline project and set its state to UNCHANGED.
+    *
+    * @param resource the name of the resource.
     * @exception CmsException if operation was not successful.
-	*/
+    */
     public void copyResourceToProject(CmsObject cms, String resourceName) throws CmsException {
         // copy the folder to the current project
         cms.doCopyResourceToProject(resourceName);
@@ -503,36 +499,36 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-	/**
-	* Creates a new resource.<br>
-	*
-	* @param folder the complete path to the folder in which the file will be created.
-	* @param filename the name of the new resource.
-	* @param contents the contents of the new file.
-	* @param type the resourcetype of the new file.
-	*
-	* @return file a <code>CmsFile</code> object representing the newly created file.
-	*
-	* @exception CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
-	* filename is not valid or if the user has not the appropriate rights to create a new file.
-	*/
-	public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
+    /**
+    * Creates a new resource.<br>
+    *
+    * @param folder the complete path to the folder in which the file will be created.
+    * @param filename the name of the new resource.
+    * @param contents the contents of the new file.
+    * @param type the resourcetype of the new file.
+    *
+    * @return file a <code>CmsFile</code> object representing the newly created file.
+    *
+    * @exception CmsException or if the resourcetype is set to folder. The CmsException is also thrown, if the
+    * filename is not valid or if the user has not the appropriate rights to create a new file.
+    */
+    public CmsResource createResource(CmsObject cms, String folder, String name, Hashtable properties, byte[] contents) throws CmsException{
         CmsFolder res = cms.doCreateFolder(folder, name, properties);
         cms.lockResource(folder+name+"/");
         res.setLocked(cms.getRequestContext().currentUser().getId());
-		return res;
+        return res;
     }
 
 
-	/**
-	* Deletes a resource.
-	*
-	* @param folder the complete path of the folder.
-	*
-	* @exception CmsException if the file couldn't be deleted, or if the user
-	* has not the appropriate rights to delete the file.
-	*/
-	public void deleteResource(CmsObject cms, String folder) throws CmsException{
+    /**
+    * Deletes a resource.
+    *
+    * @param folder the complete path of the folder.
+    *
+    * @exception CmsException if the file couldn't be deleted, or if the user
+    * has not the appropriate rights to delete the file.
+    */
+    public void deleteResource(CmsObject cms, String folder) throws CmsException{
 
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
@@ -566,15 +562,15 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         }
     }
 
-	/**
-	* Uneletes a resource.
-	*
-	* @param folder the complete path of the folder.
-	*
-	* @exception CmsException if the file couldn't be undeleted, or if the user
-	* has not the appropriate rights to undelete the file.
-	*/
-	public void undeleteResource(CmsObject cms, String folder) throws CmsException{
+    /**
+    * Uneletes a resource.
+    *
+    * @param folder the complete path of the folder.
+    *
+    * @exception CmsException if the file couldn't be undeleted, or if the user
+    * has not the appropriate rights to undelete the file.
+    */
+    public void undeleteResource(CmsObject cms, String folder) throws CmsException{
 
        // we have to undelete the folder and all resources in the folder
         Vector allSubFolders = new Vector();
@@ -632,7 +628,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         CmsResource cmsfolder = null;
 
         String path = importPath + destination.substring(0, destination.lastIndexOf("/") + 1);
-		String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
+        String name = destination.substring((destination.lastIndexOf("/") + 1), destination.length());
         String fullname = null;
 
         try {
@@ -698,19 +694,19 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         // nothing to do here
     }
 
-	/**
-	* Locks a given resource.
-	* <br>
-	* A user can lock a resource, so he is the only one who can write this
-	* resource.
-	*
-	* @param resource the complete path to the resource to lock.
-	* @param force if force is <code>true</code>, a existing locking will be overwritten.
-	*
-	* @exception CmsException if the user has not the rights to lock this resource.
-	* It will also be thrown, if there is a existing lock and force was set to false.
-	*/
-	public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
+    /**
+    * Locks a given resource.
+    * <br>
+    * A user can lock a resource, so he is the only one who can write this
+    * resource.
+    *
+    * @param resource the complete path to the resource to lock.
+    * @param force if force is <code>true</code>, a existing locking will be overwritten.
+    *
+    * @exception CmsException if the user has not the rights to lock this resource.
+    * It will also be thrown, if there is a existing lock and force was set to false.
+    */
+    public void lockResource(CmsObject cms, String resource, boolean force) throws CmsException{
         // first lock the folder in the /content/bodys/ path if it exists.
         try{
             cms.doLockResource(C_CONTENTBODYPATH  + resource.substring(1), force);
@@ -721,16 +717,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         cms.doLockResource(resource, force);
     }
 
-	/**
-	* Moves a file to the given destination.
-	*
-	* @param source the complete path of the sourcefile.
-	* @param destination the complete path of the destinationfile.
-	*
-	* @exception CmsException if the user has not the rights to move this resource,
-	* or if the file couldn't be moved.
-	*/
-	public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
+    /**
+    * Moves a file to the given destination.
+    *
+    * @param source the complete path of the sourcefile.
+    * @param destination the complete path of the destinationfile.
+    *
+    * @exception CmsException if the user has not the rights to move this resource,
+    * or if the file couldn't be moved.
+    */
+    public void moveResource(CmsObject cms, String source, String destination) throws CmsException{
         // it is a folder so we need the end /
         destination = destination +"/";
        // we have to copy the folder and all resources in the folder
@@ -773,16 +769,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         return null;
     }
 
-	/**
-	* Renames the file to the new name.
-	*
-	* @param oldname the complete path to the file which will be renamed.
-	* @param newname the new name of the file.
-	*
-	* @exception CmsException if the user has not the rights
-	* to rename the file, or if the file couldn't be renamed.
-	*/
-	public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
+    /**
+    * Renames the file to the new name.
+    *
+    * @param oldname the complete path to the file which will be renamed.
+    * @param newname the new name of the file.
+    *
+    * @exception CmsException if the user has not the rights
+    * to rename the file, or if the file couldn't be renamed.
+    */
+    public void renameResource(CmsObject cms, String oldname, String newname) throws CmsException{
         // first of all check the new name
         validResourcename(newname.replace('/','\n'));
        // we have to copy the folder and all resources in the folder
@@ -834,16 +830,16 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         throw new CmsException("[" + this.getClass().getName() + "] Cannot restore folders.",CmsException.C_ACCESS_DENIED);
     }
 
-	/**
-	* Undo changes in a resource.
-	* <br>
-	*
-	* @param resource the complete path to the resource to be restored.
-	*
-	* @exception CmsException if the user has not the rights
-	* to write this resource.
-	*/
-	public void undoChanges(CmsObject cms, String resource) throws CmsException{
+    /**
+    * Undo changes in a resource.
+    * <br>
+    *
+    * @param resource the complete path to the resource to be restored.
+    *
+    * @exception CmsException if the user has not the rights
+    * to write this resource.
+    */
+    public void undoChanges(CmsObject cms, String resource) throws CmsException{
         // we have to undo changes of the folder and all resources in the folder
         Vector allSubFolders = new Vector();
         Vector allSubFiles   = new Vector();
@@ -896,19 +892,19 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 }
             }
         }
-	}
+    }
 
-	/**
-	* Unlocks a resource.
-	* <br>
-	* A user can unlock a resource, so other users may lock this file.
-	*
-	* @param resource the complete path to the resource to be unlocked.
-	*
-	* @exception CmsException if the user has not the rights
-	* to unlock this resource.
-	*/
-	public void unlockResource(CmsObject cms, String resource) throws CmsException{
+    /**
+    * Unlocks a resource.
+    * <br>
+    * A user can unlock a resource, so other users may lock this file.
+    *
+    * @param resource the complete path to the resource to be unlocked.
+    *
+    * @exception CmsException if the user has not the rights
+    * to unlock this resource.
+    */
+    public void unlockResource(CmsObject cms, String resource) throws CmsException{
         // first unlock the folder in the /content/bodys/ path if it exists.
         try{
             cms.doUnlockResource(C_CONTENTBODYPATH  + resource.substring(1));
@@ -919,25 +915,25 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
         cms.doUnlockResource(resource);
     }
     /**
-	 * Set the access flags of the copied Folder to the default values.
-	 * @param cms The CmsObject.
-	 * @param foldername The name of the folder.
-	 * @exception Throws CmsException if something goes wrong.
-	 */
-	private void setDefaultFlags(CmsObject cms, String foldername)
-		throws CmsException {
+     * Set the access flags of the copied Folder to the default values.
+     * @param cms The CmsObject.
+     * @param foldername The name of the folder.
+     * @exception Throws CmsException if something goes wrong.
+     */
+    private void setDefaultFlags(CmsObject cms, String foldername)
+        throws CmsException {
 
-		Hashtable startSettings=null;
-		Integer accessFlags=null;
-		startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
-		if (startSettings != null) {
-			accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
-		}
-		if (accessFlags == null) {
-			accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
-		}
-		chmod(cms, foldername, accessFlags.intValue(), false);
-	}
+        Hashtable startSettings=null;
+        Integer accessFlags=null;
+        startSettings=(Hashtable)cms.getRequestContext().currentUser().getAdditionalInfo(C_ADDITIONAL_INFO_STARTSETTINGS);
+        if (startSettings != null) {
+            accessFlags=(Integer)startSettings.get(C_START_ACCESSFLAGS);
+        }
+        if (accessFlags == null) {
+            accessFlags = new Integer(C_ACCESS_DEFAULT_FLAGS);
+        }
+        chmod(cms, foldername, accessFlags.intValue(), false);
+    }
     /**
      * Gets all resources - files and subfolders - of a given folder.
      * @param cms The CmsObject.

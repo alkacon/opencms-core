@@ -1,30 +1,30 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
- * Date   : $Date: 2001/01/04 14:06:33 $
- * Version: $Revision: 1.19 $
- *
- * Copyright (C) 2000  The OpenCms Group 
- * 
- * This File is part of OpenCms -
- * the Open Source Content Mananagement System
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * For further information about OpenCms, please see the
- * OpenCms Website: http://www.opencms.com
- * 
- * You should have received a copy of the GNU General Public License
- * long with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
+* File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/opencms_edithtml.js,v $
+* Date   : $Date: 2001/07/31 15:50:12 $
+* Version: $Revision: 1.20 $
+*
+* This library is part of OpenCms -
+* the Open Source Content Mananagement System
+*
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
+* For further information about OpenCms, please see the
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
  
 //------------------------------------------------------//
 // Script for  html editcontrol
@@ -223,25 +223,25 @@ function ContextMenuAction(itemIndex) {
 function DisplayChanged()
 {
   var i, s;
-		 
+         
   s =  document.all.EDIT_HTML.QueryStatus(DECMD_GETBLOCKFMT);
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
-	document.all.BLOCK.disabled = true;
+    document.all.BLOCK.disabled = true;
  } else {
-	document.all.BLOCK.disabled = false;
+    document.all.BLOCK.disabled = false;
     document.all.BLOCK.value =  document.all.EDIT_HTML.ExecCommand(DECMD_GETBLOCKFMT, OLECMDEXECOPT_DODEFAULT);
  }
   s =  document.all.EDIT_HTML.QueryStatus(DECMD_GETFONTNAME);
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
-	document.all.FONTFACE.disabled = true;
+    document.all.FONTFACE.disabled = true;
   } else {
-	document.all.FONTFACE.disabled = false;
+    document.all.FONTFACE.disabled = false;
     document.all.FONTFACE.value =  document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTNAME, OLECMDEXECOPT_DODEFAULT);
   }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
-	document.all.FONTSIZE.disabled = true;
+    document.all.FONTSIZE.disabled = true;
   } else {
-	document.all.FONTSIZE.disabled = false;
+    document.all.FONTSIZE.disabled = false;
     document.all.FONTSIZE.value = document.all.EDIT_HTML.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
   }
   
@@ -253,148 +253,148 @@ function DisplayChanged()
 // which button is clicked
 function doEditHTML(para)
 {
-	switch (para)
-	{
-	case CLOSE:
-		document.EDITOR.action.value = "exit";		
-		document.EDITOR.target = "_top";		
-		doSubmit();
-		document.EDITOR.submit();
-		//if (binlist!=null) binlist.close();
-		break;
-	case SAVECLOSE:
-		document.EDITOR.action.value = "saveexit";
-		document.EDITOR.target = "_top";		
-		doSubmit();
-		document.EDITOR.submit();
-		//if (binlist!=null) binlist.close();
-		break;
-	case SAVE:
-		document.EDITOR.action.value = "save";
-		doSubmit();
-		document.EDITOR.submit();
-		break;
-	case 4:
-		DECMD_UNDO_onclick();
-		break;	
-	case 5:
-		DECMD_REDO_onclick();
-		break;
-	case 6:
-		DECMD_FINDTEXT_onclick();
-		break;
-	case 7:
-		MENU_FILE_SAVEAS_onclick();
-		break;	
-	case 8:
-		break;
-	case 9:
-		DECMD_CUT_onclick();
-		break;		
-	case 10:
-		DECMD_COPY_onclick();
-		break;
-	case 11:
-		DECMD_PASTE_onclick();
-		break;
-	case 12:
-		MENU_FILE_IMPORT_onclick();
-	    break;
-	case 13:
-		MENU_FILE_EXPORT_onclick();
+    switch (para)
+    {
+    case CLOSE:
+        document.EDITOR.action.value = "exit";      
+        document.EDITOR.target = "_top";        
+        doSubmit();
+        document.EDITOR.submit();
+        //if (binlist!=null) binlist.close();
         break;
-	case 14:
-		MENU_FILE_SAVEAS_onclick();
-        break;		
-	case 15:
-		EDITOR.EDIT_HTML.PrintDocument(true);
+    case SAVECLOSE:
+        document.EDITOR.action.value = "saveexit";
+        document.EDITOR.target = "_top";        
+        doSubmit();
+        document.EDITOR.submit();
+        //if (binlist!=null) binlist.close();
         break;
-		
-	case 21:
-		ParagraphStyle_onchange();
-		break;
-	case 22:
-		FontName_onchange();
-		break;
-	case 23:
-		FontSize_onchange();
-		break;
-	case 24:
-		DECMD_BOLD_onclick();
-		break;	
-	case 25:
-		DECMD_ITALIC_onclick();
-		break;	
-	case 26:
-		DECMD_UNDERLINE_onclick();
-		break;
-		
-	case 31:
-		DECMD_JUSTIFYLEFT_onclick();
-		break;
-	case 32:
-		DECMD_JUSTIFYCENTER_onclick();
-		break;
-	case 33:
-		DECMD_JUSTIFYRIGHT_onclick();
-		break;
-	case 34:
-		DECMD_UNORDERLIST_onclick();
-		break;					
-	case 35:
-		DECMD_ORDERLIST_onclick();
-		break;
-	case 36:
-		DECMD_INDENT_onclick();
-		break;
-	case 37:
-		DECMD_OUTDENT_onclick();
-		break;
-	case 38:
-	    ColorSelected=-1;
-	    SelColor=-1;
-	    CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
-		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
+    case SAVE:
+        document.EDITOR.action.value = "save";
+        doSubmit();
+        document.EDITOR.submit();
+        break;
+    case 4:
+        DECMD_UNDO_onclick();
+        break;  
+    case 5:
+        DECMD_REDO_onclick();
+        break;
+    case 6:
+        DECMD_FINDTEXT_onclick();
+        break;
+    case 7:
+        MENU_FILE_SAVEAS_onclick();
+        break;  
+    case 8:
+        break;
+    case 9:
+        DECMD_CUT_onclick();
+        break;      
+    case 10:
+        DECMD_COPY_onclick();
+        break;
+    case 11:
+        DECMD_PASTE_onclick();
+        break;
+    case 12:
+        MENU_FILE_IMPORT_onclick();
+        break;
+    case 13:
+        MENU_FILE_EXPORT_onclick();
+        break;
+    case 14:
+        MENU_FILE_SAVEAS_onclick();
+        break;      
+    case 15:
+        EDITOR.EDIT_HTML.PrintDocument(true);
+        break;
+        
+    case 21:
+        ParagraphStyle_onchange();
+        break;
+    case 22:
+        FontName_onchange();
+        break;
+    case 23:
+        FontSize_onchange();
+        break;
+    case 24:
+        DECMD_BOLD_onclick();
+        break;  
+    case 25:
+        DECMD_ITALIC_onclick();
+        break;  
+    case 26:
+        DECMD_UNDERLINE_onclick();
+        break;
+        
+    case 31:
+        DECMD_JUSTIFYLEFT_onclick();
+        break;
+    case 32:
+        DECMD_JUSTIFYCENTER_onclick();
+        break;
+    case 33:
+        DECMD_JUSTIFYRIGHT_onclick();
+        break;
+    case 34:
+        DECMD_UNORDERLIST_onclick();
+        break;                  
+    case 35:
+        DECMD_ORDERLIST_onclick();
+        break;
+    case 36:
+        DECMD_INDENT_onclick();
+        break;
+    case 37:
+        DECMD_OUTDENT_onclick();
+        break;
+    case 38:
+        ColorSelected=-1;
+        SelColor=-1;
+        CheckFGCol= window.setInterval("setFGColor(SelColor)",500);
+        var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
-		//DECMD_SETFORECOLOR_onclick();
-		break;
+        //DECMD_SETFORECOLOR_onclick();
+        break;
     case 39:
-		ColorSelected=-1;
-	    SelColor=-1;
-	    CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
-		var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
+        ColorSelected=-1;
+        SelColor=-1;
+        CheckBGCol= window.setInterval("setBGColor(SelColor)",500);
+        var SelColorWindow= window.open('edit_html_selcolor.html',"SelColor","width=500,height=400,resizable=no,top=200,left=450");
         SelColorWindow.opener = self;
-		//DECMD_SETBACKCOLOR_onclick();
-		break;
-	case 40:
-		InsertTable();
-		break;			
-   	case 41:
-		DECMD_HYPERLINK_onclick();
-		break;		
-   	case 42:
-		DECMD_IMAGE_onclick();
-		break;		
+        //DECMD_SETBACKCOLOR_onclick();
+        break;
+    case 40:
+        InsertTable();
+        break;          
+    case 41:
+        DECMD_HYPERLINK_onclick();
+        break;      
+    case 42:
+        DECMD_IMAGE_onclick();
+        break;      
     case 43:
         window.open("picturebrowser.html?initial=true", "PicBrowser", "width=550, height=500, resizable=yes, top=200, left=450");
-		break;
-	case 44: 
-		binlist = window.open('downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
+        break;
+    case 44: 
+        binlist = window.open('downloadbrowser.html?initial=true','DownBrowser', "width=550, height=500, resizable=yes, top=200, left=450");
         binlist.focus(); 
-	 	break;
-	case 45:
-		DECMD_HYPERLINK_NODIALOG_onclick();
-		break;	
- 	default:
-		alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");			
-	}	
+        break;
+    case 45:
+        DECMD_HYPERLINK_NODIALOG_onclick();
+        break;  
+    default:
+        alert("Sorry, leider kann die Funktion nicht ausgeführt werden.");          
+    }   
 }
 
-	
+    
 <!-- Includes the Document Source-Code into the HTML-Editor and sets up the contect menue-->
 function setText()
 {
-	document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
+    document.EDITOR.EDIT_HTML.DocumentHTML = unescape(text);
     GeneralContextMenu[0] = new ContextMenuItem(LANG_CUT, DECMD_CUT);
     GeneralContextMenu[1] = new ContextMenuItem(LANG_COPY, DECMD_COPY);
     GeneralContextMenu[2] = new ContextMenuItem(LANG_PASTE, DECMD_PASTE);
@@ -409,19 +409,19 @@ function setText()
     TableContextMenu[8] = new ContextMenuItem(LANG_DELETECELL, DECMD_DELETECELLS);
     TableContextMenu[9] = new ContextMenuItem(LANG_MERGECELL, DECMD_MERGECELLS);
     TableContextMenu[10] = new ContextMenuItem(LANG_SPLITCELL, DECMD_SPLITCELL);
-	EDITOR.EDIT_HTML.focus();
+    EDITOR.EDIT_HTML.focus();
 }
 
 // Submitts the Document to the OpenCms System
 function doSubmit() 
 {
-	if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
-		// IE5
-		document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
-	} else {
-		// IE4
-		document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
-	}
+    if(document.EDITOR.EDIT_HTML.DOM.documentElement) {
+        // IE5
+        document.EDITOR.content.value = escape(getChars(document.EDITOR.EDIT_HTML.filterSourceCode(document.EDITOR.EDIT_HTML.DOM.documentElement.outerHTML)));
+    } else {
+        // IE4
+        document.EDITOR.content.value = escape(document.EDITOR.EDIT_HTML.DocumentHTML);
+    }
 }
 
 
@@ -487,7 +487,7 @@ function MENU_FILE_SAVEAS_onclick()
 }
 //=======================================================
 function ParagraphStyle_onchange() 
-{	 
+{    
   document.EDITOR.EDIT_HTML.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, EDITOR.BLOCK.value);
   EDITOR.EDIT_HTML.focus();
 }
@@ -560,13 +560,13 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-	 if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
+     if (document.all.EDIT_HTML.QueryStatus( DECMD_GETFORECOLOR )   != DECMDF_DISABLED)
      {
-	  document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
-	 }
+      document.all.EDIT_HTML.ExecCommand(DECMD_SETFORECOLOR, OLECMDEXECOPT_DODEFAULT, arr);
+     }
       window.clearInterval(CheckFGCol);
       SelColor=-1; 
-  	}
+    }
   }
   
 <!-- Function to set the BackgroundColor with the data received set by the "selcolor" dialog --> 
@@ -575,13 +575,13 @@ function DECMD_OUTDENT_onclick()
   {
   if (arr != -1) 
     {
-	 if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
+     if (document.all.EDIT_HTML.QueryStatus( DECMD_SETBACKCOLOR )  != DECMDF_DISABLED )
      {
      document.all.EDIT_HTML.ExecCommand(DECMD_SETBACKCOLOR, OLECMDEXECOPT_DODEFAULT, arr);
      }
      window.clearInterval(CheckBGCol);
      SelColor=-1;
-  	}
+    }
   }
 
 
@@ -672,30 +672,30 @@ function InsertTable()
         {
          if(arr["TableWidthSelected"] == "TRUE")
          {
-         	document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "width="+arr["TableWidth"]; 
-         	if(arr["TableWidthMode"] == "%") 
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "width="+arr["TableWidth"]; 
+            if(arr["TableWidthMode"] == "%") 
             {
-          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
-         	}
-        	else
-         	{
-         	    document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
-         	}
+                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+            }
+            else
+            {
+                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+            }
          }
        }
        else if ("TableHeight" == elem) 
         {
          if(arr["TableHeigthSelected"] == "TRUE")
          {
-         	document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "height="+arr["TableHeight"]; 
-         	if(arr["TableHeightMode"] == "%") 
-         	{
-          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
-        	}
-         	else
-        	{
-          		document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
-         	}   
+            document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs + "height="+arr["TableHeight"]; 
+            if(arr["TableHeightMode"] == "%") 
+            {
+                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +"% "
+            }
+            else
+            {
+                document.all.ObjTableInfo.TableAttrs = document.all.ObjTableInfo.TableAttrs +" "
+            }   
           }      
         }
       else if ("TableAlignment" == elem) 
@@ -735,26 +735,26 @@ function DECMD_HYPERLINK_NODIALOG_onclick()
 }
 
 function getChars(value) {
-	ret = "";
-	var num;
-	for(i=0;i<value.length;i++) {
-		num = value.charCodeAt(i);
-		if(num > 127) {
-			ret += "&#" + num.toString(10) + ";";
-		} else {
-			ret += value.charAt(i);
-		}
-	}
-	return ret + "";
+    ret = "";
+    var num;
+    for(i=0;i<value.length;i++) {
+        num = value.charCodeAt(i);
+        if(num > 127) {
+            ret += "&#" + num.toString(10) + ";";
+        } else {
+            ret += value.charAt(i);
+        }
+    }
+    return ret + "";
 }
 
 // sends URL string from seperate browser window to a hidden field within the opener document
 function sendURLString(destFormName,destFieldName,strURL){  
-	var obj1='top.window.opener.self.document.'+ destFormName;
-	var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;
-	
-	if (eval(obj1) && eval(obj2)) { 
-		eval(obj2 +'.value="'+strURL+'"');   
-		top.window.opener.doEditHTML(45); 
-	}
+    var obj1='top.window.opener.self.document.'+ destFormName;
+    var obj2='top.window.opener.self.document.'+ destFormName +'.'+ destFieldName;
+    
+    if (eval(obj1) && eval(obj2)) { 
+        eval(obj2 +'.value="'+strURL+'"');   
+        top.window.opener.doEditHTML(45); 
+    }
 }

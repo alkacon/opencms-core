@@ -1,31 +1,31 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProjectResent.java,v $
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/07/31 15:50:17 $
+* Version: $Revision: 1.14 $
 *
-* Copyright (C) 2000  The OpenCms Group 
-* 
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
-* 
-* This program is distributed in the hope that it will be useful,
+* Copyright (C) 2001  The OpenCms Group
+*
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-* 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
+*
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
-* 
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* OpenCms Website: http://www.opencms.org 
+*
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 
 package com.opencms.workplace;
 
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2001/05/17 14:10:32 $
+ * @version $Revision: 1.14 $ $Date: 2001/07/31 15:50:17 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -108,11 +108,11 @@ public class CmsAdminProjectResent extends CmsWorkplaceDefault implements I_CmsC
      * @exception CmsException
      */
     
-    //	public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang)    
-    //	throws CmsException {    
+    //  public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang)    
+    //  throws CmsException {    
     //     get the manageable projects    
-    //	    return cms.getAllManageableProjects();    
-    //	}
+    //      return cms.getAllManageableProjects();    
+    //  }
     
     public Vector projectList(CmsObject cms, CmsXmlLanguageFile lang) throws CmsException {
         Vector list = new Vector();

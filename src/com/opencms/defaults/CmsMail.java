@@ -1,30 +1,29 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/CmsMail.java,v $
-* Date   : $Date: 2001/06/29 16:11:21 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/07/31 15:50:13 $
+* Version: $Revision: 1.8 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.defaults;
@@ -72,7 +71,7 @@ import java.util.*;
  * @author mla
  * @author Alexander Lucas <alexander.lucas@framfab.de>
  *
- * @version $Name:  $ $Revision: 1.7 $ $Date: 2001/06/29 16:11:21 $
+ * @version $Name:  $ $Revision: 1.8 $ $Date: 2001/07/31 15:50:13 $
  * @since OpenCms 4.1.37. Previously, this class was part of the <code>com.opencms.workplace</code> package.
  */
 public class CmsMail extends Thread implements I_CmsLogChannels {
@@ -514,7 +513,7 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             msg = buildMessage(c_MAILSERVER);
         }
         catch(Exception e) {
-    		if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while building Email object: " + Utils.getStackTrace(e));
             }
 
@@ -538,19 +537,19 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
             }
 
             // First print out an error message...
-			if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                 A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Error while transmitting mail to SMTP server: " + e);
             }
 
             // ... and now try an alternative server (if given)
             if(c_ALTERNATIVE_MAILSERVER != null && !"".equals(c_ALTERNATIVE_MAILSERVER)) {
-				if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "Trying alternative server...");
                 }
                 try {
                     msg = buildMessage(c_ALTERNATIVE_MAILSERVER);
                     Transport.send(msg);
-					if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "...OK. Mail sent.");
                     }
                 }
@@ -560,13 +559,13 @@ public class CmsMail extends Thread implements I_CmsLogChannels {
                     for(;e2 instanceof MessagingException;e2 = ((MessagingException)e2).getNextException()) {
                         ;
                     }
-					if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                         A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! Could not send Email. Even alternative server failed! " + e2);
                     }
                 }
             }
             else {
-				if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + "PANIC! No alternative SMTP server given! Could not send Email!");
                 }
             }

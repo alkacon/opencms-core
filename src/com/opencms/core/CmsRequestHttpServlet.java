@@ -1,30 +1,29 @@
-
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
-* Date   : $Date: 2001/07/23 13:07:04 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2001/07/31 15:50:12 $
+* Version: $Revision: 1.24 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.core;
@@ -55,7 +54,7 @@ import javax.servlet.http.*;
  *
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.23 $ $Date: 2001/07/23 13:07:04 $
+ * @version $Revision: 1.24 $ $Date: 2001/07/31 15:50:12 $
  */
 public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_CmsRequest {
 
@@ -135,12 +134,12 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
             readRequest();
         }
         if(m_req.getPathInfo().indexOf("?") != -1) {
-	        if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
-				A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
-				A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
-				A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
-				A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
-			}
+            if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() && m_req.getQueryString() != null && m_req.getQueryString().indexOf("/") != -1) {
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "WARNING: URL parameters were not extracted properly.");
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "This may be caused by a bug in your servlet environment with handling \"/\" characters. ");
+                A_OpenCms.log(C_OPENCMS_CRITICAL, "Please make sure you are escaping all special chars (including \"/\") in your HTML forms.");
+                A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
+            }
             throw new IOException("URL parameters not extracted properly by servlet environment. " + m_req.getPathInfo());
         }
     }
@@ -335,7 +334,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants,I_CmsLogChannels,I_
 
         /*   if(parameter != null && !"".equals(parameter) && (parameter.indexOf("%") != -1)) {
         if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
-        	A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsRequestHttpServlet] encoding required for parameter " + name + "=" + parameter);
         }
         parameter = Encoder.unescape(parameter);
         }*/

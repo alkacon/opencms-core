@@ -1,30 +1,29 @@
-
 /*
-* File   : $File$
-* Date   : $Date: 2001/05/17 14:10:32 $
-* Version: $Revision: 1.10 $
+* File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
+* Date   : $Date: 2001/07/31 15:50:17 $
+* Version: $Revision: 1.11 $
 *
-* Copyright (C) 2000  The OpenCms Group
-*
-* This File is part of OpenCms -
+* This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
-* This program is free software; you can redistribute it and/or
-* modify it under the terms of the GNU General Public License
-* as published by the Free Software Foundation; either version 2
-* of the License, or (at your option) any later version.
+* Copyright (C) 2001  The OpenCms Group
 *
-* This program is distributed in the hope that it will be useful,
+* This library is free software; you can redistribute it and/or
+* modify it under the terms of the GNU Lesser General Public
+* License as published by the Free Software Foundation; either
+* version 2.1 of the License, or (at your option) any later version.
+*
+* This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.com
+* OpenCms Website: http://www.opencms.org 
 *
-* You should have received a copy of the GNU General Public License
-* long with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+* You should have received a copy of the GNU Lesser General Public
+* License along with this library; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 package com.opencms.workplace;
@@ -44,17 +43,17 @@ import javax.servlet.http.*;
  */
 public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsConstants {
 
-    /*	private final String C_PACKETNAME	= "packetname";
-    private final String C_VERSION		= "version";
-    private final String C_MODULENAME	= "modulename";
-    private final String C_DESCRIPTION	= "description";
-    private final String C_VIEW			= "view";
-    private final String C_ADMINPOINT	= "adminpoint";
-    private final String C_MAINTENANCE	= "maintenance";
-    private final String C_AUTHOR 		= "author";
-    private final String C_EMAIL 		= "email";
-    private final String C_DATE 		= "date";
-    private final String C_SESSION_DATA	= "module_create_data";
+    /*  private final String C_PACKETNAME   = "packetname";
+    private final String C_VERSION      = "version";
+    private final String C_MODULENAME   = "modulename";
+    private final String C_DESCRIPTION  = "description";
+    private final String C_VIEW         = "view";
+    private final String C_ADMINPOINT   = "adminpoint";
+    private final String C_MAINTENANCE  = "maintenance";
+    private final String C_AUTHOR       = "author";
+    private final String C_EMAIL        = "email";
+    private final String C_DATE         = "date";
+    private final String C_SESSION_DATA = "module_create_data";
     */
     private final String C_MODULE = "module";
     private final String C_ACTION = "action";
