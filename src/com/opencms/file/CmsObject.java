@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/08/06 16:32:48 $
-* Version: $Revision: 1.365 $
+* Date   : $Date: 2003/08/06 16:36:23 $
+* Version: $Revision: 1.366 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.365 $
+ * @version $Revision: 1.366 $
  */
 public class CmsObject {
 
@@ -2657,9 +2657,9 @@ public class CmsObject {
 
         try {
             // first we remember the new resources for the link management
-            newResources = readProjectView(m_context.currentProject().getId(), "new");
-            deletedResources = readProjectView(m_context.currentProject().getId(), "deleted");
-            changedResources = readProjectView(m_context.currentProject().getId(), "changed");
+            newResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "new");
+            deletedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "deleted");
+            changedResources = m_driverManager.readPublishProjectView(m_context, m_context.currentProject().getId(), "changed");
 
             updateOnlineProjectLinks(deletedResources, changedResources, null, CmsResourceTypePage.C_RESOURCE_TYPE_ID);
             publishedResources = m_driverManager.publishProject(this, m_context, report);

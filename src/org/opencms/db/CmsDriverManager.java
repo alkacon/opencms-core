@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/08/06 16:32:48 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2003/08/06 16:36:23 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.141 $ $Date: 2003/08/06 16:32:48 $
+ * @version $Revision: 1.142 $ $Date: 2003/08/06 16:36:23 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -6100,15 +6100,42 @@ public class CmsDriverManager extends Object {
         return m_projectDriver.readProjectLogs(projectid);
     }
 
-    /**
-     * Reads all file headers of a project from the Cms.
-     *
-     * @param projectId the id of the project to read the file headers for.
-     * @param filter The filter for the resources (all, new, changed, deleted, locked)
-     *
-     * @return a Vector of resources.
-     */
     public Vector readProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
+        Vector retValue = new Vector();
+        List resources = null;
+        CmsResource currentResource = null;
+        CmsLock currentLock = null;
+        //boolean onlyLocked = false;
+        
+        resources = readResourcesInsideProject(context, projectId, I_CmsConstants.C_UNKNOWN_ID);
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            currentResource = (CmsResource) i.next();
+            if (hasPermissions(context, currentResource, I_CmsConstants.C_READ_ACCESS, false)) {
+                if ("new".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_NEW) {
+                    retValue.addElement(currentResource);
+                } else if ("changed".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_CHANGED) {
+                    retValue.addElement(currentResource);
+                } else if ("deleted".equalsIgnoreCase(filter) && currentResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                    retValue.addElement(currentResource);
+                } else if ("locked".equalsIgnoreCase(filter)) {
+                    currentLock = getLock(context, currentResource);
+                    if (!currentLock.isNullLock()) {
+                        retValue.addElement(currentResource);
+                    }
+                } else if ("all".equalsIgnoreCase(filter) && currentResource.getState() != I_CmsConstants.C_STATE_UNCHANGED) {
+                    retValue.addElement(currentResource);
+                }
+            }
+        }
+        
+        resources.clear();
+        resources = null;
+
+        return retValue;
+    }
+    
+    public Vector readPublishProjectView(CmsRequestContext context, int projectId, String filter) throws CmsException {
         Vector retValue = new Vector();
         List resources = null;
         boolean onlyLocked = false;
@@ -6143,7 +6170,7 @@ public class CmsDriverManager extends Object {
         resources = null;
 
         return retValue;
-    }
+    }    
     
     /**
      * Reads all resources that are inside a specified project.<p>
@@ -6163,6 +6190,8 @@ public class CmsDriverManager extends Object {
             currentProjectResource = (String) projectResources.get(i);
             result.addAll(readAllSubResourcesInDfs(context, currentProjectResource, resourceType));
         }
+        
+        // TODO the calculated resource lists should be cached
 
         return result;
     }
@@ -6222,7 +6251,7 @@ public class CmsDriverManager extends Object {
             }
         }
         
-        // TODO the calculated resource lists should be cached
+        // TODO the calculated resource list should be cached
 
         return result;
     }
@@ -6949,7 +6978,7 @@ public class CmsDriverManager extends Object {
         if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
             resource.setState(I_CmsConstants.C_STATE_CHANGED);
         }
-        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_RESOURCE /*C_UPDATE_ALL*/);           
+        m_vfsDriver.updateResourceState(context.currentProject(), resource, C_UPDATE_ALL);           
 
         // clear the cache
         clearResourceCache();
