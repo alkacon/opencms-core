@@ -1,8 +1,8 @@
 
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsCacheDirectives.java,v $
-* Date   : $Date: 2001/05/30 07:28:57 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/06/08 12:59:08 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -39,7 +39,7 @@ import java.util.*;
  * used keys.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.11 $ $Date: 2001/05/30 07:28:57 $
+ * @version $Revision: 1.12 $ $Date: 2001/06/08 12:59:08 $
  */
 public class CmsCacheDirectives implements I_CmsLogChannels {
 
@@ -227,6 +227,27 @@ public class CmsCacheDirectives implements I_CmsLogChannels {
      */
     public boolean isStreamable() {
         return (m_cd & C_CACHE_STREAM) == C_CACHE_STREAM;
+    }
+
+    /**
+     * methods for the big question: has the user set the value or must we
+     * find the value by reading the accessrightrs for the file
+     */
+    public boolean userSetProxyPrivate(){
+        return m_userSetProxyPrivate;
+    }
+    public boolean userSetProxyPublic(){
+        return m_userSetProxyPublic;
+    }
+    public boolean userSetExport(){
+        return m_userSetExport;
+    }
+
+    public boolean isUserPartOfKey(){
+        return m_group || m_user;
+    }
+    public boolean isParameterPartOfKey(){
+        return (m_cacheParameter != null) && ( !m_cacheParameter.isEmpty());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/06/01 08:22:46 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/06/08 12:59:08 $
+* Version: $Revision: 1.12 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -209,6 +209,68 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
      */
     public CmsCacheDirectives getCacheDirectives() {
         return m_cacheDirectives;
+    }
+
+    /**
+     * checks the proxy public and the proxy private cache settings
+     *  of this element and all subelements.
+     *  @param cms the cms object.
+     *  @param proxySettings The CacheDirectives to merge the own CacheDriectives with.
+     *  @param parameters A Hashtable with the parameters.
+     */
+    public void checkProxySettings(CmsObject cms, CmsCacheDirectives proxySettings, Hashtable parameters){
+        // first our own cachedirectives are they set or not?
+        if (!(m_cacheDirectives.userSetProxyPrivate() && m_cacheDirectives.userSetProxyPublic())){
+            // we have to find out manually
+            boolean proxyPublic = false;
+            boolean proxyPrivate = false;
+            boolean export = false;
+            try{
+                if (m_cacheDirectives.isInternalCacheable() && (!m_cacheDirectives.isUserPartOfKey())){
+                    CmsResource templ = cms.readFileHeader(m_templateName);
+                    int accessflags = templ.getAccessFlags() ;
+                    if(!((accessflags & templ.C_ACCESS_INTERNAL_READ) > 0)){
+                        // internal flag not set
+                        proxyPrivate = true;
+                        if(m_readAccessGroup == null || "".equals(m_readAccessGroup)
+                                || (cms.C_GROUP_GUEST).equals(m_readAccessGroup)){
+                            // lesbar für guest
+                            proxyPublic = true;
+                            if((!m_cacheDirectives.isParameterPartOfKey()) && (!m_cacheDirectives.isTimeCritical())){
+                                export = true;
+                            }
+                        }
+                    }
+                }
+
+            }catch(Exception e){
+                // do nothing, set everything to false and log the error
+                if(com.opencms.core.I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
+                    A_OpenCms.log(C_OPENCMS_ELEMENTCACHE, toString()
+                                + " could not find out if the element is proxy cacheable. "+ e.getMessage());
+                }
+            }
+            if(!m_cacheDirectives.userSetProxyPrivate()){
+                m_cacheDirectives.setProxyPrivateCacheable(proxyPrivate);
+            }
+            if(!m_cacheDirectives.userSetProxyPublic()){
+                m_cacheDirectives.setProxyPublicCacheable(proxyPublic);
+            }
+            if(!m_cacheDirectives.userSetExport()){
+                m_cacheDirectives.setExport(export);
+            }
+        }
+        proxySettings.merge(m_cacheDirectives);
+        // now for the subelements
+        Enumeration elementNames = m_elementDefinitions.getAllElementNames();
+        while(elementNames.hasMoreElements()){
+            String name = (String)elementNames.nextElement();
+            CmsElementDefinition currentDef = m_elementDefinitions.get(name);
+            A_CmsElement currentEle = cms.getRequestContext().getElementCache().getElementLocator().get(
+                                    cms, new CmsElementDescriptor(currentDef.getClassName(),
+                                                            currentDef.getTemplateName()), parameters);
+            currentEle.checkProxySettings(cms, proxySettings, parameters);
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2001/05/22 14:54:20 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2001/06/08 12:59:08 $
+* Version: $Revision: 1.8 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -31,6 +31,7 @@ import java.util.*;
 import java.io.*;
 import com.opencms.core.*;
 import com.opencms.file.*;
+import com.opencms.template.*;
 
 /**
  * An instance of CmsUri represents an requestable ressource in the OpenCms
@@ -92,6 +93,31 @@ public class CmsUri implements I_CmsConstants {
     public byte[] callCanonicalRoot(CmsElementCache elementCache, CmsObject cms, Hashtable parameters) throws CmsException  {
         checkReadAccess(cms);
         A_CmsElement elem = elementCache.getElementLocator().get(cms, m_startingElement, parameters);
+
+        // check the proxistuff and set the response header
+        CmsCacheDirectives proxySettings = new CmsCacheDirectives(false);
+        elem.checkProxySettings(cms, proxySettings, parameters);
+        I_CmsResponse resp = cms.getRequestContext().getResponse();
+        // was there already a cache-control header set?
+        if(!resp.containsHeader("Cache-Control")) {
+            // only if the resource is cacheable and if the current project is online,
+            // then the browser may cache the resource
+            if(proxySettings.isProxyPublicCacheable() || proxySettings.isProxyPrivateCacheable()){
+                // set max-age to 5 minutes. In this time a proxy may cache this content.
+                resp.setHeader("Cache-Control", "max-age=300");
+                if(proxySettings.isProxyPrivateCacheable()) {
+                    resp.addHeader("Cache-Control", "private");
+                }
+           }else{
+                // set the http-header to pragma no-cache.
+                //HTTP 1.1
+                resp.setHeader("Cache-Control", "no-cache");
+                //HTTP 1.0
+                resp.setHeader("Pragma", "no-cache");
+            }
+        }
+
+
         return elem.getContent(elementCache, cms, m_elementDefinitions, C_ROOT_TEMPLATE_NAME, parameters);
     }
     /**

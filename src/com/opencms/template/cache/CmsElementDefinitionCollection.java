@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementDefinitionCollection.java,v $
-* Date   : $Date: 2001/05/09 12:28:49 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2001/06/08 12:59:08 $
+* Version: $Revision: 1.3 $
 *
 * Copyright (C) 2000  The OpenCms Group
 *
@@ -93,6 +93,13 @@ public class CmsElementDefinitionCollection {
      */
     public CmsElementDefinition get(String name) {
         return (CmsElementDefinition)m_eldefs.get(name);
+    }
+
+    /**
+     * @return a Enumeration with the element names
+     */
+    public Enumeration getAllElementNames(){
+        return m_eldefs.keys();
     }
 
     /**
