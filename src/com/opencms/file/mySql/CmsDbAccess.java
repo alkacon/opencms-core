@@ -2,8 +2,8 @@ package com.opencms.file.mySql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/18 15:41:08 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2000/09/20 14:15:12 $
+ * Version: $Revision: 1.35 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -52,7 +52,7 @@ import com.opencms.file.genericSql.I_CmsDbPool;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.34 $ $Date: 2000/09/18 15:41:08 $ * 
+ * @version $Revision: 1.35 $ $Date: 2000/09/20 14:15:12 $ * 
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	/**
@@ -441,153 +441,16 @@ protected com.opencms.file.genericSql.CmsQueries getQueries()
 	return new com.opencms.file.mySql.CmsQueries();
 }
 /**
- * Private method to init all statements in the pool.
+ * Insert the method's description here.
+ * Creation date: (18-09-2000 17:18:11)
+ * @exception com.opencms.core.CmsException The exception description.
  */
-protected void initStatements() throws CmsException
-{
-	// init statements for resources and files
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_MAXID_KEY, m_cq.C_RESOURCES_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_REMOVE_KEY, m_cq.C_RESOURCES_REMOVE);
-	m_pool.initPreparedStatement(m_cq.C_FILES_MAXID_KEY, m_cq.C_FILES_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_FILES_UPDATE_KEY, m_cq.C_FILES_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READ_KEY, m_cq.C_RESOURCES_READ);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READBYID_KEY, m_cq.C_RESOURCES_READBYID);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_WRITE_KEY, m_cq.C_RESOURCES_WRITE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_SUBFOLDER_KEY, m_cq.C_RESOURCES_GET_SUBFOLDER);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_DELETE_KEY, m_cq.C_RESOURCES_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_ID_DELETE_KEY, m_cq.C_RESOURCES_ID_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FILESINFOLDER_KEY, m_cq.C_RESOURCES_GET_FILESINFOLDER);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_PUBLISH_PROJECT_READFILE_KEY, m_cq.C_RESOURCES_PUBLISH_PROJECT_READFILE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_PUBLISH_PROJECT_READFOLDER_KEY, m_cq.C_RESOURCES_PUBLISH_PROJECT_READFOLDER);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_KEY, m_cq.C_RESOURCES_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_FILE_KEY, m_cq.C_RESOURCES_UPDATE_FILE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_LOST_ID_KEY, m_cq.C_RESOURCES_GET_LOST_ID);
-	m_pool.initPreparedStatement(m_cq.C_FILE_DELETE_KEY, m_cq.C_FILE_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_DELETE_PROJECT_KEY, m_cq.C_RESOURCES_DELETE_PROJECT);
-	m_pool.initPreparedStatement(m_cq.C_FILE_READ_ONLINE_KEY, m_cq.C_FILE_READ_ONLINE);
-	m_pool.initPreparedStatement(m_cq.C_FILE_READ_KEY, m_cq.C_FILE_READ);
-	m_pool.initPreparedStatement(m_cq.C_FILES_WRITE_KEY, m_cq.C_FILES_WRITE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_UNLOCK_KEY, m_cq.C_RESOURCES_UNLOCK);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_COUNTLOCKED_KEY, m_cq.C_RESOURCES_COUNTLOCKED);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READBYPROJECT_KEY, m_cq.C_RESOURCES_READBYPROJECT);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READFOLDERSBYPROJECT_KEY, m_cq.C_RESOURCES_READFOLDERSBYPROJECT);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READFILESBYPROJECT_KEY, m_cq.C_RESOURCES_READFILESBYPROJECT);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_PUBLISH_MARKED_KEY, m_cq.C_RESOURCES_PUBLISH_MARKED);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_DELETEBYID_KEY, m_cq.C_RESOURCES_DELETEBYID);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_RENAMERESOURCE_KEY, m_cq.C_RESOURCES_RENAMERESOURCE);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_READ_ALL_KEY, m_cq.C_RESOURCES_READ_ALL);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_UPDATE_LOCK_KEY, m_cq.C_RESOURCES_UPDATE_LOCK);
-	m_pool.initPreparedStatement(m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY_KEY, m_cq.C_RESOURCES_GET_FILES_WITH_PROPERTY);
-
-
-	// init statements for groups
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_MAXID_KEY, m_cq.C_GROUPS_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_READGROUP_KEY, m_cq.C_GROUPS_READGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_READGROUP2_KEY, m_cq.C_GROUPS_READGROUP2);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_CREATEGROUP_KEY, m_cq.C_GROUPS_CREATEGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_WRITEGROUP_KEY, m_cq.C_GROUPS_WRITEGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_DELETEGROUP_KEY, m_cq.C_GROUPS_DELETEGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_GETGROUPS_KEY, m_cq.C_GROUPS_GETGROUPS);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_GETCHILD_KEY, m_cq.C_GROUPS_GETCHILD);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_GETPARENT_KEY, m_cq.C_GROUPS_GETPARENT);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_GETGROUPSOFUSER_KEY, m_cq.C_GROUPS_GETGROUPSOFUSER);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_ADDUSERTOGROUP_KEY, m_cq.C_GROUPS_ADDUSERTOGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_USERINGROUP_KEY, m_cq.C_GROUPS_USERINGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_GETUSERSOFGROUP_KEY, m_cq.C_GROUPS_GETUSERSOFGROUP);
-	m_pool.initPreparedStatement(m_cq.C_GROUPS_REMOVEUSERFROMGROUP_KEY, m_cq.C_GROUPS_REMOVEUSERFROMGROUP);
-
-	// init statements for users
-	m_pool.initPreparedStatement(m_cq.C_USERS_MAXID_KEY, m_cq.C_USERS_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_USERS_ADD_KEY, m_cq.C_USERS_ADD);
-	m_pool.initPreparedStatement(m_cq.C_USERS_READ_KEY, m_cq.C_USERS_READ);
-	m_pool.initPreparedStatement(m_cq.C_USERS_READID_KEY, m_cq.C_USERS_READID);
-	m_pool.initPreparedStatement(m_cq.C_USERS_READPW_KEY, m_cq.C_USERS_READPW);
-	m_pool.initPreparedStatement(m_cq.C_USERS_WRITE_KEY, m_cq.C_USERS_WRITE);
-	m_pool.initPreparedStatement(m_cq.C_USERS_DELETE_KEY, m_cq.C_USERS_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_USERS_GETUSERS_KEY, m_cq.C_USERS_GETUSERS);
-	m_pool.initPreparedStatement(m_cq.C_USERS_SETPW_KEY, m_cq.C_USERS_SETPW);
-	m_pool.initPreparedStatement(m_cq.C_USERS_SETRECPW_KEY, m_cq.C_USERS_SETRECPW);
-	m_pool.initPreparedStatement(m_cq.C_USERS_RECOVERPW_KEY, m_cq.C_USERS_RECOVERPW);
-	m_pool.initPreparedStatement(m_cq.C_USERS_DELETEBYID_KEY, m_cq.C_USERS_DELETEBYID);
-
-	// init statements for projects        
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_MAXID_KEY, m_cq.C_PROJECTS_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_CREATE_KEY, m_cq.C_PROJECTS_CREATE);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_KEY, m_cq.C_PROJECTS_READ);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_BYTASK_KEY, m_cq.C_PROJECTS_READ_BYTASK);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_BYUSER_KEY, m_cq.C_PROJECTS_READ_BYUSER);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_BYGROUP_KEY, m_cq.C_PROJECTS_READ_BYGROUP);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_BYFLAG_KEY, m_cq.C_PROJECTS_READ_BYFLAG);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_READ_BYMANAGER_KEY, m_cq.C_PROJECTS_READ_BYMANAGER);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_DELETE_KEY, m_cq.C_PROJECTS_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_WRITE_KEY, m_cq.C_PROJECTS_WRITE);
-
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_GETONLINEPROJECT_KEY, m_cq.C_PROJECTS_GETONLINEPROJECT);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_GETSITEFROMPROJECT_KEY, m_cq.C_PROJECTS_GETSITEFROMPROJECT);
-	m_pool.initPreparedStatement(m_cq.C_PROJECTS_GETSITEFROMNAME_KEY, m_cq.C_PROJECTS_GETSITEFROMNAME);
-	m_pool.initPreparedStatement(m_cq.C_SITES_GETSITEFROMHOST_KEY, m_cq.C_SITES_GETSITEFROMHOST);
-	m_pool.initPreparedStatement(m_cq.C_SITES_GETALLSITES_KEY, m_cq.C_SITES_GETALLSITES);
-
-
-	// init statements for systemproperties
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_MAXID_KEY, m_cq.C_SYSTEMPROPERTIES_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_READ_KEY, m_cq.C_SYSTEMPROPERTIES_READ);
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_WRITE_KEY, m_cq.C_SYSTEMPROPERTIES_WRITE);
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_UPDATE_KEY, m_cq.C_SYSTEMPROPERTIES_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_SYSTEMPROPERTIES_DELETE_KEY, m_cq.C_SYSTEMPROPERTIES_DELETE);
-
-	// init statements for propertydef
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_MAXID_KEY, m_cq.C_PROPERTYDEF_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_READ_KEY, m_cq.C_PROPERTYDEF_READ);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_READALL_A_KEY, m_cq.C_PROPERTYDEF_READALL_A);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_READALL_B_KEY, m_cq.C_PROPERTYDEF_READALL_B);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_CREATE_KEY, m_cq.C_PROPERTYDEF_CREATE);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_DELETE_KEY, m_cq.C_PROPERTYDEF_DELETE);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTYDEF_UPDATE_KEY, m_cq.C_PROPERTYDEF_UPDATE);
-
-	// init statements for properties
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_MAXID_KEY, m_cq.C_PROPERTIES_MAXID);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_READALL_COUNT_KEY, m_cq.C_PROPERTIES_READALL_COUNT);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_READ_KEY, m_cq.C_PROPERTIES_READ);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_UPDATE_KEY, m_cq.C_PROPERTIES_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_CREATE_KEY, m_cq.C_PROPERTIES_CREATE);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_READALL_KEY, m_cq.C_PROPERTIES_READALL);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_DELETEALL_KEY, m_cq.C_PROPERTIES_DELETEALL);
-	m_pool.initPreparedStatement(m_cq.C_PROPERTIES_DELETE_KEY, m_cq.C_PROPERTIES_DELETE);
-
-	// init statements for tasks
-	m_pool.initPreparedStatement(m_cq.C_TASK_TYPE_COPY_KEY, m_cq.C_TASK_TYPE_COPY);
-	m_pool.initPreparedStatement(m_cq.C_TASK_UPDATE_KEY, m_cq.C_TASK_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_TASK_READ_KEY, m_cq.C_TASK_READ);
-	m_pool.initPreparedStatement(m_cq.C_TASK_END_KEY, m_cq.C_TASK_END);
-	m_pool.initPreparedStatement(m_cq.C_TASK_FIND_AGENT_KEY, m_cq.C_TASK_FIND_AGENT);
-	m_pool.initPreparedStatement(m_cq.C_TASK_FORWARD_KEY, m_cq.C_TASK_FORWARD);
-	m_pool.initPreparedStatement(m_cq.C_TASK_GET_TASKTYPE_KEY, m_cq.C_TASK_GET_TASKTYPE);
-
-	// init statements for taskpars
-	m_pool.initPreparedStatement(m_cq.C_TASKPAR_TEST_KEY, m_cq.C_TASKPAR_TEST);
-	m_pool.initPreparedStatement(m_cq.C_TASKPAR_UPDATE_KEY, m_cq.C_TASKPAR_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_TASKPAR_INSERT_KEY, m_cq.C_TASKPAR_INSERT);
-	m_pool.initPreparedStatement(m_cq.C_TASKPAR_GET_KEY, m_cq.C_TASKPAR_GET);
-
-	// init statements for tasklogs
-	m_pool.initPreparedStatement(m_cq.C_TASKLOG_WRITE_KEY, m_cq.C_TASKLOG_WRITE);
-	m_pool.initPreparedStatement(m_cq.C_TASKLOG_READ_KEY, m_cq.C_TASKLOG_READ);
-	m_pool.initPreparedStatement(m_cq.C_TASKLOG_READ_LOGS_KEY, m_cq.C_TASKLOG_READ_LOGS);
-	m_pool.initPreparedStatement(m_cq.C_TASKLOG_READ_PPROJECTLOGS_KEY, m_cq.C_TASKLOG_READ_PPROJECTLOGS);
-
-	// init statements for id
+protected void initIdStatements() throws com.opencms.core.CmsException {
 	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_INIT_KEY, m_cq.C_SYSTEMID_INIT);
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_LOCK_KEY, m_cq.C_SYSTEMID_LOCK);
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_READ_KEY, m_cq.C_SYSTEMID_READ);
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_WRITE_KEY, m_cq.C_SYSTEMID_WRITE);
 	((com.opencms.file.mySql.CmsDbPool) m_pool).initIdStatement(m_cq.C_SYSTEMID_UNLOCK_KEY, m_cq.C_SYSTEMID_UNLOCK);
-
-	// init statements for sessions
-	m_pool.initPreparedStatement(m_cq.C_SESSION_CREATE_KEY, m_cq.C_SESSION_CREATE);
-	m_pool.initPreparedStatement(m_cq.C_SESSION_UPDATE_KEY, m_cq.C_SESSION_UPDATE);
-	m_pool.initPreparedStatement(m_cq.C_SESSION_READ_KEY, m_cq.C_SESSION_READ);
-	m_pool.initPreparedStatement(m_cq.C_SESSION_DELETE_KEY, m_cq.C_SESSION_DELETE);
 }
 	/**
 	 * Private method to get the next id for a table.

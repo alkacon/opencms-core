@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/18 15:41:06 $
- * Version: $Revision: 1.131 $
+ * Date   : $Date: 2000/09/20 14:15:12 $
+ * Version: $Revision: 1.132 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.131 $ $Date: 2000/09/18 15:41:06 $ * 
+ * @version $Revision: 1.132 $ $Date: 2000/09/20 14:15:12 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -327,43 +327,6 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 		m_guard = createCmsConnectionGuard(m_pool, sleepTime);
 		m_guard.start();		
 	}
-/**
- * Sorts a vector of files or folders alphabetically. 
- * This method uses an insertion sort algorithm.
- * NOT IN USE AT THIS TIME
- * 
- * @param unsortedList Array of strings containing the list of files or folders.
- * @return Array of sorted strings.
- */
-protected Vector SortEntrys(Vector list)
-{
-	int in, out;
-	int nElem = list.size();
-	long startTime = System.currentTimeMillis();
-	CmsResource[] unsortedList = new CmsResource[list.size()];
-	for (int i = 0; i < list.size(); i++)
-	{
-		unsortedList[i] = (CmsResource) list.elementAt(i);
-	}
-	for (out = 1; out < nElem; out++)
-	{
-		CmsResource temp = unsortedList[out];
-		in = out;
-		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
-		{
-			unsortedList[in] = unsortedList[in - 1];
-			--in;
-		}
-		unsortedList[in] = temp;
-	}
-	Vector sortedList = new Vector();
-	for (int i = 0; i < list.size(); i++)
-	{
-		sortedList.addElement(unsortedList[i]);
-	}
-	System.err.println("Zeit f?r SortEntrys von " + nElem + " Eintr?gen:" + (System.currentTimeMillis() - startTime));
-	return sortedList;
-}
 	/**
 	 * Creates a serializable object in the systempropertys.
 	 * 
@@ -2966,6 +2929,16 @@ public CmsSite getSiteFromUrl(StringBuffer url) throws CmsException
 			}
 		}
 	}
+/**
+ * Private method to init all Id statements in the pool.
+ */
+protected void initIdStatements() throws com.opencms.core.CmsException {
+	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_INIT_KEY, m_cq.C_SYSTEMID_INIT);
+	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_LOCK_KEY, m_cq.C_SYSTEMID_LOCK);
+	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_READ_KEY, m_cq.C_SYSTEMID_READ);
+	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_WRITE_KEY, m_cq.C_SYSTEMID_WRITE);
+	m_pool.initPreparedStatement(m_cq.C_SYSTEMID_UNLOCK_KEY, m_cq.C_SYSTEMID_UNLOCK);
+}
 	/**
 	 * Private method to init the max-id of the projects-table.
 	 * 
@@ -3289,12 +3262,8 @@ public CmsSite getSiteFromUrl(StringBuffer url) throws CmsException
 		m_pool.initPreparedStatement(m_cq.C_TASKLOG_READ_PPROJECTLOGS_KEY,m_cq.C_TASKLOG_READ_PPROJECTLOGS);
 
 		// init statements for id
-		m_pool.initPreparedStatement(m_cq.C_SYSTEMID_INIT_KEY,m_cq.C_SYSTEMID_INIT);
-		
-		m_pool.initPreparedStatement(m_cq.C_SYSTEMID_LOCK_KEY,m_cq.C_SYSTEMID_LOCK);
-		m_pool.initPreparedStatement(m_cq.C_SYSTEMID_READ_KEY,m_cq.C_SYSTEMID_READ);
-		m_pool.initPreparedStatement(m_cq.C_SYSTEMID_WRITE_KEY,m_cq.C_SYSTEMID_WRITE);
-		m_pool.initPreparedStatement(m_cq.C_SYSTEMID_UNLOCK_KEY,m_cq.C_SYSTEMID_UNLOCK);	
+		// - to be able to override method in other packages
+		initIdStatements();
 
 		// init statements for sessions
 		m_pool.initPreparedStatement(m_cq.C_SESSION_CREATE_KEY, m_cq.C_SESSION_CREATE);
@@ -5791,6 +5760,43 @@ public CmsTask readTask(int id) throws CmsException {
 		}
 		return result;
 	}
+/**
+ * Sorts a vector of files or folders alphabetically. 
+ * This method uses an insertion sort algorithm.
+ * NOT IN USE AT THIS TIME
+ * 
+ * @param unsortedList Array of strings containing the list of files or folders.
+ * @return Array of sorted strings.
+ */
+protected Vector SortEntrys(Vector list)
+{
+	int in, out;
+	int nElem = list.size();
+	long startTime = System.currentTimeMillis();
+	CmsResource[] unsortedList = new CmsResource[list.size()];
+	for (int i = 0; i < list.size(); i++)
+	{
+		unsortedList[i] = (CmsResource) list.elementAt(i);
+	}
+	for (out = 1; out < nElem; out++)
+	{
+		CmsResource temp = unsortedList[out];
+		in = out;
+		while (in > 0 && unsortedList[in - 1].getAbsolutePath().compareTo(temp.getAbsolutePath()) >= 0)
+		{
+			unsortedList[in] = unsortedList[in - 1];
+			--in;
+		}
+		unsortedList[in] = temp;
+	}
+	Vector sortedList = new Vector();
+	for (int i = 0; i < list.size(); i++)
+	{
+		sortedList.addElement(unsortedList[i]);
+	}
+	System.err.println("Zeit f?r SortEntrys von " + nElem + " Eintr?gen:" + (System.currentTimeMillis() - startTime));
+	return sortedList;
+}
 	/**
 	 * Undeletes the file.
 	 * 
