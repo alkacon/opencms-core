@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsFolderTree.java,v $
- * Date   : $Date: 2000/02/16 09:15:18 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/02/22 12:02:31 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/16 09:15:18 $
+ * @version $Revision: 1.14 $ $Date: 2000/02/22 12:02:31 $
  */
 public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstants  {
 
@@ -297,19 +297,41 @@ public class CmsFolderTree extends CmsWorkplaceDefault implements I_CmsWpConstan
                       template.setXmlData(C_TREESTYLE,C_FILE_NOTINPROJECT);
                 }
 
-                // set all data for the treeline tag
-                template.setXmlData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
-                template.setXmlData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
-                template.setXmlData(C_TREEENTRY,folder.getName());
-                template.setXmlData(C_TREETAB,tab);
-                template.setXmlData(C_TREEFOLDER,folderimg);
-                template.setXmlData(C_TREESWITCH,treeswitch);
-                output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
+                if (checkAccess(cms,folder)) {
+                    // set all data for the treeline tag
+                    template.setXmlData(C_FILELIST,C_WP_EXPLORER_FILELIST+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
+                    template.setXmlData(C_TREELIST,C_WP_EXPLORER_TREE+"?"+C_PARA_FILELIST+"="+folder.getAbsolutePath());
+                    template.setXmlData(C_TREEENTRY,folder.getName());
+                    template.setXmlData(C_TREETAB,tab);
+                    template.setXmlData(C_TREEFOLDER,folderimg);
+                    template.setXmlData(C_TREESWITCH,treeswitch);
+                    output.append(template.getProcessedXmlDataValue(C_TREELINE,this));
                 
-                //finally process all subfolders if nescessary
-                if (endfolder.startsWith(folder.getAbsolutePath())) {
-                    showTree(cms,folder.getAbsolutePath(),endfolder,filelist,template,output,newtab);
+                    //finally process all subfolders if nescessary
+                    if (endfolder.startsWith(folder.getAbsolutePath())) {
+                        showTree(cms,folder.getAbsolutePath(),endfolder,filelist,template,output,newtab);
+                    }
                 }
             }
       }
+    
+     /** 
+      * Check if this resource should be displayed in the filelist.
+      * @param cms The CmsObject
+      * @param res The resource to be checked.
+      * @return True or false.
+      * @exception CmsException if something goes wrong.
+      */
+     private boolean checkAccess(A_CmsObject cms, CmsResource res)
+     throws CmsException {
+         boolean access=false;
+         int accessflags=res.getAccessFlags();
+         
+         if ( ((accessflags & C_ACCESS_PUBLIC_VISIBLE) > 0) ||
+              (cms.readOwner(res).equals(cms.getRequestContext().currentUser()) && (accessflags & C_ACCESS_OWNER_VISIBLE) > 0) ||
+              (cms.readGroup(res).equals(cms.getRequestContext().currentGroup()) && (accessflags & C_ACCESS_GROUP_VISIBLE) > 0)) {
+             access=true;
+         }
+         return access;
+     }
   }

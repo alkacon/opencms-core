@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
- * Date   : $Date: 2000/02/21 22:25:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/02/22 12:02:31 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -47,7 +47,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/02/21 22:25:09 $
+ * @version $Revision: 1.13 $ $Date: 2000/02/22 12:02:31 $
  */
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -360,7 +360,7 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
                     values.addElement(new Integer(i).toString());
                 }
             }
-            return new Integer(max+1);           
+            return new Integer(values.size()-1);           
       }      
     
       
