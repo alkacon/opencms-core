@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/03/25 11:45:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2004/03/25 13:45:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michaela Schleich
  * @author Thomas Weckert
  *
- * @version $Revision: 1.8 $ $Date: 2004/03/25 11:45:05 $
+ * @version $Revision: 1.9 $ $Date: 2004/03/25 13:45:30 $
  */
 public interface I_CmsConstants {
 
@@ -1215,7 +1215,7 @@ public interface I_CmsConstants {
 
     /** the resource is linked inside a site folder specified in the OpenCms properties  */
     int C_RESOURCEFLAG_LABELLINK = 2;
-    
+
     /** localhost ip used in fallback cases */
     String C_IP_LOCALHOST = "127.0.0.1";
     
@@ -1239,4 +1239,7 @@ public interface I_CmsConstants {
 
     /** The request http header for "last modified" requests */
     String C_HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+    
+    /** HTTP Header for internal requests used during static export */
+    String C_HEADER_OPENCMS_EXPORT =  "OpenCms-Export";
 }
