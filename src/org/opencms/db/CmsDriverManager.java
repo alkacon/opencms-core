@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/03/04 15:42:41 $
- * Version: $Revision: 1.477 $
+ * Date   : $Date: 2005/03/13 09:48:39 $
+ * Version: $Revision: 1.478 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,6 +64,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsHtmlLinkValidator;
 import org.opencms.workflow.CmsTask;
@@ -94,7 +95,7 @@ import org.apache.commons.dbcp.PoolingDriver;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.477 $ $Date: 2005/03/04 15:42:41 $
+ * @version $Revision: 1.478 $ $Date: 2005/03/13 09:48:39 $
  * @since 5.1
  */
 public final class CmsDriverManager extends Object implements I_CmsEventListener {
@@ -838,7 +839,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
                 // if an additional groupname is given and the group does not belong to
                 // Users, Administrators or Projectmanager add the user to this group
-                if (additionalGroup != null && !"".equals(additionalGroup)) {
+                if (CmsStringUtil.isNotEmpty(additionalGroup)) {
                     addGroup = readGroup(dbc, additionalGroup);
                     if (addGroup != null && isWebgroup(dbc, addGroup)) {
                         //add this user to the group
@@ -1500,7 +1501,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsGroup role = null;
 
         // read the role
-        if (roleName != null && !roleName.equals("")) {
+        if (CmsStringUtil.isNotEmpty(roleName)) {
             role = readGroup(dbc, roleName);
         }
         // create the timestamp
@@ -1749,7 +1750,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 // folders never have any content
                 contentLength = -1;
                 // must cut of trailing '/' for folder creation (or name check fails)
-                if (targetName.charAt(targetName.length() - 1) == '/') {
+                if (CmsResource.isFolder(targetName)) {
                     targetName = targetName.substring(0, targetName.length() - 1);
                 }
             } else {
@@ -1922,7 +1923,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         if (CmsFolder.isFolderType(type)) {
             // must cut of trailing '/' for folder creation
-            if (targetName.charAt(targetName.length() - 1) == '/') {
+            if (CmsResource.isFolder(targetName)) {
                 targetName = targetName.substring(0, targetName.length() - 1);
             }
             size = -1;
@@ -2079,7 +2080,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             timestamp,
             priority);
         
-        if (taskComment != null && !taskComment.equals("")) {
+        if (CmsStringUtil.isNotEmpty(taskComment)) {
             m_workflowDriver.writeTaskLog(
                 dbc,
                 task.getId(), 
@@ -2906,7 +2907,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         CmsGroup newRole = m_userDriver.readGroup(dbc, newRoleName);
         CmsUser newUser = null;
-        if (newUserName.equals("")) {
+        if (CmsStringUtil.isEmpty(newUserName)) {
             newUser = readUser(dbc, m_workflowDriver.readAgent(dbc, newRole.getId()));
         } else {
             newUser = readUser(dbc, newUserName, I_CmsConstants.C_USER_TYPE_SYSTEMUSER);
@@ -4453,19 +4454,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     found = true;
                     readResource(dbc, des, CmsResourceFilter.ALL);
                     // ....it's there, so add a postfix and try again
-                    String path = destination.substring(0, destination.lastIndexOf("/") + 1);
-                    String filename = destination.substring(destination.lastIndexOf("/") + 1, destination.length());
+                    String path = destination.substring(0, destination.lastIndexOf('/') + 1);
+                    String filename = destination.substring(destination.lastIndexOf('/') + 1, destination.length());
 
                     des = path;
 
-                    if (filename.lastIndexOf(".") > 0) {
-                        des += filename.substring(0, filename.lastIndexOf("."));
+                    if (filename.lastIndexOf('.') > 0) {
+                        des += filename.substring(0, filename.lastIndexOf('.'));
                     } else {
                         des += filename;
                     }
                     des += "_" + postfix;
-                    if (filename.lastIndexOf(".") > 0) {
-                        des += filename.substring(filename.lastIndexOf("."), filename.length());
+                    if (filename.lastIndexOf('.') > 0) {
+                        des += filename.substring(filename.lastIndexOf('.'), filename.length());
                     }
                     postfix++;
                 } catch (CmsException e3) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/03/07 20:59:14 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/03/13 09:48:39 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.I_CmsConstants;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -44,7 +45,7 @@ import java.util.Comparator;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
 
@@ -359,7 +360,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static boolean isFolder(String resource) {
 
-        return ((resource != null) && (!"".equals(resource)) && (resource.charAt(resource.length() - 1) == '/'));
+        return CmsStringUtil.isNotEmpty(resource) && (resource.charAt(resource.length() - 1) == '/');
     }
 
     /**
@@ -492,7 +493,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public String getName() {
 
         String name = getName(m_rootPath);
-        if (name.endsWith("/")) {
+        if (name.charAt(name.length() - 1) == '/') {
             return name.substring(0, name.length() - 1);
         } else {
             return name;
