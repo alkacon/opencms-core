@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2003/03/02 18:43:54 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/04/09 06:42:03 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,11 +52,20 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.50 $ $Date: 2003/03/02 18:43:54 $
+ * @version $Revision: 1.51 $ $Date: 2003/04/09 06:42:03 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
 public class CmsWpMain extends CmsWorkplaceDefault {
+    
+    public CmsWpMain() {
+        super();
+        
+        m_SelectedPrjIndex = 0;
+        m_ProjectIds = null;
+        m_ProjectNames = null;
+    }
+        
 	/**
 	 * Gets the content of a defined section in a given template file and its subtemplates
 	 * with the given parameters.
@@ -154,6 +163,8 @@ public class CmsWpMain extends CmsWorkplaceDefault {
                 } 
 			}
 		}
+        
+        this.fetchProjects(cms, xmlTemplateDocument);
 
 		// Now load the template file and start the processing
 		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
@@ -223,30 +234,68 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 	 * @throws CmsException
 	 */
 
-	public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
+    public Integer getProjects(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
+        if (m_ProjectNames == null || m_ProjectIds == null) {
+            new Integer(0);
+        }
 
-		// Get all project information
-		CmsRequestContext reqCont = cms.getRequestContext();
-		Vector allProjects = cms.getAllAccessibleProjects();
-		int currentProjectId = reqCont.currentProject().getId();
+        values.addAll(m_ProjectIds);
+        names.addAll(m_ProjectNames);
 
-		// Now loop through all projects and fill the result vectors
-		int numProjects = allProjects.size();
-		int currentProjectNum = 0;
-		for (int i = 0; i < numProjects; i++) {
-			CmsProject loopProject = (CmsProject) allProjects.elementAt(i);
-			String loopProjectName = loopProject.getName();
-			String loopProjectId = loopProject.getId() + "";
-			values.addElement(loopProjectId);
-			names.addElement(loopProjectName);
-			if (loopProject.getId() == currentProjectId) {
+        return new Integer(m_SelectedPrjIndex);
+    }
+    
+    private void fetchProjects(CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument) throws CmsException {
+        // Get all project information
+        CmsRequestContext reqCont = cms.getRequestContext();
+        Vector allProjects = cms.getAllAccessibleProjects();
+        int currentProjectId = reqCont.currentProject().getId();
 
-				// Fine. The project of this loop is the user's current project. Save it!
-				currentProjectNum = i;
-			}
-		}
-		return new Integer(currentProjectNum);
-	}
+        // Now loop through all projects and fill the result vectors
+        int numProjects = allProjects.size();
+        int currentProjectNum = 0;
+        int currentLength = 0;
+        
+        int maxPrjNameLen = 0;
+        m_ProjectIds = new Vector();
+        m_ProjectNames = new Vector();
+        
+        for (int i = 0; i < numProjects; i++) {
+            CmsProject loopProject = (CmsProject) allProjects.elementAt(i);
+            String loopProjectName = loopProject.getName();
+            String loopProjectId = loopProject.getId() + "";
+            
+            m_ProjectIds.addElement(loopProjectId);
+            m_ProjectNames.addElement(loopProjectName);
+            
+            if (loopProject.getId() == currentProjectId) {
+                // Fine. The project of this loop is the user's current project. Save it!
+                currentProjectNum = i;
+            }
+            
+            currentLength = loopProjectName.length();
+            if (currentLength>maxPrjNameLen) {
+                maxPrjNameLen = currentLength;
+            }
+        }
+        
+        m_SelectedPrjIndex = currentProjectNum;
+        
+        try {
+            if (maxPrjNameLen <= 20) {
+                xmlTemplateDocument.setData("PRJ_SELECT", xmlTemplateDocument.getProcessedDataValue("PRJ_SELECT_NORMAL", this));
+            } else {
+                xmlTemplateDocument.setData("PRJ_SELECT", xmlTemplateDocument.getProcessedDataValue("PRJ_SELECT_LARGE", this));
+            }
+        } catch (CmsException e) {
+            // this exception is only caugth for backwards compatibility with older templates
+            // missing the data blocks above.
+        }
+    }
+    
+    private int m_SelectedPrjIndex;
+    private Vector m_ProjectIds;
+    private Vector m_ProjectNames;
 
 	/**
 	 * Gets all views available for this user in the workplace screen from the Registry.

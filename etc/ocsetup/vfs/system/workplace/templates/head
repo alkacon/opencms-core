@@ -39,7 +39,7 @@
 
         <form name="projectchange" id="projectchange" method="get">
         <td class=dialogtxt>
-            ]]><SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/><![CDATA[
+            ]]><PROCESS>PRJ_SELECT</PROCESS><![CDATA[
         </td>
         </form>
         ]]><PROCESS>PUBLISH</PROCESS><![CDATA[
@@ -90,5 +90,13 @@
 <HELP_DISABLED>
 <![CDATA[<td></td>]]>
 </HELP_DISABLED>
+
+<PRJ_SELECT_NORMAL>
+<SELECT class="textfeld" name="project" width="150" method="getProjects" onchange="javascript:document.projectchange.submit()"/>
+</PRJ_SELECT_NORMAL>
+
+<PRJ_SELECT_LARGE>
+<SELECT class="textfeld" name="project" method="getProjects" onchange="javascript:document.projectchange.submit()"/>
+</PRJ_SELECT_LARGE>
 
 </WORKPLACE>
