@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorer.java,v $
- * Date   : $Date: 2003/06/12 09:43:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2003/06/13 13:13:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.http.HttpServletRequest;
  * </ul>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.1
  */
@@ -208,7 +208,7 @@ public class CmsExplorer extends CmsWorkplace {
         CmsUUID currentFolderId = CmsUUID.getNullUUID();
         if (! vfslinkView) {
             try {
-                currentFolderId = (getCms().readFolder(currentFolder)).getResourceId();
+                currentFolderId = (getCms().readFolder(currentFolder)).getId();
             } catch (CmsException e) {
                 // we use the null UUID
             }
@@ -449,7 +449,7 @@ public class CmsExplorer extends CmsWorkplace {
                 // all easy: we are in the onlineProject
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
                 content.append("top.aC(\"");
-                content.append(rootFolder.getResourceId().hashCode());
+                content.append(rootFolder.getId().hashCode());
                 content.append("\", ");
                 content.append("\"");
                 content.append(getSettings().getMessages().key("title.rootfolder"));
@@ -460,7 +460,7 @@ public class CmsExplorer extends CmsWorkplace {
                     CmsFolder folder = (CmsFolder)tree.elementAt(i);
                     content.append("top.aC(\"");
                     // id
-                    content.append(folder.getResourceId().hashCode());
+                    content.append(folder.getId().hashCode());
                     content.append("\", ");
                     // name
                     content.append("\"");
@@ -470,7 +470,7 @@ public class CmsExplorer extends CmsWorkplace {
                     content.append(folder.getParentId().hashCode());
                     content.append("\", false);\n");                    
                 }
-            }else {
+            } else {
                 // offline Project
                 Hashtable idMixer = new Hashtable();
                 CmsFolder rootFolder = (CmsFolder)tree.elementAt(0);
@@ -478,12 +478,12 @@ public class CmsExplorer extends CmsWorkplace {
                 if(! CmsProject.isOnlineProject(rootFolder.getProjectId())) {
                     startAt = 2;
                     grey = false;
-                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getResourceId());
+                    idMixer.put((CmsFolder)tree.elementAt(1), rootFolder.getId());
                 }else {
                     grey = true;
                 }
                 content.append("top.aC(\"");
-                content.append(rootFolder.getResourceId().hashCode());
+                content.append(rootFolder.getId().hashCode());
                 content.append("\", ");
                 content.append("\"");
                 content.append(getSettings().getMessages().key("title.rootfolder"));
@@ -506,7 +506,7 @@ public class CmsExplorer extends CmsWorkplace {
                                 // the next res is the same res in the online-project: ignore it!
                                 if(folder.getAbsolutePath().equals(((CmsFolder)tree.elementAt(i + 1)).getAbsolutePath())) {
                                     i++;
-                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getResourceId());
+                                    idMixer.put((CmsFolder)tree.elementAt(i), folder.getId());
                                 }
                             }catch(IndexOutOfBoundsException exc) {
                             // ignore the exception, this was the last resource
@@ -520,7 +520,7 @@ public class CmsExplorer extends CmsWorkplace {
                         }
                         content.append("top.aC(\"");
                         // id
-                        content.append(folder.getResourceId().hashCode());
+                        content.append(folder.getId().hashCode());
                         content.append("\", ");
                         // name
                         content.append("\"");
