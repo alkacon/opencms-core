@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/08 11:50:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/08/12 08:52:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.sql.SQLException;
  * Oracle/OCI implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ $Date: 2003/07/08 11:50:44 $
+ * @version $Revision: 1.4 $ $Date: 2003/08/12 08:52:51 $
  * @since 5.1
  */
 public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {     
@@ -72,7 +72,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
             stmt.setString(1, fileId.toString());
             if (writeBackup) {
                 stmt.setInt(2, versionId);
-                stmt.setString(3,new CmsUUID().toString());
+                stmt.setString(3, new CmsUUID().toString());
             }
             stmt.executeUpdate();
         } catch (SQLException e) {
