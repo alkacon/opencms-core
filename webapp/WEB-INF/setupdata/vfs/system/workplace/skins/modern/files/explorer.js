@@ -543,22 +543,22 @@ function printList(wo) {
 					resourceName = vi.liste[i].path;
 				}
 			}
+			var lastWasSeparator = false;
+			var firstEntryWritten = false;
 			for (a = 0; a < vi.menus[vi.liste[i].type].items.length; a++) {
-
+				
 				// 0:unchanged, 1:changed, 2:new, 3:deleted
 				var result = -1;
-
-				if (vr.actProject == vr.onlineProject) {
+				
+				if (vi.menus[vi.liste[i].type].items[a].name == "-") {
+					result = 1;
+				} else if (vr.actProject == vr.onlineProject) {
 					// online project
 					if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'i') {
-						result = (vi.menus[vi.liste[i].type].items[a].name == "-")?1:2;
+						result = 2;
 					} else {
 						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'a') {
-							if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-								result = 1;
-							} else {
-								result = (vi.liste[i].type == 0)?3:4;
-							}
+							result = (vi.liste[i].type == 0)?3:4;
 						}
 					}
 				} else {
@@ -577,7 +577,7 @@ function printList(wo) {
 							}
 						}
 					} else {
-						// resource is in this project => we have to differ 5 cases
+						// resource is in this project => we have to differ 4 cases
 						if (vi.liste[i].lockedBy == '') {
 							// resource is not locked...
 							if (autolock) {
@@ -595,7 +595,7 @@ function printList(wo) {
 									// ... the current user ...
 									if (isSharedLock) {
 										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 26);
+										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
 									} else {
 										// ... as exclusive lock
 										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 10);
@@ -603,47 +603,22 @@ function printList(wo) {
 
 								} else {
 									// ... someone else
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 30);
-									} else {
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-									}
+									display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
 								}
 							} else {
-								// locked in an other project from ...
-								if (vi.liste[i].lockedBy == vr.userName) {
-									// ... the current user
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 30);
-									} else {
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 18);
-									}
-								} else {
-									// ... someone else
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 30);
-									} else {
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 22);
-									}
-								}
+								// locked in an other project ...
+								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
 							}
 						}
 						if (display == 'i') {
-							result = (vi.menus[vi.liste[i].type].items[a].name == "-")?1:2;
+							result = 2;
 						} else {
 							if (display == 'a') {
-								if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-									result = 1;
+								if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
+								&& (vi.liste[i].linkType == 0)) {
+									result = 2;
 								} else {
-									if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-									&& (vi.liste[i].linkType == 0)) {
-										result = 2;
-									} else {
-										result = (vi.liste[i].type == 0)?3:4;
-									}
+									result = (vi.liste[i].type == 0)?3:4;
 								}
 							}
 						}
@@ -652,11 +627,16 @@ function printList(wo) {
 				switch (result) {
 					case 1:
 						// separator line
-						wo.writeln("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
+						if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[vi.liste[i].type].items.length - 1))) {
+							wo.writeln("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
+							lastWasSeparator = true;
+						}
 						break;
 					case 2:
 						// inactive entry
 						wo.writeln("<tr><td>" + spanstartina + vi.menus[vi.liste[i].type].items[a].name + spanend + "</td></tr>");
+						lastWasSeparator = false;
+						firstEntryWritten = true;
 						break;
 					case 3:
 					case 4:
@@ -678,16 +658,17 @@ function printList(wo) {
 						}
 
 						wo.writeln("<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[vi.liste[i].type].items[a].name + spanend + "</a></td></tr>");
+						lastWasSeparator = false;
+						firstEntryWritten = true;
 						break;
 					default:
 						// alert("Undefined result for menu " + a);
 						break;
 				}
-
-			}
+			} // end for ...
 			wo.writeln("</table></div></div>");
-		}
-	}
+		} // end if (access)
+	} // end for ...
 
 	wo.writeln("<br></body></html>");
 	wo.close();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/10 16:50:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * and information about the new resource dialog.<p>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -135,10 +135,9 @@ public class CmsExplorerTypeSettings implements Comparable {
     /**
      * Adds a menu separator to the list of context menu items.<p>
      * 
-     * @param rules the display rules for the separator
      * @param order the sort order of the separator
      */
-    public void addContextMenuSeparator(String rules, String order) {
+    public void addContextMenuSeparator(String order) {
         Integer orderValue = new Integer(0);
         try {
             orderValue = Integer.valueOf(order);
@@ -147,7 +146,7 @@ public class CmsExplorerTypeSettings implements Comparable {
                 OpenCms.getLog(this).error("Wrong order for context menu separator.");
             }      
         }
-        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(CmsExplorerContextMenuItem.C_TYPE_SEPARATOR, null, null, rules, null, orderValue, false);
+        CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(CmsExplorerContextMenuItem.C_TYPE_SEPARATOR, null, null, null, null, orderValue, false);
         m_contextMenuEntries.add(item);
         if (OpenCms.getLog(this).isDebugEnabled()) {
             OpenCms.getLog(this).debug("Adding menu separator: " + order);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2004/03/10 11:22:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/03/10 16:50:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * in the OpenCms configuration.<p> 
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -75,7 +75,7 @@ public class CmsExplorerContextMenu {
         m_allEntries.addAll(entries);
         Collections.sort(m_allEntries);
     }
-    
+      
     /**
      * Returns all entries of the context menu.<p>
      * 
@@ -134,16 +134,17 @@ public class CmsExplorerContextMenu {
                         target = "";
                     }
                     result.append("\"'" + target + "'\", ");
+                    // remove all blanks from the rule String
+                    String rules = CmsStringSubstitution.substitute(item.getRules(), " ", "");
+                    // parse the rules to create autlock column
+                    rules = parseRules(rules, item.getKey());
+                    result.append("\"" + rules + "\");\n");
                     // result: addMenuEntry([id], "[language_key]", "[dialogURI]", "'[target]'", "ddiiiiaaaiaaaiddddddddddddiiiidddd");
                 } else {
                     // create a separator entry
-                    result.append("\"-\", \" \", \"''\", ");
+                    result.append("\"-\", \" \", \"''\", \"\");\n");
                     // result: addMenuEntry([id], "-", " ", "''", "ddaaaaaaaaaaaaddddddddddddaaaadddd");
                 }         
-                String rules = item.getRules();
-                // remove all blanks from the rule String
-                rules = CmsStringSubstitution.substitute(rules, " ", "");
-                result.append("\"" + rules + "\");\n");
             }
             entries = result.toString();
             // store the generated entries
@@ -151,6 +152,27 @@ public class CmsExplorerContextMenu {
         }
         
         return entries;
+    }
+    
+    /**
+     * Parses the rules and adds a column for the autolock feature of resources.<p>
+     * 
+     * @param rules the current rules
+     * @param key the key name of the current item
+     * @return the rules with added autlock rules column
+     */
+    private String parseRules(String rules, String key) {
+        StringBuffer newRules = new StringBuffer(rules.length() + 4);
+        newRules.append(rules.substring(0, 6));
+        if ("explorer.context.lock".equalsIgnoreCase(key) || "explorer.context.unlock".equalsIgnoreCase(key)) {
+            // for "lock" and "unlock" item, use same rules as "unlocked" column
+            newRules.append(rules.substring(2, 6));
+        } else {
+            // for all other items, use same rules as "locked exclusively by current user" column
+            newRules.append(rules.substring(6, 10));
+        }       
+        newRules.append(rules.substring(6));
+        return newRules.toString();
     }
 
     /**
