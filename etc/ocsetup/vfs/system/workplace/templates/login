@@ -55,7 +55,7 @@
         </tr>
          <tr>
             <td class=formular>]]><LABEL value="input.password" /><![CDATA[:</td>	
-            <td class=formular>]]><PASSWORD name="PASSWORD" class="textfeld" size="15" length="16" /><![CDATA[</td>
+            <td class=formular>]]><PASSWORD name="PASSWORD" class="textfeld" size="15" length="32" /><![CDATA[</td>
         </tr>
         <tr>
             <td colspan=2 align=middle class=formular>]]><SUBMITBUTTON class="button" name="LOGIN" value="login" width="100" action="" /><![CDATA[</td>
