@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2004/08/19 11:26:34 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/11/05 13:54:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,17 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.3
  */
@@ -85,26 +89,6 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     public CmsNewResourceSibling(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         this(new CmsJspActionElement(context, req, res));
     }    
-    
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);                            
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else {                        
-            setAction(ACTION_DEFAULT);
-            // build title for new resource dialog     
-            setParamTitle(key("title.newsibling"));
-        }      
-    }
 
     /**
      * Creates the new sibling of a resource.<p>
@@ -185,6 +169,42 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     }
     
     /**
+     * Redirects to the property dialog if the resourceeditprops parameter is true.<p>
+     * 
+     * If the parameter is not true, the dialog will be closed.<p>
+     * If the sibling of the new resource is locked, the paramter will be ignored as properties
+     * cannot be created in this case.<p>
+     * 
+     * @throws IOException if redirecting to the property dialog fails
+     * @throws JspException if an inclusion fails
+     */
+    public void actionEditProperties() throws IOException, JspException {
+        boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
+        // get the sibling name
+        String newRes = getParamResource();
+        // check if this sibling is locked
+        try {
+            CmsLock lock = getCms().getLock(newRes);
+            // if the new resource has no exclusive lock, set the editProps flag to false
+            if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE) {
+                editProps = false;
+            }
+        } catch (CmsException e) {
+            throw new JspException(e);
+        }
+        if (editProps) {
+            // edit properties checkbox checked, redirect to property dialog
+            String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
+            params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD; 
+            sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER + params);
+        } else {
+            // edit properties not checked, close the dialog
+            actionCloseDialog();
+        }
+    }
+    
+    
+    /**
      * Returns the current explorer path for use in Javascript of new sibling dialog.<p>
      * 
      * @return the current explorer path
@@ -213,6 +233,26 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
      */
     public void setParamKeepProperties(String keepProperties) {
         m_paramKeepProperties = keepProperties;
+    }
+    
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);                            
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else {                        
+            setAction(ACTION_DEFAULT);
+            // build title for new resource dialog     
+            setParamTitle(key("title.newsibling"));
+        }      
     }
 
 }
