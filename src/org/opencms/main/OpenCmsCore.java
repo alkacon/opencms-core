@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/10/05 14:31:31 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2004/10/14 08:23:01 $
+ * Version: $Revision: 1.144 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,6 +61,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -106,7 +107,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.143 $
+ * @version $Revision: 1.144 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -176,10 +177,10 @@ public final class OpenCmsCore {
     
     /** The module manager. */
     private CmsModuleManager m_moduleManager;
-
-    /** The name of the class used to validate a new password. */
-    private String m_passwordValidatingClass;
-
+    
+    /** The password handler used to digest and validate passwords. */
+    private I_CmsPasswordHandler m_passwordHandler;
+    
     /** Map of request handlers. */
     private Map m_requestHandlers;
 
@@ -595,16 +596,7 @@ public final class OpenCmsCore {
         
         return m_moduleManager;
     }
-
-    /**
-     * Returns the Class that is used for the password validation.<p>
-     * 
-     * @return the Class that is used for the password validation
-     */
-    protected String getPasswordValidatingClass() {
-        return m_passwordValidatingClass;
-    }
-
+    
     /**
      * Returns the handler instance for the specified name, 
      * or null if the name does not match any handler name.<p>
@@ -616,6 +608,15 @@ public final class OpenCmsCore {
         return (I_CmsRequestHandler)m_requestHandlers.get(name);
     }
 
+    /**
+     * Return the password handler.<p>
+     * 
+     * @return the password handler
+     */
+    protected I_CmsPasswordHandler getPasswordHandler() {
+        return m_passwordHandler;
+    }
+    
     /**
      * Returns the resource manager.<p>
      * 
@@ -932,7 +933,7 @@ public final class OpenCmsCore {
             if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
                 getLog(CmsLog.CHANNEL_INIT).warn(". Request handler class: " + handler.getClass().getName() + " activated");
             }                    
-        }    
+        }        
         // get Site Manager
         m_siteManager = systemConfiguration.getSiteManager();        
         
@@ -959,7 +960,10 @@ public final class OpenCmsCore {
         // get the module configuration
         CmsModuleConfiguration moduleConfiguration = (CmsModuleConfiguration)m_configurationManager.getConfiguration(CmsModuleConfiguration.class); 
         m_moduleManager = moduleConfiguration.getModuleManager();
-        
+
+        // get the password handler
+        m_passwordHandler = systemConfiguration.getPasswordHandler();
+                
         try {
             // init the rb via the manager with the configuration
             // and init the cms-object with the rb.
@@ -1002,13 +1006,7 @@ public final class OpenCmsCore {
         if (m_defaultFilenames == null) {
             m_defaultFilenames = new String[0];
         }
-
-        // read the password validating class
-        m_passwordValidatingClass = configuration.getString("passwordvalidatingclass", "com.opencms.util.PasswordValidtation");
-        if (getLog(CmsLog.CHANNEL_INIT).isInfoEnabled()) {
-            getLog(CmsLog.CHANNEL_INIT).info(". Password validation  : " + m_passwordValidatingClass);
-        }
-
+        
         if (m_runtimeProperties == null) {
             m_runtimeProperties = Collections.synchronizedMap(new HashMap());
         }
@@ -1173,7 +1171,6 @@ public final class OpenCmsCore {
     protected void initMembers() {
         synchronized (m_lock) {
             m_log = new CmsLog();
-            m_passwordValidatingClass = "";
             m_resourceInitHandlers = new ArrayList();
             m_eventListeners = new HashMap();
             m_requestHandlers = new HashMap();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2004/10/03 11:37:53 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2004/10/14 08:23:01 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.scheduler.CmsScheduleManager;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public final class OpenCms {
 
@@ -212,25 +213,25 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getMemoryMonitor();
     }
-
+   
     /**
      * Returns the module manager.<p>
      * 
      * @return the module manager
-     */
+     */    
     public static CmsModuleManager getModuleManager() {
-
+        
         return OpenCmsCore.getInstance().getModuleManager();
     }
-
+    
     /**
-     * Returns the Class that is used for the password validation.<p>
+     * Returns the password handler.<p>
      * 
-     * @return the Class that is used for the password validation
+     * @return the password handler
      */
-    public static String getPasswordValidatingClass() {
+    public static I_CmsPasswordHandler getPasswordHandler() {
 
-        return OpenCmsCore.getInstance().getPasswordValidatingClass();
+        return OpenCmsCore.getInstance().getPasswordHandler();
     }
 
     /**
@@ -358,7 +359,7 @@ public final class OpenCms {
 
         return OpenCmsCore.getInstance().getWorkplaceManager();
     }
-
+    
     /**
      * Returns the XML content type manager.<p>
      * 
@@ -388,9 +389,9 @@ public final class OpenCms {
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see #initCmsObject(String)
-     */
+     */        
     public static CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
-
+        
         return OpenCmsCore.getInstance().initCmsObject(adminCms, contextInfo);
     }
 
@@ -441,14 +442,14 @@ public final class OpenCms {
 
         OpenCmsCore.getInstance().setRuntimeProperty(key, value);
     }
-
+    
     /**
      * Writes the XML configuration for the provided configuration class.<p>
      * 
      * @param clazz the configuration class to write the XML for
      */
     public static void writeConfiguration(Class clazz) {
-
+        
         OpenCmsCore.getInstance().writeConfiguration(clazz);
-    }
+    }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2004/09/10 13:12:45 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2004/10/14 08:23:01 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.security.CmsPermissionSet;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  */
 public interface I_CmsConstants {
 
@@ -179,6 +179,21 @@ public interface I_CmsConstants {
      */
     int C_USER_TYPE_WEBUSER = 2;
 
+    /**
+     * The user digest algorithm.
+     */
+    String C_USER_DIGEST_TYPE = "db.user.digest.type";
+    
+    /**
+     * The user digest encoding.
+     */
+    String C_USER_DIGEST_ENCODING = "db.user.digest.encoding";
+    
+    /**
+     * The user digest output coding.
+     */
+    String C_USER_DIGEST_OUTPUT = "db.user.digest.output"; 
+    
     /**
      * Key for additional info address.
      */
