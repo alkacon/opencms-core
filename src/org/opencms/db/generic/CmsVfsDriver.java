@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/08/17 16:09:25 $
- * Version: $Revision: 1.196 $
+ * Date   : $Date: 2004/08/17 16:46:57 $
+ * Version: $Revision: 1.197 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.196 $ $Date: 2004/08/17 16:09:25 $
+ * @version $Revision: 1.197 $ $Date: 2004/08/17 16:46:57 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -2211,19 +2211,31 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         return readFileHeader(project.getId(), newStructureId, false);
     }    
 
+    /**
+     * Removes a trailing separater from a path if required.<p>
+     * 
+     * @param path the path to remove the trailing separator from
+     * @return the path without a trailing separator
+     */
     private static String removeTrailingSeparator(String path) {
         int l = path.length();
-        if (path == null || l <= 1 || path.charAt(l-1) != '/') {
+        if ((l <= 1) || (path.charAt(l-1) != '/')) {
             return path;
         } else {
             return path.substring(0, l-1);
         }
     }
     
+    /**
+     * Adds a trailing separator to a path if required.<p>
+     * 
+     * @param path the path to add the trailing separator to
+     * @return the path with a trailing separator
+     */
     private static String addTrailingSeparator(String path) {
         int l = path.length();
-        if (path != null && (l == 0 || path.charAt(l-1) != '/')) {
-            return path + "/";
+        if ((l == 0) || (path.charAt(l-1) != '/')) {
+            return path.concat("/");
         } else {
             return path;
         }
