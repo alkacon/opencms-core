@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
-* Date   : $Date: 2002/07/01 11:07:02 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/07/24 15:59:08 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import com.opencms.report.*;
  * This class implements the registry for OpenCms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.44 $ $Date: 2002/07/01 11:07:02 $
+ * @version $Revision: 1.45 $ $Date: 2002/07/24 15:59:08 $
  *
  */
 public class CmsRegistry extends A_CmsXmlContent implements I_CmsRegistry {
@@ -1349,6 +1349,15 @@ public Hashtable getSystemValues(String key) {
         // ignore the exception - registry is not wellformed
     }
     return retValue;
+}
+
+/**
+ * Return the XML "system" node Element from the registry for further 
+ * processing in another class.
+ * @return the system node.
+ */
+public Element getSystemElement() {
+    return (Element)m_xmlReg.getElementsByTagName("system").item(0);
 }
 
 /**
