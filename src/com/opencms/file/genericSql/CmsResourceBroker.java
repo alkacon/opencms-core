@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
-* Date   : $Date: 2003/04/01 15:20:19 $
-* Version: $Revision: 1.373 $
+* Date   : $Date: 2003/04/17 13:32:32 $
+* Version: $Revision: 1.374 $
 
 *
 * This library is part of OpenCms -
@@ -77,7 +77,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michaela Schleich
  * @author Michael Emmerich
  * @author Anders Fugmann
- * @version $Revision: 1.373 $ $Date: 2003/04/01 15:20:19 $
+ * @version $Revision: 1.374 $ $Date: 2003/04/17 13:32:32 $
  *
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -216,7 +216,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         // read the parent folder
         if(resource.getParent() != null) {
             // readFolder without checking access
-            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+            resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
         } else {
             // no parent folder!
             return true;
@@ -237,7 +237,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
                 // read next resource
                 if(resource.getParent() != null) {
                     // readFolder without checking access
-                    resource = m_dbAccess.readFolder(resource.getProjectId(),  resource.getRootName()+resource.getParent());
+                    resource = readCachedFolder(resource.getProjectId(),  resource.getRootName()+resource.getParent());
                 }
             } else {
                 // last check was negative
@@ -260,7 +260,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
     public boolean accessCreate(CmsUser currentUser, CmsProject currentProject,
                                 String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
+        CmsResource resource = readCachedFileHeader(currentProject.getId(), resourceName, false);
         return accessCreate(currentUser, currentProject, resource);
     }
     /**
@@ -290,6 +290,65 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         return false;
 
     }
+    
+    
+    protected CmsFolder readCachedFolder(int projectId, String folderName) throws CmsException {
+        String cacheKey = getCacheKey("folder_cache", projectId, folderName);
+        CmsFolder folder = (CmsFolder)m_resourceCache.get(cacheKey);
+        if (folder == null) {
+            folder =  m_dbAccess.readFolder(projectId, folderName);
+            m_resourceCache.put(cacheKey, folder);
+        }  
+        return folder; 
+    }
+    
+    protected CmsFolder readCachedFolder(int projectId, int folderId) throws CmsException {
+        String cacheKey = getCacheKey("folder_id_cache", projectId, "" + folderId);
+        CmsFolder folder = (CmsFolder)m_resourceCache.get(cacheKey);
+        if (folder == null) {
+            folder = m_dbAccess.readFolder(projectId, folderId);    
+            m_resourceCache.put(cacheKey, folder);
+        }  
+        return folder;                 
+    }    
+    
+    protected CmsFile readCachedFileHeader(int projectId, String fileName, boolean includeDeleted) throws CmsException {        
+        String cacheKey = getCacheKey("file_cache", projectId, fileName);
+        CmsFile file = (CmsFile)m_resourceCache.get(cacheKey);
+        if (file == null) {
+            file = m_dbAccess.readFileHeader(projectId, fileName, includeDeleted);
+            m_resourceCache.put(cacheKey, file);
+        }
+        return file;        
+    }
+    
+    protected CmsUser readCachedUser(String userName, int userType) throws CmsException {
+        CmsUser user = (CmsUser)m_userCache.get(new CacheId(userName + userType));
+        if (user == null) {
+            user = m_dbAccess.readUser(userName, userType); 
+            m_userCache.put(new CacheId(user), user);
+        }
+        return user;   
+    }
+    
+    protected CmsUser readCachedUser(int userId) throws CmsException {        
+        CmsUser user = (CmsUser)m_userCache.get(new CacheId(userId));
+        if (user == null) {
+            user = m_dbAccess.readUser(userId); 
+            m_userCache.put(new CacheId(user), user);
+        }
+        return user;     
+    }    
+    
+    protected CmsGroup readCachedGroup(String groupName) throws CmsException {
+        CmsGroup group = (CmsGroup)m_groupCache.get(new CacheId(groupName));
+        if (group== null) {
+            group = m_dbAccess.readGroup(groupName); 
+            m_groupCache.put(new CacheId(group), group);
+        }
+        return group;     
+    }    
+    
     /**
      * Checks, if the user may lock this resource.
      *
@@ -321,7 +380,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
         // read the parent folder
         if(resource.getParent() != null) {
             // readFolder without checking access
-            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+            resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
         } else {
             // no parent folder!
             return true;
@@ -340,7 +399,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
             // read next resource
             if(resource.getParent() != null) {
                 // readFolder without checking access
-                resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+                resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
             }
         } while(resource.getParent() != null);
 
@@ -359,7 +418,7 @@ public void acceptTask(CmsUser currentUser, CmsProject currentProject, int taskI
     public boolean accessLock(CmsUser currentUser, CmsProject currentProject,
                               String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
+        CmsResource resource = readCachedFileHeader(currentProject.getId(), resourceName, false);
         return accessLock(currentUser,currentProject,resource);
     }
 /**
@@ -489,7 +548,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             CmsResource res = resource; // save the original resource name to be used if an error occurs.
             while (res.getParent() != null) {
                 // readFolder without checking access
-                res = m_dbAccess.readFolder(currentProject.getId(), res.getRootName() + res.getParent());
+                res = readCachedFolder(currentProject.getId(), res.getRootName() + res.getParent());
                 if (res == null) {
                     if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging()) {
                         A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
@@ -521,7 +580,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
      * @return weather the user has access, or not.
      */
     public boolean accessRead(CmsUser currentUser, CmsProject currentProject, String resourceName) throws CmsException {
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
+        CmsResource resource = readCachedFileHeader(currentProject.getId(), resourceName, false);
         return accessRead(currentUser, currentProject, resource);
     }
 
@@ -557,7 +616,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         // read the parent folder
         if(resource.getParent() != null) {
             // readFolder without checking access
-            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+            resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
         } else {
             // no parent folder!
             return true;
@@ -575,7 +634,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
             // read next resource
             if(resource.getParent() != null) {
                 // readFolder without checking access
-                resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+                resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
             }
         } while(resource.getParent() != null);
 
@@ -635,7 +694,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         // read the parent folder
         if(resource.getParent() != null) {
             // readFolder without checking access
-            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+            resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
         } else {
             // no parent folder!
             return true;
@@ -659,7 +718,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 // read next resource
                 if(resource.getParent() != null) {
                     // readFolder without checking access
-                    resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+                    resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
                 }
             } else {
                 // last check was negative
@@ -682,7 +741,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
     public boolean accessWrite(CmsUser currentUser, CmsProject currentProject,
                                String resourceName) throws CmsException {
 
-        CmsResource resource = m_dbAccess.readFileHeader(currentProject.getId(), resourceName, false);
+        CmsResource resource = readCachedFileHeader(currentProject.getId(), resourceName, false);
         return accessWrite(currentUser,currentProject,resource);
     }
     /**
@@ -727,7 +786,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
         // read the parent folder
         if(resource.getParent() != null) {
             // readFolder without checking access
-            resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+            resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
         } else {
             // no parent folder!
             return true;
@@ -750,7 +809,7 @@ protected boolean accessOther(CmsResource resource, int flags) throws CmsExcepti
                 // read next resource
                 if(resource.getParent() != null) {
                     // readFolder without checking access
-                    resource = m_dbAccess.readFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
+                    resource = readCachedFolder(resource.getProjectId(), resource.getRootName()+resource.getParent());
                 }
             } else {
                 // last check was negative
@@ -1016,7 +1075,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
                 CmsUser user;
                 CmsGroup usergroup;
 
-                user=m_dbAccess.readUser(newUser.getName(),C_USER_TYPE_WEBUSER);
+                user=readCachedUser(newUser.getName(),C_USER_TYPE_WEBUSER);
 
                 //check if the user exists
                 if (user != null) {
@@ -1082,7 +1141,7 @@ public void addUserToGroup(CmsUser currentUser, CmsProject currentProject, Strin
             CmsGroup usergroup;
             CmsGroup addGroup;
 
-            user=m_dbAccess.readUser(newUser.getName(),C_USER_TYPE_WEBUSER);
+            user=readCachedUser(newUser.getName(),C_USER_TYPE_WEBUSER);
             //check if the user exists
             if (user != null) {
                 usergroup=readGroup(currentUser,currentProject,group);
@@ -2248,8 +2307,8 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                               String taskName, String taskComment,
                               int taskType, long timeout, int priority)
         throws CmsException {
-        CmsUser agent = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER);
-        CmsGroup role = m_dbAccess.readGroup(roleName);
+        CmsUser agent = readCachedUser(agentName, C_USER_TYPE_SYSTEMUSER);
+        CmsGroup role = readCachedGroup(roleName);
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
 
@@ -2294,13 +2353,13 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                               String taskname, String taskcomment,
                               long timeout, int priority)
         throws CmsException {
-        CmsGroup role = m_dbAccess.readGroup(roleName);
+        CmsGroup role = readCachedGroup(roleName);
         java.sql.Timestamp timestamp = new java.sql.Timestamp(timeout);
         java.sql.Timestamp now = new java.sql.Timestamp(System.currentTimeMillis());
         int agentId = C_UNKNOWN_ID;
         validTaskname(taskname);   // check for valid Filename
         try {
-            agentId = m_dbAccess.readUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
+            agentId = readCachedUser(agentName, C_USER_TYPE_SYSTEMUSER).getId();
         } catch (Exception e) {
             // ignore that this user doesn't exist and create a task for the role
         }
@@ -2495,9 +2554,9 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
         // read the resource to check the access
         if (filename.endsWith("/")) {
             isFolder=true;
-            resource = m_dbAccess.readFolder(currentProject.getId(),filename);
+            resource = readCachedFolder(currentProject.getId(),filename);
         } else {
-            resource = (CmsFile)m_dbAccess.readFileHeader(currentProject.getId(),filename, true);
+            resource = (CmsFile)readCachedFileHeader(currentProject.getId(),filename, true);
         }
 
         // has the user write-access?
@@ -2970,12 +3029,12 @@ public CmsProject createTempfileProject(CmsObject cms, CmsUser currentUser, CmsP
                             String newRoleName, String newUserName)
         throws CmsException {
 
-        CmsGroup newRole = m_dbAccess.readGroup(newRoleName);
+        CmsGroup newRole = readCachedGroup(newRoleName);
         CmsUser newUser = null;
         if(newUserName.equals("")) {
-            newUser = m_dbAccess.readUser(m_dbAccess.findAgent(newRole.getId()));
+            newUser = readCachedUser(m_dbAccess.findAgent(newRole.getId()));
         } else {
-            newUser =   m_dbAccess.readUser(newUserName, C_USER_TYPE_SYSTEMUSER);
+            newUser = readCachedUser(newUserName, C_USER_TYPE_SYSTEMUSER);
         }
 
         m_dbAccess.forwardTask(taskid, newRole.getId(), newUser.getId());
@@ -4028,7 +4087,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
             // get the folder
             CmsFolder cmsFolder = null;
             try {
-                cmsFolder = m_dbAccess.readFolder(currentProject.getId(), foldername);
+                cmsFolder = readCachedFolder(currentProject.getId(), foldername);
             } catch(CmsException exc) {
                 if(exc.getType() == CmsException.C_NOT_FOUND) {
                     // ignore the exception - file dosen't exist in this project
@@ -4079,7 +4138,7 @@ public Vector getResourcesInFolder(CmsUser currentUser, CmsProject currentProjec
                                        String foldername)
         throws CmsException{
 
-        CmsFolder cmsFolder = m_dbAccess.readFolder(currentProject.getId(),foldername);
+        CmsFolder cmsFolder = readCachedFolder(currentProject.getId(),foldername);
         if( accessRead(currentUser, currentProject, (CmsResource)cmsFolder) ) {
             // acces to all subfolders was granted - return the sub-folders.
             Vector folders = m_dbAccess.getSubFolders(currentProject.getId(),cmsFolder);
@@ -4820,7 +4879,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
     public boolean shouldReloadClasses(int projectId, Vector classFiles) {
         for(int i = 0; i < classFiles.size(); i++) {
             try {
-                CmsFile file = m_dbAccess.readFileHeader(projectId, (String)classFiles.elementAt(i), false);
+                CmsFile file = readCachedFileHeader(projectId, (String)classFiles.elementAt(i), false);
                 if( (file.getState() == C_STATE_CHANGED) || (file.getState() == C_STATE_DELETED) ) {
                     // this class-file was changed or deleted - we have to reload
                     return true;
@@ -5350,7 +5409,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
             cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
             if (cmsFile==null) {
-               cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, false);
+               cmsFile = readCachedFileHeader(currentProject.getId(), filename, false);
                m_resourceCache.put(cacheKey, cmsFile);
             }
         } catch(CmsException exc) {
@@ -5404,7 +5463,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
              String cacheKey = getCacheKey(null, currentUser, currentProject, filename);
              cmsFile=(CmsResource)m_resourceCache.get(cacheKey);
              if (cmsFile==null) {
-                cmsFile = m_dbAccess.readFileHeader(currentProject.getId(), filename, includeDeleted);
+                cmsFile = readCachedFileHeader(currentProject.getId(), filename, includeDeleted);
                 m_resourceCache.put(cacheKey, cmsFile);
              }
          } catch(CmsException exc) {
@@ -5605,7 +5664,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, Stri
         String cacheKey = getCacheKey(null, currentUser, currentProject, folder);
         cmsFolder = (CmsFolder) m_resourceCache.get(cacheKey);
         if (cmsFolder == null) {
-            cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folder);
+            cmsFolder = readCachedFolder(currentProject.getId(), folder);
             if (cmsFolder.getState() != C_STATE_DELETED) {
                 m_resourceCache.put(cacheKey, cmsFolder);
             }
@@ -5650,7 +5709,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
     CmsFolder cmsFolder = null;
     // read the resource from the currentProject, or the online-project
     try {
-        cmsFolder = m_dbAccess.readFolder(currentProject.getId(), folderid);
+        cmsFolder = readCachedFolder(currentProject.getId(), folderid);
     } catch (CmsException exc) {
         throw exc;
     }
@@ -5795,14 +5854,7 @@ public CmsFolder readFolder(CmsUser currentUser, CmsProject currentProject, int 
      */
     public CmsGroup readGroup(CmsUser currentUser, CmsProject currentProject, String groupname)
         throws CmsException {
-        CmsGroup group=null;
-        // try to read group form cache
-        group=(CmsGroup)m_groupCache.get(new CacheId(groupname));
-        if (group== null) {
-            group = m_dbAccess.readGroup(groupname);
-            m_groupCache.put(new CacheId(group), group);
-        }
-        return group;
+        return readCachedGroup(groupname);
     }
 
     /**
@@ -6417,7 +6469,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
                                    String orderBy, String sort)
         throws CmsException {
 
-        CmsUser user = m_dbAccess.readUser(userName, C_USER_TYPE_SYSTEMUSER);
+        CmsUser user = readCachedUser(userName, C_USER_TYPE_SYSTEMUSER);
         CmsProject project = null;
         // try to read the project, if projectId == -1 we must return the tasks of all projects
         if(projectId != C_UNKNOWN_ID){
@@ -6441,13 +6493,8 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         throws CmsException {
 
         try {
-            CmsUser user = null;
-            // try to read the user from cache
-            user = (CmsUser)m_userCache.get(new CacheId(id));
-            if (user==null) {
-                user=m_dbAccess.readUser(id);
-                m_userCache.put(new CacheId(user), user);
-            }
+            // try to read the user 
+            CmsUser user = readCachedUser(id);
             return user;
         } catch (CmsException ex) {
             return new CmsUser(C_UNKNOWN_ID, id + "", "deleted user");
@@ -6467,7 +6514,6 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
      */
     public CmsUser readUser(CmsUser currentUser, CmsProject currentProject, String username)
         throws CmsException {
-
         CmsUser user = null;
         // try to read the user from cache
         user = (CmsUser)m_userCache.get(new CacheId(username + C_USER_TYPE_SYSTEMUSER));
@@ -6475,8 +6521,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             user = (CmsUser)m_userCache.get(new CacheId(username + C_USER_TYPE_SYSTEMANDWEBUSER));
         }
         if (user == null) {
-            user = m_dbAccess.readUser(username, C_USER_TYPE_SYSTEMUSER);
-            m_userCache.put(new CacheId(user), user);
+            user = readCachedUser(username, C_USER_TYPE_SYSTEMUSER);
         }
         return user;
     }
@@ -6504,7 +6549,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
             user = (CmsUser)m_userCache.get(new CacheId(username + C_USER_TYPE_SYSTEMANDWEBUSER));
         }
         if (user == null) {
-            user = m_dbAccess.readUser(username, type);
+            user = readCachedUser(username, type);
             m_userCache.put(new CacheId(user), user);
         }
         return user;
@@ -6558,7 +6603,7 @@ public Vector readResources(CmsProject project) throws com.opencms.core.CmsExcep
         }
         // store user in cache
         if (user == null) {
-            user = m_dbAccess.readUser(username, C_USER_TYPE_WEBUSER);
+            user = readCachedUser(username, C_USER_TYPE_WEBUSER);
             m_userCache.put(new CacheId(user), user);
         }
         return user;
@@ -7940,9 +7985,9 @@ protected void validName(String name, boolean blank) throws CmsException {
      */
     protected boolean isWebgroup(CmsGroup group) throws CmsException{
         try{
-            int user = m_dbAccess.readGroup(C_GROUP_USERS).getId();
-            int admin = m_dbAccess.readGroup(C_GROUP_ADMIN).getId();
-            int manager = m_dbAccess.readGroup(C_GROUP_PROJECTLEADER).getId();
+            int user = readCachedGroup(C_GROUP_USERS).getId();
+            int admin = readCachedGroup(C_GROUP_ADMIN).getId();
+            int manager = readCachedGroup(C_GROUP_PROJECTLEADER).getId();
             if((group.getId() == user) || (group.getId() == admin) || (group.getId() == manager)){
                 return false;
             } else {
@@ -8315,7 +8360,7 @@ protected void validName(String name, boolean blank) throws CmsException {
         CmsResource res = resource; // save the original resource name to be used if an error occurs.
         while (res.getParent() != null){
             // readFolder without checking access
-            res = m_dbAccess.readFolder(currentProject.getId(), res.getRootName()+res.getParent());
+            res = readCachedFolder(currentProject.getId(), res.getRootName()+res.getParent());
             if (res == null){
                 if(I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
                     A_OpenCms.log(A_OpenCms.C_OPENCMS_DEBUG, "Resource has no parent: " + resource.getAbsolutePath());
@@ -8404,12 +8449,25 @@ protected void validName(String name, boolean blank) throws CmsException {
         buffer.append(resource);
         return buffer.toString();
     }
+    
+    private String getCacheKey(String prefix, int projectId, String resource) {
+        StringBuffer buffer = new StringBuffer(32);
+        if (prefix != null) {
+            buffer.append(prefix);
+            buffer.append("_");
+        }
+        buffer.append(projectId);
+        buffer.append("_");
+        buffer.append(resource);
+        return buffer.toString();
+    }
+        
         
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
      * a name string or an id.<p>
      * 
-     * @author Alkexander Kandzior (a.kandzior@alkacon.com)
+     * @author Alexander Kandzior (a.kandzior@alkacon.com)
      */
     private class CacheId extends Object {
         
