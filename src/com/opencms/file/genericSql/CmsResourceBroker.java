@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/02 13:34:54 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2000/08/04 12:57:32 $
+ * Version: $Revision: 1.96 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.95 $ $Date: 2000/08/02 13:34:54 $
+ * @version $Revision: 1.96 $ $Date: 2000/08/04 12:57:32 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2796,7 +2796,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Returns the parent group of a group<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -2807,26 +2807,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
 								String groupname) 
         throws CmsException {
-        // check security
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-          CmsGroup group=readGroup(currentUser,currentProject,groupname);
-     
-          if (group.getParentId()==C_UNKNOWN_ID) {
-              return null;
-          }
-          
-          // try to read from cache
-          CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
-          if (parent==null) {
-              parent=m_dbAccess.readGroup(group.getParentId());
-              m_groupCache.put(group.getParentId(),parent);
-          }
-          return parent;
-          //return m_dbAccess.getParent(groupname);
-   		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
-				CmsException.C_NO_ACCESS);
+		CmsGroup group=readGroup(currentUser,currentProject,groupname);
+		     
+		if (group.getParentId()==C_UNKNOWN_ID) {
+		    return null;
 		}
+		          
+		// try to read from cache
+		CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
+		if (parent==null) {
+		    parent=m_dbAccess.readGroup(group.getParentId());
+		    m_groupCache.put(group.getParentId(),parent);
+		}
+		return parent;
+		//return m_dbAccess.getParent(groupname);
     }
 	
 	/** 

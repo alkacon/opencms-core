@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/08/02 13:34:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2000/08/04 12:57:32 $
+ * Version: $Revision: 1.13 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -48,7 +48,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2000/08/02 13:34:55 $
+ * @version $Revision: 1.13 $ $Date: 2000/08/04 12:57:32 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -2720,7 +2720,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	 * Returns the parent group of a group<P/>
 	 * 
 	 * <B>Security:</B>
-	 * All users are granted, except the anonymous user.
+	 * All users are granted.
 	 * 
 	 * @param currentUser The user who requested this method.
 	 * @param currentProject The current project of the user.
@@ -2731,26 +2731,20 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	public CmsGroup getParent(CmsUser currentUser, CmsProject currentProject, 
 								String groupname) 
         throws CmsException {
-        // check security
-		if( ! anonymousUser(currentUser, currentProject).equals( currentUser ) ) {
-          CmsGroup group=readGroup(currentUser,currentProject,groupname);
+        CmsGroup group=readGroup(currentUser,currentProject,groupname);
      
-          if (group.getParentId()==C_UNKNOWN_ID) {
-              return null;
-          }
+        if (group.getParentId()==C_UNKNOWN_ID) {
+            return null;
+        }
           
-          // try to read from cache
-          CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
-          if (parent==null) {
-              parent=m_dbAccess.readGroup(group.getParentId());
-              m_groupCache.put(group.getParentId(),parent);
-          }
-          return parent;
-          //return m_dbAccess.getParent(groupname);
-   		} else {
-			throw new CmsException("[" + this.getClass().getName() + "] " + groupname, 
-				CmsException.C_NO_ACCESS);
-		}
+        // try to read from cache
+        CmsGroup parent=(CmsGroup)m_groupCache.get(group.getParentId());
+        if (parent==null) {
+            parent=m_dbAccess.readGroup(group.getParentId());
+            m_groupCache.put(group.getParentId(),parent);
+        }
+        return parent;
+        //return m_dbAccess.getParent(groupname);
     }
 	
 	/** 
@@ -3690,6 +3684,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
        // try to get the folders in the current project
 	   try {
 			folders = helperGetSubFolders(currentUser, currentProject, foldername);
+			System.err.println("1 " + folders.size());
     	} catch (CmsException exc) {
 			// no folders, ignoring them
 		}
@@ -3702,8 +3697,10 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 					helperGetSubFolders(currentUser, 
 										onlineProject(currentUser, currentProject), 
 										foldername);
+				System.err.println("2 " + onlineFolders.size());
                	// merge the resources
 				folders = mergeResources(folders, onlineFolders);
+				System.err.println("3 " + folders.size());
 			} catch(CmsException exc) {
 				// no onlinefolders, ignoring them
 			}			
