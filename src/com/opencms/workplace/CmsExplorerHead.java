@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
- * Date   : $Date: 2000/02/29 16:44:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/03/27 10:00:27 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.13 $ $Date: 2000/02/29 16:44:47 $
+ * @version $Revision: 1.14 $ $Date: 2000/03/27 10:00:27 $
  */
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                      I_CmsConstants {
@@ -261,10 +261,11 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is set into the adress field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
 
