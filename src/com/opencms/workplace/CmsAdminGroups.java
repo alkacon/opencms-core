@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminGroups.java,v $
- * Date   : $Date: 2000/05/09 10:02:57 $
- * Version: $Revision: 1.6 $Selector
+ * Date   : $Date: 2000/05/25 14:59:43 $
+ * Version: $Revision: 1.7 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2000/05/09 10:02:57 $
+ * @version $Revision: 1.7 $ $Date: 2000/05/25 14:59:43 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -167,11 +167,8 @@ public class CmsAdminGroups extends CmsWorkplaceDefault implements I_CmsConstant
 					}
 					session.putValue("selectedUsers", selectedUsers);
 					session.putValue("notSelectedUsers", notSelectedUsers);
-				}
-				System.err.println("reqCont:" + parameters.get("ADD"));
-				System.err.println("parameters:" + parameters.get("ADD"));
-				if (parameters.get("ADD") != null){
-					System.err.println("----ADD");
+				} 
+				if (parameters.get("ADD") != null){ 
 					// add a new group to selectedGroups 
 					String username = (String)parameters.get("NOTSELECTEDUSERS");
 					if (username != null) {
