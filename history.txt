@@ -8,7 +8,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 4.5.0  Gom Jabbar   - 07 August 2001
+OpenCms 4.5.2  Gom Jabbar   - 08 August 2001
+* The cms-redirect was called twice. This is fixed now.
+
+OpenCms 4.5.1  Gom Jabbar   - 07 August 2001
 * if no templatename is given the name of the bodyTemplate is used in the elementdefinition
 
 OpenCms 4.5.0  Gom Jabbar   - 07 August 2001
