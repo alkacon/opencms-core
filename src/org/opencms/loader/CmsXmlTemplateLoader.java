@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/07/19 01:51:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/20 16:12:13 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since FLEX alpha 1
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
@@ -509,7 +509,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
             }
         }
 
-        if (elementCacheEnabled && cmsUri == null) {
+        if (elementCacheEnabled && (cmsUri == null)) {
             // ---- element cache stuff --------
             // No URI could be found in cache.
             // So create a new URI object with a start element and store it using the UriLocator
