@@ -9,6 +9,8 @@ Legend:
 - General comment
 
 OpenCms 4.5.4  Gom Jabbar   - ?? August 2001
+* Added the name of the element to the parameters with the key  _ELEMENT_.
+* Added the parameters of the element-definition to the cache-directive -key.
 - Added redirect-informations to opencms.properties
 
 OpenCms 4.5.3  Gom Jabbar   - 10 August 2001
