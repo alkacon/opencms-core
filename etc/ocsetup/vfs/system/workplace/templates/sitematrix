@@ -17,12 +17,32 @@
 
 <script language="JavaScript">
 
+function editSite(id)
+{
+	alert("Edit Site with id " + id);
+}
+function editSiteConfig(id)
+{
+	alert("Edit Site Configuration with id " + id);
+}
+function previewSite(id)
+{
+	alert("Preview Site with id " + id);
+}
+function deleteSite(id)
+{
+	alert("Delete Site with id " + id);
+}
+
+
 function initMatrix() {
 
 	var sM = new siteMatrix(100, 60);
 	
 ]]><process>domains</process><![CDATA[
+
 ]]><process>categories</process><![CDATA[
+
 ]]><process>sites</process><![CDATA[
 
 	initContextMenus();
@@ -52,59 +72,36 @@ function initContextMenus() {
   cM2.addMenu('m001',165);
 
   
-  cM.menus['m001'].addItem('i001','Enable',"javascript:alert('Id: ' + currSiteNodeId);");
-  cM.menus['m001'].addItem('i002','---','');
-  cM.menus['m001'].addItem('i003','Edit Site','javascript:;');
-  cM.menus['m001'].addItem('i004','Edit Site Configuration','javascript:;');
-  cM.menus['m001'].addItem('i005','Preview Site','javascript:;');
+  cM.menus['m001'].addItem('i001','Edit Site','javascript:editSite(currSiteNodeId);');
+  cM.menus['m001'].addItem('i002','Edit Site Configuration','javascript:editSiteConfig(currSiteNodeId);');
+  cM.menus['m001'].addItem('i003','Preview Site','javascript:previewSite(currSiteNodeId);');
 
-  cM.menus['m001'].addItem('i006','---','');
-  cM.menus['m001'].addItem('i007','Copy','javascript:;');
-  cM.menus['m001'].addItem('i008','Paste','javascript:;');
-  cM.menus['m001'].menuItems['i008'].ghosted = true;
-  cM.menus['m001'].addItem('i009','Move','javascript:;');
-  cM.menus['m001'].addItem('i010','Delete','javascript:;');
-  cM.menus['m001'].addItem('i011','---','');
-  cM.menus['m001'].addItem('i012','Properties','javascript:;');
+  cM.menus['m001'].addItem('i004','---','');
+  cM.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
 
-  cM2.menus['m001'].addItem('i001','Disable','javascript:;');
-  cM2.menus['m001'].addItem('i002','---','');
-  cM2.menus['m001'].addItem('i003','Edit Site','javascript:;');
-  cM2.menus['m001'].addItem('i004','Edit Site Configuration','javascript:;');
-  cM2.menus['m001'].addItem('i005','Preview Site','javascript:;');
 
-  cM2.menus['m001'].addItem('i006','---','');
-  cM2.menus['m001'].addItem('i007','Copy','javascript:;');
-  cM2.menus['m001'].addItem('i008','Paste','javascript:;');
-  cM2.menus['m001'].menuItems['i008'].ghosted = true;
-  cM2.menus['m001'].addItem('i009','Move','javascript:;');
-  cM2.menus['m001'].addItem('i010','Delete','javascript:;');
-  cM2.menus['m001'].addItem('i011','---','');
-  cM2.menus['m001'].addItem('i012','Properties','javascript:;');
+  cM2.menus['m001'].addItem('i001','Edit Site','javascript:editSite(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i002','Edit Site Configuration','javascript:editSiteConfig(currSiteNodeId);');
+  cM2.menus['m001'].addItem('i003','Preview Site','javascript:previewSite(currSiteNodeId);');
 
+  cM2.menus['m001'].addItem('i004','---','');
+  cM2.menus['m001'].addItem('i005','Delete','javascript:deleteSite(currSiteNodeId);');
   
    drawContextMenus();
   
 }
 
 
-var isAdmin = false;
- 
+var isAdmin = ]]><process>isadmin</process><![CDATA[;
+
 
 function drawContextMenus() {
 
+   cM.menus['m001'].menuItems['i002'].ghosted = !isAdmin;
+   cM.menus['m001'].menuItems['i005'].ghosted = !isAdmin;
 
-   cM.menus['m001'].menuItems['i001'].ghosted = !isAdmin;
-   cM.menus['m001'].menuItems['i004'].ghosted = !isAdmin;
-   cM.menus['m001'].menuItems['i007'].ghosted = !isAdmin;
-   cM.menus['m001'].menuItems['i009'].ghosted = !isAdmin;
-   cM.menus['m001'].menuItems['i010'].ghosted = !isAdmin;
-
-   cM2.menus['m001'].menuItems['i001'].ghosted = !isAdmin;
-   cM2.menus['m001'].menuItems['i004'].ghosted = !isAdmin;
-   cM2.menus['m001'].menuItems['i007'].ghosted = !isAdmin;
-   cM2.menus['m001'].menuItems['i009'].ghosted = !isAdmin;
-   cM2.menus['m001'].menuItems['i010'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i002'].ghosted = !isAdmin;
+   cM2.menus['m001'].menuItems['i005'].ghosted = !isAdmin;
 
   cM.menus['m001'].drawMenu();
   cM2.menus['m001'].drawMenu();
@@ -129,15 +126,18 @@ function drawContextMenus() {
 
 
 <domain>
-	<![CDATA[sM.addSiteDomain('d]]><process>x</process><![CDATA[',']]><process>shortname</process><![CDATA[',']]><process>name</process><![CDATA[');]]>
+<![CDATA[	sM.addSiteDomain('d]]><process>x</process><![CDATA[',']]><process>shortname</process><![CDATA[',']]><process>name</process><![CDATA[');
+]]>
 </domain>
 
 <category>
-	<![CDATA[sM.addSiteType('t]]><process>y</process><![CDATA[', ']]><process>name</process><![CDATA[');]]>
+<![CDATA[	sM.addSiteType('t]]><process>y</process><![CDATA[', ']]><process>name</process><![CDATA[');
+]]>
 </category>
 
 <sitenode>
-	<![CDATA[sM.addSiteNode('n]]><process>id</process><![CDATA[', ']]><process>name</process><![CDATA[', 'd]]><process>x</process><![CDATA[', 't]]><process>y</process><![CDATA[', true);]]>
+<![CDATA[	sM.addSiteNode('n]]><process>id</process><![CDATA[', ']]><process>name</process><![CDATA[', 'd]]><process>x</process><![CDATA[', 't]]><process>y</process><![CDATA[', true);
+]]>
 </sitenode>
 
 </XMLTEMPLATE>

@@ -17,6 +17,10 @@
             <name>select.news</name>
             <url>/system/workplace/action/news_admin.html</url>
         </view>
+        <view>
+            <name>select.sitematrix</name>
+            <url>/system/workplace/action/sitematrix_frames.html</url>
+        </view>
     </system>
     <modules/>
 </registry>

@@ -10,7 +10,7 @@
 ####################################################################################
 
 #Database
-INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '0', 'Default', 'Default online project', '0', '1', '0', '1');
+INSERT INTO CMS_SITES (SITE_ID, NAME, DESCRIPTION, CATEGORY_ID, LANGUAGE_ID, COUNTRY_ID, ONLINEPROJECT_ID) VALUES ( '0', 'Default', 'Default online project', '2', '1', '2', '1');
 UPDATE CMS_SYSTEMID SET ID=ID+1 WHERE TABLE_KEY = 13;
 INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '1');
 INSERT INTO CMS_SITE_PROJECTS (SITE_ID, PROJECT_ID) VALUES ( '0', '2');
