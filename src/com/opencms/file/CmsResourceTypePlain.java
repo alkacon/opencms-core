@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePlain.java,v $
-* Date   : $Date: 2003/04/01 15:20:18 $
-* Version: $Revision: 1.23 $
+* Date   : $Date: 2003/06/10 16:21:00 $
+* Version: $Revision: 1.24 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -163,8 +163,11 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * @throws CmsException if operation was not successful.
     */
     public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
+// TODO: remove this
+/*
         cms.doChgrp(filename, newGroup);
-    }
+*/
+        }
 
     /**
     * Changes the flags of a resource.
@@ -191,8 +194,11 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * for this resource.
     */
     public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
+// TODO: remove this
+/*
         cms.doChmod(filename, flags);
-    }
+*/
+        }
 
     /**
     * Changes the owner of a resource.
@@ -218,8 +224,11 @@ public class CmsResourceTypePlain implements I_CmsResourceType, I_CmsConstants, 
     * @throws CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
+// TODO: remove this
+/*
         cms.doChown(filename, newOwner);
-    }
+*/
+        }
     
     /**
      * Change the timestamp of a resource.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/06/06 12:48:11 $
-* Version: $Revision: 1.47 $
+* Date   : $Date: 2003/06/10 16:21:00 $
+* Version: $Revision: 1.48 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.47 $ $Date: 2003/06/06 12:48:11 $
+ * @version $Revision: 1.48 $ $Date: 2003/06/10 16:21:00 $
  */
 public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
     
@@ -564,6 +564,11 @@ public class CmsResource implements I_CmsConstants, Cloneable, Serializable {
      public CmsUUID getResourceId(){
         return m_resourceId;
      }
+     
+     public CmsUUID getResourceAceId() {
+     	return m_resourceId;
+     }
+     
     /**
      * Gets the userId from the user who made the last change.
      *

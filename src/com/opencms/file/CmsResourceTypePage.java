@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypePage.java,v $
-* Date   : $Date: 2003/06/09 17:06:52 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2003/06/10 16:21:00 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * Implementation of a resource type for "editable content pages" in OpenCms.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.53 $ $Date: 2003/06/09 17:06:52 $
+ * @version $Revision: 1.54 $ $Date: 2003/06/10 16:21:00 $
  */
 public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_CmsConstants, I_CmsWpConstants {
 
@@ -197,7 +197,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @throws CmsException if operation was not successful.
     */
     public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
-
+// TODO: remove this
+/*
         CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -210,6 +211,7 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 cms.doChgrp(bodyPath, newGroup);
             }
         }
+*/
     }
 
     /**
@@ -237,7 +239,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * for this resource.
     */
     public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
-
+// TODO: remove this
+/*
         CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -256,7 +259,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 cms.doChmod(bodyPath, flags);
             }
         }
-    }
+*/
+        }
 
     /**
     * Changes the owner of a resource.
@@ -282,6 +286,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
     * @throws CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
+// TODO: remove this
+/*
         CmsFile file = cms.readFile(filename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -294,7 +300,8 @@ public class CmsResourceTypePage implements I_CmsResourceType, Serializable, I_C
                 cms.doChown(bodyPath, newOwner);
             }
         }
-    }
+*/
+        }
     
     /**
      * Change the timestamp of a page.

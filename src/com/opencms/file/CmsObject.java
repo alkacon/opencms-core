@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/06/09 17:05:53 $
-* Version: $Revision: 1.279 $
+* Date   : $Date: 2003/06/10 16:21:00 $
+* Version: $Revision: 1.280 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import com.opencms.util.Utils;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michaela Schleich
  *
- * @version $Revision: 1.279 $
+ * @version $Revision: 1.280 $
  */
 public class CmsObject implements I_CmsConstants {
 
@@ -4530,7 +4530,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		if ("".equals(permissionString)) {
 			m_driverManager.removeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, principal.getId());	
 		} else {
-			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
+			CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), permissionString);
 			m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 		}
 	}
@@ -4548,7 +4548,7 @@ public void backupProject(int projectId, int versionId, long publishDate) throws
 		CmsResource res = readFileHeader(resourceName);
 		I_CmsPrincipal principal = m_driverManager.lookupPrincipal(m_context.currentUser(), m_context.currentProject(), principalName);
 				
-		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
+		CmsAccessControlEntry acEntry = new CmsAccessControlEntry(res.getResourceAceId(), principal.getId(), allowedPermissions, deniedPermissions, flags);
 		m_driverManager.writeAccessControlEntry(m_context.currentUser(), m_context.currentProject(), res, acEntry);
 	}
 	

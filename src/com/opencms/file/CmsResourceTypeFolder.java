@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2003/05/15 12:39:34 $
-* Version: $Revision: 1.45 $
+* Date   : $Date: 2003/06/10 16:21:00 $
+* Version: $Revision: 1.46 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Vector;
 /**
  * Access class for resources of the type "Folder".
  *
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  */
 public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants, Serializable, com.opencms.workplace.I_CmsWpConstants {
 
@@ -168,7 +168,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException if operation was not successful.
     */
     public void chgrp(CmsObject cms, String filename, String newGroup, boolean chRekursive) throws CmsException{
-
+// TODO: remove this
+/*
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -227,7 +228,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                                     CmsException.C_NO_ACCESS);
         }
-    }
+*/
+        }
 
     /**
     * Changes the flags of a resource.
@@ -254,7 +256,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * for this resource.
     */
     public void chmod(CmsObject cms, String filename, int flags, boolean chRekursive) throws CmsException{
-
+// TODO: remove this
+/*
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the group of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -313,7 +316,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                                     CmsException.C_NO_ACCESS);
         }
-    }
+*/
+        }
 
     /**
     * Changes the owner of a resource.
@@ -339,7 +343,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
     * @throws CmsException if operation was not successful.
     */
     public void chown(CmsObject cms, String filename, String newOwner, boolean chRekursive) throws CmsException{
-
+// TODO: remove this
+/*
         CmsFolder folder = cms.readFolder(filename);
         // check if the current user has the right to change the owner of the
         // resource. Only the owner of a file and the admin are allowed to do this.
@@ -396,7 +401,8 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             throw new CmsException("[" + this.getClass().getName() + "] " + filename,
                                     CmsException.C_NO_ACCESS);
         }
-    }
+*/
+        }
     
     /**
      * Change the timestamp of a folder.

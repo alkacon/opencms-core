@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/db/Attic/CmsDriverManager.java,v $
- * Date   : $Date: 2003/06/09 17:04:15 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/06/10 16:20:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,13 +101,13 @@ import com.opencms.workplace.CmsAdminVfsLinkManagement;
 
 
 /**
- * @version $Revision: 1.16 $ $Date: 2003/06/09 17:04:15 $
+ * @version $Revision: 1.17 $ $Date: 2003/06/10 16:20:23 $
  * @author 	Carsten Weinholz (c.weinholz@alkacon.com)
  */
 /**
  * This is the driver manager.
  * 
- * @version $Revision: 1.16 $ $Date: 2003/06/09 17:04:15 $
+ * @version $Revision: 1.17 $ $Date: 2003/06/10 16:20:23 $
  */
 public class CmsDriverManager implements I_CmsConstants {
    
@@ -130,13 +130,13 @@ public class CmsDriverManager implements I_CmsConstants {
     
     // define the VfsAccessGuard
     class VfsAccessGuard extends CmsAccessGuard {
-    	
+    	    	
 		public VfsAccessGuard(CmsUser user, CmsProject project) {
 			super(user, project);    	
 		}
 		
 		public CmsPermissionSet evaluatePermissions(CmsResource resource)  throws CmsException {
-			/*
+
 			CmsPermissionSet permissions;
 			int allowed = 0, denied = 0;
 			
@@ -144,14 +144,33 @@ public class CmsDriverManager implements I_CmsConstants {
 			if(this.getProject().isOnlineProject())
 				denied |= C_PERMISSION_WRITE;
 
-			// if the resource is locked by another user, read and write are rejected
-			if(! this.getUser().equals(resource.isLockedBy()))
-				denied |= C_PERMISSION_READ | C_PERMISSION_WRITE;
+			// if the resource type is jsp or xml template
+			// write is only allowed for administrators
+			I_CmsResourceType resType = getResourceType(getUser(), getProject(), resource.getType());
+			if(( "XMLTemplate".equals(resType.getResourceTypeName())||"jsp".equals(resType.getResourceTypeName()) ) &&
+				!isAdmin(getUser(),getProject()) ) 
+				denied |= C_PERMISSION_WRITE;	
+			
+			
+			if(resource.isLocked()) {
+				//	if the resource is locked by another user, read and write are rejected
+				if (!this.getUser().getId().equals(resource.isLockedBy()))
+					denied |= C_PERMISSION_WRITE | C_PERMISSION_READ;
 				 
-			// if the resource is locked in another project, read and write is rejected
-			if(this.getProject().getId() != resource.getLockedInProject())
-				denied |= C_PERMISSION_READ | C_PERMISSION_WRITE;
-				
+				// if the resource is locked in another project, read and write are rejected
+				// exception: if the current project is the tempfileProject, reading from other projects is allowed
+				// exception: if the resource is locked in the tempfileProject, read and write are allowed
+				if((this.getProject().getId() != resource.getLockedInProject()) &&
+				   !isTempfileProject(readProject(resource.getLockedInProject()))) {
+					
+					if (isTempfileProject(this.getProject())) {
+						denied |= C_PERMISSION_WRITE;
+					} else {
+						denied |= C_PERMISSION_WRITE | C_PERMISSION_READ;
+					}
+				}
+			}
+			
 			// TODO: check how to handle projects
 			// check the access to the project
 			//if( ! accessProject(currentUser, currentProject, currentProject.getId()) ) {
@@ -175,9 +194,10 @@ public class CmsDriverManager implements I_CmsConstants {
 			}
 			
 			permissions.denyPermissions(denied);
+
+System.err.println ("Checking " + getUser().getName() + " " + getProject().getName() + ", Resource " + resource.getName() + " against " + permissions.toString());
+
 			return permissions;
-			*/
-			return new CmsPermissionSet(~0);
 		}
     }
 
@@ -2345,6 +2365,10 @@ public CmsUser anonymousUser(CmsUser currentUser, CmsProject currentProject) thr
 	    {
 	        throw new CmsException("[" + this.getClass().getName() + "] " + name, CmsException.C_NO_ACCESS);
 	    }
+	}
+	
+	public boolean isTempfileProject(CmsProject project) {
+		return project.getName().equals("tempFileProject");
 	}
 	
     /**
@@ -5516,6 +5540,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
                 m_resourceCache.put(cacheKey, cmsFile);
             }
             
+            // TODO: check if access control is sound here
 			// check if the user has read access to the folder
 			getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READ_ACCESS);
 		
@@ -5571,6 +5596,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
             throw exc;
         }
       
+      	// TODO: check if access control is sound here
 		// check if the user has read access to the folder
 		getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READ_ACCESS);
 		
@@ -5624,6 +5650,7 @@ public synchronized void exportStaticResources(CmsUser currentUser, CmsProject c
              throw exc;
          }
 
+		 // TODO: check if access control is sound here
 		 // check if the user has read access to the file
 		 getVfsAccessGuard(currentUser, currentProject).check(cmsFile, C_READ_ACCESS);
 		 
@@ -9028,7 +9055,7 @@ protected void validName(String name, boolean blank) throws CmsException {
 	public CmsAccessControlEntry createAccessControlEntry(CmsUser currentUser, CmsProject currentProject, CmsResource resource, CmsUUID principal, CmsPermissionSet permissions, int flags) throws CmsException {
 		
 		m_userDriver.createAccessControlEntry(currentProject, resource.getResourceId(), principal, permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
-		return new CmsAccessControlEntry(resource.getResourceId(), principal, permissions, flags); 
+		return new CmsAccessControlEntry(resource.getResourceAceId(), principal, permissions, flags); 
 	}
 	
 	/**
