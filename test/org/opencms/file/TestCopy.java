@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2004/07/02 13:29:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/07/03 10:21:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -134,18 +134,75 @@ public class TestCopy extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();     
         echo("Testing overwriting a deleted file");
         
-        String source = "/folder1/page1.html";
-        String destination1 = "/folder1/page2.html";
+        String source1 = "/folder1/page2.html";
+        String source2 = "/folder1/image1.gif";
+        String source3 = "/folder1/page3.html";
+        String destination = "/folder1/page1.html";
            
-        storeResources(cms, source);   
+        storeResources(cms, source1);   
+        storeResources(cms, source2);   
+        storeResources(cms, source3);   
+        storeResources(cms, destination);   
         
-        cms.lockResource(destination1);
-        cms.deleteResource(destination1, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
-         
-        cms.copyResource(source, destination1);
+        cms.lockResource(destination);
         
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
-     
+        // delete and owerwrite with a sibling of source 1
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
+        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        
+        cms.copyResource(source1, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
+        
+        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertSiblingCount(cms, destination, 2);
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        assertSiblingCountIncremented(cms, source1, 1);
+        assertLock(cms, source1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);        
+        assertFilter(cms, source1, destination, OpenCmsTestResourceFilter.FILTER_COPY_SOURCE_DESTINATION_AS_SIBLING);
+        
+        
+        // delete again and owerwrite with a sibling of source 2
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+
+        cms.copyResource(source2, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
+
+        assertSiblingCountIncremented(cms, source1, 0);
+        assertLock(cms, source1, CmsLock.C_TYPE_UNLOCKED);
+        
+        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertSiblingCount(cms, destination, 2);
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        assertSiblingCountIncremented(cms, source2, 1);
+        assertLock(cms, source2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        
+        assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
+        assertFilter(cms, source2, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);        
+        assertFilter(cms, source2, destination, OpenCmsTestResourceFilter.FILTER_COPY_SOURCE_DESTINATION_AS_SIBLING);
+
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+
+        // delete yet again and overwrite with content of source 3 (not a sibling)
+        cms.copyResource(source3, destination, I_CmsConstants.C_COPY_AS_NEW); 
+
+        assertSiblingCountIncremented(cms, source1, 0);
+        assertLock(cms, source1, CmsLock.C_TYPE_UNLOCKED);
+        assertSiblingCountIncremented(cms, source2, 0);
+        assertLock(cms, source2, CmsLock.C_TYPE_UNLOCKED);        
+        
+        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertSiblingCount(cms, destination, 1);
+        assertSiblingCount(cms, source3, 1);
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
+        assertFilter(cms, source2, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
+        assertFilter(cms, source3, OpenCmsTestResourceFilter.FILTER_EQUAL);        
+        assertFilter(cms, source3, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);            
     }  
         
     /**

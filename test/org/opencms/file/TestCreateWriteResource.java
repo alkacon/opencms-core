@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2004/06/25 16:36:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/03 10:21:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
   
@@ -153,7 +153,23 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        storeResources(cms, resourcename);
        long timestamp = System.currentTimeMillis();
        
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
        cms.lockResource(resourcename);       
+       
+       try {
+           // resource exists and is not deleted, creation must thrw exception
+           cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+       } catch (CmsVfsException e) {
+           if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+               fail("Existing resource '" + resourcename + "' was not detected!");
+           }
+       }
+       
+       // read resource for comparing id's later
+       CmsResource original = cms.readResource(resourcename);
+       
+       // delete resource and try again
+       cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
        cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
        
        // ensure created resource is a folder
@@ -166,8 +182,19 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // the user last modified must be the current user
        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
-       // now evaluate the result
-       assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);       
+       // date created
+       assertDateCreated(cms, resourcename, original.getDateCreated());
+       // the user created must be the current user
+       assertUserCreated(cms, resourcename, cms.readUser(original.getUserCreated())); 
+       
+       // compare id's
+       CmsResource created = cms.readResource(resourcename);
+       if (! created.getResourceId().equals(original.getResourceId())) {
+           fail("A created folder that replaced a deleted folder must have the same resource id!");
+       }
+       if (! created.getContentId().equals(original.getContentId())) {
+           fail("A created folder that replaced a deleted folder must have the same content id!");
+       }        
        
        // publish the project
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
@@ -232,10 +259,26 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        
        String contentStr = "Hello this is my NEW AND ALSO CHANGED other content";
        byte[] content = contentStr.getBytes();      
-       
+
+       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
        cms.lockResource(resourcename);
-       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
        
+       try {
+           // resource exists and is not deleted, creation must thrw exception
+           cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+       } catch (CmsVfsException e) {
+           if (e.getType() != CmsVfsException.C_VFS_RESOURCE_ALREADY_EXISTS) {
+               fail("Existing resource '" + resourcename + "' was not detected!");
+           }
+       }
+
+       // read resource for comparing id's later
+       CmsResource original = cms.readResource(resourcename);
+       
+       // delete resource and try again
+       cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+       cms.createResource(resourcename, CmsResourceTypePlain.C_RESOURCE_TYPE_ID, content, null);
+              
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "changed"
@@ -244,15 +287,26 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // the user last modified must be the current user
        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+       // date created
+       assertDateCreatedAfter(cms, resourcename, timestamp);
+       // the user created must be the current user
+       assertUserCreated(cms, resourcename, cms.getRequestContext().currentUser());       
        // check the content
        assertContent(cms, resourcename, content);     
-       // now check the filter
-       assertFilter(cms, resourcename, OpenCmsTestResourceFilter.FILTER_CREATE_RESOURCE);       
+       
+       // compare id's
+       CmsResource created = cms.readResource(resourcename);
+       if (created.getResourceId().equals(original.getResourceId())) {
+           fail("A created resource that replaced a deleted resource must not have the same resource id!");
+       }
+       if (created.getContentId().equals(original.getContentId())) {
+           fail("A created resource that replaced a deleted resource must not have the same content id!");
+       }       
        
        // publish the project
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
        cms.publishProject();    
-       
+              
        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
    }
 

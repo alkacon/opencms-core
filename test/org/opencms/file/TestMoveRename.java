@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2004/06/29 14:38:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/07/03 10:21:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
@@ -45,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -68,6 +69,8 @@ public class TestMoveRename extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         
         suite.addTest(new TestMoveRename("testMoveSingleResource"));
+        suite.addTest(new TestMoveRename("testMoveSingleNewResource"));
+        suite.addTest(new TestMoveRename("testMultipleMoveResource"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -82,6 +85,71 @@ public class TestMoveRename extends OpenCmsTestCase {
         
         return wrapper;
     }     
+    
+    
+    /**
+     * Tests a "multiple move" on a resource.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testMultipleMoveResource() throws Throwable {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing multiple move of a resource");
+        
+        // switch to the root context
+        cms.getRequestContext().setSiteRoot("/");
+        
+        String source = "/sites/default/folder1/page1.html";
+        String destination1 = "/sites/default/folder1/page1_move.html";
+        String destination2 = "/page1_move.html";
+
+        storeResources(cms, source);    
+        
+        cms.lockResource(source);        
+        cms.moveResource(source, destination1);                
+        cms.moveResource(destination1, destination2);
+        
+        // source resource:
+        
+        // project must be current project
+        assertProject(cms, source, cms.getRequestContext().currentProject());
+        // state must be "deelted"
+        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        // assert lock state
+        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        // "internal" property must have been added
+        assertPropertyNew(cms, source, new CmsProperty(I_CmsConstants.C_PROPERTY_INTERNAL, 
+            String.valueOf(cms.getRequestContext().currentProject().getId()), null));
+        // one sibling must have been added
+        assertSiblingCountIncremented(cms, source, 1);
+        // now assert the filter for the rest of the attributes        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_MOVE_SOURCE);   
+        
+        // destination resource
+        
+        // project must be current project
+        assertProject(cms, destination2, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination2, I_CmsConstants.C_STATE_NEW);
+        // assert lock state
+        assertLock(cms, destination2, CmsLock.C_TYPE_EXCLUSIVE);
+        // set filter mapping
+        setMapping(destination2, source);
+        // one sibling must have been added
+        assertSiblingCountIncremented(cms, destination2, 1);        
+        // now assert the filter for the rest of the attributes        
+        assertFilter(cms, destination2, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);    
+        
+        
+        // just for fun try to undo changes on the source resource
+        resetMapping();
+        cms.changeLock(source);
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
+        cms.undoChanges(source, false);        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
+    }
     
     /**
      * Tests the "move single resource" operation.<p>
@@ -132,4 +200,52 @@ public class TestMoveRename extends OpenCmsTestCase {
         // now assert the filter for the rest of the attributes        
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);       
     }  
+    
+    /**
+     * Tests the "move a single new resource" operation.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testMoveSingleNewResource() throws Throwable {
+
+        CmsObject cms = getCmsObject();     
+        echo("Testing move of a new file");
+        
+        String source = "/folder1/new.html";
+        String destination = "/folder1/new_move.html";
+
+        // create a new, plain resource
+        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        storeResources(cms, source);        
+        
+        cms.moveResource(source, destination);     
+        
+        // source resource must be gone
+        CmsResource res = null;
+        try {
+            res = cms.readResource(source);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // this is expected
+        }
+        if (res != null) {
+            fail("New resource still available after move operation!");
+        }
+
+        // destination resource
+        
+        // project must be current project
+        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        // assert lock state
+        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        // set filter mapping
+        setMapping(destination, source);
+        // no siblings on the new resource
+        assertSiblingCount(cms, destination, 1);        
+        // now assert the filter for the rest of the attributes        
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);       
+    }      
 }

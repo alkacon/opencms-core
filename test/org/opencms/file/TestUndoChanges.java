@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2004/06/28 07:52:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/07/03 10:21:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.lock.CmsLock;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
@@ -46,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
   
@@ -68,9 +71,12 @@ public class TestUndoChanges extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         
-        suite.addTest(new TestUndoChanges("testUndoChanges"));
+        suite.addTest(new TestUndoChanges("testUndoChangesResource"));
+        suite.addTest(new TestUndoChanges("testUndoChangesOnNewResource"));
         suite.addTest(new TestUndoChanges("testUndoChangesFolder"));
         suite.addTest(new TestUndoChanges("testUndoChangesFolderRecursive"));
+        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopyNewOverDeleted"));
+        suite.addTest(new TestUndoChanges("testUndoChangesAfterCopySiblingOverDeleted"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -85,6 +91,108 @@ public class TestUndoChanges extends OpenCmsTestCase {
         
         return wrapper;
     }       
+    
+    /**
+     * Tests undo changes on a new resource, this must lead to an exception!<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChangesOnNewResource() throws Throwable {
+       
+        CmsObject cms = getCmsObject();     
+        echo("Testing for exception when trying undo changes on a new resource");
+        
+        String source = "/types/new.html";
+        
+        // create a new, plain resource
+        cms.createResource(source, CmsResourceTypePlain.C_RESOURCE_TYPE_ID);
+        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        
+        try {
+            cms.undoChanges(source, false);
+        } catch (CmsVfsException e) {
+            if (e.getType() == CmsVfsException.C_VFS_UNDO_CHANGES_NOT_POSSIBLE_ON_NEW_RESOURCE) {
+                // this is the expected result, so the test is successful
+                return;
+            }
+        }
+        
+        fail("Did not catch expected exception trying undo changes on a new resource!");
+    }
+    
+    /**
+     * Tests undo changes after a resource was deleted and another 
+     * resource was copied over the deleted file "as new".<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChangesAfterCopyNewOverDeleted() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing undo changes after overwriting a deleted file with a new file");
+        
+        String source = "/folder1/page2.html";
+        String destination = "/folder1/page1.html";
+           
+        storeResources(cms, source);     
+        storeResources(cms, destination);   
+        
+        cms.lockResource(destination);
+        
+        // delete and owerwrite
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
+        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        
+        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_NEW); 
+        
+        // now undo all changes on the resource
+        cms.undoChanges(destination, false);
+     
+        // now ensure source and destionation are in the original state
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);        
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);
+        
+        // publishing may reveal problems with the id's
+        cms.publishProject();
+    }
+    
+    /**
+     * Tests undo changes after a resource was deleted and another 
+     * resource was copied over the deleted file "as sibling".<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */    
+    public void testUndoChangesAfterCopySiblingOverDeleted() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing undo changes after overwriting a deleted file with a sibling");
+        
+        String source = "/folder1/page2.html";
+        String destination = "/folder1/page1.html";
+           
+        storeResources(cms, source);     
+        storeResources(cms, destination);   
+        
+        cms.lockResource(destination);
+        
+        // delete and owerwrite with a sibling
+        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
+        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        
+        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
+        
+        // now undo all changes on the resource
+        cms.undoChanges(destination, false);
+     
+        // now ensure source and destionation are in the original state
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);    
+        
+        // publishing may reveal problems with the id's
+        cms.publishProject();
+    }    
+                                                        
+                                                      
     
     /**
      * Test the touch method to touch a single resource.<p>
@@ -241,7 +349,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testUndoChanges() throws Throwable {
+    public void testUndoChangesResource() throws Throwable {
         
         CmsObject cms = getCmsObject();
         
