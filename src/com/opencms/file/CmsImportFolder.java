@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsImportFolder.java,v $
-* Date   : $Date: 2002/10/22 12:40:05 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/10/25 14:02:20 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import com.opencms.util.*;
  * into the cms.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.11 $ $Date: 2002/10/22 12:40:05 $
+ * @version $Revision: 1.12 $ $Date: 2002/10/25 14:02:20 $
  */
 public class CmsImportFolder implements I_CmsConstants {
 
@@ -360,22 +360,38 @@ public class CmsImportFolder implements I_CmsConstants {
                     if(size == 0) { buffer = " ".getBytes(); }
                 }
                 file = null; // reset file
-                // create the file
-                try { // check if file exists ...
-                    //file = m_cms.readFile(actImportPath, path[path.length-1]);
-                    m_cms.lockResource(actImportPath + path[path.length-1], true);
-                    m_cms.deleteResource(actImportPath + path[path.length-1]);
-                } catch(CmsException e) {
+                
+                filename = actImportPath + path[path.length-1];
+                Hashtable oldProperties = null;
+                
+                try { 
+                    // lock the filename to see whether it already exists
+                    m_cms.lockResource(filename, true);
+                    
+                    // save the properties of the old file
+                    oldProperties = m_cms.readAllProperties(filename);
+                    
+                    // trash the old file
+                    m_cms.deleteFile( filename );
+                } 
+                catch(CmsException e) {
                     // ignore the exception (did not exist)
                 }
+                
                 try {
-                    // new file ...
-                    m_cms.createResource(actImportPath, path[path.length-1], type, null, buffer);                                                            
+                    // create the new file ...
+                    m_cms.createFile( actImportPath, path[path.length-1], buffer, type );
+                    
+                    // set the properties of the old file on the new file
+                    if (oldProperties!=null) {
+                        m_cms.writeProperties( filename, oldProperties );
+                    }
                 } catch(CmsException e) {
                     // ignore the exception
                     throw new CmsException(CmsException.C_UNKNOWN_EXCEPTION, e);
                 }
             }
+            
             // close the entry ...
             zipStreamIn.closeEntry();
         }
