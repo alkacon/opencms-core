@@ -8,6 +8,13 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.22 Bela Tegeuse - 
+! The resource types are stored in the registry.xml now. Actions on resources are depending
+  on the resourcetype, so there is a special class for each resource type that handles the
+  actions. You have to get the new registry.xml and the new cmssetup.txt.
+! The launchernames are stored in the registry.xml
+* Bugfixing in PL/SQL-Procedures for access
+
 OpenCms 4.3.21 Bela Tegeuse - 28 June 2001
 * General Bugfixing
 * When creating or changing a resource in a folder all subfolders only need read access
