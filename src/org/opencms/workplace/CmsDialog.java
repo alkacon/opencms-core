@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2003/07/22 17:12:01 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2003/07/28 16:18:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace;
 import com.opencms.core.CmsException;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
+import com.opencms.flex.util.CmsStringSubstitution;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 5.1
  */
@@ -292,7 +293,7 @@ public class CmsDialog extends CmsWorkplace {
      * @return the value of the errorstack parameter
      */    
     public String getParamErrorstack()  {
-        return m_paramErrorstack;
+        return CmsStringSubstitution.substitute(m_paramErrorstack, "\n", "<br>");
     }
     
     /**
