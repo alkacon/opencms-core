@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlStringValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2004/11/16 16:58:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @since 5.5.0
  */
 public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlContentValue {
@@ -167,6 +167,14 @@ public class CmsXmlStringValue extends A_CmsXmlContentValue implements I_CmsXmlC
         return C_TYPE_NAME;
     }
 
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument)
+     */
+    public String getPlainText(CmsObject cms, I_CmsXmlDocument document) {
+        
+        return this.getStringValue(cms, document);
+    }
+    
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
      */

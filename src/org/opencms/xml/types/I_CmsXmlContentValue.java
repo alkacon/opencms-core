@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2004/10/23 06:50:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2004/11/16 16:58:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * @since 5.5.0
  */
 public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
@@ -76,6 +76,23 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @throws CmsXmlException if something goes wrong
      */
     String getStringValue(CmsObject cms, I_CmsXmlDocument document) throws CmsXmlException;
+
+    
+    /**
+     * Returns the value of this XML content node as a plain text String.<p>
+     * Plain text in this context means a pure textual representation
+     * of the content (i.e. without html tags).
+     * The plain text may be <code>null</code>, too, if there is no sound or useful
+     * textual representation (i.e. color values).
+     * 
+     * @param cms an initialized instance of a CmsObject
+     * @param document the XML document this value belongs to
+     * 
+     * @return the value of this XML content node as a plain text String
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    String getPlainText(CmsObject cms, I_CmsXmlDocument document) throws CmsXmlException;
 
     /**
      * Sets the provided String as value of this XML content node.<p>  
