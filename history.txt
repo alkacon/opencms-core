@@ -11,6 +11,7 @@ Legend:
 OpenCms 4.5.5  Gom Jabbar   - xx September 2001
 * After an redirect (redirect-rules configurated in opencms.properites) a ressource
   should not be delivered by OpenCms. 
+* Now only the visible Templates are selectable in the HTML-Editor.
 - Added logging-informations about jdk, servlet-engine and os.
 - Added "image" for upload dialog again. Now it is possible to choose "image" for uploaded files.
 
