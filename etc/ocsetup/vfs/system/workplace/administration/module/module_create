@@ -161,7 +161,7 @@
 
 <TEMPLATE name="errorProject">
 <![CDATA[
-]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.noprojectreason" suggestion="module.error.noprojectsugg" ref="index.html" >no details</ERRORPAGE><![CDATA[
+]]><ERRORPAGE title="module.error.createtitle" message="module.error.createmessage" reason="module.error.noprojectreason" suggestion="module.error.noprojectsugg" ref="index.html" ><PROCESS>details</PROCESS></ERRORPAGE><![CDATA[
 ]]>
 </TEMPLATE>
 
