@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2004/05/05 21:25:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2004/05/13 11:08:31 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.map.LRUMap;
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class CmsLocaleManager implements I_CmsEventListener {
     
@@ -99,8 +99,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-         });
+                I_CmsEventListener.EVENT_CLEAR_CACHES
+        });
     }
     
     /**
