@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2004/03/25 19:34:22 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/06/06 10:43:16 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.loader;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
@@ -59,7 +60,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * by other loaders.<p>
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
     
@@ -197,9 +198,15 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);                
         if (lastModifiedHeader > -1) {
             // last modified header is set, compare it to the requested resource
-            if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) && (resource.getDateLastModified() == lastModifiedHeader)) {
-                res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
+            if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) 
+            && (resource.getDateLastModified() == lastModifiedHeader)) {                
+                long now = System.currentTimeMillis();
+                if ((resource.getDateReleased() < now)
+                && (resource.getDateExpired() > now)) {
+                    CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired());
+                    res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                    return;
+                }                            
             }
         }
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2004/06/04 15:42:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/06 10:44:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,9 +30,6 @@
  */
 package org.opencms.search;
 
-import java.util.Vector;
-
-import org.apache.lucene.index.IndexWriter;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -41,10 +38,14 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 
+import java.util.List;
+
+import org.apache.lucene.index.IndexWriter;
+
 /**
  * Implements the indexing of vfs data.<p>
  * 
- * @version $Revision: 1.6 $ $Date: 2004/06/04 15:42:06 $
+ * @version $Revision: 1.7 $ $Date: 2004/06/06 10:44:58 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.3.1
  */
@@ -101,7 +102,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         boolean folderReported = false;
         
         try {
-            Vector resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
+            List resources = m_cms.getResourcesInFolder(path, CmsResourceFilter.DEFAULT);
             CmsResource res;
             
             // process resources
