@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsResourceBroker.java,v $
- * Date   : $Date: 2000/06/14 14:20:46 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2000/06/16 15:59:14 $
+ * Version: $Revision: 1.53 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import com.opencms.file.*;
  * @author Andreas Schouten
  * @author Michaela Schleich
  * @author Michael Emmerich
- * @version $Revision: 1.52 $ $Date: 2000/06/14 14:20:46 $
+ * @version $Revision: 1.53 $ $Date: 2000/06/16 15:59:14 $
  * 
  */
 public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
@@ -3743,7 +3743,7 @@ public class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			deleteAllProperties(currentUser,currentProject,file.getAbsolutePath());
 			if(onlineFile == null) {
 				// the onlinefile dosent exist => remove the file realy!
-				m_dbAccess.removeFile(currentProject, filename);
+				m_dbAccess.removeFile(currentProject.getId(), filename);
 			} else {
 				m_dbAccess.deleteFile(currentProject, filename);
 			}
