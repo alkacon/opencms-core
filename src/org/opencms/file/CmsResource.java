@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2004/06/08 13:24:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/08 14:26:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import java.io.Serializable;
 
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -45,7 +44,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -66,11 +65,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** The release date of this resource */
     private long m_dateReleased;
-    private String m_dateReleasedNiceName;
 
     /** The expiration date of this resource */
     private long m_dateExpired;  
-    private String m_dateExpiredNiceName;
     
     /** The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags) */
     private int m_flags;
@@ -179,8 +176,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         m_dateExpired = dateExpired;
         m_isTouched = false;
         m_rootPath = null;  
-        m_dateReleasedNiceName = CmsDateUtil.getHeaderDate(dateReleased);
-        m_dateExpiredNiceName = CmsDateUtil.getHeaderDate(dateExpired);
     }
 
     /**
@@ -729,7 +724,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public void setDateExpired(long time) {
         m_isTouched = true;
         m_dateExpired = time;
-        m_dateExpiredNiceName = CmsDateUtil.getHeaderDate(time);
     }
     
     
@@ -751,7 +745,6 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     public void setDateReleased(long time) {
         m_isTouched = true;
         m_dateReleased = time;
-        m_dateReleasedNiceName = CmsDateUtil.getHeaderDate(time);
     }
     
     
