@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpBoxDefFile.java,v $
- * Date   : $Date: 2000/08/08 14:08:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -41,7 +41,7 @@ import java.util.*;
  *  Content definition for the workplace messagebox element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/08/08 14:08:34 $
+ * @version $Revision: 1.7 $ $Date: 2000/08/22 13:33:57 $
  **/
 public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChannels ,
 																	 I_CmsWpConstants {
@@ -93,7 +93,7 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsLogChann
 		setData(C_ERROR_MSG_REASON,msgReason);
 		setData(C_ERROR_MSG_BUTTON,msgButton);
 		return getProcessedDataValue(C_TAG_ERRORPAGE);                
-	 } 
+	 }
 	/**
 	 * Gets the processed data for a errorbox.
 	 * @param title The title of this errorbox.

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/08/08 14:08:30 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.25 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.24 $ $Date: 2000/08/08 14:08:30 $
+ * @version $Revision: 1.25 $ $Date: 2000/08/22 13:33:57 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -59,6 +59,11 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 	 * Reference to icons definition file
 	 */
 	protected static CmsXmlWpTemplateFile m_icondef = null;
+	
+	/**
+	 * Reference to backbutton definition file
+	 */
+	protected static CmsXmlWpTemplateFile m_backbuttondef = null;
 	
 	/**
 	 * Reference to projectlist definition file
@@ -126,6 +131,22 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 	/** Reference to the config file */
 	private static CmsXmlWpConfigFile m_configFile = null;    
 
+	/**
+	 * Reads the backbutton definition file.
+	 * @param cms The actual cms object
+	 * @return Reference to the backbutton defintion file.
+	 * @exception CmsException
+	 */
+	public CmsXmlWpTemplateFile getBackbuttonDefinitions(CmsObject cms) throws CmsException {
+		//if(m_icondef == null) {
+			if(m_workplaceElementPath == null) {
+				CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+				m_workplaceElementPath = configFile.getWorkplaceElementPath();
+			}
+			m_backbuttondef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_ADMIN_BACK_BUTTON);
+		//}
+		return m_backbuttondef;
+	}
 	  /**
 	 * Reads the box definition file.
 	 * @param cms The actual cms object

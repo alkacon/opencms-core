@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
- * Date   : $Date: 2000/08/08 14:08:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,14 +36,14 @@ import com.opencms.template.*;
 import com.opencms.file.*;
 
 import java.util.*;
-
+import javax.servlet.http.*;
 
 /**
  * Class for building workplace error pages. <BR>
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/08/08 14:08:31 $
+ * @version $Revision: 1.10 $ $Date: 2000/08/22 13:33:57 $
  */
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
 	
@@ -84,6 +84,7 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
 		String button;
 		
 		CmsXmlWpTemplateFile errordef = getErrorDefinitions(cms);
+		CmsXmlWpConfigFile confFile = new CmsXmlWpConfigFile(cms); 
 		
 		// get the data from the language file
 		errorTitle = lang.getLanguageValue(errorTitle);
@@ -92,7 +93,9 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement, I_Cm
 		errorSuggestion = lang.getLanguageValue(errorSuggestion);
 		reason=lang.getLanguageValue("message.reason");
 		button=lang.getLanguageValue("button.ok");
-
+		String servletPath = ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getServletPath();
+		errordef.setData("stylesheetpath", servletPath + confFile.getStylesheetPath()); 
+		errordef.setData("jspath", servletPath + confFile.getWorkplaceJsPath()); 
 		errordef.setData(C_ERROR_MSG_BUTTON, button);
 		errordef.setData(C_ERROR_TITLE, errorTitle);
 		errordef.setData(C_ERROR_MESSAGE, errorMessage);

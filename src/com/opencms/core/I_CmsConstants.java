@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/08/17 16:05:56 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.99 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.98 $ $Date: 2000/08/17 16:05:56 $
+ * @version $Revision: 1.99 $ $Date: 2000/08/22 13:33:57 $
  */
 public interface I_CmsConstants
 {
@@ -165,6 +165,15 @@ public interface I_CmsConstants
 	 */
 	static final String C_PROPERTY_NAVTEXT="NavText";
    
+	 /**
+	 * Property for resource navigation title
+	 */
+	static final String C_PROPERTY_VISIBLE="visiblemethod";
+   
+	 /**
+	 * Property for resource navigation title
+	 */
+	static final String C_PROPERTY_ACTIV="activemethod";
 	/**
 	 * Property for resource navigation position
 	 */
@@ -501,6 +510,11 @@ public interface I_CmsConstants
 	 */
 	static final String C_SESSION_DATA = "_session_data_";
 	
+	/** 
+	* Session key for storing the possition in the administration navigation
+	*/
+	public static final String C_SESSION_ADMIN_POS = "adminposition";
+
 	/** Identifier for request type http */
 	public static final int C_REQUEST_HTTP = 0;
 	

@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
- * Date   : $Date: 2000/08/08 14:08:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,10 +43,9 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/08/08 14:08:34 $
+ * @version $Revision: 1.22 $ $Date: 2000/08/22 13:33:57 $
  */
 public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChannels, I_CmsConstants {
-
 	/**
 	 * Default constructor.
 	 */
@@ -200,12 +199,28 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 		return getDataValue("path.picgallery");
 	}
 	/**
+	 * Gets the path for OpenCms workplace stylesheet files.
+	 * @return Path for OpenCms workplace stylesheet files.
+	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+	 */
+	public String getStylesheetPath() throws CmsException {
+		return getDataValue("path.stylesheet");
+	}
+	/**
 	 * Gets the path for OpenCms workplace action files.
 	 * @return Path for OpenCms workplace action files.
 	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
 	 */
 	public String getWorkplaceActionPath() throws CmsException {
 		return getDataValue("path.wpaction");
+	}
+	/**
+	 * Gets the path for OpenCms workplace administration files.
+	 * @return Path for OpenCms workplace administration files.
+	 * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+	 */
+	public String getWorkplaceAdministrationPath() throws CmsException {
+		return getDataValue("path.administration");
 	}
 	/**
 	 * Gets the path for OpenCms element templates like ButtonTemplate.
@@ -303,6 +318,15 @@ public class CmsXmlWpConfigFile extends A_CmsXmlContent implements I_CmsLogChann
 			values.addElement(link);
 		}
 	}
+/**
+ * Gets the path for OpenCms javascripts.
+ * @return Path for OpenCms javascripts.
+ * @exception CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
+ * Creation date: (11.08.00 14:06:18)
+ */
+public String getWorkplaceJsPath() throws com.opencms.core.CmsException {
+	return getDataValue("path.wpscripts");
+}
 	/**
 	 * Gets the main path for OpenCms workplace index page 
 	 * (e.g. <code>/system/workplace/action/index.html</code>).

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsRequestHttpServlet.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.14 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.13 $ $Date: 2000/08/08 14:08:21 $  
+ * @version $Revision: 1.14 $ $Date: 2000/08/22 13:33:57 $  
  */
 public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
 											  I_CmsRequest { 
@@ -152,7 +152,7 @@ public class CmsRequestHttpServlet implements I_CmsConstants, I_CmsLogChannels,
 			A_OpenCms.log(C_OPENCMS_CRITICAL, m_req.getPathInfo());
 			throw new IOException("URL parameters not extracted properly by servlet environment. " + m_req.getPathInfo());            
 		}        
-	 } 
+	 }
   /**
   * Extracts and returns the boundary token from a line.
   * 

@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/OpenCms.java,v $
- * Date   : $Date: 2000/08/08 14:08:21 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.36 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -55,7 +55,7 @@ import com.opencms.launcher.*;
 *  
 * @author Michael Emmerich
 * @author Alexander Lucas
-* @version $Revision: 1.35 $ $Date: 2000/08/08 14:08:21 $  
+* @version $Revision: 1.36 $ $Date: 2000/08/22 13:33:57 $  
 * 
 * */
 
@@ -152,7 +152,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 				A_OpenCms.log(I_CmsLogChannels.C_OPENCMS_INIT, "[OpenCms] " + e.getMessage());
 			}
 		}            
-	 } 
+	 }
 	/**
 	 * Destructor, called when the the servlet is shut down.
 	 * @exception CmsException Throws CmsException if something goes wrong.
@@ -240,7 +240,7 @@ public class OpenCms extends A_OpenCms implements I_CmsConstants, I_CmsLogChanne
 	 * Prints a copyright information to all log-files.
 	 */
 	private void printCopyrightInformation(CmsObject cms) {
-		System.err.println(cms.version());
+//		System.err.println(cms.version());
 		if(c_servletLogging) {
 			this.log(C_OPENCMS_INFO, cms.version());
 		}

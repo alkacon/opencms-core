@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/A_OpenCms.java,v $
- * Date   : $Date: 2000/08/08 14:08:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.11 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -49,7 +49,7 @@ import source.org.apache.java.util.*;
 *   
 * @author Alexander Lucas
 * @author Michael Emmerich
-* @version $Revision: 1.10 $ $Date: 2000/08/08 14:08:20 $  
+* @version $Revision: 1.11 $ $Date: 2000/08/22 13:33:57 $  
 * 
 */
 public abstract class A_OpenCms implements I_CmsLogChannels {
@@ -64,7 +64,7 @@ public abstract class A_OpenCms implements I_CmsLogChannels {
 	 * Destructor, called when the the servlet is shut down.
 	 */
 	abstract void destroy()
-		  throws CmsException;  
+		  throws CmsException;
 	/**
 	 * Initializes the logging mechanism of the Jserv
 	 * @param configurations the configurations needed at initialization.

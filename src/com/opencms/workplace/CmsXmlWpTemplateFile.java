@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
- * Date   : $Date: 2000/08/08 14:08:34 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.45 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.44 $ $Date: 2000/08/08 14:08:34 $
+ * @version $Revision: 1.45 $ $Date: 2000/08/22 13:33:57 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
 																		I_CmsWpConstants {
@@ -285,6 +285,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
 		registerTag("TASKLIST", "com.opencms.workplace.CmsTaskList");
 		registerTag("TASKDOCU", "com.opencms.workplace.CmsTaskDocu");
 		registerTag("PREFSSCROLLER", "com.opencms.workplace.CmsPrefsScroller");
+		registerTag("BACKBUTTON", "com.opencms.workplace.CmsBackbutton");
 	}
 	/**
 	 * Special registerTag method for this content definition class.

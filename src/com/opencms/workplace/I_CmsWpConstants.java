@@ -1,9 +1,9 @@
 package com.opencms.workplace;
 
- /*
+/*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/08/08 14:08:34 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2000/08/22 13:33:57 $
+ * Version: $Revision: 1.96 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.95 $ $Date: 2000/08/08 14:08:34 $
+ * @version $Revision: 1.96 $ $Date: 2000/08/22 13:33:57 $
  */
 public interface I_CmsWpConstants {
 
@@ -209,6 +209,9 @@ public interface I_CmsWpConstants {
 		
 	/** The filename to the icontemplate */
 	public static final String C_ICON_TEMPLATEFILE = "icontemplate";
+	
+	/** The filename to the backbuttontemplate */
+	public static final String C_ADMIN_BACK_BUTTON = "adminbackbuttontemplate";
 	
 	/** The filename to the projectlisttemplate */
 	public static final String C_PROJECTLIST_TEMPLATEFILE = "projecttemplate";
