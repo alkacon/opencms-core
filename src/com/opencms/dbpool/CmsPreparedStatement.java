@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/dbpool/Attic/CmsPreparedStatement.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/06/30 22:34:20 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import source.org.apache.java.util.*;
  * This class is used to create an connection-pool for opencms.
  *
  * @author a.schouten
+ * @author Mark Foley
  */
 public class CmsPreparedStatement extends CmsStatement implements PreparedStatement {
 
@@ -99,10 +100,18 @@ public class CmsPreparedStatement extends CmsStatement implements PreparedStatem
   public void setString(int parameterIndex, String x) throws SQLException {
     ((PreparedStatement)m_originalStatement).setString(parameterIndex, x);
   }
-
+  
+  /* TESTFIX (mfoley@iee.org) Old code:
   public void setBytes(int parameterIndex, byte x[]) throws SQLException {
     ((PreparedStatement)m_originalStatement).setBytes(parameterIndex, x);
   }
+  ** TESTFIX (mfoley@iee.org) New code: */
+  public void setBytes(int parameterIndex, byte x[]) throws SQLException {
+    if(x.length < 2000)
+        ((PreparedStatement)m_originalStatement).setBytes(parameterIndex, x);
+    else
+        ((PreparedStatement)m_originalStatement).setBinaryStream(parameterIndex, new ByteArrayInputStream(x), x.length);
+  }  
 
   public void setDate(int parameterIndex, java.sql.Date x) throws SQLException {
     ((PreparedStatement)m_originalStatement).setDate(parameterIndex, x);
@@ -197,4 +206,13 @@ public class CmsPreparedStatement extends CmsStatement implements PreparedStatem
   public void addBatch() throws SQLException {
     ((PreparedStatement)m_originalStatement).addBatch();
   }
+  
+  public java.sql.ParameterMetaData getParameterMetaData() throws java.sql.SQLException {
+    return ((PreparedStatement)m_originalStatement).getParameterMetaData();
+  }
+  
+  public void setURL(int param, java.net.URL uRL) throws java.sql.SQLException {
+    ((PreparedStatement)m_originalStatement).setURL(param, uRL);
+  }
+  
 }
