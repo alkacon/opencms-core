@@ -66,7 +66,7 @@
 		<td class=menu>]]><BUTTON href="#" name="bt_table" action="doEditHTML(40);" alt="table"/><![CDATA[</td>
 				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
-		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="link"/><![CDATA[</td>
+		<td class=menu>]]><BUTTON href="#" name="bt_link" action="doEditHTML(41);" alt="linkto"/><![CDATA[</td>
 				
 		<td class=menu width=2>]]><BUTTONSEPARATOR/><![CDATA[</td>
 		<td class=menu>]]><BUTTON href="#" name="bt_image" action="doEditHTML(42);" alt="image"/><![CDATA[</td>
