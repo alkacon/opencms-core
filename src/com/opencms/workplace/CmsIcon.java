@@ -14,7 +14,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2000/02/02 09:10:30 $
+ * @version $Revision: 1.2 $ $Date: 2000/02/02 10:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {    
@@ -24,19 +24,20 @@ public class CmsIcon extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpCo
      * <P>
      * Returns the processed code with the actual elements.
      * <P>
-     * Icons can to be referenced in any workplace template by <br>
+     * Icons can be referenced in any workplace template by <br>
      * // TODO: insert correct syntax here!
      * <CODE>&lt;ICON name="..." label="..." action="..." href="..." target="..."/&gt;</CODE>
      * 
      * @param cms A_CmsObject Object for accessing resources.
-     * @param n XML element containing the <code>&lt;BUTTON&gt;</code> tag.
+     * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object <em>(not used here)</em>.
      * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed button.
      * @exception CmsException
      */    
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         // Read button parameters
         String iconName = n.getAttribute(C_ICON_NAME);
         String iconLabel = n.getAttribute(C_ICON_LABEL);

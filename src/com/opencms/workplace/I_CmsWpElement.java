@@ -5,6 +5,7 @@ import org.xml.sax.*;
 
 import com.opencms.file.*;
 import com.opencms.core.*;
+import com.opencms.template.*;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ import java.util.*;
  * has to implement this interface.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/27 15:01:43 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/02 10:30:08 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public interface I_CmsWpElement {
@@ -27,11 +28,12 @@ public interface I_CmsWpElement {
      * 
      * @param cms A_CmsObject Object for accessing resources.
      * @param n XML element containing the current tag.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param callingObject reference to the calling object.
      * @param parameters Hashtable containing all user parameters.
      * @param lang CmsXmlLanguageFile conataining the currently valid language file.
      * @return Processed special workplace XML tag.
      * @exception CmsException 
      */
-    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException;    
+    public Object handleSpecialWorkplaceTag(A_CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException;    
 }

@@ -14,7 +14,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.18 $ $Date: 2000/02/02 10:07:59 $
+ * @version $Revision: 1.19 $ $Date: 2000/02/02 10:30:29 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels,
                                                                         I_CmsWpConstants {
@@ -169,7 +169,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
         }
     
         workplaceObject = (I_CmsWpElement)loadedClass;
-        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, callingObject, (Hashtable)userObj, m_languageFile);                
+        result = workplaceObject.handleSpecialWorkplaceTag(m_cms, n, this, callingObject, (Hashtable)userObj, m_languageFile);                
     
         return result; 
     }                    
