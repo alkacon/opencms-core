@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2004/06/14 15:50:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/08/05 11:19:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,9 @@ import org.opencms.main.CmsException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.LineNumberReader;
+import java.io.StringBufferInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -49,7 +51,7 @@ import java.util.Vector;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2004/06/14 15:50:09 $
+ * @version $Revision: 1.8 $ $Date: 2004/08/05 11:19:22 $
  */
 public class CmsSetupDb extends Object {
     
@@ -101,6 +103,15 @@ public class CmsSetupDb extends Object {
         }
     }
 
+    /**
+     * Sets a new internal connection to teh database.<p>
+     * 
+     * @param conn the connection to use
+     */
+    public void setConnection(Connection conn) {
+        m_con = conn;    
+    }
+    
     /**
      * Closes the internal connection to the database.<p>
      */
@@ -156,21 +167,59 @@ public class CmsSetupDb extends Object {
     }
 
     /**
+     * Calls an update script.<p>
+     * 
+     * @param updateScript the update script (script code, NOT filename!)
+     */
+    public void updateDatabase(String updateScript, Map replacers) {
+        InputStreamReader reader = new InputStreamReader(new StringBufferInputStream(updateScript));
+        executeSql(reader, replacers);
+    }
+    
+    /**
      * Internal method to parse and execute a setup script.<p>
      * 
-     * @param file the filename of the setup script
+     * @param databaseKey the database variant of the script
+     * @param sqlScript the name of the script
      * @param replacers the replacements to perform in the script
      */
     private void executeSql(String databaseKey, String sqlScript, Map replacers) {
-        String statement = "";
-        LineNumberReader reader = null;
         String filename = null;
-        String line = null;
-
-        // get and parse the setup script 
+        InputStreamReader reader = null;
         try {
             filename = m_basePath + "setup" + File.separator + "database" + File.separator + databaseKey + File.separator + sqlScript;
-            reader = new LineNumberReader(new FileReader(filename));
+            // 
+            executeSql(new FileReader(filename), replacers);
+        } catch (FileNotFoundException e) {
+            if (m_errorLogging) {
+                m_errors.addElement("Database setup SQL script not found: " + filename);
+                m_errors.addElement(CmsException.getStackTraceAsString(e));
+            }
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (Exception e) {
+                // noop
+            }
+        }
+    }
+
+    /**
+     * Internal method to parse and execute a setup script.<p>
+     * 
+     * @param inputStreamReader an input stream reader on the setup script
+     * @param replacers the replacements to perform in the script
+     */
+    private void executeSql(InputStreamReader inputStreamReader, Map replacers) {
+        String statement = "";
+        LineNumberReader reader = null;
+        String line = null;
+
+        // parse the setup script 
+        try {
+            reader = new LineNumberReader(inputStreamReader);
             line = null;
 
             while (true) {
@@ -213,11 +262,6 @@ public class CmsSetupDb extends Object {
                 }
 
                 statement += " \n";
-            }
-        } catch (FileNotFoundException e) {
-            if (m_errorLogging) {
-                m_errors.addElement("Database setup SQL script not found: " + filename);
-                m_errors.addElement(CmsException.getStackTraceAsString(e));
             }
         } catch (SQLException e) {
             if (m_errorLogging) {
