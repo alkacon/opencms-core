@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2004/02/23 23:27:03 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2004/02/25 10:28:33 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -1834,9 +1834,10 @@ public final class OpenCmsCore {
                     + htmlProps.getProperty("C_STYLES") 
                     + htmlProps.getProperty("C_ERROR_DIALOG_END");
         
+        
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${title}", messages.key("error.system.message"));
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${encoding}", getSystemInfo().getDefaultEncoding());
-        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri() + "explorer/report_error.gif");
+        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${warnimageuri}", CmsWorkplace.getSkinUri() + "explorer/error.gif");
         if (cause.getLocalizedMessage() != null) {
             errorHtml = CmsStringSubstitution.substitute(errorHtml, "${message}", "<p><b>" + CmsStringSubstitution.substitute(cause.getLocalizedMessage(), "\n", "\n<br>") + "</b></p>");
         } else {
@@ -1853,13 +1854,24 @@ public final class OpenCmsCore {
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${version}", getSystemInfo().getVersionName());
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${context}", getSystemInfo().getOpenCmsContext());        
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_close}", messages.key("button.close"));
-        errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
+        
         
         String exception = CmsException.getStackTraceAsString(cause);
-        exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
-        exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
-        exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");        
-        String details = "<html><body bgcolor='#fffff'><pre>" + exception + "</pre></body></html>"; 
+        String details = "";
+        
+        if (exception == null || "".equals(exception.trim())) {
+            // no stack trace available, do not show "details" button
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${button_details}", "");
+        } else {
+            // stack trace available, show the "details" button
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${button_details}", htmlProps.getProperty("C_BUTTON_DETAILS"));
+            errorHtml = CmsStringSubstitution.substitute(errorHtml, "${bt_details}", messages.key("button.detail"));
+            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
+            exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");
+            details = "<html><body style='background-color: Window;'><pre>" + exception + "</pre></body></html>";
+        }
+
         errorHtml = CmsStringSubstitution.substitute(errorHtml, "${details}", details);
         
         return errorHtml;
@@ -2024,8 +2036,6 @@ public final class OpenCmsCore {
      *
      * @param req the current http request
      * @param res the current http response
-     * @param cmsReq the wrapped http request
-     * @param cmsRes the wrapped http response
      * @return the initialized cms context
      * @throws IOException if user authentication fails
      * @throws CmsException in case something goes wrong
@@ -2161,7 +2171,7 @@ public final class OpenCmsCore {
      * The user data is only updated if the user was authenticated to the system.
      *
      * @param cms the current CmsObject initialized with the user data
-     * @param cmsReq the current request
+     * @param req the current request
      */
     private void updateUser(CmsObject cms, HttpServletRequest req) {
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {

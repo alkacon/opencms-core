@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2004/02/13 13:41:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2004/02/25 10:28:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * Provides an output window for a CmsReport.<p> 
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 5.1.10
  */
@@ -61,9 +61,6 @@ public class CmsReport extends CmsDialog {
     
     /** Request parameter key for the type of the report */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
-    
-    /** Constant for the "Details" button in the build button method */
-    public static final int BUTTON_DETAILS = 101;
     
     /** The key name which contains the localized message for the continue checkbox */
     private String m_paramReportContinueKey;
@@ -338,25 +335,6 @@ public class CmsReport extends CmsDialog {
             m_paramThread = CmsUUID.getNullUUID();
         }
     }  
-    
-    /**
-     * @see org.opencms.workplace.CmsDialog#dialogButtonRowHtml(java.lang.StringBuffer, int, java.lang.String)
-     */
-    protected void dialogButtonRowHtml(StringBuffer result, int button, String attribute) {
-        attribute = appendDelimiter(attribute);
-
-        switch (button) {
-            case BUTTON_DETAILS :
-                result.append("<input name=\"details\" type=\"button\" value=\"");
-                result.append(key("button.detail"));
-                result.append("\" class=\"dialogbutton\"");
-                result.append(attribute);
-                result.append(">\n");
-                break;
-            default :
-                super.dialogButtonRowHtml(result, button, attribute);
-        }
-    }
     
     /**
      * Builds a button row with an "Ok", a "Cancel" and a "Details" button.<p>

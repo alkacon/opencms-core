@@ -7,15 +7,26 @@
 %><%= wp.htmlStart() %>
 
 <script type="text/javascript">
-function toggleDetail(id) {
+var init = false;
 
-    var element = document.getElementById(id);
-    var cl = element.className;
-    if (cl == "hide") {
-        element.className = "show";
-    } else {
-        element.className = "hide";
-    }
+function toggleElement(id) {
+	var element = document.getElementById(id);
+	var cl = element.className;
+	if (cl == "hide") {
+		element.className = "show";
+		if (! init) {
+			init = true;
+			setTimeout("initTrace()", 0);
+		}
+	} else {
+		element.className = "hide";
+	}
+}
+
+function initTrace() {
+	trace.document.open();
+	trace.document.write("<%= wp.getFormattedErrorstack() %>");
+	trace.document.close();
 }
 </script>
 
@@ -24,7 +35,12 @@ function toggleDetail(id) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<%= wp.getParamMessage() %>
+<table border="0" cellpadding="4" cellspacing="0">
+<tr>
+	<td style="vertical-align: middle;"><img src="<%= wp.getSkinUri() %>explorer/error.gif" border="0"></td>
+	<td style="vertical-align: middle;"><%= wp.getParamMessage() %></td>
+</tr>
+</table>
 
 <%= wp.dialogBlockStart(wp.key("message.reason")) %>
 
@@ -33,25 +49,25 @@ function toggleDetail(id) {
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
-<form name="toggledetails" action="" class="nomargin">
-	<input name="ok" type="button" value="<%= wp.key("button.detail") %>" onClick="toggleDetail('details');" class="dialogbutton" style="margin-left: 0; width: 60px;">
-</form>
-
 <%= wp.dialogSpacer() %>
-<div id="details" class="hide">
-<%= wp.dialogWhiteBoxStart() %>
 
-<tt unselectable="off">
-<%= wp.getParamErrorstack() %>
-</tt>
-
-<%= wp.dialogWhiteBoxEnd() %>
-</div>
 <%= wp.dialogContentEnd() %>
 
 <form name="close" action="" class="nomargin">
+<%
+	if (wp.getParamErrorstack() == null || "".equals(wp.getParamErrorstack())) {
+%>
 <%= wp.dialogButtonRowClose() %>
+<%	} else { %>
+<%= wp.dialogButtonRowCloseDetails(null, "onClick=\"toggleElement('errorStack');\"") %>
+<%	} %>
 </form>
+
+<div id="errorStack" class="hide">
+<div style="margin: 10px; ">
+<iframe name="trace" id="trace" src="about:blank" style="width:100%; height:400px; margin: 0; padding: 0;"></iframe>
+</div>
+</div>
 
 <%= wp.dialogEnd() %>
 <%= wp.bodyEnd() %>

@@ -208,13 +208,13 @@ function appendBr() {
 }
 
 var report_running = new Image();
-report_running.src = "<%= wp.getSkinUri() %>explorer/report_running.gif";
+report_running.src = "<%= wp.getSkinUri() %>explorer/wait.gif";
 
 var report_ok = new Image();
-report_ok.src = "<%= wp.getSkinUri() %>explorer/report_ok.gif";
+report_ok.src = "<%= wp.getSkinUri() %>explorer/ok.gif";
 
 var report_error = new Image();
-report_error.src = "<%= wp.getSkinUri() %>explorer/report_error.gif";
+report_error.src = "<%= wp.getSkinUri() %>explorer/error.gif";
 
 // toggles between the simple and extended output format
 function switchOutputFormat() {
@@ -250,7 +250,7 @@ var pageStartSimple =
     "<body style='background-color:Menu;'>\n" +   
     "<div style='vertical-align:middle; height: 100%;'>\n"+
     "<table border='0' style='vertical-align:middle; height: 100%;'>\n" + 
-    "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>explorer/report_running.gif' width='32' height='32' alt=''></td>\n" + 
+    "<tr><td width='40' align='center' valign='middle'><img name='report_img' src='<%= wp.getSkinUri() %>explorer/wait.gif' width='32' height='32' alt=''></td>\n" + 
     "<td valign='middle'>";
     
 var pageEndSimple = 

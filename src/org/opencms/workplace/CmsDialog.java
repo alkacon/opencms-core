@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2004/02/16 12:05:59 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2004/02/25 10:28:33 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  * Provides methods for building the dialog windows of OpenCms.<p> 
  * 
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 5.1
  */
@@ -86,6 +86,8 @@ public class CmsDialog extends CmsWorkplace {
     public static final int BUTTON_SET = 4;
     /** Constant for the "OK" button without form submission in the build button methods */
     public static final int BUTTON_OK_NO_SUBMIT = 5;
+    /** Constant for the "Details" button in the build button methods */
+    public static final int BUTTON_DETAILS = 6;
     
     /** Request parameter value for the action: dialog confirmed */
     public static final String DIALOG_CONFIRMED = "confirmed";
@@ -357,6 +359,26 @@ public class CmsDialog extends CmsWorkplace {
         return key("error.reason." + getParamDialogtype()) + "<br>\n" + key("error.suggestion." + getParamDialogtype()) + "\n";        
     }
     
+    /**
+     * Returns the formatted value of the errorstack parameter for inclusion in an iframe, 
+     * or an empty String if this parameter was not provided.<p>
+     * 
+     * The error stack is used by the common error screen 
+     * that is displayed if an error occurs.<p>
+     * 
+     * @return the formatted value of the errorstack parameter
+     */    
+    public String getFormattedErrorstack() {
+        String exception = m_paramErrorstack;
+        if (exception == null || "".equals(exception)) {
+            return "";
+        } else {
+            exception = CmsStringSubstitution.substitute(exception, "\\", "\\\\");
+            exception = CmsStringSubstitution.substitute(exception, "\r\n", "\\n");        
+            exception = CmsStringSubstitution.substitute(exception, "\n", "\\n");        
+            return "<html><body style='background-color: Window; overflow: scroll;'><pre>" + exception + "</pre></body></html>";
+        }
+    }
     
     /**
      * Returns the value of the errorstack parameter, 
@@ -839,27 +861,34 @@ public class CmsDialog extends CmsWorkplace {
                         result.append(buttonActionClose());
                     }
                     result.append(" class=\"dialogbutton\"");
-                result.append(attribute);
+                    result.append(attribute);
                     result.append(">\n");
                     break;
                 case BUTTON_ADVANCED:
                     result.append("<input name=\"advanced\" type=\"button\" value=\"");
                     result.append(key("button.advanced")+"\"");
                     result.append(" class=\"dialogbutton\"");
-                result.append(attribute);
+                    result.append(attribute);
                     result.append(">\n");
                     break;
                 case BUTTON_SET:
                     result.append("<input name=\"set\" type=\"button\" value=\"");
                     result.append(key("button.submit")+"\"");
                     result.append(" class=\"dialogbutton\"");
-                result.append(attribute);
+                    result.append(attribute);
+                    result.append(">\n");
+                    break;
+                case BUTTON_DETAILS:
+                    result.append("<input name=\"details\" type=\"button\" value=\"");
+                    result.append(key("button.detail")+"\"");
+                    result.append(" class=\"dialogbutton\"");
+                    result.append(attribute);
                     result.append(">\n");
                     break;
                 default:
                     // not a valid button code, just insert a warning in the HTML
                     result.append("<!-- invalid button code: ");
-                result.append(button);
+                    result.append(button);
                     result.append(" -->\n");
             }
         }
@@ -953,6 +982,17 @@ public class CmsDialog extends CmsWorkplace {
      */    
     public String dialogButtonRowClose(String closeAttribute) {
         return dialogButtonRow(new int[] {BUTTON_CLOSE}, new String[] {closeAttribute});
+    }
+    
+    /**
+     * Builds a button row with a "close" and a "details" button.<p>
+     * 
+     * @param closeAttribute additional attributes for the "close" button
+     * @param detailsAttribute additional attributes for the "details" button
+     * @return the button row 
+     */    
+    public String dialogButtonRowCloseDetails(String closeAttribute, String detailsAttribute) {
+        return dialogButtonRow(new int[] {BUTTON_CLOSE, BUTTON_DETAILS}, new String[] {closeAttribute, detailsAttribute});
     }
         
     /**
