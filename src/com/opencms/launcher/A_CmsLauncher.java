@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/launcher/Attic/A_CmsLauncher.java,v $
-* Date   : $Date: 2002/03/07 13:42:40 $
-* Version: $Revision: 1.32 $
+* Date   : $Date: 2002/08/19 15:18:31 $
+* Version: $Revision: 1.33 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.http.*;
  * </UL>
  *
  * @author Alexander Lucas
- * @version $Revision: 1.32 $ $Date: 2002/03/07 13:42:40 $
+ * @version $Revision: 1.33 $ $Date: 2002/08/19 15:18:31 $
  */
 abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsConstants {
 
@@ -257,20 +257,49 @@ abstract class A_CmsLauncher implements I_CmsLauncher,I_CmsLogChannels,I_CmsCons
 
         // Check the clearcache parameter
         String clearcache = cms.getRequestContext().getRequest().getParameter("_clearcache");
+        
+        // Clear launcher caches if this is required
+        clearLauncherCache(cms, 
+            ((clearcache != null) && ("all".equals(clearcache) || "class".equals(clearcache))),
+            ((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))),
+            ((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))));
+        
+        launch(cms, file, startTemplateClass, openCms);
+    }
+    
+    /**
+     * Compatibility method to ensure the legacy cache command line parameters
+     * are still supported.
+     * @param cms an initialized CmsObject
+     * @param clearClasses if true, CmsTemplateClassManager is cleared
+     * @param clearFiles if true, A_CmsXmlContent cache is cleared
+     * @param clearTemplates if true, internal template cache is cleared.
+     */
+    private static void clearLauncherCache(CmsObject cms, boolean clearClasses, boolean clearFiles, boolean clearTemplates) {
         long currentFsCounter = cms.getFileSystemChanges();
-        if((clearcache != null) && ("all".equals(clearcache) || "class".equals(clearcache))) {
+        if(clearClasses) {
             CmsTemplateClassManager.clearCache();
         }
-        if(((clearcache != null) && ("all".equals(clearcache) || "file".equals(clearcache))) || (currentFsCounter > m_lastFsCounterFile)) {
+        if(clearFiles || (currentFsCounter > m_lastFsCounterFile)) {
             A_CmsXmlContent.clearFileCache();
             m_lastFsCounterFile = currentFsCounter;
         }
-        if(((clearcache != null) && ("all".equals(clearcache) || "template".equals(clearcache))) || (currentFsCounter > m_lastFsCounterTemplate)) {
+        if(clearTemplates || (currentFsCounter > m_lastFsCounterTemplate)) {
             m_templateCache.clearCache();
             m_lastFsCounterTemplate = currentFsCounter;
-        }
-        launch(cms, file, startTemplateClass, openCms);
+        }        
     }
+
+    /**
+     * Clear the XML template cache that is maintained in the launcher.
+     * To use this method, call it on one of the classes that extend 
+     * A_CmsLauncher (e.g. com.opencms.launcher.CmsXmlLauncher.clearLauncherCache()).
+     * @param cms an initialized CmsObject
+     */  
+    public static void clearLauncherCache(CmsObject cms) {
+        clearLauncherCache(cms, true, true, true);
+    }
+    
 
     /**
      * Unitary method to start generating the output.
