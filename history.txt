@@ -32,6 +32,7 @@ OpenCms 4.5.31 Chusuk       - xx December 2001
 - Changed the appearance of the media-management in mastermodules. Added some language tags.
 - Revision of resource cache and added cache for subresources.
 - Media selectbox can now start at zero (0). Changes were made to A_CmsChannelBackoffice.
+- Added catch of exception on marking sessions as dirty.
 
 OpenCms 4.5si.30 Chusuk     - 14 December 2001
 * bugfix static export: if a extern link is in a link tag (should not happen) no strange folders are created.
