@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsUndoChanges.java,v $
- * Date   : $Date: 2003/07/12 11:29:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2003/07/16 10:12:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 5.1
  */
@@ -156,7 +156,7 @@ public class CmsUndoChanges extends CmsDialog {
      * @return the user who changed the resource
      */
     public String getLastModifiedUser() {
-        CmsUUID userId = getCurrentResource().getResourceLastModifiedBy();
+        CmsUUID userId = getCurrentResource().getUserLastModified();
         try {
             return getCms().readUser(userId).getName();
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/07/15 13:53:47 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/07/16 10:16:13 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the VFS driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.31 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.32 $ $Date: 2003/07/16 10:16:13 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
@@ -370,7 +370,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
         // adjust attribs. in case a resource is created while a project is published 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = file.getState();
-            modifiedByUserId = file.getResourceLastModifiedBy();
+            modifiedByUserId = file.getUserLastModified();
             dateModified = file.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
@@ -564,7 +564,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = folder.getState();
-            modifiedByUserId = folder.getResourceLastModifiedBy();
+            modifiedByUserId = folder.getUserLastModified();
             dateModified = folder.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
@@ -815,7 +815,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
 
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
             state = newResource.getState();
-            modifiedByUserId = newResource.getResourceLastModifiedBy();
+            modifiedByUserId = newResource.getUserLastModified();
             //dateModified = newResource.getDateLastModified();
         } else {
             state = I_CmsConstants.C_STATE_NEW;
@@ -3001,7 +3001,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
      * @throws CmsException Throws CmsException if operation was not succesful.
      */
     public void writeFile(CmsProject project, CmsFile file, boolean changed) throws CmsException {
-        writeFile(project, file, changed, file.getResourceLastModifiedBy());
+        writeFile(project, file, changed, file.getUserLastModified());
     }
 
     /**
@@ -3068,7 +3068,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     * @throws CmsException Throws CmsException if operation was not succesful.
     */
     public void writeFileHeader(CmsProject project, CmsFile file, boolean changed) throws CmsException {
-        writeFileHeader(project, file, changed, file.getResourceLastModifiedBy());
+        writeFileHeader(project, file, changed, file.getUserLastModified());
     }
 
     /**
@@ -3144,7 +3144,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
     * @throws CmsException Throws CmsException if operation was not succesful.
     */
     public void writeFolder(CmsProject project, CmsFolder folder, boolean changed) throws CmsException {
-        writeFolder(project, folder, changed, folder.getResourceLastModifiedBy());
+        writeFolder(project, folder, changed, folder.getUserLastModified());
     }
 
     /**
@@ -3376,7 +3376,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             filecontent = new byte[0];
         }
         if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            userId = resource.getResourceLastModifiedBy();
+            userId = resource.getUserLastModified();
         }
 
 		int state = resource.getState();
@@ -3453,7 +3453,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
                 stmt.setInt(3, offlineResource.getLauncherType());
                 stmt.setString(4, offlineResource.getLauncherClassname());
                 stmt.setTimestamp(5, new Timestamp(offlineResource.getDateLastModified()));
-    			stmt.setString(6, offlineResource.getResourceLastModifiedBy().toString());
+    			stmt.setString(6, offlineResource.getUserLastModified().toString());
     			stmt.setInt(7, I_CmsConstants.C_STATE_UNCHANGED);
                 stmt.setInt(8, resourceSize);
                 stmt.setString(9, offlineResource.getFileId().toString());
@@ -3470,7 +3470,7 @@ public class CmsVfsDriver extends Object implements I_CmsVfsDriver {
             stmt.setInt(4, offlineResource.getVfsLinkType());            
             stmt.setInt(5, I_CmsConstants.C_STATE_UNCHANGED);            
             stmt.setString(6, CmsUUID.getNullUUID().toString());            
-            stmt.setString(7, offlineResource.getResourceLastModifiedBy().toString());
+            stmt.setString(7, offlineResource.getUserLastModified().toString());
             stmt.setString(8, offlineResource.getId().toString());                       
             stmt.executeUpdate();
          

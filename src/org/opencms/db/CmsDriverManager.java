@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/15 18:42:07 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2003/07/16 10:13:33 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.53 $ $Date: 2003/07/15 18:42:07 $
+ * @version $Revision: 1.54 $ $Date: 2003/07/16 10:13:33 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -7272,7 +7272,7 @@ public class CmsDriverManager extends Object {
                     backupFile.getLauncherType(),
                     backupFile.getLauncherClassname(),
                     offlineFile.getDateCreated(),
-                    backupFile.getResourceCreatedBy(),
+                    backupFile.getUserCreated(),
                     offlineFile.getDateLastModified(),
                     context.currentUser().getId(),
                     backupFile.getContents(),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/07/15 13:53:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2003/07/16 10:16:13 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.16 $ $Date: 2003/07/15 13:53:47 $
+ * @version $Revision: 1.17 $ $Date: 2003/07/16 10:16:13 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
@@ -562,10 +562,10 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
         int vfsLinkType = I_CmsConstants.C_UNKNOWN_ID;
 
         try {
-            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getResourceLastModifiedBy());
+            CmsUser lastModified = m_driverManager.getUserDriver().readUser(resource.getUserLastModified());
             lastModifiedName = lastModified.getName() + " " + lastModified.getFirstname() + " " + lastModified.getLastname();
 
-            CmsUser created = m_driverManager.readUser(null, resource.getResourceCreatedBy());
+            CmsUser created = m_driverManager.readUser(null, resource.getUserCreated());
             createdName = created.getName() + " " + created.getFirstname() + " " + created.getLastname();
         } catch (CmsException e) {
             lastModifiedName = "";
@@ -591,9 +591,9 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
                 stmt.setInt(5, resource.getLauncherType());
                 stmt.setString(6, resource.getLauncherClassname());
                 stmt.setTimestamp(7, new Timestamp(publishDate));
-    			stmt.setString(8, resource.getResourceCreatedBy().toString());
+    			stmt.setString(8, resource.getUserCreated().toString());
                 stmt.setTimestamp(9, new Timestamp(resource.getDateLastModified()));
-    			stmt.setString(10, resource.getResourceLastModifiedBy().toString());
+    			stmt.setString(10, resource.getUserLastModified().toString());
     			stmt.setInt(11, resource.getState());
                 stmt.setInt(12, resource.getLength());
                 stmt.setInt(13, versionId);
@@ -616,8 +616,8 @@ public class CmsBackupDriver extends Object implements I_CmsBackupDriver {
             stmt.setInt(6, vfsLinkType);
             stmt.setInt(7, resource.getState());
             stmt.setString(8, resource.isLockedBy().toString());
-            stmt.setString(9, resource.getResourceLastModifiedBy().toString());
-            stmt.setString(10, resource.getResourceCreatedBy().toString());
+            stmt.setString(9, resource.getUserLastModified().toString());
+            stmt.setString(10, resource.getUserCreated().toString());
             stmt.setString(11, lastModifiedName);
             stmt.setString(12, createdName);
             stmt.setInt(13, versionId);

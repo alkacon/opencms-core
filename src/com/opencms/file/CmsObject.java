@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsObject.java,v $
-* Date   : $Date: 2003/07/15 18:42:07 $
-* Version: $Revision: 1.324 $
+* Date   : $Date: 2003/07/16 10:11:23 $
+* Version: $Revision: 1.325 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.324 $
+ * @version $Revision: 1.325 $
  */
 public class CmsObject extends Object {
 
@@ -1717,7 +1717,12 @@ public class CmsObject extends Object {
      * @throws CmsException if something goes wrong
      */
     public List getAllResourceTypes() throws CmsException {
-        return Arrays.asList(m_driverManager.getAllResourceTypes(m_context));
+        I_CmsResourceType resourceTypes[] = m_driverManager.getAllResourceTypes(m_context);
+        List result = new ArrayList(resourceTypes.length);
+        for (int i = 0; i < resourceTypes.length; i++)
+            if (resourceTypes[i] != null) result.add(resourceTypes[i]);
+        
+        return result;
     }
 
     /**

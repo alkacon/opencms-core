@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2003/07/15 13:53:47 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2003/07/16 10:11:00 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,8 +55,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.39 $
- * $Date: 2003/07/15 13:53:47 $
+ * $Revision: 1.40 $
+ * $Date: 2003/07/16 10:11:00 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -633,7 +633,7 @@ public class CmsChannelContent extends A_CmsContentDefinition
      * Gets the id of the user who has modified the channel
      */
     public CmsUUID getLastModifiedBy(){
-        return m_channel.getResourceLastModifiedBy();
+        return m_channel.getUserLastModified();
     }
 
     /**
