@@ -3283,6 +3283,15 @@
             <properties/>
         </file>
         <file>
+            <source>system/workplace/action/explorer_files_frameset.html</source>
+            <destination>system/workplace/action/explorer_files_frameset.html</destination>
+            <type>plain</type>
+            <user>Admin</user>
+            <group>Users</group>
+            <access>15</access>
+            <properties/>
+        </file>
+        <file>
             <source>system/workplace/action/administration.html</source>
             <destination>system/workplace/action/administration.html</destination>
             <type>XMLTemplate</type>
