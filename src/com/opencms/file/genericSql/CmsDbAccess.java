@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/09/15 11:01:17 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2000/09/15 11:22:11 $
+ * Version: $Revision: 1.129 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -50,7 +50,7 @@ import com.opencms.util.*;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.128 $ $Date: 2000/09/15 11:01:17 $ * 
+ * @version $Revision: 1.129 $ $Date: 2000/09/15 11:22:11 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -2317,7 +2317,7 @@ public CmsSite getSiteFromUrl(StringBuffer url) throws CmsException
 		ResultSet res = statement.executeQuery();
 		if (res.next())
 		{
-			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"));
+			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
 		}
 		else
 		{
@@ -2362,7 +2362,7 @@ public CmsSite getSite(int projectId) throws CmsException
 		if (res.next())
 		{
 			//SELECT SITE_ID, NAME, DESCRIPTION,CATEGORY_ID,LANGUAGE_ID, COUNTRY_ID FROM " + C_DATABASE_PREFIX + "SITES, " + C_DATABASE_PREFIX + "SITE_PROJECTS WHERE " + C_DATABASE_PREFIX + "SITE_PROJECTS.BASEPROJECT_ID = ? AND " + C_DATABASE_PREFIX + "SITE_PROJECTS.SITE_ID=" + C_DATABASE_PREFIX + "SITES.SITE_ID";
-			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"));
+			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
 		}
 		else
 		{
@@ -2405,7 +2405,7 @@ public CmsSite getSite(String siteName) throws CmsException
 		ResultSet res = statement.executeQuery();
 		if (res.next())
 		{
-			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"));
+			site = new CmsSite(res.getInt("SITE_ID"), res.getString("NAME"), res.getString("DESCRIPTION"), res.getInt("CATEGORY_ID"), res.getInt("LANGUAGE_ID"), res.getInt("COUNTRY_ID"), res.getInt("ONLINEPROJECT_ID"));
 		}
 		else
 		{
