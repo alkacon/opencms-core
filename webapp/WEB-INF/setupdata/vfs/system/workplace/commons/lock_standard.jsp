@@ -35,7 +35,8 @@ case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 </form>
 <script type="text/javascript">
-    document.forms["main"].submit();
+    submitAction('<%= wp.DIALOG_OK %>', null, 'main');
+	document.forms["main"].submit();
 </script>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>

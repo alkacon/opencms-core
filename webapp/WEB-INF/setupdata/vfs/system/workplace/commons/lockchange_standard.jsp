@@ -30,11 +30,12 @@ case CmsLock.ACTION_SUBMIT_NOCONFIRMATION:
 %>
 <%= wp.htmlStart() %>
 <%= wp.bodyStart(null) %>
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 </form>
 <script type="text/javascript">
+	submitAction('<%= wp.DIALOG_OK %>', null, 'main');
 	document.forms["main"].submit();
 </script>
 <%= wp.bodyEnd() %>
