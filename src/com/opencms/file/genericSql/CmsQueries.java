@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsQueries.java,v $
- * Date   : $Date: 2000/09/28 08:50:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2000/09/28 13:06:30 $
+ * Version: $Revision: 1.15 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ import com.opencms.core.*;
  * This interface is defines all queries used in the DB-Access class.  
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.14 $ $Date: 2000/09/28 08:50:48 $
+ * @version $Revision: 1.15 $ $Date: 2000/09/28 13:06:30 $
  */
 public class CmsQueries
 {
@@ -305,6 +305,8 @@ public class CmsQueries
 	public String C_SITE_UPDATESITE = "UPDATE " + C_DATABASE_PREFIX + "SITES SET NAME = ?, DESCRIPTION = ?, CATEGORY_ID = ?, LANGUAGE_ID = ?, COUNTRY_ID = ? WHERE SITE_ID = ?";
 	public Integer C_SITEURLS_UPDATESITEURLS_KEY = new Integer(465);
 	public String C_SITEURLS_UPDATESITEURLS = "UPDATE " + C_DATABASE_PREFIX + "SITE_URLS SET URL = ? WHERE SITE_ID = ?";
+	public Integer C_SITEURLS_SELECTSITEURLS_KEY = new Integer(466);
+	public String C_SITEURLS_SELECTSITEURLS = "SELECT URL_ID, URL, SITE_ID, PRIMARYURL FROM " + C_DATABASE_PREFIX + "SITE_URLS WHERE SITE_ID = ?";
 	
 	//statements needen for newSite
 	public Integer C_SITES_MAXID_KEY = new Integer(452);
