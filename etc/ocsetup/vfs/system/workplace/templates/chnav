@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<WORKPLACE>
+<TEMPLATE>
+<![CDATA[
+
+<html>
+<head>
+<script language="JavaScript">
+    function checkForm(){
+      document.location.href='chnav.html?action=save&navpos='+document.getElementById("navpos").value;
+    }
+</script>
+<link rel=stylesheet type="text/css" href="../css/format.css">
+</head>
+<body>
+<form>
+    <table border=2 cellspacing=0 cellpadding=0 width=430px align=center>
+        <tr>
+            <td>
+                <table cellspacing=0 cellpadding=5 border=0 width=100% height=100%>
+                    <tr>
+                        <td colspan=2 class=head>
+                            ]]><LABEL value="explorer.context.chnav" /><![CDATA[: ]]><PROCESS>frameTitle</PROCESS><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>
+                            <br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class=formular>
+                            ]]><LABEL value="input.newposition" /><![CDATA[:
+                        </td>
+                        <td class=dialogtxt>
+                            ]]><SELECT class="textfeld" name="navpos" width="300" method="getNavPos" /><![CDATA[
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2 class=dialogtxt>&nbsp;
+                        </td>
+                    </tr>
+                    <tr>
+                    	<td class=dialogtxt colspan=2 align=center>
+                    		<table>
+                    			<tr>
+                        			<td class=dialogtxt align=center>
+                            			<input class=button type="button" value="]]><LABEL value="button.ok" /><![CDATA[" onClick=checkForm();>
+                            			<input class=button type="button" value="]]><LABEL value="button.cancel" /><![CDATA[" onClick="location='explorer_files.html';">
+                        			</td>
+                        		</tr>
+                        	</table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+]]>
+</TEMPLATE>
+
+<TEMPLATE name="error_system">
+<![CDATA[
+]]><ERRORPAGE title="error.title.chnav" message="error.message.chnav" reason="error.reason.chnav" suggestion="error.suggestion.none" ref="chnav.html?step=fromerror" ><process>details</process></ERRORPAGE><![CDATA[
+]]>
+</TEMPLATE>
+
+</WORKPLACE>
