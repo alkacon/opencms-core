@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cron/Attic/CmsCronTable.java,v $
- * Date   : $Date: 2004/07/05 16:32:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2004/07/06 10:06:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsRegistry;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,7 +45,7 @@ import org.dom4j.Element;
  * Describes a complete crontable with cronentries.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com) 
- * @version $Revision: 1.7 $ $Date: 2004/07/05 16:32:42 $
+ * @version $Revision: 1.8 $ $Date: 2004/07/06 10:06:13 $
  * @since 5.1.12
  */
 public class CmsCronTable extends Object {
@@ -56,10 +55,8 @@ public class CmsCronTable extends Object {
 
     /**
      * Creates a cron table from the specified string representing the cron table.<p>
-     * 
-     * @throws IOException if the string couldn't be read
      */
-    public CmsCronTable() throws IOException {
+    public CmsCronTable() {
         m_cronEntries = new ArrayList();
         update();        
     }
