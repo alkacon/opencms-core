@@ -111,7 +111,8 @@
 	autolock?, 
 	enableusermanagement?, 
 	maxfileuploadsize?, 
-	labledfolders? )>
+	labeledfolders?,
+	explorertypes+ )>
 
 <!--
 # The default locale of the OpenCms workplace that is selected if a user
@@ -189,16 +190,90 @@
 <!ELEMENT maxfileuploadsize (#PCDATA)>
 
 <!--
-# List of labled folders. If a resource has a sibling in one of these folders,
+# List of labeled folders. If a resource has a sibling in one of these folders,
 # a special label icon will be shown in the explorer view on all siblings.
 # Use this feature to identify "dangerous" folders (e.g. folders that 
 # contain material that will be public available after publishing) 
 # to prevent accidental creation of siblings in this folder to a resource that 
 # contains sensitive data.
 -->
-<!ELEMENT labledfolders (resource*)>
+<!ELEMENT labeledfolders (resource*)>
 <!ELEMENT resource EMPTY>
 <!ATTLIST resource uri CDATA #REQUIRED>
+
+<!--
+# Settings for the new resource dialog and the contextmenus in the explorer view.
+# Configure which options are shown in the new resource dialog and if resources are 
+# visible and editable depending on the current users group(s).
+-->
+<!ELEMENT explorertypes (explorertype+)>
+
+<!--
+# The resource type name, the key of the localized name and the used icon are required.
+-->
+<!ELEMENT explorertype (
+	newresource,
+	accesscontrol,
+	editoptions?)>
+<!ATTLIST explorertype name CDATA #REQUIRED key CDATA #REQUIRED icon CDATA #REQUIRED>
+
+<!--
+# The URI for the new resource dialog and the ranking is required.
+-->
+<!ELEMENT newresource EMPTY>
+<!ATTLIST newresource uri CDATA #REQUIRED order CDATA #REQUIRED>
+
+<!--
+# Enter the permissions for OpenCms groups. The flags have the following meaning:
+# +w: the context menu for editing the resource is shown
+# +c: this entry is shown in the new resource dialog for this group
+# +v: resources of the current type are visible in the explorer view
+-->
+<!ELEMENT accesscontrol (accessentry*)>
+<!ELEMENT accessentry EMPTY>
+<!ATTLIST accessentry principal CDATA #REQUIRED permissions CDATA #REQUIRED>
+
+<!--
+# The edit options of the current explorer type. 
+# Don't specify them for the file upload and new link types.
+-->
+<!ELEMENT editoptions (
+	defaultproperties,
+	contextmenu)>
+
+<!--
+# Define here the properties which can be edited in the new resource dialog.
+# If the enabled attribute is false, the special property dialog will not be used.
+# If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
+-->
+<!ELEMENT defaultproperties (property*)>
+<!ATTLIST defaultproperties enabled (true|false|TRUE|FALSE) #REQUIRED shownavigation (true|false|TRUE|FALSE) #IMPLIED>
+
+<!--
+# This defines the context menu appearance of the current explorer type.
+# A list of entry and separator nodes is needed here.
+# An entry node needs the following attributes:
+# key: the name for the localized key of the menu entry.
+# uri: the OpenCms VFS URI of the dialog.
+# rules: the display rules for the current entry.
+# order: the order of the entry (display position in the menu).
+# isxml: if the URI leads to a legacy XMLTemplate based dialog, set this attribute to true.
+# A separator node only needs the rules attribute to be displayed properly.
+-->
+<!ELEMENT contextmenu (
+	entry*,
+	separator*)*>
+	
+<!ELEMENT entry EMPTY>
+<!ATTLIST entry 
+	key CDATA #REQUIRED 
+	uri CDATA #REQUIRED 
+	rules CDATA #REQUIRED 
+	order CDATA #REQUIRED 
+	isxml (true|false|TRUE|FALSE) #IMPLIED>
+	
+<!ELEMENT separator EMPTY>
+<!ATTLIST separator rules CDATA #REQUIRED order CDATA #REQUIRED>
 
 <!--
 # <importexport> node options.
@@ -224,7 +299,7 @@
 # <import> node options.
 # There are several options to ensure backward compatibility.
 -->
-<!ELEMENT import (overwrite?, convert?, oldwebappurl?, importversions+, immutables*, princialtranslations*, ignoredproperties*)>
+<!ELEMENT import (overwrite?, convert?, oldwebappurl?, importversions+, immutables*, principaltranslations*, ignoredproperties*)>
 
 <!--
 # If this flag is set to "false" then imports > v2 (that should have resource UUIDs
@@ -279,9 +354,9 @@
 # in the importing system, you can use this feature to translate the names from the 
 # import to other names in your system.
 -->
-<!ELEMENT princialtranslations (princialtranslation*)>
-<!ELEMENT princialtranslation EMPTY>
-<!ATTLIST princialtranslation type (USER|user|GROUP|group) #REQUIRED from CDATA #REQUIRED to CDATA #REQUIRED>
+<!ELEMENT principaltranslations (principaltranslation*)>
+<!ELEMENT principaltranslation EMPTY>
+<!ATTLIST principaltranslation type (USER|user|GROUP|group) #REQUIRED from CDATA #REQUIRED to CDATA #REQUIRED>
 
 <!--
 # List of properties which are ignored (ie. not imported) when resources are imported. 
