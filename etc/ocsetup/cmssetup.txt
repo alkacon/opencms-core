@@ -44,7 +44,7 @@ setCurrentProject 2
 copyResourceToProject "/"
 importResources "c:/work41/opencms/workplace/"
 publishProject "2"
-writeExportPath "c:/work41/exportfiles/"
+writeExportPath "c:/work41/export/"
 exit
 
 
