@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/01/12 16:46:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/01/18 13:06:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * @since 5.5.4
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
@@ -177,15 +177,19 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getDefault(org.opencms.file.CmsObject, org.opencms.xml.types.I_CmsXmlSchemaType, java.util.Locale)
      */
     public String getDefault(CmsObject cms, I_CmsXmlSchemaType type, Locale locale) {
-
-        String defaultValue = (String)m_defaultValues.get(type.getElementName());
-        if (defaultValue != null) {
-            // return the string set in the appinfo with processed macros
+        
+        String elementName = type.getElementName();
+        String defaultValue = (String)m_defaultValues.get(elementName);
+        if (defaultValue == null) {
+            // use the "getDefault" method of the given value, will use value from standard XML schema
+            defaultValue = type.getDefault(locale);
+        }        
+        if (defaultValue != null) {            
+            // return the default value with processed macros
             return CmsStringUtil.substituteMacros(defaultValue, new CmsStringMapper(this, null, locale, cms));
         }
-
-        // default implementation currently just uses the "getDefault" mehod of the given value
-        return type.getDefault(locale);
+        // no default value is available
+        return null; 
     }
 
     /**
