@@ -11,7 +11,7 @@ import java.util.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/01/21 10:35:18 $
+ * @version $Revision: 1.4 $ $Date: 2000/01/26 17:06:50 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -153,6 +153,43 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         return getDataValue("ELEMENTDEF." + elementName + ".PARAMETER." + parameterName);        
     }
     
+    
+    /**
+     * Gets the processed data of the appropriate <code>&lt;TEMPLATE&gt;</code> section of
+     * this workplace template file.
+     * <P>
+     * The correct datablock name for the template datablock will be taken
+     * from <code>getTemplateDatablockName</code>.
+     * 
+     * @param callingObject reference to the calling object. Used to look up user methods while processing.
+     * @param parameters hashtable containing all user parameters.
+     * @param templateSelector Name of the template section or null if the default section is requested.
+     * @return Processed template data.
+     * @exception CmsException
+     * @see #getTemplateDatablockName
+     */
+    public String getProcessedTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
+        String datablockName = this.getTemplateDatablockName(templateSelector);
+        return getProcessedDataValue(datablockName, callingObject, parameters);
+    }        
+
+    /**
+     * Gets the processed data of the default <code>&lt;TEMPLATE&gt;</code> section of
+     * this workplace template file.
+     * <P>
+     * The correct datablock name for the template datablock will be taken
+     * from <code>getTemplateDatablockName</code>.
+     * 
+     * @param callingObject reference to the calling object. Used to look up user methods while processing.
+     * @param parameters hashtable containing all user parameters.
+     * @return Processed template data.
+     * @exception CmsException
+     * @see #getTemplateDatablockName
+     */
+    public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
+        return getProcessedTemplateContent(callingObject, parameters, null);
+    }        
+        
     /**
      * Utility method to get the correct datablock name for a given selector.<BR>
      * If no selector is given or the selected section is not found, the template section
@@ -163,7 +200,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
      * @return Appropriate name of the template datablock.
      * @exception CmsException
      */
-    public String getTemplateDatablockName(String templateSelector) throws CmsException {
+    private String getTemplateDatablockName(String templateSelector) throws CmsException {
         String templateDatablockName = null;
         if(templateSelector != null && ! "".equals(templateSelector)) {            
             if(hasData("template." + templateSelector)) {

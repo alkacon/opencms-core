@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2000/01/25 14:02:39 $
+ * @version $Revision: 1.5 $ $Date: 2000/01/26 17:06:50 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -117,30 +117,29 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      */
     public byte[] getContent(A_CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
         if(C_DEBUG && A_OpenCms.isLogging()) {
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] getting content of element " + elementName);
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] getting content of element " + ((elementName==null)?"<root>":elementName));
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] template file is: " + templateFile);
-            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<root>":templateSelector));
+            A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsXmlTemplate] selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
 
-        String result = null;        
-
-        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile();       
-        String fullFileName = CmsXmlTemplateFile.lookupAbsoluteFilename(cms, templateFile, xmlTemplateDocument);
-        CmsFile file = cms.readFile(fullFileName);
-        xmlTemplateDocument.init(cms, file);       
-                
-        //CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);       
-        String templateDatablockName = xmlTemplateDocument.getTemplateDatablockName(templateSelector);
-                
+        CmsXmlTemplateFile xmlTemplateDocument = new CmsXmlTemplateFile(cms, templateFile);                       
+        return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+    }
+    
+    
+    
+    
+    protected byte[] startProcessing(A_CmsObject cms, CmsXmlTemplateFile xmlTemplateDocument, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+        String result = null;
         // Try to process the template file
         try {
-            result = xmlTemplateDocument.getProcessedDataValue(templateDatablockName, this, parameters);
+            result = xmlTemplateDocument.getProcessedTemplateContent(this, parameters, templateSelector);
         } catch(Throwable e) {
             // There were errors while generating output for this template.
             // Clear HTML cache and then throw exception again
             xmlTemplateDocument.clearFileCache(xmlTemplateDocument);
-            if(isCacheable(cms, templateFile, parameters)) {
-                m_cache.clearCache(getKey(cms, templateFile, parameters));
+            if(isCacheable(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters)) {
+                m_cache.clearCache(getKey(cms, xmlTemplateDocument.getAbsoluteFilename(), parameters));
             }
             if(e instanceof CmsException) {
                 throw (CmsException)e;
@@ -150,7 +149,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
                 // corresponding CmsExceptions.
                 String errorMessage = "Exception while getting content for (sub)template " + elementName + ". " + e;                                       
                 if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_CRITICAL, "[CmsXmlTemplate] " + errorMessage);
+                    A_OpenCms.log(C_OPENCMS_CRITICAL, getClassName() + errorMessage);
                 }
                 throw new CmsException(errorMessage);                
             }
@@ -168,7 +167,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
      * 
      * @param cms A_CmsObject Object for accessing system resources.
      * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object the initiating XLM document.  
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
      * @param userObj Hashtable with parameters.
      * @return String or byte[] with the content of this subelement.
      * @exception CmsException
@@ -331,7 +330,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     public boolean isCacheable(A_CmsObject cms, String templateFile, Hashtable parameters) {
         boolean cacheable = ((m_cache != null) && subtemplatesCacheable(cms, templateFile, parameters));
         if(C_DEBUG && A_OpenCms.isLogging()) {
-            String errorMessage = "[CmsXmlTemplate] Template class " + getClass().getName() + " with file " + templateFile + " is ";
+            String errorMessage = getClassName() + "Template class " + getClass().getName() + " with file " + templateFile + " is ";
             if(cacheable) {
                 errorMessage = errorMessage + "cacheable.";
             } else {
@@ -391,7 +390,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
                 // from the subtemplate.
                 // So we cannot determine the cacheability.
                 if(A_OpenCms.isLogging()) {
-                    A_OpenCms.log(C_OPENCMS_INFO, "[CmsXmlTemplate] Could not determine cacheability of subelement " + elName + " in template file " 
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + "Could not determine cacheability of subelement " + elName + " in template file " 
                             + doc.getFilename() + ". There were missing datablocks.");
                 }
                 return false;
@@ -405,6 +404,15 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         }                
         return cacheable;
     }    
+
+    /**
+     * Help method to print nice classnames in error messages
+     * @return class name in [ClassName] format
+     */
+    protected String getClassName() {
+        String name = getClass().getName();
+        return "[" + name.substring(name.lastIndexOf(".") + 1) + "] ";
+    }        
     
     /**
      * Find the corresponding template file to be loaded by the template class.

@@ -13,9 +13,8 @@ import java.util.*;
  * Content definition for Workplace template files.
  * 
  * @author Alexander Lucas
-
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/01/26 13:52:40 $
+ * @version $Revision: 1.9 $ $Date: 2000/01/26 17:06:21 $
  */
 public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLogChannels {
 
@@ -131,21 +130,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile implements I_CmsLog
     public CmsXmlLanguageFile getLanguageFile() {
         return m_languageFile; 
     }
-    
-    /**
-     * Gets the processed data of the <code>&lt;TEMPLATE&gt;</code> section of
-     * this workplace template file.
-     * 
-     * @param callingObject reference to the calling object. Used to look up user methods while processing.
-     * @param parameters hashtable containing all user parameters.
-     * @return Processed template data.
-     * @exception CmsException
-     */
-    public String getProcessedTemplateContent(Object callingObject, Hashtable parameters) throws CmsException {
-        return getProcessedDataValue("TEMPLATE", callingObject, parameters);
-    }
-    
-    
+        
     /**
      * Handles any occurence of any special workplace XML tag like <code>&lt;BUTTON&gt;</code> or 
      * <code>&lt;LABEL&gt;</code>. Looks up the appropriate workplace element class for the current
