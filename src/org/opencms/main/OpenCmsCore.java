@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/02/20 18:33:03 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2005/03/02 13:20:13 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.161 $
+ * @version $Revision: 1.162 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -2102,37 +2102,35 @@ public final class OpenCmsCore {
     private void updateUser(CmsObject cms, HttpServletRequest req) {
         
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {
+            // this request must not update the user session info
+            // this is true for long running "thread" requests, e.g. during project publish
             return;
         }
-        // get the session if it is there
+        // get the session if it is available
         HttpSession session = req.getSession(false);
-
-        // if the user was authenticated via sessions, update the information in the
-        // session stroage
+        // if the user was authenticated via sessions, 
+        // update the information in the session info manager
         if (session != null) {
-            if (!cms.getRequestContext().currentUser().getName().equals(OpenCms.getDefaultUsers().getUserGuest())) {
-
-                CmsSessionInfo sessionInfo = new CmsSessionInfo();
-
-                // set necessary values in the CmsSessionInfo object
-                sessionInfo.setUserName(cms.getRequestContext().currentUser().getName());
-                sessionInfo.setUserId(cms.getRequestContext().currentUser().getId());
-                sessionInfo.setProject(new Integer(cms.getRequestContext().currentProject().getId()));
-                sessionInfo.setCurrentSite(cms.getRequestContext().getSiteRoot());
-                sessionInfo.setSession(session);
-                // update the session info user data
-                m_sessionInfoManager.putUser(session.getId(), sessionInfo);
-
-                // ensure that the session notify is set
-                // this is required to remove the session from the internal storage on its destruction
-                CmsSessionBindingListener notify = null;
-                Object sessionValue = session.getAttribute("NOTIFY");
-                if (sessionValue instanceof CmsSessionBindingListener) {
-                    notify = (CmsSessionBindingListener)sessionValue;
-                }
-                if (notify == null) {
-                    notify = new CmsSessionBindingListener(session.getId());
-                    session.setAttribute("NOTIFY", notify);
+            if (!cms.getRequestContext().currentUser().isGuestUser()) {
+                // get the session id
+                String sessionId = session.getId();
+                // get the session info object for the user
+                CmsSessionInfo sessionInfo= m_sessionInfoManager.getUserInfo(sessionId);                
+                if (sessionInfo != null) {
+                    // update the users session information
+                    sessionInfo.update(cms.getRequestContext());                    
+                } else {                
+                    sessionInfo = new CmsSessionInfo();
+                    // update the users session information                    
+                    sessionInfo.update(cms.getRequestContext());
+                    // store the session in the session info
+                    sessionInfo.setSession(session);
+                    // update the session info user data
+                    m_sessionInfoManager.putUser(sessionId, sessionInfo);
+                    // set the session binding listener
+                    // this is required to remove the session info from the session info manager on its destruction
+                    CmsSessionBindingListener sessionInfoRemover = new CmsSessionBindingListener(sessionId);
+                    session.setAttribute("SESSION_INFO_REMOVER", sessionInfoRemover);
                 }
             }
         }

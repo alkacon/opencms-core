@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminLoggedInUsers.java,v $
-* Date   : $Date: 2005/02/18 15:18:51 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2005/03/02 13:20:21 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,13 +38,14 @@ import org.opencms.main.OpenCms;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Template class for displaying OpenCms workplace admin users screens.
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.9 $ $Date: 2005/02/18 15:18:51 $
+ * @version $Revision: 1.10 $ $Date: 2005/03/02 13:20:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -75,19 +76,19 @@ public class CmsAdminLoggedInUsers extends CmsWorkplaceDefault  {
         }
 
         List users = OpenCms.getSessionInfoManager().getLoggedInUsers(cms);
-        Hashtable user;
+        Map userData;
         StringBuffer ret = new StringBuffer();
         for(int i = 0; i < users.size(); i++) {
             try {
-                user = (Hashtable) users.get(i);
-                CmsUser cmsUser = cms.readUser((String)user.get(I_CmsConstants.C_SESSION_USERNAME));
-                CmsProject cmsProject = cms.readProject(((Integer)user.get(I_CmsConstants.C_SESSION_PROJECT)).intValue());
+                userData = (Map)users.get(i);
+                CmsUser cmsUser = cms.readUser((String)userData.get(I_CmsConstants.C_SESSION_USERNAME));
+                CmsProject cmsProject = cms.readProject(((Integer)userData.get(I_CmsConstants.C_SESSION_PROJECT)).intValue());
                 xmlTemplateDocument.setData("username", cmsUser.getName());
                 xmlTemplateDocument.setData("firstname", cmsUser.getFirstname()+"");
                 xmlTemplateDocument.setData("lastname", cmsUser.getLastname()+"");
                 xmlTemplateDocument.setData("email", cmsUser.getEmail()+"");
-                xmlTemplateDocument.setData("currentgroup", (String)user.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
-                xmlTemplateDocument.setData("messagepending", ((Boolean)user.get(I_CmsConstants.C_SESSION_MESSAGEPENDING)).toString());
+                xmlTemplateDocument.setData("currentgroup", (String)userData.get(I_CmsConstants.C_SESSION_CURRENTGROUP));
+                xmlTemplateDocument.setData("messagepending", ((Boolean)userData.get(I_CmsConstants.C_SESSION_MESSAGEPENDING)).toString());
                 xmlTemplateDocument.setData("currentproject", cmsProject.getName());
                 ret.append( xmlTemplateDocument.getProcessedDataValue("line") );
             } catch(Exception exc) {

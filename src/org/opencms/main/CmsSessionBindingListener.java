@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionBindingListener.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/03/02 13:20:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,34 +44,36 @@ import javax.servlet.http.HttpSessionBindingListener;
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsSessionBindingListener implements HttpSessionBindingListener {
-    
+
     /** String to identify the notify session attribute in the session. */
     public static final String C_NOTIFY_ATTRIBUTE = "__OpenCmsServletNotify";
-    
+
     /** The id to which this listener is bound. */
     private String m_id;
-    
+
     /**
      * Constructor, creates a new CmsSessionBindingListener object.<p>
      * 
      * @param id the session id to which this listener is bound
      */
     public CmsSessionBindingListener(String id) {
+
         m_id = id;
     }
-    
+
     /**
      * Called when the listener is bound to a session.<p>
      * 
      * @param event the HttpSessionBindingEvent
      */
-    public void valueBound(HttpSessionBindingEvent event) {            
+    public void valueBound(HttpSessionBindingEvent event) {
+
         // nothing to be done here
     }
-    
+
     /**
      * Called when the listener is unbound from to a session,
      * in which case the OpenCms internal session storage must be updated.<p>
@@ -79,6 +81,7 @@ public class CmsSessionBindingListener implements HttpSessionBindingListener {
      * @param event the HttpSessionBindingEvent
      */
     public void valueUnbound(HttpSessionBindingEvent event) {
+
         OpenCms.getSessionInfoManager().removeUserSession(m_id);
     }
 }

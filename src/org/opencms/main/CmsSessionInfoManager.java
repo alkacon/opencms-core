@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Attic/CmsSessionInfoManager.java,v $
- * Date   : $Date: 2005/02/17 12:44:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/03/02 13:20:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,9 @@ import org.opencms.util.CmsUUID;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import javax.servlet.http.HttpSession;
 
@@ -61,7 +59,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @see #sendBroadcastMessage(String message)
  */
@@ -123,34 +121,46 @@ public class CmsSessionInfoManager {
     }
 
     /**
-     * Returns a Vector with all currently logged in users.<p>
+     * Returns a list with information about all currently logged in users.<p>
      * 
-     * The Vector elements are <code>Hashtables</code> with the users name, 
+     * The List elements are <code>Maps</code> with the users name, 
      * the current project, the current group a Boolean if current messages
      * are pending.<p>
      *
-     * @return a list with all currently logged in users
+     * @return a list with information about all currently logged in users
      */
     public List getLoggedInUsers() {
 
-        List output = new Vector();
+        List output = new ArrayList();
         String key;
         CmsSessionInfo sessionInfo;
 
-        // Hastable to return in the vector for one user-entry
-        Hashtable userentry;
+        // Map to return in the vector for one user-entry
+        Map userentry;
 
         synchronized (m_sessions) {
             Iterator i = m_sessions.keySet().iterator();
             while (i.hasNext()) {
-                userentry = new Hashtable(4);
+                userentry = new HashMap(4);
                 key = (String)i.next();
                 sessionInfo = (CmsSessionInfo)m_sessions.get(key);
-                userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
-                userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
-                userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(sessionInfo.getSession()
-                    .getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));
-                output.add(userentry);
+                // check if the session is still valid
+                HttpSession session = sessionInfo.getSession();
+                long creationTime = 0;
+                try {
+                    creationTime = session.getCreationTime();
+                } catch (IllegalStateException e) {
+                    // invalid session, remove it
+                    m_sessions.remove(key);
+                }
+                if (creationTime != 0) {
+                    // session is still valid
+                    userentry.put(I_CmsConstants.C_SESSION_USERNAME, sessionInfo.getUserName());
+                    userentry.put(I_CmsConstants.C_SESSION_PROJECT, sessionInfo.getProject());
+                    userentry.put(I_CmsConstants.C_SESSION_MESSAGEPENDING, new Boolean(session
+                        .getAttribute(I_CmsConstants.C_SESSION_BROADCASTMESSAGE) != null));
+                    output.add(userentry);
+                }
             }
         }
         return output;
