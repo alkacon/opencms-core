@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2003/07/31 13:44:04 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2003/07/31 15:18:46 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import source.org.apache.java.util.Configurations;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.110 $ $Date: 2003/07/31 13:44:04 $
+ * @version $Revision: 1.111 $ $Date: 2003/07/31 15:18:46 $
  * @since 5.1
  */
 public class CmsDriverManager extends Object {
@@ -1906,7 +1906,7 @@ public class CmsDriverManager extends Object {
                 int exceptionType = currentLock.getUserId().equals(context.currentUser().getId()) ? CmsLockException.C_RESOURCE_LOCKED_BY_CURRENT_USER : CmsLockException.C_RESOURCE_LOCKED_BY_OTHER_USER;
                 throw new CmsLockException("VFS link " + currentResource.getFullResourceName() + " pointing to " + filename + " is locked by another user!", exceptionType);
             }
-        }
+        }       
 
         // delete/remove all collected resources
         i = resources.iterator();
@@ -1924,8 +1924,8 @@ public class CmsDriverManager extends Object {
                 } catch (CmsException exc) {
                     existsOnline = false;
                 }
-
-                unlockResource(context, currentResource.getFullResourceName(), true);
+                
+                unlockResource(context, currentResource.getFullResourceName(), true);                
 
                 if (!existsOnline) {
                     // remove the properties                
@@ -1942,11 +1942,11 @@ public class CmsDriverManager extends Object {
                 }
             }
         }
-
+        
         // flush all caches
         clearAccessControlListCache();
         clearResourceCache();
-        m_accessCache.clear();
+        m_accessCache.clear();         
 
         // update the FS checksum
         fileSystemChanged(false);
@@ -1991,6 +1991,8 @@ public class CmsDriverManager extends Object {
 
         // check if the user has write access to the folder
         checkPermissions(context, cmsFolder, I_CmsConstants.C_WRITE_ACCESS);
+        
+        m_lockDispatcher.removeResource(this, context, foldername, true);        
 
         // write-acces  was granted - delete the folder and metainfos.
         if (onlineFolder == null) {
@@ -2007,12 +2009,11 @@ public class CmsDriverManager extends Object {
             // delete the access control entries
             deleteAllAccessControlEntries(context, cmsFolder);
         }
+        
         // update cache
         clearAccessControlListCache();
         clearResourceCache();
         m_accessCache.clear();
-        
-        m_lockDispatcher.removeResource(this, context, foldername, true);
         
         // inform about the file-system-change
         fileSystemChanged(true);
@@ -2519,14 +2520,19 @@ public class CmsDriverManager extends Object {
         return siblings;
     }
     
-    public List getAllSiblings(CmsRequestContext context, String resourcename) throws CmsException {
-        // cw: must be possible for deleted resources, also
-        List path = readPath(context, resourcename, true);
-        CmsResource resource = (CmsResource) path.get(path.size() - 1);
-        List siblings = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
+    public List getAllSiblings(CmsRequestContext context, String resourcename) {
+        List siblings = null;
 
-        for (int i = 0; i < siblings.size(); i++) {
-            readPath(context, (CmsResource) siblings.get(i), false);
+        try {
+            List path = readPath(context, resourcename, true);
+            CmsResource resource = (CmsResource) path.get(path.size() - 1);
+            siblings = m_vfsDriver.getAllVfsSoftLinks(context.currentProject(), resource);
+
+            for (int i = 0; i < siblings.size(); i++) {
+                readPath(context, (CmsResource) siblings.get(i), false);
+            }
+        } catch (CmsException e) {
+            siblings = (List) new ArrayList(0);
         }
 
         return siblings;

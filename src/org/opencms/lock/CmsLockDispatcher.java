@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/31 14:09:04 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/07/31 15:18:46 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * are instances of CmsLock objects.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.23 $ $Date: 2003/07/31 14:09:04 $
+ * @version $Revision: 1.24 $ $Date: 2003/07/31 15:18:46 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -93,10 +93,10 @@ public final class CmsLockDispatcher extends Object {
     protected void finalize() throws Throwable {
         if (m_exclusiveLocks != null) {
             m_exclusiveLocks.clear();
+
+            m_exclusiveLocks = null;
             sharedInstance = null;
         }
-
-        m_exclusiveLocks = null;
     }
 
     /**
@@ -157,8 +157,8 @@ public final class CmsLockDispatcher extends Object {
         }
 
         resource = internalReadFileHeader(driverManager, context, resourcename);
-        if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
-            // deleted resources are never locked
+        if (resource == null || resource.getState() == I_CmsConstants.C_STATE_DELETED) {
+            // deleted, removed or non-existent resources are never locked
             return CmsLock.getNullLock();
         }
 
@@ -335,7 +335,7 @@ public final class CmsLockDispatcher extends Object {
             return lock;
         }
 
-        return null;
+        return lock;
     }
 
     /**
@@ -391,12 +391,17 @@ public final class CmsLockDispatcher extends Object {
      * @throws CmsException
      */
     private CmsResource internalReadFileHeader(CmsDriverManager driverManager, CmsRequestContext context, String resourcename) throws CmsException {
+        CmsResource resource = null;
 
         // reading a resource using readFileHeader while the lock state is checked would
         // inevitably result in an infinite loop...
 
-        List path = driverManager.readPath(context, resourcename, true);
-        CmsResource resource = (CmsResource) path.get(path.size() - 1);
+        try {
+            List path = driverManager.readPath(context, resourcename, false);
+            resource = (CmsResource) path.get(path.size() - 1);
+        } catch (CmsException e) {
+            resource = null;
+        }
 
         return resource;
     }
