@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/A_CmsWpElement.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2000/09/19 07:45:27 $
+ * Version: $Revision: 1.26 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import com.opencms.template.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2000/08/22 13:33:57 $
+ * @version $Revision: 1.26 $ $Date: 2000/09/19 07:45:27 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement, I_CmsWpConstants {
@@ -69,7 +69,12 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 	 * Reference to projectlist definition file
 	 */
 	protected static CmsXmlWpTemplateFile m_projectlistdef = null;
-	
+
+	/**
+	 * Reference to modulelist definition file
+	 */
+	protected static CmsXmlWpTemplateFile m_modulelistdef = null;
+
 	/**
 	 * Reference to projectlist definition file
 	 */
@@ -280,6 +285,22 @@ public abstract class A_CmsWpElement implements I_CmsLogChannels, I_CmsWpElement
 			m_labeldef = new CmsXmlWpLabelDefFile(cms, m_workplaceElementPath + C_LABELTEMPLATE);
 		//}
 		return m_labeldef;
+	}
+	/**
+	 * Reads the modulelist definition file.
+	 * @param cms The actual cms object
+	 * @return Reference to the list defintion file.
+	 * @exception CmsException
+	 */
+	public CmsXmlWpTemplateFile getModulelistDefinitions(CmsObject cms) throws CmsException {
+		//if(m_projectlistdef == null) {
+			if(m_workplaceElementPath == null) {
+				CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
+				m_workplaceElementPath = configFile.getWorkplaceElementPath();
+			}
+			m_modulelistdef = new CmsXmlWpTemplateFile(cms, m_workplaceElementPath + C_MODULELIST_TEMPLATEFILE);
+		//}
+		return m_modulelistdef;
 	}
 	 /**
 	 * Reads the panel bar definition file.

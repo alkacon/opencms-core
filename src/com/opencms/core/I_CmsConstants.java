@@ -2,8 +2,8 @@ package com.opencms.core;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/I_CmsConstants.java,v $
- * Date   : $Date: 2000/08/31 07:31:15 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2000/09/19 07:45:27 $
+ * Version: $Revision: 1.102 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,7 +36,7 @@ package com.opencms.core;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * 
- * @version $Revision: 1.101 $ $Date: 2000/08/31 07:31:15 $
+ * @version $Revision: 1.102 $ $Date: 2000/09/19 07:45:27 $
  */
 public interface I_CmsConstants
 {
@@ -515,6 +515,11 @@ public interface I_CmsConstants
 	*/
 	public static final String C_SESSION_ADMIN_POS = "adminposition";
 
+	/** 
+	* Session key for storing the files Vector for moduleimport.
+	*/
+	public static final String C_SESSION_MODULE_VECTOR  = "modulevector";
+	
 	/** Identifier for request type http */
 	public static final int C_REQUEST_HTTP = 0;
 	

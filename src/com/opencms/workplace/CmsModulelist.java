@@ -1,9 +1,9 @@
 package com.opencms.workplace;
 
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjectlist.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
  * Date   : $Date: 2000/09/19 07:45:27 $
- * Version: $Revision: 1.19 $
+ * Version: $Revision: 1.1 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,36 +40,26 @@ import java.util.*;
 import java.lang.reflect.*;
 
 /**
- * Class for building workplace icons. <BR>
- * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
+ * Class for building modulelist. <BR>
+ * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;MODULELIST&gt;</code>.
  * 
- * @author Andreas Schouten
- * @version $Revision: 1.19 $ $Date: 2000/09/19 07:45:27 $
+ * Creation date: (31.08.00 15:16:10)
+ * @author: Hanjo Riege
+ * @Version: $Revision: 1.1 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
-public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
-	
+public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants {
 	/**
-	 * Javascriptmethod, to call for contextlink
-	 */
-	private static final String C_PROJECT_LOCK = "project_lock";
-			
-	/**
-	 * Javascriptmethod, to call for contextlink
-	 */
-	private static final String C_PROJECT_UNLOCK = "project_unlock";
-			
-	/**
-	 * Handling of the special workplace <CODE>&lt;PROJECTLIST&gt;</CODE> tags.
+	 * Handling of the special workplace <CODE>&lt;MODULELIST&gt;</CODE> tags.
 	 * <P>
 	 * Returns the processed code with the actual elements.
 	 * <P>
 	 * Projectlists can be referenced in any workplace template by <br>
 	 * // TODO: insert correct syntax here!
-	 * <CODE>&lt;PROJECTLIST /&gt;</CODE>
+	 * <CODE>&lt;MODULELIST /&gt;</CODE>
 	 * 
 	 * @param cms CmsObject Object for accessing resources.
-	 * @param n XML element containing the <code>&lt;ICON&gt;</code> tag.
+	 * @param n XML element containing the <code>&lt;MODULELIST&gt;</code> tag.
 	 * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document.  
 	 * @param callingObject reference to the calling object <em>(not used here)</em>.
 	 * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
@@ -79,10 +69,14 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 	 */    
 	public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 		// Read projectlist parameters
-		String listMethod = n.getAttribute(C_PROJECTLIST_METHOD);
+		String listMethod = n.getAttribute(C_MODULELIST_METHOD);
+
+		//Get the registry
+		I_CmsRegistry reg = cms.getRegistry();
 		
 		// Get list definition and language values
-		CmsXmlWpTemplateFile listdef = getProjectlistDefinitions(cms);
+		CmsXmlWpTemplateFile listdef = getModulelistDefinitions(cms);
+
 		// call the method for generating projectlist elements
 		Method callingMethod = null;
 		Vector list = new Vector();
@@ -108,37 +102,19 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 			throwException("User method " + listMethod + " in calling class " + callingObject.getClass().getName() + " was found but could not be invoked. " + exc2, CmsException.C_XML_NO_USER_METHOD);
 		}
 		
-		/** StringBuffer for the generated output */
+		// StringBuffer for the generated output
 		StringBuffer result = new StringBuffer();
-		String state = C_PROJECTLIST_STATE_UNLOCKED;
-		String snaplock = listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK,
-														   callingObject, parameters);
 		
-		for(int i = 0; i < list.size(); i++) {
-			// get the actual project
-			CmsProject project = (CmsProject) list.elementAt(i);
-
-			// get the correckt state
-			if( cms.countLockedResources(project.getId()) == 0 ) {
-				state = C_PROJECTLIST_STATE_UNLOCKED;
-			} else {
-				state = C_PROJECTLIST_STATE_LOCKED;
-			}
-			  
-			// get the processed list.
-			
-			setListEntryData(cms, lang, listdef, project);
-
-			if( state.equals(C_PROJECTLIST_STATE_UNLOCKED) ) {
-				listdef.setData(C_PROJECTLIST_LOCKSTATE, "");
-				listdef.setData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
-			} else {
-				listdef.setData(C_PROJECTLIST_LOCKSTATE, snaplock);
-				listdef.setData(C_PROJECTLIST_MENU, C_PROJECT_LOCK);
-			}
-
-			listdef.setData(C_PROJECTLIST_IDX, new Integer(i).toString());
-			result.append(listdef.getProcessedDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject, parameters));
+		for(int i = 0; i < list.size(); i++) 
+		{
+			String currentModule = (String)list.elementAt(i);
+			listdef.setData(C_MODULELIST_NAME, currentModule);
+			listdef.setData(C_MODULELIST_VERSION, reg.getModuleVersion(currentModule)+"");
+			listdef.setData(C_MODULELIST_AUTHOR, reg.getModuleAuthor(currentModule));
+			listdef.setData(C_MODULELIST_DATECREATED, Utils.getNiceDate(reg.getModuleCreateDate(currentModule)));
+			listdef.setData(C_MODULELIST_DATEUPLOADED, Utils.getNiceDate(reg.getModuleUploadDate(currentModule)));
+			listdef.setData(C_MODULELIST_IDX, new Integer(i).toString());
+			result.append(listdef.getProcessedDataValue(C_TAG_MODULELIST_DEFAULT, callingObject, parameters));
 		}		
 		return result.toString();
 	}
@@ -154,34 +130,5 @@ public class CmsProjectlist extends A_CmsWpElement implements I_CmsWpElement, I_
 	 */
 	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
 		return false;
-	}
-	/**
-	 * Method to set details about a project into xml-datas.
-	 * @param cms The cms-object.
-	 * @param lang The language-file.
-	 * @param xmlFile The file to set the xml-data into.
-	 * @param project The project to get the data from.
-	 * @exception CmsException is thrown if something goes wrong.
-	 */
-	public static void setListEntryData(CmsObject cms, CmsXmlLanguageFile lang, 
-										CmsXmlWpTemplateFile xmlFile, CmsProject project)
-		throws CmsException {
-		
-		String state;
-		// get the correckt state
-		if( cms.countLockedResources(project.getId()) == 0 ) {
-			state = C_PROJECTLIST_STATE_UNLOCKED;
-		} else {
-			state = C_PROJECTLIST_STATE_LOCKED;
-		}
-		xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
-		xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, Encoder.escape(project.getName()));
-		xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
-		xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
-		xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(state));
-		xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, cms.readManagerGroup(project).getName());
-		xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, cms.readGroup(project).getName());
-		xmlFile.setData(C_PROJECTLIST_DATECREATED, Utils.getNiceDate(project.getCreateDate()) );
-		xmlFile.setData(C_PROJECTLIST_OWNER, cms.readOwner(project).getName());
 	}
 }

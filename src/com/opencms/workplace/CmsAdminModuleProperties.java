@@ -1,0 +1,197 @@
+package com.opencms.workplace;
+
+/*
+ * File   : $File$
+ * Date   : $Date: 2000/09/19 07:45:27 $
+ * Version: $Revision: 1.1 $
+ *
+ * Copyright (C) 2000  The OpenCms Group 
+ * 
+ * This File is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.com
+ * 
+ * You should have received a copy of the GNU General Public License
+ * long with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
+import com.opencms.file.*;
+import com.opencms.core.*;
+import com.opencms.util.*;
+import com.opencms.template.*;
+
+import java.util.*;
+
+import javax.servlet.http.*;
+
+/**
+ * Template class for displaying the properties of a module.
+ * Creation date: (07.09.00 11:30:26)
+ * @author: Hanjo Riege
+ */
+public class CmsAdminModuleProperties extends CmsWorkplaceDefault implements I_CmsConstants {
+
+	/**
+	* the different template views.
+	*/
+	private final String C_DESCRIPTION  	= "description";
+	private final String C_VIEW  			= "view";
+	private final String C_MODULENAME		= "module";
+	private final String C_PARAMETER		= "parameter";
+	private final String C_CHANGE_PARAMETER	= "changeparameter";
+	private final String C_NEW_VALUE		= "newvalue";
+	private final String C_FROMERRORPAGE	= "fromerrorpage";
+
+	// sessionentry
+	private final String C_SESSION_MODULENAME	= "modulename_error";
+	private final String C_SESSION_PARAMETER	= "moduleparameter_error";
+	
+	/**
+	 * Gets the content of a defined section in a given template file and its subtemplates
+	 * with the given parameters. 
+	 * 
+	 * @see getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters)
+	 * @param cms CmsObject Object for accessing system resources.
+	 * @param templateFile Filename of the template file.
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 */
+	public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) throws CmsException {
+		if(C_DEBUG && A_OpenCms.isLogging()) {
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "getting content of element " + ((elementName==null)?"<root>":elementName));
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "template file is: " + templateFile);
+			A_OpenCms.log(C_OPENCMS_DEBUG, this.getClassName() + "selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+		}
+		
+		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
+		I_CmsSession session = cms.getRequestContext().getSession(true);
+ 		I_CmsRegistry reg = cms.getRegistry();
+		String view = (String)parameters.get(C_VIEW);
+		String module = (String)parameters.get(C_MODULENAME);
+
+		if ((view != null) && (C_DESCRIPTION.equals(view))){
+
+			// set the values in the template "description"
+			xmlTemplateDocument.setData("name",module);
+			xmlTemplateDocument.setData("version", ""+reg.getModuleVersion(module));
+			xmlTemplateDocument.setData("descriptiontext",reg.getModuleDescription(module));
+			xmlTemplateDocument.setData("author", reg.getModuleAuthor(module));
+			xmlTemplateDocument.setData("email", reg.getModuleAuthorEmail(module));
+			xmlTemplateDocument.setData("createdate",Utils.getNiceDate(reg.getModuleCreateDate(module)));
+			xmlTemplateDocument.setData("uploadfrom", reg.getModuleUploadedBy(module));
+			xmlTemplateDocument.setData("uploaddate", Utils.getNiceDate(reg.getModuleUploadDate(module)));
+			xmlTemplateDocument.setData("view", reg.getModuleViewName(module));
+			String docu = reg.getModuleDocumentPath(module);
+			if ((docu != null)&& (docu.length()>1)){
+				xmlTemplateDocument.setData("documentation", docu.substring(1));
+			}else{
+				xmlTemplateDocument.setData("documentation","");
+			}
+			Vector depNames = new Vector();
+			Vector minVersion = new Vector();
+			Vector maxVersion = new Vector();
+			int deps = reg.getModuleDependencies(module, depNames, minVersion, maxVersion);
+			String dependences = "";
+			for (int i=0; i < deps; i++){
+				String max = (String)maxVersion.elementAt(i);
+				if ("-1".equals(max)){
+					dependences += (String)depNames.elementAt(i)+"  "+(String)minVersion.elementAt(i)+" - "
+									+ "*"+"\n";
+				}else{
+					dependences += (String)depNames.elementAt(i)+"  "+(String)minVersion.elementAt(i)+" - "
+									+ max +"\n";
+				}					
+			}
+			xmlTemplateDocument.setData("dependences", dependences);
+
+			String[] repositorys = reg.getModuleRepositories(module);
+			String outputRep = "";
+			for (int i=0; i<repositorys.length; i++){
+				outputRep += repositorys[i] + "\n";
+			}
+			xmlTemplateDocument.setData("repository", outputRep);
+			// set the correct templateselector
+			templateSelector = C_DESCRIPTION;
+		}else if((view != null) && (C_PARAMETER.equals(view))){
+
+			// set the values in the template "parameter"
+			xmlTemplateDocument.setData("name",module);
+			xmlTemplateDocument.setData("version", ""+reg.getModuleVersion(module));
+			String[] parameterNames = reg.getModuleParameterNames(module);
+			String allParameter = "";
+			for (int i=0; i<parameterNames.length; i++){
+				xmlTemplateDocument.setData("paraname", parameterNames[i]);
+				xmlTemplateDocument.setData("paravalue",reg.getModuleParameter(module, parameterNames[i]));
+				allParameter += xmlTemplateDocument.getProcessedDataValue("parameterentry");
+			}
+			xmlTemplateDocument.setData("allparameter", allParameter);
+			// set the correct templateselector
+			templateSelector = C_PARAMETER;
+		}else if((view != null) && (C_CHANGE_PARAMETER.equals(view))){
+			
+			// set the values in the template "changeparameter"
+			String parameter = (String)parameters.get("selectpara");
+			String fromError = (String)parameters.get(C_FROMERRORPAGE);
+			if (fromError != null){
+				module = (String)session.getValue(C_SESSION_MODULENAME);
+				parameter = (String)session.getValue(C_SESSION_PARAMETER);
+				session.removeValue(C_SESSION_MODULENAME);
+				session.removeValue(C_SESSION_PARAMETER);
+			}
+			xmlTemplateDocument.setData("name",module);
+			xmlTemplateDocument.setData("version", ""+reg.getModuleVersion(module));
+			xmlTemplateDocument.setData("paraname", parameter);
+			xmlTemplateDocument.setData("paratext", reg.getModuleParameterDescription(module, parameter));
+			xmlTemplateDocument.setData("paratype", reg.getModuleParameterType(module, parameter));
+			xmlTemplateDocument.setData("paravalue", reg.getModuleParameter(module, parameter));			
+			// set the correct templateselector
+			templateSelector = C_CHANGE_PARAMETER;
+		}else if((view != null) && (C_NEW_VALUE.equals(view))){
+
+			// Now we can finaly change the value.
+			String parameter = (String)parameters.get("parameter");
+			String value = (String)parameters.get("parawert");
+			xmlTemplateDocument.setData("name",module);
+			templateSelector = "done";
+			try{
+				reg.setModuleParameter(module, parameter, value);
+			}catch(CmsException e){
+				// wrong value
+				session.putValue(C_SESSION_MODULENAME, module);
+				session.putValue(C_SESSION_PARAMETER, parameter);
+				templateSelector = "error";
+				xmlTemplateDocument.setData("paraname", parameter);
+				xmlTemplateDocument.setData("DETAILS", Utils.getStackTrace(e));
+			}
+		}
+		// Now load the template file and start the processing
+		return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
+	}
+	/**
+	 * Indicates if the results of this class are cacheable.
+	 * 
+	 * @param cms CmsObject Object for accessing system resources
+	 * @param templateFile Filename of the template file 
+	 * @param elementName Element name of this template in our parent template.
+	 * @param parameters Hashtable with all template class parameters.
+	 * @param templateSelector template section that should be processed.
+	 * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
+	 */
+	public boolean isCacheable(CmsObject cms, String templateFile, String elementName, Hashtable parameters, String templateSelector) {
+		return false;
+	}
+}

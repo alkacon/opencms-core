@@ -2,8 +2,8 @@ package com.opencms.file;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/I_CmsRegistry.java,v $
- * Date   : $Date: 2000/09/15 09:46:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/09/19 07:45:27 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -36,11 +36,16 @@ import com.opencms.core.*;
  * This interface describes the registry for OpenCms.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.9 $ $Date: 2000/09/15 09:46:47 $
+ * @version $Revision: 1.10 $ $Date: 2000/09/19 07:45:27 $
  * 
  */
 public interface I_CmsRegistry extends Cloneable {
 	public static final int C_ANY_VERSION = -1;
+
+	/**
+	* The name of the folder to extend the exportpath
+	*/
+	public final String C_MODULE_PATH="modules/";
 
 /**
  * This method clones the registry.

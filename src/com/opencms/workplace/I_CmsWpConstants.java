@@ -2,8 +2,8 @@ package com.opencms.workplace;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/08/22 13:33:57 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2000/09/19 07:45:27 $
+ * Version: $Revision: 1.97 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.96 $ $Date: 2000/08/22 13:33:57 $
+ * @version $Revision: 1.97 $ $Date: 2000/09/19 07:45:27 $
  */
 public interface I_CmsWpConstants {
 
@@ -216,6 +216,24 @@ public interface I_CmsWpConstants {
 	/** The filename to the projectlisttemplate */
 	public static final String C_PROJECTLIST_TEMPLATEFILE = "projecttemplate";
 
+	/** The filename to the modulelisttemplate */
+	public static final String C_MODULELIST_TEMPLATEFILE = "moduletemplate";
+
+	public static final String C_SESSION_MODULE_PROPFILES = "modulepropfiles";
+
+	public static final String C_SESSION_MODULE_MISSFILES = "modulemissfiles";
+
+	public static final String C_SESSION_MODULE_CHECKSUM = "modulechecksum";
+
+	public static final String C_SESSION_MODULE_INUSE = "moduleinuse";
+
+	public static final String C_SESSION_MODULE_EXCLUSION = "moduleexclusion";
+
+	public static final String C_SESSION_MODULE_PROJECTFILES = "moduleprojectfiles";
+	
+	public static final String C_SESSION_MODULE_DELETE_STEP = "moduledeletestep";
+
+	
 	//** The filename to the filetypelist template */
 	public static final String C_FILETYPELIST_TEMPLATEFILE = "filetypelisttemplate";
 	
@@ -298,6 +316,9 @@ public interface I_CmsWpConstants {
 	
    /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_DEFAULT = "defaultprojectlist";   
+
+   /** Name of the label tag in the label definition template */
+   public static final String C_TAG_MODULELIST_DEFAULT = "defaultmodulelist";   
 	
    /** Name of the label tag in the label definition template */
    public static final String C_TAG_PROJECTLIST_SNAPLOCK = "snaplock";   
@@ -521,7 +542,29 @@ public interface I_CmsWpConstants {
 	
 	/**  Method of the projectlist field  */
 	public static final String C_PROJECTLIST_OWNER = "owner";    
+
 	
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_METHOD = "method";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_IDX = "idx";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_NAME = "name";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_VERSION = "version";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_AUTHOR = "author";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_DATECREATED = "datecreated";    
+		
+	/**  Method of the modulelist field  */
+	public static final String C_MODULELIST_DATEUPLOADED = "dateuploaded";    
+		
 	// Parameters for error boxes and error pages
 	
 	/** Title of the error box */
