@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/cache/Attic/CmsFlexResponse.java,v $
- * Date   : $Date: 2003/02/26 15:19:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/04/14 06:36:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * the CmsFlexCache.
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsFlexResponse extends HttpServletResponseWrapper {
     
@@ -419,7 +419,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 if (o instanceof byte[]) {
                     res.getOutputStream().write((byte[])o);
                 } else {
-                    if (m_includeResults.size() > count) {
+                    if ((m_includeResults != null) && (m_includeResults.size() > count)) {
                         // Make sure that we don't run behind end of list (should never happen, though)
                         res.getOutputStream().write((byte[])m_includeResults.get(count));
                         count++;
