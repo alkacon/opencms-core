@@ -75,6 +75,31 @@
             <access>79</access>
             <properties/>
         </file>
+		<file>
+			<destination>system/xmlmodules</destination>
+			<type>folder</type>
+			<user>Admin</user>
+			<group>Users</group>
+			<access>383</access>
+			<properties/>
+		</file>
+		<file>
+			<destination>system/xmlmodules/news</destination>
+		    <type>folder</type>
+			<user>Admin</user>
+			<group>Users</group>
+		    <access>383</access>
+		    <properties/>
+		</file>
+		<file>
+		    <source>xmlmodules/news/module.ini</source>
+		    <destination>system/xmlmodules/news/module.ini</destination>
+		    <type>plain</type>
+			<user>Admin</user>
+			<group>Users</group>
+		    <access>383</access>
+		    <properties/>
+        </file>
         <file>
             <source>action/administration.html</source>
             <destination>system/workplace/action/administration.html</destination>
