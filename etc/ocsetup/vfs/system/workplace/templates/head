@@ -10,7 +10,7 @@
 	var pfad="]]><METHOD name="picsUrl"/><![CDATA[";
 	function loadBody() {
 		var link = document.form1.view.options[document.form1.view.selectedIndex].value;
-		window.top.body.location.href=link;
+		window.top.body.location.href="]]><METHOD name="getServletPath"/><![CDATA["+link.substring(1);
     }
 	
 	function loadFoot(){
@@ -38,7 +38,7 @@
 		</td>
 		<td class=menubold><p class=tab>]]><LABEL value="label.view" /><![CDATA[:&nbsp;&nbsp;&nbsp;</p></td>
 		<td class=dialogtxt>
-			]]><SELECT class="textfeld" name="view" width="150" method="getViews" onchange="document.form1.submit()"/><![CDATA[
+			]]><SELECT class="textfeld" name="view" width="150" method="getRegViews" onchange="document.form1.submit()"/><![CDATA[
 			<!-- <select class=textfeld name="view" width=100 style="width:100px" onchange="window.top.body.location.href=this.options[this.selectedIndex].value">
 			<option value="explorer.html">Explorer
 			<option value="tasks.html">Aufgaben
