@@ -303,7 +303,8 @@ ${build.inputlib.uuid}
             <zipfileset dir="${build.web}/WEB-INF" prefix="WEB-INF"/>
             <zipfileset dir="${build.web}/ocsetup" prefix="ocsetup"/>
             <zipfileset dir="${build.web}/export" prefix="export"/>
-            <zipfileset dir="${additional.modules}" prefix="WEB-INF/export/modules"/>         
+            <zipfileset dir="${additional.modules}" prefix="WEB-INF/export/modules"/>   
+            <zipfileset dir="${additional.export}" prefix="export"/>      
         </zip>
         
         <zip
