@@ -51,7 +51,7 @@ function showColorPicker(fieldName) {
 	if (document.all) {		
 		colorPicker.color = fieldValue;
 		var selColor = -1;
-		selColor = showModalDialog(colorPicker.url, colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+		selColor = showModalDialog(colorPicker.url, colorPicker, "resizable: yes; help: no; status: no; scroll: no;");
 		if (selColor != null) {
 			theField.value = "#" + selColor;
 			previewColor(fieldName);
