@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWpMain.java,v $
- * Date   : $Date: 2000/03/20 13:50:13 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2000/03/22 10:39:21 $
+ * Version: $Revision: 1.10 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.9 $ $Date: 2000/03/20 13:50:13 $
+ * @version $Revision: 1.10 $ $Date: 2000/03/22 10:39:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWpMain extends CmsWorkplaceDefault {
@@ -290,20 +290,5 @@ public class CmsWpMain extends CmsWorkplaceDefault {
             }
         }
         return new Integer(currentViewIndex);
-    }
-
-    /**
-     * User method to get the name of the user.
-     * 
-     * @param cms A_CmsObject Object for accessing system resources.
-     * @param tagcontent Unused in this special case of a user method. Can be ignored.
-     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
-     * @param userObj Hashtable with parameters <em>(not used here)</em>.
-     * @return String with the pics URL.
-     * @exception CmsException
-     */    
-    public Object userName(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
-		throws CmsException {
-		return Utils.getFullName(cms.getRequestContext().currentUser());
     }
 }

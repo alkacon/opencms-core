@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
- * Date   : $Date: 2000/03/16 19:26:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2000/03/22 10:39:21 $
+ * Version: $Revision: 1.18 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -45,7 +45,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.17 $ $Date: 2000/03/16 19:26:44 $
+ * @version $Revision: 1.18 $ $Date: 2000/03/22 10:39:21 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConstants {
@@ -133,6 +133,21 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
         return xmlTemplateDocument;
     }        
 
+    /**
+     * User method to get the name of the user.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param tagcontent Unused in this special case of a user method. Can be ignored.
+     * @param doc Reference to the A_CmsXmlContent object of the initiating XLM document <em>(not used here)</em>.  
+     * @param userObj Hashtable with parameters <em>(not used here)</em>.
+     * @return String with the pics URL.
+     * @exception CmsException
+     */    
+    public Object userName(A_CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) 
+		throws CmsException {
+		return Utils.getFullName(cms.getRequestContext().currentUser());
+    }
+    
     /**
      * User method to generate an URL for the system pics folder.
      * <P>
