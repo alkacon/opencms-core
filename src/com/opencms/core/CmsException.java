@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/core/Attic/CmsException.java,v $
- * Date   : $Date: 2003/09/25 16:09:38 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2003/10/15 09:59:18 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.*;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  */
 public class CmsException extends Exception {
 
@@ -349,6 +349,15 @@ public class CmsException extends Exception {
         return (m_message!=null) ? getClass().getName() + ": " + m_message : getClass().getName();
     }
 
+    /**
+     * Returns the description message<p>
+     * 
+     * @return the description message
+     */
+    public String getShortMessage() {
+        return m_message; 
+    }
+    
     /**
      * Get the root cause Throwable which was provided
      * when this exception was thrown.<p>
