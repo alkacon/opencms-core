@@ -12,7 +12,7 @@ import com.opencms.core.*;
  * police.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.46 $ $Date: 2000/02/09 14:24:21 $
+ * @version $Revision: 1.47 $ $Date: 2000/02/09 15:12:10 $
  */
 class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 	
@@ -1916,19 +1916,14 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 			(currentProject.getFlags() == C_PROJECT_STATE_UNLOCKED)) {
 			// is offlineproject and is owner
 			
-			// read the online-resource
-			A_CmsResource onlineRes = m_fileRb.readFileHeader(online, resource);
-			// copy it to the offlineproject
-			m_fileRb.copyResourceToProject(currentProject, online, resource);
-			// inform about the file-system-change
-			fileSystemChanged(currentProject.getName(), resource);
-			// read the offline-resource
-			A_CmsResource offlineRes = m_fileRb.readFileHeader(currentProject, resource);
-			// copy the metainfos			
-			m_metadefRb.writeMetainformations(offlineRes,
-				m_metadefRb.readAllMetainformations(onlineRes));
+			helperCopyResourceToProject(online, currentProject, resource);
 			
 			// walk rekursively throug all parents and copy them, too
+			// read the online-resource
+			A_CmsResource onlineRes = m_fileRb.readFileHeader(online, resource);
+			// read the offline-resource
+			A_CmsResource offlineRes = m_fileRb.readFileHeader(currentProject, resource);
+
 			resource = onlineRes.getParent();
 			try {
 				while(resource != null) {
@@ -1956,6 +1951,45 @@ class CmsResourceBroker implements I_CmsResourceBroker, I_CmsConstants {
 		}
 	}
 		
+     /**
+     * A helper to copy a resource from the online project to a new, specified project.<br>
+     * 
+	 * @param onlineProject The online project.
+	 * @param offlineProject The offline project.
+	 * @param resource The name of the resource.
+ 	 * @exception CmsException  Throws CmsException if operation was not succesful.
+     */
+    private void helperCopyResourceToProject(A_CmsProject onlineProject,
+											 A_CmsProject offlineProject,
+											 String resource)
+        throws CmsException {
+		// read the online-resource
+		A_CmsResource onlineRes = m_fileRb.readFileHeader(onlineProject, resource);
+		// copy it to the offlineproject
+		m_fileRb.copyResourceToProject(offlineProject, onlineProject, resource);
+		// inform about the file-system-change
+		fileSystemChanged(offlineProject.getName(), resource);
+		// read the offline-resource
+		A_CmsResource offlineRes = m_fileRb.readFileHeader(offlineProject, resource);
+		// copy the metainfos			
+		m_metadefRb.writeMetainformations(offlineRes,
+			m_metadefRb.readAllMetainformations(onlineRes));
+		
+		// now walk recursive through all files and folders, and copy them too
+		if(onlineRes.isFolder()) {
+			Vector files = m_fileRb.getFilesInFolder(onlineProject, resource);
+			Vector folders = m_fileRb.getSubFolders(onlineProject, resource);
+			for(int i = 0; i < files.size(); i++) {
+				helperCopyResourceToProject(onlineProject, offlineProject, 
+											((A_CmsResource)files.elementAt(i)).getAbsolutePath());
+			}
+			for(int i = 0; i < folders.size(); i++) {
+				helperCopyResourceToProject(onlineProject, offlineProject, 
+											((A_CmsResource)folders.elementAt(i)).getAbsolutePath());
+			}
+		}
+	}
+	
 	/**
 	 * Reads a file from the Cms.<BR/>
 	 * 
