@@ -45,7 +45,7 @@
 		</import>
 	</importexport>
 	<staticexport enabled="true">
-		<mode>on-demand</mode>
+		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
 		<exportpath>export</exportpath>
 		<defaultpropertyvalue>true</defaultpropertyvalue>
 		<defaultsuffixes>

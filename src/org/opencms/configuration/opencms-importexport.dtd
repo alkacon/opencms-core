@@ -112,7 +112,7 @@
 # it works according the the selected <mode> setting.
 -->
 <!ELEMENT staticexport (
-	mode, 
+	staticexporthandler, 
 	exportpath,
 	defaultpropertyvalue,
 	defaultsuffixes?,
@@ -122,21 +122,21 @@
 <!ATTLIST staticexport enabled (TRUE|true|FALSE|false) #REQUIRED>
 
 <!--
-# There are 3 modes of operation. The default mode is "on-demand" mode,
-# which is most suitable for dynamic sites that use the static export as optimization
-# for non-dynamic content. The second mode is the "on-publish" mode,
-# which exports all changes immediately after something is published. 
-# The third mode is the "full-static-render" mode, where the complete content is
-# rendered as static HTML pages, so that you can transfer the complete exported 
-# content to another server that does not run OpenCms.
+# The fully qualified class name of a concrete implementation of the 
+# org.opencms.staticexport.I_CmsStaticExportHandler interface.
+# The default handler is "CmsOnDemandStaticExportHandler",
+# which is most suitable for dynamic sites that use the static export 
+# as optimization for non-dynamic content. 
+# Another handler is the "CmsAfterPublishStaticExportHandler",
+# which exports all changes immediately after something is published.
 #
-# The 3 possible values for this node are:
-#
-# on-demand             selects export "on demand" mode
-# after-publish         selects export "after publish" mode
-# full-static-render	selects export "full static render" mode
+# The default 2 possible values for this node are:
+#    org.opencms.staticexport.CmsOnDemandStaticExportHandler             
+#         selects export "on demand" mode
+#    org.opencms.staticexport.CmsAfterPublishStaticExportHandler
+#         selects export "after publish" mode
 -->
-<!ELEMENT mode (#PCDATA)>
+<!ELEMENT staticexporthandler (#PCDATA)>
 
 <!--
 # The path in the "real" FS to write the static exported pages to.

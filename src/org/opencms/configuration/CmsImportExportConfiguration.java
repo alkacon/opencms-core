@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2004/09/22 12:08:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/01/05 15:30:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -120,8 +120,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     /**  The node name of the static export header node. */
     protected static final String N_STATICEXPORT_HEADER = "header";
     
-    /**  The node name of the static export mode node. */
-    protected static final String N_STATICEXPORT_MODE = "mode";
+    /**  The node name of the static export handler node. */
+    protected static final String N_STATICEXPORT_HANDLER = "staticexporthandler";
     
     /**  The node name of the static export plainoptimization node. */    
     protected static final String N_STATICEXPORT_PLAINOPTIMIZATION = "plainoptimization";
@@ -146,7 +146,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     
     /**  The node name of the static export rfx-prefix node. */    
     protected static final String N_STATICEXPORT_RFS_PREFIX = "rfs-prefix";
-   
+    
     /**  The node name of the static export suffix node. */    
     protected static final String N_STATICEXPORT_SUFFIX = "suffix";
     
@@ -230,7 +230,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         digester.addCallMethod("*/" + N_STATICEXPORT, "setExportEnabled", 1); 
         digester.addCallParam("*/" + N_STATICEXPORT, 0, A_ENABLED);         
         // mode rule
-        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_MODE , "setMode", 0); 
+        digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_HANDLER , "setHandler", 0); 
         // exportpath rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH , "setExportPath", 0); 
         // default property rule
@@ -339,8 +339,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         Element staticexportElement = parent.addElement(N_STATICEXPORT);
         staticexportElement.addAttribute(A_ENABLED, m_staticExportManager.getExportEnabled());
         
-        // <mode> node
-        staticexportElement.addElement(N_STATICEXPORT_MODE).addText(m_staticExportManager.getMode());
+        // <staticexporthandler> node
+        staticexportElement.addElement(N_STATICEXPORT_HANDLER).addText(m_staticExportManager.getHandler().getClass().getName());
         
         // <exportpath> node
         String exportPathUnmodified = m_staticExportManager.getExportPathUnmodified();
