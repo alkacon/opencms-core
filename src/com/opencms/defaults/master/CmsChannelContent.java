@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2002/01/31 10:18:21 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2002/02/07 13:50:59 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import java.lang.*;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.7 $
- * $Date: 2002/01/31 10:18:21 $
+ * $Revision: 1.8 $
+ * $Date: 2002/02/07 13:50:59 $
  */
 public class CmsChannelContent extends A_CmsContentDefinition
                                implements I_CmsContent, I_CmsLogChannels, I_CmsExtendedContentDefinition{
@@ -382,20 +382,19 @@ public class CmsChannelContent extends A_CmsContentDefinition
                         cms.lockResource(newChannel.getAbsolutePath(), true);
                     }
                 };
-                // check if the owner has changed
-                if(newChannel.getOwnerId() != this.getOwner()){
-                    cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
-                };
-                // check if the group has changed
-
-                if(newChannel.getGroupId() != this.getGroupId()){
-                    cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
-                };
-                // check if the accessflags has changed
-                if(newChannel.getAccessFlags() != this.getAccessFlags()){
-                    cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
-                };
             }
+            // check if the owner has changed
+            if(newChannel.getOwnerId() != this.getOwner()){
+                cms.chown(newChannel.getAbsolutePath(), this.getOwnerName());
+            };
+            // check if the group has changed
+            if(newChannel.getGroupId() != this.getGroupId()){
+                cms.chgrp(newChannel.getAbsolutePath(), this.getGroup());
+            };
+            // check if the accessflags has changed
+            if(newChannel.getAccessFlags() != this.getAccessFlags()){
+                cms.chmod(newChannel.getAbsolutePath(), this.getAccessFlags());
+            };
             m_channel = cms.readFolder(newChannel.getAbsolutePath());
         } catch (CmsException exc){
             throw exc;
