@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/flex/util/Attic/CmsMessages.java,v $
- * Date   : $Date: 2002/11/18 14:26:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/01/30 09:13:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.ResourceBundle;
  * that can be checked to see if the instance was properly initialized.
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.0 beta 2
  */
@@ -143,4 +143,20 @@ public final class CmsMessages extends Object {
         }
         return "??? " + keyName + " ???";
     }    
+    
+    /**
+     * Directly calls the getString(String) method of the wrapped ResourceBundle.<p>
+     * 
+     * If you use this this class on a template, you should consider using 
+     * the {@link #key(String)} method to get the value from the ResourceBundle because it
+     * handles the exception for you in a convenient way. 
+     * 
+     * @param keyName the key  
+     * @return the resource string for the given key
+     * @throws MissingResourceException in case the key is not found of the bundle is not initialized
+     */
+    public String getString( String keyName ) throws MissingResourceException {              
+        if (m_bundle != null) return m_bundle.getString( keyName );
+        else throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+    }       
 }
