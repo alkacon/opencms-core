@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2004/01/22 14:12:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/01/22 16:42:43 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 5.1
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHtmlLinkValidatable {
@@ -92,15 +92,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsHt
      * @see com.opencms.file.I_CmsResourceType#createResource(com.opencms.file.CmsObject, java.lang.String, java.util.Map, byte[], java.lang.Object)
      */
     public CmsResource createResource(CmsObject cms, String resourcename, Map properties, byte[] contents, Object parameter) throws CmsException {
-
         CmsFile file = cms.doCreateFile(resourcename, contents, C_RESOURCE_TYPE_NAME, properties);
         cms.doLockResource(resourcename, false, CmsLock.C_MODE_COMMON);
 
-        // linkmanagement: create the links of the new page (for the case that the content was not empty
-        // if (contents.length > 1) {
-        //    CmsPageLinks linkObject = cms.getPageLinks(resourcename);
-        //    cms.createLinkEntrys(linkObject.getResourceId(), linkObject.getLinkTargets());
-        // }
         contents = null;
         return file;
     }  
