@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2003/07/02 11:03:12 $
-* Version: $Revision: 1.50 $
+* Date   : $Date: 2003/07/06 13:43:21 $
+* Version: $Revision: 1.51 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.Serializable;
  *
  * @author Michael Emmerich
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.50 $ $Date: 2003/07/02 11:03:12 $
+ * @version $Revision: 1.51 $ $Date: 2003/07/06 13:43:21 $
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
     
@@ -465,25 +465,37 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         // now as the name does not end with "/", check for the last "/" which is the parent folder name
         return parent.substring(0, parent.lastIndexOf("/") + 1);
     }
+
+    /**
+     * Returns the name of a resource without the path information.<p>
+     * 
+     * The resource name of a file is the name of the file.
+     * The resource name of a folder is the folder name with trailing "/".
+     * The resource name of the root folder is <code>/</code>.<p>
+     * 
+     * Example: <code>/system/workplace/</code> has the resource name <code>workplace/</code>.
+     * 
+     * @param resource the resource to get the name for
+     * @return the name of a resource without the path information
+     */    
+    public static String getName(String resource) {
+        if (I_CmsConstants.C_ROOT.equals(resource)) return I_CmsConstants.C_ROOT;
+        // remove the last char, for a folder this will be "/", for a file it does not matter
+        String parent = (resource.substring(0, resource.length() - 1));
+        // now as the name does not end with "/", check for the last "/" which is the parent folder name
+        return resource.substring(parent.lastIndexOf("/") + 1);
+    }    
     
     /**
-     * Returns the folder path of this resource,
-     * if the resource is a folder, the complete path of the folder is returned 
-     * (not the parent folder path).<p>
+     * Returns true if the resource name is a folder name, i.e. ends with a "/".<p>
      * 
-     * Example: Returns <code>/system/def/</code> for the
-     * resource <code>/system/def/file.html</code> and 
-     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
-     * 
-     * Does not append the repository information to the result, 
-     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
-     *
-     * @return the folder of this resource
+     * @param resource the resource to check
+     * @return true if the resource name is a folder name, i.e. ends with a "/"
      */
-    public String getPath() {
-        return getPath(getAbsolutePath(getFullResourceName()));
+    public static boolean isFolder(String resource) {
+        return ((resource != null) && resource.endsWith("/"));
     }
-    
+
     /**
      * Returns the folder path of the resource with the given name,
      * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
@@ -502,6 +514,24 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static String getPath(String resource) {
         return resource.substring(0, resource.lastIndexOf("/") + 1);
+    }
+                
+    /**
+     * Returns the folder path of this resource,
+     * if the resource is a folder, the complete path of the folder is returned 
+     * (not the parent folder path).<p>
+     * 
+     * Example: Returns <code>/system/def/</code> for the
+     * resource <code>/system/def/file.html</code> and 
+     * <code>/system/def/</code> for the (folder) resource <code>/system/def/</code>.
+     * 
+     * Does not append the repository information to the result, 
+     * i.e. <code>/system/def/</code> will be returned, not <code>/default/vfs/system/def/</code>.
+     *
+     * @return the folder of this resource
+     */
+    public String getPath() {
+        return getPath(getAbsolutePath(getFullResourceName()));
     }
         
     /**
