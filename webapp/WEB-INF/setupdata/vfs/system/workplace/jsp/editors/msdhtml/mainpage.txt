@@ -43,7 +43,7 @@
 			// open elements window;
 			dialogWindow = window.open("about:blank","DIALOG","width=380,height=420,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.ELEMENTS.submit();
-			window.DIALOG.focus();
+			dialogWindow.focus();
 			break;
 		case 7:
 			// Change Body;
@@ -56,7 +56,7 @@
 			// open properties window;
 			dialogWindow = window.open("about:blank","DIALOG","width=600,height=450,left=0,top=0,location=no,menubar=no,toolbar=no,dependent=yes");
 			document.PROPERTIES.submit();
-			window.DIALOG.focus();
+			dialogWindow.focus();
 			break;
 		}
 	}

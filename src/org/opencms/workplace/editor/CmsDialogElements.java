@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogElements.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/14 15:46:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -234,7 +234,7 @@ public class CmsDialogElements extends CmsDialog {
             // set the parameter value back to null
             setParamDeleteElement(null);
         } catch (CmsException e) {
-            // TODO: show exception
+            // ignore this exception
         }
     }
     
@@ -258,15 +258,23 @@ public class CmsDialogElements extends CmsDialog {
                 // get the current list element
                 String[] currentElement = (String[])i.next();               
                 String elementName = currentElement[0];
+                boolean isExisting = page.hasElement(elementName, getParamBodylanguage());
                 boolean isMandatory = "1".equals(currentElement[2]);
                 if (isMandatory || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + elementName))) {
+                    if (!isExisting) {
+                        // create element in order to enable it properly 
+                        page.addElement(elementName, getParamBodylanguage());
+                    }
                     page.setEnabled(elementName, getParamBodylanguage(), true);
                     if (isMandatory && !foundMandatory) {
                         changeBody = elementName;
                         foundMandatory = true;
                     }
                 } else {
-                    page.setEnabled(elementName, getParamBodylanguage(), false);
+                    if (isExisting) {
+                        // disable element if it is already existing
+                        page.setEnabled(elementName, getParamBodylanguage(), false);
+                    }
                 }
             }
             // write the temporary file
@@ -284,7 +292,19 @@ public class CmsDialogElements extends CmsDialog {
             // if no exception is caused update operation was successful
             closeDialog();
         } catch (CmsException e) {
-            // TODO: show exception
+            // show error dialog
+            setParamOkFunctions("window.close();");
+            setParamErrorstack(e.getStackTraceAsString());
+            setParamMessage(key("error.message.editor.elements"));
+            String reason = key("error.reason.editor.elements") + "<br>\n" + key("error.suggestion.editor.elements") + "\n";
+            setParamReasonSuggestion(reason);
+            // save initialized instance of this class in request attribute for included sub-elements
+            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            try {
+                getJsp().include(C_FILE_DIALOG_SCREEN_ERROR); 
+            } catch (Exception exc) {
+                // ignore this exception
+            }
         }
     }
     
@@ -341,13 +361,9 @@ public class CmsDialogElements extends CmsDialog {
                 retValue.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
                 if (!"".equals(page.getContent(getCms(), elementName, getParamBodylanguage()))) {
                     // current element has content that can be deleted
-                    //retValue.append("<a href=\"javascript:confirmDelete('" + elementName + "');\">");
-                    //retValue.append("<img src=\"" + buttonFolder + ".gif\" border=\"0\" title=\"" + key("button.delete") + "\">");
                     retValue.append(button("javascript:confirmDelete('" + elementName + "');", null, "deletecontent", "button.delete", 0, buttonFolder));
-                    //retValue.append("</a>");
                 } else {
                     // current element is empty
-                    //retValue.append("<img src=\"" + buttonFolder + ".gif\" border=\"0\" title=\"" + key("button.delete") + "\">");
                     retValue.append(button(null, null, "deletecontent_in", "button.delete", 0, buttonFolder));
                 }
                 retValue.append("</tr></table>");
@@ -358,7 +374,7 @@ public class CmsDialogElements extends CmsDialog {
             
             
         } catch (CmsException e) {
-            // TODO: show exception
+            // ignore this exception
         }
         
         retValue.append("</table>\n");
@@ -406,15 +422,4 @@ public class CmsDialogElements extends CmsDialog {
         return m_elementList;
     }
     
-    public void showException(CmsException exc) throws JspException {
-        // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
-        // show error dialog
-        setParamErrorstack(exc.getStackTraceAsString());
-        setParamMessage(key("error.message." + getParamDialogtype()));
-        String reason = key("error.reason.") + "<br>\n" + key("error.suggestion." ) + "\n";
-        setParamReasonSuggestion(reason);
-        getJsp().include(C_FILE_DIALOG_SCREEN_ERROR);
-    }
-
 }

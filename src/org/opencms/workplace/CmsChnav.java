@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsChnav.java,v $
- * Date   : $Date: 2004/01/06 17:06:05 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2004/01/14 15:46:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ package org.opencms.workplace;
 
 import com.opencms.core.CmsException;
 import com.opencms.core.I_CmsConstants;
+import com.opencms.file.CmsObject;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
 import com.opencms.flex.jsp.CmsJspNavBuilder;
@@ -39,6 +40,8 @@ import com.opencms.flex.jsp.CmsJspNavElement;
 import com.opencms.util.Encoder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -54,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 5.1
  */
@@ -222,27 +225,30 @@ public class CmsChnav extends CmsDialog {
         }
         // chnav operation was successful, return to explorer filelist
         getJsp().include(C_FILE_EXPLORER_FILELIST);
-    } 
+    }
     
     /**
      * Builds the HTML for the select box of the navigation position.<p>
      * 
+     * @param cms the CmsObject
+     * @param filename the current file
+     * @param attributes optional attributes for the &lt;select&gt; tag, do not add the "name" atribute!
+     * @param messages the localized workplace messages
      * @return the HTML for a navigation position select box
      */
-    public String buildNavPosSelector() {
+    public static String buildNavPosSelector(CmsObject cms, String filename, String attributes, CmsWorkplaceMessages messages) {
         ArrayList navList = new ArrayList();
         ArrayList options = new ArrayList();
         ArrayList values = new ArrayList();
         
         // get current file navigation element
-        String filename = getParamResource();
-        CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(getCms(), filename);
+        CmsJspNavElement curNav = CmsJspNavBuilder.getNavigationForResource(cms, filename);
         
         // get the parent folder of the current file
         filename = CmsResource.getParentFolder(filename);
         
         // get navigation of the current folder
-        navList = CmsJspNavBuilder.getNavigationForFolder(getCms(), filename);
+        navList = CmsJspNavBuilder.getNavigationForFolder(cms, filename);
         float maxValue = 0;
         float nextPos = 0;
         
@@ -260,7 +266,7 @@ public class CmsChnav extends CmsDialog {
         }
         
         // add the first entry: before first element
-        options.add(key("input.firstelement"));
+        options.add(messages.key("input.firstelement"));
         values.add(firstValue+"");      
         
         // show all present navigation elements in box
@@ -283,7 +289,7 @@ public class CmsChnav extends CmsDialog {
             
             // if the element is the current file, mark it in selectbox
             if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
-                options.add(Encoder.escapeHtml(key("input.currentposition")+" ["+ne.getFileName()+"]"));
+                options.add(Encoder.escapeHtml(messages.key("input.currentposition")+" ["+ne.getFileName()+"]"));
                 values.add("-1");
             } else {
                 options.add(Encoder.escapeHtml(navText+" ["+ne.getFileName()+"]"));
@@ -292,14 +298,31 @@ public class CmsChnav extends CmsDialog {
         }
         
         // add the entry: at the last position
-        options.add(key("input.lastelement"));
+        options.add(messages.key("input.lastelement"));
         values.add((maxValue+1)+"");
         
         // add the entry: no change
-        options.add(key("input.nochange"));
+        options.add(messages.key("input.nochange"));
         values.add("-1");
         
-        return buildSelect("name=\""+PARAM_NAVPOS+"\"", options, values, values.size()-1);  
+        if (attributes != null && !"".equals(attributes.trim())) {
+            attributes = " " + attributes;
+        } else {
+            attributes = "";
+        }
+        CmsDialog wp = new CmsDialog(null);
+        return wp.buildSelect("name=\""+PARAM_NAVPOS+"\"" + attributes, options, values, values.size()-1, true);  
+    }
+    
+    /**
+     * Builds the HTML for the select box of the navigation position.<p>
+     * 
+     * @return the HTML for a navigation position select box
+     */
+    public String buildNavPosSelector() {
+        synchronized (this) {
+            return buildNavPosSelector(getCms(), getParamResource(), null, getSettings().getMessages());
+        }
     }
 
 }

@@ -98,6 +98,31 @@ function submitAdvanced() {
 	document.forms["main"].submit();
 }
 
+function toggleNav() {
+	var checked = document.getElementById("enablenav").checked;
+	var disableFields = false;
+	if (checked == true) {
+		if (document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText")) {
+			var hiddenValue = document.getElementById("<%= wp.PREFIX_HIDDEN %>NavText").value;
+			if (hiddenValue != null && hiddenValue != "" && document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
+				document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = true;
+				toggleDelete('NavText');
+			}		
+		}	
+	} else {
+		disableFields = true;
+		if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
+			document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").checked = false;
+			toggleDelete('NavText');
+		}
+	}
+	if (document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText")) {
+		document.getElementById("<%= wp.PREFIX_USEPROPERTY %>NavText").disabled = disableFields;
+	}
+	document.getElementById("<%= wp.PREFIX_VALUE %>NavText").disabled = disableFields;
+	document.getElementById("navpos").disabled = disableFields;
+}
+
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -116,6 +141,13 @@ function submitAdvanced() {
 </form>
 
 <%= wp.dialogEnd() %>
+
+<script type="text/javascript">
+<!--
+toggleNav();
+//-->
+</script>
+
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%

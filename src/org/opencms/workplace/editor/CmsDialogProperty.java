@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editor/Attic/CmsDialogProperty.java,v $
- * Date   : $Date: 2004/01/14 10:00:04 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2004/01/14 15:46:42 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,18 @@
 package org.opencms.workplace.editor;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.I_CmsConstants;
 import com.opencms.file.CmsResource;
 import com.opencms.flex.jsp.CmsJspActionElement;
-import com.opencms.flex.util.CmsMessages;
 import com.opencms.util.Encoder;
+import com.opencms.workplace.CmsHelperMastertemplates;
 
+import org.opencms.workplace.CmsChnav;
 import org.opencms.workplace.CmsProperty;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * 
  * @author Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 5.3.0
  */
@@ -69,15 +69,6 @@ public class CmsDialogProperty extends CmsProperty {
     
     /** Stores the property names which should be listed in the edit form */
     public static final String[] PROPERTIES = {"Title", "Keywords", "Description", };
-    
-    public static final String[] SORT_METHODS = {"A", "T", "G", "D", "S"};    
-    public static final String[] PAGE_TYPES = {"default", "catalog", "other"};       
-    
-    // the special property definition names for files and folders
-    public static final String PROP_CATEGORY = "category";
-    public static final String PROP_PAGETYPE = "page_type";
-    public static final String PROP_SHOWDOCUMENT = "showdocument";
-    public static final String PROP_SORTMETHOD = "SortMethod";
     
     /**
      * Public constructor with JSP action element.<p>
@@ -153,7 +144,7 @@ public class CmsDialogProperty extends CmsProperty {
         retValue.append("<tr>\n\t<td>"+dialogSpacer()+"</td>\n</tr>\n");
         retValue.append(buildTextInput(editable, activeProperties));
         
-        //retValue.append(buildPageProperties(editable, activeProperties));
+        retValue.append(buildPageProperties(editable, activeProperties));
      
         retValue.append("</table>");       
        
@@ -169,99 +160,99 @@ public class CmsDialogProperty extends CmsProperty {
      */
     private StringBuffer buildPageProperties(boolean editable, Map activeProperties) {
         StringBuffer retValue = new StringBuffer(1024);
-        CmsMessages wpMessages = new CmsMessages("lgt_dialogs", getSettings().getLanguage());
         
         // create "disabled" attribute if properties are not editable
         String disabled = "";
         if (!editable) {
             disabled = " disabled=\"disabled\"";
-        }
+        }    
         
-        // check if the property is already defined        
-        boolean pageTypeSet = activeProperties.containsKey(PROP_PAGETYPE);       
-        String propValue = null;
-        
-        // get the current property value
-        if (pageTypeSet) {
-            propValue = (String)activeProperties.get(PROP_PAGETYPE);
+        // create "add to navigation" checkbox
+        retValue.append(buildTableRowStart(key("input.addtonav")));
+        retValue.append("<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
+        if (activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVTEXT) && activeProperties.containsKey(I_CmsConstants.C_PROPERTY_NAVPOS)) {
+            retValue.append(" checked=\"checked\"");
         }
-        
-        // build the lists for the method selection box
-        List methodValues = new ArrayList(6);
-        List methodNames = new ArrayList(6);
-        // first element is the "nothing selected" case
-        methodValues.add("");
-        methodNames.add(wpMessages.key("select.notselected"));
-        String[] localizedNames = getLocalizedNames(wpMessages.key("pagetype.names"), ",");
-        int selectedIndex = 0;
-        for (int i=0; i<PAGE_TYPES.length; i++) {
-            // add names and values to the lists
-            methodValues.add(PAGE_TYPES[i]);
-            methodNames.add(localizedNames[i]);
-            if (PAGE_TYPES[i].equalsIgnoreCase(propValue)) {
-                selectedIndex = (i + 1);
-            }
-        }
-        
-        // build the attribute for the javascript depending on state of property
-        String checkMethod = "";
-        if (pageTypeSet) {
-            checkMethod = " onchange=\"checkPageType();\"";
-        }
-        retValue.append(buildTableRowStart(PROP_PAGETYPE));
-        retValue.append(buildSelect("name=\""+PREFIX_VALUE+PROP_PAGETYPE+"\" id=\""+PREFIX_VALUE+PROP_PAGETYPE+"\"" + checkMethod + disabled, methodNames, methodValues, selectedIndex));
+        retValue.append(">");
         retValue.append("</td>\n");
         retValue.append("\t<td class=\"textcenter\">");       
-        // append the checkbox depending on property state
-        if (pageTypeSet) {
-            retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+PROP_PAGETYPE+"\" id=\""+PREFIX_HIDDEN+PROP_PAGETYPE+"\" value=\""+selectedIndex+"\">");
-            retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+PROP_PAGETYPE+"\" id=\""+PREFIX_USEPROPERTY+PROP_PAGETYPE+"\" value=\"true\"");
-            retValue.append(" checked=\"checked\"");
-            if (editable) {
-                retValue.append(" onClick=\"toggleDeletePageType();\"");
-            }
-            retValue.append(disabled+">");
-        } else {
-            retValue.append("&nbsp;");
-        }
+        retValue.append("&nbsp;");
         retValue.append(buildTableRowEnd());
         
-        //      check if the property is already defined        
-        boolean showDocumentSet = activeProperties.containsKey(PROP_SHOWDOCUMENT);       
-        propValue = null;
-        // get the current property value
-        if (showDocumentSet) {
-            propValue = (String)activeProperties.get(PROP_SHOWDOCUMENT);
-        }
+        // create NavText input row
+        retValue.append(buildPropertyEntry(activeProperties, I_CmsConstants.C_PROPERTY_NAVTEXT, key("input.navtitle"), editable));
         
-        retValue.append(buildTableRowStart(PROP_SHOWDOCUMENT));
-        retValue.append("<input type=\"radio\" name=\""+PREFIX_VALUE+PROP_SHOWDOCUMENT+"\" id=\""+PREFIX_VALUE+PROP_SHOWDOCUMENT+"---1\" value=\"true\"" + disabled);
-        if ("true".equalsIgnoreCase(propValue)) {
-            retValue.append(" checked=\"checked\"");
+        // create NavPos select box row
+        retValue.append(buildTableRowStart(key("input.insert")));
+        synchronized (this) {
+            retValue.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled + "\" class=\"maxwidth\"", getSettings().getMessages()));
         }
-        retValue.append(">"+wpMessages.key("showdocument.yes")+"&nbsp;");
-        retValue.append("<input type=\"radio\" name=\""+PREFIX_VALUE+PROP_SHOWDOCUMENT+"\" id=\""+PREFIX_VALUE+PROP_SHOWDOCUMENT+"---2\" value=\"false\"" + disabled);
-        if ("false".equalsIgnoreCase(propValue)) {
-            retValue.append(" checked=\"checked\"");
+        // get the old NavPos value and store it in hidden field
+        String navPos = null;
+        try {
+            navPos = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_NAVPOS);
+        } catch (CmsException e) {
+            // ignore this exception
         }
-        retValue.append(">"+wpMessages.key("showdocument.no")+"");
+        if (navPos == null) {
+            navPos = "";
+        }
+        retValue.append("<input type=\"hidden\" name=\"" + PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS +  "\" value=\"" + navPos + "\">");
         retValue.append("</td>\n");
-        retValue.append("\t<td class=\"textcenter\">");
-        // append the checkbox depending on property state
-        if (showDocumentSet) {
-            retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+PROP_SHOWDOCUMENT+"\" id=\""+PREFIX_HIDDEN+PROP_SHOWDOCUMENT+"\" value=\""+propValue+"\">");
-            retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+PROP_SHOWDOCUMENT+"\" id=\""+PREFIX_USEPROPERTY+PROP_SHOWDOCUMENT+"\" value=\"true\"");
-            retValue.append(" checked=\"checked\"");
-            if (editable) {
-                retValue.append(" onClick=\"toggleDeleteShowDocument();\"");
-            }
-            retValue.append(disabled+">");
-        } else {
-            retValue.append("&nbsp;");
-        }
+        retValue.append("\t<td class=\"textcenter\">");       
+        retValue.append("&nbsp;");
         retValue.append(buildTableRowEnd());
         
+        // create template select box row
+        retValue.append(buildTableRowStart(key("input.template")));
+        retValue.append(buildSelectTemplates("name=\"" + I_CmsConstants.C_PROPERTY_TEMPLATE + "\" class=\"maxwidth\""));
+        retValue.append("</td>\n");
+        retValue.append("\t<td class=\"textcenter\">");       
+        retValue.append("&nbsp;");
+        retValue.append(buildTableRowEnd());
+ 
         return retValue;
+    }
+    
+    /**
+     * Builds the html for the page template select box.<p>
+     * 
+     * @param attributes optional attributes for the &lt;select&gt; tag
+     * @return the html for the page template select box
+     */
+    public String buildSelectTemplates(String attributes) {
+        Vector names = new Vector();
+        Vector values = new Vector();
+        Integer selectedValue = new Integer(-1);
+        String currentTemplate = null;
+        try {
+            currentTemplate = getCms().readProperty(getParamResource(), I_CmsConstants.C_PROPERTY_TEMPLATE, true);
+            selectedValue = CmsHelperMastertemplates.getTemplates(getCms(), names, values, currentTemplate, -1);
+        } catch (CmsException e) {
+            // ignore this exception
+        }
+        if (currentTemplate == null) {
+            currentTemplate = "";
+        }        
+        if (selectedValue.intValue() == -1) {
+            // no template found -> use the given one
+            // first clean the vectors
+            names.removeAllElements();
+            values.removeAllElements();
+            // now add the current template
+            String name = currentTemplate;
+            try { 
+                // read the title of this template
+                name = getCms().readProperty(name, I_CmsConstants.C_PROPERTY_TITLE);
+            } catch (CmsException exc) {
+                // ignore this exception - the title for this template was not readable
+            }
+            names.add(name);
+            values.add(currentTemplate);
+        }
+
+        String hiddenField = "<input type=\"hidden\" name=\"" + PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_TEMPLATE +  "\" value=\"" + currentTemplate + "\">";
+        return buildSelect(attributes, names, values, selectedValue.intValue(), false) + hiddenField;
     }
     
     /**
@@ -289,24 +280,6 @@ public class CmsDialogProperty extends CmsProperty {
     }
     
     /**
-     * Builds a String array of localized names for the select boxes.<p>
-     * 
-     * @param nameString the localized String
-     * @param delim the delimiter
-     * @return String array with localized names
-     */
-    private String[] getLocalizedNames(String nameString, String delim) {
-        String[] localizedNames = new String[10];
-        StringTokenizer T = new StringTokenizer(nameString, delim);
-        int counter = 0;
-        while (T.hasMoreTokens()) {
-            localizedNames[counter] = T.nextToken();
-            counter++;
-        }
-        return localizedNames;
-    }
-    
-    /**
      * Builds the HTML for the common text input property values stored in the String array "PROPERTIES".<p>
      * 
      * @param editable indicates if the properties are editable
@@ -314,44 +287,57 @@ public class CmsDialogProperty extends CmsProperty {
      * @return the HTML code for the common text input fields
      */
     private StringBuffer buildTextInput(boolean editable, Map activeProperties) {
+        StringBuffer retValue = new StringBuffer(256);        
+        // iterate over the array
+        for (int i=0; i<PROPERTIES.length; i++) {
+            retValue.append(buildPropertyEntry(activeProperties, PROPERTIES[i], PROPERTIES[i], editable));
+        }
+        return retValue;
+    }
+    
+    /**
+     * Builds the html for a single text input property row.<p>
+     * 
+     * @param activeProperties Map of all active properties of the resource
+     * @param propertyName the name of the property
+     * @param propertyTitle the nice name of the property
+     * @param editable indicates if the properties are editable
+     * @return the html for a single text input property row
+     */
+    private StringBuffer buildPropertyEntry(Map activeProperties, String propertyName, String propertyTitle, boolean editable) {
         StringBuffer retValue = new StringBuffer(256);
-        
         // create "disabled" attribute if properties are not editable
         String disabled = "";
         if (!editable) {
             disabled = " disabled=\"disabled\"";
         }
-        
-        // iterate over the array
-        for (int i=0; i<PROPERTIES.length; i++) {
-            String propName = Encoder.escapeXml(PROPERTIES[i]);
-            retValue.append(buildTableRowStart(propName));
-            if (activeProperties.containsKey(PROPERTIES[i])) {
-                // the property is used, so create text field with value, checkbox and hidden field
-                String propValue = Encoder.escapeXml((String)activeProperties.get(PROPERTIES[i]));
-                retValue.append("<input type=\"text\" class=\"maxwidth\" value=\"");
-                retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propName+"\" id=\""+PREFIX_VALUE+propName+"\"");
-                if (editable) {
-                    retValue.append(" onKeyup=\"checkValue('"+propName+"');\"");
-                }
-                retValue.append(disabled+">");
-                retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+propName+"\" id=\""+PREFIX_HIDDEN+propName+"\" value=\""+propValue+"\">");
-                retValue.append("</td>\n");
-                retValue.append("\t<td class=\"textcenter\">");
-                retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+propName+"\" id=\""+PREFIX_USEPROPERTY+propName+"\" value=\"true\"");
-                retValue.append(" checked=\"checked\"");
-                if (editable) {
-                    retValue.append(" onClick=\"toggleDelete('"+propName+"');\"");
-                }
-                retValue.append(disabled+">");
-            } else {
-                // property is not used, create an empty text input field
-                retValue.append("<input type=\"text\" class=\"maxwidth\" ");
-                retValue.append("name=\""+PREFIX_VALUE+propName+"\""+disabled+"></td>\n");
-                retValue.append("\t<td class=\"textcenter\">&nbsp;");
+        retValue.append(buildTableRowStart(propertyTitle));
+        if (activeProperties.containsKey(propertyName)) {
+            // the property is used, so create text field with value, checkbox and hidden field
+            String propValue = Encoder.escapeXml((String)activeProperties.get(propertyName));
+            propertyName = Encoder.escapeXml(propertyName);
+            retValue.append("<input type=\"text\" class=\"maxwidth\" value=\"");
+            retValue.append(propValue+"\" name=\""+PREFIX_VALUE+propertyName+"\" id=\""+PREFIX_VALUE+propertyName+"\"");
+            if (editable) {
+                retValue.append(" onKeyup=\"checkValue('"+propertyName+"');\"");
             }
-            retValue.append(buildTableRowEnd());
+            retValue.append(disabled+">");
+            retValue.append("<input type=\"hidden\" name=\""+PREFIX_HIDDEN+propertyName+"\" id=\""+PREFIX_HIDDEN+propertyName+"\" value=\""+propValue+"\">");
+            retValue.append("</td>\n");
+            retValue.append("\t<td class=\"textcenter\">");
+            retValue.append("<input type=\"checkbox\" name=\""+PREFIX_USEPROPERTY+propertyName+"\" id=\""+PREFIX_USEPROPERTY+propertyName+"\" value=\"true\"");
+            retValue.append(" checked=\"checked\"");
+            if (editable) {
+                retValue.append(" onClick=\"toggleDelete('"+propertyName+"');\"");
+            }
+            retValue.append(disabled+">");
+        } else {
+            // property is not used, create an empty text input field
+            retValue.append("<input type=\"text\" class=\"maxwidth\" ");
+            retValue.append("name=\""+PREFIX_VALUE+propertyName+"\""+disabled+"></td>\n");
+            retValue.append("\t<td class=\"textcenter\">&nbsp;");
         }
+        retValue.append(buildTableRowEnd());
         return retValue;
     }
     
@@ -399,27 +385,37 @@ public class CmsDialogProperty extends CmsProperty {
                 String oldValue = request.getParameter(PREFIX_HIDDEN + PROPERTIES[i]);
                 writeProperty(PROPERTIES[i], paramValue, oldValue, activeProperties);
             }
-            
-      
+                
             // write special file properties
             
-            // get all needed params for the page type
-            String paramValue = request.getParameter(PREFIX_VALUE + PROP_PAGETYPE);
-            String oldPos = request.getParameter(PREFIX_HIDDEN + PROP_PAGETYPE);
-            String oldValue = "";
-            if (oldPos != null && !"".equals(oldPos)) {
-                int position = Integer.parseInt(oldPos);
-                if (position > 0) {
-                    oldValue = PAGE_TYPES[position - 1];
+            // get the navigation enabled parameter
+            String paramValue = request.getParameter("enablenav");
+            String oldValue = null;
+            if ("true".equals(paramValue)) {
+                // navigation enabled, update params
+                paramValue = request.getParameter("navpos");
+                oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVPOS);
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, paramValue, oldValue, activeProperties);
+                paramValue = request.getParameter(PREFIX_VALUE + I_CmsConstants.C_PROPERTY_NAVTEXT);
+                oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_NAVTEXT);
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, paramValue, oldValue, activeProperties);
+            } else {
+                // navigation disabled, delete property values
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVPOS, null, null, activeProperties);
+                writeProperty(I_CmsConstants.C_PROPERTY_NAVTEXT, null, null, activeProperties);
+            }
+            
+            // get the template parameter
+            paramValue = request.getParameter(I_CmsConstants.C_PROPERTY_TEMPLATE);
+            oldValue = request.getParameter(PREFIX_HIDDEN + I_CmsConstants.C_PROPERTY_TEMPLATE);
+            writeProperty(I_CmsConstants.C_PROPERTY_TEMPLATE, paramValue, oldValue, activeProperties);
+            if (paramValue != null && !paramValue.equals(oldValue)) {
+                // template has changed, refresh editor window
+                if (getParamOkFunctions() != null && getParamOkFunctions().startsWith("window.close()")) {
+                    setParamOkFunctions("window.opener.EDITOR.pagetemplate.value='"+paramValue+"';window.opener.doTemplSubmit(3);");
                 }
             }
-            // write the page type property
-            writeProperty(PROP_PAGETYPE, paramValue, oldValue, activeProperties);
-            
-            // get params for showdocument ans write property
-            paramValue = request.getParameter(PREFIX_VALUE + PROP_SHOWDOCUMENT);
-            oldValue = request.getParameter(PREFIX_HIDDEN + PROP_SHOWDOCUMENT);
-            writeProperty(PROP_SHOWDOCUMENT, paramValue, oldValue, activeProperties);         
+                  
         } finally {
             if (useTempfileProject) {
                 switchToCurrentProject();
