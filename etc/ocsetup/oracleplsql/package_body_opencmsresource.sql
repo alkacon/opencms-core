@@ -431,6 +431,9 @@ PACKAGE BODY opencmsresource IS
            sysdate, sysdate, 0, pUserId);
     commit;
   EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+      rollback;
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
     WHEN OTHERS THEN
       rollback;
       RAISE;
@@ -470,6 +473,9 @@ PACKAGE BODY opencmsresource IS
     commit;
     OPEN oResource FOR select * from cms_resources where resource_id = vNewResourceId;
   EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+      rollback;
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
     WHEN OTHERS THEN
       rollback;
       RAISE;
@@ -523,6 +529,9 @@ PACKAGE BODY opencmsresource IS
                               where r.resource_id = vNewResourceId
                               and r.file_id = f.file_id(+);
   EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+      rollback;
+      userErrors.raiseUserError(userErrors.C_FILE_EXISTS);  
     WHEN OTHERS THEN
       rollback;
       RAISE;
