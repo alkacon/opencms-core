@@ -15,6 +15,7 @@ OpenCms 4.5.15 Chusuk       - xx October 2001
   the resources /default/ (for the site), /default/vfs (for resources in the virtual filesystem)
   and /default/cos (for channels) are created in the online and the offline project.
 ! When creating a project the channels can be added to the project, too.
+! The element cache can handle dependencies for variants. 
 * Bugfix 1796: temporary files are not exported.
 * Changes in Synchronize: when creating a resource in the virtual filesystem no exception is thrown
   if the resourcename is not valid.
