@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsInput.java,v $
- * Date   : $Date: 2000/02/15 17:44:01 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2000/03/27 09:53:43 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;INPUT&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.7 $ $Date: 2000/02/15 17:44:01 $
+ * @version $Revision: 1.8 $ $Date: 2000/03/27 09:53:43 $
  */
 public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpConstants  {    
     
@@ -79,8 +79,8 @@ public class CmsInput extends A_CmsWpElement implements I_CmsWpElement, I_CmsWpC
 			// call the method for generating value
 			Method valueMethod = null;
 			try {
-			    valueMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class});
-			    value = (String)valueMethod.invoke(callingObject, new Object[] {cms, lang});
+			    valueMethod = callingObject.getClass().getMethod(method, new Class[] {A_CmsObject.class, CmsXmlLanguageFile.class, Hashtable.class});
+			    value = (String)valueMethod.invoke(callingObject, new Object[] {cms, lang, parameters});
 			} catch(NoSuchMethodException exc) {
 			    // The requested method was not found.
 			    throwException("Could not find method " + method + " in calling class " + callingObject.getClass().getName() + " for generating input value content.", CmsException.C_NOT_FOUND);

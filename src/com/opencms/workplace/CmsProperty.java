@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/03/23 15:14:03 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2000/03/27 09:54:25 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2000/03/23 15:14:03 $
+ * @version $Revision: 1.2 $ $Date: 2000/03/27 09:54:25 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -223,39 +223,6 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
             
         }
         
-       /* // a new owner was given in the request so try to change it
-        if (newgroup != null) {
-
-            // check if the current user has the right to change the group of the
-            // resource. Only the owner of a file and the admin are allowed to do this.
-            if ((cms.getRequestContext().currentUser().equals(cms.readOwner(file))) ||
-                (cms.userInGroup(cms.getRequestContext().currentUser().getName(), C_GROUP_ADMIN))){
-                cms.chgrp(file.getAbsolutePath(),newgroup);
-                //check if the file type name is page
-			    //if so delete the file body and content
-			    // else delete only file
-			    if( (cms.getResourceType(file.getType()).getResourceName()).equals(C_TYPE_PAGE_NAME) ){
-				    String bodyPath=getBodyPath(cms, file);
-				    int help = C_CONTENTBODYPATH.lastIndexOf("/");
-				    String hbodyPath=(C_CONTENTBODYPATH.substring(0,help))+(file.getAbsolutePath());
-				    if (hbodyPath.equals(bodyPath)){
-					    cms.chgrp(hbodyPath,newgroup);
-				    }
-                }      
-                
-                session.removeValue(C_PARA_FILE);
-                // return to filelist
-                try {
-		           cms.getRequestContext().getResponse().sendCmsRedirect( getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST);
-			    } catch (Exception e) {
-			        throw new CmsException("Redirect fails :"+ getConfigFile(cms).getWorkplaceActionPath()+C_WP_EXPLORER_FILELIST,CmsException.C_UNKNOWN_EXCEPTION,e);
-			    }
-            } else {
-                // the current user is not allowed to change the file owner
-                template="error";
-            }
-        }*/
-
          // set the required datablocks
         String title=cms.readMetainformation(file.getAbsolutePath(),C_METAINFO_TITLE);
         if (title==null) {
@@ -337,10 +304,11 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is set into the input field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String getMetainfoValue(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String getMetainfoValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         
         String metaValue=null;

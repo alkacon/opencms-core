@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourceOthertype.java,v $
- * Date   : $Date: 2000/03/22 09:22:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2000/03/27 09:54:05 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -43,7 +43,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.6 $ $Date: 2000/03/22 09:22:34 $
+ * @version $Revision: 1.7 $ $Date: 2000/03/27 09:54:05 $
  */
 public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                                    I_CmsConstants {
@@ -156,10 +156,11 @@ public class CmsNewResourceOthertype extends CmsWorkplaceDefault implements I_Cm
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is set into the new file dialod.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String setValue(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);
         

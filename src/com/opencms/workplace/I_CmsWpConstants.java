@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/I_CmsWpConstants.java,v $
- * Date   : $Date: 2000/03/23 17:03:49 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2000/03/27 09:55:12 $
+ * Version: $Revision: 1.71 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -34,7 +34,7 @@ package com.opencms.workplace;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.70 $ $Date: 2000/03/23 17:03:49 $
+ * @version $Revision: 1.71 $ $Date: 2000/03/27 09:55:12 $
  */
 public interface I_CmsWpConstants {
 
@@ -602,7 +602,10 @@ public interface I_CmsWpConstants {
     
     /** method value of the file list */
     public static final String C_FILELIST_METHOD ="method";
-    
+
+    /** method value of the file list */
+    public static final String C_FILELIST_DISPLAYMETHOD ="namedisplaymethod";
+        
     /** template value for the file list */
     public static final String C_FILELIST_TEMPLATE="template";
     

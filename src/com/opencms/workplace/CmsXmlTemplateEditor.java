@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlTemplateEditor.java,v $
- * Date   : $Date: 2000/03/22 10:39:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2000/03/27 09:55:01 $
+ * Version: $Revision: 1.17 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.16 $ $Date: 2000/03/22 10:39:30 $
+ * @version $Revision: 1.17 $ $Date: 2000/03/27 09:55:01 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -563,10 +563,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setTitle(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String setTitle(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
         String name=(String)session.getValue("te_title");      
@@ -578,10 +579,11 @@ public class CmsXmlTemplateEditor extends CmsWorkplaceDefault implements I_CmsCo
      * This method is directly called by the content definiton.
      * @param Cms The CmsObject.
      * @param lang The language file.
+     * @param parameters User parameters.
      * @return Value that is pre-set into the title field.
      * @exception CmsExeption if something goes wrong.
      */
-    public String setBodyTitle(A_CmsObject cms, CmsXmlLanguageFile lang)
+    public String setBodyTitle(A_CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters)
         throws CmsException {
         HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);        
         String title=(String)session.getValue("te_oldbodytitle");      
