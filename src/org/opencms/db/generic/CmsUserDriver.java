@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:10 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) database server implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.47 $ $Date: 2003/11/14 10:09:10 $
+ * @version $Revision: 1.48 $ $Date: 2003/11/14 16:59:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
@@ -623,7 +623,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
@@ -669,7 +669,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
@@ -706,7 +706,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, true);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 
@@ -1280,7 +1280,7 @@ public class CmsUserDriver extends Object implements I_CmsDriver, I_CmsUserDrive
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 

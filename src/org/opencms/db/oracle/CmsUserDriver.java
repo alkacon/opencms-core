@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.23 $ $Date: 2003/11/14 10:09:15 $
+ * @version $Revision: 1.24 $ $Date: 2003/11/14 16:59:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -257,10 +257,14 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();
-            commit.close();
-            commit = null;
-               
-            stmt.close();
+            
+            m_sqlManager.closeAll(null, stmt, res);
+            m_sqlManager.closeAll(null, commit, null);
+            
+//            commit.close();
+//            stmt.close();
+
+            commit = null;              
             stmt = null;
             res = null;
                           

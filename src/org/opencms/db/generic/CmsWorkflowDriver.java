@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.24 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.25 $ $Date: 2003/11/14 16:59:35 $
  * @since 5.1
  */
 public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkflowDriver {
@@ -587,7 +587,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         boolean first = true;
         Vector tasks = new Vector(); // vector for the return result
         CmsTask task = null; // tmp task for adding to vector
-        ResultSet recset = null;
+        ResultSet res = null;
         Connection conn = null;
 
         // create the sql string depending on parameters
@@ -647,11 +647,11 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
         try {
             conn = m_sqlManager.getConnection();
             stmt = conn.createStatement();
-            recset = stmt.executeQuery(sqlstr);
+            res = stmt.executeQuery(sqlstr);
 
             // if resultset exists - return vector of tasks
-            while (recset.next()) {
-                task = internalCreateTask(recset);
+            while (res.next()) {
+                task = internalCreateTask(res);
                 tasks.addElement(task);
             }
 
@@ -661,7 +661,7 @@ public class CmsWorkflowDriver extends Object implements I_CmsDriver, I_CmsWorkf
             throw m_sqlManager.getCmsException(this, null, CmsException.C_UNKNOWN_EXCEPTION, exc, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         return tasks;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
- * @version $Revision: 1.25 $ $Date: 2003/11/14 10:09:15 $
+ * @version $Revision: 1.26 $ $Date: 2003/11/14 16:59:35 $
  * @since 5.1
  */
 public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
@@ -176,7 +176,7 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, "internalWriteBackupFileContent backupId=" + backupId.toString() + " fileId=" + fileId.toString(), CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:10 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * Generic (ANSI-SQL) implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.136 $ $Date: 2003/11/14 10:09:10 $
+ * @version $Revision: 1.137 $ $Date: 2003/11/14 16:59:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -1779,7 +1779,7 @@ public class CmsProjectDriver extends Object implements I_CmsDriver, I_CmsProjec
             throw m_sqlManager.getCmsException(this, "getOnlineBrokenLinks()", CmsException.C_UNKNOWN_EXCEPTION, e, false);
         } finally {
             // close all db-resources
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
     }
 

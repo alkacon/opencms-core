@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /** 
  * Oracle/OCI implementation of the project driver methods.<p>
  *
- * @version $Revision: 1.17 $ $Date: 2003/11/14 10:09:15 $
+ * @version $Revision: 1.18 $ $Date: 2003/11/14 16:59:35 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -121,10 +121,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();
-            commit.close();
+            
+            m_sqlManager.closeAll(null, stmt, res);
+            m_sqlManager.closeAll(null, commit, null);
+            
+//            commit.close(); 
+//            stmt.close();
+            
             commit = null;
-               
-            stmt.close();
             stmt = null;
             res = null;
                           
@@ -250,8 +254,8 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                     stmt2 = null;                    
                 }
                 
-                stmt.close();
-                stmt = null;
+//                stmt.close();
+//                stmt = null;
                                 
                 // read the file offline
                 // offlineFile = m_driverManager.getVfsDriver().readFile(offlineProject.getId(), false, offlineFileHeader.getStructureId());
@@ -278,6 +282,9 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
             }
 
             throw e;
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, res);
+            m_sqlManager.closeAll(null, stmt2, null);
         }
         
         return newFile;
@@ -320,10 +327,14 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
                          
             commit = m_sqlManager.getPreparedStatement(conn, "C_COMMIT");
             commit.execute();
-            commit.close();
+            
+            m_sqlManager.closeAll(null, stmt, res);
+            m_sqlManager.closeAll(null, commit, null);
+            
+//            commit.close();              
+//            stmt.close();
+
             commit = null;
-               
-            stmt.close();
             stmt = null;
             res = null;
                           

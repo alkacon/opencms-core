@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2003/11/13 10:29:26 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2003/11/14 16:59:35 $
+ * Version: $Revision: 1.157 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.156 $ $Date: 2003/11/13 10:29:26 $
+ * @version $Revision: 1.157 $ $Date: 2003/11/14 16:59:35 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -1014,7 +1014,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         return count;
@@ -1030,9 +1030,9 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         List undeletedResources = (List)new ArrayList();
 
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource res = (CmsResource)resources.get(i);
-            if (res.getState() != I_CmsConstants.C_STATE_DELETED) {
-                undeletedResources.add(res);
+            CmsResource resource = (CmsResource)resources.get(i);
+            if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+                undeletedResources.add(resource);
             }
         }
 
@@ -1476,7 +1476,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public Map readProperties(int projectId, CmsResource resource, int resourceType) throws CmsException {
         HashMap returnValue = new HashMap();
-        ResultSet result = null;
+        ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -1493,14 +1493,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(1, resourceId.toString());
             stmt.setString(2, resource.getStructureId().toString() /* resourceName */);
             stmt.setInt(3, resourceType);
-            result = stmt.executeQuery();
-            while (result.next()) {
-                returnValue.put(result.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
+            res = stmt.executeQuery();
+            while (res.next()) {
+                returnValue.put(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, result);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return (returnValue);
     }
@@ -1510,7 +1510,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
      */
     public String readProperty(String meta, int projectId, CmsResource resource, int resourceType) throws CmsException {
 
-        ResultSet result = null;
+        ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
         String returnValue = null;
@@ -1531,14 +1531,14 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
             stmt.setString(3, resourceId);
             stmt.setString(4, resource.getStructureId().toString() /* resourceName */);
 
-            result = stmt.executeQuery();
-            if (result.next()) {
-                returnValue = result.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE"));
+            res = stmt.executeQuery();
+            if (res.next()) {
+                returnValue = res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE"));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, result);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         return returnValue;
@@ -1985,7 +1985,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
             m_sqlManager.closeAll(null, statementProp, null);
             m_sqlManager.closeAll(null, statementCont, null);
         }
@@ -2071,7 +2071,7 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         } catch (SQLException e) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, e, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, null);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
 
         return exists;

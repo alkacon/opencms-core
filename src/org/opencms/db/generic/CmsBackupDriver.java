@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/11/14 10:09:10 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2003/11/14 16:59:36 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.75 $ $Date: 2003/11/14 10:09:10 $
+ * @version $Revision: 1.76 $ $Date: 2003/11/14 16:59:36 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -746,7 +746,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
      */
     public HashMap readBackupProperties(CmsBackupResource resource) throws CmsException {
         HashMap returnValue = new HashMap();
-        ResultSet result = null;
+        ResultSet res = null;
         PreparedStatement stmt = null;
         Connection conn = null;
 
@@ -764,14 +764,14 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(2, resource.getStructureId().toString());
             stmt.setInt(3, resource.getType());
             stmt.setInt(4, resource.getTagId());
-            result = stmt.executeQuery();
-            while (result.next()) {
-                returnValue.put(result.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
+            res = stmt.executeQuery();
+            while (res.next()) {
+                returnValue.put(res.getString(m_sqlManager.readQuery("C_PROPERTYDEF_NAME")), res.getString(m_sqlManager.readQuery("C_PROPERTY_VALUE")));
             }
         } catch (SQLException exc) {
             throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
         } finally {
-            m_sqlManager.closeAll(conn, stmt, result);
+            m_sqlManager.closeAll(conn, stmt, res);
         }
         return (returnValue);
     }
