@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2003/09/26 16:00:00 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2003/09/29 19:10:50 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,10 @@ package org.opencms.loader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsResourceTranslator;
 
 import com.opencms.core.CmsException;
+import com.opencms.core.CmsRequestHttpServlet;
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsRequest;
 import com.opencms.core.I_CmsResponse;
@@ -79,7 +81,7 @@ import source.org.apache.java.util.Configurations;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  */
 public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
     
@@ -210,8 +212,14 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
      * @see org.opencms.loader.I_CmsResourceLoader#export(com.opencms.file.CmsObject, com.opencms.file.CmsFile, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public byte[] export(CmsObject cms, CmsFile file, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException, CmsException {
-        // TODO: Auto-generated method stub
-        return null;
+        // TODO: get real file translator
+        CmsRequestHttpServlet cmsReq = new CmsRequestHttpServlet(req, new CmsResourceTranslator(new String[0], true));
+        byte[] result = generateOutput(cms, file, cmsReq);
+        if (result != null) {
+            return result;
+        } else {
+            return "".getBytes();
+        }
     }        
     
     /**
@@ -656,8 +664,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader {
         
         // get the CmsRequest
         I_CmsRequest req = cms.getRequestContext().getRequest();
-        byte[] result = null;
-        result = generateOutput(cms, file, req);
+        byte[] result = generateOutput(cms, file, req);
         if (result != null) {
             writeBytesToResponse(cms, result);
         }
