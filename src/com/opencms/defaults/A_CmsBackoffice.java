@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2001/10/19 15:03:09 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/10/22 11:36:01 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1217,6 +1217,8 @@ public byte[] getContent(CmsObject cms, String templateFile, String elementName,
             setLockstates(cms, template, cdClass, entryObject, parameters);
             //set the projectflag for the current entry
             setProjectFlag(cms, template, cdClass, entryObject, parameters);
+            // set the context menu of the current entry
+            setContextMenu(cms, template, entryObject);
 
             //insert single table row in template
             template.setData("entry", entry);
@@ -1794,6 +1796,7 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
 
         //init project flag vars
         int state = 0;
+        int lockstate = -1;
         int projectId = 1;
         int actProjectId = cms.getRequestContext().currentProject().getId();
         String style = new String();
@@ -1807,10 +1810,20 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
             }
         }
 
-        if (projectId != actProjectId) {
-            // is in this project
+        if (actProjectId == C_PROJECT_ONLINE_ID){
+            style = this.C_STYLE_UNCHANGED;
+        } else if (projectId != actProjectId) {
+            // not is in this project
             style = this.C_STYLE_NOTINPROJECT;
         } else {
+            // get the lockstate of an entry: if its unlocked and changed enable direct publish
+            try {
+                lockstate = ((A_CmsContentDefinition)entryObject).getLockstate();
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
+                }
+            }
             // get the state of an entry: if its unchanged do not change the font
             try {
                 state = ((I_CmsExtendedContentDefinition)entryObject).getState();
@@ -1837,6 +1850,70 @@ private Object getContentMethodObject(CmsObject cms, Class cdClass, String metho
         }
         // if there was an exception return an empty string
         return style;
+    }
+
+    /**
+     * Set the context menu for the current list entry.
+     *
+     * @param cms The current CmsObject.
+     * @param template The current template.
+     * @param entryObject
+     */
+    private void setContextMenu(CmsObject cms, CmsXmlWpTemplateFile template, Object entryObject) {
+
+        //init project flag vars
+        int state = 0;
+        int lockstate = -1;
+        int projectId = 1;
+        int actProjectId = cms.getRequestContext().currentProject().getId();
+        String style = new String();
+
+        // get the projectid of the entry
+        try{
+            projectId = ((I_CmsExtendedContentDefinition)entryObject).getProjectId();
+        } catch (Exception e) {
+            if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getProjectId throwed an exception: "+e.toString());
+            }
+        }
+
+        if (actProjectId == C_PROJECT_ONLINE_ID){
+            template.setData("backofficecontextmenue", "backofficeonline");
+        } else if (projectId != actProjectId) {
+            // not is in this project
+            template.setData("backofficecontextmenue", "backofficenoaccess");
+        } else {
+            // get the lockstate of an entry: if its unlocked and changed enable direct publish
+            try {
+                lockstate = ((A_CmsContentDefinition)entryObject).getLockstate();
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getLockstate throwed an exception: "+e.toString());
+                }
+            }
+            // get the state of an entry: if its unchanged do not change the font
+            try {
+                state = ((I_CmsExtendedContentDefinition)entryObject).getState();
+            } catch (Exception e) {
+                if (I_CmsLogChannels.C_PREPROCESSOR_IS_LOGGING && A_OpenCms.isLogging() ) {
+                    A_OpenCms.log(C_OPENCMS_INFO, getClassName() + ": Backoffice setFontFormat: Method getState throwed an exception: "+e.toString());
+                }
+            }
+
+            if(lockstate == C_UNKNOWN_ID){
+                if(state == C_STATE_UNCHANGED){
+                    template.setData("backofficecontextmenue", "backofficenolock");
+                } else if (state == C_STATE_DELETED){
+                    template.setData("backofficecontextmenue", "backofficedeleted");
+                } else {
+                    template.setData("backofficecontextmenue", "backofficenolockchanged");
+                }
+            } else if (lockstate != cms.getRequestContext().currentUser().getId()){
+                template.setData("backofficecontextmenue", "backofficelock");
+            } else {
+                template.setData("backofficecontextmenue", "backofficelockuser");
+            }
+        }
     }
 
     /**

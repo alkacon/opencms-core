@@ -110,6 +110,9 @@ function show_help()
 	var editUrl="]]><Method name="getServletPath"/><METHOD name="getEditUrl"/><![CDATA[";
 	var backofficeUrl="]]><Method name="getServletPath"/><METHOD name="getBackofficeUrl"/><![CDATA[";
 	var deleteUrl="]]><Method name="getServletPath"/><METHOD name="getDeleteUrl"/><![CDATA[";
+	var publishUrl="]]><Method name="getServletPath"/><METHOD name="getPublishUrl"/><![CDATA[";
+	var historyUrl="]]><Method name="getServletPath"/><METHOD name="getHistoryUrl"/><![CDATA[";
+	var undeleteUrl="]]><Method name="getServletPath"/><METHOD name="getUndeleteUrl"/><![CDATA[";
 </SCRIPT>
 
 <head>
@@ -150,6 +153,7 @@ start();
 <contextmenue name="backofficeedit"> 
 	<contextentry name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
 	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficelock"> 
@@ -157,6 +161,9 @@ start();
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.overridelock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 		
 <contextmenue name="backofficelockuser"> 
@@ -164,6 +171,9 @@ start();
 	<contextentry name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.unlock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenolock"> 
@@ -171,10 +181,33 @@ start();
 	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
 	<contextspacer/>
 	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextdisabled name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+</contextmenue>
+
+<contextmenue name="backofficenolockchanged"> 
+	<contextdisabled name="button.edit" href="javascript:location.href=editUrl+'?idedit='+kontextparam;"/>
+	<contextdisabled name="explorer.context.delete" href="javascript:location.href=deleteUrl+'?iddelete='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.lock" href="javascript:location.href=backofficeUrl+'?idlock='+kontextparam;"/>
+	<contextentry name="explorer.context.publish" href="javascript:location.href=publishUrl+'?idpublish='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 <contextmenue name="backofficenoaccess"> 
 	<contextdisabled name="explorer.context.noaccess" href="#"/>	
+</contextmenue>
+
+<contextmenue name="backofficeonline"> 
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
+</contextmenue>
+
+<contextmenue name="backofficedeleted"> 
+	<contextentry name="explorer.context.undelete" href="javascript:location.href=undeleteUrl+'?idundelete='+kontextparam;"/>
+	<contextspacer/>
+	<contextentry name="explorer.context.history" href="javascript:location.href=historyUrl+'?idhistory='+kontextparam;"/>
 </contextmenue>
 
 </TEMPLATE>
