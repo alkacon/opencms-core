@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/02/17 12:44:32 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/03/02 15:51:57 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.search.Searcher;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.30 $ $Date: 2005/02/17 12:44:32 $
+ * @version $Revision: 1.31 $ $Date: 2005/03/02 15:51:57 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -380,6 +380,9 @@ public class CmsSearchIndex {
         Field field = null;
         String path = null;
         
+        long totalSearchDuration = -System.currentTimeMillis();
+        long luceneSearchDuration = 0;
+        
         Map searchCache = OpenCms.getSearchManager().getResultCache();
         String cacheKey = cms.getRequestContext().currentUser().getName()
             + "_"
@@ -451,9 +454,11 @@ public class CmsSearchIndex {
                     query = QueryParser.parse(searchQuery, I_CmsDocumentFactory.DOC_CONTENT, OpenCms.getSearchManager()
                         .getAnalyzer(m_locale));
                 }
-    
+
+                luceneSearchDuration = -System.currentTimeMillis();
                 searcher = new IndexSearcher(m_path);
                 hits = searcher.search(query);
+                luceneSearchDuration += System.currentTimeMillis();
                 
                 foundDocuments = new ArrayList(hits.length());
                 scores = new ArrayList(hits.length());
@@ -555,6 +560,13 @@ public class CmsSearchIndex {
         // save the total count of search results at the last index of the search result
         searchResults.add(new Integer(foundDocuments.size()));        
         searchCache.put(cacheKey, searchResults);
+
+        totalSearchDuration += System.currentTimeMillis();
+        
+        if (OpenCms.getLog(this).isDebugEnabled()) {
+            OpenCms.getLog(this).debug(hits.length() + " results found in "
+                + totalSearchDuration + " ms" + " (Lucene: " + luceneSearchDuration + " ms)");
+        }
         
         return searchResults;
     }
