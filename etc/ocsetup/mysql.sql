@@ -419,6 +419,7 @@ create table CMS_MODULE_ONLINE_MASTER   (MASTER_ID              int not null,
                                          DATA_DATE_2            datetime,
                                          DATA_DATE_3            datetime,
                                          DATA_DATE_4            datetime,
+                                         index iSUB_ID (SUB_ID),
                                          primary key(MASTER_ID));
                                          
 create table CMS_MODULE_ONLINE_CHANNEL_REL
@@ -546,6 +547,7 @@ create table CMS_MODULE_MASTER          (MASTER_ID              int not null,
                                          DATA_DATE_2            datetime,
                                          DATA_DATE_3            datetime,
                                          DATA_DATE_4            datetime,
+                                         index iSUB_ID (SUB_ID),
                                          primary key(MASTER_ID));
 
 create table CMS_MODULE_CHANNEL_REL

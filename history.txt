@@ -9,6 +9,7 @@ Legend:
 - General comment
 
 OpenCms 4.5.32 Chusuk       - xx January 2001
+- Index added on field sub_id in table cms_module_master and cms_module_online_master
 * when the property export is set to https, the 404 error is thrown only in the online project
   and it works for folders too.
 * Bugfix in subressource-cache. Now the subressource-cache is user dependend.
