@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
-* Date   : $Date: 2001/09/12 13:11:59 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2001/09/13 09:05:23 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -97,6 +97,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault implements I_CmsCo
         jsOutput.append(" this.langup=\"" + lang.getLanguageValue("button.parent") + "\";\n");
         jsOutput.append(" this.langnew=\"" + lang.getLanguageValue("button.new") + "\";\n");
         jsOutput.append(" this.langadress=\"" + lang.getLanguageValue("input.adress") + ":\";\n");
+        jsOutput.append(" this.langpage=\"" + lang.getLanguageValue("input.page") + "\";\n");
         jsOutput.append(" this.langloading=\"" + lang.getLanguageValue("label.loading") + "\";\n");
         jsOutput.append(" this.altlockedby=\"" + lang.getLanguageValue("explorer.lockedby") + "\";\n");
         jsOutput.append(" this.altlockedin=\"" + lang.getLanguageValue("explorer.lockedin") + "\";\n");

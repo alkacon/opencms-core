@@ -485,6 +485,7 @@
             <messagecompleted>Mesage when completed</messagecompleted>
             <messagemembers>Inform all role members of the task</messagemembers>
             <moveto>Move to</moveto>
+            <page>Page:</page>
             <promptgroup>Please choose group ...</promptgroup>
             <propertydef>Select Property</propertydef>
             <newpropertydefvalue>Enter Property Value</newpropertydefvalue>

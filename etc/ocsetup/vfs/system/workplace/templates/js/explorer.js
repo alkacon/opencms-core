@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/etc/ocsetup/vfs/system/workplace/templates/js/Attic/explorer.js,v $
-* Date   : $Date: 2001/09/12 13:35:37 $
-* Version: $Revision: 1.43 $
+* Date   : $Date: 2001/09/13 09:05:23 $
+* Version: $Revision: 1.44 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -439,7 +439,11 @@
  top.window.frames[1].frames[1].frames[1].document.close();
 
      folder=top.window.frames[1].frames[1].frames[0].document.forms.urlform.url.value;
-     top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum;
+     selectedpage="";
+     if(top.window.frames[1].frames[1].frames[0].document.forms.urlform.pageSelect){
+        selectedpage=top.window.frames[1].frames[1].frames[0].document.forms.urlform.pageSelect.value;
+     }
+     top.window.frames[1].frames[1].frames[1].document.location="explorer_files.html?folder="+folder+"&check="+vi.checksum+"&selPage="+selectedpage;
 
      //window.alert("explorer_files.html?folder="+folder+"&check="+vi.checksum);
 
@@ -762,12 +766,26 @@ function showTree(doc,windowed) {
  /**
   *  display "explorer_head" frame
   */
- function displayHead(doc){
+ function displayHead(doc, pages, actpage){
 
  if(vr.actDirectory=="/")dirup="";
 else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_up');\" onmouseout=\"top.choff(document,'bt_up');\">";
 
-
+var pageSelect="";
+if(pages>1){
+    pageSelect= "<td class=menubold><p class=einzug><b>&nbsp;"+vr.langpage+"&nbsp;&nbsp;&nbsp;</b></p></td>"+
+                "<td class=menu>"+
+                "<p class=einzug>"+
+                "<select name='pageSelect' width=50 style='width:50px' onchange='javascript:top.openurl();return false;'>";
+    for(i=1;i<=pages;i++){
+        if(i==actpage){
+            pageSelect+="<option value='"+i+"' selected>"+i;
+        }else{
+            pageSelect+="<option value='"+i+"'>"+i;
+        }
+    }
+    pageSelect+="</select></p></td>";
+}
 
     var headHead="<html><head><title>opencms</title>"+
             "<style type='text/css'>"+
@@ -792,7 +810,7 @@ else dirup="<a href=javascript:top.dirUp(); onmouseover=\"top.chon(document,'bt_
             "<td class=menubold nowrap align=right valign=middle><p class=einzug> <b>&nbsp;"+vr.langadress+"&nbsp;</b> </td>"+
             "<td class=menu nowrap align=left valign=middle>"+
             "<input value="+vr.actDirectory+" size=50 maxlength=255 name=url id=url class=textfeld2>"+
-            "</td></tr></table></form></body></html>";
+            "</td>"+pageSelect+"</tr></table></form></body></html>";
 
     doc.open();
     doc.writeln(headHead);
@@ -1233,8 +1251,11 @@ function enableNewButton(showit){
 
 /**
  *  do an update (filelist display)
+ *  pages: are the nummber of pages that are selectable from the head
+ *  (if a filelist has more than X entrys, 0 otherwise)
+ *  actpage: the aktual shown page
  */
-function dU(doc){
+function dU(doc, pages, actpage){
     vi.lastLayer=null;
     vi.locklength=0;
     vi.doc=doc;
@@ -1242,11 +1263,12 @@ function dU(doc){
     printList(doc);
     folderOpen(vr.actDirId);
     showTree(explorer_tree,0);
-    displayHead(explorer_head);
+    displayHead(explorer_head, pages, actpage);
 }
 
 /**
  *  do an update (filelist display)
+ *  I think this is used if there is no head to display (projectlist, picgallery, etc.)
  */
 function dUL(doc){
     vi.lastLayer=null;

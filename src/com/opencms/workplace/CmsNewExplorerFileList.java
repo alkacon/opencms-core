@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2001/09/12 13:34:51 $
-* Version: $Revision: 1.36 $
+* Date   : $Date: 2001/09/13 09:05:23 $
+* Version: $Revision: 1.37 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.36 $ $Date: 2001/09/12 13:34:51 $
+ * @version $Revision: 1.37 $ $Date: 2001/09/13 09:05:23 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -57,6 +57,15 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
      */
     private static I_CmsTemplateCache m_cache = null;
 
+
+    /**
+     * This is the nummber of resources that are shown on one page.
+     * If a folder contains more than this we have to split the entrys
+     * on more than one page.
+     * TODO: this should be saved iin the usersettiings, so each user
+     *      can say how much he wants to see at once(and how long he has to wait for it)
+     */
+    private final static int C_ENTRYS_PER_PAGE = 50;
 
     /** Boolean for additional debug output control */
     private static final boolean C_DEBUG = false;
@@ -140,6 +149,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             A_OpenCms.log(C_OPENCMS_DEBUG, "[CmsDumpTemplate] Now dumping contents of file "
                     + templateFile);
         }
+System.err.println("mgm--parameter"+parameters);
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpTemplateFile templateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = templateDocument.getLanguageFile();
@@ -177,6 +187,7 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         }catch(Exception e) {
         }
         check = cms.getFileSystemFolderChanges();
+
         // get the currentFolder Id
         int currentFolderId = (cms.readFolder(currentFolder)).getResourceId();
         // start creating content
@@ -226,9 +237,42 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
         boolean showGroup = (filelist & C_FILELIST_GROUP) > 0;
         boolean showSize = (filelist & C_FILELIST_SIZE) > 0;
 
-        // now the entries for the filelist
+        // now get the entries for the filelist
         Vector resources = getRessources(cms, currentFolder, projectView);
-        for(int i = 0;i < resources.size();i++) {
+
+        // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE
+        // but only in the explorer view
+        int startat = 0;
+        int stopat = resources.size();
+        int selectedPage = 1;
+        int numberOfPages = 0;
+        int maxEntrys = C_ENTRYS_PER_PAGE; // later this comes from the usersettings
+        if(!(listonly || projectView)){
+            String selPage = (String)parameters.get("selPage");
+            if(selPage != null && !"".equals(selPage)){
+                try{
+                    selectedPage = Integer.parseInt(selPage);
+                }catch(Exception e){
+                }
+            }
+            if(stopat > maxEntrys){
+                // we have to splitt
+                numberOfPages = (stopat / maxEntrys) +1;
+                if(selectedPage > numberOfPages){
+                    // the user has changed the folder and then selected a page for the old folder
+                    selectedPage =1;
+                }
+                startat = (selectedPage -1) * maxEntrys;
+                if((startat + maxEntrys) < stopat){
+                    stopat = startat + maxEntrys;
+                }
+            }
+System.err.println("mgm--selected page found in parameters:"+selectedPage);
+System.err.println("mgm--we have "+resources.size()+" resources to show.");
+System.err.println("mgm--we show now: "+startat+" <= x < "+stopat);
+        }
+
+        for(int i = startat;i < stopat;i++) {
             CmsResource res = (CmsResource)resources.elementAt(i);
             content.append("top.aF(");
             // the name
@@ -394,7 +438,8 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             content.append(" top.dUL(document); \n");
         } else {
             // update all frames
-            content.append(" top.dU(document); \n");
+System.err.println("mgm--call : top.dU(document,"+numberOfPages+","+selectedPage+");");
+            content.append(" top.dU(document,"+numberOfPages+","+selectedPage+"); \n");
         }
         content.append("}\n");
         content.append("</script>\n</head> \n<BODY onLoad=\"initialize()\"></BODY> \n</html>\n");

@@ -500,6 +500,7 @@
             <none>-- keine --</none>
             <oldpwd>Aktuelles Kennwort</oldpwd>
             <owner>Eigentümer</owner>
+            <page>Seite:</page>
             <padding>Rahmen</padding>
             <paddinginfo>Bildschirmpunkte in den Zellen</paddinginfo>
             <password>Kennwort</password> 
