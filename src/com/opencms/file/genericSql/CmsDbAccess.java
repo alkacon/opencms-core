@@ -2,8 +2,8 @@ package com.opencms.file.genericSql;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
- * Date   : $Date: 2000/11/16 11:17:52 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2000/11/20 14:22:48 $
+ * Version: $Revision: 1.168 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -51,7 +51,7 @@ import com.opencms.util.*;
  * @author Hanjo Riege
  * @author Anders Fugmann
  * @author Finn Nielsen
- * @version $Revision: 1.167 $ $Date: 2000/11/16 11:17:52 $ * 
+ * @version $Revision: 1.168 $ $Date: 2000/11/20 14:22:48 $ * 
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 	
@@ -761,17 +761,21 @@ public I_CmsDbPool createCmsDbPool(String driver, String url, String user, Strin
 		  }
 		   
 		   // Test if the file is already there and marked as deleted.
-		   // If so, delete it
+		   // If so, delete it. 
+		   // If the file exists already and is not marked as deleted then throw exception
 		   try {
- 
-			readFileHeader(project.getId(),filename);     
+				CmsFile exFile = readFileHeader(project.getId(),filename);
+				throw new CmsException("["+this.getClass().getName()+"] ",CmsException.C_FILE_EXISTS);
 		   } catch (CmsException e) {
-			   // if the file is maked as deleted remove it!
+			   // if the file is marked as deleted remove it!
 			   if (e.getType()==CmsException.C_RESOURCE_DELETED) {
 
 					removeFile(project.getId(),filename);
 					state=C_STATE_CHANGED;
-			   }              
+			   }
+			   if (e.getType()==CmsException.C_FILE_EXISTS) {
+				   throw e;
+			   }	    
 		   }
 		   
 		   int newFileId = file.getFileId();
