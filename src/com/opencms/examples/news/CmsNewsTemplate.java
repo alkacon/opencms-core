@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplate.java,v $
- * Date   : $Date: 2000/03/16 19:19:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2000/03/27 09:57:24 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -56,7 +56,7 @@ import javax.servlet.http.*;
  *
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.3 $ $Date: 2000/03/16 19:19:57 $
+ * @version $Revision: 1.4 $ $Date: 2000/03/27 09:57:24 $
  * @see com.opencms.examples.CmsXmlNewsTemplateFile
  */
 public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstants, I_CmsLogChannels {
@@ -161,7 +161,10 @@ public class CmsNewsTemplate extends CmsXmlTemplate implements I_CmsNewsConstant
             if(tagcontent.toLowerCase().equals("externallink")) {
                 result = article.getNewsExternalLink();
             } else if(tagcontent.toLowerCase().equals("date")) {
-                result = Utils.getNiceShortDate(article.getNewsDate());
+                long newsDate = article.getNewsDate();
+                if(newsDate != 0) {
+                    result = Utils.getNiceShortDate(article.getNewsDate());
+                } 
             } else if(tagcontent.toLowerCase().equals("author")) {
                 result = article.getNewsAuthor();
             } else if(tagcontent.toLowerCase().equals("headline")) {

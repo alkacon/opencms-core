@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/examples/news/Attic/CmsNewsTemplateFile.java,v $
- * Date   : $Date: 2000/03/22 10:36:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2000/03/27 09:57:45 $
+ * Version: $Revision: 1.3 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import java.util.*;
  * Sample content definition for news articles.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2000/03/22 10:36:05 $
+ * @version $Revision: 1.3 $ $Date: 2000/03/27 09:57:45 $
  */
  public class CmsNewsTemplateFile extends A_CmsXmlContent implements I_CmsNewsConstants {
 
@@ -128,14 +128,17 @@ import java.util.*;
      * @return Date.
      */
     public long getNewsDate() throws CmsException {
+        long result = 0;
         String dateText = getDataValue(C_NEWS_XML_DATE);
-        String splittetDate[] = Utils.split(dateText, ".");
-        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-                Integer.parseInt(splittetDate[1]) - 1,
-                Integer.parseInt(splittetDate[0]), 0, 0, 0);
-        //long newsDate = cal.getTime().getTime();
         
-        return cal.getTime().getTime();
+        if(dateText != null && !"".equals(dateText)) {
+            String splittetDate[] = Utils.split(dateText, ".");
+            GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
+                    Integer.parseInt(splittetDate[1]) - 1,
+                    Integer.parseInt(splittetDate[0]), 0, 0, 0);
+            result = cal.getTime().getTime();
+        }
+        return result;
     }
 
     /**
