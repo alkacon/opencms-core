@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsStaticExportCronJob.java,v $
- * Date   : $Date: 2004/04/13 15:08:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/04/13 15:29:30 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.ServletException;
  * </pre>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsStaticExportCronJob extends Object implements I_CmsCronJob {
 
@@ -65,7 +65,7 @@ public class CmsStaticExportCronJob extends Object implements I_CmsCronJob {
         I_CmsReport report = null;
         
         try {
-            report = (I_CmsReport) new CmsLogReport();
+            report = (I_CmsReport) new CmsLogReport(CmsStaticExportCronJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(cms, true, report);
         } catch (CmsException e) {
             report.println(e);
@@ -74,7 +74,7 @@ public class CmsStaticExportCronJob extends Object implements I_CmsCronJob {
         } catch (ServletException e) {
             report.println(e);
         }  finally {
-            // append runtime statistics to report
+            // append runtime statistics to the report
             StringBuffer stats = new StringBuffer();
             stats.append(report.key("report.publish_stats"));
             stats.append(report.key("report.publish_stats_duration"));
