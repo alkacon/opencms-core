@@ -233,7 +233,7 @@ function show_help()
 <SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="../templates/js/opencms.js"></SCRIPT>
 
 </HEAD>
-<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload="updateFrame('body.explorer_content.explorer_files', 'rename.html?action=ok');">
+<BODY bgcolor="#ffffff" marginwidth = 0 marginheight = 0 topmargin=0 leftmargin=0 onload="location.href='rename.html?action=ok'">
 <CENTER>
 <!-- Begin Logo opencms -->
 <table border=0 cellspacing=0 cellpadding=0 align=center height=100>

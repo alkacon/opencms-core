@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2000/04/26 07:48:04 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2000/05/03 11:17:47 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -42,7 +42,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2000/04/26 07:48:04 $
+ * @version $Revision: 1.9 $ $Date: 2000/05/03 11:17:47 $
  */
 public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants,
                                                              I_CmsConstants {
@@ -81,6 +81,10 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         // the template to be displayed
         String template=null;
                              
+		String lasturl = getLastUrl(cms, parameters);
+		System.err.println("CmsProperty: lasturl="+lasturl);
+		
+		
         // clear session values on first load
         String initial=(String)parameters.get(C_PARA_INITIAL);
         if (initial!= null) {
@@ -238,6 +242,7 @@ public class CmsProperty extends CmsWorkplaceDefault implements I_CmsWpConstants
         xmlTemplateDocument.setData("OWNER",owner.getFirstname()+" "+owner.getLastname()+"("+owner.getName()+")");
         xmlTemplateDocument.setData("GROUP",cms.readGroup(file).getName());
 		xmlTemplateDocument.setData("FILENAME",file.getName());
+		xmlTemplateDocument.setData("lasturl", lasturl);
    
         
         // process the selected template 

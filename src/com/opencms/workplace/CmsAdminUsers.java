@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminUsers.java,v $
- * Date   : $Date: 2000/05/02 16:13:19 $
- * Version: $Revision: 1.5 $Selector
+ * Date   : $Date: 2000/05/03 11:17:47 $
+ * Version: $Revision: 1.6 $Selector
 
  *
  * Copyright (C) 2000  The OpenCms Group 
@@ -43,7 +43,7 @@ import javax.servlet.http.*;
  * <P>
  * 
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2000/05/02 16:13:19 $
+ * @version $Revision: 1.6 $ $Date: 2000/05/03 11:17:47 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants {
@@ -704,6 +704,36 @@ public class CmsAdminUsers extends CmsWorkplaceDefault implements I_CmsConstants
 			}  
         return new Integer(-1); // none preselected
     }
+	
+	/**
+     * Gets all groups in which the user is, i.e. the selected ones and the indirect ones
+     * The given vectors <code>names</code> and <code>values</code> will 
+     * be filled with the appropriate information to be used for building
+     * a select box.
+     * 
+     * @param cms A_CmsObject Object for accessing system resources.
+     * @param names Vector to be filled with the appropriate values in this method.
+     * @param values Vector to be filled with the appropriate values in this method.
+     * @param parameters Hashtable containing all user parameters <em>(not used here)</em>.
+     * @return Index representing the default Group of the user
+     * @exception CmsException
+     */
+	
+	public Integer getGroupsOfUser(A_CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) 
+		throws CmsException {  
+		HttpSession session= ((HttpServletRequest)cms.getRequestContext().getRequest().getOriginalRequest()).getSession(true);   
+       	
+		String defaultGroup =(String) session.getValue("DEFAULTGROUP");
+		if (defaultGroup == null) {
+			defaultGroup = "";
+		}
+		
+		getSelectedGroups(cms, lang, names, values, parameters); 
+		getIndirectGroups(cms, lang, names, values, parameters); 
+		
+        return new Integer(names.indexOf(defaultGroup)); 
+    }
+	
 	
 	 /**
      * change the groups of the user
