@@ -11,7 +11,7 @@ import java.util.*;
  * Content definition for "clickable" and user requestable XML body files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/11 18:49:34 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 14:10:23 $
  */
 public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChannels {
 
@@ -141,6 +141,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     }
 
     /**
+     * Sets the template class of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @param classname Classname to be set.
+     */
+    public void setElementClass(String elementName, String classname) {
+        setData("ELEMENTDEF." + elementName + ".CLASS", classname); 
+    }
+        
+    /**
      * Gets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
@@ -150,6 +159,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
     }
 
     /**
+     * Sets the filename of the master template file of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @filename Filename to be set.
+     */
+    public void setElementTemplate(String elementName, String filename) {
+        setData("ELEMENTDEF." + elementName + ".TEMPLATE", filename); 
+    }
+    
+    /**
      * Gets the filename of the master template file of a given subelement definition.
      * @param elementName Name of the subelement.
      * @return Filename of the template file.
@@ -158,6 +176,15 @@ public class CmsXmlControlFile extends A_CmsXmlContent implements I_CmsLogChanne
         return getDataValue("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR"); 
     }
         
+    /**
+     * Sets the filename of the master template file of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @param templateSelector Template selector to be set.
+     */
+    public void setElementTemplSelector(String elementName, String templateSelector) {
+        setData("ELEMENTDEF." + elementName + ".TEMPLATESELECTOR", templateSelector); 
+    }
+
     /**
      * Gets an enumeration of all names of the subelement definition in the
      * body file.

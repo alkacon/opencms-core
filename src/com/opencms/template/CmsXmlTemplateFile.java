@@ -12,7 +12,7 @@ import java.io.*;
  * Content definition for XML template files.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/02/11 18:51:29 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 14:10:23 $
  */
 public class CmsXmlTemplateFile extends A_CmsXmlContent {
 
@@ -107,6 +107,26 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     public String getSubtemplateFilename(String name) throws CmsException {
         String className = getDataValue("ELEMENTDEF." + name + ".TEMPLATE");
         return className;
+    }    
+
+    /**
+     * Gets the template selector of the master template file of a given subelement definition.
+     * @param elementName Name of the subelement.
+     * @return Filename of the template file.
+     */
+    public String getSubtemplateSelector(String name) throws CmsException {
+        String templateSelector = getDataValue("ELEMENTDEF." + name + ".TEMPLATESELECTOR");
+        return templateSelector;
+    }    
+
+    /**
+     * Checks if there is a template selector defined in the subelement definition of
+     * this template file.
+     * @param elementName Name of the subelement.
+     * @return <code>true</code>, if there exists a template selector, <code>false</code> otherwise.
+     */
+    public boolean hasSubtemplateSelector(String name) throws CmsException {
+        return hasData("ELEMENTDEF." + name + ".TEMPLATESELECTOR");
     }    
     
     /**
@@ -216,9 +236,11 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
  
     public void setEditedTemplateContent(String content, String templateSelector, boolean html) throws CmsException {
         System.err.println("*** NOW WRITING BACK CONTENT. HTML = " + html);
+        System.err.println("*** TEMPLATE SELECTOR IS: " + templateSelector);
         System.err.println(content);
         System.err.println("-----------------");
         String datablockName = this.getTemplateDatablockName(templateSelector);
+        System.err.println("*** DATABLOCK NAME IS: " + datablockName);
         Element data = getData(datablockName);
 
         if(html) {
@@ -294,8 +316,13 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
     }
         
     public String getEditableTemplateContent(Object callingObject, Hashtable parameters, String templateSelector) throws CmsException {
+
+            System.err.println("### And still the content is:");
+            System.err.println(getXmlText());
+        
         String datablockName = this.getTemplateDatablockName(templateSelector);
         Element data = getData(datablockName);
+        System.err.println("+++++++++ " + getDataValue(datablockName));
         StringBuffer result = new StringBuffer();
         
         Document tempDoc = (Document)getXmlDocument().cloneNode(true);
@@ -306,7 +333,7 @@ public class CmsXmlTemplateFile extends A_CmsXmlContent {
         }
         data = (Element)getXmlParser().importNode(tempDoc, data);
         rootElem.appendChild(data);       
-                
+        
         // Scan for cdatas
         Node n = data;
         Vector cdatas = new Vector();

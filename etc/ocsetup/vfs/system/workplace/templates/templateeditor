@@ -47,6 +47,9 @@
 			document.PREVIEW.preview.value = "1";
 			document.PREVIEW.submit();
 			break;
+	case 6:
+		// New Body;
+		alert("NYI!");
 		}
 	}
 	
@@ -79,7 +82,6 @@ return DisplayChanged()
 	name=PREVIEW 
 	id=PREVIEW
 	TARGET="PREVIEW"
-	ACTION="]]><METHOD name="previewUrl"/><![CDATA["  	
 	METHOD=POST>
 	<INPUT TYPE=HIDDEN name="bodyclass">
 	<INPUT TYPE=HIDDEN name="bodyfile">
@@ -108,12 +110,12 @@ return DisplayChanged()
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="body" width="80" method="getBodys" onchange="doTemplSubmit(1);"/><![CDATA[
 			<INPUT TYPE=HIDDEN name="bodychanged">		
 		</td>
-		<td class=menu><p class=tab>]]><BUTTON href="#" name="bt_newdoc" action="" alt="newbody"/><![CDATA[</td>
+		<td class=menu><p class=tab>]]><BUTTON href="#" name="bt_newdoc" action="javascript:doTemplSubmit(6);" alt="newbody"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.template"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="template" width="150" method="getAvailableTemplates" onchange="doTemplSubmit(4);"/><![CDATA[</td>
 		<td class=menubold><p class=tab>]]><LABEL value="input.editor"/>:<![CDATA[&nbsp;&nbsp;&nbsp;</td>
 		<td class=dialogtxt>]]><SELECT class="textfeld" name="editor" width="100" method="getEditorViews" onchange="doTemplSubmit(3);"/><![CDATA[</td>
-		<td class=menu width="100%" align=right>]]><BUTTON href="javascript:doTemplSubmit(5);" name="bt_docpreview" action="" alt="preview"/><![CDATA[</td>		
+		<td class=menu width="100%" align=right>]]><BUTTON href="#" name="bt_docpreview" action="javascript:doTemplSubmit(5);" alt="preview"/><![CDATA[</td>		
 	</tr>
 </table>
 

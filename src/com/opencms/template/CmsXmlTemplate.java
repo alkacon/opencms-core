@@ -14,7 +14,7 @@ import org.xml.sax.*;
  * that can include other subtemplates.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.8 $ $Date: 2000/02/11 18:50:38 $
+ * @version $Revision: 1.9 $ $Date: 2000/02/14 14:10:23 $
  */
 public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
     
@@ -221,6 +221,9 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
 
         // Name of the subtemplate file.
         String templateFilename = getTemplateFileName(tagcontent, templateFile, parameterHashtable);                        
+
+        // Name of the subtemplate template selector
+        String templateSelector = getTemplateSelector(tagcontent, templateFile, parameterHashtable);
         
         // Results returned by the subtemplate class
         byte[] result = null;
@@ -281,7 +284,7 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
         // all parameters are now parsed. let's call the subtemplate
         if(result == null) {
             try {
-                result = subTemplate.getContent(cms, templateFilename, tagcontent, parameterHashtable);
+                result = subTemplate.getContent(cms, templateFilename, tagcontent, parameterHashtable, templateSelector);
             } catch (CmsException e) {
                 // Oh, oh..
                 // There were errors while getting the content of the subtemplate
@@ -541,4 +544,25 @@ public class CmsXmlTemplate implements I_CmsXmlTemplate, I_CmsLogChannels {
             return doc.getSubtemplateClass(elementName);
         }
     }
+
+    /**
+     * Find the corresponding template selector to be activated.
+     * This may be defined in the template file of the parent
+     * template and can be overwritten in the body file.
+     * 
+     * @param elementName Element name of this template in our parent template.
+     * @param doc CmsXmlTemplateFile object of our template file including a subtemplate.
+     * @param parameters Hashtable with all template class parameters.
+     * @return Name of the class that should generate the output for the included template file.
+     */    
+    protected String getTemplateSelector(String elementName, CmsXmlTemplateFile doc, Hashtable parameters) throws CmsException {
+        if(parameters.containsKey(elementName + "._TEMPLATESELECTOR_")) {
+            return (String)parameters.get(elementName + "._TEMPLATESELECTOR_");
+        } else if (doc.hasSubtemplateSelector(elementName)) {
+            return doc.getSubtemplateSelector(elementName);
+        } else {
+            return null;
+        }
+    }
+
 }

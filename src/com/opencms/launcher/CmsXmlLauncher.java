@@ -26,7 +26,7 @@ import javax.servlet.http.*;
  * be used to create output.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2000/01/26 16:16:45 $
+ * @version $Revision: 1.6 $ $Date: 2000/02/14 14:10:02 $
  */
 public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels { 	
         
@@ -97,6 +97,10 @@ public class CmsXmlLauncher extends A_CmsLauncher implements I_CmsLogChannels {
 
             if(doc.isElementTemplateDefined(elementName)) {
                 newParameters.put(elementName + "._TEMPLATE_", doc.getElementTemplate(elementName));                
+            }
+            
+            if(doc.isElementTemplSelectorDefined(elementName)) {
+                newParameters.put(elementName + "._TEMPLATESELECTOR_", doc.getElementTemplSelector(elementName));
             }
             
             Enumeration parameters = doc.getParameterNames(elementName);
