@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/Attic/CmsLockDispatcher.java,v $
- * Date   : $Date: 2003/07/22 00:29:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2003/07/22 11:00:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import java.util.Map;
  * re-initialize itself while the app. with a clear cache event.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $ $Date: 2003/07/22 00:29:23 $
+ * @version $Revision: 1.8 $ $Date: 2003/07/22 11:00:39 $
  * @since 5.1.4
  * @see com.opencms.file.CmsObject#getLock(CmsResource)
  * @see org.opencms.lock.CmsLock
@@ -161,8 +161,8 @@ public final class CmsLockDispatcher extends Object implements I_CmsEventListene
             while (i.hasNext()) {
                 lockedPath = (String) i.next();
 
-                if (resourcename.startsWith(lockedPath)) {
-                    // create a new indirect lock
+                if (resourcename.startsWith(lockedPath) && resourcename.endsWith(I_CmsConstants.C_FOLDER_SEPARATOR)) {
+                    // create a new indirect lock if a locked parent folder was found
                     parentLock = (CmsLock) m_lockedResources.get(lockedPath);
                     lock = addResource(resourcename, parentLock.getUserId(), parentLock.getProjectId(), CmsLock.C_HIERARCHY_INDIRECT_LOCKED);
                     break;
