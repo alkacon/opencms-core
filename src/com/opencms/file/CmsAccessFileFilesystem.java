@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFileFilesystem.java,v $
- * Date   : $Date: 2000/05/04 09:40:00 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2000/05/18 15:31:30 $
+ * Version: $Revision: 1.31 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.30 $ $Date: 2000/05/04 09:40:00 $
+ * @version $Revision: 1.31 $ $Date: 2000/05/18 15:31:30 $
  */
  class CmsAccessFileFilesystem implements I_CmsAccessFile, I_CmsConstants  {
    
@@ -1081,7 +1081,9 @@ import com.opencms.core.*;
      public void copyResourceToProject(A_CmsProject project,
                                        A_CmsProject onlineProject,
                                        String resourcename) 
+         
          throws CmsException {
+         
          // check if the resource is a file or a folder
          if (resourcename.endsWith("/")) {
              // this is a folder
@@ -1138,8 +1140,9 @@ import com.opencms.core.*;
             if ((offlineFolder.getState() == C_STATE_CHANGED) ||
                 (offlineFolder.getState() == C_STATE_NEW)){
             
+                CmsFolder onlineFolder=null;
                 // create a new folder fo the online project
-                CmsFolder onlineFolder = new CmsFolder(offlineFolder.getAbsolutePath(),
+                onlineFolder = new CmsFolder(offlineFolder.getAbsolutePath(),
                                                        offlineFolder.getType(),
                                                        offlineFolder.getFlags(),
                                                        offlineFolder.getOwnerId(),
@@ -1159,10 +1162,17 @@ import com.opencms.core.*;
                     writeFolder(onlineProject,onlineFolder,false);                      
                 } else {
                    // this is a new folder
-                    onlineFolder=createFolder(onlineProject,onlineProject,onlineFolder,onlineFolder.getAbsolutePath());
+                    try {
+                        readFolder(onlineProject,onlineFolder.getAbsolutePath());
+                        onlineFolder.setState(C_STATE_UNCHANGED);
+                        writeFolder(onlineProject,onlineFolder,false); 
+                    } catch (CmsException ex) {
+                        onlineFolder=createFolder(onlineProject,onlineProject,onlineFolder,onlineFolder.getAbsolutePath());
+                    }    
                     onlineFolder.setState(C_STATE_UNCHANGED);
                     writeFolder(onlineProject,onlineFolder,false);     
                 }
+                
                 resources.addElement(onlineFolder.getAbsolutePath());
             }
         }
@@ -1177,8 +1187,8 @@ import com.opencms.core.*;
             // test if this files is changed or new
             if ((offlineFile.getState() == C_STATE_CHANGED) ||
                 (offlineFile.getState() == C_STATE_NEW)){
-
-                    CmsFile onlineFile= new CmsFile(offlineFile.getAbsolutePath(),
+                CmsFile onlineFile=null;
+                onlineFile= new CmsFile(offlineFile.getAbsolutePath(),
                                                     offlineFile.getType(),
                                                     offlineFile.getFlags(),
                                                     offlineFile.getOwnerId(),
@@ -1193,7 +1203,7 @@ import com.opencms.core.*;
                                                     offlineFile.getDateLastModified(),
                                                     readFile(project,onlineProject,offlineFile.getAbsolutePath()).getContents(),
                                                     offlineFile.getLength());
-            
+           
                     // remove a lock if nescessary. This is a temporrary fix, this has to be
                     // done in the resource broker.
                     onlineFile.setLocked(C_UNKNOWN_ID);
@@ -1202,10 +1212,16 @@ import com.opencms.core.*;
                         onlineFile.setState(C_STATE_UNCHANGED);   
                         writeFile(onlineProject,onlineProject,onlineFile,false); 
                     } else {
-                        onlineFile=createFile(onlineProject,onlineProject,onlineFile,onlineFile.getAbsolutePath());
+                        try {
+                            readFile(onlineProject,onlineProject,offlineFile.getAbsolutePath());
+                            onlineFile.setState(C_STATE_UNCHANGED);   
+                            writeFile(onlineProject,onlineProject,onlineFile,false); 
+                        } catch (CmsException ex) {          
+                            onlineFile=createFile(onlineProject,onlineProject,onlineFile,onlineFile.getAbsolutePath());
+                        }
                         onlineFile.setState(C_STATE_UNCHANGED);
                         writeFileHeader(onlineProject,onlineProject,onlineFile,false);
-                    }
+                       }
                     resources.addElement(onlineFile.getAbsolutePath());
             }                      
         }

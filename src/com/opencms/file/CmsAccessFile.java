@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsAccessFile.java,v $
- * Date   : $Date: 2000/05/02 10:03:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2000/05/18 15:31:30 $
+ * Version: $Revision: 1.22 $
  *
  * Copyright (C) 2000  The OpenCms Group 
  * 
@@ -40,7 +40,7 @@ import com.opencms.core.*;
  * All methods have package-visibility for security-reasons.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.21 $ $Date: 2000/05/02 10:03:34 $
+ * @version $Revision: 1.22 $ $Date: 2000/05/18 15:31:30 $
  */
 class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
 
@@ -443,10 +443,12 @@ class CmsAccessFile implements I_CmsAccessFile, I_CmsConstants  {
             
          // todo: implement a more effective method to copy folders within a single
          // access module
-         
+ 
          // copy the file form the source filesystem to the destination one
-         CmsFolder folder=sourceFs.readFolder(project,source);
-         destinationFs.createFolder(project,onlineProject,folder,destination);        
+         try {
+            CmsFolder folder=sourceFs.readFolder(project,source);
+            destinationFs.createFolder(project,onlineProject,folder,destination);        
+         } catch (CmsException ex) {};
      }
           
      /**
