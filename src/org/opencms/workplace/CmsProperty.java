@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsProperty.java,v $
- * Date   : $Date: 2003/07/11 12:15:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/07/11 13:03:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  *
  * @author  Andreas Zahner (a.zahner@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 5.1
  */
@@ -199,9 +199,9 @@ public class CmsProperty extends CmsDialog {
         while (i.hasNext()) {
             String key = Encoder.escapeXml((String)i.next());           
             String value = Encoder.escapeXml((String)properties.get(key));
-            retValue.append("<tr>\n\t<td  unselectable=\"on\">");
+            retValue.append("<tr>\n\t<td>");
             retValue.append(key+":</td>\n");
-            retValue.append("\t<td unselectable=\"on\">"+value+"</td>\n");
+            retValue.append("\t<td>"+value+"</td>\n");
             retValue.append("</tr>\n");
         }
         
