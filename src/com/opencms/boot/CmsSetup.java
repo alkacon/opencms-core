@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/boot/Attic/CmsSetup.java,v $
-* Date   : $Date: 2001/10/12 15:31:31 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2001/12/18 15:26:18 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -1054,6 +1054,93 @@ public class CmsSetup {
       m_replacer = replacer;
   }
 
+  public String getStaticExport() {
+    Object temp = m_extProp.get("staticexport.enabled");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
 
+  public void setStaticExport(String staticExport)  {
+    setProperties("staticexport.enabled",staticExport);
+  }
+
+
+  public String getStaticExportPath() {
+    Object temp = m_extProp.get("staticexport.path");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+  public void setStaticExportPath(String staticExportPath)  {
+    setProperties("staticexport.path",staticExportPath);
+  }
+
+
+  public String getUrlPrefixExport() {
+    Object temp = m_extProp.get("url_prefix_export");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+  public void setUrlPrefixExport(String urlPrefixExport)  {
+    setProperties("url_prefix_export",urlPrefixExport);
+  }
+
+
+  public String getUrlPrefixHttp() {
+    Object temp = m_extProp.get("url_prefix_http");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+  public void setUrlPrefixHttp(String urlPrefixHttp)  {
+    setProperties("url_prefix_http",urlPrefixHttp);
+  }
+
+
+  public String getUrlPrefixHttps() {
+    Object temp = m_extProp.get("url_prefix_https");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+  public void setUrlPrefixHttps(String urlPrefixHttps)  {
+    setProperties("url_prefix_https",urlPrefixHttps);
+  }
+
+
+  public String getUrlPrefixServername() {
+    Object temp = m_extProp.get("url_prefix_servername");
+    if(temp != null)  {
+      return temp.toString();
+    }
+    else  {
+      return "";
+    }
+  }
+
+  public void setUrlPrefixServername(String urlPrefixServername)  {
+    setProperties("url_prefix_servername",urlPrefixServername);
+  }
 
 }

@@ -4,17 +4,16 @@
 
 <% 
 	/* Set all given Properties */
-	int redirectNr = 0;	
-	while(request.getParameter("redirect"+redirectNr) != null)	{
-		Bean.setRedirect(request.getParameter("redirect"+redirectNr),redirectNr);
-		if(request.getParameter("redirectLocation"+redirectNr) != null)	{
-			Bean.setRedirectLocation(request.getParameter("redirectLocation"+redirectNr),redirectNr);
-		}
-		redirectNr++;
-	}
-%>
+	
+	Bean.setStaticExport(request.getParameter("staticExport"));			
+	Bean.setStaticExportPath(request.getParameter("staticExportPath"));				
+	
+	Bean.setUrlPrefixExport(request.getParameter("urlPrefixExport"));		
+	Bean.setUrlPrefixHttp(request.getParameter("urlPrefixHttp"));		
+	Bean.setUrlPrefixHttps(request.getParameter("urlPrefixHttps"));	
+	Bean.setUrlPrefixServername(request.getParameter("urlPrefixServername"));
+	
 
-<%	
 	/* true if properties are initialized */
 	boolean setupOk = (Bean.getProperties()!=null);
 	

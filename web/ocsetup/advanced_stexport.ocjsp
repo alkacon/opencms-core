@@ -4,13 +4,13 @@
 
 <% 
 	/* Set all given Properties */
-	int expPointNr = 0;	
-	while(request.getParameter("exportPoint"+expPointNr) != null)	{
-		Bean.setExportPoint(request.getParameter("exportPoint"+expPointNr),expPointNr);
-		if(request.getParameter("exportPointPath"+expPointNr) != null)	{
-			Bean.setExportPointPath(request.getParameter("exportPointPath"+expPointNr),expPointNr);
+	int redirectNr = 0;	
+	while(request.getParameter("redirect"+redirectNr) != null)	{
+		Bean.setRedirect(request.getParameter("redirect"+redirectNr),redirectNr);
+		if(request.getParameter("redirectLocation"+redirectNr) != null)	{
+			Bean.setRedirectLocation(request.getParameter("redirectLocation"+redirectNr),redirectNr);
 		}
-		expPointNr++;
+		redirectNr++;
 	}
 %>
 
@@ -19,7 +19,7 @@
 	boolean setupOk = (Bean.getProperties()!=null);
 
 	/* next page to be accessed */
-	String nextPage = "advanced_stexport.ocjsp";
+	String nextPage = "advanced_3.ocjsp";
 %>
 <!-- ------------------------------------------------------------------------------------------------------------------- -->
 
@@ -51,43 +51,50 @@
 					<table border="1">
 						<tr>
 							<td align="center" class="bold">
-								<p>Redirect parameters</p>
-								<table border="0">
-								<%
-									int redirectNr = 0;
-									while (Bean.getRedirect(redirectNr)!=null)	{
-								%>
-									<tr>
-										<td width="150">
-											Redirect <%= ""+redirectNr %>
-										</td>
-										<td>
-											<input type="text" size="30" style="width:300px;" name="redirect<%= ""+redirectNr %>" value="<%= Bean.getRedirect(redirectNr) %>">
-										</td>
+								<p>Static Export</p>
+								<table border="0" width="100%" cellpadding="5" cellspacing="3">
+									<tr><td class="bold">Static Export:</td>
+									<td>
+										<input type="radio" name="staticExport" value="true" <% if(Bean.getStaticExport().equals("true")) { out.print("checked");} %>>enabled
+										<input type="radio" name="staticExport" value="false" <% if(Bean.getStaticExport().equals("false")) { out.print("checked");} %>>disabled
+									</td>
 									</tr>
-								<%
-									if(Bean.getRedirectLocation(redirectNr) != null)	{
-								%>
-									<tr>
-										<td>
-											Redirect Location <%= ""+redirectNr %>
-										</td>
-										<td>
-											<input type="text" size="30" style="width:300px;" name="redirectLocation<%= ""+redirectNr %>" value="<%= Bean.getRedirectLocation(redirectNr) %>">
-										</td>
+									
+									<tr><td>Static Export Path:</td>
+									<td>
+										<input type="text" name="staticExportPath" value="<%= Bean.getStaticExportPath() %>" size="30" style="width:300px;">
+									</td>
+									</tr>									
+									
+									<tr><td>URL Prefix Export:</td>
+									<td>
+										<input type="text" name="urlPrefixExport" value="<%= Bean.getUrlPrefixExport() %>" size="30" style="width:300px;">
+									</td>
 									</tr>
-								<%
-									}
-									out.println("<tr><td colspan='2'><hr></td></tr>");
-									redirectNr++;
-									}
-								%>
+																			
+									<tr><td>URL Prefix http:</td>
+									<td>
+										<input type="text" name="urlPrefixHttp" value="<%= Bean.getUrlPrefixHttp() %>" size="30" style="width:300px;">
+									</td>
+									</tr>									
+									
+									<tr><td>URL Prefix https:</td>
+									<td>
+										<input type="text" name="urlPrefixHttps" value="<%= Bean.getUrlPrefixHttps() %>" size="30" style="width:300px;">
+									</td>
+									</tr>																		
+									
+									<tr><td>URL Prefix Servername:</td>
+									<td>
+										<input type="text" name="urlPrefixServername" value="<%= Bean.getUrlPrefixServername() %>" size="30" style="width:300px;">
+									</td>
+									</tr>																											
 								</table>
 								<p>
 							</td>
 						</tr>
 																
-										</table>
+						</table>
 					</td>
 				</tr>
 				<tr>
