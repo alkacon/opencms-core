@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/08 09:08:09 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2003/09/09 08:11:50 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +67,7 @@ import source.org.apache.java.util.Configurations;
  * Generic (ANSI-SQL) database server implementation of the backup driver methods.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.36 $ $Date: 2003/09/08 09:08:09 $
+ * @version $Revision: 1.37 $ $Date: 2003/09/09 08:11:50 $
  * @since 5.1
  */
 public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupDriver {
@@ -513,6 +514,44 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
 
         return projectResources;
     }
+    
+    
+     
+    /**
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupProperties(com.opencms.file.CmsResource, int)
+     */
+    public HashMap readBackupProperties(CmsBackupResource resource) throws CmsException {
+        HashMap returnValue = new HashMap();
+        ResultSet result = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        
+        String resourceName= resource.getFullResourceName();
+        // hack: this never should happen, but it does.......
+        if ((resource.isFolder()) && (!resourceName.endsWith("/"))) {
+            resourceName += "/";
+        } 
+        
+        CmsUUID backupId = resource.getBackupId();
+        try {
+            conn = m_sqlManager.getConnectionForBackup();
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_READALL_BACKUP");
+            stmt.setString(1, backupId.toString());
+            stmt.setString(2, resourceName);
+            stmt.setInt(3, resource.getType());
+            stmt.setInt(4, resource.getTagId());
+            result = stmt.executeQuery();
+            while (result.next()) {
+                returnValue.put(result.getString(m_sqlManager.get("C_PROPERTYDEF_NAME")), result.getString(m_sqlManager.get("C_PROPERTY_VALUE")));
+            }
+        } catch (SQLException exc) {
+            throw m_sqlManager.getCmsException(this, null, CmsException.C_SQL_ERROR, exc, false);
+        } finally {
+            m_sqlManager.closeAll(conn, stmt, result);
+        }
+        return (returnValue);
+    }
+    
 
     /**
      * @see org.opencms.db.I_CmsBackupDriver#writeBackupProject(com.opencms.file.CmsProject, int, long, com.opencms.file.CmsUser)
@@ -708,8 +747,7 @@ public class CmsBackupDriver extends Object implements I_CmsDriver, I_CmsBackupD
             stmt.setString(3, resource.getResourceId().toString());
             stmt.setString(4, resource.getResourceName());
             stmt.setInt(5, resource.getState());
-            stmt.setInt(6, tagId);
-            //TODO: add the real version id here once it is introduces            
+            stmt.setInt(6, tagId);      
             stmt.setInt(7, versionId);
             stmt.setString(8, backupPkId.toString());
             stmt.executeUpdate();

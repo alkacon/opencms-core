@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2003/09/08 09:08:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2003/09/09 08:11:50 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import com.opencms.flex.util.CmsUUID;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -54,7 +55,7 @@ import java.util.Vector;
  * of resource that were saved during one backup process.
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.15 $ $Date: 2003/09/08 09:08:08 $
+ * @version $Revision: 1.16 $ $Date: 2003/09/09 08:11:50 $
  * @since 5.1
  */
 public interface I_CmsBackupDriver {
@@ -199,6 +200,18 @@ public interface I_CmsBackupDriver {
      * @throws CmsException if something goes wrong
      */
     void writeBackupResource(CmsUser currentUser, CmsProject publishProject, CmsResource resource, Map properties, int tagId, long publishDate, int maxVersions) throws CmsException;
+
+
+    /**
+     * Returns a list of all properties of a backup file or folder.<p>
+     *
+     * @param resource the resource to read the properties from
+     * 
+     * @return a Map of Strings representing the properties of the resource
+     *
+     * @throws CmsException Throws CmsException if operation was not succesful
+     */
+    HashMap readBackupProperties(CmsBackupResource resource) throws CmsException;
 
 
     /**
