@@ -8,6 +8,17 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 4.3.20 Bela Tegeuse -
+! Advanced Projectmechanism
+  Now the resources for online, offline and backup are stored in several tables. 
+  The offline resources exist only once. Each project that is created is only a view
+  on the offline resources. After a project was published it is still accessible, except
+  it was created as a temporary project.
+  The online resources and backup resources can be created in several databases. 
+  So there are new entries in the opencms.properties for the connections to online
+  and backup databases. The history can be enabled or disabled by the flag history.enabled
+  in opencms.properties.
+
 OpenCms 4.3.19 Bela Tegeuse - 18 June 2001
 ! Streaming now works in the element cache mode.
 * Accessrights in element cache now checks all groups the user is in.
