@@ -173,7 +173,7 @@ ${opencms.inputlib.pdfbox}
     	
         <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
         	<srcfiles dir= "${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
-        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt" excludes="${excludes}" />
+        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.dtd" excludes="${excludes}" />
         </uptodate>
             	
        	<javac
@@ -208,7 +208,7 @@ ${opencms.inputlib.pdfbox}
             deprecation="on" />
 		
         <copy todir="${opencms.output.classes}">
-            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt" excludes="${excludes}"/>
+            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.dtd" excludes="${excludes}"/>
         </copy>              
                 
         <antcall target="versioninfo" />        
