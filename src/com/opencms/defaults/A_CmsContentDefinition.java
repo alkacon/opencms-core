@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2001/10/19 15:02:17 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -93,7 +93,6 @@ public static Vector applyFilter(CmsObject cms, CmsFilterMethod filterMethod, St
 
     allParametersArray = new Object[allParameters.size()];
     allParameters.copyInto(allParametersArray);
-
     return (Vector) method.invoke(null, allParametersArray);
 }
 
@@ -344,5 +343,15 @@ private boolean accessOther( int flags ) throws CmsException {
     } else {
         return false;
     }
+}
+
+/**
+ * if the content definition objects should be displayed
+ * in an extended list with projectflags and state
+ * this method must be overwritten with value true
+ * @returns a boolean
+ */
+public static boolean isExtendedList() {
+    return false;
 }
 }
