@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkTable.java,v $
- * Date   : $Date: 2003/12/08 09:15:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/10 17:37:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,19 +31,19 @@
 package org.opencms.util;
 
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteMatcher;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/08 09:15:05 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkTable {
 
     private static final String C_LINK_PREFIX = "link";
-    
-    private static final String C_LOCAL_PREFIX = "/";
     
     private HashMap m_linkTable;
     
@@ -51,7 +51,7 @@ public class CmsLinkTable {
     /**
      * Class to keep a single link entry.<p>
      * 
-     * @version $Revision: 1.2 $ $Date: 2003/12/08 09:15:05 $
+     * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
      * @author Carsten Weinholz (c.weinholz@alkacon.com)
      */
     public class CmsLink {
@@ -63,9 +63,9 @@ public class CmsLinkTable {
         protected String m_type;
         
         /** The link target (destination) */
-        protected String m_target;
+        protected URI m_target;
         
-        /** Inidicates if the link is a local link within opencms */
+        /** Indicates if the link is a local link within opencms */
         protected boolean m_internal;
         
         /**
@@ -95,9 +95,26 @@ public class CmsLinkTable {
          */
         public String getTarget() {
             
-            return m_target;
+            return m_target.toString();
         }
 
+        /**
+         * Convenience method to get a vfs link from the target.<p>
+         * If the link is internal and starts with the context (i.e. /opencms/opencms),
+         * the context is removed
+         * 
+         * @return the full link destination
+         */
+        public String getVfsTarget() {
+        
+            String context = OpenCms.getOpenCmsContext();
+            if (m_internal && m_target.getPath().startsWith(context)) {
+                return m_target.getPath().substring(context.length());
+            } else {
+                return m_target.toString();
+            }
+        } 
+        
         /**
          * Returns if the link is internal.<p>
          * 
@@ -106,25 +123,7 @@ public class CmsLinkTable {
         public boolean isInternal() {
             
             return m_internal;
-        }
-
-        /**
-         * Convenience method to obtain a full link destination.<p>
-         * If the link is internal and dos not start with the context (i.e. /opencms/opencms),
-         * the context is added as prefix.
-         * 
-         * @return the full link destination
-         */
-        public String getRootTarget () {
-        
-            String context = OpenCms.getOpenCmsContext();
-            String target = m_target;
-            if (m_internal && !target.startsWith(context)) {
-                target = context + "/" + target;
-            }
-        
-            return target;
-        }    
+        }   
     }
     
     /**
@@ -140,18 +139,18 @@ public class CmsLinkTable {
      * 
      * @param type type of the link
      * @param target link destination
-     * @return the internal name of the link for access
+     * @return the new link entry
      */
-    public String addLink (String type, String target) {
+    public CmsLink addLink (String type, String target) {
         
         CmsLink link = new CmsLink();
         link.m_name = C_LINK_PREFIX + m_linkTable.size();
         link.m_type = type;
-        link.m_target = target;
-        link.m_internal = isInternal(target);
-        
+        link.m_target = URI.create(target);
+        link.m_internal = isInternal(link.m_target);
+
         m_linkTable.put(link.m_name, link);
-        return link.m_name;
+        return link;
     }
 
     /**
@@ -161,16 +160,18 @@ public class CmsLinkTable {
      * @param type the type of the link
      * @param target the destination of the link
      * @param internal flag to indicate if the link is a local link
+     * @return the new link entry
      */
-    public void addLink (String name, String type, String target, boolean internal) {
+    public CmsLink addLink (String name, String type, String target, boolean internal) {
 
         CmsLink link = new CmsLink();
         link.m_name = name;
         link.m_type = type;
-        link.m_target = target;
+        link.m_target = URI.create(target);
         link.m_internal = internal;
         
         m_linkTable.put(link.m_name, link);
+        return link;
     }
     
     /**
@@ -207,11 +208,37 @@ public class CmsLinkTable {
     /**
      * Checks if a given link target is a local link within the opencms system.
      * 
-     * @param target the link target
+     * @param targetURI the link target
      * @return true if the target is identidfied as local
      */
-    private boolean isInternal(String target) {
+    private boolean isInternal(URI targetURI) {
         
-        return target.startsWith(C_LOCAL_PREFIX);
+        String context = OpenCms.getOpenCmsContext();
+        
+        int pos = context.indexOf("/", 1);
+        String webapp  = (pos > 0) ? context.substring(0, pos) : context;
+        
+        if (targetURI.isOpaque()) {
+            // an opaque uri (i.e. mailto:name@host) is not internal
+            return false;
+        }
+
+        if (targetURI.isAbsolute()) {
+            // an absolute uri is internal if it starts with a site root or if its part starts with the opencms context
+            return OpenCms.getSiteManager().isMatching(new CmsSiteMatcher(targetURI.toString())) || targetURI.getPath().startsWith(context);
+        }
+        
+        if (targetURI.getPath().startsWith(context)) {
+            // a relative uri that starts with the opencms context (/opencms/opencms as default) is internal
+            return true;
+        }
+        
+        if (targetURI.getPath().startsWith(webapp)) {
+            // a relative uri that starts with the webapp context (but not with the opencms context) is not internal
+            return false;
+        }    
+        
+        // every other relative uri is internal
+        return true;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsLinkProcessor.java,v $
- * Date   : $Date: 2003/12/08 09:15:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2003/12/10 17:37:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,10 @@
  */
 package org.opencms.util;
 
+import org.opencms.main.OpenCms;
+
+import com.opencms.file.CmsObject;
+
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.StringNode;
@@ -44,7 +48,7 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * @version $Revision: 1.2 $ $Date: 2003/12/08 09:15:05 $
+ * @version $Revision: 1.3 $ $Date: 2003/12/10 17:37:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  */
 public class CmsLinkProcessor extends NodeVisitor {
@@ -64,6 +68,9 @@ public class CmsLinkProcessor extends NodeVisitor {
     
     /** The processed content */
     private StringBuffer m_result;
+
+    /** The current cms instance */
+    private CmsObject m_cms;
     
     /**
      * Creates a new CmsLinkProcessor.<p>
@@ -106,17 +113,20 @@ public class CmsLinkProcessor extends NodeVisitor {
      * Starts link processing for the given content in processing mode.<p>
      * Macros are replaced by links.
      * 
+     * @param cms the cms object
      * @param content the content to process
      * @return the processed content with replaced macros
      * 
      * @throws ParserException if something goes wrong
      */
-    public String processLinks(String content) 
+    public String processLinks(CmsObject cms, String content) 
         throws ParserException {
         
         Lexer lexer = new Lexer(content);
         
         m_mode = C_PROCESS_LINKS;
+        m_cms = cms;
+        
         m_result = new StringBuffer();
         m_parser.setLexer(lexer);
         m_parser.visitAllNodesWith(this);
@@ -135,13 +145,13 @@ public class CmsLinkProcessor extends NodeVisitor {
               
         switch (m_mode) {
             case C_REPLACE_LINKS:
-                String name = m_linkTable.addLink(linkTag.getTagName(), linkTag.getLink());
-                linkTag.setLink(newMacro(name));
+
+                linkTag.setLink(replaceLink(m_linkTable.addLink(linkTag.getTagName(), linkTag.getLink())));
                 break;
                 
             case C_PROCESS_LINKS:
-                CmsLinkTable.CmsLink link =  m_linkTable.getLink(getMacro(linkTag.getLink()));
-                linkTag.setLink(link.getRootTarget());
+                
+                linkTag.setLink(processLink(m_linkTable.getLink(getLinkName(linkTag.getLink()))));
                 break;
                 
             default:
@@ -162,13 +172,13 @@ public class CmsLinkProcessor extends NodeVisitor {
         
         switch (m_mode) {
             case C_REPLACE_LINKS:
-                String name = m_linkTable.addLink(imageTag.getTagName(), imageTag.getImageURL());
-                imageTag.setImageURL(newMacro(name));
+                
+                imageTag.setImageURL(replaceLink(m_linkTable.addLink(imageTag.getTagName(), imageTag.getImageURL())));
                 break;
                 
             case C_PROCESS_LINKS:
-                CmsLinkTable.CmsLink link = m_linkTable.getLink(getMacro(imageTag.getImageURL()));
-                imageTag.setImageURL(link.getRootTarget());
+
+                imageTag.setImageURL(processLink(m_linkTable.getLink(getLinkName(imageTag.getImageURL()))));
                 break;
                 
             default:
@@ -221,17 +231,51 @@ public class CmsLinkProcessor extends NodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.tags.Tag)
      */
     public void visitEndTag(Tag tag) {
+        
         Node parent;
         
         parent = tag.getParent ();
         if (null == parent) {
+            System.err.println("Writing: " + tag.toHtml());
             m_result.append(tag.toHtml());
+        } else if (parent instanceof CompositeTag) {
+            // write the parent and its children only when the end tag is reached
+            if (tag == ((CompositeTag)parent).getEndTag()) {
+                m_result.append(parent.toHtml());
+                System.err.println("Writing: " + parent.toHtml());
+            }
         } else {
             m_result.append(parent.toHtml());
-
+            System.err.println("Writing: " + parent.toHtml());
         }
     }
+
+    /**
+     * Returns the replacement string for a given link.<p>
+     * 
+     * @param link the link
+     * @return the replacement
+     */
+    private String replaceLink(CmsLinkTable.CmsLink link) {
+ 
+        return newMacro(link.getName());
+    }
     
+    /**
+     * Returns the processed link of a given link.<p>
+     * 
+     * @param link the link
+     * @return processed link
+     */
+    private String processLink(CmsLinkTable.CmsLink link) {
+
+        if (link.isInternal()) {
+            return OpenCms.getLinkManager().substituteLink(m_cms, link.getVfsTarget());
+        } else {
+            return link.getTarget();
+        }
+    }
+      
     /**
      * Internal method to create a macro name ${name}.<p>
      * 
@@ -251,7 +295,7 @@ public class CmsLinkProcessor extends NodeVisitor {
      * 
      * @return the name of the macro
      */
-    private String getMacro (String macro) {
+    private String getLinkName (String macro) {
         
         return macro.substring(2, macro.length()-1);
     }
