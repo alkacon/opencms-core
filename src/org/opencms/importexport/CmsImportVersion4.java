@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2004/04/05 15:13:51 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2004/04/30 01:50:34 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -391,18 +391,24 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                            String principal=id.substring(id.indexOf(".")+1, id.length());
 
-                           if (id.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
-                               principal = OpenCms.getImportExportManager().translateGroup(principal);  
-                               principalId=m_cms.readGroup(principal).getId().toString();
-                           } else {
-                               principal = OpenCms.getImportExportManager().translateUser(principal);  
-                               principalId=m_cms.readUser(principal).getId().toString();
-                           }                                                    
-                           String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);                                                      
-                           String allowed = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
-                           String denied = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
-                           // add the entry to the list
-                           addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
+                           try {
+                               if (id.startsWith(CmsImportExportConfiguration.C_PRINCIPAL_GROUP)) {
+                                   principal = OpenCms.getImportExportManager().translateGroup(principal);  
+                                   principalId=m_cms.readGroup(principal).getId().toString();
+                               } else {
+                                   principal = OpenCms.getImportExportManager().translateUser(principal);  
+                                   principalId=m_cms.readUser(principal).getId().toString();
+                               }                                                    
+                               String acflags = CmsImport.getChildElementTextValue(currentEntry, I_CmsConstants.C_EXPORT_TAG_FLAGS);                                                      
+                               String allowed = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
+                               String denied = ((Element)currentEntry.selectNodes("./" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_PERMISSIONSET + "/" + I_CmsConstants.C_EXPORT_TAG_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
+                               // add the entry to the list
+                               addImportAccessControlEntry(res, principalId, allowed, denied, acflags);
+                           } catch (CmsException e) {
+                               // user or group of ACE might not exist in target system, ignore ACE
+                               OpenCms.getLog(this).warn("Could not import ACE for resource " + translatedName, e);
+                               m_report.println(e);
+                           }
                        }
                        importAccessControlEntries(res);
                    } else {
