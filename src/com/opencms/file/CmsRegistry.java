@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsRegistry.java,v $
- * Date   : $Date: 2003/09/19 14:42:53 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2003/09/26 16:53:31 $
+ * Version: $Revision: 1.102 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.w3c.dom.NodeList;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  */
 public class CmsRegistry extends A_CmsXmlContent {
 
@@ -1658,17 +1658,18 @@ public class CmsRegistry extends A_CmsXmlContent {
      *  
      * @param node the base node element
      * @param key the key of a node below the base node
-     * @return the values for subnodes
+     * @return the values for subnodes or null if base node not found
      */
     public Map getSubNodeValues(Element node, String key) {
-        HashMap values = new HashMap();
+        HashMap values = null;
         try {            
             NodeList list;
             if (key != null && !"".equals(key))
                 list = node.getElementsByTagName(key).item(0).getChildNodes();
             else
                 list = node.getChildNodes();
-                
+            
+            values = new HashMap();   
             for (int i = 0; i < list.getLength(); i++) {
                 
                 Node n = list.item(i);
