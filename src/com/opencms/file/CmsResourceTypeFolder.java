@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/08/30 14:57:17 $
-* Version: $Revision: 1.20 $
+* Date   : $Date: 2001/10/05 15:14:36 $
+* Version: $Revision: 1.21 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -205,7 +205,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFiles.size();i++) {
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
-                        cms.chgrp(newfile.getAbsolutePath(), newGroup);
+                        try{
+                            cms.chgrp(newfile.getAbsolutePath(), newGroup);
+                        } catch (CmsException e){
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                        }
                     }
                 }
             }
@@ -285,7 +289,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFiles.size();i++) {
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
-                        cms.chmod(newfile.getAbsolutePath(), flags);
+                        try{
+                            cms.chmod(newfile.getAbsolutePath(), flags);
+                        } catch (CmsException e){
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                        }
                     }
                 }
             }
@@ -362,7 +370,11 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
                 for(int i = 0;i < allFiles.size();i++) {
                     CmsFile newfile = (CmsFile)allFiles.elementAt(i);
                     if(newfile.getState() != C_STATE_DELETED) {
-                        cms.chown(newfile.getAbsolutePath(), newOwner);
+                        try{
+                            cms.chown(newfile.getAbsolutePath(), newOwner);
+                        } catch (CmsException e){
+                            A_OpenCms.log(A_OpenCms.C_OPENCMS_CRITICAL, "["+this.getClass().getName()+"] "+newfile.getAbsolutePath()+": "+e.getStackTrace());
+                        }
                     }
                 }
             }
