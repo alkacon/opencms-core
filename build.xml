@@ -30,6 +30,8 @@
 
     <property name="build.version.propertyfile" value="${build.classes}/com/opencms/core/version.properties"/>
     <property name="build.version.jsfile"       value="${build.webinf}/ocsetup/vfs/system/workplace/templates/js/version.js"/>
+    <property name="build.version.setupfile"    value="${build.web}/ocsetup/versions.txt"/>
+
 
     <property name="db.url"                     value="jdbc:mysql://localhost:3306/opencms"/>
     <property name="db.setupurl"                value="jdbc:mysql://localhost:3306/mysql"/>
@@ -122,6 +124,9 @@
 
        <!-- create version-info for the workplace-->
        <echo file="${build.version.jsfile}">var version = '${version.number} ${version.name}';</echo>
+       <!-- create version-info for the setup versions.txt -->
+       <echo file="${build.version.setupfile}" append="on">OpenCms ${version.number}
+</echo>
     </target>
 
     <target name="war" depends="copy">
