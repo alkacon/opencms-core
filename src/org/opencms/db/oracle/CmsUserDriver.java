@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/02/25 15:53:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/03/30 13:50:48 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -55,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
 /**
  * Oracle implementation of the user driver methods.<p>
  * 
- * @version $Revision: 1.40 $ $Date: 2005/02/25 15:53:30 $
+ * @version $Revision: 1.41 $ $Date: 2005/03/30 13:50:48 $
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @since 5.1
@@ -332,9 +333,24 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
      */
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
         
-        // this is the most version independent code                
-        oracle.sql.BLOB blob = ((oracle.jdbc.OracleResultSet)res).getBLOB(name);
-        return blob.getBinaryOutputStream();
+        // check/find a solution for Oracle 8/9/10
+        int todo = 0;
+        
+        Blob blob = res.getBlob(name);
+        try {
+            // jdbc standard
+            blob.truncate(0);
+            return blob.setBinaryStream(0L);
+        } catch (SQLException e) {
+            // oracle 9   
+            ((oracle.sql.BLOB)blob).trim(0);
+            return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
+        }
+        
+        // this is the most version independent code 
+        // -cw- this is nonsense, since it leaves the old content in the blob
+        // oracle.sql.BLOB blob = ((oracle.jdbc.OracleResultSet)res).getBLOB(name);
+        // return blob.getBinaryOutputStream();
 
         // this is the code for Oracle 10 (doesn't work with Oracle 9)                
         //((oracle.sql.BLOB)blob).truncate(0);
