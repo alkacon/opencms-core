@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/A_CmsElement.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.26 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.27 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -130,6 +130,7 @@ public abstract class A_CmsElement implements com.opencms.boot.I_CmsLogChannels 
             CmsElementVariant old = (CmsElementVariant)m_variants.get(key);
             if ((old != null) && (old.size() == 0)){
                 variant.addDependencies(old.getDependencies());
+                variant.mergeNextTimeout(old.getNextTimeout());
             }
             return m_variants.put(key, variant);
         }

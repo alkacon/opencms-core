@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementXml.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -99,9 +99,23 @@ public class CmsElementXml extends A_CmsElement implements com.opencms.boot.I_Cm
 
             checkReadAccess(cms);
             if (cd.isTimeCritical() && (m_timestamp < cd.getTimeout().getLastChange())){
+                if(this.hasDependenciesVariants()){
+                    // remove all the variants from the extern dep table
+                    cms.getOnlineElementCache().getElementLocator().removeElementFromDependencies(
+                                mergedElDefs.get(elementName).getDescriptor(), this);
+                }
                 clearVariantCache();
             }else{
                 variant = getVariant(cd.getCacheKey(cms, parameters));
+                if((variant != null) && variant.isTimeCritical()
+                                     && variant.getNextTimeout() < System.currentTimeMillis()){
+                    // the variant is not longer valid, remove it from the extern dependencies
+                    cms.getOnlineElementCache().getElementLocator().removeVariantFromDependencies(
+                                        mergedElDefs.get(elementName).getClassName()+"|"
+                                        + mergedElDefs.get(elementName).getTemplateName()+"|"
+                                        + cd.getCacheKey(cms, parameters), variant);
+                    variant = null;
+                }
             }
             if(variant != null) {
                 result = resolveVariant(cms, variant, elementCache, mergedElDefs, elementName, parameters);

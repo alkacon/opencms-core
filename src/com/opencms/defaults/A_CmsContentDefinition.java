@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/defaults/Attic/A_CmsContentDefinition.java,v $
-* Date   : $Date: 2001/10/25 09:50:57 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -352,6 +352,15 @@ protected boolean accessOther( int flags ) throws CmsException {
  * @returns a boolean
  */
 public static boolean isExtendedList() {
+    return false;
+}
+
+/**
+ * if the content definition objects are timecritical
+ * this method must be overwritten with value true.
+ * @returns a boolean
+ */
+public boolean isTimedContent() {
     return false;
 }
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementVariant.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -54,6 +54,11 @@ public class CmsElementVariant {
      * of the resources change this variant is decleared void.
      */
     Vector m_dependencies;
+
+    /**
+     * The date when this variant must be new generated. Only used if it is not 0.
+     */
+    private long m_nextTimeout = 0;
 
     /**
      * Creates a new empty variant for an element.
@@ -165,5 +170,36 @@ public class CmsElementVariant {
             if(i < len-1) result.append("-");
         }
         return result.toString();
+    }
+
+    /**
+     * Merges the time when this variant has to be new generated.
+     * Sets it to the minimum of the old and the new value, whereby 0 don't count.
+     * @param timeout. The date as a long.
+     */
+    public void mergeNextTimeout(long timeout){
+
+        if(m_nextTimeout == 0 || timeout == 0){
+            if(m_nextTimeout < timeout){
+                m_nextTimeout = timeout;
+            }
+        }else{
+            if(m_nextTimeout > timeout){
+                m_nextTimeout = timeout;
+            }
+        }
+    }
+    /**
+     * Returns the time when this variant has to be new generated.
+     * @return timeout. The date as a long.
+     */
+    public long getNextTimeout(){
+        return m_nextTimeout;
+    }
+    /**
+     * Returns true if this variant has an expiration date.
+     */
+    public boolean isTimeCritical(){
+        return m_nextTimeout != 0;
     }
 }

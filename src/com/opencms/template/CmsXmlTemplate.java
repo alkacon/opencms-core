@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/Attic/CmsXmlTemplate.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.79 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.80 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.http.*;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.79 $ $Date: 2001/10/24 14:21:46 $
+ * @version $Revision: 1.80 $ $Date: 2001/10/26 12:43:45 $
  */
 public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
     public static final String C_FRAME_SELECTOR = "cmsframe";
@@ -944,6 +944,8 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
         if(cms.getRequestContext().isElementCacheEnabled() && (cacheKey != null) &&
                 (cms.getRequestContext().currentProject().equals(cms.onlineProject()) )) {
             Hashtable externVarDeps = cms.getVariantDependencies();
+            long exTimeForVariant = Long.MAX_VALUE;
+            long now = System.currentTimeMillis();
             // this will be the entry for the extern hashtable
             String variantEntry = getClass().getName() + "|"+ templateName +"|"+ cacheKey;
 
@@ -955,6 +957,16 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     A_CmsContentDefinition contentDef = (A_CmsContentDefinition)cosDeps.elementAt(i);
                     String key = "cos/"+contentDef.getClass().getName() +"/"+contentDef.getUniqueId(cms);
                     allDeps.add(key);
+                    if(contentDef.isTimedContent()){
+                        long time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPublicationDate();
+                        if (time > now && time < exTimeForVariant){
+                            exTimeForVariant = time;
+                        }
+                        time = ((I_CmsTimedContentDefinition)cosDeps.elementAt(i)).getPurgeDate();
+                        if (time > now && time < exTimeForVariant){
+                            exTimeForVariant = time;
+                        }
+                    }
                 }
             }
             // now for the Classes
@@ -964,10 +976,10 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
                     allDeps.add(key);
                 }
             }
-            // now for the vfs mgmtodo: instead of "vfs: ... .getAbsolutePath" use getResourceName
+            // now for the vfs
             if(vfsDeps != null){
                 for(int i = 0; i < vfsDeps.size(); i++){
-                    allDeps.add("vfs:"+((CmsResource)vfsDeps.elementAt(i)).getAbsolutePath() );
+                    allDeps.add(((CmsResource)vfsDeps.elementAt(i)).getResourceName());
                 }
             }
             // now put them all in the extern store
@@ -992,6 +1004,9 @@ public class CmsXmlTemplate extends A_CmsTemplate implements I_CmsXmlTemplate {
             // add an empty variant with the vector to the element
             CmsElementVariant emptyVar = new CmsElementVariant();
             emptyVar.addDependencies(allDeps);
+            if(exTimeForVariant < Long.MAX_VALUE ){
+                emptyVar.mergeNextTimeout(exTimeForVariant);
+            }
             Vector removedVar = currElem.addVariant(cacheKey, emptyVar);
             if((removedVar != null) ){
                 // adding a new variant deleted this variant so we have to update the extern store

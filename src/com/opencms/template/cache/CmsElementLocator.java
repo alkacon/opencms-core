@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/template/cache/Attic/CmsElementLocator.java,v $
-* Date   : $Date: 2001/10/24 14:21:46 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2001/10/26 12:43:45 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      * @param the descriptor of the element.
      * @param the element itself.
      */
-    private void removeElementFromDependencies(CmsElementDescriptor desc, A_CmsElement element){
+    public void removeElementFromDependencies(CmsElementDescriptor desc, A_CmsElement element){
         if(element.hasDependenciesVariants()){
             Vector variantKeys = element.getAllVariantKeys();
             String cacheStart = desc.getClassName() +"|"+ desc.getTemplateName() +"|";
@@ -106,7 +106,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
      * @param key the compleate entry in the table like "classname|template|variantcachekey"
      * @param the variant
      */
-    private void removeVariantFromDependencies(String key, CmsElementVariant variant){
+    public void removeVariantFromDependencies(String key, CmsElementVariant variant){
 
         if(variant != null){
             Vector variantDeps = variant.getDependencies();
@@ -246,6 +246,7 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
                             CmsElementVariant vari = element.getVariant(variants.elementAt(j));
                             System.err.println("");
                             System.err.println("        ("+j+")variant:"+(String)variants.elementAt(j));
+                            System.err.println("                timed:"+vari.isTimeCritical() + " nextTimeOut:"+vari.getNextTimeout() );
                             Vector currentDeps = vari.getDependencies();
                             if(currentDeps == null || currentDeps.size() == 0){
                                 System.err.println("                no dependencies in this element");
@@ -284,7 +285,9 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     }
 
     /**
-     *mgmtodo
+     * Clears the cache from unvalid variants. It looks for each entry in the invalidResources
+     * if there are variants that depend on it. If so this variant has to be deleted and
+     * the extern dependencies table is updated.
      *
      * @param invalidResources A vector of Strings with the entrys to compare to the
      *          externDependencies Hashtable. These entrys are resources in the vfs or
@@ -331,7 +334,12 @@ public class CmsElementLocator implements com.opencms.boot.I_CmsLogChannels {
     }
 
     /**
-     * mgm todo comment
+     * Removes the elements from the extern Dependencies table.
+     *
+     * @param elements. A Vector with the elements to be removed. This Vector
+     *          contains Vectors. Each of this vectors contains two objects.
+     *          The first one is the CmsElementDescriptor of the element and
+     *          the second one is the element itself(A_CmsElement).
      */
     private void cleanupExternDependencies(Vector elements){
         if(elements != null){
