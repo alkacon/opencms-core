@@ -3464,6 +3464,11 @@
                     <type>0</type>
                     <value><![CDATA[ic_linkmanagement]]></value>
                 </property>
+                <property>
+                    <name>activemethod</name>
+                    <type>0</type>
+                    <value><![CDATA[com.opencms.workplace.CmsWorkplaceDefault.isNotOnlineProject]]></value>
+                </property>                
             </properties>
             <accesscontrol/>
         </file>
