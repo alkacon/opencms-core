@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2004/06/01 15:19:15 $
- * Version: $Revision: 1.178 $
+ * Date   : $Date: 2004/06/01 15:46:54 $
+ * Version: $Revision: 1.179 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
- * @version $Revision: 1.178 $ $Date: 2004/06/01 15:19:15 $
+ * @version $Revision: 1.179 $ $Date: 2004/06/01 15:46:54 $
  * @since 5.1
  */
 public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver {
@@ -570,7 +570,13 @@ public class CmsVfsDriver extends Object implements I_CmsDriver, I_CmsVfsDriver 
         long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
         long dateReleased = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_RELEASED"));
         long dateExpired = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_EXPIRED"));     
-        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        int resourceSize;
+        if (resourceType == CmsResourceTypeFolder.C_RESOURCE_TYPE_ID) {
+            // folders must have -1 size
+            resourceSize = -1;
+        } else {
+            resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        }
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         int linkCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_LINK_COUNT"));

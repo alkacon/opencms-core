@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2004/05/29 09:30:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/01 15:46:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -204,7 +204,7 @@ public class TestTouch extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();     
         echo("Testing touch on file");
-        touchResource(this, cms, "/release/installation.html");   
+        touchResource(this, cms, "/index.html");   
     }  
     
     /**
@@ -216,7 +216,7 @@ public class TestTouch extends OpenCmsTestCase {
         
         CmsObject cms = getCmsObject();        
         echo("Testing touch on a folder (without recursion)");
-        touchResources(this, cms, "/tree/folder1/");
+        touchResources(this, cms, "/folder1/");
     }      
     
     /**
@@ -228,6 +228,6 @@ public class TestTouch extends OpenCmsTestCase {
         
         CmsObject cms = getCmsObject();        
         echo("Testing touch on a folder (_with_ recursion)");
-        touchResourcesRecursive(this, cms, "/tree/folder2/");    
+        touchResourcesRecursive(this, cms, "/folder2/");    
     }  
 }

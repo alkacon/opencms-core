@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2004/05/28 10:52:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2004/06/01 15:46:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,15 +43,15 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class OpenCmsTestResourceStorage {
 
     /** the name of the default storage */
     public static String DEFAULT_STORAGE = "default";
 
-    /** A CmsObject to use to access resources */
-    private CmsObject m_cms;
+    /** the name of the default storage */
+    public static String GLOBAL_STORAGE = "global";
     
     /** the name of the storage */
     private String m_name;
@@ -71,29 +71,28 @@ public class OpenCmsTestResourceStorage {
     /**
      * Creates a new OpenCmsTestResourceStorage.<p>
      * 
-     * @param cms the current CmsObject
      * @param name the name of the storage
      */
-    public OpenCmsTestResourceStorage(CmsObject cms, String name) {
+    public OpenCmsTestResourceStorage(String name) {
 
         m_storage = new HashMap();
         m_precalcState = new HashMap();
         m_sourceNameMapping = null;
         m_targetNameMapping = null;
-        m_cms = cms;
         m_name = name;
     }
 
     /** 
      * Adds a CmsResource to the resource storage.<p>
      * 
+     * @param cms the CmsObject 
      * @param resourceName the resource name to add
      * @param resource the resource to add
      * @throws CmsException if something goes wrong
      */
-    public void add(String resourceName, CmsResource resource) throws CmsException {
+    public void add(CmsObject cms, String resourceName, CmsResource resource)  throws CmsException {
 
-        m_storage.put(resourceName, new OpenCmsTestResourceStorageEntry(m_cms, resourceName, resource));
+        m_storage.put(resourceName, new OpenCmsTestResourceStorageEntry(cms, resourceName, resource));
         m_precalcState.put(resourceName, preCalculateState(resource));
     }
     

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2004/05/29 09:30:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2004/06/01 15:46:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -190,7 +190,7 @@ public class TestProperty extends OpenCmsTestCase {
      */
     public static void removeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1) throws Throwable {  
 
-         tc.storeResources(cms, resource1);
+        tc.storeResources(cms, resource1);
   
          long timestamp = System.currentTimeMillis();
          
@@ -220,7 +220,7 @@ public class TestProperty extends OpenCmsTestCase {
      */
     public static void writeProperties(OpenCmsTestCase tc, CmsObject cms, String resource1, List propertyList1) throws Throwable {
 
-         tc.storeResources(cms, resource1);
+        tc.storeResources(cms, resource1);
   
          long timestamp = System.currentTimeMillis();        
          
@@ -250,7 +250,7 @@ public class TestProperty extends OpenCmsTestCase {
      */
     public static void writeProperty(OpenCmsTestCase tc, CmsObject cms, String resource1, CmsProperty property1) throws Throwable {
           
-         tc.storeResources(cms, resource1);
+        tc.storeResources(cms, resource1);
   
          long timestamp = System.currentTimeMillis();
                   
@@ -284,7 +284,7 @@ public class TestProperty extends OpenCmsTestCase {
         List propertyList3 = new ArrayList();
         propertyList3.add(property8);
         propertyList3.add(property9);
-        createProperties(this, cms, "/release/notes_5.0rc2.html", propertyList3);
+        createProperties(this, cms, "/index.html", propertyList3);
     }
         
     /**
@@ -297,7 +297,7 @@ public class TestProperty extends OpenCmsTestCase {
         CmsObject cms = getCmsObject(); 
         echo("Testing creating one property on a resource");
         CmsProperty property7 = new CmsProperty("Newproperty", "testvalue1", "testvalue2");
-        createProperty(this, cms, "/release/notes_5.0rc1.html", property7);
+        createProperty(this, cms, "/folder1/index.html", property7);
     }
     
     /**
@@ -314,7 +314,7 @@ public class TestProperty extends OpenCmsTestCase {
         List propertyList2 = new ArrayList();
         propertyList2.add(property5);
         propertyList2.add(property6);
-        removeProperties(this, cms, "/release/notes_5.0b2.html", propertyList2);
+        removeProperties(this, cms, "/folder1/page1.html", propertyList2);
     }
     
     /**
@@ -327,7 +327,7 @@ public class TestProperty extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();  
         echo("Testing removing one property on a resource");
         CmsProperty property4 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);                 
-        removeProperty(this, cms, "/release/notes_5.0.0.html", property4);
+        removeProperty(this, cms, "/folder1/page2.html", property4);
     }
         
     /**
@@ -344,7 +344,7 @@ public class TestProperty extends OpenCmsTestCase {
         List propertyList1 = new ArrayList();
         propertyList1.add(property2);
         propertyList1.add(property3); 
-        writeProperties(this, cms, "/release/mailinglist.html", propertyList1);
+        writeProperties(this, cms, "/folder1/page3.html", propertyList1);
     }
     
     /**
@@ -357,7 +357,7 @@ public class TestProperty extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();              
         echo("Testing writing one  property on a resource");
         CmsProperty property1 = new CmsProperty("Title", "OpenCms", null);  
-        writeProperty(this, cms, "/release/installation.html", property1);
+        writeProperty(this, cms, "/folder1/image1.gif", property1);
     }
     
     /**
@@ -370,6 +370,6 @@ public class TestProperty extends OpenCmsTestCase {
         CmsObject cms = getCmsObject(); 
         echo("Testing writing one property on a folder");
         CmsProperty property10 = new CmsProperty("Title", "OpenCms", null);  
-        writeProperty(this, cms, "/release/", property10);
+        writeProperty(this, cms, "/folder2/", property10);
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2004/05/29 09:30:21 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2004/06/01 15:46:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -180,8 +180,8 @@ public class TestSiblings extends OpenCmsTestCase {
     public void testSiblingsCopy() throws Throwable {
 
         CmsObject cms = getCmsObject(); 
-        String source = "/release/installation.html";
-        String target = "/release/installation_sibling.html";
+        String source = "/index.html";
+        String target = "/index_sibling.html";
         echo("Copying " + source + " as a new sibling to " + target);
         copyResourceAsSibling(this, cms, source, target);
     }
@@ -194,8 +194,8 @@ public class TestSiblings extends OpenCmsTestCase {
     public void testSiblingsCreate() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        String source = "/release/welcome.html";
-        String target = "/release/welcome_sibling.html";        
+        String source = "/folder1/image1.gif";
+        String target = "/folder1/image1_sibling.gif";        
         echo("Creating a new sibling " + target + " from " + source);
         createSibling(this, cms, source, target);
     }

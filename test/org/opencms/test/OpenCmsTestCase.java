@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2004/05/29 09:30:34 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2004/06/01 15:46:54 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * values in the provided <code>./test/data/WEB-INF/config/opencms.properties</code> file.<p>
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 5.3.5
  */
@@ -95,10 +95,10 @@ public class OpenCmsTestCase extends TestCase {
     private static String m_testDataPath;
         
     /** The current resource storage */
-    private OpenCmsTestResourceStorage m_currentResourceStrorage;
+    public OpenCmsTestResourceStorage m_currentResourceStrorage;
     
     /** The internal storages */
-    private HashMap m_resourceStorages;
+    public static HashMap m_resourceStorages;
     
     /**
      * Default JUnit constructor.<p>
@@ -107,7 +107,9 @@ public class OpenCmsTestCase extends TestCase {
      */    
     public OpenCmsTestCase(String arg0) {
         super(arg0);
-        m_resourceStorages = new HashMap();
+        if (m_resourceStorages == null) {
+            m_resourceStorages = new HashMap();
+        }       
     }
     
     
@@ -184,7 +186,7 @@ public class OpenCmsTestCase extends TestCase {
             cms.getRequestContext().setCurrentProject(cms.readProject("_setupProject"));
             
             // import the "simpletest" files
-            importResources(cms, importFolder, targetFolder);  
+            importResources(cms, importFolder, targetFolder);                 
             
             // publish the current project by script
             script = new File(getTestDataPath() + "scripts/script_publish.txt");
@@ -1224,11 +1226,10 @@ public class OpenCmsTestCase extends TestCase {
     
     /**
      * Creates a new storage object.<p>
-     * @param cms the current CmsObject
      * @param name the name of the storage
      */
-    public void createStorage(CmsObject cms, String name) {
-        OpenCmsTestResourceStorage storage = new OpenCmsTestResourceStorage(cms, name);
+    public void createStorage(String name) {
+        OpenCmsTestResourceStorage storage = new OpenCmsTestResourceStorage(name);
         m_resourceStorages.put(name, storage);
     }
     
@@ -1283,18 +1284,18 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource resource = cms.readFileHeader(resourceName, CmsResourceFilter.ALL);
             // test if the name belongs to a file or folder
             if (resource.isFile()) {
-                m_currentResourceStrorage.add(resourceName, resource);
+                m_currentResourceStrorage.add(cms, resourceName, resource);
             } else {
                 // this is a folder, so first add the folder itself to the storeage
-                m_currentResourceStrorage.add(resourceName, resource);
+                m_currentResourceStrorage.add(cms, resourceName, resource);
                 
                 // now get all subresources and add them as well
                 List resources = getSubtree(cms, resourceName);
                 Iterator i = resources.iterator();
                 while (i.hasNext()) {
                     CmsResource res = (CmsResource) i.next();
-                    resName = cms.readAbsolutePath(resource, CmsResourceFilter.ALL) + res.getName();
-                    m_currentResourceStrorage.add(resName, res);
+                    resName = cms.readAbsolutePath(res, CmsResourceFilter.ALL);
+                    m_currentResourceStrorage.add(cms, resName, res);
                 }
             }
             } catch (CmsException e) {
@@ -1344,7 +1345,7 @@ public class OpenCmsTestCase extends TestCase {
         cms.getRequestContext().setSiteRoot("/sites/default/");
         
         // init the storage
-        createStorage(cms, OpenCmsTestResourceStorage.DEFAULT_STORAGE);
+        createStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
         switchStorage(OpenCmsTestResourceStorage.DEFAULT_STORAGE);
         
         // return the initialized cms context Object

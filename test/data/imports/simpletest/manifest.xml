@@ -4,19 +4,57 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>5.3.5 Ix</opencms_version>
-		<createdate>5/27/04 12:26 PM</createdate>
+		<createdate>6/1/04 12:37 PM</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
 	<files>
 		<file>
-			<destination>release</destination>
+			<destination>types</destination>
 			<type>folder</type>
-			<uuidresource>cfdb2e2a-afc7-11d8-9883-ebdd0e0c3701</uuidresource>
+			<uuidresource>2cbb0b09-b3a9-11d8-b3e3-514d35713fed</uuidresource>
 			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-			<datelastmodified>1077616301000</datelastmodified>
+			<datelastmodified>1086080034764</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1046478589000</datecreated>
+			<datecreated>1086080018873</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[A folder with different resource types]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/image.gif</source>
+			<destination>types/image.gif</destination>
+			<type>image</type>
+			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>3e0337c5-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080514958</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080477364</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is an image]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/jsp.jsp</source>
+			<destination>types/jsp.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>10d3126f-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080406895</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080401551</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -24,174 +62,835 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_6.0a1.html]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/installation.html</source>
-			<destination>release/installation.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
-			<uuidcontent>0fe6cf2f-2a34-11d8-9147-c2dcabc28482</uuidcontent>
-			<datelastmodified>1074850290000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1070966410000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[51]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Installation]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Installation]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/mailinglist.html</source>
-			<destination>release/mailinglist.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>167d141a-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051188702000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051188702000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[102.0]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Mailing list]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_5.0.0.html</source>
-			<destination>release/notes_5.0.0.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>16844011-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>16844010-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051688624000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051688624000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
 				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/link</source>
+			<destination>types/link</destination>
+			<type>pointer</type>
+			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>27ca96b2-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080450817</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080440083</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link to OpenCms.org]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/opencms-legacy.jar</source>
+			<destination>types/opencms-legacy.jar</destination>
+			<type>plain</type>
+			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>030c0a6d-b3b6-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086085592641</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086085532397</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a binary file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/text.txt</source>
+			<destination>types/text.txt</destination>
+			<type>plain</type>
+			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>015d3f4c-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080384582</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080375613</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a Textfile]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>types/xml.xml</source>
+			<destination>types/xml.xml</destination>
+			<type>XMLTemplate</type>
+			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>c589e3c0-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080742757</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080704739</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a XML file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder2</destination>
+			<type>folder</type>
+			<uuidresource>a8af8213-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086083245671</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083233312</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.75]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Folder2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Folder2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/image1.gif</source>
+			<destination>folder2/image1.gif</destination>
+			<type>image</type>
+			<uuidresource>e913bb0e-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>e913bb0f-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081983296</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083341343</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/image2.gif</source>
+			<destination>folder2/image2.gif</destination>
+			<type>image</type>
+			<uuidresource>efcac931-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>efcac932-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081991750</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083352609</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/index.html</source>
+			<destination>folder2/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>b3e624e6-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083599250</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083252125</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 final release notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in folder2]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0.0 (5.0 final) release notes]]></value>
+					<value><![CDATA[Indexpage]]></value>
 				</property>
 			</properties>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
-			<source>release/notes_5.0b2.html</source>
-			<destination>release/notes_5.0b2.html</destination>
+			<source>folder2/page1.html</source>
+			<destination>folder2/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>168b44f7-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>168b44f6-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051691223000</datelastmodified>
+			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>161b49c7-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083610265</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051691223000</datecreated>
+			<datecreated>1086083416890</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[2.0]]></value>
 				</property>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in folder2]]></value>
+				</property>
+				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 beta 2 notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 beta 2 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>folder2/page2.html</source>
+			<destination>folder2/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>193c5fe9-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>193c5fea-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083443750</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083422140</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in folder2]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_5.0rc1.html</source>
-			<destination>release/notes_5.0rc1.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>168fffed-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>168fffec-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051691285000</datelastmodified>
+			<destination>folder2/subfolder21</destination>
+			<type>folder</type>
+			<uuidresource>453da22c-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086083506828</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051691285000</datecreated>
+			<datecreated>1086083495968</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub21]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder21]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder21/image1.gif</source>
+			<destination>folder2/subfolder21/image1.gif</destination>
+			<type>image</type>
+			<uuidresource>65e24310-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>65e24311-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081983296</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083550734</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder2/subfolder21/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>b3e624e5-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>b3e624e6-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083599250</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083252125</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in subfolder21]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>folder2/subfolder21/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>161b49c6-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>161b49c7-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083610265</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083416890</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder21]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>folder2/subfolder21/subsubfolder211</destination>
+			<type>folder</type>
+			<uuidresource>933ad7f6-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086083638203</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083626812</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub211]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder211]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder21/subsubfolder211/jsp1.jsp</source>
+			<destination>folder2/subfolder21/subsubfolder211/jsp1.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>9fb0d899-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084544978</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083647718</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder21/subsubfolder211/jsp2.jsp</source>
+			<destination>folder2/subfolder21/subsubfolder211/jsp2.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>ad2d25ab-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>ad2d25ac-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083683875</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083670343</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[timeout=5]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jsp2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder2/subfolder22</destination>
+			<type>folder</type>
+			<uuidresource>a566d4fe-b3b2-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086084096750</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086084086796</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub22]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder22]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder22/index.html</source>
+			<destination>folder2/subfolder22/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>b82172e0-b3b2-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>b82172e1-b3b2-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084130343</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086084118218</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index page in subfolder22]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder22/page1.html</source>
+			<destination>folder2/subfolder22/page1.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>4e983a1a-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084258244</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086082223171</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder22/page2.html</source>
+			<destination>folder2/subfolder22/page2.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>8379ac10-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084276733</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086082311890</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder2/subfolder22/page3.html</source>
+			<destination>folder2/subfolder22/page3.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>441ba595-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>441ba596-b3b3-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084374942</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086084353061</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page3 in subfolder22]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder2/subfolder22/subsubfolder221</destination>
+			<type>folder</type>
+			<uuidresource>748942b3-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086084418526</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086084418526</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub121]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder121]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test1</uuidprincipal>
+					<flags>22</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>folder2/subfolder22/subsubfolder221/index.html</source>
+			<destination>folder2/subfolder22/subsubfolder221/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>6b4cc22d-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>6b4cc22e-b3b3-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084508355</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086084418814</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the indext page in folder subsub221]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexpage]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder2/subfolder22/subsubfolder221/jsp1.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>9fb0d898-b3b1-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>9fb0d899-b3b1-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084544978</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083647718</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -205,71 +904,66 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.9]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[5]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 rc 1 notes]]></value>
+					<value><![CDATA[Jsp1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 rc 1 release notes]]></value>
+					<value><![CDATA[Jsp1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_5.0rc2.html</source>
-			<destination>release/notes_5.0rc2.html</destination>
+			<source>folder2/subfolder22/subsubfolder221/page1.html</source>
+			<destination>folder2/subfolder22/subsubfolder221/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>16972ae3-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>16972ae2-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051691270000</datelastmodified>
+			<uuidresource>6b610d80-b3b3-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>6b610d81-b3b3-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084520592</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051691270000</datecreated>
+			<datecreated>1086084418947</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.45]]></value>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subsubfolder221]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 rc 2 notes]]></value>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 rc 2 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_6.0a1.html</source>
-			<destination>release/notes_6.0a1.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>1fd32591-6614-11d8-ab96-cbfb51df5f23</uuidresource>
-			<uuidcontent>1fd32592-6614-11d8-ab96-cbfb51df5f23</uuidcontent>
-			<datelastmodified>1077550066000</datelastmodified>
+			<destination>folder1</destination>
+			<type>folder</type>
+			<uuidresource>ea587f43-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086080779979</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1077549762000</datecreated>
+			<datecreated>1086080766491</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -279,1163 +973,936 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[6.0 a 1 notes]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[Folder1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[6.0 a 1 release notes]]></value>
+					<value><![CDATA[Folder1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/upgrade.html</source>
-			<destination>release/upgrade.html</destination>
+			<source>folder1/image1.gif</source>
+			<destination>folder1/image1.gif</destination>
+			<type>image</type>
+			<uuidresource>98a47bf8-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>98a47bf9-b3ad-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081983296</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086081917906</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder1/image2.gif</source>
+			<destination>folder1/image2.gif</destination>
+			<type>image</type>
+			<uuidresource>a8c8425b-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>a8c8425c-b3ad-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081991750</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086081944984</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder1/index.html</source>
+			<destination>folder1/index.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>169e56d9-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>169e56d8-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1051177154000</datelastmodified>
+			<uuidresource>f6b52b85-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>f6b52b86-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080836398</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1051177154000</datecreated>
+			<datecreated>1086080787231</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[101.0]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Upgrade info]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[How to upgrade from OpenCms 4.x to 5.0.0]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/welcome.html</source>
-			<destination>release/welcome.html</destination>
-			<type>jsp</type>
-			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<uuidcontent>16f8ac21-c102-11d7-a1e4-9b02dffa6399</uuidcontent>
-			<datelastmodified>1077617201000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1060163353000</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[500]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>tree</destination>
-			<type>folder</type>
-			<uuidresource>22e39650-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-			<datelastmodified>1085653512109</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512109</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_6.0a1.html]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/installation.html</source>
-			<destination>tree/installation.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>22f1ee32-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>22f1ee33-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1074850290000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512203</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[51]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Installation]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Installation]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/mailinglist.html</source>
-			<destination>tree/mailinglist.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>22fdd515-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>22fdd516-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051188702000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512281</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[102.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Mailing list]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/notes_5.0.0.html</source>
-			<destination>tree/notes_5.0.0.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>2309bbf8-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>2309bbf9-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051688624000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512359</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[Description of the index page]]></value>
+				</property>
+				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 final release notes]]></value>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0.0 (5.0 final) release notes]]></value>
+					<value><![CDATA[Index page]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/notes_5.0b2.html</source>
-			<destination>tree/notes_5.0b2.html</destination>
+			<source>folder1/page1.html</source>
+			<destination>folder1/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>231358eb-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>231358ec-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691223000</datelastmodified>
+			<uuidresource>0f8618fe-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>0f8618ff-b3ad-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083466875</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512422</datecreated>
+			<datecreated>1086081687859</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[2.0]]></value>
 				</property>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in folder1]]></value>
+				</property>
+				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 beta 2 notes]]></value>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page1]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 beta 2 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/notes_5.0rc1.html</source>
-			<destination>tree/notes_5.0rc1.html</destination>
+			<source>folder1/page2.html</source>
+			<destination>folder1/page2.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>231f3fce-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>231f3fcf-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691285000</datelastmodified>
+			<uuidresource>6726f581-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>6726f582-b3ad-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083459062</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512500</datecreated>
+			<datecreated>1086081834875</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.9]]></value>
+					<value><![CDATA[3.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 1 notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in folder1]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page2]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 rc 1 release notes]]></value>
+					<value><![CDATA[Page2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/notes_5.0rc2.html</source>
-			<destination>tree/notes_5.0rc2.html</destination>
+			<source>folder1/page3.html</source>
+			<destination>folder1/page3.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>2328dcc1-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>2328dcc2-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691270000</datelastmodified>
+			<uuidresource>7c169bd5-b3ad-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>7c169bd6-b3ad-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083452765</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512563</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.45]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 2 notes]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[5.0 rc 2 release notes]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/notes_6.0a1.html</source>
-			<destination>tree/notes_6.0a1.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>2334c3a4-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>2334c3a5-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077550066000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512641</datecreated>
+			<datecreated>1086081870000</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.5]]></value>
+					<value><![CDATA[4.0]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is page3 in folder1]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[6.0 a 1 notes]]></value>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword page3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[6.0 a 1 release notes]]></value>
+					<value><![CDATA[Page3]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/upgrade.html</source>
-			<destination>tree/upgrade.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>233bef97-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>233bef98-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051177154000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512688</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[101.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Upgrade info]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[How to upgrade from OpenCms 4.x to 5.0.0]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/welcome.html</source>
-			<destination>tree/welcome.html</destination>
-			<type>jsp</type>
-			<uuidresource>23458c8a-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>23458c8b-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077617201000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653512751</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[500]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>tree/folder1</destination>
+			<destination>folder1/subfolder11</destination>
 			<type>folder</type>
-			<uuidresource>38dae8bd-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
+			<uuidresource>15b34144-b3ae-11d8-9c65-514d35713fed</uuidresource>
 			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-			<datelastmodified>1085653548962</datelastmodified>
+			<datelastmodified>1086082553875</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653548962</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_6.0a1.html]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder1/installation.html</source>
-			<destination>tree/folder1/installation.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>38edfb8f-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>38edfb90-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1074850290000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549087</datecreated>
+			<datecreated>1086082127718</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[51]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[5.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Installation]]></value>
+					<value><![CDATA[Sub11]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Installation]]></value>
+					<value><![CDATA[Subfolder11]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder1/mailinglist.html</source>
-			<destination>tree/folder1/mailinglist.html</destination>
+			<source>folder1/subfolder11/index.html</source>
+			<destination>folder1/subfolder11/index.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>38fa0982-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>38fa0983-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051188702000</datelastmodified>
+			<uuidresource>21b6f816-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>21b6f817-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086082208781</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549166</datecreated>
+			<datecreated>1086082147875</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[102.0]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Mailing list]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder1/notes_5.0.0.html</source>
-			<destination>tree/folder1/notes_5.0.0.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>3905f065-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3905f066-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051688624000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549244</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 final release notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is the index page of subfolder11]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0.0 (5.0 final) release notes]]></value>
+					<value><![CDATA[The index page in subfolder 11]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder1/notes_5.0b2.html</source>
-			<destination>tree/folder1/notes_5.0b2.html</destination>
+			<destination>folder1/subfolder11/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>39144848-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>39144849-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691223000</datelastmodified>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>4e983a1a-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084258244</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549338</datecreated>
+			<datecreated>1086082223171</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[2.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 beta 2 notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder11]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 beta 2 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder1/notes_5.0rc1.html</source>
-			<destination>tree/folder1/notes_5.0rc1.html</destination>
+			<destination>folder1/subfolder11/page2.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>39202f2b-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>39202f2c-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691285000</datelastmodified>
+			<uuidresource>8379ac0f-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>8379ac10-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084276733</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549416</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.9]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 1 notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[5.0 rc 1 release notes]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder1/notes_5.0rc2.html</source>
-			<destination>tree/folder1/notes_5.0rc2.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>392e870e-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>392e870f-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691270000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549510</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.45]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 2 notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[5.0 rc 2 release notes]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder1/notes_6.0a1.html</source>
-			<destination>tree/folder1/notes_6.0a1.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>393a6df1-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>393a6df2-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077550066000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549588</datecreated>
+			<datecreated>1086082311890</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.5]]></value>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder11]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[6.0 a 1 notes]]></value>
+					<value><![CDATA[Page2]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[6.0 a 1 release notes]]></value>
+					<value><![CDATA[Page2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder1/upgrade.html</source>
-			<destination>tree/folder1/upgrade.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>394654d4-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>394654d5-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051177154000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549666</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[101.0]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Upgrade info]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[How to upgrade from OpenCms 4.x to 5.0.0]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder1/welcome.html</source>
-			<destination>tree/folder1/welcome.html</destination>
-			<type>jsp</type>
-			<uuidresource>395262c7-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>395262c8-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077617201000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653549745</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[500]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>tree/folder2</destination>
+			<destination>folder1/subfolder11/subsubfolder111</destination>
 			<type>folder</type>
-			<uuidresource>3f21f71a-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
+			<uuidresource>9d1fae82-b3ae-11d8-9c65-514d35713fed</uuidresource>
 			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
-			<datelastmodified>1085653559494</datelastmodified>
+			<datelastmodified>1086082369859</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559494</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[notes_6.0a1.html]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms release notes and welcome pages]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder2/installation.html</source>
-			<destination>tree/folder2/installation.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>3f304efc-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f304efd-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1074850290000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559588</datecreated>
+			<datecreated>1086082354921</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[51]]></value>
+					<value><![CDATA[4.0]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Installation]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[SubSub111]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Installation]]></value>
+					<value><![CDATA[SubSubFolder111]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/mailinglist.html</source>
-			<destination>tree/folder2/mailinglist.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>3f3ea6df-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f3ea6e0-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051188702000</datelastmodified>
+			<destination>folder1/subfolder11/subsubfolder111/image.gif</destination>
+			<type>image</type>
+			<uuidresource>3e0337c4-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>3e0337c5-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080514958</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559682</datecreated>
+			<datecreated>1086080477364</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[102.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Mailing list]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
 					<name>Title</name>
-					<value><![CDATA[Subscribe to the OpenCms mailing list]]></value>
+					<value><![CDATA[This is an image]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/notes_5.0.0.html</source>
-			<destination>tree/folder2/notes_5.0.0.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>3f4a8dc2-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f4a8dc3-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051688624000</datelastmodified>
+			<destination>folder1/subfolder11/subsubfolder111/jsp.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>10d3126e-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>10d3126f-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080406895</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559760</datecreated>
+			<datecreated>1086080401551</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder1/subfolder11/subsubfolder111/link</destination>
+			<type>pointer</type>
+			<uuidresource>27ca96b1-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>27ca96b2-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080450817</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080440083</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link to OpenCms.org]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder1/subfolder11/subsubfolder111/opencms-legacy.jar</destination>
+			<type>plain</type>
+			<uuidresource>030c0a6c-b3b6-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>030c0a6d-b3b6-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086085592641</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086085532397</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a binary file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder1/subfolder11/subsubfolder111/text.txt</destination>
+			<type>plain</type>
+			<uuidresource>015d3f4b-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>015d3f4c-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080384582</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080375613</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a Textfile]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder1/subfolder11/subsubfolder111/xml.xml</destination>
+			<type>XMLTemplate</type>
+			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>c589e3c0-b3aa-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086080742757</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086080704739</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is a XML file]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>folder1/subfolder12</destination>
+			<type>folder</type>
+			<uuidresource>ea92a5ac-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086082498625</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086082484859</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sub12]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subfolder12]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder1/subfolder12/index.html</source>
+			<destination>folder1/subfolder12/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>f6cab2ee-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>f6cab2ef-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086082564218</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086082505359</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the index in subfolder12]]></value>
+				</property>
+				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 final release notes]]></value>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0.0 (5.0 final) release notes]]></value>
+					<value><![CDATA[Indexpage]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/notes_5.0b2.html</source>
-			<destination>tree/folder2/notes_5.0b2.html</destination>
+			<destination>folder1/subfolder12/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>3f5674a5-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f5674a6-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691223000</datelastmodified>
+			<uuidresource>4e983a19-b3ae-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>4e983a1a-b3ae-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084258244</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559838</datecreated>
+			<datecreated>1086082223171</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
+					<value><![CDATA[1.5]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subfolder12]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[5.0 beta 2 notes]]></value>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 beta 2 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/notes_5.0rc1.html</source>
-			<destination>tree/folder2/notes_5.0rc1.html</destination>
+			<source>folder1/subfolder12/page2.html</source>
+			<destination>folder1/subfolder12/page2.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>3f64cc88-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f64cc89-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691285000</datelastmodified>
+			<uuidresource>3340c0c2-b3af-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>3340c0c3-b3af-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086084299190</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653559932</datecreated>
+			<datecreated>1086082606796</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.9]]></value>
+					<value><![CDATA[3.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 1 notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is page2 in subfolder12]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 rc 1 release notes]]></value>
+					<value><![CDATA[Page2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/notes_5.0rc2.html</source>
-			<destination>tree/folder2/notes_5.0rc2.html</destination>
+			<destination>folder1/subfolder12/subsubfolder121</destination>
+			<type>folder</type>
+			<uuidresource>3d1964c5-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>00000000-0000-0000-0000-000000000000</uuidcontent>
+			<datelastmodified>1086083069093</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083052812</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[SubSub121]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Subsubfolder121]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder1/subfolder12/subsubfolder121/image1.gif</source>
+			<destination>folder1/subfolder12/subsubfolder121/image1.gif</destination>
+			<type>image</type>
+			<uuidresource>7a234f2d-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>7a234f2e-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086081983296</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>1086083155218</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>folder1/subfolder12/subsubfolder121/index.html</source>
+			<destination>folder1/subfolder12/subsubfolder121/index.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>3f73246b-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f73246c-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051691270000</datelastmodified>
+			<uuidresource>49c653e7-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>49c653e8-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083105750</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653560026</datecreated>
+			<datecreated>1086083074078</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.45]]></value>
+					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[5.0 rc 2 notes]]></value>
+					<name>Description</name>
+					<value><![CDATA[This is the indext page in folder subsub121]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[5.0 rc 2 release notes]]></value>
+					<value><![CDATA[Indexpage]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/notes_6.0a1.html</source>
-			<destination>tree/folder2/notes_6.0a1.html</destination>
+			<source>folder1/subfolder12/subsubfolder121/page1.html</source>
+			<destination>folder1/subfolder12/subsubfolder121/page1.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>3f7f0b4e-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f7f0b4f-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077550066000</datelastmodified>
+			<uuidresource>6546bbaa-b3b0-11d8-9c65-514d35713fed</uuidresource>
+			<uuidcontent>6546bbab-b3b0-11d8-9c65-514d35713fed</uuidcontent>
+			<datelastmodified>1086083190656</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653560104</datecreated>
+			<datecreated>1086083120218</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.5]]></value>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[This is page1 in subsubfolder121]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[6.0 a 1 notes]]></value>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[6.0 a 1 release notes]]></value>
+					<value><![CDATA[Page1]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>tree/folder2/upgrade.html</source>
-			<destination>tree/folder2/upgrade.html</destination>
+			<source>index.html</source>
+			<destination>index.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>3f88a841-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f88a842-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1051177154000</datelastmodified>
+			<uuidresource>a7b5d298-b3ab-11d8-b3e3-514d35713fed</uuidresource>
+			<uuidcontent>a7b5d299-b3ab-11d8-b3e3-514d35713fed</uuidcontent>
+			<datelastmodified>1086081096701</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653560167</datecreated>
+			<datecreated>1086081084192</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[101.0]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Upgrade info]]></value>
+					<name>Description</name>
+					<value><![CDATA[Description of the index page]]></value>
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
+				<property>
+					<name>Keywords</name>
+					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[How to upgrade from OpenCms 4.x to 5.0.0]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>tree/folder2/welcome.html</source>
-			<destination>tree/folder2/welcome.html</destination>
-			<type>jsp</type>
-			<uuidresource>3f948f24-afc8-11d8-9883-ebdd0e0c3701</uuidresource>
-			<uuidcontent>3f948f25-afc8-11d8-9883-ebdd0e0c3701</uuidcontent>
-			<datelastmodified>1077617201000</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>1085653560245</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[500]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
+					<value><![CDATA[Index page]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 	</files>
+	<usergroupdata>
+		<groupdata>
+			<name>Administrators</name>
+			<description><![CDATA[The administrators group]]></description>
+			<flags>2</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>Guests</name>
+			<description><![CDATA[The guest group]]></description>
+			<flags>0</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>Projectmanagers</name>
+			<description><![CDATA[The projectmanager group]]></description>
+			<flags>14</flags>
+			<parentgroup>Users</parentgroup>
+		</groupdata>
+		<groupdata>
+			<name>Users</name>
+			<description><![CDATA[The users group]]></description>
+			<flags>12</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>group1</name>
+			<description><![CDATA[group1]]></description>
+			<flags>4</flags>
+			<parentgroup/>
+		</groupdata>
+		<groupdata>
+			<name>group2</name>
+			<description><![CDATA[group2]]></description>
+			<flags>6</flags>
+			<parentgroup/>
+		</groupdata>
+		<userdata>
+			<name>Admin</name>
+			<password><![CDATA[YTFhM2FmYTlmYWQ3MjUyN2MzMDljYThlY2EwMDlmNDM=
+]]></password>
+			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
+			<description><![CDATA[The admin user]]></description>
+			<firstname/>
+			<lastname/>
+			<email/>
+			<flags>0</flags>
+			<defaultgroup>Administrators</defaultgroup>
+			<address/>
+			<section/>
+			<type>0</type>
+			<userinfo>/~userinfo/Admin.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Administrators</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+		<userdata>
+			<name>Export</name>
+			<password><![CDATA[MjhiZDZiZjgyYTJiNTM2YWJkMDcyMzMxMzlkZmIzNjU=
+]]></password>
+			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
+			<description><![CDATA[The static export user]]></description>
+			<firstname/>
+			<lastname/>
+			<email/>
+			<flags>0</flags>
+			<defaultgroup>Guests</defaultgroup>
+			<address/>
+			<section/>
+			<type>0</type>
+			<userinfo>/~userinfo/Export.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Guests</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+		<userdata>
+			<name>Guest</name>
+			<password><![CDATA[NTQ5ZDBjNTkwZjgwMzI4NDY5MDA4OTE4NmM3OGMyZmU=
+]]></password>
+			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
+			<description><![CDATA[The guest user]]></description>
+			<firstname/>
+			<lastname/>
+			<email/>
+			<flags>0</flags>
+			<defaultgroup>Guests</defaultgroup>
+			<address/>
+			<section/>
+			<type>0</type>
+			<userinfo>/~userinfo/Guest.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Guests</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+		<userdata>
+			<name>test1</name>
+			<password><![CDATA[ZGE5MGRlMGIxZGMwNjFiMjE3MDA1NmFlMjJhNmRkMGE=
+]]></password>
+			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
+			<description><![CDATA[test1]]></description>
+			<firstname>test1</firstname>
+			<lastname>test1</lastname>
+			<email>test1</email>
+			<flags>0</flags>
+			<defaultgroup>Users</defaultgroup>
+			<address><![CDATA[test1]]></address>
+			<section/>
+			<type>0</type>
+			<userinfo>/~userinfo/test1.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Users</name>
+				</groupname>
+				<groupname>
+					<name>group1</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+		<userdata>
+			<name>test2</name>
+			<password><![CDATA[MmQ4MmI0MDIxMjg1Mzk4M2IxMTYzYTAxMGZmYTA3YWI=
+]]></password>
+			<recoverypassword><![CDATA[549d0c590f803284690089186c78c2fe]]></recoverypassword>
+			<description><![CDATA[test2]]></description>
+			<firstname>test2</firstname>
+			<lastname>test2</lastname>
+			<email>test2</email>
+			<flags>0</flags>
+			<defaultgroup>Users</defaultgroup>
+			<address><![CDATA[test2]]></address>
+			<section/>
+			<type>0</type>
+			<userinfo>/~userinfo/test2.dat</userinfo>
+			<usergroups>
+				<groupname>
+					<name>Users</name>
+				</groupname>
+				<groupname>
+					<name>group2</name>
+				</groupname>
+			</usergroups>
+		</userdata>
+	</usergroupdata>
 </export>

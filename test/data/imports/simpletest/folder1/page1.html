@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE page SYSTEM "http://www.opencms.org/dtd/6.0/xmlpage.dtd">
+
+<page>
+  <elements>
+    <element name="body" language="en">
+      <links>
+        <link name="link2" type="IMG" internal="true">
+          <target><![CDATA[/sites/default/folder1/image1.gif]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/folder1/page2.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/sites/default/folder1/page3.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<P>  &nbsp;</P>
+<P>This is page1</P>
+<P>Link to <A href="${link0}" 
+target=_self>page2</A>  </P>
+<P>Link to <A href="${link1}" 
+target=_self>page3</A>  </P>
+<P>An image</P>
+<P> &nbsp; <IMG src = "${link2}" ></P>]]></content>
+    </element>
+  </elements>
+</page>
