@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.167 $
+ * Date   : $Date: 2005/03/21 17:22:54 $
+ * Version: $Revision: 1.168 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.167 $
+ * @version $Revision: 1.168 $
  * @since 5.1
  */
 public final class OpenCmsCore {
@@ -244,7 +244,7 @@ public final class OpenCmsCore {
      * 
      * @return the initialized OpenCms singleton instance
      */
-    public static OpenCmsCore getInstance() {
+    protected static OpenCmsCore getInstance() {
         
         if (m_instance == null) {
             try {
@@ -255,104 +255,6 @@ public final class OpenCmsCore {
             }
         }
         return m_instance;
-    }
-
-    /**
-     * Reads the requested resource from the OpenCms VFS,
-     * in case a directory name is requested, the default files of the 
-     * directory will be looked up and the first match is returned.<p>
-     *
-     * @param cms the current CmsObject
-     * @param resourceName the requested resource
-     * @param req the current request
-     * @param res the current response
-     * @return CmsFile the requested file read from the VFS
-     * 
-     * @throws CmsException in case the file does not exist or the user has insufficient access permissions 
-     */
-    public CmsResource initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
-        
-        int todo = 0;
-        // TODO: Check requirement for public visibility, perhaps move this method to a different class
-        
-        CmsResource resource = null;
-        CmsException tmpException = null;
-
-        try {
-            // try to read the requested resource
-            resource = cms.readResource(resourceName);
-            // resource exists, lets check if we have a file or a folder
-            if (resource.isFolder()) {
-                // the resource is a folder, check if C_PROPERTY_DEFAULT_FILE is set on folder
-                try {                
-                    String defaultFileName = cms.readPropertyObject(CmsResource.getFolderPath(cms.getSitePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
-                    if (defaultFileName != null) {
-                        // property was set, so look up this file first
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
-                        resource = cms.readResource(tmpResourceName);
-                        // no exception? so we have found the default file                         
-                        cms.getRequestContext().setUri(tmpResourceName);
-                    } 
-                } catch (CmsSecurityException se) {
-                    // permissions deny access to the resource
-                    throw se;
-                } catch (CmsException e) {
-                    // ignore all other exceptions and continue the lookup process
-                }                
-                if (resource.isFolder()) {
-                    // resource is (still) a folder, check default files specified in configuration
-                    for (int i = 0; i < m_defaultFiles.size(); i++) {
-                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + m_defaultFiles.get(i);
-                        try {      
-                            resource = cms.readResource(tmpResourceName);
-                            // no exception? So we have found the default file                         
-                            cms.getRequestContext().setUri(tmpResourceName);
-                            // stop looking for default files   
-                            break;
-                        } catch (CmsSecurityException se) {
-                            // permissions deny access to the resource
-                            throw se;
-                        } catch (CmsException e) {
-                            // ignore all other exceptions and continue the lookup process
-                        }     
-                    }           
-                }
-            }
-            if (resource.isFolder()) {
-                // we only want files as a result for further processing
-                resource = null;
-            }
-        } catch (CmsException e) {
-            // file or folder with given name does not exist, store exception
-            tmpException = e;
-            resource = null;
-        }
-          
-        if (resource != null) {
-            // test if this file is only available for internal access operations
-            if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
-            }
-        }
-
-        // test if this file has to be checked or modified
-        Iterator i = m_resourceInitHandlers.iterator();
-        while (i.hasNext()) {
-            try {
-                resource = ((I_CmsResourceInit)i.next()).initResource(resource, cms, req, res);
-                // the loop has to be interrupted when the exception is thrown!
-            } catch (CmsResourceInitException e) {
-                break;
-            }
-        }
-
-        // file is still null and not found exception was thrown, so throw original exception
-        if (resource == null && tmpException != null) {
-            throw tmpException;
-        }
-
-        // return the resource read from the VFS
-        return resource;
     }
 
     /**
@@ -1243,6 +1145,113 @@ public final class OpenCmsCore {
             m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
             m_sessionManager = new CmsSessionManager();
         }
+    }
+
+    /**
+     * Reads the requested resource from the OpenCms VFS,
+     * in case a directory name is requested, the default files of the 
+     * directory will be looked up and the first match is returned.<p>
+     *
+     * The resource that is returned is always a <code>{@link org.opencms.file.CmsFile}</code>,
+     * even though the content will usually not be loaded in the result. Folders are never returned since
+     * the point of this method is really to load the default file if just a folder name is requested.<p>
+     *
+     * The URI stored in the given OpenCms user context will be changed to the URI of the resource 
+     * that was found and returned.<p>
+     * 
+     * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
+     * allows to customize the process of default resouce selection.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param resourceName the path of the requested resource in the OpenCms VFS
+     * @param req the current http request
+     * @param res the current http response
+     * @return the requested resource read from the VFS
+     * 
+     * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions
+     * 
+     * @see OpenCms#initResource(CmsObject, String, HttpServletRequest, HttpServletResponse)
+     */
+    protected CmsResource initResource(CmsObject cms, String resourceName, HttpServletRequest req, HttpServletResponse res) throws CmsException {
+        
+        CmsResource resource = null;
+        CmsException tmpException = null;
+
+        try {
+            // try to read the requested resource
+            resource = cms.readResource(resourceName);
+            // resource exists, lets check if we have a file or a folder
+            if (resource.isFolder()) {
+                // the resource is a folder, check if C_PROPERTY_DEFAULT_FILE is set on folder
+                try {                
+                    String defaultFileName = cms.readPropertyObject(CmsResource.getFolderPath(cms.getSitePath(resource)), I_CmsConstants.C_PROPERTY_DEFAULT_FILE, false).getValue();
+                    if (defaultFileName != null) {
+                        // property was set, so look up this file first
+                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + defaultFileName;
+                        resource = cms.readResource(tmpResourceName);
+                        // no exception? so we have found the default file                         
+                        cms.getRequestContext().setUri(tmpResourceName);
+                    } 
+                } catch (CmsSecurityException se) {
+                    // permissions deny access to the resource
+                    throw se;
+                } catch (CmsException e) {
+                    // ignore all other exceptions and continue the lookup process
+                }                
+                if (resource.isFolder()) {
+                    // resource is (still) a folder, check default files specified in configuration
+                    for (int i = 0; i < m_defaultFiles.size(); i++) {
+                        String tmpResourceName = CmsResource.getFolderPath(cms.getSitePath(resource)) + m_defaultFiles.get(i);
+                        try {      
+                            resource = cms.readResource(tmpResourceName);
+                            // no exception? So we have found the default file                         
+                            cms.getRequestContext().setUri(tmpResourceName);
+                            // stop looking for default files   
+                            break;
+                        } catch (CmsSecurityException se) {
+                            // permissions deny access to the resource
+                            throw se;
+                        } catch (CmsException e) {
+                            // ignore all other exceptions and continue the lookup process
+                        }     
+                    }           
+                }
+            }
+            if (resource.isFolder()) {
+                // we only want files as a result for further processing
+                resource = null;
+            }
+        } catch (CmsException e) {
+            // file or folder with given name does not exist, store exception
+            tmpException = e;
+            resource = null;
+        }
+          
+        if (resource != null) {
+            // test if this file is only available for internal access operations
+            if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
+                throw new CmsException(CmsException.C_ERROR_DESCRIPTION[CmsException.C_INTERNAL_FILE] + cms.getRequestContext().getUri(), CmsException.C_INTERNAL_FILE);
+            }
+        }
+
+        // test if this file has to be checked or modified
+        Iterator i = m_resourceInitHandlers.iterator();
+        while (i.hasNext()) {
+            try {
+                resource = ((I_CmsResourceInit)i.next()).initResource(resource, cms, req, res);
+                // the loop has to be interrupted when the exception is thrown!
+            } catch (CmsResourceInitException e) {
+                break;
+            }
+        }
+
+        // file is still null and not found exception was thrown, so throw original exception
+        if (resource == null && tmpException != null) {
+            throw tmpException;
+        }
+
+        // return the resource read from the VFS
+        return resource;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/03/10 16:23:06 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/03/21 17:22:54 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.main;
 import org.opencms.db.CmsDefaultUsers;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.loader.CmsResourceManager;
@@ -53,6 +54,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.logging.Log;
 
 /**
@@ -62,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public final class OpenCms {
 
@@ -88,6 +92,7 @@ public final class OpenCms {
 
         // empty
     }
+        
 
     /**
      * Add a cms event listener that listens to all events.<p>
@@ -456,6 +461,38 @@ public final class OpenCms {
     public static CmsObject initCmsObject(String user) throws CmsException {
 
         return OpenCmsCore.getInstance().initCmsObject(user);
+    }
+    
+    /**
+     * Reads the requested resource from the OpenCms VFS,
+     * and in case a directory name is requested, the default files of the 
+     * directory will be looked up and the first match is returned.<p>
+     *
+     * The resource that is returned is always a <code>{@link org.opencms.file.CmsFile}</code>,
+     * even though the content will usually not be loaded in the result. Folders are never returned since
+     * the point of this method is really to load the default file if just a folder name is requested.<p>
+     *
+     * The URI stored in the given OpenCms user context will be changed to the URI of the resource 
+     * that was found and returned.<p>
+     * 
+     * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
+     * allows to customize the process of default resouce selection.<p>
+     *
+     * @param cms the current users OpenCms context
+     * @param resourceName the path of the requested resource in the OpenCms VFS
+     * @param req the current http request
+     * @param res the current http response
+     * @return the requested resource read from the VFS
+     * 
+     * @throws CmsException in case the requested file does not exist or the user has insufficient access permissions 
+     */
+    public static CmsResource initResource(
+        CmsObject cms,
+        String resourceName,
+        HttpServletRequest req,
+        HttpServletResponse res) throws CmsException {
+
+        return OpenCmsCore.getInstance().initResource(cms, resourceName, req, res);
     }
 
     /**

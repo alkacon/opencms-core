@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/03/17 10:31:09 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2005/03/21 17:22:54 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
-import org.opencms.main.OpenCmsCore;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
@@ -80,7 +79,7 @@ import org.apache.commons.collections.map.LRUMap;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Moossen (a.moossen@alkacon.com)
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  */
 public class CmsStaticExportManager implements I_CmsEventListener {
 
@@ -333,7 +332,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (resource.isFile()) {
             file = cms.readFile(vfsName);
         } else {
-            file = CmsFile.upgrade(OpenCmsCore.getInstance().initResource(cms, vfsName, req, res), cms);
+            file = CmsFile.upgrade(OpenCms.initResource(cms, vfsName, req, res), cms);
             try {
                 cms.readResource(vfsName + file.getName());
                 vfsName = vfsName + file.getName();
