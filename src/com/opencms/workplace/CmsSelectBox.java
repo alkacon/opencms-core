@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsSelectBox.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.15 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.16 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -55,7 +55,6 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement,I_Cms
      * and returns the processed code with the actual elements.
      * <P>
      * Select boxes can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;SELECTBOX name="..." action="..." alt="..."/&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.
@@ -146,7 +145,6 @@ public class CmsSelectBox extends A_CmsWpElement implements I_CmsWpElement,I_Cms
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
         
-        // TODO: check, if this is neede: int numNames = names.size();
         for(int i = 0;i < numValues;i++) {
             if(i == selectedOption) {
                 result.append(inputdef.getSelectBoxSelOption((String)values.elementAt(i), (String)names.elementAt(i)));

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsLabel.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.11 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.12 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;LABEL&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.11 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.12 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -53,7 +53,6 @@ public class CmsLabel extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpCo
      * and returns the processed code with the actual elements.
      * <P>
      * Labels can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;LABEL name="..." action="..." alt="..."/&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.

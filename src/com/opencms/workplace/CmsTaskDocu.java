@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsTaskDocu.java,v $
-* Date   : $Date: 2001/07/31 15:50:20 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TASKDOCU&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.10 $ $Date: 2001/07/31 15:50:20 $
+ * @version $Revision: 1.11 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -71,7 +71,6 @@ public class CmsTaskDocu extends A_CmsWpElement implements I_CmsWpElement,I_CmsW
      * Returns the processed code with the actual elements.
      * <P>
      * Projectlists can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;TASKDOCU /&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.

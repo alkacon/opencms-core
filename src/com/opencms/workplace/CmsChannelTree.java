@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsChannelTree.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.5 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.6 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -309,7 +309,6 @@ public class CmsChannelTree extends CmsWorkplaceDefault implements I_CmsWpConsta
 
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
 
-        // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
         StringBuffer output = new StringBuffer();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         CmsXmlWpConfigFile configFile = this.getConfigFile(cms);

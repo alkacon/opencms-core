@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminDatatypes.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.15 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.16 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.15 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.16 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -115,8 +115,6 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
                     + ((templateSelector == null) ? "<default>" : templateSelector));
         }
 
-        //CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
-        //CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
         String action = (String)parameters.get("action");
@@ -256,7 +254,6 @@ public class CmsAdminDatatypes extends CmsWorkplaceDefault implements I_CmsConst
         CmsXmlWpTemplateFile templateFile = (CmsXmlWpTemplateFile)doc;
         templateFile.setData(C_TAG_RESTYPE, resTypeName);
 
-        // TODO: this escape function doesn't handle multiple blanks properly
         //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc", Encoder.escapeWBlanks(resTypeName,
             cms.getRequestContext().getEncoding()));

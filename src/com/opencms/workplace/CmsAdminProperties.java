@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminProperties.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.14 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.15 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import javax.servlet.http.*;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.14 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.15 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -203,7 +203,6 @@ public class CmsAdminProperties extends CmsWorkplaceDefault implements I_CmsCons
         Vector properties = cms.readAllPropertydefinitions(resType.getResourceTypeName());
         templateFile.setData(C_TAG_RESTYPE, resType.getResourceTypeName());
 
-        // TODO: this escape function doesn't handle properly multiple blancs
         //Gridnine AB Aug 8, 2002
         templateFile.setData(C_TAG_RESTYPE + "_esc",
                 Encoder.escapeWBlanks(resType.getResourceTypeName(),

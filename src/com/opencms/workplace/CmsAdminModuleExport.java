@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsAdminModuleExport.java,v $
-* Date   : $Date: 2002/11/11 15:27:31 $
-* Version: $Revision: 1.18 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.19 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -157,7 +157,7 @@ public class CmsAdminModuleExport extends CmsWorkplaceDefault implements I_CmsCo
 				resourcen[i++] = C_VFS_PATH_BODIES.substring(0, C_VFS_PATH_BODIES.length() - 1) + C_VFS_PATH_MODULEDEMOS + exportName + "/";
 			}
 
-			// TODO: this is just a Hack (What the heck does this hack??)
+			// TODO: check what this piece of code does:
 			for (i = 0; i < resourceCount; i++) {
 				try {
 					if (resourcen[i] != null) {

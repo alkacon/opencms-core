@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRename.java,v $
-* Date   : $Date: 2001/12/06 10:02:00 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.39 $ $Date: 2001/12/06 10:02:00 $
+ * @version $Revision: 1.40 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -93,7 +93,6 @@ public class CmsRename extends CmsWorkplaceDefault implements I_CmsWpConstants,I
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
 
-        // TODO: check, if this is neede: String lock=(String)parameters.get(C_PARA_LOCK);
         String filename = (String)parameters.get(C_PARA_FILE);
         if(filename != null) {
             session.putValue(C_PARA_FILE, filename);

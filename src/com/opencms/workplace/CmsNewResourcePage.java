@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewResourcePage.java,v $
-* Date   : $Date: 2002/11/13 14:59:43 $
-* Version: $Revision: 1.53 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.54 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.53 $ $Date: 2002/11/13 14:59:43 $
+ * @version $Revision: 1.54 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -132,7 +132,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
         // get the document to display
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
-        // TODO: check, if this is neede: String type=null;
         byte[] content = new byte[0];
         CmsFile contentFile = null;
         I_CmsSession session = cms.getRequestContext().getSession(true);
@@ -160,7 +159,6 @@ public class CmsNewResourcePage extends CmsWorkplaceDefault implements I_CmsWpCo
             xmlTemplateDocument.setData("doOnload", "");
         }
 
-        // TODO: check, if this is neede: String flags=(String)parameters.get(C_PARA_FLAGS);
         String templatefile = (String)parameters.get(C_PARA_TEMPLATE);
         String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
         String navpos = (String)parameters.get(C_PARA_NAVPOS);

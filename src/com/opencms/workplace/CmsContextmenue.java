@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsContextmenue.java,v $
-* Date   : $Date: 2001/12/14 15:40:11 $
-* Version: $Revision: 1.13 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.14 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Andreas Schouten
- * @version $Revision: 1.13 $ $Date: 2001/12/14 15:40:11 $
+ * @version $Revision: 1.14 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -58,7 +58,6 @@ public class CmsContextmenue extends A_CmsWpElement implements I_CmsWpElement,I_
      * Returns the processed code with the actual elements.
      * <P>
      * Contextmenue can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;Contextmenue /&gt;</CODE>
      *
      * @param cms CmsObject Object for accessing resources.

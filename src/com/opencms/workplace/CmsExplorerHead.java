@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2001/07/31 15:50:18 $
-* Version: $Revision: 1.25 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.26 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.25 $ $Date: 2001/07/31 15:50:18 $
+ * @version $Revision: 1.26 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -143,7 +143,6 @@ public class CmsExplorerHead extends CmsWorkplaceDefault implements I_CmsWpConst
         // the template to be displayed
         String template = null;
 
-        // TODO: check, if this is neede: Hashtable preferences=new Hashtable();
         // get session and servlet root
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String servlets = cms.getRequestContext().getRequest().getServletUrl();

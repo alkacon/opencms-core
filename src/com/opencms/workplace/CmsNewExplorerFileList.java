@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsNewExplorerFileList.java,v $
-* Date   : $Date: 2002/10/30 10:37:54 $
-* Version: $Revision: 1.48 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.49 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.xml.sax.*;
  * This can be used for plain text files or files containing graphics.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.48 $ $Date: 2002/10/30 10:37:54 $
+ * @version $Revision: 1.49 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannels,I_CmsConstants,I_CmsWpConstants {
@@ -60,11 +60,10 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
 
 
     /**
-     * This is the nummber of resources that are shown on one page.
+     * This is the number of resources that are shown on one page.
      * If a folder contains more than this we have to split the entrys
-     * on more than one page.
-     * TODO: this should be saved iin the usersettiings, so each user
-     *      can say how much he wants to see at once(and how long he has to wait for it)
+     * to more than one page.
+     * TODO: set this in the user preferences, so that each user can select how many resources he wants to see at once
      */
     private final static int C_ENTRYS_PER_PAGE = 50;
 
@@ -319,10 +318,10 @@ public class CmsNewExplorerFileList implements I_CmsDumpTemplate,I_CmsLogChannel
             }else{
                 content.append("\"\",");
             }
-            // TODO:user who changed it: content.append("\"" + "TODO" + "\",");
+            // unused field, was intended for the user who changed the resource last
             content.append("\"\",");
             // date
-            // not yet used: content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\",");
+            // unused field, was intended for: content.append("\"" + Utils.getNiceDate(res.getDateCreated()) + "\",");
             content.append("\"\",");
             // size
             if(res.isFolder() || (!showSize)) {

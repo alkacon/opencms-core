@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsExplorerTree.java,v $
-* Date   : $Date: 2002/09/03 11:57:06 $
-* Version: $Revision: 1.12 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.13 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.12 $ $Date: 2002/09/03 11:57:06 $
+ * @version $Revision: 1.13 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConstants {
@@ -189,7 +189,6 @@ public class CmsExplorerTree extends CmsWorkplaceDefault implements I_CmsWpConst
     public Object getTree(CmsObject cms, String tagcontent, A_CmsXmlContent doc, 
             Object userObj) throws CmsException {
         
-        // TODO: check, if this is needed: Hashtable parameters = (Hashtable)userObj;
         StringBuffer output = new StringBuffer();
         I_CmsSession session = cms.getRequestContext().getSession(true);
         String foldername = null;

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsWorkplaceDefault.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.49 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.50 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.http.*;
  * Most special workplace classes may extend this class.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.49 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Revision: 1.50 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -63,12 +63,6 @@ public class CmsWorkplaceDefault extends CmsXmlTemplate implements I_CmsWpConsta
 
     /** Reference to the config file */
     private CmsXmlWpConfigFile m_configFile = null;
-
-
-    /** Constant for the current language
-     * HACK: replace this by the corresponding value from the user object
-     */
-    private final static String C_CURRENT_LANGUAGE = I_CmsWpConstants.C_DEFAULT_LANGUAGE;
 
     /**
      * Sorts two vectors using bubblesort. This is a quick hack to display templates sorted by title instead of

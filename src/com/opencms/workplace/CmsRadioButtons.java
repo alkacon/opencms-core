@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.11 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.*;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.10 $ $Date: 2001/07/31 15:50:19 $
+ * @version $Revision: 1.11 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -56,7 +56,6 @@ public class CmsRadioButtons extends A_CmsWpElement implements I_CmsWpElement,I_
      * and returns the processed code with the actual elements.
      * <P>
      * Select boxes can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;RADIOBUTTON name="..." action="..." alt="..."/&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.

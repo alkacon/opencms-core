@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsMove.java,v $
-* Date   : $Date: 2001/12/20 08:32:13 $
-* Version: $Revision: 1.44 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.45 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.44 $ $Date: 2001/12/20 08:32:13 $
+ * @version $Revision: 1.45 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -308,14 +308,9 @@ public class CmsMove extends CmsWorkplaceDefault implements I_CmsWpConstants,I_C
 
     public Integer getFolder(CmsObject cms, CmsXmlLanguageFile lang, Vector names, Vector values, Hashtable parameters) throws CmsException {
         Integer selected = new Integer(0);
-
-        // Let's see if we have a session
-        // TODO: check, if this is neede: CmsRequestContext reqCont = cms.getRequestContext();
-        // TODO: check, if this is neede: I_CmsSession session = ((HttpServletRequest)reqCont.getRequest().getOriginalRequest()).getSession(false);
-        // get current and root folder
+        // get the root folder
         CmsFolder rootFolder = cms.rootFolder();
-
-        //add the root folder
+        // add the root folder
         names.addElement(lang.getLanguageValue("title.rootfolder"));
         values.addElement("/");
         getTree(cms, rootFolder, names, values);

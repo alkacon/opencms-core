@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsUnlock.java,v $
-* Date   : $Date: 2002/07/12 17:48:13 $
-* Version: $Revision: 1.39 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.40 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,15 +36,14 @@ import javax.servlet.http.*;
 import java.util.*;
 
 /**
- * Template class for displaying the unlock screen of the OpenCms workplace.<P>
+ * Template class for displaying the unlock screen of the OpenCms workplace.<p>
+ * 
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
- * <P>
- *
- * HACK: class uses news example package for handling special news locking features.
+ * 
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.39 $ $Date: 2002/07/12 17:48:13 $
+ * @version $Revision: 1.40 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsUnlock extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {

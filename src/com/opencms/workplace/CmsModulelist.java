@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2001/07/31 15:50:19 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author: Hanjo Riege
- * @Version: $Revision: 1.5 $
+ * @Version: $Revision: 1.6 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -55,7 +55,6 @@ public class CmsModulelist extends A_CmsWpElement implements I_CmsWpElement,I_Cm
      * Returns the processed code with the actual elements.
      * <P>
      * Projectlists can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;MODULELIST /&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsErrorpage.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.17 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.18 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.servlet.http.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.17 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Revision: 1.18 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement,I_CmsWpConstants {
@@ -54,7 +54,6 @@ public class CmsErrorpage extends A_CmsWpElement implements I_CmsWpElement,I_Cms
      * and returns the processed code with the actual elements.
      * <P>
      * Error page boxes can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;ERRORPAGEBOX name="..." action="..." alt="..."/&gt;</CODE>
      *
      * @param cms CmsObject Object for accessing resources.

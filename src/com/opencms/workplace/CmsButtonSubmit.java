@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsButtonSubmit.java,v $
-* Date   : $Date: 2001/07/31 15:50:17 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;SUBMITBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.8 $ $Date: 2001/07/31 15:50:17 $
+ * @version $Revision: 1.9 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -54,7 +54,6 @@ public class CmsButtonSubmit extends A_CmsWpElement implements I_CmsWpElement,I_
      * and returns the processed code with the actual elements.
      * <P>
      * Select boxes can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;SUBMITBUTTON name="..." action="..." alt="..."/&gt;</CODE>
      * 
      * @param cms CmsObject Object for accessing resources.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2002/09/03 11:57:07 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.lang.reflect.*;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.2 $ $Date: 2002/09/03 11:57:07 $
+ * @version $Revision: 1.3 $ $Date: 2002/11/16 13:23:06 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  */
 
@@ -66,7 +66,6 @@ public class CmsProjecthistory extends A_CmsWpElement implements I_CmsWpElement,
      * Returns the processed code with the actual elements.
      * <P>
      * Projectlists can be referenced in any workplace template by <br>
-     * // TODO: insert correct syntax here!
      * <CODE>&lt;PROJECTHISTORY /&gt;</CODE>
      *
      * @param cms CmsObject Object for accessing resources.

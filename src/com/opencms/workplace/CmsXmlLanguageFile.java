@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2002/11/07 19:33:56 $
-* Version: $Revision: 1.34 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.35 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.io.*;
  * Content definition for language files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.34 $ $Date: 2002/11/07 19:33:56 $
+ * @version $Revision: 1.35 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChannels,I_CmsWpConstants,I_CmsConstants {
@@ -139,7 +139,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
             CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
             m_languagePath = configFile.getLanguagePath();
         }
-        // HACK: In case you want only english language (the default), uncomment the following line
+        // In case you want only english language (the default), uncomment the following line
         // if (0 < 1) return C_DEFAULT_LANGUAGE;
         
         // select the right language to use
@@ -282,7 +282,7 @@ public class CmsXmlLanguageFile extends A_CmsXmlContent implements I_CmsLogChann
     private void mergeLanguageFiles(CmsObject cms, String language) throws CmsException {
         Vector langFiles = new Vector();
 
-        // HACK: Make sure old "uk" stuff still works        
+        // Make sure old "uk" stuff still works        
         if ("uk".equals(language)) language = "en";
         
         langFiles = cms.getFilesInFolder(m_languagePath + language + "/");

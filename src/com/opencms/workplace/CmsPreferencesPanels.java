@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/workplace/Attic/CmsPreferencesPanels.java,v $
-* Date   : $Date: 2002/07/25 07:15:25 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2002/11/16 13:23:06 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -40,10 +40,8 @@ import java.util.*;
  * Template class for displaying the preference panels screen of the OpenCms workplace.<P>
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
- * TODO: use predefined constants in this class, clean up this class and add more comments!
- *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2002/07/25 07:15:25 $
+ * @version $Revision: 1.36 $ $Date: 2002/11/16 13:23:06 $
  */
 
 public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWpConstants,I_CmsConstants {
@@ -915,31 +913,6 @@ public class CmsPreferencesPanels extends CmsWorkplaceDefault implements I_CmsWp
                 values.addElement(loopLink);
             }
         }
-
-        /*      // Check if the list of available views is not yet loaded from the workplace.ini
-        if(m_viewNames == null || m_viewLinks == null) {
-        m_viewNames = new Vector();
-        m_viewLinks = new Vector();
-
-        CmsXmlWpConfigFile configFile = new CmsXmlWpConfigFile(cms);
-        configFile.getWorkplaceIniData(m_viewNames, m_viewLinks,"WORKPLACEVIEWS","VIEW");
-        }
-
-        // OK. Now m_viewNames and m_viewLinks contail all available
-        // view information.
-        // Loop through the vectors and fill the result vectors.
-        int currentViewIndex = 0;
-        int numViews = m_viewNames.size();
-        for(int i=0; i<numViews; i++) {
-        String loopValue = (String)m_viewLinks.elementAt(i);
-        String loopName = (String)m_viewNames.elementAt(i);
-        values.addElement(loopValue);
-        names.addElement(lang.getLanguageValue("select." + loopName));
-        if(loopValue.equals(currentView)) {
-        currentViewIndex = i;
-        }
-        }
-        */
         return new Integer(currentViewIndex);
     }
 
