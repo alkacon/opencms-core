@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/mySql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/01/31 17:54:28 $
-* Version: $Revision: 1.81 $
+* Date   : $Date: 2003/02/22 15:15:41 $
+* Version: $Revision: 1.82 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import source.org.apache.java.util.Configurations;
  * @author Michael Emmerich
  * @author Hanjo Riege
  * @author Anders Fugmann
- * @version $Revision: 1.81 $ $Date: 2003/01/31 17:54:28 $ *
+ * @version $Revision: 1.82 $ $Date: 2003/02/22 15:15:41 $ *
  */
 public class CmsDbAccess extends com.opencms.file.genericSql.CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -830,6 +830,72 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
 }
 
     /**
+     * Creates a new task.<p>
+     * 
+     * MySQL 4 does not support the SQL from the generic driver, so that's
+     * why we have that special implementation here. 
+     * This was tested with MySQL 4.0.10. 
+     * 
+     * @param rootId id of the root task project
+     * @param parentId id of the parent task
+     * @param tasktype type of the task
+     * @param ownerId id of the owner
+     * @param agentId id of the agent
+     * @param roleId id of the role
+     * @param taskname name of the task
+     * @param wakeuptime time when the task will be wake up
+     * @param timeout time when the task times out
+     * @param priority priority of the task
+     *
+     * @return the Task object of the generated task
+     *
+     * @throws CmsException if something goes wrong.
+     */
+    public CmsTask createTask(int rootId, int parentId, int tasktype,
+                               int ownerId, int agentId,int  roleId, String taskname,
+                               java.sql.Timestamp wakeuptime, java.sql.Timestamp timeout,
+                               int priority)
+    throws CmsException {
+        // fetch new task id
+        int newId = nextId(C_TABLE_TASK);        
+        // create the task id entry in the DB                 
+        PreparedStatement statement = null;
+        Connection con = null;
+        try {
+            con = DriverManager.getConnection(m_poolName);
+            statement = con.prepareStatement(m_cq.get("C_TASK_CREATE"));
+            statement.setInt(1, newId);
+            statement.executeUpdate();
+
+        } catch( SQLException exc ) {
+            throw new CmsException(exc.getMessage(), CmsException.C_SQL_ERROR, exc);
+        } finally {
+            if(statement != null) {
+                 try {
+                     statement.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+            if(con != null) {
+                 try {
+                     con.close();
+                 } catch(SQLException exc) {
+                     // nothing to do here
+                 }
+            }
+        }                
+        // create the task object, note that this does not user the "task type" table
+        // because the generic SQL does not work with MySQL 4 
+        CmsTask task = new CmsTask(newId, taskname, C_TASK_STATE_STARTED, tasktype, rootId, parentId, ownerId, roleId, agentId, 
+                        agentId, new java.sql.Timestamp(System.currentTimeMillis()), wakeuptime, timeout, null, 0, 
+                        "30308", priority, 0, "../taskforms/adhoc.asp", 0, 1);       
+        // write tast
+        task = writeTask(task);
+        return task;
+    }
+    
+    /**
      * Reads a task from the Cms with
      * added escaping of Strings since MySQL dosen't support Unicode strings
      *
@@ -840,7 +906,7 @@ public CmsFile readFile(int projectId, int onlineProjectId, String filename, boo
      */
     public CmsTask readTask(int id) throws CmsException {
         CmsTask task = super.readTask(id);
-        task.setName(unescape(task.getName()));
+        if (task != null) task.setName(unescape(task.getName()));
         return task;
     }
 

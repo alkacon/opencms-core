@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/genericSql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2003/02/22 11:20:02 $
-* Version: $Revision: 1.270 $
+* Date   : $Date: 2003/02/22 15:15:40 $
+* Version: $Revision: 1.271 $
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
 *
@@ -71,7 +71,7 @@ import source.org.apache.java.util.Configurations;
  * @author Anders Fugmann
  * @author Finn Nielsen
  * @author Mark Foley
- * @version $Revision: 1.270 $ $Date: 2003/02/22 11:20:02 $ *
+ * @version $Revision: 1.271 $ $Date: 2003/02/22 15:15:40 $ *
  */
 public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
 
@@ -1797,21 +1797,22 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
     }
 
     /**
-     * Creates a new task.
-     * rootId Id of the root task project
-     * parentId Id of the parent task
-     * tasktype Type of the task
-     * ownerId Id of the owner
-     * agentId Id of the agent
-     * roleId Id of the role
-     * taskname Name of the Task
-     * wakeuptime Time when the task will be wake up
-     * timeout Time when the task times out
-     * priority priority of the task
+     * Creates a new task.<p>
+     * 
+     * @param rootId id of the root task project
+     * @param parentId id of the parent task
+     * @param tasktype type of the task
+     * @param ownerId id of the owner
+     * @param agentId id of the agent
+     * @param roleId id of the role
+     * @param taskname name of the task
+     * @param wakeuptime time when the task will be wake up
+     * @param timeout time when the task times out
+     * @param priority priority of the task
      *
-     * @return The Taskobject  of the generated Task
+     * @return the Task object of the generated task
      *
-     * @throws CmsException Throws CmsException if something goes wrong.
+     * @throws CmsException if something goes wrong.
      */
     public CmsTask createTask(int rootId, int parentId, int tasktype,
                                int ownerId, int agentId,int  roleId, String taskname,
@@ -1825,6 +1826,7 @@ public class CmsDbAccess implements I_CmsConstants, I_CmsLogChannels {
         try {
             newId = nextId(C_TABLE_TASK);
             con = DriverManager.getConnection(m_poolName);
+            // this statement causes trouble with MySQL 4.0.10
             statement = con.prepareStatement(m_cq.get("C_TASK_TYPE_COPY"));
             // create task by copying from tasktype table
             statement.setInt(1,newId);
@@ -9718,11 +9720,11 @@ public CmsTask readTask(int id) throws CmsException {
     try {
         con = DriverManager.getConnection(m_poolName);
         
+        // CHECK: Now using PreparedStatement in readTask()
         statement = con.prepareStatement(m_cq.get("C_TASK_READ"));
         statement.setInt(1, id);
         res = statement.executeQuery();
                 
-        // CHECK: Now using PreparedStatement because of issues with MySQL 4
         // statement = con.createStatement();
         // res = statement.executeQuery(m_cq.get("C_TASK_READ_STATEMENT")+id);
         if (res.next()) {
