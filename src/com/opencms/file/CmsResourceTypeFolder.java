@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResourceTypeFolder.java,v $
-* Date   : $Date: 2001/08/03 09:37:58 $
-* Version: $Revision: 1.19 $
+* Date   : $Date: 2001/08/30 14:57:17 $
+* Version: $Revision: 1.20 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -642,7 +642,7 @@ public class CmsResourceTypeFolder implements I_CmsResourceType, I_CmsConstants,
             }
             if(fullname == null){
                 // properties are the same but what about the owner, group and access?
-                if(cmsfolder.getFlags() != Integer.parseInt(access) ||
+                if(cmsfolder.getAccessFlags()  != Integer.parseInt(access) ||
                         cmsfolder.getOwnerId() != cms.readUser(user).getId() ||
                         cmsfolder.getGroupId() != cms.readGroup(group).getId() ){
                     fullname = cmsfolder.getAbsolutePath();

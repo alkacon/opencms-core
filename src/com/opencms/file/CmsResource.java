@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src/com/opencms/file/Attic/CmsResource.java,v $
-* Date   : $Date: 2001/07/31 15:50:13 $
-* Version: $Revision: 1.35 $
+* Date   : $Date: 2001/08/30 14:57:17 $
+* Version: $Revision: 1.36 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@
 * Lesser General Public License for more details.
 *
 * For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
+* OpenCms Website: http://www.opencms.org
 *
 * You should have received a copy of the GNU Lesser General Public
 * License along with this library; if not, write to the Free Software
@@ -37,7 +37,7 @@ import com.opencms.core.*;
  * This resource can be a A_CmsFile or a A_CmsFolder.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.35 $ $Date: 2001/07/31 15:50:13 $
+ * @version $Revision: 1.36 $ $Date: 2001/08/30 14:57:17 $
  */
  public class CmsResource implements I_CmsConstants,
                                                            Cloneable,
@@ -68,7 +68,7 @@ import com.opencms.core.*;
      private int m_resourceType;
 
      /**
-      * The flags of this resource.
+      * The flags of this resource ( not used yet; the Accessflags are stored in m_accessFlags).
       */
      private int m_resourceFlags;
 
@@ -264,9 +264,9 @@ import com.opencms.core.*;
         return m_fileId;
      }
     /**
-     * Returns the flags of this resource.
+     * Returns the flags of this resource ( not used yet; the Accessflags are served in getAccessFlags).
      *
-     * @return the flags of this resource.
+     * @return the flags of this resource (this are not the AccessFlags!!).
      */
       public int getFlags() {
          return m_resourceFlags;
