@@ -19,6 +19,7 @@ OpenCms 4.5.17 Chusuk       - 09 November 2001
 ! New property "description" for type image. The description can be inserted when uploading
   a picture in the picturegallery.
 ! Webusers can be added with an additional group by everybody.
+* Initialized "m_versionId" in "CmsMasterDataSet"
 - The password of a user can be changed by everybody who knows the username and the old password.
 - Added some methods to the generic CmsDbAccess so it is easier to select the correct pool 
   and statement for online or offline projects.
