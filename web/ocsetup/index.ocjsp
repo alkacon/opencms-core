@@ -6,7 +6,7 @@
 <jsp:setProperty name="Bean" property="basePath" value='<%= config.getServletContext().getRealPath("/") %>' />
 
 
-<%	
+<%		
 	/* Initialize the properties */
 	Bean.initProperties("opencms.properties");
 	
