@@ -344,7 +344,10 @@ function updateReport() {
     			"<%= wp.key("report.error.details") %>" + 
     			pageEndSimple;
     	} else {
-	    	pageBody = pageStartSimple + lastHeadline + pageEndSimple;
+	    	pageBody = 
+	    		pageStartSimple + 
+	    		"<span class='head'>" + lastHeadline + "</span><br>\n" +
+	    		pageEndSimple;
     	}	
     } else {
     	pageBody = pageStartExtended + htmlText + pageEndExtended;
